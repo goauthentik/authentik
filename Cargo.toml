@@ -21,9 +21,15 @@ publish = false
 [workspace.dependencies]
 arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
+askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
+axum-extra = { version = "= 0.12.6", default-features = false, features = [
+  "cookie-signed",
+  "cookie-key-expansion",
+] }
+base64 = "= 0.22.1"
 clap = { version = "= 4.6.3", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 chrono = { version = "0.4.45", features = ["serde"] }
@@ -40,17 +46,39 @@ eyre = "= 0.6.12"
 forwarded-header-value = "= 0.1.1"
 futures = "= 0.3.33"
 glob = "= 0.3.3"
+hyper = { version = "= 1.10.1", features = ["client", "http1", "http2"] }
+hyper-rustls = { version = "= 0.27.9", default-features = false, features = [
+  "aws-lc-rs",
+  "http1",
+  "http2",
+  "native-tokio",
+  "tls12",
+] }
 hyper-unix-socket = "= 0.6.1"
-hyper-util = "= 0.1.20"
+hyper-util = { version = "= 0.1.20", features = [
+  "client-legacy",
+  "http1",
+  "http2",
+  "tokio",
+] }
 ipnet = { version = "= 2.12.0", features = ["serde"] }
 json-subscriber = "= 0.3.0"
+jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
+moka = { version = "= 0.12.15", default-features = false, features = [
+  "future",
+] }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
+rand = "= 0.10.2"
+rcgen = { version = "= 0.14.7", default-features = false, features = [
+  "aws_lc_rs",
+  "fips",
+] }
 regex = "= 1.13.1"
 reqwest = { version = "= 0.13.4", features = [
   "form",
@@ -101,6 +129,10 @@ time = { version = "= 0.3.54", features = ["macros"] }
 tokio = { version = "= 1.52.4", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
+tokio-tungstenite = { version = "= 0.29.0", features = [
+  "rustls-tls-webpki-roots",
+  "url",
+] }
 tokio-util = { version = "= 0.7.18", features = ["full"] }
 tower = "= 0.5.3"
 tower-http = { version = "= 0.7.0", features = ["timeout"] }
@@ -260,32 +292,72 @@ publish.workspace = true
 
 [features]
 default = ["core", "proxy"]
-core = ["ak-common/core", "dep:pyo3", "dep:sqlx"]
-proxy = ["ak-common/proxy"]
+core = ["proxy", "ak-common/core", "dep:pyo3", "dep:sqlx"]
+proxy = [
+  "ak-common/proxy",
+  "dep:ak-client",
+  "dep:jsonwebtoken",
+  "dep:axum-extra",
+  "dep:aws-lc-rs",
+  "dep:reqwest-middleware",
+  "dep:moka",
+  "dep:base64",
+  "dep:regex",
+  "dep:hyper",
+  "dep:hyper-rustls",
+  "dep:thiserror",
+  "dep:askama",
+]
 
 [build-dependencies]
 pyo3-build-config.workspace = true
 
 [dependencies]
 ak-axum.workspace = true
+ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
+askama = { workspace = true, optional = true }
+aws-lc-rs = { workspace = true, optional = true }
+base64 = { workspace = true, optional = true }
+axum-extra = { workspace = true, optional = true }
+axum-server.workspace = true
 axum.workspace = true
 color-eyre.workspace = true
 eyre.workspace = true
+futures.workspace = true
+hyper = { workspace = true, optional = true }
+hyper-rustls = { workspace = true, optional = true }
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
-metrics.workspace = true
+jsonwebtoken = { workspace = true, optional = true }
 metrics-exporter-prometheus.workspace = true
+metrics.workspace = true
+moka = { workspace = true, optional = true }
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
+rand.workspace = true
+regex = { workspace = true, optional = true }
+reqwest-middleware = { workspace = true, optional = true }
 reqwest.workspace = true
+rustls.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_repr.workspace = true
 sqlx = { workspace = true, optional = true }
+thiserror = { workspace = true, optional = true }
+time.workspace = true
+tokio-tungstenite.workspace = true
 tokio.workspace = true
+tower.workspace = true
 tracing.workspace = true
+url.workspace = true
 uuid.workspace = true
 which.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
 
 [lints]
 workspace = true
