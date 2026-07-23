@@ -296,9 +296,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-switch-input
                         name="flags.coreDefaultAppAccess"
                         ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
-                        label=${msg("Require policies for application access")}
+                        label=${msg("Allow application access with no policies")}
                         help=${msg(
-                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                            "Applications with no policies bound can be accessed by any user..",
                         )}
                     >
                     </ak-switch-input>

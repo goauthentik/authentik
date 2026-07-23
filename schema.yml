@@ -37447,8 +37447,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -51582,8 +51582,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56382,8 +56382,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56471,8 +56471,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
