@@ -4,6 +4,8 @@ use ak_client::{
     apis::{configuration::Configuration, outposts_api::outposts_instances_list},
     models::Outpost as OutpostModel,
 };
+#[cfg(feature = "core")]
+use ak_common::Mode;
 use ak_common::{Tasks, VERSION, api, authentik_build_hash};
 use arc_swap::ArcSwap;
 use eyre::{Result, eyre};
@@ -59,7 +61,25 @@ impl OutpostController {
 
     #[instrument(skip_all)]
     async fn new<O: Outpost>() -> Result<Self> {
-        let api_config = api::make_config()?;
+        let (detected_as_embedded, api_config) = {
+            #[cfg(not(feature = "core"))]
+            {
+                (false, api::make_config()?)
+            }
+
+            #[cfg(feature = "core")]
+            {
+                if Mode::is_core() {
+                    (
+                        true,
+                        api::make_config_embedded(crate::server::socket_path())?,
+                    )
+                } else {
+                    (false, api::make_config()?)
+                }
+            }
+        };
+
         let outpost = Self::get_outpost(&api_config).await?;
         let instance_uuid = Uuid::new_v4();
 
@@ -88,6 +108,12 @@ impl OutpostController {
             m_connection,
         };
 
+        if detected_as_embedded && !controller.is_embedded() {
+            return Err(eyre!(
+                "We think we are running as embedded, but the outpost returned by the API is not the embedded outpost."
+            ));
+        }
+
         info!(embedded = controller.is_embedded(), "outpost mode");
         debug!(?reload_offset, "HA Reload offset");
 
@@ -111,13 +137,13 @@ impl OutpostController {
 }
 
 #[instrument(skip_all)]
-pub(crate) async fn start<O: Outpost + 'static>(_cli: O::Cli, tasks: &mut Tasks) -> Result<()> {
+pub(crate) async fn start<O: Outpost + 'static>(_cli: O::Cli, tasks: &mut Tasks) -> Result<Arc<O>> {
     let controller = Arc::new(OutpostController::new::<O>().await?);
     let outpost = Arc::new(O::new(Arc::clone(&controller)).await?);
 
     event::start(tasks, Arc::clone(&controller), Arc::clone(&outpost))?;
-    outpost.start(tasks)?;
+    Arc::clone(&outpost).start(tasks)?;
     controller.m_info.set(1_u8);
 
-    Ok(())
+    Ok(outpost)
 }

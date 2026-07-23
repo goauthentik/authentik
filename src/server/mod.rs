@@ -30,7 +30,7 @@ use tokio::{
 use tower::ServiceExt;
 use tracing::{info, trace, warn};
 
-use crate::worker::Workers;
+use crate::{outpost, outpost::proxy::ProxyOutpost, worker::Workers};
 
 mod core;
 mod r#static;
@@ -150,12 +150,14 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
                 if signal == SignalKind::user_defined1() {
                     info!("server notified us ready, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
+                    let _ = arbiter.send_event(Event::GunicornIsReady);
                 }
             },
             _ = start_interval.tick(), if !GUNICORN_READY.load(Ordering::Relaxed) => {
                 if server.is_socket_ready().await {
                     info!("server socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
+                    let _ = arbiter.send_event(Event::GunicornIsReady);
                 }
             },
             _ = check_interval.tick() => {
@@ -175,9 +177,8 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
     }
 }
 
-fn build_router(server: Arc<Server>) -> Router {
+fn build_router(server: Arc<Server>, proxy_outpost: Option<Arc<ProxyOutpost>>) -> Router {
     let core_router = core::build_router(server);
-    // let proxy_router = Router::new();
 
     metrics::describe_histogram!(
         "authentik_main_request_duration",
@@ -185,7 +186,18 @@ fn build_router(server: Arc<Server>) -> Router {
         "API request latencies in seconds"
     );
 
-    Router::new().fallback(any(async |request: Request<Body>| {
+    let router = if let Some(proxy_outpost) = proxy_outpost {
+        Router::new().nest(
+            "/outpost.goauthentik.io/ping",
+            Router::new()
+                .fallback(outpost::proxy::handlers::handle_ping)
+                .with_state(proxy_outpost),
+        )
+    } else {
+        Router::new()
+    };
+
+    router.fallback(any(async |request: Request<Body>| {
         let now = Instant::now();
 
         let res = core_router.oneshot(request).await;
@@ -200,12 +212,18 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
 
     let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock")).await?);
 
+    let proxy_outpost = if !config::get().outposts.disable_embedded_outpost {
+        Some(outpost::start::<ProxyOutpost>(Default::default(), tasks).await?)
+    } else {
+        None
+    };
+
     tasks
         .build_task()
         .name(&format!("{}::watch_server", module_path!()))
         .spawn(watch_server(arbiter.clone(), Arc::clone(&server)))?;
 
-    let router = build_router(Arc::clone(&server));
+    let router = build_router(Arc::clone(&server), proxy_outpost);
 
     for addr in config::get().listen.http.iter().copied() {
         ak_axum::server::start_plain(tasks, "server", router.clone(), addr)?;
