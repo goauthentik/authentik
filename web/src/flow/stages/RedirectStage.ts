@@ -91,6 +91,17 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.startedRedirect = true;
     }
 
+    // Let the native <a href> navigate
+    followRedirect(): void {
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const url = new URL(this.challenge!.to, window.location.origin);
+
+        // Foreign final redirect: let pagehide broadcast the exit; else suppress it.
+        if (!(finalRedirect && url.origin !== window.location.origin)) {
+            suppressNextExitForSameOriginNavigation();
+        }
+    }
+
     protected render(): SlottedTemplateResult {
         if (!this.challenge) {
             return nothing;
@@ -123,13 +134,9 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 <fieldset class="pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
-                        type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${(ev: Event) => {
-                            ev.preventDefault();
-                            this.redirect();
-                        }}
+                        @click=${() => this.followRedirect()}
                     >
                         ${msg("Follow redirect")}
                     </a>
