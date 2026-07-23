@@ -27,7 +27,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
-from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
@@ -37,7 +37,12 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
@@ -133,12 +138,17 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
+def event_actions():
+    # Wrapper used in models to prevent migrations constantly changing when actions are added
+    return EventAction.choices
+
+
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
-    action = models.TextField(choices=EventAction.choices)
+    action = models.TextField(choices=event_actions)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
@@ -671,6 +681,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
             "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
+        through="NotificationRuleNotificationTransport",
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,
@@ -713,6 +724,30 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
+
+
+class NotificationRuleNotificationTransport(SimpleThroughModel):
+    notification_rule = models.ForeignKey(
+        NotificationRule, on_delete=models.CASCADE, db_column="notificationrule_id"
+    )
+    notification_transport = models.ForeignKey(
+        NotificationTransport,
+        on_delete=models.CASCADE,
+        db_column="notificationtransport_id",
+    )
+
+    class Meta:
+        db_table = "authentik_events_notificationrule_transports"
+        unique_together = (("notification_rule", "notification_transport"),)
+        verbose_name = _("Notification Rule Notification Transport")
+        verbose_name_plural = _("Notification Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            "NotificationRuleNotificationTransport for NotificationRule "
+            f"{self.notification_rule_id} "
+            f"and NotificationTransport {self.notification_transport_id}."
+        )
 
 
 class NotificationWebhookMapping(PropertyMapping):

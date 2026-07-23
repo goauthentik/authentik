@@ -1,9 +1,13 @@
 from authentik.common.saml.constants import NS_MAP as _map
+from authentik.enterprise.providers.ws_federation.models import WSFederationSAMLVersion
 
 WS_FED_ACTION_SIGN_IN = "wsignin1.0"
 WS_FED_ACTION_SIGN_OUT = "wsignout1.0"
 WS_FED_ACTION_SIGN_OUT_CLEANUP = "wsignoutcleanup1.0"
 
+WS_FED_QS_ACTION = "wa"
+WS_FED_QS_REALM = "wtrealm"
+WS_FED_QS_REPLY = "wreply"
 WS_FED_POST_KEY_ACTION = "wa"
 WS_FED_POST_KEY_RESULT = "wresult"
 WS_FED_POST_KEY_CONTEXT = "wctx"
@@ -11,9 +15,17 @@ WS_FED_POST_KEY_CONTEXT = "wctx"
 WSS_TOKEN_TYPE_SAML2 = (
     "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0"  # nosec
 )
+WSS_TOKEN_TYPE_SAML11 = (
+    "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV1.1"  # nosec
+)
 WSS_KEY_IDENTIFIER_SAML_ID = (
     "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID"
 )
+
+WSS_TOKEN_TYPE_BY_VERSION = {
+    WSFederationSAMLVersion.SAML_1_1: WSS_TOKEN_TYPE_SAML11,
+    WSFederationSAMLVersion.SAML_2_0: WSS_TOKEN_TYPE_SAML2,
+}
 
 NS_WS_FED_PROTOCOL = "http://docs.oasis-open.org/wsfed/federation/200706"
 NS_WS_FED_TRUST = "http://schemas.xmlsoap.org/ws/2005/02/trust"

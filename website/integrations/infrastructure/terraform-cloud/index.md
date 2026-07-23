@@ -26,7 +26,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Terraform with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
@@ -35,8 +35,8 @@ To support the integration of Terraform with authentik, you need to create an ap
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-        - Set the **ACS URL** to `https://temporary.domain`.
-        - Set the **Audience** to `https://temporary.domain`.
+        - Set the **ACS URL** to `https://temp.temp`.
+        - Set the **Audience** to `https://temp.temp`.
         - Under **Advanced protocol settings**, select an available **Signing Certificate**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
@@ -56,7 +56,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 4. Click **Save Settings**.
 5. Under **HCP Terraform**, take note of the **Entity ID (Audience)** and **Assertion Consumer URL** values. Do not close this window.
 
-## Configure the remaining information in authentik
+### Update the authentik provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and provider that you created in the previous step.
@@ -64,7 +64,7 @@ To support the integration of Terraform with authentik, you need to create an ap
 4. Under **Protocol settings**, set the value of the **ACS URL** to the **Assertion Consumer URL** value from the previous step. Then, set the value of the **Audience** to the **Entity ID (Audience)** value from the previous step.
 5. Click **Update**.
 
-## Enable Terraform Cloud SSO
+### Enable SSO
 
 1. In Terraform Cloud, under **Settings** > **SSO**, click **Test**. Successfully authenticating will result in a green checkmark and **Successful** appearing. Then, to enable SSO, click **Enable**.
 2. Read the warning message that appears and click **Enable SAML**.
