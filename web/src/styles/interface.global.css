@@ -32,6 +32,7 @@
 @import "#elements/ToggleGroup_impl/ToggleGroup.root.css" layer(components);
 @import "#elements/Divider_impl/Divider.root.css" layer(components);
 @import "#elements/Progress_impl/Progress.root.css" layer(components);
+@import "#elements/EmptyState_impl/EmptyState.root.css" layer(components);
 @import "#styles/global/locales/ja/globals.css" layer(components);
 @import "#styles/global/locales/ko/globals.css" layer(components);
 @import "#styles/global/locales/zh/globals.css" layer(components);
