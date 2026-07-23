@@ -1,4 +1,3 @@
-import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#components/ak-status-label";
 import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
@@ -63,10 +62,6 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             ...(await this.defaultEndpointConfig()),
             status: this.showOnlyPending ? OffboardingStatusEnum.Pending : undefined,
         });
-    }
-
-    protected override renderSectionBefore(): SlottedTemplateResult {
-        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
     }
 
     protected override renderToolbar(): TemplateResult {
