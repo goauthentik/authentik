@@ -12,7 +12,7 @@ use std::{
 use ak_common::{Arbiter, Event, Tasks, config};
 use arc_swap::ArcSwapOption;
 use argh::FromArgs;
-use axum::{Router, body::Body};
+use axum::{Router, body::Body, extract::Request, routing::any};
 use eyre::{Result, eyre};
 use hyper_unix_socket::UnixSocketConnector;
 use hyper_util::{client::legacy::Client, rt::TokioExecutor};
@@ -25,12 +25,15 @@ use tokio::{
     process::{Child, Command},
     signal::unix::SignalKind,
     sync::Mutex,
-    time::{Duration, interval},
+    time::{Duration, Instant, interval},
 };
+use tower::ServiceExt;
 use tracing::{info, trace, warn};
 
 use crate::worker::Workers;
 
+mod core;
+mod r#static;
 mod tls;
 
 #[derive(Debug, Default, FromArgs, PartialEq, Eq)]
@@ -172,8 +175,24 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
     }
 }
 
-fn build_router(_server: Arc<Server>) -> Router {
-    Router::new()
+fn build_router(server: Arc<Server>) -> Router {
+    let core_router = core::build_router(server);
+    // let proxy_router = Router::new();
+
+    metrics::describe_histogram!(
+        "authentik_main_request_duration",
+        metrics::Unit::Seconds,
+        "API request latencies in seconds"
+    );
+
+    Router::new().fallback(any(async |request: Request<Body>| {
+        let now = Instant::now();
+
+        let res = core_router.oneshot(request).await;
+        metrics::histogram!("authentik_main_request_duration", "dest" => "core")
+            .record(now.elapsed());
+        res
+    }))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
