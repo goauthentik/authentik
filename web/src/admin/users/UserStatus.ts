@@ -19,6 +19,8 @@ export function renderUserStatus(status: CompositeStatusEnum): SlottedTemplateRe
                 type="warning"
                 .badLabel=${msg("Locked", { id: "user.status.locked" })}
             ></ak-status-label>`;
+        // TODO: Replace this attribute-backed status with dedicated state.
+        // https://github.com/goauthentik/authentik/issues/19681
         case CompositeStatusEnum.PasswordResetPending:
             return html`<ak-status-label
                 type="warning"
