@@ -54,6 +54,7 @@ from authentik.stages.password.models import PasswordStage
 from authentik.stages.password.stage import (
     PLAN_CONTEXT_METHOD,
     PLAN_CONTEXT_METHOD_ARGS,
+    should_show_lockout_message,
 )
 
 
@@ -252,11 +253,12 @@ class IdentificationStageView(ChallengeStageView):
     response_class = IdentificationChallengeResponse
 
     def challenge_invalid(self, response: IdentificationChallengeResponse) -> HttpResponse:
-        """Stop the flow when embedded password validation locks the user out."""
+        """Stop the flow after its embedded password attempts are exhausted."""
         current_stage: IdentificationStage = self.executor.current_stage
-        if (
-            response.authentication_status is PasswordAuthenticationStatus.LOCKED
-            and current_stage.password_stage
+        if current_stage.password_stage and should_show_lockout_message(
+            self.executor.plan.context,
+            current_stage.password_stage,
+            response.authentication_status,
         ):
             return self.executor.stage_invalid(
                 current_stage.password_stage.get_lockout_message(_("Failed to authenticate."))

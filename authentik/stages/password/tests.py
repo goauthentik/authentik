@@ -131,6 +131,9 @@ class TestPasswordStage(FlowTestCase):
 
     def test_valid_password_locked(self):
         """A correct password cannot authenticate while password login is locked."""
+        self.stage.failed_attempts_before_lockout = 2
+        self.stage.show_lockout_message = True
+        self.stage.save(update_fields=("failed_attempts_before_lockout", "show_lockout_message"))
         lock_password_login(self.user)
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
@@ -138,16 +141,24 @@ class TestPasswordStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        response = self.client.post(
-            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-            {"password": self.user.username},
-        )
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, {"password": self.user.username})
 
         self.assertStageResponse(
             response,
             self.flow,
+            response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+        )
+
+        response = self.client.post(url, {"password": self.user.username})
+        self.assertStageResponse(
+            response,
+            self.flow,
             component="ak-stage-access-denied",
-            error_message="Invalid password",
+            error_message=(
+                "Your account has been locked out due to too many failed attempts. "
+                "Please contact your administrator."
+            ),
         )
 
     def test_invalid_password(self):
@@ -355,7 +366,7 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
 
         self.assertIs(
             record_failed_password_attempt(user, 2),
-            PasswordAuthenticationStatus.LOCKED,
+            PasswordAuthenticationStatus.NEWLY_LOCKED,
         )
         stale_user.email = "updated@example.com"
         stale_user.save()
@@ -395,7 +406,7 @@ class TestPasswordLockoutConcurrency(TransactionTestCase):
             [
                 PasswordAuthenticationStatus.INVALID,
                 PasswordAuthenticationStatus.LAST_ATTEMPT,
-                PasswordAuthenticationStatus.LOCKED,
+                PasswordAuthenticationStatus.NEWLY_LOCKED,
             ],
         )
         self.assertEqual(

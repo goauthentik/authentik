@@ -156,7 +156,7 @@ def record_failed_password_attempt(
                 request,
                 **event_context,
             )
-            return PasswordAuthenticationStatus.LOCKED
+            return PasswordAuthenticationStatus.NEWLY_LOCKED
 
         state.save(update_fields=("failed_attempts",))
         if state.failed_attempts == threshold - 1:

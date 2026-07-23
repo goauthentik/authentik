@@ -270,6 +270,34 @@ class TestIdentificationStage(FlowTestCase):
             error_message="Failed to authenticate.",
         )
 
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            response_errors={
+                "non_field_errors": [
+                    {
+                        "string": "Failed to authenticate.",
+                        "code": "invalid",
+                    }
+                ]
+            },
+        )
+
+        response = self.client.post(
+            url,
+            {"uid_field": self.user.email, "password": self.user.username + "test"},
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message="Failed to authenticate.",
+        )
+
     def test_invalid_with_password_pretend(self):
         """Test with invalid email and invalid password in single step (with pretend_user_exists)"""
         self.stage.pretend_user_exists = True

@@ -25,6 +25,7 @@ class PasswordAuthenticationStatus(Enum):
     AUTHENTICATED = auto()
     INVALID = auto()
     LAST_ATTEMPT = auto()
+    NEWLY_LOCKED = auto()
     LOCKED = auto()
 
 

@@ -1,5 +1,7 @@
 """authentik password stage"""
 
+from typing import Any
+
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -26,6 +28,28 @@ PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+PLAN_CONTEXT_LOCKED_ATTEMPTS = "goauthentik.io/stages/password/locked_attempts"
+
+
+def should_show_lockout_message(
+    context: dict[str, Any],
+    password_stage: PasswordStage,
+    status: PasswordAuthenticationStatus,
+) -> bool:
+    """Return whether the current flow has reached its lockout message."""
+    if status is PasswordAuthenticationStatus.NEWLY_LOCKED:
+        return True
+    if status is not PasswordAuthenticationStatus.LOCKED:
+        return False
+
+    key = f"{PLAN_CONTEXT_LOCKED_ATTEMPTS}/{password_stage.pk}"
+    attempts = context.get(key, 0) + 1
+    context[key] = attempts
+    threshold = (
+        password_stage.failed_attempts_before_lockout
+        or password_stage.failed_attempts_before_cancel
+    )
+    return threshold > 0 and attempts >= threshold
 
 
 class PasswordChallenge(WithUserInfoChallenge):
@@ -122,7 +146,11 @@ class PasswordStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
-        if response.authentication_status is PasswordAuthenticationStatus.LOCKED:
+        if should_show_lockout_message(
+            self.executor.plan.context,
+            current_stage,
+            response.authentication_status,
+        ):
             return self.executor.stage_invalid(
                 current_stage.get_lockout_message(_("Invalid password"))
             )
