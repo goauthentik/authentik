@@ -151,13 +151,11 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(self.client.post(lock_url).status_code, 204)
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.password_login_locked_at)
-        self.assertEqual(
-            Event.objects.filter(
-                action=EventAction.PASSWORD_LOGIN_LOCKED,
-                user__pk=self.user.pk,
-            ).count(),
-            1,
+        lock_event = Event.objects.get(
+            action=EventAction.PASSWORD_LOGIN_LOCKED,
+            context__affected_user__pk=self.user.pk,
         )
+        self.assertEqual(lock_event.user["pk"], self.admin.pk)
 
         unlock_url = reverse(
             "authentik_api:user-password-login-unlock", kwargs={"pk": self.user.pk}
@@ -166,13 +164,11 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(self.client.post(unlock_url).status_code, 204)
         self.user.refresh_from_db()
         self.assertIsNone(self.user.password_login_locked_at)
-        self.assertEqual(
-            Event.objects.filter(
-                action=EventAction.PASSWORD_LOGIN_UNLOCKED,
-                user__pk=self.user.pk,
-            ).count(),
-            1,
+        unlock_event = Event.objects.get(
+            action=EventAction.PASSWORD_LOGIN_UNLOCKED,
+            context__affected_user__pk=self.user.pk,
         )
+        self.assertEqual(unlock_event.user["pk"], self.admin.pk)
 
     @enterprise_test()
     def test_password_login_lock_rejects_current_user(self):

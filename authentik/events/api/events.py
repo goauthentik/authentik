@@ -124,7 +124,12 @@ class EventsFilter(django_filters.FilterSet):
     )
 
     def filter_username(self, queryset, name, value):
-        return queryset.filter(Q(user__username=value) | Q(context__username=value))
+        return queryset.filter(
+            Q(user__username=value)
+            | Q(context__username=value)
+            | Q(context__affected_user__username=value)
+            | Q(context__affected_user=value)
+        )
 
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,

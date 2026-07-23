@@ -42,9 +42,9 @@ def _record_transition(
     **event_context: Any,
 ) -> None:
     """Record a password-login lock transition."""
-    event = Event.new(action, **event_context)
+    event = Event.new(action, affected_user=user, **event_context)
     if request:
-        event.from_http(request, user=user)
+        event.from_http(request)
     else:
         event.set_user(user).save()
 
