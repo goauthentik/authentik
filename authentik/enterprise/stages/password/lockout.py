@@ -200,6 +200,8 @@ def authenticate_password(
 ) -> PasswordAuthenticationResult:
     """Authenticate a password and atomically apply the enterprise lockout policy."""
     if not is_password_lockout_enabled():
+        # Keep existing lockout state dormant; unlicensed authentication must not
+        # enforce or update Enterprise lockout bookkeeping.
         user = authenticate(
             request,
             password_stage.backends,
