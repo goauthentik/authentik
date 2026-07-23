@@ -255,9 +255,14 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                     ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
-                        label="Allow Show Password"
+                        label="Show Password Visibility Toggle Button"
                         ?checked=${this.instance?.allowShowPassword ?? false}
-                        help=${msg("Provide users with a 'show password' button.")}
+                        help=${msg(
+                            "Whether to allow users to toggle password visibility in the password input field.",
+                            {
+                                id: "password-stage.allow-show-password.description",
+                            },
+                        )}
                     ></ak-switch-input>
                 </div>
             </ak-form-group>`;
