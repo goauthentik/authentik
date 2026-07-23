@@ -35,7 +35,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
-import { renderUserStatus } from "#admin/users/UserStatus";
+import { UserStatusLabel } from "#admin/users/UserStatus";
 
 import { CoreApi, CoreUsersExportCreateRequest, User, UserPath } from "@goauthentik/api";
 
@@ -318,7 +318,7 @@ export class UserListPage extends WithLicenseSummary(
                     >${displayName ? item.name : html`&lt;${msg("No name set")}&gt;`}</small
                 >
             </a>`,
-            renderUserStatus(item.compositeStatus),
+            UserStatusLabel(item.compositeStatus),
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div class="ak-c-table__actions">
@@ -349,7 +349,7 @@ export class UserListPage extends WithLicenseSummary(
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        ${renderUserStatus(item.compositeStatus)}
+                        ${UserStatusLabel(item.compositeStatus)}
                     </div>
                     <div class="pf-c-description-list__text">
                         ${item.isSuperuser ? msg("Superuser") : msg("Regular user")}

@@ -18,7 +18,7 @@ import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 import { ToggleUserPasswordLoginLockButton } from "#admin/users/UserPasswordLoginLockForm";
-import { renderUserStatus } from "#admin/users/UserStatus";
+import { UserStatusLabel } from "#admin/users/UserStatus";
 
 import { User, UserTypeEnum } from "@goauthentik/api";
 
@@ -144,7 +144,7 @@ export class UserInfoCard extends AKElement {
                     [msg("Last password change"), this.renderDate(user.passwordChangeDate)],
                     [
                         msg("Status", { id: "user.field.status" }),
-                        renderUserStatus(user.compositeStatus),
+                        UserStatusLabel(user.compositeStatus),
                     ],
                     [msg("Type"), userTypeToLabel(user.type)],
                     [
