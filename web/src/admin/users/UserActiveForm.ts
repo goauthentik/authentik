@@ -70,7 +70,11 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        return html`${super.renderForm()}
+        const form = super.renderForm();
+        if (!this.instance?.isActive) {
+            return form;
+        }
+        return html`${form}
             <a
                 href=${docLink("/users-sources/user/access-control/")}
                 target="_blank"
