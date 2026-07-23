@@ -95,6 +95,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
         ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
         ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
+        ["/identity/personas", msg("Personas"), {enterprise:true}],
         ["/identity/object-attributes", msg("Object attributes")],
         ["/identity/initial-permissions", msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_REGEX})$`]],
         ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
