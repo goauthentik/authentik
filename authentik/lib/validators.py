@@ -3,16 +3,17 @@
 from base64 import b64decode
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.hashers import (
     Argon2PasswordHasher,
     BasePasswordHasher,
     BCryptSHA256PasswordHasher,
     PBKDF2PasswordHasher,
-    PBKDF2SHA1PasswordHasher,
     ScryptPasswordHasher,
     identify_hasher,
     must_update_salt,
 )
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
@@ -20,12 +21,8 @@ from rest_framework.utils.representation import smart_repr
 
 INVALID_PASSWORD_HASH_MESSAGE = _("Invalid password hash encoding.")
 
-# Keep this allowlist in sync with the non-legacy hashers in settings.PASSWORD_HASHERS.
-SUPPORTED_PASSWORD_HASHERS = (
-    PBKDF2PasswordHasher,
-    BCryptSHA256PasswordHasher,
-    ScryptPasswordHasher,
-    Argon2PasswordHasher,
+SUPPORTED_PASSWORD_HASHERS = tuple(
+    import_string(password_hasher) for password_hasher in settings.PASSWORD_HASHERS
 )
 BCRYPT_ALPHABET = frozenset("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
 BCRYPT_SALT_LENGTH = 22
@@ -52,8 +49,6 @@ def _decode_password_hash(
 
     if type(hasher) is PBKDF2PasswordHasher:
         _decode_base64(decoded["hash"], 32)
-    elif type(hasher) is PBKDF2SHA1PasswordHasher:
-        _decode_base64(decoded["hash"], 20)
     elif type(hasher) is ScryptPasswordHasher:
         _decode_base64(decoded["hash"], 64)
     elif type(hasher) is Argon2PasswordHasher:

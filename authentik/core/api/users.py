@@ -109,10 +109,9 @@ from authentik.stages.email.utils import TemplateEmailMessage
 LOGGER = get_logger()
 
 PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE = _(
-    "This password hash does not use one of authentik's supported algorithms "
-    "(pbkdf2_sha256, bcrypt_sha256, scrypt, or argon2) with its current work factor "
-    "and sufficient salt entropy. Importing it can weaken password security or enable "
-    'timing-based user enumeration. Set "override" to true to import it anyway.'
+    "This password hash does not use its current work factor and sufficient salt entropy. "
+    "Importing it can weaken password security or enable timing-based user enumeration. "
+    'Set "override" to true to import it anyway.'
 )
 
 
@@ -474,8 +473,8 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
     override = BooleanField(
         default=False,
         help_text=_(
-            "Import a valid Django password hash even when its algorithm or parameters "
-            "do not match authentik's current password hashing policy."
+            "Import a valid password hash even when its parameters do not match authentik's "
+            "current password hashing policy."
         ),
     )
 

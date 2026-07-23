@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
     PBKDF2SHA1PasswordHasher,
     ScryptPasswordHasher,
+    get_hashers,
     make_password,
 )
 from django.urls.base import reverse
@@ -39,10 +40,9 @@ from authentik.stages.email.models import EmailStage
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash encoding."
 PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR = (
-    "This password hash does not use one of authentik's supported algorithms "
-    "(pbkdf2_sha256, bcrypt_sha256, scrypt, or argon2) with its current work factor "
-    "and sufficient salt entropy. Importing it can weaken password security or enable "
-    'timing-based user enumeration. Set "override" to true to import it anyway.'
+    "This password hash does not use its current work factor and sufficient salt entropy. "
+    "Importing it can weaken password security or enable timing-based user enumeration. "
+    'Set "override" to true to import it anyway.'
 )
 
 
@@ -183,12 +183,7 @@ class TestUsersAPI(APITestCase):
         """Test setting a user's password with each supported hasher."""
         self.client.force_login(self.admin)
         password = generate_key()
-        for hasher in (
-            PBKDF2PasswordHasher(),
-            BCryptSHA256PasswordHasher(),
-            ScryptPasswordHasher(),
-            Argon2PasswordHasher(),
-        ):
+        for hasher in get_hashers():
             with self.subTest(algorithm=hasher.algorithm):
                 password_hash = hasher.encode(password, hasher.salt())
                 response = self._set_password_hash(self.user, password_hash)
@@ -224,31 +219,25 @@ class TestUsersAPI(APITestCase):
             self.user,
             original_password,
             response,
-            PASSWORD_HASH_REQUIRES_OVERRIDE_ERROR,
         )
 
-    def test_set_password_hash_override_unsupported_hasher(self):
-        """Test the explicit override accepts a valid legacy password hash."""
+    def test_set_password_hash_override_rejects_unsupported_hasher(self):
+        """Test the explicit override cannot enable an unconfigured hasher."""
         self.client.force_login(self.admin)
-        password = generate_key()
+        original_password = self.user.password
         hasher = PBKDF2SHA1PasswordHasher()
-        password_hash = hasher.encode(password, hasher.salt())
+        password_hash = hasher.encode(generate_key(), hasher.salt())
 
         response = self._set_password_hash(self.user, password_hash, override=True)
 
-        self._assert_password_hash_set(self.user, password, password_hash, response)
+        self._assert_password_hash_rejected(self.user, original_password, response)
 
     def test_set_password_hash_malformed_digest(self):
         """Test structurally valid hashes with malformed digests are rejected."""
         self.client.force_login(self.admin)
         original_password = self.user.password
         password = generate_key()
-        for hasher in (
-            PBKDF2PasswordHasher(),
-            BCryptSHA256PasswordHasher(),
-            ScryptPasswordHasher(),
-            Argon2PasswordHasher(),
-        ):
+        for hasher in get_hashers():
             with self.subTest(algorithm=hasher.algorithm):
                 password_hash = hasher.encode(password, hasher.salt())
                 response = self._set_password_hash(self.user, password_hash[:-1] + "!")
@@ -271,7 +260,7 @@ class TestUsersAPI(APITestCase):
         """Test the override cannot bypass hash structure validation."""
         self.client.force_login(self.admin)
         original_password = self.user.password
-        hasher = PBKDF2SHA1PasswordHasher()
+        hasher = PBKDF2PasswordHasher()
         password_hash = hasher.encode(generate_key(), hasher.salt())
 
         response = self._set_password_hash(self.user, password_hash[:-1] + "!", override=True)
