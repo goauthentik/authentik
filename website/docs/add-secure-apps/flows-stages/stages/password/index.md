@@ -18,7 +18,7 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
-- **Failed attempts before lockout** :ak-enterprise Lock password login after this many consecutive failed password attempts. Set this option to `0` to disable password lockout.
+- **Failed attempts before lockout** :ak-enterprise Lock password login after this many consecutive failed password attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set this option to `0` to disable password lockout.
 - **Show last-attempt warning** :ak-enterprise Show a warning after a failed attempt leaves the user with one attempt remaining.
 - **Last-attempt warning message** :ak-enterprise An optional custom warning. Leave this blank to use the default: "You have one password attempt remaining before your account is locked out. If you have forgotten your password, please contact your administrator."
 - **Show lockout message** :ak-enterprise Show a specific message and stop the flow when an attempt locks the account. When disabled, authentik stops the flow with a generic authentication error.

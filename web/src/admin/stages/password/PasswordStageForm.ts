@@ -69,7 +69,7 @@ export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<Password
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Lock password login after this many consecutive failed attempts. Set to 0 to disable lockout.",
+                        "Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to disable lockout.",
                         {
                             id: "password-stage.lockout-threshold.description",
                         },
