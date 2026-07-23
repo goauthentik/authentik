@@ -58,6 +58,50 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             member.type = "user"
         return member
 
+    def _effective_user_pks(self, group: Group) -> list[int]:
+        """Return the user PKs that should be sent as members of `group`.
+
+        When `flatten_nested_groups` is enabled on the provider, this walks all
+        descendant groups (via the `parents` M2M) and unions their direct members.
+        Otherwise the direct M2M membership is returned unchanged. The result is
+        always ordered by PK for stable diffing.
+        """
+        if not self.provider.flatten_nested_groups:
+            return list(group.users.order_by("id").values_list("id", flat=True))
+
+        seen_groups: set = set()
+        user_pks: set[int] = set()
+
+        def walk(g: Group):
+            if g.pk in seen_groups:
+                return
+            seen_groups.add(g.pk)
+            user_pks.update(g.users.values_list("id", flat=True))
+            for child in Group.objects.filter(parents=g):
+                walk(child)
+
+        walk(group)
+        return sorted(user_pks)
+
+    def _collect_ancestors(self, group: Group) -> list[Group]:
+        """Return all transitive ancestors of `group` via the `parents` M2M.
+
+        Used by `update_group` to propagate membership-change signals to all
+        groups whose effective membership depends on `group` when
+        `flatten_nested_groups` is enabled. Cycle-safe.
+        """
+        seen: set = set()
+        ancestors: list[Group] = []
+        frontier = list(group.parents.all())
+        while frontier:
+            current = frontier.pop()
+            if current.pk in seen:
+                continue
+            seen.add(current.pk)
+            ancestors.append(current)
+            frontier.extend(current.parents.all())
+        return ancestors
+
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = super().to_schema(obj, connection)
@@ -74,7 +118,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             scim_group.externalId = str(obj.pk)
 
         if not self._config.patch.supported:
-            users = list(obj.users.order_by("id").values_list("id", flat=True))
+            users = self._effective_user_pks(obj)
             connections = SCIMProviderUser.objects.filter(
                 provider=self.provider, user__pk__in=users
             )
@@ -131,7 +175,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 connection = SCIMProviderGroup.objects.create(
                     provider=self.provider, group=group, scim_id=scim_id, attributes=response
                 )
-        users = list(group.users.order_by("id").values_list("id", flat=True))
+        users = self._effective_user_pks(group)
         self._patch_add_users(connection, users)
         return connection
 
@@ -237,6 +281,35 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "could not sync group membership, group does not exist", group=group
             )
             return
+        result = self._update_group_self(group, scim_group, action, users_set)
+        # When flattening is enabled, a membership change on `group` also changes the
+        # effective membership of every ancestor — reconcile each via patch_compare_users,
+        # which uses the flattened _effective_user_pks to compute the right diff.
+        if self.provider.flatten_nested_groups:
+            for ancestor in self._collect_ancestors(group):
+                ancestor_conn = SCIMProviderGroup.objects.filter(
+                    provider=self.provider, group=ancestor
+                ).first()
+                if not ancestor_conn:
+                    continue
+                try:
+                    self.patch_compare_users(ancestor)
+                except SCIMRequestException as exc:
+                    self.logger.warning(
+                        "failed to propagate membership change to ancestor",
+                        ancestor=ancestor,
+                        exc=exc,
+                    )
+        return result
+
+    def _update_group_self(
+        self,
+        group: Group,
+        scim_group: SCIMProviderGroup,
+        action: Direction,
+        users_set: set[int],
+    ):
+        """Send the direct membership delta for `group` itself."""
         if self._config.patch.supported:
             if action == Direction.add:
                 return self._patch_add_users(scim_group, users_set)
@@ -285,8 +358,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 "could not sync group membership, group does not exist", group=group
             )
             return
-        # Get a list of all users in the authentik group
-        raw_users_should = list(group.users.order_by("id").values_list("id", flat=True))
+        # Get a list of all users in the authentik group (transitive if flatten enabled)
+        raw_users_should = self._effective_user_pks(group)
         # Lookup the SCIM IDs of the users
         users_should: list[str] = list(
             SCIMProviderUser.objects.filter(
