@@ -105,6 +105,8 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.api import PasswordDeviceSerializer
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -141,6 +143,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     is_superuser = SerializerMethodField()
     avatar = SerializerMethodField()
     attributes = JSONDictField(required=False)
+    password_device = PasswordDeviceSerializer(read_only=True, allow_null=True)
     groups = PrimaryKeyRelatedField(
         allow_empty=True,
         many=True,
@@ -253,7 +256,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         if password_hash is None:
             return
         try:
-            User.validate_password_hash(password_hash)
+            PasswordDevice.validate_password_hash(password_hash)
         except ValueError as exc:
             LOGGER.warning("Failed to identify password hash format", exc_info=exc)
             raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
@@ -268,10 +271,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.save()
 
     def _ensure_password_not_empty(self, instance: User):
-        """Store an explicit unusable password instead of an empty password field."""
-        if len(instance.password) == 0:
-            instance.set_unusable_password()
-            instance.save()
+        """Ensure every API-created user has explicit local password state."""
+        PasswordDevice.for_user(instance)
 
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
@@ -359,13 +360,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "path",
             "type",
             "uuid",
-            "password_change_date",
+            "password_device",
             "last_updated",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 

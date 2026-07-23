@@ -96,8 +96,9 @@ if domain in verified_domains:
         # that connection's immutable_id...
         user["on_premises_immutable_id"] = connection.attributes.get("on_premises_immutable_id")
     else:
+        password_device = getattr(request.user, "password_device", None)
         user["password_profile"] = PasswordProfile(
-            password=request.user.password
+            password=password_device.password if password_device else ""
         )
         # ...otherwise we set an immutable ID based on the user's UID
         user["on_premises_immutable_id"] = request.user.uid
@@ -122,8 +123,9 @@ else:
         )
     ]
 
+    password_device = getattr(request.user, "password_device", None)
     user["password_profile"] = PasswordProfile(
-        password=request.user.password
+        password=password_device.password if password_device else ""
     )
 
 return user

@@ -41,7 +41,8 @@ class TestUserWriteStage(FlowTestCase):
 
         test_user = create_test_user()
         # Store original password for verification
-        original_password = test_user.password
+        original_password = test_user.password_device.password
+        self.assertFalse(UserPasswordHistory.objects.filter(user=test_user).exists())
 
         # We're changing our own password
         self.client.force_login(test_user)
@@ -56,18 +57,6 @@ class TestUserWriteStage(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
-        # Password history should be recorded
-        user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
-        self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")
-        self.assertEqual(len(user_password_history_qs), 1, "expected 1 recorded password")
-
-        # Create a password history entry manually to simulate the signal behavior
-        # This is what would happen if the signal worked correctly
-        UserPasswordHistory.objects.create(user=test_user, old_password=original_password)
-        user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
-        self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")
-        self.assertEqual(len(user_password_history_qs), 2, "expected 2 recorded password")
-
         # Execute the flow by sending a POST request to the flow executor endpoint
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
@@ -82,7 +71,7 @@ class TestUserWriteStage(FlowTestCase):
         user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
         self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")
 
-        self.assertEqual(len(user_password_history_qs), 3, "expected 3 recorded password")
+        self.assertEqual(len(user_password_history_qs), 1, "expected 1 recorded password")
         # Verify that one of the entries contains the original password
         self.assertTrue(
             any(entry.old_password == original_password for entry in user_password_history_qs),

@@ -32,6 +32,10 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	if u.Email == nil {
 		u.Email = new("")
 	}
+	passwordChangeDate := u.DateJoined
+	if passwordDevice, ok := u.GetPasswordDeviceOk(); ok && passwordDevice != nil {
+		passwordChangeDate = passwordDevice.PasswordChangeDate
+	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
 		"ak-active":      {strings.ToUpper(strconv.FormatBool(*u.IsActive))},
 		"ak-superuser":   {strings.ToUpper(strconv.FormatBool(u.IsSuperuser))},
@@ -55,7 +59,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"gidNumber":       {pi.GetUserGidNumber(u)},
 		"homeDirectory":   {fmt.Sprintf("/home/%s", u.Username)},
 		"sn":              {u.Name},
-		"pwdChangedTime":  {u.PasswordChangeDate.In(time.UTC).Format("20060102150405Z")},
+		"pwdChangedTime":  {passwordChangeDate.In(time.UTC).Format("20060102150405Z")},
 		"createTimestamp": {u.DateJoined.In(time.UTC).Format("20060102150405Z")},
 		"modifyTimestamp": {u.LastUpdated.In(time.UTC).Format("20060102150405Z")},
 	})

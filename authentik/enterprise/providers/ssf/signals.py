@@ -124,6 +124,8 @@ device_type_map = {
 def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
     if not isinstance(instance, Device):
         return
+    if not instance.is_mfa:
+        return
     if not instance.confirmed:
         return
     device_type = device_type_map.get(instance.__class__)
@@ -150,6 +152,8 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
 @receiver(post_delete)
 def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
     if not isinstance(instance, Device):
+        return
+    if not instance.is_mfa:
         return
     if not instance.confirmed:
         return

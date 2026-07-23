@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -34,10 +35,12 @@ class PasswordExpiryPolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """If password change date is more than x days in the past, call set_unusable_password
         and show a notice"""
-        actual_days = (now() - request.user.password_change_date).days
-        days_since_expiry = (
-            now() - (request.user.password_change_date + timedelta(days=self.days))
-        ).days
+        try:
+            password_change_date = request.user.password_device.password_change_date
+        except PasswordDevice.DoesNotExist:
+            return PolicyResult(True)
+        actual_days = (now() - password_change_date).days
+        days_since_expiry = (now() - (password_change_date + timedelta(days=self.days))).days
         if actual_days >= self.days:
             if not self.deny_only:
                 request.user.set_unusable_password()

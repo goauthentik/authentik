@@ -51,7 +51,7 @@ class TestUsersAPI(APITestCase):
     ) -> None:
         self.assertEqual(response.status_code, 204, response.data)
         user.refresh_from_db()
-        self.assertEqual(user.password, password_hash)
+        self.assertEqual(user.password_device.password, password_hash)
         self.assertTrue(user.check_password(password))
 
     def test_filter_type(self):
@@ -135,6 +135,29 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 204)
         self.admin.refresh_from_db()
         self.assertTrue(self.admin.check_password(new_pw))
+
+    def test_password_device_metadata(self):
+        """User responses include password device metadata without the hash."""
+        self.client.force_login(self.admin)
+
+        response = self.client.get(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("password_change_date", response.data)
+        self.assertNotIn("password", response.data["password_device"])
+        self.assertIn("password_change_date", response.data["password_device"])
+
+    def test_password_device_metadata_without_device(self):
+        """Users without a local password serialize without a password device."""
+        user = User.objects.create(username=generate_id(), name=generate_id())
+        self.client.force_login(self.admin)
+
+        response = self.client.get(reverse("authentik_api:user-detail", kwargs={"pk": user.pk}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.data["password_device"])
 
     def test_set_password_blank(self):
         """Test Direct password set"""

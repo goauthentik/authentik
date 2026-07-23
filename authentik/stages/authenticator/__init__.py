@@ -132,5 +132,5 @@ def device_classes():
 
     for config in apps.get_app_configs():
         for model in config.get_models():
-            if issubclass(model, Device):
+            if issubclass(model, Device) and model.is_mfa:
                 yield model

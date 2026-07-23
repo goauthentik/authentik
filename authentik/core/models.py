@@ -9,16 +9,19 @@ from typing import Any, Self
 from uuid import uuid4
 
 import pgtrigger
+from asgiref.sync import sync_to_async
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password, identify_hasher
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.exceptions import FieldDoesNotExist
 from django.core.validators import validate_slug
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
+from django.utils.crypto import salted_hmac
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -351,11 +354,46 @@ class UserManager(DjangoUserManager):
 
     def get_queryset(self):
         """Create special user queryset"""
-        return UserQuerySet(self.model, using=self._db)
+        queryset = UserQuerySet(self.model, using=self._db)
+        try:
+            self.model._meta.get_field("password_device")
+        except FieldDoesNotExist:
+            # Historical User models before PasswordDevice was added use this manager.
+            return queryset
+        return queryset.prefetch_related("password_device")
+
+    def _create_user_object(self, username, email, **extra_fields):
+        """Create an unsaved user without Django's password-field assignment."""
+        if not username:
+            raise ValueError("The given username must be set")
+        global_user_model = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
+        return self.model(
+            username=global_user_model.normalize_username(username),
+            email=self.normalize_email(email),
+            **extra_fields,
+        )
+
+    def _create_user(self, username, email, password, **extra_fields):
+        user = self._create_user_object(username, email, **extra_fields)
+        user.save(using=self._db)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    async def _acreate_user(self, username, email, password, **extra_fields):
+        user = self._create_user_object(username, email, **extra_fields)
+        await user.asave(using=self._db)
+        await sync_to_async(user.set_password, thread_sensitive=True)(password)
+        await user.asave(using=self._db)
+        return user
 
     def create_user(self, username, email=None, password=None, **extra_fields):
         """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
+
+    async def acreate_user(self, username, email=None, password=None, **extra_fields):
+        """Asynchronous user manager that doesn't assign Django staff fields."""
+        return await self._acreate_user(username, email, password, **extra_fields)
 
     def exclude_anonymous(self) -> QuerySet:
         """Exclude anonymous user"""
@@ -368,6 +406,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     # Overwriting PermissionsMixin: permissions are handled by roles.
     # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
     user_permissions = None
+    password = None
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
@@ -379,8 +418,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     roles = models.ManyToManyField(
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
-    password_change_date = models.DateTimeField(auto_now_add=True)
-
     last_updated = models.DateTimeField(auto_now=True)
 
     objects = UserManager()
@@ -396,7 +433,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ]
         indexes = [
             models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
@@ -406,6 +442,18 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        """Save a password device created before the user had a primary key."""
+        super().save(*args, **kwargs)
+        device = getattr(self, "_pending_password_device", None)
+        if device is None:
+            return
+        device.user = self
+        device.stage = device.default_stage()
+        device.save()
+        self.password_device = device
+        del self._pending_password_device
 
     @staticmethod
     def default_path() -> str:
@@ -558,6 +606,24 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
+    def _password_device(self, create: bool = False):
+        """Return the local password device without exposing a password field."""
+        from authentik.stages.password.models import PasswordDevice
+
+        pending_device = getattr(self, "_pending_password_device", None)
+        if pending_device is not None:
+            return pending_device
+        try:
+            return self.password_device
+        except PasswordDevice.DoesNotExist:
+            if not create:
+                return None
+            if self.pk:
+                return PasswordDevice.for_user(self)
+            device = PasswordDevice(user=self, name="Password", password="")
+            self._pending_password_device = device
+            return device
+
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
@@ -565,35 +631,34 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             if not sender:
                 sender = self
             password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        self.password_change_date = now()
-        return super().set_password(raw_password)
-
-    @staticmethod
-    def validate_password_hash(password_hash: str):
-        """Validate that the value is a recognized Django password hash."""
-        identify_hasher(password_hash)  # Raises ValueError if invalid
+        device = self._password_device(create=True)
+        device.set_password(raw_password)
+        if self.pk:
+            device.save()
+        self._password = raw_password
 
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
         must already be a valid Django password hash, and it is stored directly on the
-        user after validation.
+        user's password device after validation.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
 
         Raises ValueError if the hash format is not recognized.
         """
-        self.validate_password_hash(password_hash)
+        device = self._password_device(create=True)
+        device.set_password_from_hash(password_hash)
         if self.pk and signal:
             from authentik.core.signals import password_hash_changed
 
             if not sender:
                 sender = self
             password_hash_changed.send(sender=sender, user=self, request=request)
-        self.password = password_hash
-        self.password_change_date = now()
+        if self.pk:
+            device.save()
 
     def check_password(self, raw_password: str) -> bool:
         """
@@ -603,13 +668,40 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         Slightly changed version which doesn't send a signal for such internal hash upgrades
         """
 
-        def setter(raw_password):
-            self.set_password(raw_password, signal=False)
-            # Password hash upgrades shouldn't be considered password changes.
-            self._password = None
-            self.save(update_fields=["password"])
+        device = self._password_device()
+        if device is None:
+            return False
+        return device.check_password(raw_password)
 
-        return check_password(raw_password, self.password, setter)
+    async def acheck_password(self, raw_password: str) -> bool:
+        """Asynchronously check the user's local password device."""
+        device = self._password_device()
+        if device is None:
+            return False
+        return await device.acheck_password(raw_password)
+
+    def set_unusable_password(self):
+        """Retain the password device while making its password unusable."""
+        device = self._password_device(create=True)
+        device.set_unusable_password()
+        if self.pk:
+            device.save()
+
+    def has_usable_password(self) -> bool:
+        """Return whether the user has a usable local password device."""
+        device = self._password_device()
+        return device is not None and device.has_usable_password()
+
+    def _get_session_auth_hash(self, secret=None):
+        """Hash local password state for Django session invalidation."""
+        device = self._password_device()
+        password = device.password if device is not None else "!"
+        return salted_hmac(
+            "django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash",
+            password,
+            secret=secret,
+            algorithm="sha256",
+        ).hexdigest()
 
     @property
     def uid(self) -> str:

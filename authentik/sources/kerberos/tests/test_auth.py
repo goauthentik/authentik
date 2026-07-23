@@ -55,4 +55,4 @@ class TestKerberosAuth(KerberosTestCase):
             None, username=self.realm.user_princ, password=self.realm.password("user")
         )
         self.user.refresh_from_db()
-        self.assertTrue(is_password_usable(self.user.password))
+        self.assertTrue(is_password_usable(self.user.password_device.password))

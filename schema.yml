@@ -47790,6 +47790,52 @@ components:
           minLength: 1
       required:
       - password
+    PasswordDevice:
+      type: object
+      description: Safe metadata for a user's password device.
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          readOnly: true
+          description: The human-readable name of this device.
+        stage:
+          type: string
+          format: uuid
+          readOnly: true
+        confirmed:
+          type: boolean
+          readOnly: true
+          description: Is this device ready for use?
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        last_used:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        password_change_date:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - confirmed
+      - created
+      - last_updated
+      - last_used
+      - name
+      - password_change_date
+      - pk
+      - stage
     PasswordExpiryPolicy:
       type: object
       description: Password Expiry Policy Serializer
@@ -57986,10 +58032,11 @@ components:
           type: string
           format: uuid
           readOnly: true
-        password_change_date:
-          type: string
-          format: date-time
+        password_device:
+          allOf:
+          - $ref: '#/components/schemas/PasswordDevice'
           readOnly: true
+          nullable: true
         last_updated:
           type: string
           format: date-time
@@ -58001,7 +58048,7 @@ components:
       - is_superuser
       - last_updated
       - name
-      - password_change_date
+      - password_device
       - pk
       - roles_obj
       - uid
