@@ -5,12 +5,13 @@ from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import PermissionDenied
 from django.db import connection
-from django.test import TransactionTestCase
+from django.test import RequestFactory, TransactionTestCase
 from django.urls import reverse
 
 from authentik.core.models import User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
 from authentik.enterprise.stages.password.lockout import (
+    authenticate_password,
     lock_password_login,
     record_failed_password_attempt,
 )
@@ -24,7 +25,8 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
-from authentik.stages.password import BACKEND_INBUILT
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME
+from authentik.stages.password import BACKEND_INBUILT, BACKEND_LDAP
 from authentik.stages.password.auth import PasswordAuthenticationStatus
 from authentik.stages.password.models import PasswordStage
 
@@ -241,6 +243,25 @@ class TestPasswordStage(FlowTestCase):
                 "Please contact your administrator."
             ),
         )
+
+    @patch("authentik.enterprise.stages.password.lockout.authenticate", return_value=None)
+    def test_external_password_failure_is_not_counted(self, _authenticate):
+        """Do not lock users when an external backend failure looks like a bad password."""
+        self.user.attributes[LDAP_DISTINGUISHED_NAME] = "cn=user,dc=example,dc=com"
+        self.user.save(update_fields=("attributes",))
+        self.stage.backends = [BACKEND_LDAP]
+        self.stage.failed_attempts_before_lockout = 1
+
+        result = authenticate_password(
+            RequestFactory().post("/"),
+            self.stage,
+            self.user,
+            "password",
+            self.stage,
+        )
+
+        self.assertIs(result.status, PasswordAuthenticationStatus.INVALID)
+        self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_lockout_message_customization(self):
         """Configured messages override the default warning and lockout messages."""
