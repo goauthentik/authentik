@@ -161,7 +161,10 @@ class PasswordStageView(ChallengeStageView):
         new_score = self.get_reputation_score()
         if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
-            return self.executor.stage_invalid(_("Invalid password"))
+            error = _("Invalid password")
+            if response.authentication_status is PasswordAuthenticationStatus.LAST_ATTEMPT:
+                error = current_stage.get_last_attempt_message(error)
+            return self.executor.stage_invalid(error)
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: PasswordChallengeResponse) -> HttpResponse:

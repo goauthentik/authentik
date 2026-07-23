@@ -300,7 +300,12 @@ class TestPasswordStage(FlowTestCase):
         self.assertFalse(UserPasswordLoginState.objects.filter(user=self.user).exists())
 
     def test_invalid_password_cancels_flow(self):
-        """Test with a valid pending user and invalid password (trigger logout counter)"""
+        """Flow cancellation preserves a simultaneous last-attempt warning."""
+        self.stage.failed_attempts_before_lockout = self.stage.failed_attempts_before_cancel + 1
+        self.stage.show_last_attempt_warning = True
+        self.stage.save(
+            update_fields=("failed_attempts_before_lockout", "show_last_attempt_warning")
+        )
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session = self.client.session
@@ -338,7 +343,14 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
-        self.assertStageResponse(response, flow=self.flow, error_message="Invalid password")
+        self.assertStageResponse(
+            response,
+            flow=self.flow,
+            error_message=(
+                "You have one password attempt remaining before your account is locked out. "
+                "If you have forgotten your password, please contact your administrator."
+            ),
+        )
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",
