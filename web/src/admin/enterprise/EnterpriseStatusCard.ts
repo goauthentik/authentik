@@ -19,7 +19,7 @@ import { match } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -84,7 +84,7 @@ export class EnterpriseStatusCard extends AKElement {
                     str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`))
         }
 
-        return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
+        return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
     }
 
     protected calcUserPercentage(licensed: number, current: number) {
@@ -107,14 +107,16 @@ export class EnterpriseStatusCard extends AKElement {
 
         const progressBar = (label: string, current: number, allowed: number) => {
             const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
-            const severity = classMap({
-                "pf-m-success": licensed && percentage <= 80,
-                "pf-m-warning": licensed && percentage > 80 && percentage <= 100,
-                "pf-m-danger": licensed && percentage > 100,
-            });
+            // prettier-ignore
+            const severity = licensed
+                ? match(percentage)
+                    .when((p) => p <= 80, () => "success")
+                    .when((p) => p > 80 && p <= 100, () => "warning")
+                    .otherwise(() => "danger")
+                : null;
 
             return html`
-                <ak-progress class="${severity}" value=${percentage}>
+                <ak-progress severity="${ifDefined(severity)}" value=${percentage}>
                     <span slot="label">${label} (${current} / ${allowed})</span>
                     <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
                 </ak-progress>
