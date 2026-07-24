@@ -27,6 +27,20 @@ class Action(Enum):
     DENY = "deny"
 
 
+class MatchFailureReason(Enum):
+    """Reason source matching could not determine an action."""
+
+    MISSING_PROPERTY = "missing_property"
+
+
+@dataclass(frozen=True)
+class MatchFailure:
+    """Details about a source matching failure."""
+
+    reason: MatchFailureReason
+    property: str
+
+
 @dataclass
 class MatchableProperty:
     property: str
@@ -44,6 +58,7 @@ class SourceMatcher:
         self.source = source
         self.user_connection_type = user_connection_type
         self.group_connection_type = group_connection_type
+        self.failure: MatchFailure | None = None
         self._logger = get_logger().bind(source=self.source)
 
     def get_action(
@@ -53,6 +68,7 @@ class SourceMatcher:
         identifier: str,
         properties: dict[str, Any | dict[str, Any]],
     ) -> tuple[Action, UserSourceConnection | GroupSourceConnection | None]:
+        self.failure = None
         connection_type = None
         matching_mode = None
         identifier_matching_mode = None
@@ -67,13 +83,12 @@ class SourceMatcher:
         if not connection_type or not matching_mode or not identifier_matching_mode:
             return Action.DENY, None
 
-        new_connection = connection_type(source=self.source, identifier=identifier)
-
         existing_connections = connection_type.objects.filter(
             source=self.source, identifier=identifier
         )
         if existing_connections.exists():
             return Action.AUTH, existing_connections.first()
+        new_connection = connection_type(source=self.source, identifier=identifier)
         # No connection exists, but we match on identifier, so enroll
         if matching_mode == identifier_matching_mode:
             # We don't save the connection here cause it doesn't have a user/group assigned yet
@@ -85,6 +100,10 @@ class SourceMatcher:
             property = matchable_property.property
             if matching_mode in [matchable_property.link_mode, matchable_property.deny_mode]:
                 if not properties.get(property, None):
+                    self.failure = MatchFailure(
+                        reason=MatchFailureReason.MISSING_PROPERTY,
+                        property=property,
+                    )
                     self._logger.warning(
                         "Refusing to use none property", identifier=identifier, property=property
                     )

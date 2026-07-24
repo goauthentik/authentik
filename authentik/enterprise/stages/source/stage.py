@@ -10,9 +10,12 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import (
+    PLAN_CONTEXT_SOURCE_MATCH_FAILURE,
+    PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY,
     SESSION_KEY_OVERRIDE_FLOW_TOKEN,
     SESSION_KEY_SOURCE_FLOW_CONTEXT,
     SESSION_KEY_SOURCE_FLOW_STAGES,
+    clear_source_flow_session,
 )
 from authentik.core.types import UILoginButton
 from authentik.enterprise.stages.source.models import SourceStage
@@ -46,11 +49,22 @@ class SourceStageView(ChallengeStageView):
         restore_token = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED)
         override_token = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
         if restore_token and override_token and restore_token.pk == override_token.pk:
-            del self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN]
+            clear_source_flow_session(self.request)
+            self.executor.plan.context.pop(
+                PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY, None
+            )
             return self.executor.stage_ok()
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        current_stage: SourceStage = self.executor.current_stage
+        self.executor.plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE, None)
+        self.executor.plan.context.pop(PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY, None)
+        if current_stage.resume_on_missing_match_property:
+            self.executor.plan.context[PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY] = {
+                "source": str(current_stage.source_id),
+                "stage": str(current_stage.pk),
+            }
         resume_token = self.create_flow_token()
         self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
         self.request.session[SESSION_KEY_SOURCE_FLOW_STAGES] = [in_memory_stage(SourceStageFinal)]
@@ -95,11 +109,19 @@ class SourceStageFinal(StageView):
     source stage is bound to."""
 
     def dispatch(self, *args, **kwargs):
-        token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        session_token = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        token_pk = getattr(session_token, "pk", None)
+        token = FlowToken.objects.including_expired().filter(pk=token_pk).first()
+        if not token or token.is_expired:
+            if token:
+                token.expire_action()
+            clear_source_flow_session(self.request)
+            return self.executor.stage_invalid("Flow token is invalid or expired")
         self.logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
         plan = token.plan
         plan.context.update(self.executor.plan.context)
-        plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+        plan.context.pop(PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY, None)
+        plan.context[PLAN_CONTEXT_IS_RESTORED] = session_token
         response = plan.to_redirect(self.request, token.flow)
         token.delete()
         return response

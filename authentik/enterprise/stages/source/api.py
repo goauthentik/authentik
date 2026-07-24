@@ -28,7 +28,11 @@ class SourceStageSerializer(EnterpriseRequiredMixin, StageSerializer):
 
     class Meta:
         model = SourceStage
-        fields = StageSerializer.Meta.fields + ["source", "resume_timeout"]
+        fields = StageSerializer.Meta.fields + [
+            "source",
+            "resume_timeout",
+            "resume_on_missing_match_property",
+        ]
 
 
 class SourceStageViewSet(UsedByMixin, ModelViewSet):
