@@ -1,0 +1,61 @@
+/**
+ * @file Document-level CSS Custom Properties for the EmptyState component.
+ */
+
+:root {
+    --ak-c-empty-state--PaddingTop: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--PaddingRight: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--PaddingBottom: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--PaddingLeft: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--m-xs--PaddingTop: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-xs--PaddingRight: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-xs--PaddingBottom: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-xs--PaddingLeft: var(--pf-global--spacer--md);
+    --ak-c-empty-state__content--MaxWidth: none;
+    --ak-c-empty-state--m-xs__content--MaxWidth: 21.875rem;
+    --ak-c-empty-state--m-sm__content--MaxWidth: 25rem;
+    --ak-c-empty-state--m-lg__content--MaxWidth: 37.5rem;
+    --ak-c-empty-state__icon--MarginBottom: var(--pf-global--spacer--lg);
+    --ak-c-empty-state__icon--FontSize: var(--pf-global--icon--FontSize--xl);
+    --ak-c-empty-state__icon--Color: var(--pf-global--icon--Color--light);
+    --ak-c-empty-state--m-xs__icon--MarginBottom: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-xl__icon--MarginBottom: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--m-xl__icon--FontSize: 6.25rem;
+    --ak-c-empty-state__title-text--FontFamily: var(--pf-global--FontFamily--heading);
+    --ak-c-empty-state__title-text--FontSize: var(--pf-global--FontSize--xl);
+    --ak-c-empty-state__title-text--FontWeight: var(--pf-global--FontWeight--normal);
+    --ak-c-empty-state__title-text--LineHeight: var(--pf-global--LineHeight--md);
+    --ak-c-empty-state--m-xs__title-text--FontSize: var(--pf-global--FontSize--md);
+    --ak-c-empty-state--m-xl__title-text--FontSize: var(--pf-global--FontSize--4xl);
+    --ak-c-empty-state--m-xl__title-text--LineHeight: var(--pf-global--LineHeight--sm);
+    --ak-c-empty-state__body--MarginTop: var(--pf-global--spacer--md);
+    --ak-c-empty-state__body--Color: var(--pf-global--Color--200);
+    --ak-c-empty-state--body--FontSize: var(--pf-global--FontSize--md);
+    --ak-c-empty-state--m-xs__body--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-empty-state--m-xs__body--MarginTop: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-xl__body--FontSize: var(--pf-global--FontSize--xl);
+    --ak-c-empty-state--m-xl__body--MarginTop: var(--pf-global--spacer--lg);
+    --ak-c-empty-state__footer--RowGap: var(--pf-global--spacer--sm);
+    --ak-c-empty-state__footer--MarginTop: var(--pf-global--spacer--xl);
+    --ak-c-empty-state--m-xs__footer--MarginTop: var(--pf-global--spacer--md);
+    --ak-c-empty-state__actions--RowGap: var(--pf-global--spacer--xs);
+    --ak-c-empty-state__actions--ColumnGap: var(--pf-global--spacer--xs);
+
+    --ak-c-empty-state--m-compact--PaddingTop: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact--PaddingRight: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact--PaddingBottom: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact--PaddingLeft: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact--m-xs--PaddingTop: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xs--PaddingRight: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xs--PaddingBottom: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xs--PaddingLeft: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact__icon--MarginBottom: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-compact--m-xs__icon--MarginBottom: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xl__icon--MarginBottom: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact__body--MarginTop: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xs__body--MarginTop: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact--m-xl__body--MarginTop: var(--pf-global--spacer--md);
+    --ak-c-empty-state--m-compact__footer--MarginTop: var(--pf-global--spacer--lg);
+    --ak-c-empty-state--m-compact--m-xs__footer--MarginTop: var(--pf-global--spacer--sm);
+    --ak-c-empty-state--m-compact__footer--RowGap: var(--pf-global--spacer--xs);
+}
