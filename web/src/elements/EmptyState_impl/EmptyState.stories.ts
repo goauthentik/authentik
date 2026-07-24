@@ -14,7 +14,7 @@ type StoryArgs = EmptyState & {
 };
 
 const metadata: Meta<StoryArgs> = {
-    title: "Elements / <ak-empty-state>",
+    title: "Elements / Empty State",
     component: "ak-empty-state",
     tags: ["autodocs"],
     parameters: {
