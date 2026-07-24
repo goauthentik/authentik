@@ -10,7 +10,7 @@ use ak_common::{
 };
 use arc_swap::ArcSwap;
 use argh::FromArgs;
-use axum::Router;
+use axum::{Extension, Router, extract::Request, http::Uri, response::Response};
 use axum_server::tls_rustls::RustlsConfig;
 use eyre::Result;
 use rustls::{
@@ -249,6 +249,24 @@ impl ProxyOutpost {
 
         longest_match
     }
+
+    /// The application that should serve this request from the embedded
+    /// outpost, if any. `None` means the request belongs to the core backend.
+    pub(crate) fn app_for_request(&self, host: &str, uri: &Uri) -> Option<Arc<Application>> {
+        let app = self.lookup_app(host)?;
+        app.should_handle_url(uri).then_some(app)
+    }
+}
+
+async fn embedded_handle(
+    Extension(app): Extension<Arc<Application>>,
+    request: Request,
+) -> ak_axum::error::Result<Response> {
+    application::handlers::handle(app, request).await
+}
+
+pub(crate) fn embedded_router() -> Router {
+    wrap_router(Router::new().fallback(embedded_handle), true)
 }
 
 fn build_router(outpost: Arc<ProxyOutpost>) -> Router {

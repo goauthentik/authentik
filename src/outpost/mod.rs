@@ -110,7 +110,8 @@ impl OutpostController {
 
         if detected_as_embedded && !controller.is_embedded() {
             return Err(eyre!(
-                "We think we are running as embedded, but the outpost returned by the API is not the embedded outpost."
+                "We think we are running as embedded, but the outpost returned by the API is not \
+                 the embedded outpost."
             ));
         }
 

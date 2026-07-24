@@ -99,7 +99,7 @@ fn main() -> Result<()> {
             let metrics = metrics::start(&mut tasks)?;
 
             #[cfg(feature = "core")]
-            if Mode::get() == Mode::AllInOne || Mode::get() == Mode::Worker {
+            if Mode::is_core() {
                 db::init(&mut tasks).await?;
             }
 

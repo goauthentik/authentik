@@ -9,7 +9,10 @@ use std::{
     },
 };
 
-use ak_axum::extract::host::Host;
+use ak_axum::extract::{
+    host::{Host, host_middleware},
+    trusted_proxy::trusted_proxy_middleware,
+};
 use ak_common::{Arbiter, Event, Tasks, config};
 use arc_swap::ArcSwapOption;
 use argh::FromArgs;
@@ -18,6 +21,8 @@ use axum::{
     body::Body,
     extract::{Request, State},
     http::StatusCode,
+    middleware::from_fn,
+    response::Response,
     routing::any,
 };
 use eyre::{Result, eyre};
@@ -157,14 +162,14 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
                 if signal == SignalKind::user_defined1() {
                     info!("server notified us ready, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
-                    let _ = arbiter.send_event(Event::GunicornIsReady);
+                    arbiter.send_event(Event::GunicornIsReady)?;
                 }
             },
             _ = start_interval.tick(), if !GUNICORN_READY.load(Ordering::Relaxed) => {
                 if server.is_socket_ready().await {
                     info!("server socket is accepting connections, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
-                    let _ = arbiter.send_event(Event::GunicornIsReady);
+                    arbiter.send_event(Event::GunicornIsReady)?;
                 }
             },
             _ = check_interval.tick() => {
@@ -184,12 +189,42 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
     }
 }
 
-async fn route_core_and_outpost(State((core_router, proxy_router)): State<(Router, Router)>) {
-    todo!()
+async fn route_core_and_outpost(
+    State((core_router, proxy_router, proxy_outpost)): State<(
+        Router,
+        Router,
+        Arc<ArcSwapOption<ProxyOutpost>>,
+    )>,
+    Host(host): Host,
+    mut request: Request,
+) -> Response {
+    let start = Instant::now();
+
+    // The embedded outpost is only populated once gunicorn is ready, so this is
+    // `None` during startup and every request naturally falls through to core.
+    let app = proxy_outpost
+        .load_full()
+        .and_then(|outpost| outpost.app_for_request(&host, request.uri()));
+
+    let (router, dest) = match app {
+        Some(app) => {
+            // The proxy router reads the resolved application from the request
+            // extensions, so we don't look it up a second time.
+            request.extensions_mut().insert(app);
+            (proxy_router, "embedded_outpost")
+        }
+        None => (core_router, "core"),
+    };
+
+    let response = router.oneshot(request).await.expect("infallible");
+    metrics::histogram!("authentik_main_request_duration", "dest" => dest)
+        .record(start.elapsed().as_secs_f64());
+    response
 }
 
 fn build_router(server: Arc<Server>, proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>) -> Router {
     let core_router = core::build_router(server);
+    let proxy_router = outpost::proxy::embedded_router();
 
     metrics::describe_histogram!(
         "authentik_main_request_duration",
@@ -203,33 +238,11 @@ fn build_router(server: Arc<Server>, proxy_outpost: Arc<ArcSwapOption<ProxyOutpo
         Router::new()
     };
 
-    let proxy_router = Router::new();
-
     router
         .fallback(any(route_core_and_outpost))
-        .with_state((core_router, proxy_router))
-    // router
-    //     .fallback(any(async |request: Request<Body>, State(proxy_outpost): State<Arc<ArcSwapOption<ProxyOutpost>>>| {
-    //         let now = Instant::now();
-    //
-    //         if let Some(proxy_outpost) = proxy_outpost.load_full()
-    //             && let Some(app) = proxy_outpost.lookup_app("")
-    //         {
-    //             let res = outpost::proxy::application::handlers::handle(app, request).await;
-    //             metrics::histogram!("authentik_main_request_duration", "dest" => "embedded_outpost")
-    //             .record(now.elapsed());
-    //             res
-    //         } else {
-    //             let res = core_router
-    //                 .oneshot(request)
-    //                 .await
-    //                 .map_err(|_| eyre!("Infallible").into());
-    //             metrics::histogram!("authentik_main_request_duration", "dest" => "core")
-    //                 .record(now.elapsed());
-    //             res
-    //         }
-    //     }))
-    //     .with_state(proxy_outpost)
+        .with_state((core_router, proxy_router, proxy_outpost))
+        .layer(from_fn(host_middleware))
+        .layer(from_fn(trusted_proxy_middleware))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
@@ -268,11 +281,22 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     )?;
 
     if !config::get().outposts.disable_embedded_outpost {
-        tokio::select! {
-            Ok(Event::GunicornIsReady) = events_rx.recv() => {},
-            () = arbiter.shutdown() => return Ok(server),
+        info!("waiting for gunicorn to be ready before starting embedded outpost");
+        loop {
+            tokio::select! {
+                event = events_rx.recv() => {
+                    if event == Ok(Event::GunicornIsReady) {
+                        break;
+                    }
+                },
+                () = arbiter.shutdown() => {
+                    warn!("we were told to shutdown before starting the embedded outpost");
+                    return Ok(server);
+                },
+            }
         }
 
+        info!("starting embedded outpost");
         proxy_outpost.store(Some(
             outpost::start::<ProxyOutpost>(Default::default(), tasks).await?,
         ));

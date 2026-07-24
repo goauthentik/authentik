@@ -6,7 +6,7 @@ use ak_client::{
 };
 use ak_common::{config, tls::store::Certificate};
 use arc_swap::ArcSwapOption;
-use axum::{Router, routing::any};
+use axum::{Router, http::Uri, routing::any};
 use eyre::{Result, eyre};
 use jsonwebtoken::jwk::JwkSet;
 use moka::future::Cache;
@@ -18,6 +18,7 @@ use crate::outpost::proxy::{
     claims::Claims,
     cookie::SessionCookie,
     endpoint::OidcEndpoint,
+    oauth,
     session::{SessionStore, filesystem::FsSessionStore},
     upstream,
 };
@@ -25,7 +26,7 @@ use crate::outpost::proxy::{
 pub(crate) mod handlers;
 
 #[derive(Debug)]
-pub(super) struct Application {
+pub(crate) struct Application {
     pub(super) host: String,
     pub(super) provider: ProxyOutpostConfig,
     pub(super) router: Router<Arc<Self>>,
@@ -181,6 +182,22 @@ impl Application {
             upstream_client,
             jwks_cache: ArcSwapOption::empty(),
         })
+    }
+
+    /// Whether the embedded outpost should handle this request rather than
+    /// letting it fall through to the core backend. Proxy-mode apps handle
+    /// everything; forward-auth apps only handle their own outpost endpoints
+    /// and OAuth callback/logout signatures.
+    pub(super) fn should_handle_url(&self, uri: &Uri) -> bool {
+        if self.provider.mode == Some(ProxyMode::Proxy) {
+            return true;
+        }
+        if uri.path().starts_with("/outpost.goauthentik.io") {
+            return true;
+        }
+        let query = uri.query();
+        oauth::has_signature(query, oauth::CALLBACK_SIGNATURE)
+            || oauth::has_signature(query, oauth::LOGOUT_SIGNATURE)
     }
 
     /// Default session lifetime: the access token validity plus one second
