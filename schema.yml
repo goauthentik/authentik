@@ -58553,6 +58553,11 @@ components:
         password:
           type: string
           minLength: 1
+        override:
+          type: boolean
+          default: false
+          description: Import a valid password hash even when its parameters do not
+            match authentik's current password hashing policy.
       required:
       - password
     UserPasswordSetRequest:

@@ -24,6 +24,12 @@ export interface UserPasswordHashSetRequest {
      * @memberof UserPasswordHashSetRequest
      */
     password: string;
+    /**
+     * Import a valid password hash even when its parameters do not match authentik's current password hashing policy.
+     * @type {boolean}
+     * @memberof UserPasswordHashSetRequest
+     */
+    override?: boolean;
 }
 
 /**
@@ -49,6 +55,7 @@ export function UserPasswordHashSetRequestFromJSONTyped(
     }
     return {
         password: json["password"],
+        override: json["override"] == null ? undefined : json["override"],
     };
 }
 
@@ -66,5 +73,6 @@ export function UserPasswordHashSetRequestToJSONTyped(
 
     return {
         password: value["password"],
+        override: value["override"],
     };
 }
