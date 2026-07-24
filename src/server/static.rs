@@ -147,8 +147,6 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
         .headers_mut()
         .insert(VARY, HeaderValue::from_static("X-authentik-version, Etag"));
 
-    // TODO: etag
-
     response
 }
 
