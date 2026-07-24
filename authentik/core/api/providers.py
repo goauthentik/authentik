@@ -18,13 +18,13 @@ from authentik.core.models import Provider
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
     """Provider Serializer"""
 
-    assigned_application_slug = ReadOnlyField(source="application.slug", allow_null=True)
-    assigned_application_name = ReadOnlyField(source="application.name", allow_null=True)
+    assigned_application_slug = ReadOnlyField(source="application.slug", allow_null=True, required=False)
+    assigned_application_name = ReadOnlyField(source="application.name", allow_null=True, required=False)
     assigned_backchannel_application_slug = ReadOnlyField(
-        source="backchannel_application.slug", allow_null=True
+        source="backchannel_application.slug", allow_null=True, required=False
     )
     assigned_backchannel_application_name = ReadOnlyField(
-        source="backchannel_application.name", allow_null=True
+        source="backchannel_application.name", allow_null=True, required=False
     )
 
     component = SerializerMethodField()
