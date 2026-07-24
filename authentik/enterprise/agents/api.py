@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
@@ -33,6 +33,8 @@ from authentik.core.models import (
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 
+ID_JAG_FIELDS = ["id_jag_audience", "id_jag_client_id", "id_jag_resources"]
+
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
@@ -46,6 +48,14 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
         token = Token.objects.filter(user=agent, intent=TokenIntents.INTENT_API).first()
         return token.identifier if token else None
 
+    def validate(self, attrs: dict) -> dict:
+        # ID-JAG is for system agents only. An owned agent's owner can edit it, and must
+        # not be able to make authentik mint assertions for an audience of their choosing.
+        parent = self.instance.parent_id if self.instance else None
+        if parent and any(attrs.get(f) for f in ID_JAG_FIELDS):
+            raise ValidationError(_("ID-JAG can only be configured on system agents."))
+        return super().validate(attrs)
+
     class Meta:
         model = Agent
         fields = PartialUserSerializer.Meta.fields + [
@@ -55,6 +65,8 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
             "parent",
             "policy_behavior",
             "token_identifier",
+            "applications",
+            *ID_JAG_FIELDS,
         ]
 
 
