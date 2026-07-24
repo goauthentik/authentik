@@ -89,7 +89,11 @@ export function UserWriteStageRequestFromJSONTyped(
         createUsersAsInactive:
             json["create_users_as_inactive"] == null ? undefined : json["create_users_as_inactive"],
         createUsersGroup:
-            json["create_users_group"] == null ? undefined : json["create_users_group"],
+            json["create_users_group"] === undefined
+                ? undefined
+                : json["create_users_group"] === null
+                  ? null
+                  : json["create_users_group"],
         userType: json["user_type"] == null ? undefined : UserTypeEnumFromJSON(json["user_type"]),
         userPathTemplate:
             json["user_path_template"] == null ? undefined : json["user_path_template"],

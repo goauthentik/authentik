@@ -48,8 +48,9 @@ export function ThemedUrlsFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         return json;
     }
     return {
-        light: json["light"] == null ? undefined : json["light"],
-        dark: json["dark"] == null ? undefined : json["dark"],
+        light:
+            json["light"] === undefined ? undefined : json["light"] === null ? null : json["light"],
+        dark: json["dark"] === undefined ? undefined : json["dark"] === null ? null : json["dark"],
     };
 }
 

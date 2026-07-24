@@ -134,9 +134,27 @@ export interface AgentConnector {
 export function instanceOfAgentConnector(value: object): value is AgentConnector {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -168,10 +186,19 @@ export function AgentConnectorFromJSONTyped(
                 : json["auth_terminate_session_on_expiry"],
         refreshInterval: json["refresh_interval"] == null ? undefined : json["refresh_interval"],
         authorizationFlow:
-            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
         nssUidOffset: json["nss_uid_offset"] == null ? undefined : json["nss_uid_offset"],
         nssGidOffset: json["nss_gid_offset"] == null ? undefined : json["nss_gid_offset"],
-        challengeKey: json["challenge_key"] == null ? undefined : json["challenge_key"],
+        challengeKey:
+            json["challenge_key"] === undefined
+                ? undefined
+                : json["challenge_key"] === null
+                  ? null
+                  : json["challenge_key"],
         challengeIdleTimeout:
             json["challenge_idle_timeout"] == null ? undefined : json["challenge_idle_timeout"],
         challengeTriggerCheckIn:
@@ -190,7 +217,7 @@ export function AgentConnectorToJSON(json: any): AgentConnector {
 export function AgentConnectorToJSONTyped(
     value?: Omit<
         AgentConnector,
-        "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+        "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

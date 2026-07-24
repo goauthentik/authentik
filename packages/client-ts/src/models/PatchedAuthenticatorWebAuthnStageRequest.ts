@@ -114,16 +114,23 @@ export function PatchedAuthenticatorWebAuthnStageRequestFromJSONTyped(
     }
     return {
         name: json["name"] == null ? undefined : json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         userVerification:
             json["user_verification"] == null
                 ? undefined
                 : UserVerificationEnumFromJSON(json["user_verification"]),
         authenticatorAttachment:
-            json["authenticator_attachment"] == null
+            json["authenticator_attachment"] === undefined
                 ? undefined
-                : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
+                : json["authenticator_attachment"] === null
+                  ? null
+                  : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
         residentKeyRequirement:
             json["resident_key_requirement"] == null
                 ? undefined

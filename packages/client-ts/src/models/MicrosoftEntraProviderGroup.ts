@@ -66,9 +66,21 @@ export function instanceOfMicrosoftEntraProviderGroup(
     value: object,
 ): value is MicrosoftEntraProviderGroup {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (
+        (!("microsoftId" in (value as Record<string, any>)) &&
+            !("microsoft_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["microsoftId"] === undefined &&
+            (value as Record<string, any>)["microsoft_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -100,7 +112,7 @@ export function MicrosoftEntraProviderGroupToJSON(json: any): MicrosoftEntraProv
 }
 
 export function MicrosoftEntraProviderGroupToJSONTyped(
-    value?: Omit<MicrosoftEntraProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    value?: Omit<MicrosoftEntraProviderGroup, "id" | "groupObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

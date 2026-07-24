@@ -76,10 +76,34 @@ export interface CaptchaChallenge {
  * Check if a given object implements the CaptchaChallenge interface.
  */
 export function instanceOfCaptchaChallenge(value: object): value is CaptchaChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
-    if (!("siteKey" in value) || value["siteKey"] === undefined) return false;
-    if (!("jsUrl" in value) || value["jsUrl"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
+    if (
+        (!("siteKey" in (value as Record<string, any>)) &&
+            !("site_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["siteKey"] === undefined &&
+            (value as Record<string, any>)["site_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("jsUrl" in (value as Record<string, any>)) &&
+            !("js_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["jsUrl"] === undefined &&
+            (value as Record<string, any>)["js_url"] === undefined)
+    )
+        return false;
     if (!("interactive" in value) || value["interactive"] === undefined) return false;
     return true;
 }

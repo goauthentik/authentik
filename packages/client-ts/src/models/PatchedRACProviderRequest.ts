@@ -85,7 +85,11 @@ export function PatchedRACProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],

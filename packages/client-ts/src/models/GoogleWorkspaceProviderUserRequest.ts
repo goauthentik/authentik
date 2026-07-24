@@ -44,7 +44,13 @@ export interface GoogleWorkspaceProviderUserRequest {
 export function instanceOfGoogleWorkspaceProviderUserRequest(
     value: object,
 ): value is GoogleWorkspaceProviderUserRequest {
-    if (!("googleId" in value) || value["googleId"] === undefined) return false;
+    if (
+        (!("googleId" in (value as Record<string, any>)) &&
+            !("google_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["googleId"] === undefined &&
+            (value as Record<string, any>)["google_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;

@@ -225,8 +225,17 @@ export function PatchedKerberosSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:

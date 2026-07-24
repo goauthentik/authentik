@@ -393,7 +393,7 @@ requires-dist = [
     { name = "dumb-init", specifier = "==1.2.5.post1" },
     { name = "duo-client", specifier = "==5.6.1" },
     { name = "fido2", specifier = "==2.2.1" },
-    { name = "geoip2", specifier = "==5.2.0" },
+    { name = "geoip2", specifier = "==5.3.0" },
     { name = "geopy", specifier = "==2.5.0" },
     { name = "google-api-python-client", specifier = "==2.198.0" },
     { name = "gssapi", specifier = "==1.11.1" },
@@ -417,7 +417,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
     { name = "scim2-filter-parser", specifier = "==0.7.0" },
-    { name = "sentry-sdk", specifier = "==2.65.0" },
+    { name = "sentry-sdk", specifier = "==2.66.0" },
     { name = "service-identity", specifier = "==26.1.0" },
     { name = "setproctitle", specifier = "==1.3.7" },
     { name = "structlog", specifier = "==26.1.0" },
@@ -441,7 +441,7 @@ dev = [
     { name = "black", specifier = "==26.5.1" },
     { name = "bpython", specifier = "==0.26" },
     { name = "colorama", specifier = "==0.4.6" },
-    { name = "constructs", specifier = "==10.7.0" },
+    { name = "constructs", specifier = "==10.7.1" },
     { name = "coverage", extras = ["toml"], specifier = "==7.15.2" },
     { name = "daphne", specifier = "==4.2.2" },
     { name = "debugpy", specifier = "==1.8.21" },
@@ -465,7 +465,7 @@ dev = [
     { name = "selenium", specifier = "==4.46.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-docker", specifier = "==7.1.0.20260712" },
-    { name = "types-jwcrypto", specifier = "==1.5.7.20260518" },
+    { name = "types-jwcrypto", specifier = "==1.5.8.20260720" },
     { name = "types-ldap3", specifier = "==2.9.13.20260518" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20260518" },
@@ -936,15 +936,15 @@ wheels = [
 
 [[package]]
 name = "constructs"
-version = "10.7.0"
+version = "10.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsii" },
     { name = "publication" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0d/87/fd63e959e0a4ebee76e620cceebe99d2093a54ce1f9f42aa9bb5ec14f0c1/constructs-10.7.0.tar.gz", hash = "sha256:e593ac6935f020e65f3a39ad73a6196cb30cb8080d80268471f06321e9317242", size = 70906, upload-time = "2026-07-15T16:04:42.306Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/1e/f8616b97256cad2a2ec27a6bbb74ae478182ddd782ba10fd97924970a75d/constructs-10.7.1.tar.gz", hash = "sha256:7b33d60851fc8c6d4c4a111dc342088e467c344b22d9a562a5e0b6fbbbaf4b2a", size = 71079, upload-time = "2026-07-20T08:01:34.724Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b0/5a/3cacb1aba05ab167fd2ce3b6db46e5736c4c67c5bfbd81771797947b9bbd/constructs-10.7.0-py3-none-any.whl", hash = "sha256:4aaf04c6628fb9af71fd4bcd59d141c871eaa5aaf8f690a4b2dfd572f8bba053", size = 68945, upload-time = "2026-07-15T16:04:40.959Z" },
+    { url = "https://files.pythonhosted.org/packages/ab/e7/f014792cb9e76d407e552aead634e048134c22e59a2f892b1cb7324afc71/constructs-10.7.1-py3-none-any.whl", hash = "sha256:f212c66b37249c45eca4638c6b33c68efddae50599d27062d71d0bf81c11431e", size = 69144, upload-time = "2026-07-20T08:01:32.43Z" },
 ]
 
 [[package]]
@@ -1622,16 +1622,16 @@ wheels = [
 
 [[package]]
 name = "geoip2"
-version = "5.2.0"
+version = "5.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "maxminddb" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/18/70/3d9e87289f79713aaf0fea9df4aa8e68776640fe59beb6299bb214610cfd/geoip2-5.2.0.tar.gz", hash = "sha256:6c9ded1953f8eb16043ed0a8ea20e6e9524ea7b65eb745724e12490aca44ef00", size = 176498, upload-time = "2025-11-20T18:21:08.874Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/8d/a62c6e56545049605777ad47de2274a72ed60e3991433ca3f1bcdd761ef5/geoip2-5.3.0.tar.gz", hash = "sha256:66df653e16c535f9bb45e3c7ce992fbe008911d9c7c349540574ea2fe8931db5", size = 177948, upload-time = "2026-07-16T22:34:01.497Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/d2/d55df737199a52b9d06e742ed2a608c525f0677e40375951372e65714fbd/geoip2-5.2.0-py3-none-any.whl", hash = "sha256:3d1546fd4eb7cad20445d027d2d9e81d3a71c074e019383f30db5d45e2c23320", size = 28991, upload-time = "2025-11-20T18:21:07.178Z" },
+    { url = "https://files.pythonhosted.org/packages/71/bf/407ea894512ad989f6fbf9f8e50a02a69ce888bf6a2b799e53a99e4d26a7/geoip2-5.3.0-py3-none-any.whl", hash = "sha256:7f82c587f3f3691f30adc8634d0b93de9853d96d514ed48ff3ba38f188a5df31", size = 29186, upload-time = "2026-07-16T22:34:00.126Z" },
 ]
 
 [[package]]
@@ -3415,15 +3415,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.65.0"
+version = "2.66.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f1/1f/ed17a390348156ca99fe622b97cd7d2f1969b5f49df89084b0f28e7953e9/sentry_sdk-2.65.0.tar.gz", hash = "sha256:c94dc945d54bad49d4f20448b1e6b217ca2f92f46d05c3e83d41764af685c3d1", size = 932133, upload-time = "2026-07-13T11:33:19.92Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/ff/670abe04c5072719b5060ed93851d0d69525d60f8f2c5810f8becd58f9c1/sentry_sdk-2.66.0.tar.gz", hash = "sha256:9727d35aa83c56cd53294676fe65b96296a334c9ce107fa2142bd70f47acb265", size = 935745, upload-time = "2026-07-16T12:42:04.663Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/3b/326ad4c03b5da89b5124c8890af66e8119c4d2e10abc0619e0d67d9f7c7f/sentry_sdk-2.65.0-py3-none-any.whl", hash = "sha256:3595169677a808e4d0e1ea6ffb89443459549c7a98392ed71c77c847182ab6bf", size = 503869, upload-time = "2026-07-13T11:33:17.71Z" },
+    { url = "https://files.pythonhosted.org/packages/c7/bb/49b10783f29067da2eec179320617e94faf63196609de47aeab3c26c3325/sentry_sdk-2.66.0-py3-none-any.whl", hash = "sha256:096136c214c602be2b323524d30755dc5b30ec5a218a206207f33b12c05c6f11", size = 504769, upload-time = "2026-07-16T12:42:02.919Z" },
 ]
 
 [[package]]
@@ -3690,14 +3690,14 @@ wheels = [
 
 [[package]]
 name = "types-jwcrypto"
-version = "1.5.7.20260518"
+version = "1.5.8.20260720"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/10/69410365c8e5d5f380ff90dbc7c5e57a07e7f3c8ccce33695806703fee9b/types_jwcrypto-1.5.7.20260518.tar.gz", hash = "sha256:44df0b55520a7ce88e6577f2331e79c9ba7ac2a74e4c8b4552a7f33eccd6c012", size = 12118, upload-time = "2026-05-18T06:06:33.266Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/61/5f6945cc633865309c97d548ac546e090963f895ada87f30dd41245cbbd6/types_jwcrypto-1.5.8.20260720.tar.gz", hash = "sha256:18d7d624e257b7f9f18c35700288bbc115179b16d804a263590b702d022cb487", size = 12165, upload-time = "2026-07-20T05:27:09.826Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/79/be24dfed6892200303dac0e504ffb69a2261103dfe214b9208548b655066/types_jwcrypto-1.5.7.20260518-py3-none-any.whl", hash = "sha256:d3db816621990229940823b7c83b3a95093cabfd9e4f4f596761312e00256972", size = 13348, upload-time = "2026-05-18T06:06:32.018Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/ef/728dfe98bf0423f8e7e0074ad6f60feaad95982b44d7398fd35f429c08c2/types_jwcrypto-1.5.8.20260720-py3-none-any.whl", hash = "sha256:e606fefc5381c71236d6dccd7500f283eb19c22151fb1ef19cefe5589630d376", size = 13363, upload-time = "2026-07-20T05:27:08.973Z" },
 ]
 
 [[package]]

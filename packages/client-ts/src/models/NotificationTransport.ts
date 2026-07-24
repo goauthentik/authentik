@@ -95,7 +95,13 @@ export interface NotificationTransport {
 export function instanceOfNotificationTransport(value: object): value is NotificationTransport {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("modeVerbose" in value) || value["modeVerbose"] === undefined) return false;
+    if (
+        (!("modeVerbose" in (value as Record<string, any>)) &&
+            !("mode_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modeVerbose"] === undefined &&
+            (value as Record<string, any>)["mode_verbose"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -116,11 +122,24 @@ export function NotificationTransportFromJSONTyped(
         mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
         modeVerbose: json["mode_verbose"],
         webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
-        webhookCa: json["webhook_ca"] == null ? undefined : json["webhook_ca"],
+        webhookCa:
+            json["webhook_ca"] === undefined
+                ? undefined
+                : json["webhook_ca"] === null
+                  ? null
+                  : json["webhook_ca"],
         webhookMappingBody:
-            json["webhook_mapping_body"] == null ? undefined : json["webhook_mapping_body"],
+            json["webhook_mapping_body"] === undefined
+                ? undefined
+                : json["webhook_mapping_body"] === null
+                  ? null
+                  : json["webhook_mapping_body"],
         webhookMappingHeaders:
-            json["webhook_mapping_headers"] == null ? undefined : json["webhook_mapping_headers"],
+            json["webhook_mapping_headers"] === undefined
+                ? undefined
+                : json["webhook_mapping_headers"] === null
+                  ? null
+                  : json["webhook_mapping_headers"],
         emailSubjectPrefix:
             json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
         emailTemplate: json["email_template"] == null ? undefined : json["email_template"],
@@ -133,7 +152,7 @@ export function NotificationTransportToJSON(json: any): NotificationTransport {
 }
 
 export function NotificationTransportToJSONTyped(
-    value?: Omit<NotificationTransport, "pk" | "mode_verbose"> | null,
+    value?: Omit<NotificationTransport, "pk" | "modeVerbose"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

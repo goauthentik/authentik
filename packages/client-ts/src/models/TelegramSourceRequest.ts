@@ -127,9 +127,26 @@ export interface TelegramSourceRequest {
 export function instanceOfTelegramSourceRequest(value: object): value is TelegramSourceRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("botUsername" in value) || value["botUsername"] === undefined) return false;
-    if (!("botToken" in value) || value["botToken"] === undefined) return false;
-    if (!("preAuthenticationFlow" in value) || value["preAuthenticationFlow"] === undefined)
+    if (
+        (!("botUsername" in (value as Record<string, any>)) &&
+            !("bot_username" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["botUsername"] === undefined &&
+            (value as Record<string, any>)["bot_username"] === undefined)
+    )
+        return false;
+    if (
+        (!("botToken" in (value as Record<string, any>)) &&
+            !("bot_token" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["botToken"] === undefined &&
+            (value as Record<string, any>)["bot_token"] === undefined)
+    )
+        return false;
+    if (
+        (!("preAuthenticationFlow" in (value as Record<string, any>)) &&
+            !("pre_authentication_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["preAuthenticationFlow"] === undefined &&
+            (value as Record<string, any>)["pre_authentication_flow"] === undefined)
+    )
         return false;
     return true;
 }
@@ -151,8 +168,17 @@ export function TelegramSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:

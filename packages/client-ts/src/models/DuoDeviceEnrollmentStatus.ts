@@ -35,7 +35,13 @@ export interface DuoDeviceEnrollmentStatus {
 export function instanceOfDuoDeviceEnrollmentStatus(
     value: object,
 ): value is DuoDeviceEnrollmentStatus {
-    if (!("duoResponse" in value) || value["duoResponse"] === undefined) return false;
+    if (
+        (!("duoResponse" in (value as Record<string, any>)) &&
+            !("duo_response" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["duoResponse"] === undefined &&
+            (value as Record<string, any>)["duo_response"] === undefined)
+    )
+        return false;
     return true;
 }
 

@@ -40,7 +40,13 @@ export interface MDMConfigRequest {
  */
 export function instanceOfMDMConfigRequest(value: object): value is MDMConfigRequest {
     if (!("platform" in value) || value["platform"] === undefined) return false;
-    if (!("enrollmentToken" in value) || value["enrollmentToken"] === undefined) return false;
+    if (
+        (!("enrollmentToken" in (value as Record<string, any>)) &&
+            !("enrollment_token" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["enrollmentToken"] === undefined &&
+            (value as Record<string, any>)["enrollment_token"] === undefined)
+    )
+        return false;
     return true;
 }
 
