@@ -59,7 +59,12 @@ export interface EndpointAgentChallenge {
  */
 export function instanceOfEndpointAgentChallenge(value: object): value is EndpointAgentChallenge {
     if (!("challenge" in value) || value["challenge"] === undefined) return false;
-    if (!("challengeIdleTimeout" in value) || value["challengeIdleTimeout"] === undefined)
+    if (
+        (!("challengeIdleTimeout" in (value as Record<string, any>)) &&
+            !("challenge_idle_timeout" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["challengeIdleTimeout"] === undefined &&
+            (value as Record<string, any>)["challenge_idle_timeout"] === undefined)
+    )
         return false;
     return true;
 }

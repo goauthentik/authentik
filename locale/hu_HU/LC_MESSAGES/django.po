@@ -6,16 +6,16 @@
 # Translators:
 # Marc Schmitt, 2025
 # Gyula Kiss <kiss@indi.hu>, 2026
-# Dániel Bek, 2026
+# bekdan1988, 2026
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-03 00:30+0000\n"
+"POT-Creation-Date: 2026-07-17 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
-"Last-Translator: Dániel Bek, 2026\n"
+"Last-Translator: bekdan1988, 2026\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/authentik/teams/119923/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -291,14 +291,14 @@ msgid "No empty segments in user path allowed."
 msgstr "Szóközök használata nem engedélyezett a felhasználói útvonalban."
 
 #: authentik/core/api/users.py
+msgid "Can't create internal service accounts"
+msgstr "Nem lehet belső szolgáltatásfiókokat létrehozni"
+
+#: authentik/core/api/users.py
 msgid "Can't change internal service account to other user type."
 msgstr ""
 "A belső szolgáltatás fióktól eltérő felhasználói típust nem lehet "
 "beállítani."
-
-#: authentik/core/api/users.py
-msgid "Setting a user to internal service account is not allowed."
-msgstr "Belül szolgáltatói fiókra való konvertálás nem engedélyezett."
 
 #: authentik/core/api/users.py
 msgid "User does not have permission to add members to a superuser group."
@@ -813,6 +813,14 @@ msgstr "Agent Csatló"
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
 msgstr "Agent Csatlók"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr "Ügynök eszköz felhasználó kötés"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
+msgstr "Ügynök eszköz felhasználó kötések"
 
 #: authentik/endpoints/connectors/agent/models.py
 #: authentik/providers/oauth2/models.py
@@ -2437,6 +2445,10 @@ msgid "ES512 (Asymmetric Encryption)"
 msgstr "ES512 (Szimmetrikus titkosítás)"
 
 #: authentik/providers/oauth2/models.py
+msgid "EdDSA (Asymmetric Encryption)"
+msgstr "EdDSA (aszimmetrikus titkosítás)"
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
 msgstr "A kliens által használt hatáskör"
 
@@ -2599,6 +2611,10 @@ msgstr "Kód kihívás"
 #: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
 msgstr "Kód kihívási módszer"
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
+msgstr "DPoP JWK ujjlenyomat"
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization Code"
@@ -3973,12 +3989,9 @@ msgid "Flow used before authentication."
 msgstr "A hitelesítés előtt használt folyamat."
 
 #: authentik/sources/saml/models.py
-msgid "Issuer"
-msgstr "Kibocsátó"
-
-#: authentik/sources/saml/models.py
-msgid "Also known as Entity ID. Defaults the Metadata URL."
-msgstr "Egyéni azonosítóként ismert. Alapértelmezett a Metaadat URL-cím."
+msgid "Also known as Entity ID. Defaults to the Metadata URL."
+msgstr ""
+"Más néven entitásazonosító. Alapértelmezés szerint a metaadatok URL-címe."
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"

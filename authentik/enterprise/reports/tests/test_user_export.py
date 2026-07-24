@@ -7,10 +7,10 @@ from authentik.admin.files.tests.utils import FileTestFileBackendMixin
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.reports.models import DataExport
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 
 
-@patch_license
+@enterprise_test()
 class TestUserExport(FileTestFileBackendMixin, TestCase):
     def setUp(self) -> None:
         super().setUp()

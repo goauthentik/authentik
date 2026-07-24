@@ -32,7 +32,7 @@ jobs:
       tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
       tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - id: compute-tags
         uses: ./.github/actions/compute-container-tags
   build:
@@ -96,7 +96,7 @@ jobs:
             deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -106,7 +106,7 @@ jobs:
   test-gen:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup authentik env
@@ -122,7 +122,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -148,7 +148,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           fetch-depth: 0
       - name: checkout stable
@@ -229,7 +229,7 @@ jobs:
           - 18-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -249,7 +249,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -316,7 +316,7 @@ jobs:
             skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
           done
           rm -rf container/
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env
@@ -329,7 +329,7 @@ jobs:
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -383,7 +383,7 @@ jobs:
           - name: ssf_transmitter
             glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -425,7 +425,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -486,9 +486,9 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
       # Docker login is required for attestations
       - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
         with:
@@ -506,7 +506,7 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
@@ -522,7 +522,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Comment on PR
         uses: ./.github/actions/comment-pr-instructions
         with:

@@ -36,7 +36,13 @@ export interface LifecycleIterationRequest {
 export function instanceOfLifecycleIterationRequest(
     value: object,
 ): value is LifecycleIterationRequest {
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
     return true;
 }
 
