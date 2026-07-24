@@ -2,10 +2,15 @@
  * @file Barrel file and default registry ('ak-empty-state') for the EmptyState component
  */
 
-import { akEmptyState, EmptyState, type EmptyStateProps } from "./EmptyState_impl/EmptyState";
+import {
+    akEmptyState,
+    EmptyState,
+    type EmptyStateContentProps,
+    type EmptyStateProps,
+} from "./EmptyState_impl/EmptyState";
 
 export { akEmptyState, EmptyState };
-export type { EmptyStateProps };
+export type { EmptyStateContentProps, EmptyStateProps };
 
 window.customElements.define("ak-empty-state", EmptyState);
 

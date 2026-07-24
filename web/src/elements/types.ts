@@ -94,7 +94,7 @@ export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
  */
 export type LitFC<P> = (
     props: P,
-    children?: null | SlottedTemplateResult
+    children?: null | SlottedTemplateResult,
 ) => SlottedTemplateResult | SlottedTemplateResult[] | null;
 
 //#endregion
@@ -115,12 +115,12 @@ export interface ReactiveContextController<
  */
 export interface ContextControllerRegistryMap {
     get<T extends Context<unknown, unknown>>(
-        key: T
+        key: T,
     ): ReactiveContextController<T, object> | undefined;
 
     set<T extends Context<unknown, unknown>>(
         key: ContextType<T>,
-        controller: ReactiveContextController<T, object>
+        controller: ReactiveContextController<T, object>,
     ): void;
     delete<T extends Context<unknown, unknown>>(key: ContextType<T>): void;
 }
@@ -224,7 +224,7 @@ export interface CreateMixinInit<C = unknown> {
  * @template Mixin The mixin class to union with the superclass.
  */
 export function createMixin<Mixin, C = unknown>(
-    mixinCallback: (init: CreateMixinInit<C>) => unknown
+    mixinCallback: (init: CreateMixinInit<C>) => unknown,
 ) {
     return <T extends LitElementConstructor | AbstractLitElementConstructor>(
         /**
@@ -237,7 +237,7 @@ export function createMixin<Mixin, C = unknown>(
          * currently active and subscribed to the context will automatically have a `requestUpdate()`
          * triggered with the new configuration.
          */
-        subscribe?: boolean
+        subscribe?: boolean,
     ) => {
         const MixinClass = mixinCallback({
             SuperClass: SuperClass as LitElementConstructor<C>,
