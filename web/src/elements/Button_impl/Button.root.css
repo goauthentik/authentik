@@ -1,0 +1,246 @@
+:root {
+    --ak-c-button--PaddingTop: var(--pf-global--spacer--form-element);
+    --ak-c-button--PaddingRight: var(--pf-global--spacer--md);
+    --ak-c-button--PaddingBottom: var(--pf-global--spacer--form-element);
+    --ak-c-button--PaddingLeft: var(--pf-global--spacer--md);
+    --ak-c-button--LineHeight: var(--pf-global--LineHeight--md);
+    --ak-c-button--FontWeight: var(--pf-global--FontWeight--normal);
+    --ak-c-button--FontSize: var(--pf-global--FontSize--md);
+    --ak-c-button--BackgroundColor: transparent;
+    --ak-c-button--BorderRadius: var(--pf-global--BorderRadius--sm);
+    --ak-c-button--after--BorderRadius: var(--pf-global--BorderRadius--sm);
+    --ak-c-button--after--BorderColor: transparent;
+    --ak-c-button--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --ak-c-button--hover--after--BorderWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--focus--after--BorderWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--active--after--BorderWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--disabled--Color: var(--pf-global--disabled-color--100);
+    --ak-c-button--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    --ak-c-button--disabled--after--BorderColor: transparent;
+    --ak-c-button--m-primary--BackgroundColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-primary--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-primary--hover--BackgroundColor: var(--pf-global--primary-color--200);
+    --ak-c-button--m-primary--hover--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-primary--focus--BackgroundColor: var(--pf-global--primary-color--200);
+    --ak-c-button--m-primary--focus--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-primary--active--BackgroundColor: var(--pf-global--primary-color--200);
+    --ak-c-button--m-primary--active--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-secondary--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--after--BorderColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--Color: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--hover--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--hover--after--BorderColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--hover--Color: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--focus--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--focus--after--BorderColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--focus--Color: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--active--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--active--after--BorderColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--active--Color: var(--pf-global--primary-color--100);
+    --ak-c-button--m-secondary--m-danger--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--m-danger--Color: var(--pf-global--danger-color--100);
+    --ak-c-button--m-secondary--m-danger--after--BorderColor: var(--pf-global--danger-color--100);
+    --ak-c-button--m-secondary--m-danger--hover--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--m-danger--hover--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-secondary--m-danger--hover--after--BorderColor: var(
+        --pf-global--danger-color--100
+    );
+    --ak-c-button--m-secondary--m-danger--focus--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--m-danger--focus--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-secondary--m-danger--focus--after--BorderColor: var(
+        --pf-global--danger-color--100
+    );
+    --ak-c-button--m-secondary--m-danger--active--BackgroundColor: transparent;
+    --ak-c-button--m-secondary--m-danger--active--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-secondary--m-danger--active--after--BorderColor: var(
+        --pf-global--danger-color--100
+    );
+    --ak-c-button--m-tertiary--BackgroundColor: transparent;
+    --ak-c-button--m-tertiary--after--BorderColor: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--hover--BackgroundColor: transparent;
+    --ak-c-button--m-tertiary--hover--after--BorderColor: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--hover--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--focus--BackgroundColor: transparent;
+    --ak-c-button--m-tertiary--focus--after--BorderColor: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--focus--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--active--BackgroundColor: transparent;
+    --ak-c-button--m-tertiary--active--after--BorderColor: var(--pf-global--Color--100);
+    --ak-c-button--m-tertiary--active--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-warning--BackgroundColor: var(--pf-global--warning-color--100);
+    --ak-c-button--m-warning--Color: var(--pf-global--Color--dark-100);
+    --ak-c-button--m-warning--hover--BackgroundColor: var(--pf-global--palette--gold-500);
+    --ak-c-button--m-warning--hover--Color: var(--pf-global--Color--dark-100);
+    --ak-c-button--m-warning--focus--BackgroundColor: var(--pf-global--palette--gold-500);
+    --ak-c-button--m-warning--focus--Color: var(--pf-global--Color--dark-100);
+    --ak-c-button--m-warning--active--BackgroundColor: var(--pf-global--palette--gold-500);
+    --ak-c-button--m-warning--active--Color: var(--pf-global--Color--dark-100);
+    --ak-c-button--m-danger--BackgroundColor: var(--pf-global--danger-color--100);
+    --ak-c-button--m-danger--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-danger--hover--BackgroundColor: var(--pf-global--danger-color--200);
+    --ak-c-button--m-danger--hover--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-danger--focus--BackgroundColor: var(--pf-global--danger-color--200);
+    --ak-c-button--m-danger--focus--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-danger--active--BackgroundColor: var(--pf-global--danger-color--200);
+    --ak-c-button--m-danger--active--Color: var(--pf-global--Color--light-100);
+    --ak-c-button--m-link--BackgroundColor: transparent;
+    --ak-c-button--m-link--Color: var(--pf-global--link--Color);
+    --ak-c-button--m-link--hover--BackgroundColor: transparent;
+    --ak-c-button--m-link--hover--Color: var(--pf-global--link--Color--hover);
+    --ak-c-button--m-link--focus--BackgroundColor: transparent;
+    --ak-c-button--m-link--focus--Color: var(--pf-global--link--Color--hover);
+    --ak-c-button--m-link--active--BackgroundColor: transparent;
+    --ak-c-button--m-link--active--Color: var(--pf-global--link--Color--hover);
+    --ak-c-button--m-link--disabled--BackgroundColor: transparent;
+    --ak-c-button--m-link--disabled--Color: var(--pf-global--disabled-color--100);
+    --ak-c-button--m-link--m-inline--FontSize: inherit;
+    --ak-c-button--m-link--m-inline--hover--TextDecoration: var(
+        --pf-global--link--TextDecoration--hover
+    );
+    --ak-c-button--m-link--m-inline--hover--Color: var(--pf-global--link--Color--hover);
+    --ak-c-button--m-link--m-inline--PaddingTop: 0;
+    --ak-c-button--m-link--m-inline--PaddingRight: 0;
+    --ak-c-button--m-link--m-inline--PaddingBottom: 0;
+    --ak-c-button--m-link--m-inline--PaddingLeft: 0;
+    --ak-c-button--m-link--m-inline__progress--Left: var(--pf-global--spacer--xs);
+    --ak-c-button--m-link--m-inline--m-in-progress--PaddingLeft: calc(
+        var(--ak-c-button--m-link--m-inline__progress--Left) + var(--pf-global--spacer--sm) + 1rem
+    );
+    --ak-c-button--m-link--m-danger--BackgroundColor: transparent;
+    --ak-c-button--m-link--m-danger--Color: var(--pf-global--danger-color--100);
+    --ak-c-button--m-link--m-danger--hover--BackgroundColor: transparent;
+    --ak-c-button--m-link--m-danger--hover--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-link--m-danger--focus--BackgroundColor: transparent;
+    --ak-c-button--m-link--m-danger--focus--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-link--m-danger--active--BackgroundColor: transparent;
+    --ak-c-button--m-link--m-danger--active--Color: var(--pf-global--danger-color--200);
+    --ak-c-button--m-plain--BackgroundColor: transparent;
+    --ak-c-button--m-plain--Color: var(--pf-global--Color--200);
+    --ak-c-button--m-plain--hover--BackgroundColor: transparent;
+    --ak-c-button--m-plain--hover--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-plain--focus--BackgroundColor: transparent;
+    --ak-c-button--m-plain--focus--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-plain--active--BackgroundColor: transparent;
+    --ak-c-button--m-plain--active--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-plain--disabled--Color: var(--pf-global--disabled-color--200);
+    --ak-c-button--m-plain--disabled--BackgroundColor: transparent;
+    --ak-c-button--m-control--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-button--m-control--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-control--BorderRadius: 0;
+    --ak-c-button--m-control--after--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --ak-c-button--m-control--after--BorderTopColor: var(--pf-global--BorderColor--300);
+    --ak-c-button--m-control--after--BorderRightColor: var(--pf-global--BorderColor--300);
+    --ak-c-button--m-control--after--BorderBottomColor: var(--pf-global--BorderColor--200);
+    --ak-c-button--m-control--after--BorderLeftColor: var(--pf-global--BorderColor--300);
+    --ak-c-button--m-control--disabled--BackgroundColor: var(--pf-global--disabled-color--300);
+    --ak-c-button--m-control--hover--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-button--m-control--hover--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-control--hover--after--BorderBottomWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--m-control--hover--after--BorderBottomColor: var(--pf-global--active-color--100);
+    --ak-c-button--m-control--active--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-button--m-control--active--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-control--active--after--BorderBottomWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--m-control--active--after--BorderBottomColor: var(--pf-global--active-color--100);
+    --ak-c-button--m-control--focus--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-button--m-control--focus--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-control--focus--after--BorderBottomWidth: var(--pf-global--BorderWidth--md);
+    --ak-c-button--m-control--focus--after--BorderBottomColor: var(--pf-global--active-color--100);
+    --ak-c-button--m-control--m-expanded--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --ak-c-button--m-control--m-expanded--Color: var(--pf-global--Color--100);
+    --ak-c-button--m-control--m-expanded--after--BorderBottomWidth: var(
+        --pf-global--BorderWidth--md
+    );
+    --ak-c-button--m-control--m-expanded--after--BorderBottomColor: var(
+        --pf-global--active-color--100
+    );
+    --ak-c-button--m-small--FontSize: var(--pf-global--FontSize--sm);
+    --ak-c-button--m-display-lg--PaddingTop: var(--pf-global--spacer--md);
+    --ak-c-button--m-display-lg--PaddingRight: var(--pf-global--spacer--xl);
+    --ak-c-button--m-display-lg--PaddingBottom: var(--pf-global--spacer--md);
+    --ak-c-button--m-display-lg--PaddingLeft: var(--pf-global--spacer--xl);
+    --ak-c-button--m-display-lg--FontWeight: var(--pf-global--FontWeight--bold);
+    --ak-c-button--m-link--m-display-lg--FontSize: var(--pf-global--FontSize--lg);
+    --ak-c-button__icon--m-start--MarginRight: var(--pf-global--spacer--xs);
+    --ak-c-button__icon--m-end--MarginLeft: var(--pf-global--spacer--xs);
+    --ak-c-button__progress--width: calc(
+        var(--pf-global--icon--FontSize--md) + var(--pf-global--spacer--sm)
+    );
+    --ak-c-button__progress--Opacity: 0;
+    --ak-c-button__progress--TranslateY: -50%;
+    --ak-c-button__progress--TranslateX: 0;
+    --ak-c-button__progress--Top: 50%;
+    --ak-c-button__progress--Left: var(--pf-global--spacer--md);
+    --ak-c-button--m-progress--TransitionProperty: padding;
+    --ak-c-button--m-progress--TransitionDuration: var(--pf-global--TransitionDuration);
+    --ak-c-button--m-progress--PaddingRight: calc(
+        var(--pf-global--spacer--md) + calc(var(--ak-c-button__progress--width) / 2)
+    );
+
+    --ak-c-button--m-progress--PaddingLeft: calc(
+        var(--pf-global--spacer--md) + calc(var(--ak-c-button__progress--width) / 2)
+    );
+    --ak-c-button--m-in-progress--PaddingRight: var(--pf-global--spacer--md);
+    --ak-c-button--m-in-progress--PaddingLeft: calc(
+        var(--pf-global--spacer--md) + var(--ak-c-button__progress--width)
+    );
+    --ak-c-button--m-in-progress--m-plain--Color: var(--pf-global--primary-color--100);
+    --ak-c-button--m-in-progress--m-plain__progress--Left: 50%;
+    --ak-c-button--m-in-progress--m-plain__progress--TranslateX: -50%;
+    --ak-c-button__count--MarginLeft: var(--pf-global--spacer--sm);
+    --ak-c-button--disabled__c-badge--Color: var(--pf-global--Color--dark-100);
+    --ak-c-button--disabled__c-badge--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --ak-c-button--m-primary__c-badge--BorderColor: var(--pf-global--BorderColor--300);
+    --ak-c-button--m-primary__c-badge--BorderWidth: var(--pf-global--BorderWidth--sm);
+
+    --ak-c-button--m-narrow--PaddingTop: var(--pf-global--spacer--form-element);
+    --ak-c-button--m-narrow--PaddingRight: var(--pf-global--spacer--sm);
+    --ak-c-button--m-narrow--PaddingBottom: var(--pf-global--spacer--form-element);
+    --ak-c-button--m-narrow--PaddingLeft: var(--pf-global--spacer--sm);
+}
+
+.pf-theme-dark,
+html[theme="dark"],
+html[data-theme="dark"] {
+    --ak-c-button--disabled--Color: var(--pf-global--disabled-color--300);
+    --ak-c-button--m-primary--BackgroundColor: var(--pf-global--primary-color--300);
+    --ak-c-button--m-primary--Color: var(--pf-global--primary-color--400);
+    --ak-c-button--m-tertiary--after--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-button--m-tertiary--Color: var(--pf-global--palette--black-100);
+    --ak-c-button--m-tertiary--hover--after--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-button--m-tertiary--hover--Color: var(--pf-global--palette--black-100);
+    --ak-c-button--m-tertiary--focus--after--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-button--m-tertiary--focus--Color: var(--pf-global--palette--black-100);
+    --ak-c-button--m-tertiary--active--after--BorderColor: var(--pf-global--BorderColor--100);
+    --ak-c-button--m-tertiary--active--Color: var(--pf-global--palette--black-100);
+    --ak-c-button--m-warning--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-warning--hover--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-warning--focus--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-warning--active--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-warning--hover--BackgroundColor: var(--pf-global--warning-color--200);
+    --ak-c-button--m-warning--focus--BackgroundColor: var(--pf-global--warning-color--200);
+    --ak-c-button--m-warning--active--BackgroundColor: var(--pf-global--warning-color--200);
+    --ak-c-button--m-danger--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-danger--hover--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-danger--focus--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-danger--active--Color: var(--pf-global--palette--black-900);
+    --ak-c-button--m-link--disabled--Color: var(--pf-global--disabled-color--100);
+    --ak-c-button--m-control--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-button--m-control--hover--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-button--m-control--active--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-button--m-control--focus--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-button--m-control--m-expanded--BackgroundColor: var(--pf-global--BackgroundColor--400);
+    --ak-c-button--m-control--after--BorderTopColor: transparent;
+    --ak-c-button--m-control--after--BorderRightColor: transparent;
+    --ak-c-button--m-control--after--BorderBottomColor: var(--pf-global--BorderColor--400);
+    --ak-c-button--m-control--after--BorderLeftColor: transparent;
+    --ak-c-button--m-control--hover--after--BorderBottomColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-control--active--after--BorderBottomColor: var(
+        --pf-global--primary-color--100
+    );
+    --ak-c-button--m-control--focus--after--BorderBottomColor: var(--pf-global--primary-color--100);
+    --ak-c-button--m-control--m-expanded--after--BorderBottomColor: var(
+        --pf-global--primary-color--100
+    );
+    --ak-c-button--m-control--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    --ak-c-button--m-primary__c-badge--BorderColor: var(--pf-global--Color--100);
+}

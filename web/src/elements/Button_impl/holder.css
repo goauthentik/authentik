@@ -1,0 +1,60 @@
+/*
+ * TODO: These have been set aside because we're not quite sure what to do with them yet.
+ */
+
+.pf-m-primary .pf-v5-c-badge.pf-m-unread {
+    border: var(--pf-v5-c-button--m-primary__c-badge--BorderWidth) solid
+        var(--pf-v5-c-button--m-primary__c-badge--BorderColor);
+}
+
+:disabled .pf-v5-c-badge,
+.pf-m-disabled .pf-v5-c-badge,
+.pf-m-aria-disabled .pf-v5-c-badge {
+    --pf-v5-c-badge--m-unread--Color: var(--pf-v5-c-button--disabled__c-badge--Color);
+    --pf-v5-c-badge--m-unread--BackgroundColor: var(
+        --pf-v5-c-button--disabled__c-badge--BackgroundColor
+    );
+    --pf-v5-c-button--m-primary__c-badge--BorderWidth: 0;
+}
+
+.pf-m-aria-disabled {
+    --pf-v5-c-button--after--BorderWidth: 0;
+    --pf-v5-c-button--m-link--m-inline--hover--TextDecoration: none;
+
+    cursor: default;
+}
+
+.pf-m-progress {
+    --pf-v5-c-button--PaddingRight: var(--pf-v5-c-button--m-progress--PaddingRight);
+    --pf-v5-c-button--PaddingLeft: var(--pf-v5-c-button--m-progress--PaddingLeft);
+
+    transition: var(--pf-v5-c-button--m-progress--TransitionProperty)
+        var(--pf-v5-c-button--m-progress--TransitionDuration);
+}
+
+.pf-m-in-progress {
+    --pf-v5-c-button--m-link--m-inline--PaddingLeft: var(
+        --pf-v5-c-button--m-link--m-inline--m-in-progress--PaddingLeft
+    );
+}
+
+.pf-m-in-progress:not(.pf-m-plain) {
+    --pf-v5-c-button--PaddingRight: var(--pf-v5-c-button--m-in-progress--PaddingRight);
+    --pf-v5-c-button--PaddingLeft: var(--pf-v5-c-button--m-in-progress--PaddingLeft);
+}
+
+.pf-m-in-progress.pf-m-plain {
+    --pf-v5-c-button--m-plain--Color: var(--pf-v5-c-button--m-in-progress--m-plain--Color);
+    --pf-v5-c-button__progress--Left: var(--pf-v5-c-button--m-in-progress--m-plain__progress--Left);
+    --pf-v5-c-button__progress--TranslateX: var(
+        --pf-v5-c-button--m-in-progress--m-plain__progress--TranslateX
+    );
+}
+
+.pf-m-in-progress.pf-m-plain > :not(.pf-v5-c-button__progress) {
+    opacity: 0;
+}
+
+.pf-c-v5-button__progress .pf-v5-c-spinner {
+    --pf-v5-c-spinner--Color: currentcolor;
+}
