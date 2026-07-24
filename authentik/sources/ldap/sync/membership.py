@@ -129,7 +129,7 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
                 group_filter = f"({self._source.group_membership_field}={escaped_dn})"
-                group_members = self.search_paginator(
+                group_members = self._source.connection().extend.standard.paged_search(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,
                     search_scope=SUBTREE,
