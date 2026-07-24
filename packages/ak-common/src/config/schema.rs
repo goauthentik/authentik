@@ -3,8 +3,9 @@ use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize};
 use ipnet::IpNet;
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
-pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 4] = [
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 5] = [
     "listen.http",
+    "listen.https",
     "listen.metrics",
     "listen.trusted_proxy_cidrs",
     "log.http_headers",
@@ -147,6 +148,7 @@ pub struct Config {
 
     // Outpost specific fields
     pub host: Option<String>,
+    pub host_browser: Option<String>,
     pub token: Option<String>,
     #[serde(default, deserialize_with = "deserialize_optional_str_or_bool")]
     pub insecure: Option<bool>,
@@ -177,6 +179,7 @@ pub struct PostgreSQLConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListenConfig {
     pub http: Vec<SocketAddr>,
+    pub https: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
     pub debug_tokio: Option<SocketAddr>,
     pub trusted_proxy_cidrs: Vec<IpNet>,

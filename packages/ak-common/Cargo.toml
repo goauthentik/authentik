@@ -22,11 +22,13 @@ axum-server.workspace = true
 config-rs.workspace = true
 console-subscriber.workspace = true
 eyre.workspace = true
+futures.workspace = true
 glob.workspace = true
 ipnet.workspace = true
 json-subscriber.workspace = true
 notify.workspace = true
 pin-project-lite.workspace = true
+rcgen.workspace = true
 reqwest.workspace = true
 reqwest-middleware.workspace = true
 rustls.workspace = true
@@ -43,6 +45,7 @@ tracing-error.workspace = true
 tracing-subscriber.workspace = true
 tracing.workspace = true
 url.workspace = true
+uuid.workspace = true
 
 [dev-dependencies]
 nix.workspace = true
