@@ -115,7 +115,7 @@ class TestOffboardingSweeper(APITestCase):
         self.user = create_test_user()
 
     def test_due_offboarding_dispatched_under_schedule(self):
-        """The sweeper dispatches each due offboarding (and its schedule resolves)."""
+        """The sweeper dispatches each due offboarding."""
         UserOffboarding.objects.create(
             user=self.user,
             scheduled_at=now() - timedelta(minutes=1),
@@ -124,7 +124,8 @@ class TestOffboardingSweeper(APITestCase):
         with patch(
             "authentik.enterprise.lifecycle.offboarding.tasks.execute_offboarding.send_with_options"
         ) as send:
-            execute_due_offboardings()
+            # Dispatch through the worker so CurrentTask (and its rel_obj) is populated.
+            execute_due_offboardings.send()
         send.assert_called_once()
 
     def test_due_offboarding_executed(self):
@@ -223,7 +224,7 @@ class TestOffboardingSweeper(APITestCase):
             scheduled_at=now() + timedelta(days=1),
             action=OffboardingAction.DEACTIVATE,
         )
-        execute_due_offboardings()
+        execute_due_offboardings.send()
         offboarding.refresh_from_db()
         self.user.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.PENDING)
