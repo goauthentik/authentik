@@ -1,0 +1,24 @@
+version: 1
+metadata:
+  name: Develop
+context:
+  step1: !Context step2
+  step2: false
+entries:
+  group1: !Enumerate
+    - [group-from-dict-and-enumerate1, group-from-dict-and-enumerate2]
+    - SEQ
+    - model: authentik_core.group
+      identifiers:
+        name: !Value 0
+      attrs:
+        is_superuser: !Context step1
+  group2:
+    - !Enumerate
+      - model: authentik_core.group
+        identifiers:
+          name: group-from-dict-then-list-and-enumerate
+        attrs:
+          is_superuser: !Context step1
+      - MAP
+      - [!Index 0, !Value 0]
