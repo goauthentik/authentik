@@ -106,13 +106,15 @@ fn main() -> Result<()> {
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    server::start(server::Cli::default(), &mut tasks).await?;
                     let workers = worker::start(worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers));
+                    let server = server::start(server::Cli::default(), &mut tasks).await?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    server::start(args, &mut tasks).await?;
+                    let server = server::start(args, &mut tasks).await?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
