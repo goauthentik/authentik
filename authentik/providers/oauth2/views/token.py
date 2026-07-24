@@ -17,11 +17,14 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
     GRANT_TYPE_TOKEN_EXCHANGE,
     JWT_TYPE_DPOP_ID_TOKEN,
+    JWT_TYPE_ID_JAG,
     SCOPE_OFFLINE_ACCESS,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_ID_JAG,
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
+from authentik.lib.generators import generate_id
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
@@ -336,6 +339,8 @@ class TokenView(View):
 
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        if self.params.requested_token_type == TOKEN_TYPE_URI_ID_JAG:
+            return self.create_id_jag_response()
         # Issued on the `audience` target, else on the client's own provider
         provider = self.params.token_provider
         now = timezone.now()
@@ -365,4 +370,36 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(provider.access_token_validity).total_seconds()
             ),
+        }
+
+    def create_id_jag_response(self) -> dict[str, Any]:
+        """Mint an ID-JAG (Identity Assertion JWT Authorization Grant): a short-lived,
+        audience-scoped assertion a *foreign* resource server's authorization server
+        accepts via RFC 7523 JWT-bearer, letting a client obtain an authentik-mediated
+        cross-domain delegation without registering directly with that foreign AS.
+        See https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-assertion-authz-grant
+        """
+        now = timezone.now()
+        validity = timedelta_from_string(self.provider.access_token_validity)
+        id_jag = IDToken()
+        id_jag.iss = self.provider.get_issuer(self.request)
+        id_jag.sub = id_jag._resolve_sub(self.provider, self.params.user)
+        id_jag.aud = self.params.id_jag_audience
+        id_jag.jti = generate_id()
+        id_jag.iat = int(now.timestamp())
+        id_jag.exp = int((now + validity).timestamp())
+        id_jag.claims["client_id"] = self.provider.client_id
+        if self.params.scope:
+            id_jag.claims["scope"] = " ".join(self.params.scope)
+        # RFC 8693 §4.1 delegation, same mechanism as create_token_exchange_response:
+        # `sub` above stays the human subject; `act` records the Actor actually
+        # exercising the assertion (always present, see check_id_jag_actor).
+        id_jag.act = {"sub": id_jag._resolve_sub(self.provider, self.params.actor)}
+
+        return {
+            "access_token": id_jag.to_jwt(self.provider, jwt_type=JWT_TYPE_ID_JAG),
+            "issued_token_type": TOKEN_TYPE_URI_ID_JAG,
+            # Per the spec, an ID-JAG is not itself a bearer access token.
+            "token_type": "N_A",
+            "expires_in": int(validity.total_seconds()),
         }

@@ -355,6 +355,25 @@ class OAuth2Provider(WebfingerProvider, Provider):
         "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
     )
 
+    # Explicit allow-list of external `audience` values this provider may mint an
+    # ID-JAG (RFC 8693 requested_token_type=id-jag) for. Required and checked whenever
+    # an id-jag is requested -- minting a signed assertion for an arbitrary
+    # client-supplied audience would be a confused-deputy/SSRF-shaped risk, so unlike
+    # ordinary token exchange (which rejects audience/resource outright), id-jag
+    # requires the target to be explicitly allow-listed by an admin rather than merely
+    # accepted.
+    id_jag_audiences = ArrayField(
+        models.TextField(),
+        default=list,
+        blank=True,
+        verbose_name=_("Allowed ID-JAG audiences"),
+        help_text=_(
+            "External resource server issuer URLs this provider may mint an ID-JAG "
+            "(RFC 8693 id-jag token exchange) for. Empty means ID-JAG is disabled "
+            "for this provider."
+        ),
+    )
+
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
         """Get either the configured certificate or the client secret"""

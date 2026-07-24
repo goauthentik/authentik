@@ -7,6 +7,8 @@ from authentik.common.oauth.constants import (
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
     TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+    TOKEN_TYPE_URI_ID_JAG,
+    TOKEN_TYPE_URI_ID_TOKEN,
 )
 from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
@@ -19,6 +21,23 @@ from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_ME
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
 
+    @property
+    def is_id_jag_request(self) -> bool:
+        return self.requested_token_type == TOKEN_TYPE_URI_ID_JAG
+
+    def resolve_id_jag_audience(self, request: HttpRequest) -> None:
+        """Requesting an ID-JAG is *entirely about* targeting an external audience, so
+        exactly one `audience` is required, and it must be explicitly allow-listed on the
+        provider rather than resolved to another authentik provider."""
+        audiences = request.POST.getlist("audience")
+        if len(audiences) != 1:
+            self.logger.warning("ID-JAG request requires exactly one audience")
+            raise TokenExchangeError("invalid_target").with_cause("audience_required")
+        if audiences[0] not in self.provider.id_jag_audiences:
+            self.logger.warning("ID-JAG audience not allow-listed", audience=audiences[0])
+            raise TokenExchangeError("invalid_target").with_cause("audience_not_allowed")
+        self.id_jag_audience = audiences[0]
+
     def resolve_audience(self, request: HttpRequest) -> None:
         """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
         `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
@@ -27,6 +46,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         if request.POST.getlist("resource"):
             self.logger.warning("Resource indicators are not supported")
             raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+        if self.is_id_jag_request:
+            return self.resolve_id_jag_audience(request)
         audiences = request.POST.getlist("audience")
         if not audiences:
             return
@@ -63,12 +84,16 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         if not subject_token or not subject_token_type:
             self.logger.warning("Missing subject_token or subject_token_type")
             raise TokenExchangeError("invalid_request").with_cause("missing_subject_token")
-        if subject_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        # Spec's subject_token is normally an ID Token, accepted only when requesting an id-jag
+        allowed_subject_token_types = TOKEN_EXCHANGE_TOKEN_TYPES | (
+            {TOKEN_TYPE_URI_ID_TOKEN} if self.is_id_jag_request else set()
+        )
+        if subject_token_type not in allowed_subject_token_types:
             self.logger.warning("Unsupported subject token type", token_type=subject_token_type)
             raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
         if self.requested_token_type is None:
             self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
-        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES | {TOKEN_TYPE_URI_ID_JAG}:
             self.logger.warning(
                 "Unsupported requested token type", token_type=self.requested_token_type
             )
@@ -104,6 +129,9 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
 
         self.post_init_token_exchange_actor(request)
+        if self.is_id_jag_request and not self.actor:
+            self.logger.warning("ID-JAG requires an actor_token")
+            raise TokenExchangeError("invalid_request").with_cause("actor_required")
 
         method_args = {
             "jwt": federated_party.parsed_token,
@@ -113,6 +141,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         }
         if self.audience_provider:
             method_args["audience"] = self.audience_provider.client_id
+        if self.id_jag_audience:
+            method_args["audience"] = self.id_jag_audience
         # A delegated exchange is performed by the actor, so attribute the event to it; the
         # audit log then records it as an agent acting on behalf of the verified subject,
         # matching how direct API calls by an actor are attributed.

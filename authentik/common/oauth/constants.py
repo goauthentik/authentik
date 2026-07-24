@@ -26,6 +26,18 @@ TOKEN_EXCHANGE_TOKEN_TYPES = {TOKEN_TYPE_URI_ACCESS_TOKEN, TOKEN_TYPE_URI_JWT}
 # built-in Token model on top of the JWT types accepted for subject_token
 ACTOR_TOKEN_TYPES = TOKEN_EXCHANGE_TOKEN_TYPES | {TOKEN_TYPE_URI_AUTHENTIK_TOKEN}
 
+# ID-JAG (Identity Assertion JWT Authorization Grant), draft-ietf-oauth-identity-
+# assertion-authz-grant: a token-exchange request with this requested_token_type mints
+# a short-lived, audience-scoped assertion a *foreign* resource server's authorization
+# server accepts via RFC 7523 JWT-bearer -- IdP-mediated cross-domain delegation.
+# https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-assertion-authz-grant
+TOKEN_TYPE_URI_ID_JAG = "urn:ietf:params:oauth:token-type:id-jag"  # nosec
+# JWT header `typ` for an issued ID-JAG
+JWT_TYPE_ID_JAG = "oauth-id-jag+jwt"
+# Spec's subject_token is normally an ID Token, not an access token -- accepted
+# alongside TOKEN_EXCHANGE_TOKEN_TYPES specifically when requesting an id-jag.
+TOKEN_TYPE_URI_ID_TOKEN = "urn:ietf:params:oauth:token-type:id_token"  # nosec
+
 QS_LOGIN_HINT = "login_hint"
 
 CLIENT_ASSERTION = "client_assertion"
