@@ -97,16 +97,70 @@ export interface OutpostHealth {
  */
 export function instanceOfOutpostHealth(value: object): value is OutpostHealth {
     if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("lastSeen" in value) || value["lastSeen"] === undefined) return false;
+    if (
+        (!("lastSeen" in (value as Record<string, any>)) &&
+            !("last_seen" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastSeen"] === undefined &&
+            (value as Record<string, any>)["last_seen"] === undefined)
+    )
+        return false;
     if (!("version" in value) || value["version"] === undefined) return false;
-    if (!("golangVersion" in value) || value["golangVersion"] === undefined) return false;
-    if (!("opensslEnabled" in value) || value["opensslEnabled"] === undefined) return false;
-    if (!("opensslVersion" in value) || value["opensslVersion"] === undefined) return false;
-    if (!("fipsEnabled" in value) || value["fipsEnabled"] === undefined) return false;
-    if (!("versionShould" in value) || value["versionShould"] === undefined) return false;
-    if (!("versionOutdated" in value) || value["versionOutdated"] === undefined) return false;
-    if (!("buildHash" in value) || value["buildHash"] === undefined) return false;
-    if (!("buildHashShould" in value) || value["buildHashShould"] === undefined) return false;
+    if (
+        (!("golangVersion" in (value as Record<string, any>)) &&
+            !("golang_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["golangVersion"] === undefined &&
+            (value as Record<string, any>)["golang_version"] === undefined)
+    )
+        return false;
+    if (
+        (!("opensslEnabled" in (value as Record<string, any>)) &&
+            !("openssl_enabled" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["opensslEnabled"] === undefined &&
+            (value as Record<string, any>)["openssl_enabled"] === undefined)
+    )
+        return false;
+    if (
+        (!("opensslVersion" in (value as Record<string, any>)) &&
+            !("openssl_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["opensslVersion"] === undefined &&
+            (value as Record<string, any>)["openssl_version"] === undefined)
+    )
+        return false;
+    if (
+        (!("fipsEnabled" in (value as Record<string, any>)) &&
+            !("fips_enabled" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fipsEnabled"] === undefined &&
+            (value as Record<string, any>)["fips_enabled"] === undefined)
+    )
+        return false;
+    if (
+        (!("versionShould" in (value as Record<string, any>)) &&
+            !("version_should" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionShould"] === undefined &&
+            (value as Record<string, any>)["version_should"] === undefined)
+    )
+        return false;
+    if (
+        (!("versionOutdated" in (value as Record<string, any>)) &&
+            !("version_outdated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionOutdated"] === undefined &&
+            (value as Record<string, any>)["version_outdated"] === undefined)
+    )
+        return false;
+    if (
+        (!("buildHash" in (value as Record<string, any>)) &&
+            !("build_hash" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["buildHash"] === undefined &&
+            (value as Record<string, any>)["build_hash"] === undefined)
+    )
+        return false;
+    if (
+        (!("buildHashShould" in (value as Record<string, any>)) &&
+            !("build_hash_should" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["buildHashShould"] === undefined &&
+            (value as Record<string, any>)["build_hash_should"] === undefined)
+    )
+        return false;
     if (!("hostname" in value) || value["hostname"] === undefined) return false;
     return true;
 }
@@ -143,16 +197,16 @@ export function OutpostHealthToJSONTyped(
     value?: Omit<
         OutpostHealth,
         | "uid"
-        | "last_seen"
+        | "lastSeen"
         | "version"
-        | "golang_version"
-        | "openssl_enabled"
-        | "openssl_version"
-        | "fips_enabled"
-        | "version_should"
-        | "version_outdated"
-        | "build_hash"
-        | "build_hash_should"
+        | "golangVersion"
+        | "opensslEnabled"
+        | "opensslVersion"
+        | "fipsEnabled"
+        | "versionShould"
+        | "versionOutdated"
+        | "buildHash"
+        | "buildHashShould"
         | "hostname"
     > | null,
     ignoreDiscriminator: boolean = false,

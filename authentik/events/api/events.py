@@ -31,6 +31,7 @@ from authentik.api.search.fields import ChoiceSearchField, JSONSearchField
 from authentik.api.validation import validate
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -124,7 +125,15 @@ class EventsFilter(django_filters.FilterSet):
     )
 
     def filter_username(self, queryset, name, value):
-        return queryset.filter(Q(user__username=value) | Q(context__username=value))
+        query = Q(user__username=value) | Q(context__username=value)
+        user_pk = User.objects.filter(username=value).values_list("pk", flat=True).first()
+        if user_pk is not None:
+            query |= Q(
+                context__model__app=User._meta.app_label,
+                context__model__model_name=User._meta.model_name,
+                context__model__pk=user_pk,
+            )
+        return queryset.filter(query)
 
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,

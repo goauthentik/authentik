@@ -60,7 +60,13 @@ export interface PlexAuthenticationChallenge {
 export function instanceOfPlexAuthenticationChallenge(
     value: object,
 ): value is PlexAuthenticationChallenge {
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     return true;
 }

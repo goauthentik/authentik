@@ -77,7 +77,12 @@ export function PatchedNotificationRuleRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         transports: json["transports"] == null ? undefined : json["transports"],
         severity: json["severity"] == null ? undefined : SeverityEnumFromJSON(json["severity"]),
-        destinationGroup: json["destination_group"] == null ? undefined : json["destination_group"],
+        destinationGroup:
+            json["destination_group"] === undefined
+                ? undefined
+                : json["destination_group"] === null
+                  ? null
+                  : json["destination_group"],
         destinationEventUser:
             json["destination_event_user"] == null ? undefined : json["destination_event_user"],
     };

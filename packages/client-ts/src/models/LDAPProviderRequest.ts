@@ -106,8 +106,20 @@ export interface LDAPProviderRequest {
  */
 export function instanceOfLDAPProviderRequest(value: object): value is LDAPProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -125,12 +137,21 @@ export function LDAPProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
         uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
         gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],

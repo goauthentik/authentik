@@ -56,7 +56,12 @@ export function EndpointAgentChallengeResponseRequestFromJSONTyped(
     }
     return {
         component: json["component"] == null ? undefined : json["component"],
-        response: json["response"] == null ? undefined : json["response"],
+        response:
+            json["response"] === undefined
+                ? undefined
+                : json["response"] === null
+                  ? null
+                  : json["response"],
     };
 }
 

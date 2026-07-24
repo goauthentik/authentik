@@ -57,7 +57,13 @@ export function instanceOfRoleModelPermission(value: object): value is RoleModel
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("codename" in value) || value["codename"] === undefined) return false;
     if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (
+        (!("appLabel" in (value as Record<string, any>)) &&
+            !("app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabel"] === undefined &&
+            (value as Record<string, any>)["app_label"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
@@ -87,7 +93,7 @@ export function RoleModelPermissionToJSON(json: any): RoleModelPermission {
 }
 
 export function RoleModelPermissionToJSONTyped(
-    value?: Omit<RoleModelPermission, "id" | "codename" | "model" | "app_label" | "name"> | null,
+    value?: Omit<RoleModelPermission, "id" | "codename" | "model" | "appLabel" | "name"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

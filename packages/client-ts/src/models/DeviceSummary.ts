@@ -42,9 +42,27 @@ export interface DeviceSummary {
  * Check if a given object implements the DeviceSummary interface.
  */
 export function instanceOfDeviceSummary(value: object): value is DeviceSummary {
-    if (!("totalCount" in value) || value["totalCount"] === undefined) return false;
-    if (!("unreachableCount" in value) || value["unreachableCount"] === undefined) return false;
-    if (!("outdatedAgentCount" in value) || value["outdatedAgentCount"] === undefined) return false;
+    if (
+        (!("totalCount" in (value as Record<string, any>)) &&
+            !("total_count" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["totalCount"] === undefined &&
+            (value as Record<string, any>)["total_count"] === undefined)
+    )
+        return false;
+    if (
+        (!("unreachableCount" in (value as Record<string, any>)) &&
+            !("unreachable_count" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["unreachableCount"] === undefined &&
+            (value as Record<string, any>)["unreachable_count"] === undefined)
+    )
+        return false;
+    if (
+        (!("outdatedAgentCount" in (value as Record<string, any>)) &&
+            !("outdated_agent_count" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["outdatedAgentCount"] === undefined &&
+            (value as Record<string, any>)["outdated_agent_count"] === undefined)
+    )
+        return false;
     return true;
 }
 

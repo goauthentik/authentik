@@ -58,8 +58,19 @@ export interface TelegramLoginChallenge {
  * Check if a given object implements the TelegramLoginChallenge interface.
  */
 export function instanceOfTelegramLoginChallenge(value: object): value is TelegramLoginChallenge {
-    if (!("botUsername" in value) || value["botUsername"] === undefined) return false;
-    if (!("requestMessageAccess" in value) || value["requestMessageAccess"] === undefined)
+    if (
+        (!("botUsername" in (value as Record<string, any>)) &&
+            !("bot_username" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["botUsername"] === undefined &&
+            (value as Record<string, any>)["bot_username"] === undefined)
+    )
+        return false;
+    if (
+        (!("requestMessageAccess" in (value as Record<string, any>)) &&
+            !("request_message_access" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["requestMessageAccess"] === undefined &&
+            (value as Record<string, any>)["request_message_access"] === undefined)
+    )
         return false;
     return true;
 }

@@ -95,10 +95,28 @@ export interface BlueprintInstance {
 export function instanceOfBlueprintInstance(value: object): value is BlueprintInstance {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("lastApplied" in value) || value["lastApplied"] === undefined) return false;
-    if (!("lastAppliedHash" in value) || value["lastAppliedHash"] === undefined) return false;
+    if (
+        (!("lastApplied" in (value as Record<string, any>)) &&
+            !("last_applied" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastApplied"] === undefined &&
+            (value as Record<string, any>)["last_applied"] === undefined)
+    )
+        return false;
+    if (
+        (!("lastAppliedHash" in (value as Record<string, any>)) &&
+            !("last_applied_hash" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastAppliedHash"] === undefined &&
+            (value as Record<string, any>)["last_applied_hash"] === undefined)
+    )
+        return false;
     if (!("status" in value) || value["status"] === undefined) return false;
-    if (!("managedModels" in value) || value["managedModels"] === undefined) return false;
+    if (
+        (!("managedModels" in (value as Record<string, any>)) &&
+            !("managed_models" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["managedModels"] === undefined &&
+            (value as Record<string, any>)["managed_models"] === undefined)
+    )
+        return false;
     if (!("metadata" in value) || value["metadata"] === undefined) return false;
     return true;
 }
@@ -136,7 +154,7 @@ export function BlueprintInstanceToJSON(json: any): BlueprintInstance {
 export function BlueprintInstanceToJSONTyped(
     value?: Omit<
         BlueprintInstance,
-        "pk" | "last_applied" | "last_applied_hash" | "status" | "managed_models" | "metadata"
+        "pk" | "lastApplied" | "lastAppliedHash" | "status" | "managedModels" | "metadata"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

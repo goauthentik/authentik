@@ -197,7 +197,11 @@ export function PatchedOAuth2ProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
@@ -222,8 +226,18 @@ export function PatchedOAuth2ProviderRequestFromJSONTyped(
             json["include_claims_in_id_token"] == null
                 ? undefined
                 : json["include_claims_in_id_token"],
-        signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
-        encryptionKey: json["encryption_key"] == null ? undefined : json["encryption_key"],
+        signingKey:
+            json["signing_key"] === undefined
+                ? undefined
+                : json["signing_key"] === null
+                  ? null
+                  : json["signing_key"],
+        encryptionKey:
+            json["encryption_key"] === undefined
+                ? undefined
+                : json["encryption_key"] === null
+                  ? null
+                  : json["encryption_key"],
         redirectUris:
             json["redirect_uris"] == null
                 ? undefined

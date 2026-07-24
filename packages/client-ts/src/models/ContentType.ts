@@ -42,6 +42,12 @@ export interface ContentType {
      * @memberof ContentType
      */
     readonly verboseNamePlural: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ContentType
+     */
+    readonly fullyQualifiedModel: string;
 }
 
 /**
@@ -49,9 +55,28 @@ export interface ContentType {
  */
 export function instanceOfContentType(value: object): value is ContentType {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (
+        (!("appLabel" in (value as Record<string, any>)) &&
+            !("app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabel"] === undefined &&
+            (value as Record<string, any>)["app_label"] === undefined)
+    )
+        return false;
     if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("fullyQualifiedModel" in (value as Record<string, any>)) &&
+            !("fully_qualified_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fullyQualifiedModel"] === undefined &&
+            (value as Record<string, any>)["fully_qualified_model"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -68,6 +93,7 @@ export function ContentTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean
         appLabel: json["app_label"],
         model: json["model"],
         verboseNamePlural: json["verbose_name_plural"],
+        fullyQualifiedModel: json["fully_qualified_model"],
     };
 }
 
@@ -76,7 +102,10 @@ export function ContentTypeToJSON(json: any): ContentType {
 }
 
 export function ContentTypeToJSONTyped(
-    value?: Omit<ContentType, "id" | "app_label" | "model" | "verbose_name_plural"> | null,
+    value?: Omit<
+        ContentType,
+        "id" | "appLabel" | "model" | "verboseNamePlural" | "fullyQualifiedModel"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

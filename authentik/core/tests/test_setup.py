@@ -12,6 +12,7 @@ from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.root.signals import post_startup, pre_startup
 from authentik.tenants.flags import patch_flag
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestSetup(FlowTestCase):
@@ -99,6 +100,7 @@ class TestSetup(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
             {
                 "email": f"{generate_id()}@t.goauthentik.io",
+                "base_url": "https://authentik.company/",
                 "password": pw,
                 "password_repeat": pw,
                 "component": "ak-stage-prompt",
@@ -124,6 +126,42 @@ class TestSetup(FlowTestCase):
         self.assertTrue(Setup.get())
         user = User.objects.get(username="akadmin")
         self.assertTrue(user.check_password(pw))
+
+        self.assertEqual(get_current_tenant().base_url, "https://authentik.company")
+
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flow_invalid_base_url(self):
+        """An invalid base URL entered during setup is rejected and never persisted"""
+        Setup.set(False)
+
+        res = self.client.get(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+
+        res = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+        )
+        self.assertEqual(res.status_code, HTTPStatus.OK)
+        self.assertStageResponse(res, component="ak-stage-prompt")
+
+        pw = generate_id()
+        res = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": "initial-setup"}),
+            {
+                "email": f"{generate_id()}@t.goauthentik.io",
+                "base_url": "not-a-url",
+                "password": pw,
+                "password_repeat": pw,
+                "component": "ak-stage-prompt",
+            },
+        )
+        # The prompt stage is re-shown with a validation error instead of advancing.
+        raw = self.assertStageResponse(res, component="ak-stage-prompt")
+        self.assertIn("Enter a valid URL", str(raw["response_errors"]))
+
+        # Setup did not complete and no base_url was written to the tenant.
+        self.assertFalse(Setup.get())
+        self.assertEqual(get_current_tenant().base_url, "")
 
     @patch_flag(Setup, False)
     @apply_blueprint("default/flow-oobe.yaml")

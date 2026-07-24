@@ -69,7 +69,7 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: "version-${{ needs.check-inputs.outputs.major-version }}"
           token: "${{ steps.app-token.outputs.token }}"
@@ -143,10 +143,10 @@ jobs:
         goos: [linux, darwin]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
-      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: "go.mod"
       - uses: ./.github/actions/setup-node
@@ -186,7 +186,7 @@ jobs:
         run: |
           skopeo copy "oci-archive:container/server-amd64.oci.tar" "docker-daemon:authentik.invalid/goauthentik/server:${{ needs.check-inputs.outputs.version }}"
           rm -rf container/
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
       - name: Run test in Docker
@@ -215,7 +215,7 @@ jobs:
         run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
           token: "${{ steps.app-token.outputs.token }}"
@@ -240,7 +240,7 @@ jobs:
         with:
           pattern: binaries-build-*
           merge-multiple: true
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
         with:
           subject-path: |
             metadata.json
@@ -252,7 +252,7 @@ jobs:
             binaries/authentik-outpost-*
           github-token: "${{ steps.app-token.outputs.token }}"
       - name: Create Release
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ needs.check-inputs.outputs.version }}"

@@ -64,9 +64,21 @@ export interface SCIMProviderGroup {
  */
 export function instanceOfSCIMProviderGroup(value: object): value is SCIMProviderGroup {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (
+        (!("scimId" in (value as Record<string, any>)) &&
+            !("scim_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scimId"] === undefined &&
+            (value as Record<string, any>)["scim_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -98,7 +110,7 @@ export function SCIMProviderGroupToJSON(json: any): SCIMProviderGroup {
 }
 
 export function SCIMProviderGroupToJSONTyped(
-    value?: Omit<SCIMProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    value?: Omit<SCIMProviderGroup, "id" | "groupObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

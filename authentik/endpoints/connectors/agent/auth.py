@@ -3,7 +3,6 @@ from typing import Any
 from django.db.models import Model, Q
 from django.http import HttpRequest
 from django.utils.timezone import now
-from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from jwt import PyJWTError, decode, encode
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import PermissionDenied
@@ -146,17 +145,6 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
             return None
-
-
-class DeviceFederationAuthSchema(OpenApiAuthenticationExtension):
-    """Auth schema"""
-
-    target_class = DeviceAuthFedAuthentication
-    name = "device_federation"
-
-    def get_security_definition(self, auto_schema):
-        """Auth schema"""
-        return {"type": "http", "scheme": "bearer"}
 
 
 def check_device_policies(device: Device, user: User, request: HttpRequest):

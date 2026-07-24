@@ -142,12 +142,41 @@ export function instanceOfApplication(value: object): value is Application {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
-    if (!("backchannelProvidersObj" in value) || value["backchannelProvidersObj"] === undefined)
+    if (
+        (!("providerObj" in (value as Record<string, any>)) &&
+            !("provider_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerObj"] === undefined &&
+            (value as Record<string, any>)["provider_obj"] === undefined)
+    )
         return false;
-    if (!("launchUrl" in value) || value["launchUrl"] === undefined) return false;
-    if (!("metaIconUrl" in value) || value["metaIconUrl"] === undefined) return false;
-    if (!("metaIconThemedUrls" in value) || value["metaIconThemedUrls"] === undefined) return false;
+    if (
+        (!("backchannelProvidersObj" in (value as Record<string, any>)) &&
+            !("backchannel_providers_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["backchannelProvidersObj"] === undefined &&
+            (value as Record<string, any>)["backchannel_providers_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("launchUrl" in (value as Record<string, any>)) &&
+            !("launch_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["launchUrl"] === undefined &&
+            (value as Record<string, any>)["launch_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaIconUrl" in (value as Record<string, any>)) &&
+            !("meta_icon_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaIconUrl"] === undefined &&
+            (value as Record<string, any>)["meta_icon_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaIconThemedUrls" in (value as Record<string, any>)) &&
+            !("meta_icon_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaIconThemedUrls"] === undefined &&
+            (value as Record<string, any>)["meta_icon_themed_urls"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -163,7 +192,12 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
         pk: json["pk"],
         name: json["name"],
         slug: json["slug"],
-        provider: json["provider"] == null ? undefined : json["provider"],
+        provider:
+            json["provider"] === undefined
+                ? undefined
+                : json["provider"] === null
+                  ? null
+                  : json["provider"],
         providerObj: ProviderFromJSON(json["provider_obj"]),
         backchannelProviders:
             json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
@@ -195,11 +229,11 @@ export function ApplicationToJSONTyped(
     value?: Omit<
         Application,
         | "pk"
-        | "provider_obj"
-        | "backchannel_providers_obj"
-        | "launch_url"
-        | "meta_icon_url"
-        | "meta_icon_themed_urls"
+        | "providerObj"
+        | "backchannelProvidersObj"
+        | "launchUrl"
+        | "metaIconUrl"
+        | "metaIconThemedUrls"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

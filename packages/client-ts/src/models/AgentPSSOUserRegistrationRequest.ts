@@ -44,10 +44,27 @@ export interface AgentPSSOUserRegistrationRequest {
 export function instanceOfAgentPSSOUserRegistrationRequest(
     value: object,
 ): value is AgentPSSOUserRegistrationRequest {
-    if (!("userAuth" in value) || value["userAuth"] === undefined) return false;
-    if (!("userSecureEnclaveKey" in value) || value["userSecureEnclaveKey"] === undefined)
+    if (
+        (!("userAuth" in (value as Record<string, any>)) &&
+            !("user_auth" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userAuth"] === undefined &&
+            (value as Record<string, any>)["user_auth"] === undefined)
+    )
         return false;
-    if (!("enclaveKeyId" in value) || value["enclaveKeyId"] === undefined) return false;
+    if (
+        (!("userSecureEnclaveKey" in (value as Record<string, any>)) &&
+            !("user_secure_enclave_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userSecureEnclaveKey"] === undefined &&
+            (value as Record<string, any>)["user_secure_enclave_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("enclaveKeyId" in (value as Record<string, any>)) &&
+            !("enclave_key_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["enclaveKeyId"] === undefined &&
+            (value as Record<string, any>)["enclave_key_id"] === undefined)
+    )
+        return false;
     return true;
 }
 

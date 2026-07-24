@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from django.urls import reverse
 from rest_framework.fields import CharField, SerializerMethodField, URLField
 
+from authentik.common.saml.constants import DEFAULT_ISSUER
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -18,6 +19,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
     reply_url = URLField(source="acs_url")
     wtrealm = CharField(source="audience")
     url_wsfed = SerializerMethodField()
+    url_issuer = SerializerMethodField()
 
     def get_url_download_metadata(self, instance: WSFederationProvider) -> str:
         """Get metadata download URL"""
@@ -47,7 +49,32 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
-        return request.build_absolute_uri(reverse("authentik_providers_ws_federation:wsfed"))
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:wsfed-app-specific",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return ""
+
+    def get_url_issuer(self, instance: WSFederationProvider) -> str:
+        """Get Issuer/EntityID URL"""
+        if instance.issuer_override:
+            return instance.issuer_override
+        if "request" not in self._context:
+            return DEFAULT_ISSUER
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return DEFAULT_ISSUER
 
     class Meta(SAMLProviderSerializer.Meta):
         model = WSFederationProvider
@@ -60,6 +87,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "property_mappings",
             "name_id_mapping",
             "authn_context_class_ref_mapping",
+            "saml_version",
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",
@@ -69,6 +97,7 @@ class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerial
             "default_name_id_policy",
             "url_download_metadata",
             "url_wsfed",
+            "url_issuer",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 

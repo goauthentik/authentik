@@ -298,14 +298,56 @@ export function instanceOfLDAPSource(value: object): value is LDAPSource {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("managed" in value) || value["managed"] === undefined) return false;
-    if (!("iconUrl" in value) || value["iconUrl"] === undefined) return false;
-    if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
-    if (!("serverUri" in value) || value["serverUri"] === undefined) return false;
-    if (!("baseDn" in value) || value["baseDn"] === undefined) return false;
+    if (
+        (!("iconUrl" in (value as Record<string, any>)) &&
+            !("icon_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["iconUrl"] === undefined &&
+            (value as Record<string, any>)["icon_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("iconThemedUrls" in (value as Record<string, any>)) &&
+            !("icon_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["iconThemedUrls"] === undefined &&
+            (value as Record<string, any>)["icon_themed_urls"] === undefined)
+    )
+        return false;
+    if (
+        (!("serverUri" in (value as Record<string, any>)) &&
+            !("server_uri" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["serverUri"] === undefined &&
+            (value as Record<string, any>)["server_uri"] === undefined)
+    )
+        return false;
+    if (
+        (!("baseDn" in (value as Record<string, any>)) &&
+            !("base_dn" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["baseDn"] === undefined &&
+            (value as Record<string, any>)["base_dn"] === undefined)
+    )
+        return false;
     if (!("connectivity" in value) || value["connectivity"] === undefined) return false;
     return true;
 }
@@ -325,8 +367,17 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
@@ -350,9 +401,18 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         iconUrl: json["icon_url"],
         iconThemedUrls: ThemedUrlsFromJSON(json["icon_themed_urls"]),
         serverUri: json["server_uri"],
-        peerCertificate: json["peer_certificate"] == null ? undefined : json["peer_certificate"],
+        peerCertificate:
+            json["peer_certificate"] === undefined
+                ? undefined
+                : json["peer_certificate"] === null
+                  ? null
+                  : json["peer_certificate"],
         clientCertificate:
-            json["client_certificate"] == null ? undefined : json["client_certificate"],
+            json["client_certificate"] === undefined
+                ? undefined
+                : json["client_certificate"] === null
+                  ? null
+                  : json["client_certificate"],
         bindCn: json["bind_cn"] == null ? undefined : json["bind_cn"],
         startTls: json["start_tls"] == null ? undefined : json["start_tls"],
         sni: json["sni"] == null ? undefined : json["sni"],
@@ -381,7 +441,12 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncGroups: json["sync_groups"] == null ? undefined : json["sync_groups"],
-        syncParentGroup: json["sync_parent_group"] == null ? undefined : json["sync_parent_group"],
+        syncParentGroup:
+            json["sync_parent_group"] === undefined
+                ? undefined
+                : json["sync_parent_group"] === null
+                  ? null
+                  : json["sync_parent_group"],
         connectivity: json["connectivity"],
         lookupGroupsFromUser:
             json["lookup_groups_from_user"] == null ? undefined : json["lookup_groups_from_user"],
@@ -403,12 +468,12 @@ export function LDAPSourceToJSONTyped(
         LDAPSource,
         | "pk"
         | "component"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
         | "managed"
-        | "icon_url"
-        | "icon_themed_urls"
+        | "iconUrl"
+        | "iconThemedUrls"
         | "connectivity"
     > | null,
     ignoreDiscriminator: boolean = false,

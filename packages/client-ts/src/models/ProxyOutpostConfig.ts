@@ -158,14 +158,47 @@ export interface ProxyOutpostConfig {
 export function instanceOfProxyOutpostConfig(value: object): value is ProxyOutpostConfig {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("externalHost" in value) || value["externalHost"] === undefined) return false;
-    if (!("oidcConfiguration" in value) || value["oidcConfiguration"] === undefined) return false;
-    if (!("accessTokenValidity" in value) || value["accessTokenValidity"] === undefined)
+    if (
+        (!("externalHost" in (value as Record<string, any>)) &&
+            !("external_host" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalHost"] === undefined &&
+            (value as Record<string, any>)["external_host"] === undefined)
+    )
         return false;
-    if (!("scopesToRequest" in value) || value["scopesToRequest"] === undefined) return false;
-    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
+    if (
+        (!("oidcConfiguration" in (value as Record<string, any>)) &&
+            !("oidc_configuration" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["oidcConfiguration"] === undefined &&
+            (value as Record<string, any>)["oidc_configuration"] === undefined)
+    )
         return false;
-    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
+    if (
+        (!("accessTokenValidity" in (value as Record<string, any>)) &&
+            !("access_token_validity" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["accessTokenValidity"] === undefined &&
+            (value as Record<string, any>)["access_token_validity"] === undefined)
+    )
+        return false;
+    if (
+        (!("scopesToRequest" in (value as Record<string, any>)) &&
+            !("scopes_to_request" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scopesToRequest"] === undefined &&
+            (value as Record<string, any>)["scopes_to_request"] === undefined)
+    )
+        return false;
+    if (
+        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_application_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("assignedApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_application_name"] === undefined)
+    )
         return false;
     return true;
 }
@@ -194,7 +227,12 @@ export function ProxyOutpostConfigFromJSONTyped(
         clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
         oidcConfiguration: OpenIDConnectConfigurationFromJSON(json["oidc_configuration"]),
         cookieSecret: json["cookie_secret"] == null ? undefined : json["cookie_secret"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
         basicAuthEnabled:
             json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],
@@ -225,11 +263,11 @@ export function ProxyOutpostConfigToJSONTyped(
     value?: Omit<
         ProxyOutpostConfig,
         | "pk"
-        | "oidc_configuration"
-        | "access_token_validity"
-        | "scopes_to_request"
-        | "assigned_application_slug"
-        | "assigned_application_name"
+        | "oidcConfiguration"
+        | "accessTokenValidity"
+        | "scopesToRequest"
+        | "assignedApplicationSlug"
+        | "assignedApplicationName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

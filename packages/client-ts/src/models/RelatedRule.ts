@@ -61,8 +61,20 @@ export interface RelatedRule {
  */
 export function instanceOfRelatedRule(value: object): value is RelatedRule {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("reviewerGroups" in value) || value["reviewerGroups"] === undefined) return false;
-    if (!("minReviewers" in value) || value["minReviewers"] === undefined) return false;
+    if (
+        (!("reviewerGroups" in (value as Record<string, any>)) &&
+            !("reviewer_groups" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewerGroups"] === undefined &&
+            (value as Record<string, any>)["reviewer_groups"] === undefined)
+    )
+        return false;
+    if (
+        (!("minReviewers" in (value as Record<string, any>)) &&
+            !("min_reviewers" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["minReviewers"] === undefined &&
+            (value as Record<string, any>)["min_reviewers"] === undefined)
+    )
+        return false;
     if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
     return true;
 }
@@ -89,7 +101,7 @@ export function RelatedRuleToJSON(json: any): RelatedRule {
 }
 
 export function RelatedRuleToJSONTyped(
-    value?: Omit<RelatedRule, "reviewer_groups" | "min_reviewers" | "reviewers"> | null,
+    value?: Omit<RelatedRule, "reviewerGroups" | "minReviewers" | "reviewers"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
