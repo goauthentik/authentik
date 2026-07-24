@@ -8,7 +8,7 @@ use rustls::{
     server::{ClientHello, ResolvesServerCert, WebPkiClientVerifier},
     sign::CertifiedKey,
 };
-use tracing::{debug, warn};
+use tracing::{debug, info, warn};
 
 use crate::{brands, outpost::proxy::ProxyOutpost};
 
@@ -41,10 +41,21 @@ async fn make_tls_config(fallback: Arc<CertifiedKey>) -> Result<ServerConfig> {
 pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> Result<()> {
     let mut events_rx = arbiter.events_subscribe();
 
-    tokio::select! {
-        Ok(Event::GunicornIsReady) = events_rx.recv() => {},
-        () = arbiter.shutdown() => return Ok(()),
+    info!("waiting for gunicorn to be ready before starting tls watcher");
+    loop {
+        tokio::select! {
+            event = events_rx.recv() => {
+                if event == Ok(Event::GunicornIsReady) {
+                    break;
+                }
+            },
+            () = arbiter.shutdown() => {
+                warn!("we were told to shutdown before starting the tls watcher");
+                return Ok(());
+            },
+        }
     }
+    info!("starting tls watcher");
 
     let fallback = Arc::new(self_signed::generate_certifiedkey()?);
 
