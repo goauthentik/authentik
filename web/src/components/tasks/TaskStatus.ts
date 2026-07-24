@@ -1,7 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { AKElement } from "#elements/Base";
-import { akLabel, PFColor } from "#elements/Label";
+import { akLabel } from "#elements/Label";
 
 import { LastTaskStatusEnum, TaskAggregatedStatusEnum } from "@goauthentik/api";
 
@@ -12,23 +12,22 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 
 type Status = TaskAggregatedStatusEnum | LastTaskStatusEnum;
-type StatusRepresentation = [string, PFColor, ...Status[]];
+type StatusRepresentation = [string, string, ...Status[]];
 
-const C = PFColor;
 const TA = TaskAggregatedStatusEnum;
 const LT = LastTaskStatusEnum;
 
 // prettier-ignore
 const statusRepresentation: StatusRepresentation[] = [
-    [msg("Waiting for dependencies"), C.Gray, TA.WaitingForDependencies, LT.WaitingForDependencies],
-    [msg("Waiting to run"),  C.Gray,   TA.Queued, LT.Queued],
-    [msg("Consumed"),        C.Blue,   TA.Consumed, LT.Consumed],
-    [msg("Pre-processing"),  C.Blue,   TA.Preprocess, LT.Preprocess],
-    [msg("Running"),         C.Blue,   TA.Running, LT.Running],
-    [msg("Post-processing"), C.Blue,   TA.Postprocess, LT.Postprocess],
-    [msg("Successful"),      C.Green,  TA.Done, LT.Done, TA.Info, LT.Info],
-    [msg("Warning"),         C.Orange, TA.Warning, LT.Warning],
-    [msg("Error"),           C.Red,    TA.Rejected, LT.Rejected, TA.Error, LT.Error],
+    [msg("Waiting for dependencies"), "gray", TA.WaitingForDependencies, LT.WaitingForDependencies],
+    [msg("Waiting to run"),  "gray",   TA.Queued, LT.Queued],
+    [msg("Consumed"),        "blue",   TA.Consumed, LT.Consumed],
+    [msg("Pre-processing"),  "blue",   TA.Preprocess, LT.Preprocess],
+    [msg("Running"),         "blue",   TA.Running, LT.Running],
+    [msg("Post-processing"), "blue",   TA.Postprocess, LT.Postprocess],
+    [msg("Successful"),      "green",  TA.Done, LT.Done, TA.Info, LT.Info],
+    [msg("Warning"),         "orange", TA.Warning, LT.Warning],
+    [msg("Error"),           "red",    TA.Rejected, LT.Rejected, TA.Error, LT.Error],
 ];
 
 /*
@@ -46,13 +45,13 @@ export class TaskStatus extends AKElement {
     @property()
     status?: TaskAggregatedStatusEnum | LastTaskStatusEnum;
 
-    rep: StatusRepresentation = [msg("Unset"), C.Gray];
+    rep: StatusRepresentation = [msg("Unset"), "red"];
 
     willUpdate(changed: PropertyValues<this>) {
         if (changed.has("status")) {
             this.rep = statusRepresentation.find((s) =>
                 s.slice(2).find((t) => t === this.status),
-            ) ?? [msg("Unknown"), C.Gray];
+            ) ?? [msg("Unknown"), "gray"];
         }
     }
 

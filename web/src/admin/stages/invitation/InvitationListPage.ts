@@ -8,7 +8,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -108,7 +107,7 @@ export class InvitationListPage extends TablePage<Invitation> {
             html`<div>${item.name}</div>
                 ${!item.flowObj && this.multipleEnrollmentFlows
                     ? html`
-                          <ak-label color=${PFColor.Orange}>
+                          <ak-label status="warning">
                               ${msg(
                                   "Invitation not limited to any flow, and can be used with any enrollment flow.",
                               )}

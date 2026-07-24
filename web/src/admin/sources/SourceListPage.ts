@@ -11,7 +11,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -85,9 +84,7 @@ export class SourceListPage extends TablePage<Source> {
                 <div>${item.name}</div>
                 ${item.enabled
                     ? nothing
-                    : html`<ak-label color=${PFColor.Orange} compact>
-                          ${msg("Disabled")}</ak-label
-                      >`}
+                    : html`<ak-label status="warning" compact> ${msg("Disabled")}</ak-label>`}
             </a>`,
             item.verboseName,
             html`<div class="ak-c-table__actions">
@@ -100,7 +97,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Gray} compact> ${msg("Built-in")}</ak-label>
+                <ak-label compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             nothing,

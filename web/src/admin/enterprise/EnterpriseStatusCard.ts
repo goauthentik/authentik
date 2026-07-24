@@ -80,7 +80,7 @@ export class EnterpriseStatusCard extends AKElement {
                     str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`))
         }
 
-        return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
+        return html`<ak-label color=${status[0]}>${status[1]}</ak-label>`;
     }
 
     protected calcUserPercentage(licensed: number, current: number) {

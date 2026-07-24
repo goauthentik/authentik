@@ -1,6 +1,5 @@
 import { formatElapsedTime } from "#common/temporal";
 
-import { PFColor } from "#elements/Label";
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -27,11 +26,11 @@ export class OutpostHealthList extends StaticTable<OutpostHealth> {
         return [
             html`${item.hostname}`,
             html`${item.versionOutdated
-                ? html`<ak-label color=${PFColor.Red} compact
+                ? html`<ak-label status="danger" compact
                       >${msg(str`${item.version}, should be ${item.versionShould}`)}
                   </ak-label>`
-                : html`<ak-label color=${PFColor.Green} compact>${versionString} </ak-label>`}`,
-            html`<ak-label color=${PFColor.Green} compact>
+                : html`<ak-label status="success" compact>${versionString} </ak-label>`}`,
+            html`<ak-label status="success" compact>
                 ${msg(
                     str`${formatElapsedTime(item.lastSeen)} (${item.lastSeen?.toLocaleTimeString()})`,
                 )}

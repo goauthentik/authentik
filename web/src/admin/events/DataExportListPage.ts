@@ -9,7 +9,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -84,8 +83,8 @@ export class DataExportListPage extends TablePage<DataExport> {
             >`,
             Timestamp(item.requestedOn),
             html`${item.completed
-                ? html`<ak-label color=${PFColor.Green}>${msg("Finished")}</ak-label>`
-                : html`<ak-label color=${PFColor.Gray}>${msg("Queued")}</ak-label>`}`,
+                ? html`<ak-label status="success">${msg("Finished")}</ak-label>`
+                : html`<ak-label>${msg("Queued")}</ak-label>`}`,
             item.completed && item.fileUrl
                 ? html`<div>
                       <a href="${item.fileUrl}">
