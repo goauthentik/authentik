@@ -244,9 +244,9 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="syncGroupParents"
-                        label=${msg("Sync Group Parents")}
-                        ?checked=${this.instance?.syncGroupParents ?? true}
+                        name="syncGroupHierarchy"
+                        label=${msg("Sync Group Hierarchy")}
+                        ?checked=${this.instance?.syncGroupHierarchy ?? true}
                         help=${msg("Sync group hierarchy from LDAP directories.")}
                     ></ak-switch-input>
                     <ak-form-element-horizontal
