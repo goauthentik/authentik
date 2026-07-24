@@ -165,12 +165,12 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
         return membership_count
 
 
-class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
-    """Sync parentship of LDAP Groups into authentik"""
+class GroupHierarchyLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
+    """Sync hierarchy of LDAP Groups into authentik"""
 
     @staticmethod
     def name() -> str:
-        return "parentship"
+        return "group hierarchy"
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups:
@@ -243,5 +243,5 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
                 count = len(children_from_source)
                 group.children.set(children_from_source.union(children_not_from_source))
 
-        self._logger.debug("Successfully updated group parentship")
+        self._logger.debug("Successfully updated group hierarchy")
         return count

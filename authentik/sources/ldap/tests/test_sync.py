@@ -23,8 +23,8 @@ from authentik.sources.ldap.models import (
 from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import (
+    GroupHierarchyLDAPSynchronizer,
     MembershipLDAPSynchronizer,
-    ParentshipLDAPSynchronizer,
 )
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
@@ -420,8 +420,8 @@ class LDAPSyncTests(TestCase):
             posix_group = Group.objects.filter(name="group-posix").first()
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
 
-    def test_sync_group_parentship_ad(self):
-        """Test group parentship sync"""
+    def test_sync_group_hierarchy_ad(self):
+        """Test group hierarchy sync"""
         self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
         self.source.additional_user_dn = ""
         self.source.additional_group_dn = ""
@@ -446,8 +446,8 @@ class LDAPSyncTests(TestCase):
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
-            parentship_sync.sync_full()
+            hierarchy_sync = GroupHierarchyLDAPSynchronizer(self.source, Task())
+            hierarchy_sync.sync_full()
             child_group_name = "Domain Admins"
             parent_group_name = "Administrators"
             group: Group = Group.objects.filter(name=child_group_name).first()
@@ -467,8 +467,8 @@ class LDAPSyncTests(TestCase):
                 f"Additional parent group missing from {parent_group_name}'s parents",
             )
 
-    def test_sync_group_parentship_ad_memberOf(self):
-        """Test group parentship sync"""
+    def test_sync_group_hierarchy_ad_memberOf(self):
+        """Test group hierarchy sync"""
         self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
         self.source.additional_user_dn = ""
         self.source.additional_group_dn = ""
@@ -495,8 +495,8 @@ class LDAPSyncTests(TestCase):
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
-            parentship_sync.sync_full()
+            hierarchy_sync = GroupHierarchyLDAPSynchronizer(self.source, Task())
+            hierarchy_sync.sync_full()
             child_group_name = "Domain Admins"
             parent_group_name = "Administrators"
             group: Group = Group.objects.filter(name=child_group_name).first()
