@@ -18,7 +18,7 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.core.sources.mapper import SourceMapper
-from authentik.core.sources.matcher import Action, SourceMatcher
+from authentik.core.sources.matcher import Action, MatchFailure, SourceMatcher
 from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
@@ -47,9 +47,23 @@ from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 LOGGER = get_logger()
 
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
+PLAN_CONTEXT_SOURCE_MATCH_FAILURE = "goauthentik.io/sources/matching_failure"
+PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY = (
+    "goauthentik.io/sources/stage/resume_on_missing_match_property"
+)
 SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
 SESSION_KEY_SOURCE_FLOW_CONTEXT = "authentik/flows/source_flow_context"
 SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
+
+
+def clear_source_flow_session(request: HttpRequest) -> None:
+    """Clear state used to return from a source flow."""
+    for key in (
+        SESSION_KEY_OVERRIDE_FLOW_TOKEN,
+        SESSION_KEY_SOURCE_FLOW_CONTEXT,
+        SESSION_KEY_SOURCE_FLOW_STAGES,
+    ):
+        request.session.pop(key, None)
 
 
 class MessageStage(StageView):
@@ -167,6 +181,10 @@ class SourceFlowManager:
                 if action == Action.ENROLL:
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
+            if action == Action.DENY and self.matcher.failure:
+                response = self.handle_match_failure(self.matcher.failure)
+                if response:
+                    return response
         except FlowNonApplicableException as exc:
             self._logger.warning("Flow non applicable", exc=exc)
             return self.error_handler(exc)
@@ -180,6 +198,10 @@ class SourceFlowManager:
             ),
         )
         return self.error_handler(error)
+
+    def handle_match_failure(self, failure: MatchFailure) -> HttpResponse | None:
+        """Optionally handle a structured source matching failure."""
+        return None
 
     def error_handler(self, error: Exception) -> HttpResponse:
         """Handle any errors by returning an access denied stage"""

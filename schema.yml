@@ -32421,6 +32421,10 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
+        name: resume_on_missing_match_property
+        schema:
+          type: boolean
+      - in: query
         name: resume_timeout
         schema:
           type: string
@@ -51647,6 +51651,10 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_missing_match_property:
+          type: boolean
+          description: Resume the flow when source matching fails because a required
+            property is missing.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -56729,6 +56737,10 @@ components:
           type: string
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_missing_match_property:
+          type: boolean
+          description: Resume the flow when source matching fails because a required
+            property is missing.
       required:
       - component
       - flow_set
@@ -56753,6 +56765,10 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_missing_match_property:
+          type: boolean
+          description: Resume the flow when source matching fails because a required
+            property is missing.
       required:
       - name
       - source

@@ -8266,6 +8266,11 @@
                     "minLength": 1,
                     "title": "Resume timeout",
                     "description": "Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)"
+                },
+                "resume_on_missing_match_property": {
+                    "type": "boolean",
+                    "title": "Resume on missing match property",
+                    "description": "Resume the flow when source matching fails because a required property is missing."
                 }
             },
             "required": []

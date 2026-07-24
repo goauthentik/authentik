@@ -1,3 +1,4 @@
+import "#components/ak-switch-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
@@ -71,6 +72,19 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
+            <ak-switch-input
+                name="resumeOnMissingMatchProperty"
+                label=${msg("Resume on missing matching property", {
+                    id: "stages.source.resume-on-missing-match-property.label",
+                })}
+                ?checked=${this.instance?.resumeOnMissingMatchProperty ?? false}
+                help=${msg(
+                    "Resume this flow when source matching fails because a required property is missing. No source connection is created.",
+                    {
+                        id: "stages.source.resume-on-missing-match-property.description",
+                    },
+                )}
+            ></ak-switch-input>
             <ak-form-element-horizontal
                 label=${msg("Resume timeout")}
                 required

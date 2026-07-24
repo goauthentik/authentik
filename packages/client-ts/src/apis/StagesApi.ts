@@ -1377,6 +1377,7 @@ export interface StagesSourceListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    resumeOnMissingMatchProperty?: boolean;
     resumeTimeout?: string;
     search?: string;
     source?: string;
@@ -14365,6 +14366,11 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["resumeOnMissingMatchProperty"] != null) {
+            queryParameters["resume_on_missing_match_property"] =
+                requestParameters["resumeOnMissingMatchProperty"];
         }
 
         if (requestParameters["resumeTimeout"] != null) {
