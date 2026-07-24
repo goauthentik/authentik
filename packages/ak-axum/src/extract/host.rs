@@ -24,6 +24,12 @@ const X_FORWARDED_HOST: &str = "X-Forwarded-Host";
 #[derive(Clone, Debug)]
 pub struct Host(pub String);
 
+impl Host {
+    fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 impl<S> FromRequestParts<S> for Host
 where
     S: Send + Sync,
@@ -84,12 +90,18 @@ async fn extract_host(parts: &mut Parts) -> Result<String, (StatusCode, &'static
 pub async fn host_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
-    let host = match extract_host(&mut parts).await {
-        Ok(host) => host,
-        Err(err) => return err.into_response(),
+    let host = if let Some(host) = parts.extensions.get::<Host>() {
+        host
+    } else {
+        let host = match extract_host(&mut parts).await {
+            Ok(host) => Host(host),
+            Err(err) => return err.into_response(),
+        };
+        parts.extensions.insert(host);
+        parts.extensions.get::<Host>().expect("infallible")
     };
-    Span::current().record("host", host.clone());
-    parts.extensions.insert::<Host>(Host(host));
+
+    Span::current().record("host", host.as_str());
 
     let request = Request::from_parts(parts, body);
 

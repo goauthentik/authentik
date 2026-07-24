@@ -79,9 +79,15 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
 pub async fn client_ip_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
-    let client_ip = extract_client_ip(&mut parts).await;
-    Span::current().record("remote", client_ip.to_string());
-    parts.extensions.insert::<ClientIp>(ClientIp(client_ip));
+    let client_ip = if let Some(client_ip) = parts.extensions.get::<ClientIp>() {
+        client_ip
+    } else {
+        let client_ip = ClientIp(extract_client_ip(&mut parts).await);
+        parts.extensions.insert(client_ip);
+        parts.extensions.get::<ClientIp>().expect("infallible")
+    };
+
+    Span::current().record("remote", client_ip.0.to_string());
 
     let request = Request::from_parts(parts, body);
 
