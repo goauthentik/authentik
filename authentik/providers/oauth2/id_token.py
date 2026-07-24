@@ -15,7 +15,7 @@ from authentik.common.oauth.constants import (
     AMR_WEBAUTHN,
     SubModes,
 )
-from authentik.core.models import default_token_duration
+from authentik.core.models import User, default_token_duration
 from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -72,6 +72,10 @@ class IDToken:
     jti: str | None = None
     # Confirmation JWK, https://datatracker.ietf.org/doc/html/rfc7800#section-3
     cnf: dict | None = None
+    # Authorized Actor, RFC 8693 §4.1 delegation -- present when this token was issued
+    # via token exchange with an `actor_token` (e.g. a Persona acting for `sub`).
+    # https://datatracker.ietf.org/doc/html/rfc8693#section-4.1
+    act: dict | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
@@ -89,22 +93,7 @@ class IDToken:
         id_token.aud = provider.client_id
         id_token.claims = {}
 
-        if provider.sub_mode == SubModes.HASHED_USER_ID:
-            id_token.sub = token.user.uid
-        elif provider.sub_mode == SubModes.USER_ID:
-            id_token.sub = str(token.user.pk)
-        elif provider.sub_mode == SubModes.USER_UUID:
-            id_token.sub = str(token.user.uuid)
-        elif provider.sub_mode == SubModes.USER_EMAIL:
-            id_token.sub = token.user.email
-        elif provider.sub_mode == SubModes.USER_USERNAME:
-            id_token.sub = token.user.username
-        elif provider.sub_mode == SubModes.USER_UPN:
-            id_token.sub = token.user.attributes.get("upn", token.user.uid)
-        else:
-            raise ValueError(
-                f"Provider {provider} has invalid sub_mode selected: {provider.sub_mode}"
-            )
+        id_token.sub = id_token._resolve_sub(provider, token.user)
 
         # Convert datetimes into timestamps.
         now = timezone.now()
@@ -138,7 +127,30 @@ class IDToken:
             user_info = UserInfoView()
             user_info.request = request
             id_token.claims = user_info.get_claims(token.provider, token)
+
+        # RFC 8693 §4.1 delegation: `sub` above stays the subject (unchanged); `act`
+        # records who is actually exercising the token (e.g. a Persona acting for a
+        # human), when the token-exchange request presented an `actor_token`.
+        actor = getattr(token, "actor", None)
+        if actor:
+            id_token.act = {"sub": id_token._resolve_sub(provider, actor)}
         return id_token
+
+    def _resolve_sub(self, provider: OAuth2Provider, user: User) -> str:
+        """Resolve a `sub`-shaped identifier for `user`, per `provider.sub_mode`."""
+        if provider.sub_mode == SubModes.HASHED_USER_ID:
+            return user.uid
+        if provider.sub_mode == SubModes.USER_ID:
+            return str(user.pk)
+        if provider.sub_mode == SubModes.USER_UUID:
+            return str(user.uuid)
+        if provider.sub_mode == SubModes.USER_EMAIL:
+            return user.email
+        if provider.sub_mode == SubModes.USER_USERNAME:
+            return user.username
+        if provider.sub_mode == SubModes.USER_UPN:
+            return user.attributes.get("upn", user.uid)
+        raise ValueError(f"Provider {provider} has invalid sub_mode selected: {provider.sub_mode}")
 
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""

@@ -53,6 +53,8 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.core.sources.mapper import SourceMapper
+from authentik.enterprise.license import LicenseKey
+from authentik.enterprise.personas.models import Persona
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -108,6 +110,7 @@ class TokenParams:
     refresh_token: RefreshToken | None = None
     device_code: DeviceToken | None = None
     user: User | None = None
+    actor: User | None = None
 
     code_verifier: str | None = None
     dpop_proof: str | None = None
@@ -635,11 +638,6 @@ class TokenParams:
 
     def __post_init_token_exchange(self, request: HttpRequest):
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
-        # Delegation is not implemented. An actor token is rejected rather than ignored, so a
-        # client cannot believe it delegated authority while an impersonation token was issued.
-        if request.POST.get("actor_token") or request.POST.get("actor_token_type"):
-            LOGGER.warning("Delegation is not supported")
-            raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
         # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
         # requested target cannot be honored, so the parameters are refused rather than ignored.
         if request.POST.getlist("audience") or request.POST.getlist("resource"):
@@ -681,6 +679,8 @@ class TokenParams:
         if not provider:
             self.__create_user_from_jwt(token, app, source, request)
 
+        self.__post_init_token_exchange_actor(request)
+
         method_args = {
             "jwt": token,
             "subject_token_type": subject_token_type,
@@ -698,6 +698,46 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=self.user)
+
+    def __post_init_token_exchange_actor(self, request: HttpRequest):
+        """RFC 8693 §4.1 delegation: validate an optional `actor_token`, identifying who
+        is actually exercising the resulting token (e.g. a Persona acting for the
+        verified subject_token's human). `self.user` (the subject) is left unchanged --
+        only `self.actor` is set, later mirrored into the issued token's `act` claim.
+        A no-op when actor_token/actor_token_type are absent, so plain token exchange
+        (and the RFC 8693 impersonation case) is unaffected."""
+        actor_token = request.POST.get("actor_token", "")
+        actor_token_type = request.POST.get("actor_token_type", "")
+        if not actor_token and not actor_token_type:
+            return
+        if actor_token_type != TOKEN_TYPE_URI_ACCESS_TOKEN:
+            LOGGER.warning("Unsupported actor token type", token_type=actor_token_type)
+            raise TokenExchangeError("invalid_request").with_cause("unsupported_actor_token_type")
+        if not actor_token:
+            LOGGER.warning("Missing actor_token")
+            raise TokenExchangeError("invalid_request").with_cause("missing_actor_token")
+
+        if not LicenseKey.cached_summary().status.is_valid:
+            LOGGER.warning("Persona delegation requires a valid enterprise license")
+            raise TokenExchangeError("invalid_grant").with_cause("enterprise_required")
+
+        # The actor_token is a previously-issued AccessToken belonging to the Persona
+        # itself -- a literal DB match (same as __validate_jwt_from_provider's approach
+        # for subject_token) is the actual proof of authenticity here, since the token
+        # string only ever exists if this instance issued it.
+        actor_access_token: AccessToken = AccessToken.objects.filter(
+            token=actor_token, revoked=False
+        ).first()
+        if not actor_access_token:
+            LOGGER.warning("Actor token not found")
+            raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
+
+        persona = Persona.objects.filter(pk=actor_access_token.user_id).first()
+        if not persona or persona.owner_id != self.user.pk:
+            LOGGER.warning("Actor is not a persona controlled by the verified subject")
+            raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+
+        self.actor = persona
 
     def __create_user_from_jwt(
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
@@ -1030,6 +1070,7 @@ class TokenView(View):
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.user,
+            actor=self.params.actor,
             expires=access_token_expiry,
             scope=self.params.scope,
             auth_time=now,
