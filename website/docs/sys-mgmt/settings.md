@@ -12,6 +12,10 @@ The base URL under which this authentik instance is reachable, for example `http
 
 While this setting is empty, authentik displays a warning in the Admin interface until a value is provided. You can seed it at install time with the [`AUTHENTIK_WEB__BASE_URL`](../install-config/configuration/configuration.mdx) configuration option, but the value set here always takes precedence. A trailing slash is removed automatically. Defaults to an empty string.
 
+:::info
+Set this to the scheme and host only, without a path. All of authentik is served under [`AUTHENTIK_WEB__PATH`](../install-config/configuration/configuration.mdx#authentik_web__path) (`/` by default), and that prefix is already part of every link authentik generates. So even when you serve authentik under a subpath, for example `AUTHENTIK_WEB__PATH=/authentik/`, the base URL stays `https://authentik.company`, and generated links resolve under `https://authentik.company/authentik/`.
+:::
+
 This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
 
 ### Avatars
