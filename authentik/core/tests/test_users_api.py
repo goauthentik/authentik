@@ -47,13 +47,8 @@ PASSWORD_HASH_SALT_ERROR = (
 )
 
 
-def _password_hash_parameters_error(provided: str, expected: str) -> str:
-    return (
-        "Password hash parameters do not match authentik's current configuration. "
-        f"Provided: {provided}. Expected: {expected}. "
-        "Importing it can weaken password security. "
-        f"{PASSWORD_HASH_OVERRIDE_SUFFIX}"
-    )
+def _password_hash_parameters_error(requirement: str) -> str:
+    return f"{requirement} {PASSWORD_HASH_OVERRIDE_SUFFIX}"
 
 
 class TestUsersAPI(APITestCase):
@@ -265,8 +260,8 @@ class TestUsersAPI(APITestCase):
             original_password,
             response,
             _password_hash_parameters_error(
-                f"Algorithm: {hasher.algorithm}; Iterations: {hasher.iterations}",
-                f"Algorithm: {hasher.algorithm}; Iterations: {PBKDF2PasswordHasher.iterations}",
+                f"{hasher.algorithm} hashes must use {PBKDF2PasswordHasher.iterations} "
+                "iterations."
             ),
         )
 
@@ -286,50 +281,38 @@ class TestUsersAPI(APITestCase):
         scrypt.work_factor //= 2
         argon2 = Argon2PasswordHasher()
         argon2.time_cost -= 1
-        provided_argon2 = argon2.params()
         expected_argon2 = Argon2PasswordHasher().params()
 
-        hashers_and_expected_parameters = (
+        hashers_and_requirements = (
             (
                 pbkdf2,
-                f"Algorithm: {pbkdf2.algorithm}; Iterations: {pbkdf2.iterations}",
-                f"Algorithm: pbkdf2_sha256; Iterations: {PBKDF2PasswordHasher.iterations}",
+                f"pbkdf2_sha256 hashes must use {PBKDF2PasswordHasher.iterations} iterations.",
             ),
             (
                 pbkdf2_sha1,
-                f"Algorithm: {pbkdf2_sha1.algorithm}; Iterations: {pbkdf2_sha1.iterations}",
-                f"Algorithm: pbkdf2_sha1; Iterations: {PBKDF2SHA1PasswordHasher.iterations}",
+                f"pbkdf2_sha1 hashes must use {PBKDF2SHA1PasswordHasher.iterations} iterations.",
             ),
             (
                 bcrypt,
-                f"Algorithm: {bcrypt.algorithm}; Work factor: {bcrypt.rounds}",
-                f"Algorithm: bcrypt_sha256; Work factor: {BCryptSHA256PasswordHasher.rounds}",
+                "bcrypt_sha256 hashes must use a work factor of "
+                f"{BCryptSHA256PasswordHasher.rounds}.",
             ),
             (
                 scrypt,
-                f"Algorithm: {scrypt.algorithm}; Work factor: {scrypt.work_factor}; "
-                f"Block size: {scrypt.block_size}; Parallelism: {scrypt.parallelism}",
-                "Algorithm: scrypt; "
-                f"Work factor: {ScryptPasswordHasher.work_factor}; "
-                f"Block size: {ScryptPasswordHasher.block_size}; "
-                f"Parallelism: {ScryptPasswordHasher.parallelism}",
+                f"scrypt hashes must use work factor {ScryptPasswordHasher.work_factor}, "
+                f"block size {ScryptPasswordHasher.block_size}, and parallelism "
+                f"{ScryptPasswordHasher.parallelism}.",
             ),
             (
                 argon2,
-                "Algorithm: argon2; Variant: argon2id; "
-                f"Version: {provided_argon2.version}; Time cost: {provided_argon2.time_cost}; "
-                f"Memory cost: {provided_argon2.memory_cost}; "
-                f"Parallelism: {provided_argon2.parallelism}; "
-                f"Hash length: {provided_argon2.hash_len}",
-                "Algorithm: argon2; Variant: argon2id; "
-                f"Version: {expected_argon2.version}; Time cost: {expected_argon2.time_cost}; "
-                f"Memory cost: {expected_argon2.memory_cost}; "
-                f"Parallelism: {expected_argon2.parallelism}; "
-                f"Hash length: {expected_argon2.hash_len}",
+                "argon2 hashes must use variant argon2id, "
+                f"version {expected_argon2.version}, time cost {expected_argon2.time_cost}, "
+                f"memory cost {expected_argon2.memory_cost}, parallelism "
+                f"{expected_argon2.parallelism}, and hash length {expected_argon2.hash_len}.",
             ),
         )
 
-        for hasher, provided_parameters, expected_parameters in hashers_and_expected_parameters:
+        for hasher, requirement in hashers_and_requirements:
             with self.subTest(algorithm=hasher.algorithm):
                 password_hash = hasher.encode(password, hasher.salt())
                 response = self._set_password_hash(self.user, password_hash)
@@ -338,7 +321,7 @@ class TestUsersAPI(APITestCase):
                     self.user,
                     original_password,
                     response,
-                    _password_hash_parameters_error(provided_parameters, expected_parameters),
+                    _password_hash_parameters_error(requirement),
                 )
 
     def test_set_password_hash_insufficient_salt_entropy(self):
@@ -377,9 +360,8 @@ class TestUsersAPI(APITestCase):
             response,
             [
                 _password_hash_parameters_error(
-                    f"Algorithm: {hasher.algorithm}; Iterations: {hasher.iterations}",
-                    f"Algorithm: {hasher.algorithm}; "
-                    f"Iterations: {PBKDF2PasswordHasher.iterations}",
+                    f"{hasher.algorithm} hashes must use {PBKDF2PasswordHasher.iterations} "
+                    "iterations."
                 ),
                 PASSWORD_HASH_SALT_ERROR,
             ],
