@@ -23,7 +23,7 @@ use tracing::{debug, error, info, instrument, warn};
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 
 mod allowlist;
-mod application;
+pub(crate) mod application;
 mod auth;
 mod backchannel;
 mod claims;
@@ -202,7 +202,7 @@ impl ProxyOutpost {
     }
 
     #[instrument(skip(self))]
-    fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
+    pub(crate) fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
         let apps = self.apps.load();
 
         if apps.is_empty() {

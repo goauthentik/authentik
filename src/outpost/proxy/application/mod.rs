@@ -22,7 +22,7 @@ use crate::outpost::proxy::{
     upstream,
 };
 
-pub(super) mod handlers;
+pub(crate) mod handlers;
 
 #[derive(Debug)]
 pub(super) struct Application {
