@@ -45,6 +45,8 @@ preload_app = True
 max_requests = CONFIG.get_int("web.max_requests", 1000)
 max_requests_jitter = CONFIG.get_int("web.max_requests_jitter", 50)
 
+timeout = CONFIG.get_int("gunicorn.timeout", 30)
+
 logconfig_dict = get_logger_config()
 
 workers = CONFIG.get_int("web.workers", 2)
