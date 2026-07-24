@@ -1,16 +1,17 @@
 import "#elements/ak-list-select/ak-list-select";
-import "#elements/forms/SearchSelect/ak-portal";
 
 import { findFlatOptions, findOptionsSubset, groupOptions, optionsToFlat } from "./utils.js";
 
 import { ListSelect } from "#elements/ak-list-select/ak-list-select";
 import { AKElement } from "#elements/Base";
+import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
+import Styles from "#elements/forms/SearchSelect/ak-search-select-view.css";
 import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, nothing, PropertyValues } from "lit";
+import { CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
@@ -18,6 +19,15 @@ import { createRef, ref, Ref } from "lit/directives/ref.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
+
+/**
+ * Whether this browser can position *and* size the menu against its anchor purely
+ * in CSS. When true the menu uses native anchor positioning (which tracks scrolling
+ * for free); otherwise it is placed imperatively. `AnchorSizeSupported` already
+ * excludes Firefox, whose anchor positioning mis-renders inside a `<dialog>` despite
+ * reporting support — see {@link "#elements/dialogs/positioning"}.
+ */
+const CSSAnchorPositioningSupported = AnchorPositionSupported && AnchorSizeSupported;
 
 export interface ISearchSelectView {
     options: SelectOptions;
@@ -73,14 +83,11 @@ export interface ISearchSelectView {
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
     static styles: CSSResult[] = [
+        // ---
         PFForm,
         PFFormControl,
         PFSelect,
-        css`
-            .pf-c-select {
-                --pf-c-select__toggle-wrapper--MaxWidth: initial;
-            }
-        `,
+        Styles,
     ];
 
     //#region Properties
@@ -217,11 +224,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     @state()
     protected displayValue = "";
 
-    // Tracks when the inputRef is populated, so we can safely reschedule the
-    // render of the dropdown with respect to it.
-    @state()
-    protected inputRefIsAvailable = false;
-
     /**
      * Permanent identity with the portal so focus events can be checked.
      */
@@ -243,22 +245,42 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Lifecycle
 
     public override updated() {
+        this.#syncMenuVisibility();
         this.setAttribute("data-ouia-component-safe", "true");
     }
 
-    public override firstUpdated(changed: PropertyValues<this>) {
-        super.firstUpdated(changed);
+    /**
+     * Reconcile the popover's actual open state with `this.open`.
+     * Called from `updated()` so it runs after the menu has rendered.
+     */
+    #syncMenuVisibility() {
+        const menu = this.#menuRef.value;
+        if (!menu) return;
 
-        // Route around Lit's scheduling algorithm complaining about re-renders
-        requestAnimationFrame(() => {
-            this.inputRefIsAvailable = Boolean(this.#inputRef?.value);
-        });
+        const popoverOpen = menu.matches(":popover-open");
+
+        if (this.open && !this.readOnly && !popoverOpen) {
+            menu.showPopover();
+            // Start tracking synchronously (not via the async `toggle` event) so the
+            // fallback places the menu in the same frame it becomes visible — no flash
+            // at the UA default position.
+            this.#startAnchorTracking();
+        } else if ((!this.open || this.readOnly) && popoverOpen) {
+            menu.hidePopover();
+        }
     }
 
     connectedCallback() {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-search-select-view");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
+        // Styling hook: opt this instance into the CSS anchor-positioning block.
+        this.toggleAttribute("data-anchor-css", CSSAnchorPositioningSupported);
+    }
+
+    disconnectedCallback() {
+        this.#stopAnchorTracking();
+        super.disconnectedCallback();
     }
 
     // TODO: Reconcile value <-> display value, Reconcile option changes to value <-> displayValue
@@ -273,12 +295,190 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
 
     //#region Event Listeners
 
-    #clickListener = (_ev: Event) => {
+    /** Timestamp of the last browser-driven popover close (see reopen guard). */
+    #lastLightDismiss = -Infinity;
+
+    #clickListener = (event: Event) => {
         if (this.readOnly) return;
 
-        this.open = !this.open;
+        // If this same click just light-dismissed the open popover, treat it as a
+        // close: leave `open` false instead of toggling it back on.
+        const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < 250;
+
+        this.open = dismissedByThisClick ? false : !this.open;
         this.#inputRef.value?.focus();
     };
+
+    /**
+     * Reflect browser-driven popover state changes (light dismiss, Esc) back
+     * into `this.open`, keeping component state authoritative.
+     */
+    #menuToggleListener = (event: ToggleEvent) => {
+        // Opening is handled synchronously in #syncMenuVisibility; here we only
+        // react to closes (including browser-driven light dismiss / Esc).
+        if (event.newState === "open") return;
+
+        this.#stopAnchorTracking();
+
+        // Record when the browser closes the popover so a click on the input
+        // that *caused* the dismiss doesn't immediately reopen it.
+        this.#lastLightDismiss = event.timeStamp;
+
+        if (this.open) {
+            this.open = false;
+        }
+    };
+
+    /**
+     * Forward wheel scrolling to the input's nearest scrollable ancestor once the
+     * menu itself can't scroll any further in that direction. The menu is a
+     * top-layer, fixed-position popover, so the browser chains its overscroll to the
+     * viewport rather than to the (e.g. modal dialog) container behind it — meaning
+     * scrolling over the menu would otherwise appear stuck.
+     */
+    #menuWheelListener = (event: WheelEvent) => {
+        const menu = this.#menuRef.value;
+        if (!menu) return;
+
+        const goingDown = event.deltaY > 0;
+        const menuCanScroll = goingDown
+            ? Math.ceil(menu.scrollTop + menu.clientHeight) < menu.scrollHeight
+            : menu.scrollTop > 0;
+
+        if (menuCanScroll) return;
+
+        const scroller = this.#findScrollableAncestor();
+        if (!scroller) return;
+
+        scroller.scrollTop += event.deltaY;
+        event.preventDefault();
+    };
+
+    /**
+     * Walk the flattened (composed) tree upward from this element — crossing shadow
+     * boundaries and slots — to the nearest vertically scrollable ancestor.
+     */
+    #findScrollableAncestor(): HTMLElement | null {
+        const composedParent = (node: Node): Node | null => {
+            const slot = (node as Element).assignedSlot;
+            if (slot) return slot;
+
+            const parent = node.parentNode;
+            return parent instanceof ShadowRoot ? parent.host : parent;
+        };
+
+        for (let node = composedParent(this); node; node = composedParent(node)) {
+            if (!(node instanceof HTMLElement)) continue;
+
+            const { overflowY } = getComputedStyle(node);
+            const scrollable =
+                overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+
+            if (scrollable && node.scrollHeight > node.clientHeight) {
+                return node;
+            }
+        }
+
+        return null;
+    }
+
+    #anchorObserver?: IntersectionObserver;
+
+    #startAnchorTracking() {
+        const input = this.#inputRef.value;
+        const menu = this.#menuRef.value;
+
+        if (!input || !menu) return;
+
+        // Close the menu when its anchor input is no longer visible — scrolled out
+        // of the viewport, clipped away by a scroll container, or hidden. This works
+        // in every browser regardless of anchor-positioning support.
+        this.#anchorObserver?.disconnect();
+        this.#anchorObserver = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => !entry.isIntersecting)) {
+                    this.open = false;
+                }
+            },
+            { threshold: 0 },
+        );
+        this.#anchorObserver.observe(input);
+
+        // Native CSS anchor positioning handles placement and tracks scrolling on its
+        // own — nothing else to do.
+        if (CSSAnchorPositioningSupported) return;
+
+        // Otherwise position the menu imperatively and keep it in sync. We can't rely
+        // on a global scroll listener: `scroll` events are `composed: false`, so
+        // scrolling inside a shadow-rendered container (e.g. a modal dialog body)
+        // never reaches `window`. Instead we re-place the menu each animation frame
+        // while open, which also covers nested scrollers, layout shifts, and resizes.
+        let lastGeometry = "";
+
+        const reflow = () => {
+            const rect = this.#inputRef.value?.getBoundingClientRect();
+
+            if (rect) {
+                const geometry = `${rect.left},${rect.top},${rect.bottom},${rect.width},${window.innerHeight}`;
+
+                if (geometry !== lastGeometry) {
+                    lastGeometry = geometry;
+                    this.#positionMenu();
+                }
+            }
+
+            this.#reflowFrame = requestAnimationFrame(reflow);
+        };
+
+        this.#positionMenu();
+        this.#reflowFrame = requestAnimationFrame(reflow);
+    }
+
+    #reflowFrame?: number;
+
+    #stopAnchorTracking() {
+        this.#anchorObserver?.disconnect();
+        this.#anchorObserver = undefined;
+
+        if (this.#reflowFrame !== undefined) {
+            cancelAnimationFrame(this.#reflowFrame);
+            this.#reflowFrame = undefined;
+        }
+    }
+
+    /**
+     * Position the menu against the input imperatively, matching the CSS
+     * anchor-positioning behavior (below by default, flip above when there's no
+     * room, width matched to the input, capped height). Only used where CSS anchor
+     * positioning is unavailable.
+     */
+    #positionMenu() {
+        const input = this.#inputRef.value;
+        const menu = this.#menuRef.value;
+
+        if (!input || !menu) return;
+
+        const rect = input.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const maxHeight = Math.round(viewportHeight * 0.4);
+        const menuHeight = Math.min(menu.offsetHeight || maxHeight, maxHeight);
+
+        const spaceBelow = viewportHeight - rect.bottom;
+        const flipUp = spaceBelow < menuHeight && rect.top > spaceBelow;
+
+        menu.style.position = "fixed";
+        menu.style.left = `${Math.round(rect.left)}px`;
+        menu.style.width = `${Math.round(rect.width)}px`;
+        menu.style.maxHeight = `${maxHeight}px`;
+
+        if (flipUp) {
+            menu.style.top = "auto";
+            menu.style.bottom = `${Math.round(viewportHeight - rect.top)}px`;
+        } else {
+            menu.style.bottom = "auto";
+            menu.style.top = `${Math.round(rect.bottom)}px`;
+        }
+    }
 
     setFromMatchList(value?: string) {
         if (!value) return;
@@ -325,25 +525,26 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    #blurListener = (event: FocusEvent) => {
-        // If we lost focus but the menu got it, don't do anything;
-        const relatedTarget = event.relatedTarget as HTMLElement | undefined;
-        if (
-            relatedTarget &&
-            (this.contains(relatedTarget) ||
-                this.renderRoot.contains(relatedTarget) ||
-                this.#menuRef.value?.contains(relatedTarget) ||
-                this.#menuRef.value?.renderRoot.contains(relatedTarget))
-        ) {
-            return;
-        }
-        this.open = false;
-        if (!this.value) {
-            if (this.#inputRef.value) {
-                this.#inputRef.value.value = "";
-            }
-            this.setValue(undefined);
-        }
+    #blurListener = (_event: FocusEvent) => {
+        // TODO: Disabled while debugging
+        // // If we lost focus but the menu got it, don't do anything;
+        // const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+        // if (
+        //     relatedTarget &&
+        //     (this.contains(relatedTarget) ||
+        //         this.renderRoot.contains(relatedTarget) ||
+        //         this.#menuRef.value?.contains(relatedTarget) ||
+        //         this.#menuRef.value?.renderRoot.contains(relatedTarget))
+        // ) {
+        //     return;
+        // }
+        // this.open = false;
+        // if (!this.value) {
+        //     if (this.#inputRef.value) {
+        //         this.#inputRef.value.value = "";
+        //     }
+        //     this.setValue(undefined);
+        // }
     };
 
     setValue(newValue: string | undefined) {
@@ -474,8 +675,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     //#region Render
 
     public override render() {
-        const { open } = this;
-
         const emptyOption = this.blankable
             ? this.emptyOption || this.placeholder || msg("Select an option...")
             : null;
@@ -506,29 +705,22 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                     </div>
                 </div>
             </div>
-            ${this.inputRefIsAvailable
-                ? html`
-                      <ak-portal
-                          name=${ifDefined(this.name)}
-                          .anchor=${this.#inputRef.value}
-                          ?open=${open}
-                      >
-                          <ak-list-select
-                              id="menu-${this.getAttribute("data-ouia-component-id")}"
-                              ${ref(this.#menuRef)}
-                              .options=${this.managedOptions}
-                              value=${ifDefined(this.value)}
-                              @change=${this.#changeListener}
-                              @blur=${this.#blurListener}
-                              emptyOption=${ifPresent(emptyOption)}
-                              actionLabel=${ifPresent(this.actionLabel)}
-                              @ak-select-action=${this.#actionListener}
-                              @keydown=${this.#listKeydownListener}
-                              @keyup=${this.#listKeyupListener}
-                          ></ak-list-select>
-                      </ak-portal>
-                  `
-                : nothing}`;
+            <ak-list-select
+                popover="auto"
+                id="menu-${this.getAttribute("data-ouia-component-id")}"
+                ${ref(this.#menuRef)}
+                .options=${this.managedOptions}
+                value=${ifDefined(this.value)}
+                @change=${this.#changeListener}
+                @blur=${this.#blurListener}
+                @toggle=${this.#menuToggleListener}
+                @wheel=${this.#menuWheelListener}
+                emptyOption=${ifPresent(emptyOption)}
+                actionLabel=${ifPresent(this.actionLabel)}
+                @ak-select-action=${this.#actionListener}
+                @keydown=${this.#listKeydownListener}
+                @keyup=${this.#listKeyupListener}
+            ></ak-list-select>`;
     }
 
     //#endregion
