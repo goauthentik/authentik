@@ -176,6 +176,9 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
         if not self._source.sync_groups:
             self._task.info("Group syncing is disabled for this Source")
             return iter(())
+        if not self._source.sync_group_hierarchy:
+            self._task.info("Group hierarchy syncing is disabled for this Source")
+            return iter(())
 
         attributes = [
             self._source.group_membership_field,
@@ -196,6 +199,9 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
         """Iterate over all Groups and assign their parents"""
         if not self._source.sync_groups:
             self._task.info("Group syncing is disabled for this Source")
+            return -1
+        if not self._source.sync_group_hierarchy:
+            self._task.info("Group hierarchy syncing is disabled for this Source")
             return -1
         parentship_count = 0
         for group_data in page_data:
