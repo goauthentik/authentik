@@ -53,6 +53,7 @@ pub(crate) struct Cli {}
 const INITIAL_WORKER_ID: usize = 1000;
 static INITIAL_WORKER_READY: AtomicBool = AtomicBool::new(false);
 
+#[derive(Debug)]
 pub(crate) struct Worker {
     worker_id: usize,
     worker: Child,
@@ -194,6 +195,7 @@ impl Drop for Worker {
     }
 }
 
+#[derive(Debug)]
 pub(crate) struct Workers(Mutex<Vec<Worker>>);
 
 impl Workers {

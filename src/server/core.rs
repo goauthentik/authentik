@@ -265,26 +265,28 @@ async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
     Ok(StatusCode::OK)
 }
 
-pub(super) fn build_router(server: Arc<Server>) -> eyre::Result<Router> {
+pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
     // Router for endpoints handled in rust
     let our_router = wrap_router(
         Router::new()
             .route("/-/health/ready/", any(health_ready))
             .route("/-/health/live/", any(health_live))
             .route("/-/{*wild}", any(StatusCode::NOT_FOUND))
-            .with_state(Arc::clone(&server))
+            .with_state(Arc::clone(server))
             .merge(super::r#static::build_router()),
         true,
     );
 
     // Router for endpoints handled in Python
     let gunicorn_router = wrap_router(
-        Router::new().fallback(forward_request).with_state(server),
+        Router::new()
+            .fallback(forward_request)
+            .with_state(Arc::clone(server)),
         // Enable tracing but only in debug.
         config::get().debug,
     );
 
-    let path = &config::get().web.path.clone();
+    let path = &config::get().web.path;
     let router = if path == "/" {
         Router::new().merge(our_router).merge(gunicorn_router)
     } else {
@@ -296,9 +298,16 @@ pub(super) fn build_router(server: Arc<Server>) -> eyre::Result<Router> {
 
         Router::new()
             .merge(redirect_router)
-            .merge(our_router.clone())
-            .nest(path, Router::new().merge(our_router).merge(gunicorn_router))
+            .nest(
+                &path,
+                Router::new()
+                    .merge(our_router.clone())
+                    .merge(gunicorn_router),
+            )
+            .merge(our_router)
     };
+
+    dbg!(&router);
 
     Ok(router)
 }

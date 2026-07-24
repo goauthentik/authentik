@@ -275,14 +275,9 @@ verbose_file_reads = "warn"
 [profile.dev.package.backtrace]
 opt-level = 3
 
-[profile.dev]
-panic = "abort"
-
 [profile.release]
 debug = 2
 lto = "fat"
-# Because of the async runtime, we want to die straightaway if we panic.
-panic = "abort"
 strip = true
 
 [package]

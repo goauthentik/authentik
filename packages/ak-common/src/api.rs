@@ -63,7 +63,7 @@ pub fn make_config() -> Result<Configuration> {
 }
 
 pub fn make_config_embedded(socket_path: PathBuf) -> Result<Configuration> {
-    let base_path = "http://localhost/api/v3".into();
+    let base_path = format!("http://localhost{}api/v3", config::get().web.path).into();
 
     let client = reqwest::ClientBuilder::new()
         .unix_socket(socket_path)

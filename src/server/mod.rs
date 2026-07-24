@@ -13,7 +13,7 @@ use ak_axum::extract::{
     host::{Host, host_middleware},
     trusted_proxy::trusted_proxy_middleware,
 };
-use ak_common::{Arbiter, Event, Tasks, config};
+use ak_common::{Arbiter, Event, Tasks, config, tls::self_signed};
 use arc_swap::ArcSwapOption;
 use argh::FromArgs;
 use axum::{
@@ -32,6 +32,7 @@ use nix::{
     sys::signal::{Signal, kill},
     unistd::Pid,
 };
+use rustls::sign::CertifiedKey;
 use tokio::{
     net::UnixStream,
     process::{Child, Command},
@@ -42,7 +43,11 @@ use tokio::{
 use tower::ServiceExt as _;
 use tracing::{info, instrument, trace, warn};
 
-use crate::{outpost, outpost::proxy::ProxyOutpost, worker::Workers};
+use crate::{
+    brands::tls::BrandCertResolver,
+    outpost::{self, proxy::ProxyOutpost},
+    worker::Workers,
+};
 
 mod core;
 mod r#static;
@@ -63,11 +68,15 @@ pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik.sock")
 }
 
+#[derive(Debug)]
 pub(crate) struct Server {
     gunicorn: Mutex<Child>,
     socket_path: PathBuf,
     pub(crate) client: Client<UnixSocketConnector<PathBuf>, Body>,
     pub(crate) workers: ArcSwapOption<Workers>,
+    proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
+    brand_cert_resolver: ArcSwapOption<BrandCertResolver>,
+    fallback_cert: Arc<CertifiedKey>,
 }
 
 impl Server {
@@ -98,6 +107,9 @@ impl Server {
             client,
             socket_path,
             workers: ArcSwapOption::empty(),
+            proxy_outpost: Arc::new(ArcSwapOption::empty()),
+            brand_cert_resolver: ArcSwapOption::empty(),
+            fallback_cert: Arc::new(self_signed::generate_certifiedkey()?),
         })
     }
 
@@ -274,10 +286,7 @@ async fn route_core_and_outpost(
     response
 }
 
-fn build_router(
-    server: Arc<Server>,
-    proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
-) -> Result<Router> {
+fn build_router(server: &Arc<Server>) -> Result<Router> {
     let core_router = core::build_router(server)?;
     let proxy_router = outpost::proxy::embedded_router();
 
@@ -295,7 +304,7 @@ fn build_router(
 
     Ok(router
         .fallback(any(route_core_and_outpost))
-        .with_state((core_router, proxy_router, proxy_outpost))
+        .with_state((core_router, proxy_router, Arc::clone(&server.proxy_outpost)))
         .layer(from_fn(host_middleware))
         .layer(from_fn(trusted_proxy_middleware)))
 }
@@ -311,22 +320,24 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         .name(&format!("{}::watch_server", module_path!()))
         .spawn(watch_server(arbiter.clone(), Arc::clone(&server)))?;
 
-    let proxy_outpost = Arc::new(ArcSwapOption::empty());
-
-    let router = build_router(Arc::clone(&server), Arc::clone(&proxy_outpost))?;
+    let router = build_router(&server)?;
 
     for addr in config::get().listen.http.iter().copied() {
         ak_axum::server::start_plain(tasks, "server", router.clone(), addr)?;
     }
 
-    let tls_config = tls::make_initial_tls_config()?;
+    let tls_config = tls::make_initial_tls_config(Arc::clone(&server));
     for addr in config::get().listen.https.iter().copied() {
         ak_axum::server::start_tls(tasks, "server", router.clone(), addr, tls_config.clone())?;
     }
     tasks
         .build_task()
         .name(&format!("{}::tls::watch_tls_config", module_path!()))
-        .spawn(tls::watch_tls_config(arbiter.clone(), tls_config))?;
+        .spawn(tls::watch_tls_config(
+            arbiter.clone(),
+            tls_config,
+            Arc::clone(&server),
+        ))?;
 
     ak_axum::server::start_unix(
         tasks,
@@ -352,7 +363,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         }
 
         info!("starting embedded outpost");
-        proxy_outpost.store(Some(
+        server.proxy_outpost.store(Some(
             outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks).await?,
         ));
     }
