@@ -20,7 +20,7 @@ use axum::{
     Router,
     body::Body,
     extract::{Request, State},
-    http::StatusCode,
+    http::{StatusCode, header::HOST},
     middleware::from_fn,
     response::Response,
     routing::any,
@@ -40,7 +40,7 @@ use tokio::{
     time::{Duration, Instant, interval},
 };
 use tower::ServiceExt as _;
-use tracing::{info, trace, warn};
+use tracing::{info, instrument, trace, warn};
 
 use crate::{outpost, outpost::proxy::ProxyOutpost, worker::Workers};
 
@@ -148,6 +148,55 @@ impl Server {
         trace!(?result, "checking if server socket is ready");
         result.is_ok()
     }
+
+    #[instrument(skip(self))]
+    pub(crate) async fn health_live(&self) -> Result<bool> {
+        trace!("sending health live request to server");
+        let req = Request::builder()
+            .method("GET")
+            .uri("http://localhost:8000/-/health/live/")
+            .header(HOST, "localhost")
+            .body(Body::from(""))?;
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send health live request to server"))?
+            .status()
+            .is_success())
+    }
+
+    #[instrument(skip(self))]
+    pub(crate) async fn health_ready(&self) -> Result<bool> {
+        trace!("sending health ready request to server");
+        let req = Request::builder()
+            .method("GET")
+            .uri("http://localhost:8000/-/health/ready/")
+            .header(HOST, "localhost")
+            .body(Body::from(""))?;
+        Ok(self
+            .client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send health ready request to server"))?
+            .status()
+            .is_success())
+    }
+
+    #[instrument(skip(self))]
+    pub(crate) async fn notify_metrics(&self) -> Result<()> {
+        trace!("sending metrics request to server");
+        let req = Request::builder()
+            .method("GET")
+            .uri("http://localhost:8000/-/metrics/")
+            .header(HOST, "localhost")
+            .body(Body::from(""))?;
+        self.client
+            .request(req)
+            .await
+            .inspect_err(|err| warn!(?err, "failed to send metrics request to server"))?;
+        Ok(())
+    }
 }
 
 async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
@@ -225,8 +274,11 @@ async fn route_core_and_outpost(
     response
 }
 
-fn build_router(server: Arc<Server>, proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>) -> Router {
-    let core_router = core::build_router(server);
+fn build_router(
+    server: Arc<Server>,
+    proxy_outpost: Arc<ArcSwapOption<ProxyOutpost>>,
+) -> Result<Router> {
+    let core_router = core::build_router(server)?;
     let proxy_router = outpost::proxy::embedded_router();
 
     metrics::describe_histogram!(
@@ -241,11 +293,11 @@ fn build_router(server: Arc<Server>, proxy_outpost: Arc<ArcSwapOption<ProxyOutpo
         Router::new().route("/outpost.goauthentik.io/ping", any(StatusCode::NO_CONTENT))
     };
 
-    router
+    Ok(router
         .fallback(any(route_core_and_outpost))
         .with_state((core_router, proxy_router, proxy_outpost))
         .layer(from_fn(host_middleware))
-        .layer(from_fn(trusted_proxy_middleware))
+        .layer(from_fn(trusted_proxy_middleware)))
 }
 
 pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
@@ -261,7 +313,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
 
     let proxy_outpost = Arc::new(ArcSwapOption::empty());
 
-    let router = build_router(Arc::clone(&server), Arc::clone(&proxy_outpost));
+    let router = build_router(Arc::clone(&server), Arc::clone(&proxy_outpost))?;
 
     for addr in config::get().listen.http.iter().copied() {
         ak_axum::server::start_plain(tasks, "server", router.clone(), addr)?;

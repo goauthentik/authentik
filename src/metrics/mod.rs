@@ -2,7 +2,6 @@ use std::{env::temp_dir, os::unix, path::PathBuf, sync::Arc};
 
 use ak_axum::{router::wrap_router, server};
 use ak_common::{
-    Mode,
     arbiter::{Arbiter, Tasks},
     config,
 };
@@ -17,6 +16,8 @@ use tokio::{
 use tracing::info;
 
 #[cfg(feature = "core")]
+use crate::server::Server;
+#[cfg(feature = "core")]
 use crate::worker::Workers;
 
 mod handlers;
@@ -27,6 +28,8 @@ pub(crate) fn socket_path() -> PathBuf {
 
 pub(crate) struct Metrics {
     prometheus: PrometheusHandle,
+    #[cfg(feature = "core")]
+    pub(crate) server: ArcSwapOption<Server>,
     #[cfg(feature = "core")]
     pub(crate) workers: ArcSwapOption<Workers>,
 }
@@ -39,6 +42,8 @@ impl Metrics {
             .install_recorder()?;
         Ok(Self {
             prometheus,
+            #[cfg(feature = "core")]
+            server: ArcSwapOption::empty(),
             #[cfg(feature = "core")]
             workers: ArcSwapOption::empty(),
         })
@@ -78,27 +83,16 @@ pub(crate) fn start(tasks: &mut Tasks) -> Result<Arc<Metrics>> {
         .name(&format!("{}::run_upkeep", module_path!()))
         .spawn(run_upkeep(arbiter, Arc::clone(&metrics)))?;
 
-    // Serve the metrics endpoint for the worker and the standalone proxy outpost.
-    // In server and allinone mode, the server handles it.
-    let serve_metrics = match Mode::get() {
-        #[cfg(feature = "core")]
-        Mode::Worker => true,
-        #[cfg(feature = "proxy")]
-        Mode::Proxy => true,
-        _ => false,
-    };
-    if serve_metrics {
-        for addr in config::get().listen.metrics.iter().copied() {
-            server::start_plain(tasks, "metrics", router.clone(), addr)?;
-        }
-
-        server::start_unix(
-            tasks,
-            "metrics",
-            router,
-            unix::net::SocketAddr::from_pathname(socket_path())?,
-        )?;
+    for addr in config::get().listen.metrics.iter().copied() {
+        server::start_plain(tasks, "metrics", router.clone(), addr)?;
     }
+
+    server::start_unix(
+        tasks,
+        "metrics",
+        router,
+        unix::net::SocketAddr::from_pathname(socket_path())?,
+    )?;
 
     Ok(metrics)
 }
