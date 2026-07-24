@@ -25,6 +25,12 @@ const X_FORWARDED_SCHEME: &str = "X-Forwarded-Scheme";
 #[derive(Clone, Debug)]
 pub struct Scheme(pub http::uri::Scheme);
 
+impl Scheme {
+    fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
+}
+
 impl<S> FromRequestParts<S> for Scheme
 where
     S: Send + Sync,
@@ -99,9 +105,15 @@ async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
 pub async fn scheme_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
-    let scheme = extract_scheme(&mut parts).await;
-    Span::current().record("scheme", scheme.to_string());
-    parts.extensions.insert::<Scheme>(Scheme(scheme));
+    let scheme = if let Some(scheme) = parts.extensions.get::<Scheme>() {
+        scheme
+    } else {
+        let scheme = Scheme(extract_scheme(&mut parts).await);
+        parts.extensions.insert(scheme);
+        parts.extensions.get::<Scheme>().expect("infallible")
+    };
+
+    Span::current().record("scheme", scheme.as_str());
 
     let request = Request::from_parts(parts, body);
 
