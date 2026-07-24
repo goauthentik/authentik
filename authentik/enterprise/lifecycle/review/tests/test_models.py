@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_user
-from authentik.enterprise.lifecycle.models import (
+from authentik.enterprise.lifecycle.review.models import (
     LifecycleIteration,
     LifecycleRule,
     Review,
@@ -292,7 +292,7 @@ class TestLifecycleModels(TestCase):
         event.save()
 
         with patch(
-            "authentik.enterprise.lifecycle.tasks.send_notification.send_with_options"
+            "authentik.enterprise.lifecycle.review.tasks.send_notification.send_with_options"
         ) as send_with_options:
             rule.notify_reviewers(event, NotificationSeverity.NOTICE)
 

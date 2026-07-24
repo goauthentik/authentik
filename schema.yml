@@ -9684,6 +9684,118 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/:
+    get:
+      operationId: lifecycle_user_offboarding_list
+      parameters:
+      - in: query
+        name: action
+        schema:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/OffboardingStatusEnum'
+      - in: query
+        name: user__uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserOffboardingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_offboarding_create
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOffboardingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/{id}/:
+    get:
+      operationId: lifecycle_user_offboarding_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_user_offboarding_destroy
+      description: |-
+        Cancel a pending offboarding instead of deleting the record.
+
+        The row is retained (as `CANCELED`) so the offboarding stays visible in
+        the audit history; deletion would erase who scheduled and cancelled it.
+        You cannot cancel an offboarding that targets you.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /managed/blueprints/:
     get:
       operationId: managed_blueprints_list
@@ -39138,6 +39250,7 @@ components:
       - login_failed
       - logout
       - user_write
+      - user_offboarded
       - suspicious_request
       - password_set
       - secret_view
@@ -43799,6 +43912,7 @@ components:
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
+      - authentik_lifecycle.useroffboarding
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -45068,6 +45182,18 @@ components:
       - text
       - number
       - boolean
+      type: string
+    OffboardingActionEnum:
+      enum:
+      - deactivate
+      - delete
+      type: string
+    OffboardingStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      - canceled
       type: string
     OpenIDConnectConfiguration:
       type: object
@@ -47573,6 +47699,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedUserOffboardingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOffboarding'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -58546,6 +58687,83 @@ components:
       required:
       - identifier
       - source
+    UserOffboarding:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingStatusEnum'
+          readOnly: true
+        created_by_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        executed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - created_by_obj
+      - executed_at
+      - id
+      - scheduled_at
+      - status
+      - user
+      - user_obj
+    UserOffboardingRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        user:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+      required:
+      - scheduled_at
+      - user
     UserPasswordHashSetRequest:
       type: object
       description: Payload to set a users' password hash directly
