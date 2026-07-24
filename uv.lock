@@ -393,7 +393,7 @@ requires-dist = [
     { name = "dumb-init", specifier = "==1.2.5.post1" },
     { name = "duo-client", specifier = "==5.6.1" },
     { name = "fido2", specifier = "==2.2.1" },
-    { name = "geoip2", specifier = "==5.2.0" },
+    { name = "geoip2", specifier = "==5.3.0" },
     { name = "geopy", specifier = "==2.5.0" },
     { name = "google-api-python-client", specifier = "==2.198.0" },
     { name = "gssapi", specifier = "==1.11.1" },
@@ -1622,16 +1622,16 @@ wheels = [
 
 [[package]]
 name = "geoip2"
-version = "5.2.0"
+version = "5.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
     { name = "maxminddb" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/18/70/3d9e87289f79713aaf0fea9df4aa8e68776640fe59beb6299bb214610cfd/geoip2-5.2.0.tar.gz", hash = "sha256:6c9ded1953f8eb16043ed0a8ea20e6e9524ea7b65eb745724e12490aca44ef00", size = 176498, upload-time = "2025-11-20T18:21:08.874Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d2/8d/a62c6e56545049605777ad47de2274a72ed60e3991433ca3f1bcdd761ef5/geoip2-5.3.0.tar.gz", hash = "sha256:66df653e16c535f9bb45e3c7ce992fbe008911d9c7c349540574ea2fe8931db5", size = 177948, upload-time = "2026-07-16T22:34:01.497Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/d2/d55df737199a52b9d06e742ed2a608c525f0677e40375951372e65714fbd/geoip2-5.2.0-py3-none-any.whl", hash = "sha256:3d1546fd4eb7cad20445d027d2d9e81d3a71c074e019383f30db5d45e2c23320", size = 28991, upload-time = "2025-11-20T18:21:07.178Z" },
+    { url = "https://files.pythonhosted.org/packages/71/bf/407ea894512ad989f6fbf9f8e50a02a69ce888bf6a2b799e53a99e4d26a7/geoip2-5.3.0-py3-none-any.whl", hash = "sha256:7f82c587f3f3691f30adc8634d0b93de9853d96d514ed48ff3ba38f188a5df31", size = 29186, upload-time = "2026-07-16T22:34:00.126Z" },
 ]
 
 [[package]]

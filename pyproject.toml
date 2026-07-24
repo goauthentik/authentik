@@ -33,7 +33,7 @@ dependencies = [
   "dumb-init==1.2.5.post1",
   "duo-client==5.6.1",
   "fido2==2.2.1",
-  "geoip2==5.2.0",
+  "geoip2==5.3.0",
   "geopy==2.5.0",
   "google-api-python-client==2.198.0",
   "gssapi==1.11.1",
