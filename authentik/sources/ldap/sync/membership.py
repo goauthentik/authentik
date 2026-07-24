@@ -203,53 +203,45 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
         if not self._source.sync_group_hierarchy:
             self._task.info("Group hierarchy syncing is disabled for this Source")
             return -1
-        parentship_count = 0
+        count = 0
         for group_data in page_data:
             if (attributes := self.get_attributes(group_data)) is None:
                 continue
-            if self._source.lookup_groups_from_user:
-                parents = attributes.get(self._source.group_membership_field, [])
-            else:
-                group_ref = group_data.get(self._source.user_membership_attribute, {})
-                escaped_ref = escape_filter_chars(group_ref)
-                group_filter = (
-                    f"(&({self._source.group_object_filter})"
-                    f"({self._source.group_membership_field}={escaped_ref}))"
-                )
-
-                parents = [
-                    self.get_group(parent)
-                    for parent in self.search_paginator(
-                        search_base=self.base_dn_groups,
-                        search_filter=group_filter,
-                        search_scope=SUBTREE,
-                        attributes=[self._source.object_uniqueness_field],
-                    )
-                ]
-
             group = self.get_group(group_data)
             if not group:
                 continue
 
-            # add preexisting parents that are not managed by this source to the list of parents
-            parent_source_connections = GroupLDAPSourceConnection.objects.filter(
-                Q(source=self._source) & Q(group__in=group.parents.all())
-            )
-            parents.extend(
-                parent
-                for parent in group.parents.exclude(ldapsource__in=parent_source_connections)
-                .select_related("group")
-                .distinct()
-            )
+            # Deliberately WET
+            if self._source.lookup_groups_from_user:
+                parents_from_source_raw = attributes.get(self._source.group_membership_field, [])
+                parents_from_source = Group.objects.filter(
+                    **{
+                        (
+                            "attributes__" f"{self._source.user_membership_attribute}__in"
+                        ): parents_from_source_raw
+                    }
+                )
+                parents_not_from_source = group.parents.exclude(
+                    groupsourceconnection__source=self._source
+                )
 
-            parent_set_orig = set(group.parents.all())
-            parent_set_new = set(parents)
+                count = len(parents_from_source)
+                group.parents.set(parents_from_source.union(parents_not_from_source))
+            else:
+                children_from_source_raw = attributes.get(self._source.group_membership_field, [])
+                children_from_source = Group.objects.filter(
+                    **{
+                        (
+                            "attributes__" f"{self._source.user_membership_attribute}__in"
+                        ): children_from_source_raw
+                    }
+                )
+                children_not_from_source = group.children.exclude(
+                    groupsourceconnection__source=self._source
+                )
 
-            parentship_count += len(parent_set_orig - parent_set_new)
-            parentship_count += len(parent_set_new - parent_set_orig)
+                count = len(children_from_source)
+                group.children.set(children_from_source.union(children_not_from_source))
 
-            group.parents.set(parents)
-
-            group.save()
         self._logger.debug("Successfully updated group parentship")
-        return parentship_count
+        return count

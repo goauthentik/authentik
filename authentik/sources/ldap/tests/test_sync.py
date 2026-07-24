@@ -425,6 +425,7 @@ class LDAPSyncTests(TestCase):
         self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
         self.source.additional_user_dn = ""
         self.source.additional_group_dn = ""
+        self.source.sync_group_hierarchy = True
         self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
@@ -438,8 +439,6 @@ class LDAPSyncTests(TestCase):
             )
         )
         connection = MagicMock(return_value=mock_ad_connection())
-        self.source.sync_group_hierarchy = True
-        connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
             sync_parent_group = Group.objects.get(name=_user.username)
@@ -449,8 +448,8 @@ class LDAPSyncTests(TestCase):
             group_sync.sync_full()
             parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
             parentship_sync.sync_full()
-            child_group_name = "Test Group"
-            parent_group_name = "Domain Admins"
+            child_group_name = "Domain Admins"
+            parent_group_name = "Administrators"
             group: Group = Group.objects.filter(name=child_group_name).first()
             parent_ad_group = Group.objects.filter(name=parent_group_name).first()
             self.assertIsNotNone(group, f"Child group {child_group_name} not found")
@@ -473,6 +472,9 @@ class LDAPSyncTests(TestCase):
         self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
         self.source.additional_user_dn = ""
         self.source.additional_group_dn = ""
+        self.source.sync_group_hierarchy = True
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
         self.source.save()
         self.source.user_property_mappings.set(
             LDAPSourcePropertyMapping.objects.filter(
@@ -485,9 +487,6 @@ class LDAPSyncTests(TestCase):
                 managed="goauthentik.io/sources/ldap/default-name"
             )
         )
-        self.source.sync_group_hierarchy = True
-        self.source.lookup_groups_from_user = True
-        self.source.group_membership_field = "memberOf"
         connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
@@ -498,8 +497,8 @@ class LDAPSyncTests(TestCase):
             group_sync.sync_full()
             parentship_sync = ParentshipLDAPSynchronizer(self.source, Task())
             parentship_sync.sync_full()
-            child_group_name = "Test Group"
-            parent_group_name = "Domain Admins"
+            child_group_name = "Domain Admins"
+            parent_group_name = "Administrators"
             group: Group = Group.objects.filter(name=child_group_name).first()
             parent_ad_group = Group.objects.filter(name=parent_group_name).first()
             self.assertIsNotNone(group, f"Child group {child_group_name} not found")
