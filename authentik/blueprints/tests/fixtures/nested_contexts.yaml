@@ -1,0 +1,47 @@
+version: 1
+context:
+  foo.bar.baz: not-nested
+  foo:
+    bar:
+      baz:
+        qux: nested
+  bar:
+    - baz:
+        - list-element
+  baz.0.name: has-priority
+  baz:
+    - name: does-not-have-priority
+  qux:
+    - quux: !Context nested_ref_value
+  nested_ref_value: ref-value
+entries:
+  - model: authentik_core.group
+    identifiers:
+      name: !Context foo.bar.baz
+    attrs:
+      is_superuser: false
+  - model: authentik_core.group
+    identifiers:
+      name: !Context foo.bar.baz.qux
+    attrs:
+      is_superuser: false
+  - model: authentik_core.group
+    identifiers:
+      name: !Context bar.0.baz.0
+    attrs:
+      is_superuser: false
+  - model: authentik_core.group
+    identifiers:
+      name: !Context baz.0.name
+    attrs:
+      is_superuser: false
+  - model: authentik_core.group
+    identifiers:
+      name: !Context qux.0.quux
+    attrs:
+      is_superuser: false
+  - model: authentik_core.group
+    identifiers:
+      name: !Context [foo.bar.non.existing, default-value]
+    attrs:
+      is_superuser: false
