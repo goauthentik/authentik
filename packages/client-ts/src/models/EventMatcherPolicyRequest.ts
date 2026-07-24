@@ -93,11 +93,32 @@ export function EventMatcherPolicyRequestFromJSONTyped(
     return {
         name: json["name"],
         executionLogging: json["execution_logging"] == null ? undefined : json["execution_logging"],
-        action: json["action"] == null ? undefined : EventActionsFromJSON(json["action"]),
-        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
-        app: json["app"] == null ? undefined : AppEnumFromJSON(json["app"]),
-        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
-        query: json["query"] == null ? undefined : json["query"],
+        action:
+            json["action"] === undefined
+                ? undefined
+                : json["action"] === null
+                  ? null
+                  : EventActionsFromJSON(json["action"]),
+        clientIp:
+            json["client_ip"] === undefined
+                ? undefined
+                : json["client_ip"] === null
+                  ? null
+                  : json["client_ip"],
+        app:
+            json["app"] === undefined
+                ? undefined
+                : json["app"] === null
+                  ? null
+                  : AppEnumFromJSON(json["app"]),
+        model:
+            json["model"] === undefined
+                ? undefined
+                : json["model"] === null
+                  ? null
+                  : ModelEnumFromJSON(json["model"]),
+        query:
+            json["query"] === undefined ? undefined : json["query"] === null ? null : json["query"],
     };
 }
 

@@ -101,10 +101,34 @@ export function instanceOfRedirectStage(value: object): value is RedirectStage {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowSet" in (value as Record<string, any>)) &&
+            !("flow_set" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowSet"] === undefined &&
+            (value as Record<string, any>)["flow_set"] === undefined)
+    )
+        return false;
     if (!("mode" in value) || value["mode"] === undefined) return false;
     return true;
 }
@@ -128,7 +152,12 @@ export function RedirectStageFromJSONTyped(json: any, ignoreDiscriminator: boole
         keepContext: json["keep_context"] == null ? undefined : json["keep_context"],
         mode: RedirectStageModeEnumFromJSON(json["mode"]),
         targetStatic: json["target_static"] == null ? undefined : json["target_static"],
-        targetFlow: json["target_flow"] == null ? undefined : json["target_flow"],
+        targetFlow:
+            json["target_flow"] === undefined
+                ? undefined
+                : json["target_flow"] === null
+                  ? null
+                  : json["target_flow"],
     };
 }
 
@@ -139,7 +168,7 @@ export function RedirectStageToJSON(json: any): RedirectStage {
 export function RedirectStageToJSONTyped(
     value?: Omit<
         RedirectStage,
-        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

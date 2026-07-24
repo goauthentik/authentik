@@ -207,9 +207,27 @@ export interface SAMLProviderRequest {
  */
 export function instanceOfSAMLProviderRequest(value: object): value is SAMLProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
-    if (!("acsUrl" in value) || value["acsUrl"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("acsUrl" in (value as Record<string, any>)) &&
+            !("acs_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["acsUrl"] === undefined &&
+            (value as Record<string, any>)["acs_url"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -227,7 +245,11 @@ export function SAMLProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
@@ -247,11 +269,18 @@ export function SAMLProviderRequestFromJSONTyped(
             json["session_valid_not_on_or_after"] == null
                 ? undefined
                 : json["session_valid_not_on_or_after"],
-        nameIdMapping: json["name_id_mapping"] == null ? undefined : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] == null
+        nameIdMapping:
+            json["name_id_mapping"] === undefined
                 ? undefined
-                : json["authn_context_class_ref_mapping"],
+                : json["name_id_mapping"] === null
+                  ? null
+                  : json["name_id_mapping"],
+        authnContextClassRefMapping:
+            json["authn_context_class_ref_mapping"] === undefined
+                ? undefined
+                : json["authn_context_class_ref_mapping"] === null
+                  ? null
+                  : json["authn_context_class_ref_mapping"],
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -260,9 +289,24 @@ export function SAMLProviderRequestFromJSONTyped(
             json["signature_algorithm"] == null
                 ? undefined
                 : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
-        verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signingKp:
+            json["signing_kp"] === undefined
+                ? undefined
+                : json["signing_kp"] === null
+                  ? null
+                  : json["signing_kp"],
+        verificationKp:
+            json["verification_kp"] === undefined
+                ? undefined
+                : json["verification_kp"] === null
+                  ? null
+                  : json["verification_kp"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signResponse: json["sign_response"] == null ? undefined : json["sign_response"],
         signLogoutRequest:

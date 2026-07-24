@@ -55,10 +55,28 @@ export interface ErrorReportingConfig {
  */
 export function instanceOfErrorReportingConfig(value: object): value is ErrorReportingConfig {
     if (!("enabled" in value) || value["enabled"] === undefined) return false;
-    if (!("sentryDsn" in value) || value["sentryDsn"] === undefined) return false;
+    if (
+        (!("sentryDsn" in (value as Record<string, any>)) &&
+            !("sentry_dsn" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sentryDsn"] === undefined &&
+            (value as Record<string, any>)["sentry_dsn"] === undefined)
+    )
+        return false;
     if (!("environment" in value) || value["environment"] === undefined) return false;
-    if (!("sendPii" in value) || value["sendPii"] === undefined) return false;
-    if (!("tracesSampleRate" in value) || value["tracesSampleRate"] === undefined) return false;
+    if (
+        (!("sendPii" in (value as Record<string, any>)) &&
+            !("send_pii" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sendPii"] === undefined &&
+            (value as Record<string, any>)["send_pii"] === undefined)
+    )
+        return false;
+    if (
+        (!("tracesSampleRate" in (value as Record<string, any>)) &&
+            !("traces_sample_rate" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tracesSampleRate"] === undefined &&
+            (value as Record<string, any>)["traces_sample_rate"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -89,7 +107,7 @@ export function ErrorReportingConfigToJSON(json: any): ErrorReportingConfig {
 export function ErrorReportingConfigToJSONTyped(
     value?: Omit<
         ErrorReportingConfig,
-        "enabled" | "sentry_dsn" | "environment" | "send_pii" | "traces_sample_rate"
+        "enabled" | "sentryDsn" | "environment" | "sendPii" | "tracesSampleRate"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

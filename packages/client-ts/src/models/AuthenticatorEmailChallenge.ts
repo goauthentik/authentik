@@ -72,8 +72,20 @@ export interface AuthenticatorEmailChallenge {
 export function instanceOfAuthenticatorEmailChallenge(
     value: object,
 ): value is AuthenticatorEmailChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -95,7 +107,8 @@ export function AuthenticatorEmailChallengeFromJSONTyped(
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         pendingUser: json["pending_user"],
         pendingUserAvatar: json["pending_user_avatar"],
-        email: json["email"] == null ? undefined : json["email"],
+        email:
+            json["email"] === undefined ? undefined : json["email"] === null ? null : json["email"],
         emailRequired: json["email_required"] == null ? undefined : json["email_required"],
     };
 }

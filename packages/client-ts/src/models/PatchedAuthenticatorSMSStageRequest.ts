@@ -115,7 +115,12 @@ export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
     }
     return {
         name: json["name"] == null ? undefined : json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         provider: json["provider"] == null ? undefined : ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"] == null ? undefined : json["from_number"],
@@ -124,7 +129,12 @@ export function PatchedAuthenticatorSMSStageRequestFromJSONTyped(
         authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
-        mapping: json["mapping"] == null ? undefined : json["mapping"],
+        mapping:
+            json["mapping"] === undefined
+                ? undefined
+                : json["mapping"] === null
+                  ? null
+                  : json["mapping"],
     };
 }
 

@@ -75,7 +75,12 @@ export function AuthenticatorStaticStageRequestFromJSONTyped(
     }
     return {
         name: json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         tokenCount: json["token_count"] == null ? undefined : json["token_count"],
         tokenLength: json["token_length"] == null ? undefined : json["token_length"],

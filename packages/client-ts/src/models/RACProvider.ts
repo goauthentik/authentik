@@ -128,26 +128,70 @@ export interface RACProvider {
 export function instanceOfRACProvider(value: object): value is RACProvider {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
-        return false;
-    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
-        return false;
     if (
-        !("assignedBackchannelApplicationSlug" in value) ||
-        value["assignedBackchannelApplicationSlug"] === undefined
+        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_application_slug"] === undefined)
     )
         return false;
     if (
-        !("assignedBackchannelApplicationName" in value) ||
-        value["assignedBackchannelApplicationName"] === undefined
+        (!("assignedApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_application_name"] === undefined)
     )
         return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("outpostSet" in value) || value["outpostSet"] === undefined) return false;
+    if (
+        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("outpostSet" in (value as Record<string, any>)) &&
+            !("outpost_set" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["outpostSet"] === undefined &&
+            (value as Record<string, any>)["outpost_set"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -163,7 +207,11 @@ export function RACProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean
         pk: json["pk"],
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         component: json["component"],
@@ -193,14 +241,14 @@ export function RACProviderToJSONTyped(
         RACProvider,
         | "pk"
         | "component"
-        | "assigned_application_slug"
-        | "assigned_application_name"
-        | "assigned_backchannel_application_slug"
-        | "assigned_backchannel_application_name"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
-        | "outpost_set"
+        | "assignedApplicationSlug"
+        | "assignedApplicationName"
+        | "assignedBackchannelApplicationSlug"
+        | "assignedBackchannelApplicationName"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "outpostSet"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

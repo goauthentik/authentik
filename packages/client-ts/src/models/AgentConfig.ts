@@ -89,20 +89,76 @@ export interface AgentConfig {
  * Check if a given object implements the AgentConfig interface.
  */
 export function instanceOfAgentConfig(value: object): value is AgentConfig {
-    if (!("deviceId" in value) || value["deviceId"] === undefined) return false;
-    if (!("refreshInterval" in value) || value["refreshInterval"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("jwksAuth" in value) || value["jwksAuth"] === undefined) return false;
-    if (!("jwksChallenge" in value) || value["jwksChallenge"] === undefined) return false;
-    if (!("nssUidOffset" in value) || value["nssUidOffset"] === undefined) return false;
-    if (!("nssGidOffset" in value) || value["nssGidOffset"] === undefined) return false;
     if (
-        !("authTerminateSessionOnExpiry" in value) ||
-        value["authTerminateSessionOnExpiry"] === undefined
+        (!("deviceId" in (value as Record<string, any>)) &&
+            !("device_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceId"] === undefined &&
+            (value as Record<string, any>)["device_id"] === undefined)
     )
         return false;
-    if (!("systemConfig" in value) || value["systemConfig"] === undefined) return false;
-    if (!("licenseStatus" in value) || value["licenseStatus"] === undefined) return false;
+    if (
+        (!("refreshInterval" in (value as Record<string, any>)) &&
+            !("refresh_interval" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["refreshInterval"] === undefined &&
+            (value as Record<string, any>)["refresh_interval"] === undefined)
+    )
+        return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("jwksAuth" in (value as Record<string, any>)) &&
+            !("jwks_auth" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["jwksAuth"] === undefined &&
+            (value as Record<string, any>)["jwks_auth"] === undefined)
+    )
+        return false;
+    if (
+        (!("jwksChallenge" in (value as Record<string, any>)) &&
+            !("jwks_challenge" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["jwksChallenge"] === undefined &&
+            (value as Record<string, any>)["jwks_challenge"] === undefined)
+    )
+        return false;
+    if (
+        (!("nssUidOffset" in (value as Record<string, any>)) &&
+            !("nss_uid_offset" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nssUidOffset"] === undefined &&
+            (value as Record<string, any>)["nss_uid_offset"] === undefined)
+    )
+        return false;
+    if (
+        (!("nssGidOffset" in (value as Record<string, any>)) &&
+            !("nss_gid_offset" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nssGidOffset"] === undefined &&
+            (value as Record<string, any>)["nss_gid_offset"] === undefined)
+    )
+        return false;
+    if (
+        (!("authTerminateSessionOnExpiry" in (value as Record<string, any>)) &&
+            !("auth_terminate_session_on_expiry" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authTerminateSessionOnExpiry"] === undefined &&
+            (value as Record<string, any>)["auth_terminate_session_on_expiry"] === undefined)
+    )
+        return false;
+    if (
+        (!("systemConfig" in (value as Record<string, any>)) &&
+            !("system_config" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["systemConfig"] === undefined &&
+            (value as Record<string, any>)["system_config"] === undefined)
+    )
+        return false;
+    if (
+        (!("licenseStatus" in (value as Record<string, any>)) &&
+            !("license_status" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["licenseStatus"] === undefined &&
+            (value as Record<string, any>)["license_status"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -135,13 +191,13 @@ export function AgentConfigToJSON(json: any): AgentConfig {
 export function AgentConfigToJSONTyped(
     value?: Omit<
         AgentConfig,
-        | "device_id"
-        | "refresh_interval"
-        | "authorization_flow"
-        | "jwks_auth"
-        | "jwks_challenge"
-        | "system_config"
-        | "license_status"
+        | "deviceId"
+        | "refreshInterval"
+        | "authorizationFlow"
+        | "jwksAuth"
+        | "jwksChallenge"
+        | "systemConfig"
+        | "licenseStatus"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

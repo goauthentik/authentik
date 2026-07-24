@@ -79,8 +79,20 @@ export interface RadiusProviderRequest {
  */
 export function instanceOfRadiusProviderRequest(value: object): value is RadiusProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -98,14 +110,23 @@ export function RadiusProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
         sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
     };
 }
 

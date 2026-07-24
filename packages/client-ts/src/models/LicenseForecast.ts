@@ -48,11 +48,33 @@ export interface LicenseForecast {
  * Check if a given object implements the LicenseForecast interface.
  */
 export function instanceOfLicenseForecast(value: object): value is LicenseForecast {
-    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
-    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
-    if (!("forecastedInternalUsers" in value) || value["forecastedInternalUsers"] === undefined)
+    if (
+        (!("internalUsers" in (value as Record<string, any>)) &&
+            !("internal_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["internalUsers"] === undefined &&
+            (value as Record<string, any>)["internal_users"] === undefined)
+    )
         return false;
-    if (!("forecastedExternalUsers" in value) || value["forecastedExternalUsers"] === undefined)
+    if (
+        (!("externalUsers" in (value as Record<string, any>)) &&
+            !("external_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalUsers"] === undefined &&
+            (value as Record<string, any>)["external_users"] === undefined)
+    )
+        return false;
+    if (
+        (!("forecastedInternalUsers" in (value as Record<string, any>)) &&
+            !("forecasted_internal_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["forecastedInternalUsers"] === undefined &&
+            (value as Record<string, any>)["forecasted_internal_users"] === undefined)
+    )
+        return false;
+    if (
+        (!("forecastedExternalUsers" in (value as Record<string, any>)) &&
+            !("forecasted_external_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["forecastedExternalUsers"] === undefined &&
+            (value as Record<string, any>)["forecasted_external_users"] === undefined)
+    )
         return false;
     return true;
 }

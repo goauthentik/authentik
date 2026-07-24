@@ -58,7 +58,13 @@ export interface UsedBy {
  */
 export function instanceOfUsedBy(value: object): value is UsedBy {
     if (!("app" in value) || value["app"] === undefined) return false;
-    if (!("modelName" in value) || value["modelName"] === undefined) return false;
+    if (
+        (!("modelName" in (value as Record<string, any>)) &&
+            !("model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modelName"] === undefined &&
+            (value as Record<string, any>)["model_name"] === undefined)
+    )
+        return false;
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("action" in value) || value["action"] === undefined) return false;

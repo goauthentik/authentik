@@ -99,8 +99,20 @@ export function instanceOfAuthenticatorSMSStageRequest(
 ): value is AuthenticatorSMSStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("fromNumber" in value) || value["fromNumber"] === undefined) return false;
-    if (!("accountSid" in value) || value["accountSid"] === undefined) return false;
+    if (
+        (!("fromNumber" in (value as Record<string, any>)) &&
+            !("from_number" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fromNumber"] === undefined &&
+            (value as Record<string, any>)["from_number"] === undefined)
+    )
+        return false;
+    if (
+        (!("accountSid" in (value as Record<string, any>)) &&
+            !("account_sid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["accountSid"] === undefined &&
+            (value as Record<string, any>)["account_sid"] === undefined)
+    )
+        return false;
     if (!("auth" in value) || value["auth"] === undefined) return false;
     return true;
 }
@@ -118,7 +130,12 @@ export function AuthenticatorSMSStageRequestFromJSONTyped(
     }
     return {
         name: json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         provider: ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"],
@@ -127,7 +144,12 @@ export function AuthenticatorSMSStageRequestFromJSONTyped(
         authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
-        mapping: json["mapping"] == null ? undefined : json["mapping"],
+        mapping:
+            json["mapping"] === undefined
+                ? undefined
+                : json["mapping"] === null
+                  ? null
+                  : json["mapping"],
     };
 }
 

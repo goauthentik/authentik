@@ -141,18 +141,76 @@ export interface CurrentBrand {
  * Check if a given object implements the CurrentBrand interface.
  */
 export function instanceOfCurrentBrand(value: object): value is CurrentBrand {
-    if (!("matchedDomain" in value) || value["matchedDomain"] === undefined) return false;
-    if (!("brandingTitle" in value) || value["brandingTitle"] === undefined) return false;
-    if (!("brandingLogo" in value) || value["brandingLogo"] === undefined) return false;
-    if (!("brandingLogoThemedUrls" in value) || value["brandingLogoThemedUrls"] === undefined)
+    if (
+        (!("matchedDomain" in (value as Record<string, any>)) &&
+            !("matched_domain" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["matchedDomain"] === undefined &&
+            (value as Record<string, any>)["matched_domain"] === undefined)
+    )
         return false;
-    if (!("brandingFavicon" in value) || value["brandingFavicon"] === undefined) return false;
-    if (!("brandingFaviconThemedUrls" in value) || value["brandingFaviconThemedUrls"] === undefined)
+    if (
+        (!("brandingTitle" in (value as Record<string, any>)) &&
+            !("branding_title" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingTitle"] === undefined &&
+            (value as Record<string, any>)["branding_title"] === undefined)
+    )
         return false;
-    if (!("brandingCustomCss" in value) || value["brandingCustomCss"] === undefined) return false;
-    if (!("uiFooterLinks" in value) || value["uiFooterLinks"] === undefined) return false;
-    if (!("uiTheme" in value) || value["uiTheme"] === undefined) return false;
-    if (!("defaultLocale" in value) || value["defaultLocale"] === undefined) return false;
+    if (
+        (!("brandingLogo" in (value as Record<string, any>)) &&
+            !("branding_logo" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingLogo"] === undefined &&
+            (value as Record<string, any>)["branding_logo"] === undefined)
+    )
+        return false;
+    if (
+        (!("brandingLogoThemedUrls" in (value as Record<string, any>)) &&
+            !("branding_logo_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingLogoThemedUrls"] === undefined &&
+            (value as Record<string, any>)["branding_logo_themed_urls"] === undefined)
+    )
+        return false;
+    if (
+        (!("brandingFavicon" in (value as Record<string, any>)) &&
+            !("branding_favicon" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingFavicon"] === undefined &&
+            (value as Record<string, any>)["branding_favicon"] === undefined)
+    )
+        return false;
+    if (
+        (!("brandingFaviconThemedUrls" in (value as Record<string, any>)) &&
+            !("branding_favicon_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingFaviconThemedUrls"] === undefined &&
+            (value as Record<string, any>)["branding_favicon_themed_urls"] === undefined)
+    )
+        return false;
+    if (
+        (!("brandingCustomCss" in (value as Record<string, any>)) &&
+            !("branding_custom_css" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandingCustomCss"] === undefined &&
+            (value as Record<string, any>)["branding_custom_css"] === undefined)
+    )
+        return false;
+    if (
+        (!("uiFooterLinks" in (value as Record<string, any>)) &&
+            !("ui_footer_links" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["uiFooterLinks"] === undefined &&
+            (value as Record<string, any>)["ui_footer_links"] === undefined)
+    )
+        return false;
+    if (
+        (!("uiTheme" in (value as Record<string, any>)) &&
+            !("ui_theme" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["uiTheme"] === undefined &&
+            (value as Record<string, any>)["ui_theme"] === undefined)
+    )
+        return false;
+    if (
+        (!("defaultLocale" in (value as Record<string, any>)) &&
+            !("default_locale" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["defaultLocale"] === undefined &&
+            (value as Record<string, any>)["default_locale"] === undefined)
+    )
+        return false;
     if (!("flags" in value) || value["flags"] === undefined) return false;
     return true;
 }
@@ -196,11 +254,11 @@ export function CurrentBrandToJSON(json: any): CurrentBrand {
 export function CurrentBrandToJSONTyped(
     value?: Omit<
         CurrentBrand,
-        | "branding_logo_themed_urls"
-        | "branding_favicon_themed_urls"
-        | "ui_footer_links"
-        | "ui_theme"
-        | "default_locale"
+        | "brandingLogoThemedUrls"
+        | "brandingFaviconThemedUrls"
+        | "uiFooterLinks"
+        | "uiTheme"
+        | "defaultLocale"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
