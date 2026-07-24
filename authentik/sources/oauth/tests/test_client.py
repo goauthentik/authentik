@@ -18,6 +18,7 @@ class TestOAuthClient(TestCase):
             authorization_url="",
             profile_url="",
             consumer_key=generate_id(),
+            consumer_secret=generate_id(),
         )
         self.factory = RequestFactory()
 
@@ -47,6 +48,19 @@ class TestOAuthClient(TestCase):
         self.assertNotIn("client_id", args)
         self.assertNotIn("client_secret", args)
 
+    def test_client_post_body_public(self):
+        """Test public client post body without secret"""
+        self.source.provider_type = "github"
+        self.source.consumer_secret = ""
+        self.source.save()
+        request = self.factory.get("/")
+        request.session = {}
+        request.user = get_anonymous_user()
+        client = OAuth2Client(self.source, request)
+        args = client.get_access_token_args("", "")
+        self.assertIn("client_id", args)
+        self.assertNotIn("client_secret", args)
+
     def test_client_openid_auth(self):
         """Test login_challenge"""
         request = self.factory.get("/")
@@ -67,3 +81,17 @@ class TestOAuthClient(TestCase):
         args = client.get_access_token_args("", "")
         self.assertIn("client_id", args)
         self.assertIn("client_secret", args)
+
+    def test_client_openid_public(self):
+        """Test public client OIDC without secret"""
+        self.source.consumer_secret = ""
+        self.source.authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
+        self.source.save()
+        request = self.factory.get("/")
+        request.session = {}
+        request.user = get_anonymous_user()
+        client = OpenIDConnectClient(self.source, request)
+        self.assertIsNone(client.get_access_token_auth())
+        args = client.get_access_token_args("", "")
+        self.assertIn("client_id", args)
+        self.assertNotIn("client_secret", args)
