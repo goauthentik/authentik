@@ -86,6 +86,7 @@ export const AppEnum = {
     AuthentikEnterpriseEndpointsConnectorsGoogleChrome:
         "authentik.enterprise.endpoints.connectors.google_chrome",
     AuthentikEnterpriseLifecycle: "authentik.enterprise.lifecycle",
+    AuthentikEnterprisePersonas: "authentik.enterprise.personas",
     AuthentikEnterprisePoliciesUniquePassword: "authentik.enterprise.policies.unique_password",
     AuthentikEnterpriseProvidersGoogleWorkspace: "authentik.enterprise.providers.google_workspace",
     AuthentikEnterpriseProvidersMicrosoftEntra: "authentik.enterprise.providers.microsoft_entra",
