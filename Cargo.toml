@@ -38,7 +38,7 @@ dotenvy = "= 0.15.7"
 durstr = "= 0.5.1"
 eyre = "= 0.6.12"
 forwarded-header-value = "= 0.1.1"
-futures = "= 0.3.32"
+futures = "= 0.3.33"
 glob = "= 0.3.3"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
@@ -78,9 +78,9 @@ sentry = { version = "= 0.48.5", default-features = false, features = [
   "tower",
   "tracing",
 ] }
-serde = { version = "= 1.0.228", features = ["derive"] }
+serde = { version = "= 1.0.229", features = ["derive"] }
 serde_json = "= 1.0.150"
-serde_repr = "= 0.1.20"
+serde_repr = "= 0.1.21"
 serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
 ] }
@@ -96,7 +96,7 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
-thiserror = "= 2.0.18"
+thiserror = "= 2.0.19"
 time = { version = "= 0.3.53", features = ["macros"] }
 tokio = { version = "= 1.52.4", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
@@ -113,7 +113,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.5", features = ["serde", "v4"] }
+uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 which = "= 8.0.5"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
