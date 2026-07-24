@@ -58,22 +58,22 @@ def ssf_events_dispatch(events_data: dict[str, dict[str, Any]]):
         send_ssf_event.send_with_options(args=(stream_uuid, event_data), rel_obj=stream.provider)
 
 
-def _check_app_access(stream: Stream, event_data: dict) -> bool:
+def _check_app_access(stream: Stream, event_data: dict) -> tuple[bool, User]:
     """Check if event is related to user and if so, check
     if the user has access to the application"""
     # `event_data` is a dict version of a StreamEvent
     sub_id = event_data.get("payload", {}).get("sub_id", {})
     email = sub_id.get("user", {}).get("email", None)
     if not email:
-        return True
+        return True, None
     user = User.objects.filter(email=email).first()
     if not user:
-        return True
+        return True, None
     engine = PolicyEngine(stream.provider.backchannel_application, user)
     engine.empty_result = AppAccessWithoutBindings.get()
     engine.use_cache = False
     engine.build()
-    return engine.passing
+    return engine.passing, user
 
 
 @actor(description=_("Send an SSF event."))
@@ -83,7 +83,8 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     stream = Stream.objects.filter(pk=stream_uuid).first()
     if not stream:
         return
-    if not _check_app_access(stream, event_data):
+    access, user = _check_app_access(stream, event_data)
+    if not access:
         return
     event = StreamEvent.objects.create(**event_data)
     self.set_uid(event.pk)
@@ -92,6 +93,7 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     if stream.delivery_method not in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
         return
 
+    self.info("Sending event for user", user_username=user.username if user else None)
     headers = {"Content-Type": "application/secevent+jwt", "Accept": "application/json"}
     if stream.authorization_header:
         headers["Authorization"] = stream.authorization_header
