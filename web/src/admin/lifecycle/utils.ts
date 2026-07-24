@@ -1,7 +1,11 @@
 import { PFColor } from "#elements/Label";
 import { LitFC } from "#elements/types";
 
-import { LifecycleIterationStateEnum } from "@goauthentik/api";
+import {
+    LifecycleIterationStateEnum,
+    OffboardingActionEnum,
+    OffboardingStatusEnum,
+} from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -31,4 +35,36 @@ export const LifecycleIterationStatus: LitFC<LifecycleIterationStatusProps> = ({
             () => html`<ak-label color=${PFColor.Gray}>${msg("Canceled")}</ak-label>`,
         )
         .otherwise(() => html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`);
+};
+
+export interface OffboardingStatusProps {
+    status?: OffboardingStatusEnum;
+}
+
+export const OffboardingStatus: LitFC<OffboardingStatusProps> = ({ status }) => {
+    return match(status)
+        .with(
+            OffboardingStatusEnum.Pending,
+            () => html`<ak-label color=${PFColor.Orange}>${msg("Pending")}</ak-label>`,
+        )
+        .with(
+            OffboardingStatusEnum.Completed,
+            () => html`<ak-label color=${PFColor.Green}>${msg("Completed")}</ak-label>`,
+        )
+        .with(
+            OffboardingStatusEnum.Failed,
+            () => html`<ak-label color=${PFColor.Red}>${msg("Failed")}</ak-label>`,
+        )
+        .with(
+            OffboardingStatusEnum.Canceled,
+            () => html`<ak-label color=${PFColor.Gray}>${msg("Canceled")}</ak-label>`,
+        )
+        .otherwise(() => html`<ak-label color=${PFColor.Gray}>${msg("Unknown")}</ak-label>`);
+};
+
+export const offboardingActionLabel = (action?: OffboardingActionEnum): string => {
+    return match(action)
+        .with(OffboardingActionEnum.Deactivate, () => msg("Deactivate"))
+        .with(OffboardingActionEnum.Delete, () => msg("Delete"))
+        .otherwise(() => msg("Unknown"));
 };
