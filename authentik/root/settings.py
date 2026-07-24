@@ -376,6 +376,7 @@ EMAIL_SUBJECT_PREFIX = "[authentik] "
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
+# Keep this list in sync with the hasher handling in authentik.lib.validators.
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",

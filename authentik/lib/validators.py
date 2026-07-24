@@ -75,6 +75,7 @@ def _password_hash_parameters(
     hasher: BasePasswordHasher, decoded: dict[str, Any]
 ) -> dict[str, tuple[str | int, str | int]]:
     """Return the provided and current work parameters for a password hasher."""
+    # Keep this handling in sync with the hashers configured in settings.PASSWORD_HASHERS.
     parameters: dict[str, tuple[str | int, str | int]] = {
         str(_("Algorithm")): (decoded["algorithm"], hasher.algorithm),
     }
