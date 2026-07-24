@@ -23767,7 +23767,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: sync_group_parents
+        name: sync_group_hierarchy
         schema:
           type: boolean
       - in: query
@@ -42606,7 +42606,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_group_parents:
+        sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
       required:
@@ -42828,7 +42828,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_group_parents:
+        sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
       required:
@@ -49928,7 +49928,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
-        sync_group_parents:
+        sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:

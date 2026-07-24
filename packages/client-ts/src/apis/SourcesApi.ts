@@ -715,7 +715,7 @@ export interface SourcesLdapListRequest {
     slug?: string;
     sni?: boolean;
     startTls?: boolean;
-    syncGroupParents?: boolean;
+    syncGroupHierarchy?: boolean;
     syncGroups?: boolean;
     syncParentGroup?: string;
     syncUsers?: boolean;
@@ -5969,8 +5969,8 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["start_tls"] = requestParameters["startTls"];
         }
 
-        if (requestParameters["syncGroupParents"] != null) {
-            queryParameters["sync_group_parents"] = requestParameters["syncGroupParents"];
+        if (requestParameters["syncGroupHierarchy"] != null) {
+            queryParameters["sync_group_hierarchy"] = requestParameters["syncGroupHierarchy"];
         }
 
         if (requestParameters["syncGroups"] != null) {

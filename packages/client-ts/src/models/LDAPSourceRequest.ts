@@ -243,7 +243,7 @@ export interface LDAPSourceRequest {
      * @type {boolean}
      * @memberof LDAPSourceRequest
      */
-    syncGroupParents?: boolean;
+    syncGroupHierarchy?: boolean;
 }
 
 /**
@@ -333,8 +333,8 @@ export function LDAPSourceRequestFromJSONTyped(
             json["sync_outgoing_trigger_mode"] == null
                 ? undefined
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
-        syncGroupParents:
-            json["sync_group_parents"] == null ? undefined : json["sync_group_parents"],
+        syncGroupHierarchy:
+            json["sync_group_hierarchy"] == null ? undefined : json["sync_group_hierarchy"],
     };
 }
 
@@ -388,6 +388,6 @@ export function LDAPSourceRequestToJSONTyped(
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],
         ),
-        sync_group_parents: value["syncGroupParents"],
+        sync_group_hierarchy: value["syncGroupHierarchy"],
     };
 }

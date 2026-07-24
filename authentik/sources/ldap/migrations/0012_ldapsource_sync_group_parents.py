@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="ldapsource",
-            name="sync_group_parents",
+            name="sync_group_hierarchy",
             field=models.BooleanField(
                 default=True, help_text="Sync group parentage/hierarchy from LDAP directories."
             ),

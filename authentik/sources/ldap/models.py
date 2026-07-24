@@ -144,7 +144,7 @@ class LDAPSource(IncomingSyncSource):
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
 
-    sync_group_parents = models.BooleanField(
+    sync_group_hierarchy = models.BooleanField(
         default=True, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
     )
 

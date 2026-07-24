@@ -438,7 +438,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         connection = MagicMock(return_value=mock_ad_connection())
-        self.source.sync_group_parents = True
+        self.source.sync_group_hierarchy = True
         connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
@@ -485,9 +485,9 @@ class LDAPSyncTests(TestCase):
                 managed="goauthentik.io/sources/ldap/default-name"
             )
         )
-        self.source.sync_group_parents = True
+        self.source.sync_group_hierarchy = True
         self.source.lookup_groups_from_user = True
-        self.source.membership_field = "memberOf"
+        self.source.group_membership_field = "memberOf"
         connection = MagicMock(return_value=mock_ad_connection())
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             _user = create_test_admin_user()
