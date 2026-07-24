@@ -61,7 +61,7 @@ The recovery rate-limiting fields only affect recovery-style email sends. They l
 
 ### Custom templates
 
-You can provide custom email templates.
+You can provide custom email templates. Email templates must be either `.html` or `.txt` files.
 
 :::info
 You can also add a matching `.txt` file next to the `.html` file to send multipart text and HTML emails.
