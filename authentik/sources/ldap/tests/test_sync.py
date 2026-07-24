@@ -22,7 +22,10 @@ from authentik.sources.ldap.models import (
 )
 from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import (
+    GroupHierarchyLDAPSynchronizer,
+    MembershipLDAPSynchronizer,
+)
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
@@ -416,6 +419,102 @@ class LDAPSyncTests(TestCase):
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
+
+    def test_sync_group_hierarchy_ad(self):
+        """Test group hierarchy sync"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.sync_group_hierarchy = True
+        self.source.save()
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        connection = MagicMock(return_value=mock_ad_connection())
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            sync_parent_group = Group.objects.get(name=_user.username)
+            self.source.sync_parent_group = sync_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            hierarchy_sync = GroupHierarchyLDAPSynchronizer(self.source, Task())
+            hierarchy_sync.sync_full()
+            child_group_name = "Domain Admins"
+            parent_group_name = "Administrators"
+            group: Group = Group.objects.filter(name=child_group_name).first()
+            parent_ad_group = Group.objects.filter(name=parent_group_name).first()
+            self.assertIsNotNone(group, f"Child group {child_group_name} not found")
+            self.assertIsNotNone(parent_ad_group, f"Parent group {parent_group_name} not found")
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                f"Parent group {parent_group_name} not synced as parent of {child_group_name}",
+            )
+            self.assertTrue(
+                sync_parent_group in group.parents.all(),
+                f"Additional parent group missing from {child_group_name}'s parents",
+            )
+            self.assertTrue(
+                sync_parent_group in parent_ad_group.parents.all(),
+                f"Additional parent group missing from {parent_group_name}'s parents",
+            )
+
+    def test_sync_group_hierarchy_ad_memberOf(self):
+        """Test group hierarchy sync"""
+        self.source.base_dn = "dc=t,dc=goauthentik,dc=io"
+        self.source.additional_user_dn = ""
+        self.source.additional_group_dn = ""
+        self.source.sync_group_hierarchy = True
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
+        self.source.save()
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/default-name"
+            )
+        )
+        connection = MagicMock(return_value=mock_ad_connection())
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            sync_parent_group = Group.objects.get(name=_user.username)
+            self.source.sync_parent_group = sync_parent_group
+            self.source.save()
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
+            group_sync.sync_full()
+            hierarchy_sync = GroupHierarchyLDAPSynchronizer(self.source, Task())
+            hierarchy_sync.sync_full()
+            child_group_name = "Domain Admins"
+            parent_group_name = "Administrators"
+            group: Group = Group.objects.filter(name=child_group_name).first()
+            parent_ad_group = Group.objects.filter(name=parent_group_name).first()
+            self.assertIsNotNone(group, f"Child group {child_group_name} not found")
+            self.assertIsNotNone(parent_ad_group, f"Parent group {parent_group_name} not found")
+            self.assertTrue(
+                parent_ad_group in group.parents.all(),
+                f"Parent group {parent_group_name} not synced as parent of {child_group_name}",
+            )
+            self.assertTrue(
+                sync_parent_group in group.parents.all(),
+                f"Additional parent group missing from {child_group_name}'s parents",
+            )
+            self.assertTrue(
+                sync_parent_group in parent_ad_group.parents.all(),
+                f"Additional parent group missing from {parent_group_name}'s parents",
+            )
 
     def test_tasks_ad(self):
         """Test Scheduled tasks"""

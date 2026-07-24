@@ -238,6 +238,12 @@ export interface PatchedLDAPSourceRequest {
      * @memberof PatchedLDAPSourceRequest
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
+    /**
+     * Sync group parentage/hierarchy from LDAP directories.
+     * @type {boolean}
+     * @memberof PatchedLDAPSourceRequest
+     */
+    syncGroupHierarchy?: boolean;
 }
 
 /**
@@ -348,6 +354,8 @@ export function PatchedLDAPSourceRequestFromJSONTyped(
             json["sync_outgoing_trigger_mode"] == null
                 ? undefined
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
+        syncGroupHierarchy:
+            json["sync_group_hierarchy"] == null ? undefined : json["sync_group_hierarchy"],
     };
 }
 
@@ -401,5 +409,6 @@ export function PatchedLDAPSourceRequestToJSONTyped(
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],
         ),
+        sync_group_hierarchy: value["syncGroupHierarchy"],
     };
 }

@@ -47,6 +47,7 @@ If the LDAP server rejects the TLS handshake, verify that **Server URI**, **Enab
 
 #### Additional settings
 
+- **Sync Group Parents**: Sync group hierarchy from LDAP directories. Adds parents to groups imported from this LDAP directory, using same lookup fields and method as for user group membership.
 - **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.
 - **Additional User DN**: Prepended to the base DN for user queries.
