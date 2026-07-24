@@ -239,8 +239,8 @@ async fn watch_events_inner<O: Outpost>(
                 ws_write.send(Message::text(serde_json::to_string(&ping)?)).await?;
                 trace!("sent websocket hello (heartbeat)");
             },
-            Ok(arbiter::Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined1() {
+            event = events_rx.recv() => {
+                if let Ok(arbiter::Event::Signal(signal)) = event && signal == SignalKind::user_defined1() {
                     info!("refreshing outpost on signal");
                     if let Err(err) = handle_event(
                         Arc::clone(&controller),

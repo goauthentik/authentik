@@ -158,8 +158,11 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
 
     loop {
         tokio::select! {
-            Ok(Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined1() {
+            event = events_rx.recv() => {
+                if let Ok(Event::Signal(signal)) = event
+                    && signal == SignalKind::user_defined1()
+                    && !GUNICORN_READY.load(Ordering::Relaxed)
+                {
                     info!("server notified us ready, marked ready for operation");
                     GUNICORN_READY.store(true, Ordering::Relaxed);
                     arbiter.send_event(Event::GunicornIsReady)?;

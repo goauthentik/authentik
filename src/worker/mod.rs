@@ -291,8 +291,11 @@ async fn watch_workers(arbiter: Arbiter, workers: Arc<Workers>) -> Result<()> {
 
     loop {
         tokio::select! {
-            Ok(Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined2() && !INITIAL_WORKER_READY.load(Ordering::Relaxed) {
+            event = events_rx.recv() => {
+                if let Ok(Event::Signal(signal)) = event
+                    && signal == SignalKind::user_defined2()
+                    && !INITIAL_WORKER_READY.load(Ordering::Relaxed)
+                {
                     info!("worker notified us ready, marked ready for operation");
                     INITIAL_WORKER_READY.store(true, Ordering::Relaxed);
                     workers.start_other_workers().await?;
