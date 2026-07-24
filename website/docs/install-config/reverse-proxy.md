@@ -8,29 +8,55 @@ Use this page when authentik is exposed through a reverse proxy or load balancer
 authentik uses WebSockets for communication with Outposts. Your reverse proxy must support HTTP/1.1 or newer. HTTP/1.0 reverse proxies are not supported.
 :::
 
+It is recommended to use a [modern TLS configuration](https://ssl-config.mozilla.org/).
+
 ## Required proxy headers
 
 When authentik is behind a reverse proxy, configure the proxy to forward the original request HTTP headers to authentik unchanged. These headers tell authentik which host the client requested, whether the original connection used HTTP or HTTPS, what the client IP address was, and whether the request is attempting to upgrade to a WebSocket connection.
 
-At a minimum, preserve these headers in your reverse proxy configuration:
+### Scheme
 
-- `Host`
+authentik and proxy outposts need to know if they are being served over an HTTPS connection.
 
-    Preserves the original host requested by the client. Required for security checks, correct URL handling, WebSocket handshakes, and communication with outposts and proxy providers.
+The connection scheme (HTTP/HTTPS) is grabbed as follows. If the incoming connection is from a trusted proxy, the following is considered:
 
-- `X-Forwarded-Proto`
+- `X-Forwarded-Proto` header,
+- `X-Forwarded-Scheme` header,
+- `Forwarded` header, as defined in [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239). If multiple `proto=` stanzas are present, only the first one is retained.
+- whether the connection was made via TLS to the proxy via the PROXY protocol if used.
 
-    Tells authentik whether the original client connection used HTTP or HTTPS.
+If the connection is not trusted, or the above is missing, authentik will look at whether the connection was made over plaintext or TLS.
 
-- `X-Forwarded-For`
+### Host
 
-    Preserves the original client IP address so authentik can determine where the request came from.
+Required for various security checks, correct URL handling, WebSocket handshake, and communication with outposts and proxy providers.
 
-- `Connection: Upgrade` and `Upgrade: WebSocket`
+The Host is grabbed as follows. If the incoming connection is from a trusted proxy, the following is considered:
 
-    Required to upgrade WebSocket requests when using HTTP/1.1.
+- `X-Forwarded-Host` header,
+- `Forwarded` header, as defined in [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239). If multiple `host=` stanzas are present, only the first one is retained.
 
-It is also recommended to use a [modern TLS configuration](https://ssl-config.mozilla.org/).
+If the connection is not trusted, or the above is missing, authentik will consider the following:
+
+- `Host` header,
+- host part of the request URL.
+
+### Client IP
+
+authentik needs to know the IP addresses of clients for various security features and for audit purposes.
+
+The client IP is grabbed as follows. If the incoming connection is from a trusted proxy, the following is considered:
+
+- the rightmost IP in the `X-Forwarded-For` header,
+- `X-Real-IP` header,
+- the rightmost IP in the `Forwarded` header, as defined in [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239),
+- the IP passed via PROXY Protocol if used.
+
+If the connection is not trusted, the client IP will be extracted from the TCP metadata.
+
+### WebSockets
+
+The `Connection: Upgrade` and `Upgrade: WebSocket` headers are required to upgrade protocols for requests to the WebSocket endpoints under HTTP/1.1.
 
 ## Trusted proxy networks
 

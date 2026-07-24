@@ -10,7 +10,7 @@ use ak_common::{
 };
 use arc_swap::ArcSwap;
 use argh::FromArgs;
-use axum::Router;
+use axum::{Extension, Router, extract::Request, http::Uri, response::Response};
 use axum_server::tls_rustls::RustlsConfig;
 use eyre::Result;
 use rustls::{
@@ -23,7 +23,7 @@ use tracing::{debug, error, info, instrument, warn};
 use crate::outpost::{Outpost, OutpostController, proxy::application::Application};
 
 mod allowlist;
-mod application;
+pub(crate) mod application;
 mod auth;
 mod backchannel;
 mod claims;
@@ -31,7 +31,7 @@ mod cookie;
 mod endpoint;
 mod error_page;
 mod events;
-mod handlers;
+pub(crate) mod handlers;
 mod headers;
 mod oauth;
 mod oauth_state;
@@ -75,27 +75,27 @@ impl Outpost for ProxyOutpost {
     fn start(self: Arc<Self>, tasks: &mut Tasks) -> Result<()> {
         let router = build_router(Arc::clone(&self));
 
-        for addr in config::get().listen.http.iter().copied() {
-            ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr)?;
-        }
-
-        for addr in config::get().listen.https.iter().copied() {
-            let resolver = Arc::clone(&self);
-            let server_config = ServerConfig::builder()
-                .with_no_client_auth()
-                .with_cert_resolver(resolver);
-            let rustls_config = RustlsConfig::from_config(Arc::new(server_config));
-            ak_axum::server::start_tls(
-                tasks,
-                "proxy-outpost",
-                router.clone(),
-                addr,
-                rustls_config,
-            )?;
-        }
-
-        // Non-embedded outposts use the filesystem session store; sweep expired files.
+        // In non-embedded mode, we need to start http(s) listeners and filesystem cleanup.
         if !self.controller.is_embedded() {
+            for addr in config::get().listen.http.iter().copied() {
+                ak_axum::server::start_plain(tasks, "proxy-outpost", router.clone(), addr)?;
+            }
+
+            for addr in config::get().listen.https.iter().copied() {
+                let resolver = Arc::clone(&self);
+                let server_config = ServerConfig::builder()
+                    .with_no_client_auth()
+                    .with_cert_resolver(resolver);
+                let rustls_config = RustlsConfig::from_config(Arc::new(server_config));
+                ak_axum::server::start_tls(
+                    tasks,
+                    "proxy-outpost",
+                    router.clone(),
+                    addr,
+                    rustls_config,
+                )?;
+            }
+
             let arbiter = tasks.arbiter();
             tasks
                 .build_task()
@@ -182,13 +182,10 @@ impl Outpost for ProxyOutpost {
 
 impl ResolvesServerCert for ProxyOutpost {
     fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-        if let Some(server_name) = client_hello.server_name()
-            && let Some(app) = self.apps.load().get(server_name)
-            && let Some(cert) = &app.cert
-        {
-            return Some(Arc::clone(&cert.certified_key));
-        }
-        Some(Arc::clone(&self.default_cert))
+        Some(
+            self.resolve_cert(&client_hello)
+                .unwrap_or_else(|| Arc::clone(&self.default_cert)),
+        )
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -197,8 +194,18 @@ impl ResolvesServerCert for ProxyOutpost {
 }
 
 impl ProxyOutpost {
+    pub(crate) fn resolve_cert(&self, client_hello: &ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
+        if let Some(server_name) = client_hello.server_name()
+            && let Some(app) = self.apps.load().get(server_name)
+            && let Some(cert) = &app.cert
+        {
+            return Some(Arc::clone(&cert.certified_key));
+        }
+        None
+    }
+
     #[instrument(skip(self))]
-    fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
+    pub(crate) fn lookup_app(&self, host: &str) -> Option<Arc<Application>> {
         let apps = self.apps.load();
 
         if apps.is_empty() {
@@ -245,6 +252,24 @@ impl ProxyOutpost {
 
         longest_match
     }
+
+    /// The application that should serve this request from the embedded
+    /// outpost, if any. `None` means the request belongs to the core backend.
+    pub(crate) fn app_for_request(&self, host: &str, uri: &Uri) -> Option<Arc<Application>> {
+        let app = self.lookup_app(host)?;
+        app.should_handle_url(uri).then_some(app)
+    }
+}
+
+async fn embedded_handle(
+    Extension(app): Extension<Arc<Application>>,
+    request: Request,
+) -> ak_axum::error::Result<Response> {
+    application::handlers::handle(app, request).await
+}
+
+pub(crate) fn embedded_router() -> Router {
+    wrap_router(Router::new().fallback(embedded_handle), true)
 }
 
 fn build_router(outpost: Arc<ProxyOutpost>) -> Router {

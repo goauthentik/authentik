@@ -3,16 +3,17 @@ use std::{fmt::Display, sync::Arc};
 use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash};
 use axum::http::{HeaderValue, header::AUTHORIZATION};
 use eyre::{Result, eyre};
-use futures::{SinkExt as _, StreamExt as _};
+use futures::{Sink, SinkExt as _, Stream, StreamExt as _};
 use nix::unistd::gethostname;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use time::UtcDateTime;
 use tokio::{
+    net::UnixStream,
     signal::unix::SignalKind,
     time::{Duration, interval, sleep},
 };
-use tokio_tungstenite::tungstenite::{Message, client::IntoClientRequest as _};
+use tokio_tungstenite::tungstenite::{Error as WsError, Message, client::IntoClientRequest as _};
 use tracing::{debug, info, instrument, trace, warn};
 use url::Url;
 
@@ -130,6 +131,9 @@ async fn watch_events_inner<O: Outpost>(
     outpost: Arc<O>,
     attempt: u32,
 ) -> Result<()> {
+    type WsWriter = Box<dyn Sink<Message, Error = WsError> + Unpin + Send>;
+    type WsReader = Box<dyn Stream<Item = Result<Message, WsError>> + Unpin + Send>;
+
     info!("refreshing outpost forcefully");
     if let Err(err) = handle_event(
         Arc::clone(&controller),
@@ -145,9 +149,15 @@ async fn watch_events_inner<O: Outpost>(
         warn!(?err, "failed to refresh");
     }
 
-    let server_config = api::ServerConfig::new()?;
+    let host = if controller.is_embedded() {
+        Url::parse("http://localhost").expect("infallible")
+    } else {
+        let server_config = api::ServerConfig::new()?;
+        server_config.host
+    };
+
     let ws_url = build_ws_url(
-        server_config.host,
+        host,
         &controller.outpost.load().pk.to_string(),
         &controller.instance_uuid.to_string(),
         attempt,
@@ -165,8 +175,16 @@ async fn watch_events_inner<O: Outpost>(
         HeaderValue::from_str(&format!("Bearer {token}"))?,
     );
 
-    let (ws_stream, _response) = tokio_tungstenite::connect_async(request).await?;
-    let (mut ws_write, mut ws_read) = ws_stream.split();
+    let (mut ws_write, mut ws_read): (WsWriter, WsReader) = if controller.is_embedded() {
+        let stream = UnixStream::connect(crate::server::socket_path()).await?;
+        let (ws_stream, _response) = tokio_tungstenite::client_async(request, stream).await?;
+        let (write, read) = ws_stream.split();
+        (Box::new(write), Box::new(read))
+    } else {
+        let (ws_stream, _response) = tokio_tungstenite::connect_async(request).await?;
+        let (write, read) = ws_stream.split();
+        (Box::new(write), Box::new(read))
+    };
 
     info!(
         outpost = %controller.outpost.load().pk,
@@ -221,8 +239,8 @@ async fn watch_events_inner<O: Outpost>(
                 ws_write.send(Message::text(serde_json::to_string(&ping)?)).await?;
                 trace!("sent websocket hello (heartbeat)");
             },
-            Ok(arbiter::Event::Signal(signal)) = events_rx.recv() => {
-                if signal == SignalKind::user_defined1() {
+            event = events_rx.recv() => {
+                if let Ok(arbiter::Event::Signal(signal)) = event && signal == SignalKind::user_defined1() {
                     info!("refreshing outpost on signal");
                     if let Err(err) = handle_event(
                         Arc::clone(&controller),
