@@ -3198,6 +3198,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: flow_user_switch
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -5046,6 +5051,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserServiceAccountResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/switch/:
+    post:
+      operationId: core_users_switch_create
+      description: Start browser user switching.
+      parameters:
+      - in: query
+        name: next
+        schema:
+          type: string
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSwitchRequest'
+      security:
+      - authentik: []
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSwitchResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -36371,6 +36406,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_switch:
+          type: string
+          format: uuid
+          nullable: true
         flow_invalidation:
           type: string
           format: uuid
@@ -36444,6 +36483,10 @@ components:
           type: string
           minLength: 1
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -37457,6 +37500,8 @@ components:
           readOnly: true
           default: automatic
         flow_authentication:
+          type: string
+        flow_user_switch:
           type: string
         flow_invalidation:
           type: string
@@ -48593,6 +48638,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        flow_user_switch:
+          type: string
+          format: uuid
+          nullable: true
         flow_invalidation:
           type: string
           format: uuid
@@ -56346,8 +56395,13 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelf'
       required:
       - user
+      - users
     Settings:
       type: object
       description: Settings Serializer
@@ -58732,6 +58786,10 @@ components:
         is_superuser:
           type: boolean
           readOnly: true
+        is_current:
+          type: boolean
+          description: Return whether this user owns the current browser session.
+          readOnly: true
         groups:
           type: array
           items:
@@ -58771,6 +58829,7 @@ components:
       - avatar
       - groups
       - is_active
+      - is_current
       - is_superuser
       - name
       - pk
@@ -58907,6 +58966,30 @@ components:
       required:
       - identifier
       - source
+    UserSwitchActionEnum:
+      enum:
+      - add
+      - switch
+      type: string
+    UserSwitchRequest:
+      type: object
+      description: Request to add or switch users in the current browser.
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/UserSwitchActionEnum'
+          default: switch
+        user_pk:
+          type: integer
+    UserSwitchResponse:
+      type: object
+      description: Redirect returned after planning a user switch.
+      properties:
+        redirect:
+          type: string
+          readOnly: true
+      required:
+      - redirect
     UserTelegramSourceConnection:
       type: object
       description: User source connection

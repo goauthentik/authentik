@@ -25,6 +25,7 @@ SESSION_KEY_BRAND_SAFE_MODE = "authentik/brands/safe_mode"
 # same SELECT to avoid N+1 lazy loads; CurrentBrandSerializer alone reads 7.
 _BRAND_RELATED_FK_FIELDS = (
     "flow_authentication",
+    "flow_user_switch",
     "flow_invalidation",
     "flow_recovery",
     "flow_unenrollment",
@@ -59,6 +60,9 @@ class Brand(SerializerModel):
 
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"
+    )
+    flow_user_switch = models.ForeignKey(
+        Flow, null=True, on_delete=models.SET_NULL, related_name="brand_user_switch"
     )
     flow_invalidation = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_invalidation"

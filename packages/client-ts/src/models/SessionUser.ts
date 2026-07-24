@@ -34,6 +34,12 @@ export interface SessionUser {
      * @memberof SessionUser
      */
     original?: UserSelf;
+    /**
+     *
+     * @type {Array<UserSelf>}
+     * @memberof SessionUser
+     */
+    users: Array<UserSelf>;
 }
 
 /**
@@ -41,6 +47,7 @@ export interface SessionUser {
  */
 export function instanceOfSessionUser(value: object): value is SessionUser {
     if (!("user" in value) || value["user"] === undefined) return false;
+    if (!("users" in value) || value["users"] === undefined) return false;
     return true;
 }
 
@@ -55,6 +62,7 @@ export function SessionUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         user: UserSelfFromJSON(json["user"]),
         original: json["original"] == null ? undefined : UserSelfFromJSON(json["original"]),
+        users: (json["users"] as Array<any>).map(UserSelfFromJSON),
     };
 }
 
@@ -73,5 +81,6 @@ export function SessionUserToJSONTyped(
     return {
         user: UserSelfToJSON(value["user"]),
         original: UserSelfToJSON(value["original"]),
+        users: (value["users"] as Array<any>).map(UserSelfToJSON),
     };
 }

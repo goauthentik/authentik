@@ -71,6 +71,12 @@ export interface BrandRequest {
      * @type {string}
      * @memberof BrandRequest
      */
+    flowUserSwitch?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof BrandRequest
+     */
     flowInvalidation?: string | null;
     /**
      *
@@ -158,6 +164,7 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["branding_default_flow_background"],
         flowAuthentication:
             json["flow_authentication"] == null ? undefined : json["flow_authentication"],
+        flowUserSwitch: json["flow_user_switch"] == null ? undefined : json["flow_user_switch"],
         flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
         flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
@@ -195,6 +202,7 @@ export function BrandRequestToJSONTyped(
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
         flow_authentication: value["flowAuthentication"],
+        flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],

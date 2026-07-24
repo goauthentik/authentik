@@ -75,6 +75,7 @@ pub async fn core_brands_list(
     flow_recovery: Option<&str>,
     flow_unenrollment: Option<&str>,
     flow_user_settings: Option<&str>,
+    flow_user_switch: Option<&str>,
     ordering: Option<&str>,
     page: Option<i32>,
     page_size: Option<i32>,
@@ -97,6 +98,7 @@ pub async fn core_brands_list(
     let p_query_flow_recovery = flow_recovery;
     let p_query_flow_unenrollment = flow_unenrollment;
     let p_query_flow_user_settings = flow_user_settings;
+    let p_query_flow_user_switch = flow_user_switch;
     let p_query_ordering = ordering;
     let p_query_page = page;
     let p_query_page_size = page_size;
@@ -167,6 +169,9 @@ pub async fn core_brands_list(
     }
     if let Some(ref param_value) = p_query_flow_user_settings {
         req_builder = req_builder.query(&[("flow_user_settings", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_query_flow_user_switch {
+        req_builder = req_builder.query(&[("flow_user_switch", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_query_ordering {
         req_builder = req_builder.query(&[("ordering", &param_value.to_string())]);
