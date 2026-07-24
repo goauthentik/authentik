@@ -15,12 +15,12 @@ use axum::{
         HeaderName, HeaderValue, StatusCode, Uri,
         header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
     },
-    middleware::{Next, from_fn},
-    response::{IntoResponse, Response},
+    response::Response,
     routing::any,
 };
 use http_body_util::BodyExt as _;
 use serde_json::json;
+use tracing::{instrument, warn};
 
 use crate::server::{
     GUNICORN_READY, Server,
@@ -57,11 +57,9 @@ static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
         .expect("infallible")
 });
 
-const SERVER: HeaderName = HeaderName::from_static("server");
 const X_FORWARDED_CLIENT_CERT: HeaderName = HeaderName::from_static("x-forwarded-client-cert");
 const X_FORWARDED_FOR: HeaderName = HeaderName::from_static("x-forwarded-for");
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
-const X_POWERED_BY: HeaderName = HeaderName::from_static("x-powered-by");
 
 const FORWARD_ALWAYS_REMOVED_HEADERS: [HeaderName; 7] = [
     HeaderName::from_static("forwarded"),
@@ -177,77 +175,132 @@ async fn forward_request(
     }
 }
 
-fn build_gunicorn_router(server: Arc<Server>) -> Router {
-    wrap_router(
-        Router::new().fallback(forward_request).with_state(server),
-        config::get().debug, // enable tracing only in debug mode
-    )
-}
-
-async fn powered_by_middleware(request: Request, next: Next) -> Response {
-    let mut response = next.run(request).await;
-    response.headers_mut().remove(SERVER);
-    response
-        .headers_mut()
-        .insert(X_POWERED_BY, HeaderValue::from_static("authentik"));
-    response
-}
-
-async fn health_ready(State(server): State<Arc<Server>>) -> impl IntoResponse {
-    #[expect(clippy::if_same_then_else, reason = "For easier reading")]
+#[instrument(skip_all)]
+async fn health_ready(State(server): State<Arc<Server>>) -> Result<StatusCode> {
     if !server.is_alive().await {
-        StatusCode::SERVICE_UNAVAILABLE
-    } else if sqlx::query("SELECT 1").execute(db::get()).await.is_err() {
-        StatusCode::SERVICE_UNAVAILABLE
-    } else if let Some(workers) = server.workers.load_full()
-        && !workers.are_alive().await
-    {
-        StatusCode::SERVICE_UNAVAILABLE
-    } else {
-        let req = Request::builder()
-            .method("GET")
-            .uri("http://localhost:8000/-/health/ready/")
-            .header(HOST, "localhost")
-            .body(Body::from(""));
-        if let Ok(req) = req
-            && let Ok(res) = server.client.request(req).await
-        {
-            res.status()
-        } else {
-            StatusCode::SERVICE_UNAVAILABLE
+        warn!("server detected as not alive");
+        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    if let Err(err) = sqlx::query("SELECT 1").execute(db::get()).await {
+        warn!(?err, "failed to check db health");
+        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    match server.health_ready().await {
+        Ok(true) => {}
+        Ok(false) => {
+            warn!("server responded not ready");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
+        Err(err) => {
+            warn!(?err, "failed to check server health readiness");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
         }
     }
+
+    if let Some(workers) = server.workers.load_full() {
+        if !workers.are_alive().await {
+            warn!("workers detected as not alive");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
+
+        match workers.health_ready().await {
+            Ok(true) => {}
+            Ok(false) => {
+                warn!("workers responded not ready");
+                return Ok(StatusCode::SERVICE_UNAVAILABLE);
+            }
+            Err(err) => {
+                warn!(?err, "failed to check workers health readiness");
+                return Ok(StatusCode::SERVICE_UNAVAILABLE);
+            }
+        }
+    }
+
+    Ok(StatusCode::OK)
 }
 
-pub(super) fn build_router(server: Arc<Server>) -> Router {
-    let router = wrap_router(
+#[instrument(skip_all)]
+async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
+    if !server.is_alive().await {
+        warn!("server detected as not alive");
+        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    }
+
+    if !server.health_live().await? {
+        return Ok(StatusCode::SERVICE_UNAVAILABLE);
+    }
+    match server.health_live().await {
+        Ok(true) => {}
+        Ok(false) => {
+            warn!("server responded not live");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
+        Err(err) => {
+            warn!(?err, "failed to check server health liveness");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
+    }
+
+    if let Some(workers) = server.workers.load_full() {
+        if !workers.are_alive().await {
+            warn!("workers detected as not alive");
+            return Ok(StatusCode::SERVICE_UNAVAILABLE);
+        }
+
+        match workers.health_live().await {
+            Ok(true) => {}
+            Ok(false) => {
+                warn!("workers responded not live");
+                return Ok(StatusCode::SERVICE_UNAVAILABLE);
+            }
+            Err(err) => {
+                warn!(?err, "failed to check workers health liveness");
+                return Ok(StatusCode::SERVICE_UNAVAILABLE);
+            }
+        }
+    }
+
+    Ok(StatusCode::OK)
+}
+
+pub(super) fn build_router(server: Arc<Server>) -> eyre::Result<Router> {
+    // Router for endpoints handled in rust
+    let our_router = wrap_router(
         Router::new()
-            .route("/-/metrics/", any((StatusCode::NOT_FOUND, "not found")))
             .route("/-/health/ready/", any(health_ready))
+            .route("/-/health/live/", any(health_live))
+            .route("/-/{*wild}", any(StatusCode::NOT_FOUND))
             .with_state(Arc::clone(&server))
             .merge(super::r#static::build_router()),
         true,
-    )
-    .merge(build_gunicorn_router(server))
-    .layer(from_fn(powered_by_middleware));
-    let path = &config::get().web.path;
-    if config::get().web.path == "/" {
-        router
+    );
+
+    // Router for endpoints handled in Python
+    let gunicorn_router = wrap_router(
+        Router::new().fallback(forward_request).with_state(server),
+        // Enable tracing but only in debug.
+        config::get().debug,
+    );
+
+    let path = &config::get().web.path.clone();
+    let router = if path == "/" {
+        Router::new().merge(our_router).merge(gunicorn_router)
     } else {
+        let redirect_response = (
+            StatusCode::FOUND,
+            [(LOCATION, HeaderValue::from_str(path)?)],
+        );
+        let redirect_router = wrap_router(Router::new().route("/", any(redirect_response)), true);
+
         Router::new()
-            .route(
-                "/",
-                any(
-                    async || match HeaderValue::try_from(&config::get().web.path) {
-                        Ok(location) => (StatusCode::FOUND, [(LOCATION, location)]).into_response(),
-                        Err(err) => {
-                            (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response()
-                        }
-                    },
-                ),
-            )
-            .nest(path, router)
-    }
+            .merge(redirect_router)
+            .merge(our_router.clone())
+            .nest(path, Router::new().merge(our_router).merge(gunicorn_router))
+    };
+
+    Ok(router)
 }
 
 mod websockets {

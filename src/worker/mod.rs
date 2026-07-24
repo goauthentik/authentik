@@ -255,7 +255,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_live(&self) -> Result<bool> {
+    pub(crate) async fn health_live(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_live().await? {
                 return Ok(false);
@@ -265,7 +265,7 @@ impl Workers {
     }
 
     #[instrument(skip_all)]
-    async fn health_ready(&self) -> Result<bool> {
+    pub(crate) async fn health_ready(&self) -> Result<bool> {
         for worker in self.0.lock().await.iter() {
             if !worker.health_ready().await? {
                 return Ok(false);
