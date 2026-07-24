@@ -1,6 +1,7 @@
 """RadiusProvider API Views"""
 
 from base64 import b64encode
+from functools import lru_cache
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -30,6 +31,14 @@ from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
 from authentik.providers.radius.models import RadiusProvider, RadiusProviderPropertyMapping
 
+
+@lru_cache
+def radius_dictionary():
+    return Dictionary(
+        str(
+            settings.BASE_DIR / "authentik" / "providers" / "radius" / "dictionaries" / "dictionary"
+        )
+    )
 
 class RadiusProviderSerializer(
     ConditionalInheritance(
@@ -109,20 +118,10 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
             RadiusProviderPropertyMapping,
             ["packet"],
         )
-        dict = Dictionary(
-            str(
-                settings.BASE_DIR
-                / "authentik"
-                / "providers"
-                / "radius"
-                / "dictionaries"
-                / "dictionary"
-            )
-        )
 
         packet = AuthPacket()
         packet.secret = provider.shared_secret
-        packet.dict = dict
+        packet.dict = radius_dictionary()
 
         def define_attribute(
             vendor_code: int,

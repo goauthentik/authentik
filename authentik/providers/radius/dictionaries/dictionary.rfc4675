@@ -1,0 +1,31 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 4675.
+#	http://www.ietf.org/rfc/rfc4675.txt
+#
+#	$Id$
+#
+
+#
+#  High byte = '1' (0x31) means the frames are tagged.
+#  High byte = '2' (0x32) means the frames are untagged.
+#
+#  Next 12 bits MUST be zero.
+#
+#  Lower 12 bits is the IEEE-802.1Q VLAN VID.
+#
+ATTRIBUTE	Egress-VLANID				56	integer
+ATTRIBUTE	Ingress-Filters				57	integer
+
+#
+#  First byte == '1' (0x31) means that the frames are tagged.
+#  First byte == '2' (0x32) means that the frames are untagged.
+#
+ATTRIBUTE	Egress-VLAN-Name			58	string
+ATTRIBUTE	User-Priority-Table			59	octets # 8
+
+VALUE	Ingress-Filters			Enabled			1
+VALUE	Ingress-Filters			Disabled		2

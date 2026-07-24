@@ -1,0 +1,93 @@
+# -*- text -*-
+# Copyright (C) 2025 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 5580.
+#	http://www.ietf.org/rfc/rfc5580.txt
+#
+#	$Id$
+#
+
+# One ASCII character of Namespace ID
+#	0 = TADIG	(GSM)
+#	1 = Realm
+#	2 = E212
+#
+#
+# Followed by the actual string
+ATTRIBUTE	Operator-Name				126	string
+
+#
+#  Large blobs of stuff
+#
+ATTRIBUTE	Location-Information			127	struct
+MEMBER		Index					uint16
+MEMBER		Code					uint8
+
+#
+# See RFC 5580 Section 4.3.1.
+#
+# The contents are RFC4776 Section 3.1, skipping the first 3 octets.
+#
+#  The code for the DHCP option, the length of the DHCP option, and
+#  the 'what' element are not included.
+#
+VALUE	Code				Civic-Location		0
+
+#
+#  See RFC 5580 Section 4.3.2.
+#
+#
+#  The contents are RFC3825 Section 2, skipping the first 2 octets.
+#
+#  The code for the DHCP option, the length of the DHCP option are
+#  not included.
+#
+VALUE	Code				Geospatial-Location	1
+
+MEMBER		Entity					uint8
+MEMBER		Sighting-Time				uint64
+MEMBER		TTL					uint64
+MEMBER		Method					string
+
+ATTRIBUTE	Location-Data				128	struct
+
+#
+#  This field correlates Location-Information.Index with Location-Data.Index
+#
+MEMBER		Index					uint16
+
+#
+#  This field is actually one of a few different data structures,
+#  depending on Location-Information.Code.
+#
+#  Unfortunately, we do not (yet) support decoding unions based on a
+# key field which is in a different attribute.
+#
+MEMBER		Location				octets
+
+ATTRIBUTE	Basic-Location-Policy-Rules		129	struct
+MEMBER		Flags					uint16
+MEMBER		Retention-Expires			uint64
+MEMBER		Note-Well				string
+
+ATTRIBUTE	Extended-Location-Policy-Rules		130	string
+
+#
+#  Really a bit-packed field
+#
+ATTRIBUTE	Location-Capable			131	struct
+MEMBER		Civic-Location-Capable			bit[1]
+MEMBER		Geo-Location-Capable			bit[1]
+MEMBER		Users-Location-Capable			bit[1]
+MEMBER		NAS-Location-Capable			bit[1]
+MEMBER		Location-Capable-Reserved		bit[4]
+
+ATTRIBUTE	Requested-Location-Info			132	integer
+VALUE	Requested-Location-Info		Civic-Location		1
+VALUE	Requested-Location-Info		Geo-Location		2
+VALUE	Requested-Location-Info		Users-Location		4
+VALUE	Requested-Location-Info		NAS-Location		8
+VALUE	Requested-Location-Info		Future-Requests		16
+VALUE	Requested-Location-Info		None			32
