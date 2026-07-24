@@ -12,7 +12,12 @@ from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderUser,
+)
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
@@ -283,6 +288,103 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "PUT")
+
+    @Mocker()
+    def test_user_update_gitlab_active_patch(self, mock: Mocker):
+        """Test GitLab user active updates use PATCH instead of PUT"""
+        self.provider.compatibility_mode = SCIMCompatibilityMode.GITLAB
+        self.provider.save()
+
+        scim_id = generate_id()
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+                "active": True,
+            },
+        )
+        mock.patch(f"https://localhost/Users/{scim_id}", status_code=204)
+
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.request_history[0].method, "POST")
+
+        user.is_active = False
+        user.save()
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[1].method, "PATCH")
+        self.assertEqual(mock.request_history[1].url, f"https://localhost/Users/{scim_id}")
+        self.assertJSONEqual(
+            mock.request_history[1].body,
+            {
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                "Operations": [
+                    {
+                        "op": "replace",
+                        "path": "active",
+                        "value": False,
+                    }
+                ],
+            },
+        )
+
+        connection = SCIMProviderUser.objects.get(user=user, provider=self.provider)
+        self.assertFalse(connection.attributes["active"])
+
+        user.is_active = True
+        user.save()
+        self.assertEqual(mock.call_count, 3)
+        self.assertEqual(mock.request_history[2].method, "PATCH")
+        self.assertEqual(mock.request_history[2].url, f"https://localhost/Users/{scim_id}")
+        self.assertJSONEqual(
+            mock.request_history[2].body,
+            {
+                "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
+                "Operations": [
+                    {
+                        "op": "replace",
+                        "path": "active",
+                        "value": True,
+                    }
+                ],
+            },
+        )
+
+        connection.refresh_from_db()
+        self.assertTrue(connection.attributes["active"])
+
+    @Mocker()
+    def test_user_update_gitlab_skips_profile_put(self, mock: Mocker):
+        """Test GitLab mode does not fall back to unsupported full user PUT"""
+        self.provider.compatibility_mode = SCIMCompatibilityMode.GITLAB
+        self.provider.save()
+
+        scim_id = generate_id()
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+                "active": True,
+            },
+        )
+
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual(mock.call_count, 1)
+        self.assertEqual(mock.request_history[0].method, "POST")
+
+        user.name = "Updated Name"
+        user.save()
+        self.assertEqual(mock.call_count, 1)
 
     @Mocker()
     def test_user_create_delete(self, mock: Mocker):

@@ -13,9 +13,19 @@ from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
+from authentik.providers.scim.clients.schema import (
+    SCIM_USER_SCHEMA,
+    PatchOp,
+    PatchOperation,
+    PatchRequest,
+)
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
-from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
+from authentik.providers.scim.models import (
+    SCIMCompatibilityMode,
+    SCIMMapping,
+    SCIMProvider,
+    SCIMProviderUser,
+)
 
 
 class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
@@ -108,6 +118,8 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             mode="json",
             exclude_unset=True,
         )
+        if self.provider.compatibility_mode == SCIMCompatibilityMode.GITLAB:
+            return self._update_gitlab(payload, connection)
         if not self.diff(payload, connection):
             self.logger.debug("Skipping user write as data has not changed")
             return
@@ -117,6 +129,37 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
             json=payload,
         )
         connection.attributes = response
+        connection.save()
+
+    def _update_gitlab(self, payload: dict[str, Any], connection: SCIMProviderUser):
+        """Update a GitLab user via the subset of SCIM PATCH that GitLab supports."""
+        active = payload.get("active")
+        if active is None:
+            self.logger.debug("Skipping GitLab user write as active is not set")
+            return
+        if (connection.attributes or {}).get("active") == active:
+            self.logger.debug("Skipping GitLab user write as active has not changed")
+            return
+        response = self._request(
+            "PATCH",
+            f"/Users/{connection.scim_id}",
+            json=PatchRequest(
+                Operations=[
+                    PatchOperation(
+                        op=PatchOp.replace,
+                        path="active",
+                        value=active,
+                    )
+                ]
+            ).model_dump(
+                mode="json",
+            ),
+        )
+        attributes = {}
+        MERGE_LIST_UNIQUE.merge(attributes, connection.attributes or {})
+        MERGE_LIST_UNIQUE.merge(attributes, response)
+        attributes["active"] = active
+        connection.attributes = attributes
         connection.save()
 
     def discover(self):
