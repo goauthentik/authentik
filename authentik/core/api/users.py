@@ -109,9 +109,7 @@ from authentik.stages.email.utils import TemplateEmailMessage
 LOGGER = get_logger()
 
 PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE = _(
-    "This password hash does not use its current work factor and sufficient salt entropy. "
-    "Importing it can weaken password security or enable timing-based user enumeration. "
-    'Set "override" to true to import it anyway.'
+    '%(reason)s Set "override" to true to import it anyway.'
 )
 
 
@@ -485,7 +483,11 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
         try:
             validate_password_hash(attrs["password"], require_current=True)
         except PasswordHashRequiresOverride as exc:
-            raise ValidationError({"password": PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE}) from exc
+            messages = [
+                PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE % {"reason": reason}
+                for reason in exc.messages
+            ]
+            raise ValidationError({"password": messages}) from exc
         return attrs
 
 
