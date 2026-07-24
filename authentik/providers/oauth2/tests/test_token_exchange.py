@@ -21,6 +21,8 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import Application, User
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
+from authentik.enterprise.personas.models import Persona
+from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -141,8 +143,9 @@ class TestTokenExchange(OAuthTestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["error"], "invalid_request")
 
-    def test_actor_token_rejected(self):
-        """test that delegation is refused rather than silently ignored"""
+    def test_actor_token_unsupported_type_rejected(self):
+        """test that an actor_token of an unsupported type is refused rather than
+        silently ignored -- only TOKEN_TYPE_URI_ACCESS_TOKEN actors are supported"""
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             {
@@ -153,7 +156,7 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": self.subject_token,
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -364,3 +367,188 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["issued_token_type"], TOKEN_TYPE_URI_JWT)
+
+    def _decode(self, access_token: str) -> dict:
+        _, alg = self.provider.jwt_key
+        return decode(
+            access_token,
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+
+    def _create_persona(self, owner: User, label: str = "agent") -> Persona:
+        """Construct a Persona directly, since Persona.objects.create requires
+        owner/primary_app -- there's no self-service creation helper on the model"""
+        return Persona.objects.create(
+            username=f"persona-{generate_id(10)}",
+            name=label,
+            owner=owner,
+            primary_app=self.app,
+        )
+
+    def _persona_actor_token(self, persona: Persona) -> str:
+        """Issue an access token for `persona`, usable as an actor_token"""
+        token = generate_id()
+        AccessToken.objects.create(
+            provider=self.provider,
+            token=token,
+            user=persona,
+            auth_time=now(),
+        )
+        return token
+
+    @enterprise_test()
+    def test_actor_token_successful_delegation(self):
+        """test RFC 8693 §4.1 delegation: subject_token identifies the human, actor_token
+        identifies a Persona the human controls -- the issued token's `sub` stays the
+        human (unchanged), and `act` records the persona"""
+        persona = self._create_persona(self.user)
+        actor_token = self._persona_actor_token(persona)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+
+        jwt = self._decode(body["access_token"])
+        # sub is unchanged -- still the human, exactly like plain (non-delegated) exchange
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+        self.assertIn("act", jwt)
+        self.assertEqual(jwt["act"]["sub"], persona.uid)
+
+        access_token = AccessToken.objects.get(token=body["access_token"])
+        self.assertEqual(access_token.user_id, self.user.pk)
+        self.assertEqual(access_token.actor_id, persona.pk)
+
+    def test_actor_token_requires_enterprise_license(self):
+        """test that delegation is refused without a valid enterprise license, even
+        with a genuinely owned persona actor_token"""
+        persona = self._create_persona(self.user)
+        actor_token = self._persona_actor_token(persona)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+        self.assertFalse(AccessToken.objects.filter(actor=persona).exists())
+
+    @enterprise_test()
+    def test_actor_token_rejects_unowned_persona(self):
+        """test that a human cannot use as actor a persona they don't control"""
+        other_user = create_test_user()
+        someone_elses_persona = self._create_persona(other_user)
+        actor_token = self._persona_actor_token(someone_elses_persona)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+        self.assertFalse(AccessToken.objects.filter(actor=someone_elses_persona).exists())
+
+    @enterprise_test()
+    def test_actor_token_rejects_non_persona_actor(self):
+        """test that an access token belonging to an ordinary (non-Persona) user is
+        not accepted as an actor -- only Personas may be delegated to"""
+        other_user = create_test_user()
+        actor_token = generate_id()
+        AccessToken.objects.create(
+            provider=self.provider,
+            token=actor_token,
+            user=other_user,
+            auth_time=now(),
+        )
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+
+    @enterprise_test()
+    def test_actor_token_rejects_unknown_token(self):
+        """test an actor_token value that doesn't match any real access token"""
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": "not-a-real-token",
+                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+
+    def test_actor_token_absent_is_unaffected(self):
+        """test that plain token exchange (no actor_token) is completely unaffected --
+        no actor recorded, no act claim, no enterprise license even required"""
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        jwt = self._decode(body["access_token"])
+        self.assertNotIn("act", jwt)
+        access_token = AccessToken.objects.get(token=body["access_token"])
+        self.assertIsNone(access_token.actor_id)
+        self.assertEqual(access_token.user_id, self.user.pk)
