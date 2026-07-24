@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 
 from authentik.enterprise.lifecycle.offboarding.models import OffboardingStatus, UserOffboarding
-from authentik.tasks.schedules.models import Schedule
+from authentik.tasks.middleware import CurrentTask
 
 # Retry budget: a due offboarding is retried by dramatiq and the sweeper this
 # many times before it is marked FAILED.
@@ -14,17 +14,15 @@ MAX_OFFBOARDING_ATTEMPTS = 5
 
 @actor(description=_("Execute due user offboardings."))
 def execute_due_offboardings():
+    task = CurrentTask.get_task()
     # Only the pk is dispatched, so fetch pks alone rather than whole rows.
     due_pks = UserOffboarding.objects.filter(
         status=OffboardingStatus.PENDING,
         scheduled_at__lte=timezone.now(),
     ).values_list("pk", flat=True)
-    if not due_pks:
-        return
-    schedule = Schedule.objects.get(actor_name=execute_due_offboardings.actor_name)
     for pk in due_pks:
         # rel_obj groups each execution under the sweeper's schedule in the UI.
-        execute_offboarding.send_with_options(args=(str(pk),), rel_obj=schedule)
+        execute_offboarding.send_with_options(args=(str(pk),), rel_obj=task.rel_obj)
 
 
 @actor(description=_("Execute a single user offboarding."))
