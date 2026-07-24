@@ -465,7 +465,7 @@ dev = [
     { name = "selenium", specifier = "==4.46.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
     { name = "types-docker", specifier = "==7.1.0.20260712" },
-    { name = "types-jwcrypto", specifier = "==1.5.7.20260518" },
+    { name = "types-jwcrypto", specifier = "==1.5.8.20260720" },
     { name = "types-ldap3", specifier = "==2.9.13.20260518" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
     { name = "types-zxcvbn", specifier = "==4.5.0.20260518" },
@@ -3690,14 +3690,14 @@ wheels = [
 
 [[package]]
 name = "types-jwcrypto"
-version = "1.5.7.20260518"
+version = "1.5.8.20260720"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/10/69410365c8e5d5f380ff90dbc7c5e57a07e7f3c8ccce33695806703fee9b/types_jwcrypto-1.5.7.20260518.tar.gz", hash = "sha256:44df0b55520a7ce88e6577f2331e79c9ba7ac2a74e4c8b4552a7f33eccd6c012", size = 12118, upload-time = "2026-05-18T06:06:33.266Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e1/61/5f6945cc633865309c97d548ac546e090963f895ada87f30dd41245cbbd6/types_jwcrypto-1.5.8.20260720.tar.gz", hash = "sha256:18d7d624e257b7f9f18c35700288bbc115179b16d804a263590b702d022cb487", size = 12165, upload-time = "2026-07-20T05:27:09.826Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5a/79/be24dfed6892200303dac0e504ffb69a2261103dfe214b9208548b655066/types_jwcrypto-1.5.7.20260518-py3-none-any.whl", hash = "sha256:d3db816621990229940823b7c83b3a95093cabfd9e4f4f596761312e00256972", size = 13348, upload-time = "2026-05-18T06:06:32.018Z" },
+    { url = "https://files.pythonhosted.org/packages/6b/ef/728dfe98bf0423f8e7e0074ad6f60feaad95982b44d7398fd35f429c08c2/types_jwcrypto-1.5.8.20260720-py3-none-any.whl", hash = "sha256:e606fefc5381c71236d6dccd7500f283eb19c22151fb1ef19cefe5589630d376", size = 13363, upload-time = "2026-07-20T05:27:08.973Z" },
 ]
 
 [[package]]
