@@ -80,6 +80,7 @@ def _check_app_access(stream: Stream, event_data: dict) -> tuple[bool, User]:
 def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     self = CurrentTask.get_task()
 
+    self.info(f"Event type: {event_data.get("type")}")
     stream = Stream.objects.filter(pk=stream_uuid).first()
     if not stream:
         return
