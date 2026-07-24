@@ -64,7 +64,7 @@ func (ws *WebServer) configureStatic() {
 	staticRouter.Use(ws.staticHeaderMiddleware)
 	staticRouter.Use(web.DisableIndex)
 
-	distFs := http.FileServer(http.Dir("./web/dist"))
+	distFs := http.FileServer(staticWeb.StaticDir)
 
 	pathStripper := func(handler http.Handler, paths ...string) http.Handler {
 		h := handler
