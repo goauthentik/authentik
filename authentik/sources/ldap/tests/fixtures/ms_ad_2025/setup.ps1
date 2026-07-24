@@ -17,17 +17,6 @@ $userErinH = New-ADUser `
     -Enabled $true `
     -PassThru
 
-$userAlexisM = New-ADUser `
-    -GivenName "Alexis" `
-    -Surname "Morningstar" `
-    -Name "Alexis Morningstar" `
-    -UserPrincipalName "alexis.m@$domain" `
-    -SamAccountName "alexis.m" `
-    -PasswordNotRequired $true `
-    -Path $rootOU.DistinguishedName `
-    -Enabled $true `
-    -PassThru
-
 New-ADUser `
     -GivenName "Deactivated" `
     -Surname "Account" `
@@ -36,17 +25,6 @@ New-ADUser `
     -SamAccountName "deactivated.a" `
     -Enabled $false `
     -Path $rootOU.DistinguishedName
-
-$nestedGroupTest = New-ADGroup `
-    -Name "Nested Test Group" `
-    -Path $rootOU.DistinguishedName `
-    -GroupCategory Security `
-    -GroupScope Global `
-    -PassThru
-
-Add-ADGroupMember `
-    -Identity $nestedGroupTest `
-    -Members $userAlexisM
 
 $groupTest = New-ADGroup `
     -Name "Test Group" `
@@ -57,4 +35,4 @@ $groupTest = New-ADGroup `
 
 Add-ADGroupMember `
     -Identity $groupTest `
-    -Members $userErinH, $nestedGroupTest
+    -Members $userErinH

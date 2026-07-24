@@ -173,17 +173,17 @@ export interface LDAPSourceRequest {
      */
     groupObjectFilter?: string;
     /**
-     * Field which contains a list of members/memberships.
+     * Field which contains members of a group.
      * @type {string}
      * @memberof LDAPSourceRequest
      */
-    membershipField?: string;
+    groupMembershipField?: string;
     /**
-     * Attribute which matches the value of `membership_field`.
+     * Attribute which matches the value of `group_membership_field`.
      * @type {string}
      * @memberof LDAPSourceRequest
      */
-    membershipReference?: string;
+    userMembershipAttribute?: string;
     /**
      * Field which contains a unique Identifier.
      * @type {string}
@@ -219,13 +219,13 @@ export interface LDAPSourceRequest {
      * @type {string}
      * @memberof LDAPSourceRequest
      */
-    additionalParentGroup?: string | null;
+    syncParentGroup?: string | null;
     /**
      * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
      * @type {boolean}
      * @memberof LDAPSourceRequest
      */
-    lookupGroupsFromMember?: boolean;
+    lookupGroupsFromUser?: boolean;
     /**
      * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
      * @type {boolean}
@@ -308,9 +308,12 @@ export function LDAPSourceRequestFromJSONTyped(
             json["user_object_filter"] == null ? undefined : json["user_object_filter"],
         groupObjectFilter:
             json["group_object_filter"] == null ? undefined : json["group_object_filter"],
-        membershipField: json["membership_field"] == null ? undefined : json["membership_field"],
-        membershipReference:
-            json["membership_reference"] == null ? undefined : json["membership_reference"],
+        groupMembershipField:
+            json["group_membership_field"] == null ? undefined : json["group_membership_field"],
+        userMembershipAttribute:
+            json["user_membership_attribute"] == null
+                ? undefined
+                : json["user_membership_attribute"],
         objectUniquenessField:
             json["object_uniqueness_field"] == null ? undefined : json["object_uniqueness_field"],
         passwordLoginUpdateInternalPassword:
@@ -321,12 +324,9 @@ export function LDAPSourceRequestFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncGroups: json["sync_groups"] == null ? undefined : json["sync_groups"],
-        additionalParentGroup:
-            json["additional_parent_group"] == null ? undefined : json["additional_parent_group"],
-        lookupGroupsFromMember:
-            json["lookup_groups_from_member"] == null
-                ? undefined
-                : json["lookup_groups_from_member"],
+        syncParentGroup: json["sync_parent_group"] == null ? undefined : json["sync_parent_group"],
+        lookupGroupsFromUser:
+            json["lookup_groups_from_user"] == null ? undefined : json["lookup_groups_from_user"],
         deleteNotFoundObjects:
             json["delete_not_found_objects"] == null ? undefined : json["delete_not_found_objects"],
         syncOutgoingTriggerMode:
@@ -375,15 +375,15 @@ export function LDAPSourceRequestToJSONTyped(
         additional_group_dn: value["additionalGroupDn"],
         user_object_filter: value["userObjectFilter"],
         group_object_filter: value["groupObjectFilter"],
-        membership_field: value["membershipField"],
-        membership_reference: value["membershipReference"],
+        group_membership_field: value["groupMembershipField"],
+        user_membership_attribute: value["userMembershipAttribute"],
         object_uniqueness_field: value["objectUniquenessField"],
         password_login_update_internal_password: value["passwordLoginUpdateInternalPassword"],
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_groups: value["syncGroups"],
-        additional_parent_group: value["additionalParentGroup"],
-        lookup_groups_from_member: value["lookupGroupsFromMember"],
+        sync_parent_group: value["syncParentGroup"],
+        lookup_groups_from_user: value["lookupGroupsFromUser"],
         delete_not_found_objects: value["deleteNotFoundObjects"],
         sync_outgoing_trigger_mode: SyncOutgoingTriggerModeEnumToJSON(
             value["syncOutgoingTriggerMode"],

@@ -272,7 +272,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                                 return group ? group.pk : undefined;
                             }}
                             .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.additionalParentGroup;
+                                return group.pk === this.instance?.syncParentGroup;
                             }}
                             blankable
                         >
@@ -347,45 +347,43 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Membership field")}
+                        label=${msg("Group membership field")}
                         required
-                        name="membershipField"
+                        name="groupMembershipField"
                     >
                         <input
                             type="text"
-                            value="${this.instance?.membershipField || "member"}"
+                            value="${this.instance?.groupMembershipField || "member"}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains group members/object memberships. The value of this field is matched against Membership reference attribute. Typically `member` or `uniqueMember` when 'Lookup using user attribute' is off, or `memberOf` when it is on.To lookup nested groups in an Active Directory environment use `memberOf:1.2.840.113556.1.4.1941:` and set 'Lookup using user attribute' to on.",
+                                "Field which contains members of a group. The value of this field is matched against User membership attribute.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Membership reference attribute")}
+                        label=${msg("User membership attribute")}
                         required
-                        name="membershipReference"
+                        name="userMembershipAttribute"
                     >
                         <input
                             type="text"
-                            value="${this.instance?.membershipReference || "distinguishedName"}"
+                            value="${this.instance?.userMembershipAttribute || "distinguishedName"}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Attribute which matches the value of Membership field. Typically `distinguishedName` or `cn`.",
-                            )}
+                            ${msg("Attribute which matches the value of Group membership field.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-switch-input
-                        name="lookupGroupsFromMember"
+                        name="lookupGroupsFromUser"
                         label=${msg("Lookup using user attribute")}
-                        ?checked=${this.instance?.lookupGroupsFromMember ?? false}
+                        ?checked=${this.instance?.lookupGroupsFromUser ?? false}
                         help=${msg(
-                            "Lookup group memberships using a member attribute. When this is on, Authentik will use the value of 'Membership field' on users and/or groups to get reference to groups they are member of. With this off (default), 'Membership field' is used on groups to get a list of members.",
+                            "Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.",
                         )}
                     ></ak-switch-input>
                     <ak-form-element-horizontal

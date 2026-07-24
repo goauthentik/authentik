@@ -692,18 +692,16 @@ export interface SourcesLdapDestroyRequest {
 
 export interface SourcesLdapListRequest {
     additionalGroupDn?: string;
-    additionalParentGroup?: string;
     additionalUserDn?: string;
     baseDn?: string;
     bindCn?: string;
     clientCertificate?: string;
     deleteNotFoundObjects?: boolean;
     enabled?: boolean;
+    groupMembershipField?: string;
     groupObjectFilter?: string;
     groupPropertyMappings?: Array<string>;
-    lookupGroupsFromMember?: boolean;
-    membershipField?: string;
-    membershipReference?: string;
+    lookupGroupsFromUser?: boolean;
     name?: string;
     objectUniquenessField?: string;
     ordering?: string;
@@ -719,8 +717,10 @@ export interface SourcesLdapListRequest {
     startTls?: boolean;
     syncGroupParents?: boolean;
     syncGroups?: boolean;
+    syncParentGroup?: string;
     syncUsers?: boolean;
     syncUsersPassword?: boolean;
+    userMembershipAttribute?: string;
     userObjectFilter?: string;
     userPropertyMappings?: Array<string>;
 }
@@ -5875,10 +5875,6 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["additional_group_dn"] = requestParameters["additionalGroupDn"];
         }
 
-        if (requestParameters["additionalParentGroup"] != null) {
-            queryParameters["additional_parent_group"] = requestParameters["additionalParentGroup"];
-        }
-
         if (requestParameters["additionalUserDn"] != null) {
             queryParameters["additional_user_dn"] = requestParameters["additionalUserDn"];
         }
@@ -5904,6 +5900,10 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["enabled"] = requestParameters["enabled"];
         }
 
+        if (requestParameters["groupMembershipField"] != null) {
+            queryParameters["group_membership_field"] = requestParameters["groupMembershipField"];
+        }
+
         if (requestParameters["groupObjectFilter"] != null) {
             queryParameters["group_object_filter"] = requestParameters["groupObjectFilter"];
         }
@@ -5912,17 +5912,8 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["group_property_mappings"] = requestParameters["groupPropertyMappings"];
         }
 
-        if (requestParameters["lookupGroupsFromMember"] != null) {
-            queryParameters["lookup_groups_from_member"] =
-                requestParameters["lookupGroupsFromMember"];
-        }
-
-        if (requestParameters["membershipField"] != null) {
-            queryParameters["membership_field"] = requestParameters["membershipField"];
-        }
-
-        if (requestParameters["membershipReference"] != null) {
-            queryParameters["membership_reference"] = requestParameters["membershipReference"];
+        if (requestParameters["lookupGroupsFromUser"] != null) {
+            queryParameters["lookup_groups_from_user"] = requestParameters["lookupGroupsFromUser"];
         }
 
         if (requestParameters["name"] != null) {
@@ -5986,12 +5977,21 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["sync_groups"] = requestParameters["syncGroups"];
         }
 
+        if (requestParameters["syncParentGroup"] != null) {
+            queryParameters["sync_parent_group"] = requestParameters["syncParentGroup"];
+        }
+
         if (requestParameters["syncUsers"] != null) {
             queryParameters["sync_users"] = requestParameters["syncUsers"];
         }
 
         if (requestParameters["syncUsersPassword"] != null) {
             queryParameters["sync_users_password"] = requestParameters["syncUsersPassword"];
+        }
+
+        if (requestParameters["userMembershipAttribute"] != null) {
+            queryParameters["user_membership_attribute"] =
+                requestParameters["userMembershipAttribute"];
         }
 
         if (requestParameters["userObjectFilter"] != null) {

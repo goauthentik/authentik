@@ -107,8 +107,8 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
 
         # If we are looking up groups from users, we don't need to fetch the group membership field
         attributes = [self._source.object_uniqueness_field, LDAP_DISTINGUISHED_NAME]
-        if not self._source.lookup_groups_from_member:
-            attributes.append(self._source.membership_field)
+        if not self._source.lookup_groups_from_user:
+            attributes.append(self._source.group_membership_field)
 
         return self.search_paginator(
             search_base=self.base_dn_groups,
@@ -125,10 +125,10 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
             return -1
         membership_count = 0
         for group_data in page_data:
-            if self._source.lookup_groups_from_member:
+            if self._source.lookup_groups_from_user:
                 group_dn = group_data.get("dn", {})
                 escaped_dn = escape_filter_chars(group_dn)
-                group_filter = f"({self._source.membership_field}={escaped_dn})"
+                group_filter = f"({self._source.group_membership_field}={escaped_dn})"
                 group_members = self.search_paginator(
                     search_base=self.base_dn_users,
                     search_filter=group_filter,
@@ -142,17 +142,17 @@ class MembershipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
             else:
                 if (attributes := self.get_attributes(group_data)) is None:
                     continue
-                members = attributes.get(self._source.membership_field, [])
+                members = attributes.get(self._source.group_membership_field, [])
 
             group = self.get_group(group_data)
             if not group:
                 continue
 
             users = User.objects.filter(
-                Q(**{f"attributes__{self._source.membership_field}__in": members})
+                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
                 | Q(
                     **{
-                        f"attributes__{self._source.membership_field}__isnull": True,
+                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
                         "groups__in": [group],
                     }
                 )
@@ -178,8 +178,8 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
             return iter(())
 
         attributes = [
-            self._source.membership_field,
-            self._source.membership_reference,
+            self._source.group_membership_field,
+            self._source.user_membership_attribute,
             self._source.object_uniqueness_field,
             LDAP_DISTINGUISHED_NAME,
         ]
@@ -201,14 +201,14 @@ class ParentshipLDAPSynchronizer(BaseMembershipLDAPSynchronizer):
         for group_data in page_data:
             if (attributes := self.get_attributes(group_data)) is None:
                 continue
-            if self._source.lookup_groups_from_member:
-                parents = attributes.get(self._source.membership_field, [])
+            if self._source.lookup_groups_from_user:
+                parents = attributes.get(self._source.group_membership_field, [])
             else:
-                group_ref = group_data.get(self._source.membership_reference, {})
+                group_ref = group_data.get(self._source.user_membership_attribute, {})
                 escaped_ref = escape_filter_chars(group_ref)
                 group_filter = (
                     f"(&({self._source.group_object_filter})"
-                    f"({self._source.membership_field}={escaped_ref}))"
+                    f"({self._source.group_membership_field}={escaped_ref}))"
                 )
 
                 parents = [

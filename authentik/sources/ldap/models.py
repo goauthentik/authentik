@@ -111,12 +111,12 @@ class LDAPSource(IncomingSyncSource):
         default="(objectClass=person)",
         help_text=_("Consider Objects matching this filter to be Users."),
     )
-    membership_reference = models.TextField(
+    user_membership_attribute = models.TextField(
         default=LDAP_DISTINGUISHED_NAME,
-        help_text=_("Attribute which matches the value of `membership_field`."),
+        help_text=_("Attribute which matches the value of `group_membership_field`."),
     )
-    membership_field = models.TextField(
-        default="member", help_text=_("Field which contains a list of members/memberships.")
+    group_membership_field = models.TextField(
+        default="member", help_text=_("Field which contains members of a group.")
     )
     group_object_filter = models.TextField(
         default="(objectClass=group)",
@@ -140,14 +140,15 @@ class LDAPSource(IncomingSyncSource):
         ),
     )
     sync_groups = models.BooleanField(default=True)
-    additional_parent_group = models.ForeignKey(
+    sync_parent_group = models.ForeignKey(
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
     )
+
     sync_group_parents = models.BooleanField(
         default=True, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
     )
 
-    lookup_groups_from_member = models.BooleanField(
+    lookup_groups_from_user = models.BooleanField(
         default=False,
         help_text=_(
             "Lookup group membership based on a user attribute instead of a group attribute. "
@@ -215,7 +216,7 @@ class LDAPSource(IncomingSyncSource):
     def get_base_group_properties(self, **kwargs):
         return self.update_properties_with_uniqueness_field(
             {
-                "parent": self.additional_parent_group,
+                "parent": self.sync_parent_group,
             },
             **kwargs,
         )

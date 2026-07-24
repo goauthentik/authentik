@@ -13002,17 +13002,17 @@
                     "title": "Group object filter",
                     "description": "Consider Objects matching this filter to be Groups."
                 },
-                "membership_field": {
+                "group_membership_field": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Membership field",
-                    "description": "Field which contains a list of members/memberships."
+                    "title": "Group membership field",
+                    "description": "Field which contains members of a group."
                 },
-                "membership_reference": {
+                "user_membership_attribute": {
                     "type": "string",
                     "minLength": 1,
-                    "title": "Membership reference",
-                    "description": "Attribute which matches the value of `membership_field`."
+                    "title": "User membership attribute",
+                    "description": "Attribute which matches the value of `group_membership_field`."
                 },
                 "object_uniqueness_field": {
                     "type": "string",
@@ -13038,14 +13038,14 @@
                     "type": "boolean",
                     "title": "Sync groups"
                 },
-                "additional_parent_group": {
+                "sync_parent_group": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Additional parent group"
+                    "title": "Sync parent group"
                 },
-                "lookup_groups_from_member": {
+                "lookup_groups_from_user": {
                     "type": "boolean",
-                    "title": "Lookup groups from member",
+                    "title": "Lookup groups from user",
                     "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 },
                 "delete_not_found_objects": {
