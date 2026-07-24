@@ -12,10 +12,10 @@
  * Do not edit the class manually.
  */
 
-import type { ReviewerGroup } from "./ReviewerGroup";
-import { ReviewerGroupFromJSON } from "./ReviewerGroup";
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -38,10 +38,10 @@ export interface RelatedRule {
     name: string;
     /**
      *
-     * @type {Array<ReviewerGroup>}
+     * @type {Array<PartialGroup>}
      * @memberof RelatedRule
      */
-    readonly reviewerGroups: Array<ReviewerGroup>;
+    readonly reviewerGroups: Array<PartialGroup>;
     /**
      *
      * @type {number}
@@ -50,10 +50,10 @@ export interface RelatedRule {
     readonly minReviewers: number;
     /**
      *
-     * @type {Array<ReviewerUser>}
+     * @type {Array<PartialUser>}
      * @memberof RelatedRule
      */
-    readonly reviewers: Array<ReviewerUser>;
+    readonly reviewers: Array<PartialUser>;
 }
 
 /**
@@ -61,8 +61,20 @@ export interface RelatedRule {
  */
 export function instanceOfRelatedRule(value: object): value is RelatedRule {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("reviewerGroups" in value) || value["reviewerGroups"] === undefined) return false;
-    if (!("minReviewers" in value) || value["minReviewers"] === undefined) return false;
+    if (
+        (!("reviewerGroups" in (value as Record<string, any>)) &&
+            !("reviewer_groups" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewerGroups"] === undefined &&
+            (value as Record<string, any>)["reviewer_groups"] === undefined)
+    )
+        return false;
+    if (
+        (!("minReviewers" in (value as Record<string, any>)) &&
+            !("min_reviewers" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["minReviewers"] === undefined &&
+            (value as Record<string, any>)["min_reviewers"] === undefined)
+    )
+        return false;
     if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
     return true;
 }
@@ -78,9 +90,9 @@ export function RelatedRuleFromJSONTyped(json: any, ignoreDiscriminator: boolean
     return {
         id: json["id"] == null ? undefined : json["id"],
         name: json["name"],
-        reviewerGroups: (json["reviewer_groups"] as Array<any>).map(ReviewerGroupFromJSON),
+        reviewerGroups: (json["reviewer_groups"] as Array<any>).map(PartialGroupFromJSON),
         minReviewers: json["min_reviewers"],
-        reviewers: (json["reviewers"] as Array<any>).map(ReviewerUserFromJSON),
+        reviewers: (json["reviewers"] as Array<any>).map(PartialUserFromJSON),
     };
 }
 
@@ -89,7 +101,7 @@ export function RelatedRuleToJSON(json: any): RelatedRule {
 }
 
 export function RelatedRuleToJSONTyped(
-    value?: Omit<RelatedRule, "reviewer_groups" | "min_reviewers" | "reviewers"> | null,
+    value?: Omit<RelatedRule, "reviewerGroups" | "minReviewers" | "reviewers"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

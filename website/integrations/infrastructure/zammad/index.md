@@ -11,8 +11,7 @@ import Tabs from "@theme/Tabs";
 
 ## What is Zammad?
 
-> Zammad is a web-based, open source user support/ticketing solution.
-> Download and install it on your own servers. For free.
+> Zammad is a web-based, open source user support and ticketing system.
 >
 > -- https://zammad.org/
 
@@ -27,31 +26,67 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Configuration methods
-
-There are two ways to configure single sign-on for Zammad; SAML or OIDC.
-
 <Tabs
 defaultValue="saml"
 values={[
-{ label: "Log in with SAML", value: "saml" },
-{ label: "Log in with OIDC", value: "oidc" },
+{ label: "SAML", value: "saml" },
+{ label: "OIDC", value: "oidc" },
 ]}>
 <TabItem value="saml">
 
-## authentik configuration
+## authentik configuration SAML
 
-<RedirectURI20265Note />
+To support the integration of Zammad with authentik using SAML, you need to create SAML property mappings and an application/provider pair in authentik.
 
-To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
+### Create property mappings
 
-### Create an application and provider in authentik
+Zammad requests SAML attributes named `email`, `name`, `first_name`, and `last_name`. Create custom property mappings so authentik sends those attribute names in the SAML assertion.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** as the type and click **Next**.
+4. Create a property mapping with the following values:
+    - **Name**: `Zammad email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
+
+        ```python
+        return request.user.email
+        ```
+
+5. Click **Finish** to save the property mapping.
+6. Repeat steps 2-5 to create the following additional SAML provider property mappings:
+    - **Name**: `Zammad name`
+    - **SAML Attribute Name**: `name`
+    - **Expression**:
+
+        ```python
+        return request.user.name or request.user.get_full_name() or request.user.username
+        ```
+
+    - **Name**: `Zammad first_name`
+    - **SAML Attribute Name**: `first_name`
+    - **Expression**:
+
+        ```python
+        return request.user.first_name or (request.user.name.split(" ", 1)[0] if request.user.name else request.user.username)
+        ```
+
+    - **Name**: `Zammad last_name`
+    - **SAML Attribute Name**: `last_name`
+    - **Expression**:
+
+        ```python
+        return request.user.last_name or (request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else "")
+        ```
+
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://zammad.company/auth/saml/callback`.
@@ -59,83 +94,94 @@ To support the integration of Zammad with authentik, you need to create an appli
         - Set the **SLS URL** to `https://zammad.company/auth/saml/slo`.
         - Set the **SLS Binding** to `Redirect`.
         - Set the **Logout Method** to `Front-channel (Iframe)`.
-        - Under **Advanced protocol settings**, select an available **Signing certificate**.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `Zammad email`.
+            - Set **Default NameID Policy** to `Email`.
+            - Add the Zammad property mappings that you created earlier to **Selected User Property Mappings**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Download certificate file
+### Download the certificate file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for zammad`).
 3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
-## Zammad configuration
+## Zammad configuration SAML
 
-To configure Zammad's integration with authentik, go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via SAML** toggle and change the following fields:
+To configure Zammad's SAML integration with authentik, log in to Zammad as an administrator. Go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**.
 
-1. Set the following fields:
+At the top of the **Third-party Applications** page, enable **Automatic account link on initial logon** if existing Zammad users should be linked to matching authentik users during their first SSO login.
+
+1. Activate the **Authentication via SAML** toggle.
+2. Set the following fields:
     - **Display name**: authentik
     - **IDP SSO target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IDP single logout target URL**: `https://authentik.company/application/saml/<application_slug>/`
     - **IDP Certificate**: paste the contents of your certificate file.
-    - **IDP certificate fingerprint**: Leave this empty.
     - **Name Identifier Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
-    - **Automatic account link on initial logon**: Enable this to automatically create Zammad users when they sign in using authentik for the first time.
-2. Click **Submit** to save the authentication settings.
+3. Click **Submit** to save the authentication settings.
 
-:::info
-The **SSL verification** can fail when Zammad tries to connect to authentik directly, while accessing authentik in your browser works perfectly fine. You may have to disable the verification in order to save the configuration. See https://github.com/zammad/zammad/issues/5225 for details.
+:::warning SSL verification
+If Zammad cannot validate the connection to authentik when saving the SAML configuration, review the certificate trust path before temporarily disabling **SSL verification**. Disabling SSL verification accepts any presented certificate and should only be used for testing or short-term troubleshooting.
 :::
 
-</TabItem>
+## Configuration verification
 
+To verify that authentik is correctly integrated with Zammad, log out of Zammad, open Zammad, and log in by clicking the SAML button on the login screen. The button shows the **Display name** that you configured in Zammad.
+
+</TabItem>
 <TabItem value="oidc">
 
-## authentik configuration
+## authentik configuration OIDC
 
-To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
+<RedirectURI20265Note />
 
-### Create an application and provider in authentik
+To support the integration of Zammad with authentik using OIDC, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **Client type** to `Public`.
-        - Take note of the **Client ID** and **slug** values because they will be required later.
+        - Note the **Client ID** value because it will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://zammad.company/auth/openid_connect/callback`.
+        - Set the **Logout URI** to `https://zammad.company/auth/openid_connect/backchannel_logout`.
         - Select a **Signing Key**.
-        - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
+        - Under **Advanced protocol settings**, set **Subject Mode** to **Based on the User's Email**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-## Zammad configuration
+## Zammad configuration OIDC
 
-To configure Zammad's integration with authentik, go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**. Next, activate the **Authentication via OpenID Connect** toggle and change the following fields:
+To configure Zammad's OIDC integration with authentik, log in to Zammad as an administrator. Go to **Settings** (the gear icon) and select **Security** > **Third-party Applications**.
 
-1. Set the following fields:
+At the top of the **Third-party Applications** page, enable **Automatic account link on initial logon** if existing Zammad users should be linked to matching authentik users during their first SSO login.
+
+1. Activate the **Authentication via OpenID Connect** toggle.
+2. Set the following fields:
     - **Display name**: authentik
-    - **Identifier**: the **Client ID** from above.
+    - **Identifier**: enter the Client ID from authentik.
     - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
-    - **PKCE**: set to **yes**.
+    - **PKCE**: `yes`
 
-2. Click **Submit** to save the authentication settings.
-
-At the very top of the **Third-party Applications** page are a few additional settings:
-
-- **Automatic account link on initial logon**: Enable this to automatically link existing Zammad users when they sign in using authentik for the first time.
-
-</TabItem>
-</Tabs>
+3. Click **Submit** to save the authentication settings.
 
 ## Configuration verification
 
-To verify that authentik is correctly integrated with Zammad, log out of Zammad and then log back in by clicking the SAML or OIDC button on the login screen. The button will show the **Display Name** you specified above. You should be redirected to authentik to log in, and if the process is successful, you'll be logged in to the Zammad dashboard.
+To verify that authentik is correctly integrated with Zammad, log out of Zammad, open Zammad, and log in by clicking the OIDC button on the login screen. The button shows the **Display name** that you configured in Zammad.
+
+</TabItem>
+</Tabs>
 
 ## Resources
 
 - [Zammad Admin Documentation - SAML](https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html)
 - [Zammad Admin Documentation - OpenID Connect](https://admin-docs.zammad.org/en/latest/settings/security/third-party/openid-connect.html)
+- [Zammad Admin Documentation - Third-Party Applications](https://admin-docs.zammad.org/en/latest/settings/security/third-party.html)

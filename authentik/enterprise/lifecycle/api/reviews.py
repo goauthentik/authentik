@@ -3,14 +3,14 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.models import LifecycleIteration, Review
-from authentik.enterprise.lifecycle.utils import ReviewerUserSerializer
 
 
 class ReviewSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    reviewer = ReviewerUserSerializer(read_only=True)
+    reviewer = PartialUserSerializer(read_only=True)
 
     class Meta:
         model = Review

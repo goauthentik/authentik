@@ -1,0 +1,86 @@
+---
+# Re-usable workflow for multi architecture container build
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: "Git ref to build the image from"
+        type: string
+        required: true
+      image-name:
+        description: "Name of the image to build"
+        type: string
+        required: true
+      image-dockerfile:
+        description: "Path to the Dockerfile to build from"
+        type: string
+        required: true
+      image-build-args:
+        description: "Build args to pass to Docker"
+        type: string
+        default: ""
+      should-cache:
+        description: "Whether a build cache should be created"
+        type: boolean
+        default: false
+      cache-suffix:
+        description: "Suffix to add to the buildcache tag"
+        type: string
+        default: ""
+
+jobs:
+  build-amd64:
+    uses: ./.github/workflows/_reusable-container-build-single.yml
+    secrets: inherit
+    with:
+      runs-on: ubuntu-latest
+      ref: "${{ inputs.ref }}"
+      image-name: "${{ inputs.image-name }}"
+      image-arch: amd64
+      image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-build-args: "${{ inputs.image-build-args }}"
+      should-cache: "${{ inputs.should-cache }}"
+      cache-suffix: "${{ inputs.cache-suffix }}"
+  build-arm64:
+    uses: ./.github/workflows/_reusable-container-build-single.yml
+    secrets: inherit
+    with:
+      runs-on: ubuntu-24.04-arm
+      ref: "${{ inputs.ref }}"
+      image-name: "${{ inputs.image-name }}"
+      image-arch: arm64
+      image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-build-args: "${{ inputs.image-build-args }}"
+      should-cache: "${{ inputs.should-cache }}"
+      cache-suffix: "${{ inputs.cache-suffix }}"
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build-amd64
+      - build-arm64
+    steps:
+      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
+        with:
+          artifact-ids: "${{ needs.build-amd64.outputs.artifact-id }},${{ needs.build-arm64.outputs.artifact-id }}"
+          merge-multiple: true
+      - name: merge
+        run: |
+          regctl image import ocidir://${{ inputs.image-name }}-amd64:build container/${{ inputs.image-name }}-amd64.oci.tar
+          regctl image import ocidir://${{ inputs.image-name }}-arm64:build container/${{ inputs.image-name }}-arm64.oci.tar
+
+          regctl index create ocidir://${{ inputs.image-name }}:build
+
+          regctl index add ocidir://${{ inputs.image-name }}:build --ref ocidir://${{ inputs.image-name }}-amd64:build --desc-platform linux/amd64
+          regctl index add ocidir://${{ inputs.image-name }}:build --ref ocidir://${{ inputs.image-name }}-arm64:build --desc-platform linux/arm64
+
+          mkdir -p build/container/
+          regctl image export ocidir://${{ inputs.image-name }}:build build/container/${{ inputs.image-name }}.oci.tar
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "container-build-${{ inputs.image-name }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true

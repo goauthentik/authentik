@@ -5,7 +5,7 @@ authentik_version: "2024.12"
 
 The Redirect stage sends the user to another flow or a static URL.
 
-## Overview
+## About the redirect stage
 
 This stage is most commonly used to branch from one flow into another while optionally preserving the current flow context.
 

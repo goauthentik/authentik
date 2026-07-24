@@ -203,7 +203,7 @@ class SMSDevice(SerializerModel, ThrottlingMixin, SideChannelDevice):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     # Connect to the stage to when validating access we know the API Credentials
-    stage = models.ForeignKey(AuthenticatorSMSStage, on_delete=models.CASCADE)
+    stage = models.ForeignKey(AuthenticatorSMSStage, on_delete=models.PROTECT)
 
     phone_number = models.TextField()
 

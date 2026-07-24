@@ -87,9 +87,27 @@ export function instanceOfDockerServiceConnection(value: object): value is Docke
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
@@ -114,9 +132,18 @@ export function DockerServiceConnectionFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         url: json["url"],
-        tlsVerification: json["tls_verification"] == null ? undefined : json["tls_verification"],
+        tlsVerification:
+            json["tls_verification"] === undefined
+                ? undefined
+                : json["tls_verification"] === null
+                  ? null
+                  : json["tls_verification"],
         tlsAuthentication:
-            json["tls_authentication"] == null ? undefined : json["tls_authentication"],
+            json["tls_authentication"] === undefined
+                ? undefined
+                : json["tls_authentication"] === null
+                  ? null
+                  : json["tls_authentication"],
     };
 }
 
@@ -127,7 +154,7 @@ export function DockerServiceConnectionToJSON(json: any): DockerServiceConnectio
 export function DockerServiceConnectionToJSONTyped(
     value?: Omit<
         DockerServiceConnection,
-        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

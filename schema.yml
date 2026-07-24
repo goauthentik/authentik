@@ -134,6 +134,12 @@ paths:
     get:
       operationId: admin_models_list
       description: Read-only view list all installed models
+      parameters:
+      - in: query
+        name: filter_has_attributes
+        schema:
+          type: boolean
+          nullable: true
       tags:
       - admin
       security:
@@ -3462,6 +3468,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3486,6 +3493,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -3533,6 +3541,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3565,6 +3574,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3596,6 +3606,7 @@ paths:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3622,6 +3633,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -3651,6 +3663,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User added
@@ -3682,6 +3695,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User removed
@@ -3707,6 +3721,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3716,6 +3731,172 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/object_attributes/:
+    get:
+      operationId: core_object_attributes_list
+      parameters:
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: object_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: object_type__model
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedObjectAttributeList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: core_object_attributes_create
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectAttributeRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/object_attributes/{attribute_id}/:
+    get:
+      operationId: core_object_attributes_retrieve
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: core_object_attributes_update
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectAttributeRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: core_object_attributes_partial_update
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedObjectAttributeRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectAttribute'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: core_object_attributes_destroy
+      parameters:
+      - in: path
+        name: attribute_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Object Attribute.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -4268,6 +4449,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4292,6 +4474,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4318,6 +4501,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4349,6 +4533,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4379,6 +4564,7 @@ paths:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4404,6 +4590,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -4432,6 +4619,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully started impersonation
@@ -4459,6 +4647,7 @@ paths:
               $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4492,6 +4681,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully sent recover email
@@ -4520,6 +4710,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4555,6 +4746,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4577,6 +4769,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4603,6 +4796,7 @@ paths:
               $ref: '#/components/schemas/UserAccountLockdownRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4761,6 +4955,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4780,6 +4975,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully ended impersonation
@@ -4795,6 +4991,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4816,6 +5013,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4841,6 +5039,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5386,6 +5585,8 @@ paths:
         using this object
       tags:
       - endpoints
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5410,6 +5611,8 @@ paths:
         required: true
       tags:
       - endpoints
+      security:
+      - authentik_device_federation: []
       responses:
         '200':
           content:
@@ -5431,7 +5634,7 @@ paths:
       tags:
       - endpoints
       security:
-      - {}
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5455,6 +5658,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeviceFactsRequest'
+      security:
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully checked in
@@ -5475,6 +5680,8 @@ paths:
             schema:
               $ref: '#/components/schemas/EnrollRequest'
         required: true
+      security:
+      - authentik_device_enroll: []
       responses:
         '200':
           content:
@@ -5934,6 +6141,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5956,6 +6165,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -7739,9 +7950,59 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/EventActions'
+        explode: true
+        style: form
+      - in: query
+        name: brand_name
+        schema:
+          type: string
+        description: Brand name
+      - in: query
+        name: client_ip
+        schema:
+          type: string
+      - in: query
+        name: context_authorized_app
+        schema:
+          type: string
+        description: Context Authorized application
+      - in: query
+        name: context_device
+        schema:
+          type: string
+        description: Context Device Primary Key
+      - in: query
+        name: context_model_app
+        schema:
+          type: string
+        description: Context Model App
+      - in: query
+        name: context_model_name
+        schema:
+          type: string
+        description: Context Model Name
+      - in: query
+        name: context_model_pk
+        schema:
+          type: string
+        description: Context Model Primary Key
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
         name: top_n
         schema:
           type: integer
+          default: 15
+      - in: query
+        name: username
+        schema:
+          type: string
+        description: Username
       tags:
       - events
       security:
@@ -20182,6 +20443,14 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: saml_version
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: |+
+            SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
@@ -24375,7 +24644,7 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: issuer
+        name: issuer_override
         schema:
           type: string
       - in: query
@@ -36857,8 +37126,12 @@ components:
         verbose_name_plural:
           type: string
           readOnly: true
+        fully_qualified_model:
+          type: string
+          readOnly: true
       required:
       - app_label
+      - fully_qualified_model
       - id
       - model
       - verbose_name_plural
@@ -37205,8 +37478,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -37739,6 +38012,14 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
         is_primary:
           type: boolean
         connector:
@@ -37753,6 +38034,8 @@ components:
       required:
       - connector
       - connector_obj
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -40425,6 +40708,7 @@ components:
       - client_credentials
       - password
       - urn:ietf:params:oauth:grant-type:device_code
+      - urn:ietf:params:oauth:grant-type:token-exchange
       type: string
     Group:
       type: object
@@ -42870,7 +43154,7 @@ components:
         reviewer_groups_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -42886,7 +43170,7 @@ components:
         reviewers_obj:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
         notification_transports:
           type: array
@@ -43400,6 +43684,7 @@ components:
       - authentik_core.application
       - authentik_core.applicationentitlement
       - authentik_core.token
+      - authentik_core.objectattribute
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
@@ -44449,22 +44734,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -44636,22 +44917,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -44681,6 +44958,107 @@ components:
       - name
       - provider_type
       - slug
+    ObjectAttribute:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Attribute id
+        object_type:
+          type: string
+        object_type_obj:
+          allOf:
+          - $ref: '#/components/schemas/ContentType'
+          readOnly: true
+        enabled:
+          type: boolean
+          default: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        key:
+          type: string
+        label:
+          type: string
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
+      required:
+      - created
+      - key
+      - label
+      - last_updated
+      - object_type
+      - object_type_obj
+      - pk
+      - type
+    ObjectAttributeRequest:
+      type: object
+      properties:
+        object_type:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+          default: true
+        key:
+          type: string
+          minLength: 1
+        label:
+          type: string
+          minLength: 1
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
+      required:
+      - key
+      - label
+      - object_type
+      - type
+    ObjectAttributeTypeEnum:
+      enum:
+      - text
+      - number
+      - boolean
+      type: string
     OpenIDConnectConfiguration:
       type: object
       description: rest_framework Serializer for OIDC Configuration
@@ -46225,6 +46603,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedObjectAttributeList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObjectAttribute'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49955,22 +50348,18 @@ components:
           nullable: true
           description: URL used to request the initial token. This URL is only required
             for OAuth 1.
-          maxLength: 255
         authorization_url:
           type: string
           nullable: true
           description: URL the user is redirect to to conest the flow.
-          maxLength: 255
         access_token_url:
           type: string
           nullable: true
           description: URL used by authentik to retrieve tokens.
-          maxLength: 255
         profile_url:
           type: string
           nullable: true
           description: URL used by authentik to get user information.
-          maxLength: 255
         pkce:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
@@ -49994,6 +50383,40 @@ components:
           - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
           description: How to perform authentication during an authorization_code
             token request flow
+    PatchedObjectAttributeRequest:
+      type: object
+      properties:
+        object_type:
+          type: string
+          minLength: 1
+        enabled:
+          type: boolean
+          default: true
+        key:
+          type: string
+          minLength: 1
+        label:
+          type: string
+          minLength: 1
+        regex:
+          type: string
+        type:
+          $ref: '#/components/schemas/ObjectAttributeTypeEnum'
+        group:
+          type: string
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        is_unique:
+          type: boolean
+        is_required:
+          type: boolean
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
@@ -50815,9 +51238,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -51130,6 +51553,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -51190,8 +51619,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -51650,6 +52079,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -52143,7 +52578,17 @@ components:
         failure_result:
           type: boolean
           description: Result if the Policy execution fails.
+        expires:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        expiring:
+          type: boolean
+          readOnly: true
       required:
+      - expires
+      - expiring
       - group_obj
       - order
       - pk
@@ -52671,9 +53116,9 @@ components:
       type: string
     ProviderTypeEnum:
       enum:
+      - openidconnect
       - apple
       - discord
-      - openidconnect
       - entraid
       - facebook
       - github
@@ -53698,7 +54143,7 @@ components:
         reviewer_groups:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerGroup'
+            $ref: '#/components/schemas/PartialGroup'
           readOnly: true
         min_reviewers:
           type: integer
@@ -53706,7 +54151,7 @@ components:
         reviewers:
           type: array
           items:
-            $ref: '#/components/schemas/ReviewerUser'
+            $ref: '#/components/schemas/PartialUser'
           readOnly: true
       required:
       - min_reviewers
@@ -53836,7 +54281,7 @@ components:
           format: uuid
         reviewer:
           allOf:
-          - $ref: '#/components/schemas/ReviewerUser'
+          - $ref: '#/components/schemas/PartialUser'
           readOnly: true
         timestamp:
           type: string
@@ -53865,44 +54310,6 @@ components:
           minLength: 1
       required:
       - iteration
-    ReviewerGroup:
-      type: object
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        name:
-          type: string
-      required:
-      - name
-      - pk
-    ReviewerUser:
-      type: object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-      required:
-      - name
-      - pk
-      - username
-      - uuid
     Role:
       type: object
       description: Role serializer
@@ -54592,9 +54999,14 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
+        url_issuer:
+          type: string
+          description: Get the resolved Issuer, falling back to the metadata URL when
+            unset
+          readOnly: true
         sso_url:
           type: string
           description: URL that the initial Login request is sent to.
@@ -54666,6 +55078,7 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+      - url_issuer
       - verbose_name
       - verbose_name_plural
     SAMLSourcePropertyMapping:
@@ -54795,9 +55208,9 @@ components:
           type: string
           format: uuid
           description: Flow used before authentication.
-        issuer:
+        issuer_override:
           type: string
-          description: Also known as Entity ID. Defaults the Metadata URL.
+          description: Also known as Entity ID. Defaults to the Metadata URL.
         sso_url:
           type: string
           minLength: 1
@@ -55663,6 +56076,11 @@ components:
       - disabled
       - disabled_deleted
       type: string
+    SamlVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     Schedule:
       type: object
       properties:
@@ -55943,6 +56361,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56001,8 +56425,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56030,6 +56454,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56090,8 +56520,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56639,7 +57069,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host
@@ -58803,6 +59238,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -58836,6 +59277,10 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -58849,6 +59294,7 @@ components:
       - pk
       - reply_url
       - url_download_metadata
+      - url_issuer
       - url_wsfed
       - verbose_name
       - verbose_name_plural
@@ -58916,6 +59362,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -59051,6 +59503,15 @@ components:
           authentik_providers_ws_federation.wsfederationprovider: '#/components/schemas/WSFederationProviderRequest'
   securitySchemes:
     authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
       type: http
       scheme: bearer
 servers:

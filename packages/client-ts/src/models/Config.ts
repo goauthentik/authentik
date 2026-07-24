@@ -59,11 +59,34 @@ export interface Config {
  * Check if a given object implements the Config interface.
  */
 export function instanceOfConfig(value: object): value is Config {
-    if (!("errorReporting" in value) || value["errorReporting"] === undefined) return false;
+    if (
+        (!("errorReporting" in (value as Record<string, any>)) &&
+            !("error_reporting" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["errorReporting"] === undefined &&
+            (value as Record<string, any>)["error_reporting"] === undefined)
+    )
+        return false;
     if (!("capabilities" in value) || value["capabilities"] === undefined) return false;
-    if (!("cacheTimeout" in value) || value["cacheTimeout"] === undefined) return false;
-    if (!("cacheTimeoutFlows" in value) || value["cacheTimeoutFlows"] === undefined) return false;
-    if (!("cacheTimeoutPolicies" in value) || value["cacheTimeoutPolicies"] === undefined)
+    if (
+        (!("cacheTimeout" in (value as Record<string, any>)) &&
+            !("cache_timeout" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheTimeout"] === undefined &&
+            (value as Record<string, any>)["cache_timeout"] === undefined)
+    )
+        return false;
+    if (
+        (!("cacheTimeoutFlows" in (value as Record<string, any>)) &&
+            !("cache_timeout_flows" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheTimeoutFlows"] === undefined &&
+            (value as Record<string, any>)["cache_timeout_flows"] === undefined)
+    )
+        return false;
+    if (
+        (!("cacheTimeoutPolicies" in (value as Record<string, any>)) &&
+            !("cache_timeout_policies" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheTimeoutPolicies"] === undefined &&
+            (value as Record<string, any>)["cache_timeout_policies"] === undefined)
+    )
         return false;
     return true;
 }

@@ -1,0 +1,82 @@
+packages:
+    - "packages/*"
+    # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
+    # a workspace member makes pnpm treat an out-of-root path as an importer, which
+    # it cannot represent in this lockfile. Link it as an external local package
+    # instead (see web + sfe package.json).
+    - "!packages/client-ts"
+    # Dependabot resolves the `link:../packages/prettier-config` dev dependency
+    # (see web/package.json) by materializing the target — and its own linked
+    # `tsconfig` — under web/packages/ when it regenerates this workspace's
+    # lockfile. Without these exclusions the `packages/*` glob then swallows
+    # them as workspace importers, committing phantom entries that every local
+    # `pnpm install` prunes right back out.
+    - "!packages/prettier-config"
+    - "!packages/tsconfig"
+
+# pnpm's default isolated linker exposes packages strictly — only declared
+# dependencies are visible. The web bundle relies on a handful of phantom
+# deps that were hoisted by npm at the root of `node_modules` (lit-html
+# internals, ol, mdast-util-to-string, etc.). Until each is added as an
+# explicit dependency, fall back to the flat hoisted layout that mirrors
+# npm's behavior.
+nodeLinker: hoisted
+
+# Shared version references for the `catalog:` protocol. Workspace members reference
+# these via `catalog:`, and overrides pin transitive deps to the same versions.
+# `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
+catalog:
+    "@eslint/js": "^9.39.5"
+    "@typescript-eslint/eslint-plugin": "^8.64.0"
+    "@typescript-eslint/parser": "^8.64.0"
+    "@typescript-eslint/utils": "^8.64.0"
+    "@types/node": "^26.1.1"
+    esbuild: "^0.28.1"
+    eslint: "^9.39.5"
+    prettier: "3.8.3"
+    prettier-plugin-packagejson: "^3.0.2"
+    typescript: "^6.0.3"
+    typescript-eslint: "^8.64.0"
+
+overrides:
+    "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
+    "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
+    "@goauthentik/eslint-config>typescript": "catalog:"
+    "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
+    "@goauthentik/prettier-config>typescript": "catalog:"
+    "@mrmarble/djangoql-completion>lex": "workspace:*"
+    "@mrmarble/djangoql-completion>lodash": "^4.18.1"
+    "@typescript-eslint/eslint-plugin>typescript": "catalog:"
+    "@typescript-eslint/parser>typescript": "catalog:"
+    "@typescript-eslint/typescript-estree>typescript": "catalog:"
+    "@typescript-eslint/utils>typescript": "catalog:"
+    "format-imports>eslint": "catalog:"
+    "node-fetch-commonjs>node-domexception": "workspace:*"
+    "rapidoc>@apitools/openapi-parser": "0.0.37"
+    "typescript-eslint>typescript": "catalog:"
+
+# Allow-list of dependencies whose install/postinstall scripts may run.
+# Everything else is blocked, replacing the prior `ignore-scripts=true` +
+# `npm rebuild --foreground-scripts <pkg>` pattern from #20400. Each entry
+# is audited at review time — adding a package here grants it arbitrary code
+# execution at install.
+onlyBuiltDependencies:
+    - chromedriver
+    - esbuild
+    - tree-sitter
+    - tree-sitter-json
+    - "@tree-sitter-grammars/tree-sitter-yaml"
+
+# Explicit approval map for pnpm 11+. `true` = allowed (mirror
+# onlyBuiltDependencies); `false` = explicitly declined to silence the
+# "pending approval" prompt without running the install script.
+allowBuilds:
+    "@scarf/scarf": false
+    "@swc/core": false
+    "@tree-sitter-grammars/tree-sitter-yaml": true
+    chromedriver: true
+    core-js: false
+    core-js-pure: false
+    esbuild: true
+    tree-sitter: true
+    tree-sitter-json: true

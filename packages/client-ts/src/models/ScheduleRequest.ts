@@ -58,7 +58,12 @@ export function ScheduleRequestFromJSONTyped(
         return json;
     }
     return {
-        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        relObjId:
+            json["rel_obj_id"] === undefined
+                ? undefined
+                : json["rel_obj_id"] === null
+                  ? null
+                  : json["rel_obj_id"],
         crontab: json["crontab"],
         paused: json["paused"] == null ? undefined : json["paused"],
     };

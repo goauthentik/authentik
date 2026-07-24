@@ -14,10 +14,10 @@
 
 import type { ContentTypeEnum } from "./ContentTypeEnum";
 import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnum";
-import type { ReviewerGroup } from "./ReviewerGroup";
-import { ReviewerGroupFromJSON } from "./ReviewerGroup";
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
+import type { PartialGroup } from "./PartialGroup";
+import { PartialGroupFromJSON } from "./PartialGroup";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -70,10 +70,10 @@ export interface LifecycleRule {
     reviewerGroups?: Array<string>;
     /**
      *
-     * @type {Array<ReviewerGroup>}
+     * @type {Array<PartialGroup>}
      * @memberof LifecycleRule
      */
-    readonly reviewerGroupsObj: Array<ReviewerGroup>;
+    readonly reviewerGroupsObj: Array<PartialGroup>;
     /**
      *
      * @type {number}
@@ -94,10 +94,10 @@ export interface LifecycleRule {
     reviewers: Array<string>;
     /**
      *
-     * @type {Array<ReviewerUser>}
+     * @type {Array<PartialUser>}
      * @memberof LifecycleRule
      */
-    readonly reviewersObj: Array<ReviewerUser>;
+    readonly reviewersObj: Array<PartialUser>;
     /**
      * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
      * @type {Array<string>}
@@ -118,11 +118,35 @@ export interface LifecycleRule {
 export function instanceOfLifecycleRule(value: object): value is LifecycleRule {
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
-    if (!("reviewerGroupsObj" in value) || value["reviewerGroupsObj"] === undefined) return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("reviewerGroupsObj" in (value as Record<string, any>)) &&
+            !("reviewer_groups_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewerGroupsObj"] === undefined &&
+            (value as Record<string, any>)["reviewer_groups_obj"] === undefined)
+    )
+        return false;
     if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
-    if (!("reviewersObj" in value) || value["reviewersObj"] === undefined) return false;
-    if (!("targetVerbose" in value) || value["targetVerbose"] === undefined) return false;
+    if (
+        (!("reviewersObj" in (value as Record<string, any>)) &&
+            !("reviewers_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewersObj"] === undefined &&
+            (value as Record<string, any>)["reviewers_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("targetVerbose" in (value as Record<string, any>)) &&
+            !("target_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["targetVerbose"] === undefined &&
+            (value as Record<string, any>)["target_verbose"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -138,18 +162,23 @@ export function LifecycleRuleFromJSONTyped(json: any, ignoreDiscriminator: boole
         id: json["id"],
         name: json["name"],
         contentType: ContentTypeEnumFromJSON(json["content_type"]),
-        objectId: json["object_id"] == null ? undefined : json["object_id"],
+        objectId:
+            json["object_id"] === undefined
+                ? undefined
+                : json["object_id"] === null
+                  ? null
+                  : json["object_id"],
         interval: json["interval"] == null ? undefined : json["interval"],
         gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
-        reviewerGroupsObj: (json["reviewer_groups_obj"] as Array<any>).map(ReviewerGroupFromJSON),
+        reviewerGroupsObj: (json["reviewer_groups_obj"] as Array<any>).map(PartialGroupFromJSON),
         minReviewers: json["min_reviewers"] == null ? undefined : json["min_reviewers"],
         minReviewersIsPerGroup:
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
         reviewers: json["reviewers"],
-        reviewersObj: (json["reviewers_obj"] as Array<any>).map(ReviewerUserFromJSON),
+        reviewersObj: (json["reviewers_obj"] as Array<any>).map(PartialUserFromJSON),
         notificationTransports:
             json["notification_transports"] == null ? undefined : json["notification_transports"],
         targetVerbose: json["target_verbose"],
@@ -163,7 +192,7 @@ export function LifecycleRuleToJSON(json: any): LifecycleRule {
 export function LifecycleRuleToJSONTyped(
     value?: Omit<
         LifecycleRule,
-        "id" | "reviewer_groups_obj" | "reviewers_obj" | "target_verbose"
+        "id" | "reviewerGroupsObj" | "reviewersObj" | "targetVerbose"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

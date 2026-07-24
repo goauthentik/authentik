@@ -54,7 +54,13 @@ export interface SCIMSourceUserRequest {
  * Check if a given object implements the SCIMSourceUserRequest interface.
  */
 export function instanceOfSCIMSourceUserRequest(value: object): value is SCIMSourceUserRequest {
-    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (
+        (!("externalId" in (value as Record<string, any>)) &&
+            !("external_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalId"] === undefined &&
+            (value as Record<string, any>)["external_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     return true;

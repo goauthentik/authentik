@@ -1,18 +1,42 @@
 ---
 title: Enterprise support
-description: "How to access authentik Enterprise support"
+description: "Open and manage authentik Enterprise support tickets"
+sidebar_position: 4
 ---
 
-authentik Enterprise provides dedicated support for subscriptions over US$1000 per year, with a Support center where you can open and track tickets.
+authentik Enterprise subscriptions over US$1,000 per year include ticket-based support. Enterprise Plus subscriptions include the support channels and response-time commitments defined in your agreement.
 
-## Managing tickets
+## Open and manage support tickets {#managing-tickets}
 
-To access the Support center, log in to the [Customer Portal](https://customers.goauthentik.io/), then click **Support** in the top menu.
+Use the Support center to open a ticket, reply to the support team, and track existing tickets.
 
-Alternatively, you can access the Support center directly via: [https://customers.goauthentik.io/l/support](https://customers.goauthentik.io/l/support)
+1. Log in to the [Customer Portal](https://customers.goauthentik.io/).
+2. In the top menu, click **Support**.
+3. Open a new ticket or select an existing ticket.
 
-You can also always reach out to us via hello@goauthentik.io.
+You can also go directly to the [Support center](https://customers.goauthentik.io/l/support).
+
+If you cannot access the Customer Portal, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
+
+## Include diagnostic information
+
+Include enough context for the support team to understand and reproduce the problem:
+
+- The full authentik version, including the patch version.
+- The installation method, such as Docker Compose or Kubernetes.
+- A description of the problem and its impact.
+- Steps that reproduce the problem, including the expected and observed behavior.
+- Relevant logs, error messages, and configuration with credentials and other sensitive values removed.
+- Recent deployment, configuration, or infrastructure changes that might be related.
+
+Do not use a support ticket to report a suspected vulnerability. Follow the [security vulnerability reporting process](../security/policy.mdx#reporting-a-vulnerability) so that the security team can handle the report confidentially.
 
 ## Product version support
 
-We [support](../security/policy.mdx#supported-versions) the current, released version of authentik and one version back (including all major, minor, and patch versions).
+authentik provides product support for the current major release and the immediately preceding major release. A major release is identified by year and month, such as `2026.5`.
+
+The [supported versions table](../security/policy.mdx#supported-versions) lists the release that currently receive fixes.
+
+## Community support
+
+For community support, join the [authentik Discord server](https://goauthentik.io/discord). To report a reproducible product defect, open an issue in the [authentik GitHub repository](https://github.com/goauthentik/authentik/issues).

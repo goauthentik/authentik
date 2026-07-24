@@ -14,8 +14,6 @@ media
 # Node
 
 node_modules
-corepack.tgz
-.corepack
 
 .cspellcache
 cspell-report.*

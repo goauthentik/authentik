@@ -1,5 +1,7 @@
 ---
 title: SCIM Provider
+sidebar_position: 11
+sidebar_label: "SCIM Provider"
 ---
 
 SCIM (System for Cross-domain Identity Management) is a set of APIs to provision users and groups. The SCIM provider in authentik supports SCIM 2.0 and can be used to provision and sync users from authentik into other applications.
@@ -21,7 +23,7 @@ In authentik, there are two ways to authenticate SCIM requests:
 
 When the authentication mode is set to **Static token**, authentik sends the token provided by the application with outgoing SCIM requests to authenticate each request.
 
-### OAuth token :ak-enterprise
+### OAuth token :ak-enterprise {#oauth-token}
 
 When you configure a SCIM provider to use OAuth for authentication, authentik generates short-lived tokens through an OAuth flow and sends them to the SCIM endpoint. This offers improved security and control compared with a static token.
 
@@ -83,7 +85,7 @@ return {
 
 Use the schema URN and field names expected by the target SCIM service. If the remote service supports only a fixed set of schemas or filters unknown attributes from responses, the attribute might not appear even when authentik sends it.
 
-#### Skipping objects during synchronization
+#### Skip objects during synchronization
 
 To exclude specific users or groups from SCIM synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
 

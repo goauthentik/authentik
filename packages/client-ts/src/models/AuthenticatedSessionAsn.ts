@@ -43,7 +43,13 @@ export interface AuthenticatedSessionAsn {
  */
 export function instanceOfAuthenticatedSessionAsn(value: object): value is AuthenticatedSessionAsn {
     if (!("asn" in value) || value["asn"] === undefined) return false;
-    if (!("asOrg" in value) || value["asOrg"] === undefined) return false;
+    if (
+        (!("asOrg" in (value as Record<string, any>)) &&
+            !("as_org" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["asOrg"] === undefined &&
+            (value as Record<string, any>)["as_org"] === undefined)
+    )
+        return false;
     if (!("network" in value) || value["network"] === undefined) return false;
     return true;
 }

@@ -1,11 +1,14 @@
 # Integrations
 ADOM
 appflowy
+appsmith
 Ascensio
 Authy
 Beszel
 Bitnami
 Budibase
+Chatwoot
+Coolify
 Doki
 Doku
 dokuwiki
@@ -39,6 +42,8 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+n8n
+NocoDB
 Nexterm
 Observium
 Ofair

@@ -71,11 +71,21 @@ export function PatchedEnrollmentTokenRequestFromJSONTyped(
         return json;
     }
     return {
-        deviceGroup: json["device_group"] == null ? undefined : json["device_group"],
+        deviceGroup:
+            json["device_group"] === undefined
+                ? undefined
+                : json["device_group"] === null
+                  ? null
+                  : json["device_group"],
         connector: json["connector"] == null ? undefined : json["connector"],
         name: json["name"] == null ? undefined : json["name"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
     };
 }
 

@@ -54,7 +54,13 @@ export interface StaticDevice {
  */
 export function instanceOfStaticDevice(value: object): value is StaticDevice {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("tokenSet" in value) || value["tokenSet"] === undefined) return false;
+    if (
+        (!("tokenSet" in (value as Record<string, any>)) &&
+            !("token_set" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenSet"] === undefined &&
+            (value as Record<string, any>)["token_set"] === undefined)
+    )
+        return false;
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     return true;
@@ -81,7 +87,7 @@ export function StaticDeviceToJSON(json: any): StaticDevice {
 }
 
 export function StaticDeviceToJSONTyped(
-    value?: Omit<StaticDevice, "token_set" | "pk" | "user"> | null,
+    value?: Omit<StaticDevice, "tokenSet" | "pk" | "user"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

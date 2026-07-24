@@ -19,12 +19,12 @@ license-file = "LICENSE"
 publish = false
 
 [workspace.dependencies]
-arc-swap = "= 1.9.1"
+arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.17.0", features = ["fips"] }
+aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
-clap = { version = "= 4.6.1", features = ["derive", "env"] }
+clap = { version = "= 4.6.3", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
@@ -38,12 +38,12 @@ dotenvy = "= 0.15.7"
 durstr = "= 0.5.1"
 eyre = "= 0.6.12"
 forwarded-header-value = "= 0.1.1"
-futures = "= 0.3.32"
+futures = "= 0.3.33"
 glob = "= 0.3.3"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
-json-subscriber = "= 0.2.8"
+json-subscriber = "= 0.3.0"
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
@@ -51,7 +51,7 @@ notify = "= 8.2.0"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
-regex = "= 1.12.4"
+regex = "= 1.13.1"
 reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
@@ -67,8 +67,8 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.41", features = ["fips"] }
-sentry = { version = "= 0.48.2", default-features = false, features = [
+rustls = { version = "= 0.23.42", features = ["fips"] }
+sentry = { version = "= 0.48.5", default-features = false, features = [
   "backtrace",
   "contexts",
   "debug-images",
@@ -78,9 +78,9 @@ sentry = { version = "= 0.48.2", default-features = false, features = [
   "tower",
   "tracing",
 ] }
-serde = { version = "= 1.0.228", features = ["derive"] }
-serde_json = "= 1.0.150"
-serde_repr = "= 0.1.20"
+serde = { version = "= 1.0.229", features = ["derive"] }
+serde_json = "= 1.0.151"
+serde_repr = "= 0.1.21"
 serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
 ] }
@@ -96,9 +96,9 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
-thiserror = "= 2.0.18"
-time = { version = "= 0.3.49", features = ["macros"] }
-tokio = { version = "= 1.52.3", features = ["full", "tracing"] }
+thiserror = "= 2.0.19"
+time = { version = "= 0.3.54", features = ["macros"] }
+tokio = { version = "= 1.52.4", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
 tokio-util = { version = "= 0.7.18", features = ["full"] }
@@ -113,8 +113,8 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.3", features = ["serde", "v4"] }
-which = "= 8.0.4"
+uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
+which = "= 8.0.5"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.8.0-rc1", path = "./packages/client-rust" }
@@ -280,6 +280,7 @@ metrics.workspace = true
 metrics-exporter-prometheus.workspace = true
 nix.workspace = true
 pyo3 = { workspace = true, optional = true }
+reqwest.workspace = true
 sqlx = { workspace = true, optional = true }
 tokio.workspace = true
 tracing.workspace = true
