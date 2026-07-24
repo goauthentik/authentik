@@ -145,7 +145,7 @@ class LDAPSource(IncomingSyncSource):
     )
 
     sync_group_hierarchy = models.BooleanField(
-        default=True, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
+        default=False, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
     )
 
     lookup_groups_from_user = models.BooleanField(

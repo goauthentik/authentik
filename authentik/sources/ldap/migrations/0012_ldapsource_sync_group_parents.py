@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
             model_name="ldapsource",
             name="sync_group_hierarchy",
             field=models.BooleanField(
-                default=True, help_text="Sync group parentage/hierarchy from LDAP directories."
+                default=False, help_text="Sync group parentage/hierarchy from LDAP directories."
             ),
         ),
     ]
