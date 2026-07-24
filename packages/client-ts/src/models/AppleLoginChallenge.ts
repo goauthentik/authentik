@@ -70,9 +70,21 @@ export interface AppleLoginChallenge {
  * Check if a given object implements the AppleLoginChallenge interface.
  */
 export function instanceOfAppleLoginChallenge(value: object): value is AppleLoginChallenge {
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
     if (!("scope" in value) || value["scope"] === undefined) return false;
-    if (!("redirectUri" in value) || value["redirectUri"] === undefined) return false;
+    if (
+        (!("redirectUri" in (value as Record<string, any>)) &&
+            !("redirect_uri" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["redirectUri"] === undefined &&
+            (value as Record<string, any>)["redirect_uri"] === undefined)
+    )
+        return false;
     if (!("state" in value) || value["state"] === undefined) return false;
     return true;
 }

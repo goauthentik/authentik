@@ -42,7 +42,13 @@ export interface TenantRequest {
  * Check if a given object implements the TenantRequest interface.
  */
 export function instanceOfTenantRequest(value: object): value is TenantRequest {
-    if (!("schemaName" in value) || value["schemaName"] === undefined) return false;
+    if (
+        (!("schemaName" in (value as Record<string, any>)) &&
+            !("schema_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["schemaName"] === undefined &&
+            (value as Record<string, any>)["schema_name"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }

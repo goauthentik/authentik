@@ -160,7 +160,12 @@ export function SCIMProviderRequestFromJSONTyped(
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
-        authOauth: json["auth_oauth"] == null ? undefined : json["auth_oauth"],
+        authOauth:
+            json["auth_oauth"] === undefined
+                ? undefined
+                : json["auth_oauth"] === null
+                  ? null
+                  : json["auth_oauth"],
         authOauthParams: json["auth_oauth_params"] == null ? undefined : json["auth_oauth_params"],
         compatibilityMode:
             json["compatibility_mode"] == null

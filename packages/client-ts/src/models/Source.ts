@@ -155,12 +155,42 @@ export function instanceOfSource(value: object): value is Source {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("managed" in value) || value["managed"] === undefined) return false;
-    if (!("iconUrl" in value) || value["iconUrl"] === undefined) return false;
-    if (!("iconThemedUrls" in value) || value["iconThemedUrls"] === undefined) return false;
+    if (
+        (!("iconUrl" in (value as Record<string, any>)) &&
+            !("icon_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["iconUrl"] === undefined &&
+            (value as Record<string, any>)["icon_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("iconThemedUrls" in (value as Record<string, any>)) &&
+            !("icon_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["iconThemedUrls"] === undefined &&
+            (value as Record<string, any>)["icon_themed_urls"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -179,8 +209,17 @@ export function SourceFromJSONTyped(json: any, ignoreDiscriminator: boolean): So
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
@@ -215,12 +254,12 @@ export function SourceToJSONTyped(
         Source,
         | "pk"
         | "component"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
         | "managed"
-        | "icon_url"
-        | "icon_themed_urls"
+        | "iconUrl"
+        | "iconThemedUrls"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -177,7 +177,11 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
@@ -196,11 +200,18 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
             json["session_valid_not_on_or_after"] == null
                 ? undefined
                 : json["session_valid_not_on_or_after"],
-        nameIdMapping: json["name_id_mapping"] == null ? undefined : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] == null
+        nameIdMapping:
+            json["name_id_mapping"] === undefined
                 ? undefined
-                : json["authn_context_class_ref_mapping"],
+                : json["name_id_mapping"] === null
+                  ? null
+                  : json["name_id_mapping"],
+        authnContextClassRefMapping:
+            json["authn_context_class_ref_mapping"] === undefined
+                ? undefined
+                : json["authn_context_class_ref_mapping"] === null
+                  ? null
+                  : json["authn_context_class_ref_mapping"],
         samlVersion:
             json["saml_version"] == null
                 ? undefined
@@ -213,8 +224,18 @@ export function PatchedWSFederationProviderRequestFromJSONTyped(
             json["signature_algorithm"] == null
                 ? undefined
                 : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signingKp:
+            json["signing_kp"] === undefined
+                ? undefined
+                : json["signing_kp"] === null
+                  ? null
+                  : json["signing_kp"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],

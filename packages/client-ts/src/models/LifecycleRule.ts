@@ -118,11 +118,35 @@ export interface LifecycleRule {
 export function instanceOfLifecycleRule(value: object): value is LifecycleRule {
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
-    if (!("reviewerGroupsObj" in value) || value["reviewerGroupsObj"] === undefined) return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("reviewerGroupsObj" in (value as Record<string, any>)) &&
+            !("reviewer_groups_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewerGroupsObj"] === undefined &&
+            (value as Record<string, any>)["reviewer_groups_obj"] === undefined)
+    )
+        return false;
     if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
-    if (!("reviewersObj" in value) || value["reviewersObj"] === undefined) return false;
-    if (!("targetVerbose" in value) || value["targetVerbose"] === undefined) return false;
+    if (
+        (!("reviewersObj" in (value as Record<string, any>)) &&
+            !("reviewers_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["reviewersObj"] === undefined &&
+            (value as Record<string, any>)["reviewers_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("targetVerbose" in (value as Record<string, any>)) &&
+            !("target_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["targetVerbose"] === undefined &&
+            (value as Record<string, any>)["target_verbose"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -138,7 +162,12 @@ export function LifecycleRuleFromJSONTyped(json: any, ignoreDiscriminator: boole
         id: json["id"],
         name: json["name"],
         contentType: ContentTypeEnumFromJSON(json["content_type"]),
-        objectId: json["object_id"] == null ? undefined : json["object_id"],
+        objectId:
+            json["object_id"] === undefined
+                ? undefined
+                : json["object_id"] === null
+                  ? null
+                  : json["object_id"],
         interval: json["interval"] == null ? undefined : json["interval"],
         gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],
@@ -163,7 +192,7 @@ export function LifecycleRuleToJSON(json: any): LifecycleRule {
 export function LifecycleRuleToJSONTyped(
     value?: Omit<
         LifecycleRule,
-        "id" | "reviewer_groups_obj" | "reviewers_obj" | "target_verbose"
+        "id" | "reviewerGroupsObj" | "reviewersObj" | "targetVerbose"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

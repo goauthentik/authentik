@@ -78,11 +78,41 @@ export interface AuthenticatorDuoChallenge {
 export function instanceOfAuthenticatorDuoChallenge(
     value: object,
 ): value is AuthenticatorDuoChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
-    if (!("activationBarcode" in value) || value["activationBarcode"] === undefined) return false;
-    if (!("activationCode" in value) || value["activationCode"] === undefined) return false;
-    if (!("stageUuid" in value) || value["stageUuid"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
+    if (
+        (!("activationBarcode" in (value as Record<string, any>)) &&
+            !("activation_barcode" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["activationBarcode"] === undefined &&
+            (value as Record<string, any>)["activation_barcode"] === undefined)
+    )
+        return false;
+    if (
+        (!("activationCode" in (value as Record<string, any>)) &&
+            !("activation_code" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["activationCode"] === undefined &&
+            (value as Record<string, any>)["activation_code"] === undefined)
+    )
+        return false;
+    if (
+        (!("stageUuid" in (value as Record<string, any>)) &&
+            !("stage_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["stageUuid"] === undefined &&
+            (value as Record<string, any>)["stage_uuid"] === undefined)
+    )
+        return false;
     return true;
 }
 

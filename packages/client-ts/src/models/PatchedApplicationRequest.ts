@@ -118,7 +118,12 @@ export function PatchedApplicationRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         slug: json["slug"] == null ? undefined : json["slug"],
-        provider: json["provider"] == null ? undefined : json["provider"],
+        provider:
+            json["provider"] === undefined
+                ? undefined
+                : json["provider"] === null
+                  ? null
+                  : json["provider"],
         backchannelProviders:
             json["backchannel_providers"] == null ? undefined : json["backchannel_providers"],
         openInNewTab: json["open_in_new_tab"] == null ? undefined : json["open_in_new_tab"],

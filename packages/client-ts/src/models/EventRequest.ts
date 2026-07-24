@@ -87,7 +87,12 @@ export function EventRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         action: EventActionsFromJSON(json["action"]),
         app: json["app"],
         context: json["context"] == null ? undefined : json["context"],
-        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
+        clientIp:
+            json["client_ip"] === undefined
+                ? undefined
+                : json["client_ip"] === null
+                  ? null
+                  : json["client_ip"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
         brand: json["brand"] == null ? undefined : json["brand"],
     };

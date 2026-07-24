@@ -92,9 +92,27 @@ export interface FleetConnector {
 export function instanceOfFleetConnector(value: object): value is FleetConnector {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
@@ -119,7 +137,12 @@ export function FleetConnectorFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         url: json["url"],
-        headersMapping: json["headers_mapping"] == null ? undefined : json["headers_mapping"],
+        headersMapping:
+            json["headers_mapping"] === undefined
+                ? undefined
+                : json["headers_mapping"] === null
+                  ? null
+                  : json["headers_mapping"],
         mapUsers: json["map_users"] == null ? undefined : json["map_users"],
         mapTeamsAccessGroup:
             json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],
@@ -133,7 +156,7 @@ export function FleetConnectorToJSON(json: any): FleetConnector {
 export function FleetConnectorToJSONTyped(
     value?: Omit<
         FleetConnector,
-        "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+        "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

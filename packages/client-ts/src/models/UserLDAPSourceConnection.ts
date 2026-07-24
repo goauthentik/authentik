@@ -82,11 +82,29 @@ export function instanceOfUserLDAPSourceConnection(
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (
+        (!("sourceObj" in (value as Record<string, any>)) &&
+            !("source_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sourceObj"] === undefined &&
+            (value as Record<string, any>)["source_obj"] === undefined)
+    )
+        return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -120,7 +138,7 @@ export function UserLDAPSourceConnectionToJSON(json: any): UserLDAPSourceConnect
 export function UserLDAPSourceConnectionToJSONTyped(
     value?: Omit<
         UserLDAPSourceConnection,
-        "pk" | "user" | "source_obj" | "created" | "last_updated" | "user_obj"
+        "pk" | "user" | "sourceObj" | "created" | "lastUpdated" | "userObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

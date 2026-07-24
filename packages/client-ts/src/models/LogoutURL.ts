@@ -74,11 +74,36 @@ export function LogoutURLFromJSONTyped(json: any, ignoreDiscriminator: boolean):
     }
     return {
         url: json["url"],
-        providerName: json["provider_name"] == null ? undefined : json["provider_name"],
-        binding: json["binding"] == null ? undefined : json["binding"],
-        samlRequest: json["saml_request"] == null ? undefined : json["saml_request"],
-        samlResponse: json["saml_response"] == null ? undefined : json["saml_response"],
-        samlRelayState: json["saml_relay_state"] == null ? undefined : json["saml_relay_state"],
+        providerName:
+            json["provider_name"] === undefined
+                ? undefined
+                : json["provider_name"] === null
+                  ? null
+                  : json["provider_name"],
+        binding:
+            json["binding"] === undefined
+                ? undefined
+                : json["binding"] === null
+                  ? null
+                  : json["binding"],
+        samlRequest:
+            json["saml_request"] === undefined
+                ? undefined
+                : json["saml_request"] === null
+                  ? null
+                  : json["saml_request"],
+        samlResponse:
+            json["saml_response"] === undefined
+                ? undefined
+                : json["saml_response"] === null
+                  ? null
+                  : json["saml_response"],
+        samlRelayState:
+            json["saml_relay_state"] === undefined
+                ? undefined
+                : json["saml_relay_state"] === null
+                  ? null
+                  : json["saml_relay_state"],
     };
 }
 

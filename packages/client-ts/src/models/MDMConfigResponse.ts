@@ -43,7 +43,13 @@ export interface MDMConfigResponse {
  */
 export function instanceOfMDMConfigResponse(value: object): value is MDMConfigResponse {
     if (!("config" in value) || value["config"] === undefined) return false;
-    if (!("mimeType" in value) || value["mimeType"] === undefined) return false;
+    if (
+        (!("mimeType" in (value as Record<string, any>)) &&
+            !("mime_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["mimeType"] === undefined &&
+            (value as Record<string, any>)["mime_type"] === undefined)
+    )
+        return false;
     if (!("filename" in value) || value["filename"] === undefined) return false;
     return true;
 }

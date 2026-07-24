@@ -59,9 +59,10 @@ export function PropertyMappingTestRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
+        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
         context: json["context"] == null ? undefined : json["context"],
-        group: json["group"] == null ? undefined : json["group"],
+        group:
+            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
     };
 }
 

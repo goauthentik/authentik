@@ -44,7 +44,13 @@ export interface SCIMProviderGroupRequest {
 export function instanceOfSCIMProviderGroupRequest(
     value: object,
 ): value is SCIMProviderGroupRequest {
-    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (
+        (!("scimId" in (value as Record<string, any>)) &&
+            !("scim_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scimId"] === undefined &&
+            (value as Record<string, any>)["scim_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
