@@ -81,7 +81,7 @@ dev = [
   "black==26.5.1",
   "bpython==0.26",
   "colorama==0.4.6",
-  "constructs==10.7.0",
+  "constructs==10.7.1",
   "coverage[toml]==7.15.2",
   "daphne==4.2.2",
   "debugpy==1.8.21",
