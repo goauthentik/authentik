@@ -215,12 +215,12 @@ pub(crate) async fn cleanup_loop(arbiter: Arbiter) -> Result<()> {
     let mut ticker = interval(CLEANUP_INTERVAL);
     loop {
         tokio::select! {
-            () = arbiter.shutdown() => break,
             _ = ticker.tick() => {
                 if let Err(err) = store.cleanup().await {
                     warn!(?err, "session cleanup failed");
                 }
             }
+            () = arbiter.shutdown() => break,
         }
     }
     Ok(())
