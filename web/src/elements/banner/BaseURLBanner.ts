@@ -43,7 +43,6 @@ export class BaseURLBanner extends AKElement {
         }
 
         return html`<ak-banner
-            dismiss-key="base-url-banner"
             level=${P4Disposition.Warning}
             action-href="#/admin/settings"
             action-label=${msg("Configure it in the system settings", {
