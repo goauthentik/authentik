@@ -58,6 +58,14 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         help_text=_("Configure how authentik should show avatars for users."),
         default="gravatar,initials",
     )
+    base_url = models.URLField(
+        default="",
+        blank=True,
+        help_text=_(
+            "Configure the base URL under which this authentik instance is "
+            "reachable, e.g. https://authentik.company"
+        ),
+    )
     default_user_change_name = models.BooleanField(
         help_text=_("Enable the ability for users to change their name."), default=True
     )

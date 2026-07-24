@@ -51553,6 +51553,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56355,6 +56361,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56442,6 +56454,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -57051,7 +57069,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host

@@ -23,6 +23,7 @@ from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
+from authentik.tenants.utils import get_current_tenant
 
 
 def fips_enabled():
@@ -58,6 +59,7 @@ class SystemInfoSerializer(PassiveSerializer):
     server_time = SerializerMethodField()
     embedded_outpost_disabled = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
+    base_url = SerializerMethodField()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
@@ -113,6 +115,10 @@ class SystemInfoSerializer(PassiveSerializer):
         if not outposts.exists():  # pragma: no cover
             return ""
         return outposts.first().config.authentik_host
+
+    def get_base_url(self, request: Request) -> str:
+        """Configured external base URL. Can be empty"""
+        return get_current_tenant().base_url
 
 
 class SystemView(APIView):

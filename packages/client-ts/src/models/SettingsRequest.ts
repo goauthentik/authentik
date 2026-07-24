@@ -31,6 +31,12 @@ export interface SettingsRequest {
      */
     avatars?: string;
     /**
+     * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+     * @type {string}
+     * @memberof SettingsRequest
+     */
+    baseUrl?: string;
+    /**
      * Enable the ability for users to change their name.
      * @type {boolean}
      * @memberof SettingsRequest
@@ -143,6 +149,7 @@ export function SettingsRequestFromJSONTyped(
     }
     return {
         avatars: json["avatars"] == null ? undefined : json["avatars"],
+        baseUrl: json["base_url"] == null ? undefined : json["base_url"],
         defaultUserChangeName:
             json["default_user_change_name"] == null ? undefined : json["default_user_change_name"],
         defaultUserChangeEmail:
@@ -198,6 +205,7 @@ export function SettingsRequestToJSONTyped(
 
     return {
         avatars: value["avatars"],
+        base_url: value["baseUrl"],
         default_user_change_name: value["defaultUserChangeName"],
         default_user_change_email: value["defaultUserChangeEmail"],
         default_user_change_username: value["defaultUserChangeUsername"],
