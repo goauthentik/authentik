@@ -5074,6 +5074,7 @@ paths:
               $ref: '#/components/schemas/UserSwitchRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
