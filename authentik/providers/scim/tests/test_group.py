@@ -10,6 +10,7 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
+from authentik.providers.scim.clients.groups import SCIMGroupClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderGroup
 from authentik.providers.scim.tasks import scim_sync
 
@@ -208,6 +209,20 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "GET")
         self.assertNotIn("PUT", [req.method for req in mock.request_history])
+
+    @Mocker()
+    def test_group_diff_nested_attribute(self, mock: Mocker):
+        """Test nested attribute changes are detected without mutating cached data"""
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        connection = SCIMProviderGroup(attributes={"custom": {"value": "old"}})
+
+        self.assertTrue(
+            SCIMGroupClient(self.provider).diff(
+                {"custom": {"value": "new"}},
+                connection,
+            )
+        )
+        self.assertEqual(connection.attributes["custom"]["value"], "old")
 
     @Mocker()
     def test_discover(self, mock: Mocker):
