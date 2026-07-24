@@ -142,12 +142,12 @@ export class EnterpriseStatusCard extends AKElement {
                             ${progressBar(
                                 msg("Internal user usage"),
                                 currentInternalUsers,
-                                licensedInternalUsers
+                                licensedInternalUsers,
                             )}
                             ${progressBar(
                                 msg("External user usage"),
                                 currentExternalUsers,
-                                licensedExternalUsers
+                                licensedExternalUsers,
                             )}
                         </div>
                     </div>
