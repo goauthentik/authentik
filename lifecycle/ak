@@ -48,7 +48,77 @@ function run_authentik {
     esac
 }
 
+function prepare_media_dir {
+    if [[ ! -w /data ]]; then
+        log "Unable to prepare media directory because /data is not writable; continuing"
+        return 0
+    fi
+
+    local legacy_media_entry
+    legacy_media_entry=""
+    if [[ -d /media && ! -L /media ]]; then
+        legacy_media_entry="$(find /media -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null || true)"
+    fi
+
+    if [[ -n "$legacy_media_entry" ]]; then
+        if [[ -L /data/media ]]; then
+            if ! rm -- /data/media || ! ln -s /media /data/media; then
+                log "Unable to link /data/media to the legacy /media directory; continuing"
+            fi
+        elif [[ ! -e /data/media ]]; then
+            if ! ln -s /media /data/media; then
+                log "Unable to link /data/media to the legacy /media directory; continuing"
+            fi
+        elif [[ -d /data/media ]]; then
+            local current_media_entry
+            current_media_entry="$(find /data/media -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null || true)"
+            if [[ -n "$current_media_entry" ]]; then
+                log "WARNING: /data/media contains data; preserving it instead of linking to legacy /media"
+                return 0
+            fi
+            if ! rmdir -- /data/media || ! ln -s /media /data/media; then
+                log "Unable to replace empty /data/media with a link to legacy /media; continuing"
+            fi
+        else
+            log "WARNING: /data/media is not a directory or symlink; preserving it"
+        fi
+        return 0
+    fi
+
+    if [[ -L /data/media ]]; then
+        local media_target
+        local media_staging
+        media_target="$(readlink -f /data/media || true)"
+        if [[ "$media_target" != "/media" ]]; then
+            return 0
+        fi
+        if ! media_staging="$(mktemp -d /data/media.XXXXXX)"; then
+            log "Unable to create media staging directory; continuing"
+            return 0
+        fi
+        if [[ -d "$media_target" ]] && ! cp -a "$media_target"/. "$media_staging"/; then
+            log "Unable to copy legacy media into /data; continuing"
+            rm -rf -- "$media_staging" || true
+            return 0
+        fi
+        if ! rm -- /data/media; then
+            log "Unable to replace the legacy /data/media symlink; continuing"
+            rm -rf -- "$media_staging" || true
+            return 0
+        fi
+        if ! mv "$media_staging" /data/media; then
+            log "Unable to install the prepared media directory; continuing"
+        fi
+    else
+        if ! mkdir -p /data/media; then
+            log "Unable to create /data/media; continuing"
+        fi
+    fi
+    return 0
+}
+
 function check_if_root_and_run {
+    prepare_media_dir || true
     if [[ $EUID -ne 0 ]]; then
         log "Not running as root, disabling permission fixes"
         exec $(run_authentik "$@")
