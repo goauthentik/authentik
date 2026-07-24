@@ -97,7 +97,11 @@ export function PatchedRadiusProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
@@ -105,7 +109,12 @@ export function PatchedRadiusProviderRequestFromJSONTyped(
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
         sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
     };
 }
 

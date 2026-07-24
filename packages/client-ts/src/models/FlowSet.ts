@@ -106,14 +106,31 @@ export interface FlowSet {
  */
 export function instanceOfFlowSet(value: object): value is FlowSet {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("policybindingmodelPtrId" in value) || value["policybindingmodelPtrId"] === undefined)
+    if (
+        (!("policybindingmodelPtrId" in (value as Record<string, any>)) &&
+            !("policybindingmodel_ptr_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policybindingmodelPtrId"] === undefined &&
+            (value as Record<string, any>)["policybindingmodel_ptr_id"] === undefined)
+    )
         return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("title" in value) || value["title"] === undefined) return false;
     if (!("designation" in value) || value["designation"] === undefined) return false;
-    if (!("backgroundUrl" in value) || value["backgroundUrl"] === undefined) return false;
-    if (!("exportUrl" in value) || value["exportUrl"] === undefined) return false;
+    if (
+        (!("backgroundUrl" in (value as Record<string, any>)) &&
+            !("background_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["backgroundUrl"] === undefined &&
+            (value as Record<string, any>)["background_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("exportUrl" in (value as Record<string, any>)) &&
+            !("export_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["exportUrl"] === undefined &&
+            (value as Record<string, any>)["export_url"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -153,10 +170,7 @@ export function FlowSetToJSON(json: any): FlowSet {
 }
 
 export function FlowSetToJSONTyped(
-    value?: Omit<
-        FlowSet,
-        "pk" | "policybindingmodel_ptr_id" | "background_url" | "export_url"
-    > | null,
+    value?: Omit<FlowSet, "pk" | "policybindingmodelPtrId" | "backgroundUrl" | "exportUrl"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

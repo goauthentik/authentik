@@ -58,7 +58,13 @@ export interface LogEvent {
  */
 export function instanceOfLogEvent(value: object): value is LogEvent {
     if (!("timestamp" in value) || value["timestamp"] === undefined) return false;
-    if (!("logLevel" in value) || value["logLevel"] === undefined) return false;
+    if (
+        (!("logLevel" in (value as Record<string, any>)) &&
+            !("log_level" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["logLevel"] === undefined &&
+            (value as Record<string, any>)["log_level"] === undefined)
+    )
+        return false;
     if (!("logger" in value) || value["logger"] === undefined) return false;
     if (!("event" in value) || value["event"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;

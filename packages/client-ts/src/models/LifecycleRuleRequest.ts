@@ -89,7 +89,13 @@ export interface LifecycleRuleRequest {
  */
 export function instanceOfLifecycleRuleRequest(value: object): value is LifecycleRuleRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
     if (!("reviewers" in value) || value["reviewers"] === undefined) return false;
     return true;
 }
@@ -108,7 +114,12 @@ export function LifecycleRuleRequestFromJSONTyped(
     return {
         name: json["name"],
         contentType: ContentTypeEnumFromJSON(json["content_type"]),
-        objectId: json["object_id"] == null ? undefined : json["object_id"],
+        objectId:
+            json["object_id"] === undefined
+                ? undefined
+                : json["object_id"] === null
+                  ? null
+                  : json["object_id"],
         interval: json["interval"] == null ? undefined : json["interval"],
         gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],

@@ -122,9 +122,27 @@ export interface PolicyBinding {
  */
 export function instanceOfPolicyBinding(value: object): value is PolicyBinding {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("policyObj" in value) || value["policyObj"] === undefined) return false;
-    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("policyObj" in (value as Record<string, any>)) &&
+            !("policy_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policyObj"] === undefined &&
+            (value as Record<string, any>)["policy_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("order" in value) || value["order"] === undefined) return false;
     if (!("expires" in value) || value["expires"] === undefined) return false;
@@ -142,9 +160,15 @@ export function PolicyBindingFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         pk: json["pk"],
-        policy: json["policy"] == null ? undefined : json["policy"],
-        group: json["group"] == null ? undefined : json["group"],
-        user: json["user"] == null ? undefined : json["user"],
+        policy:
+            json["policy"] === undefined
+                ? undefined
+                : json["policy"] === null
+                  ? null
+                  : json["policy"],
+        group:
+            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
+        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
         policyObj: PolicyFromJSON(json["policy_obj"]),
         groupObj: PartialGroupFromJSON(json["group_obj"]),
         userObj: PartialUserFromJSON(json["user_obj"]),
@@ -166,7 +190,7 @@ export function PolicyBindingToJSON(json: any): PolicyBinding {
 export function PolicyBindingToJSONTyped(
     value?: Omit<
         PolicyBinding,
-        "pk" | "policy_obj" | "group_obj" | "user_obj" | "expires" | "expiring"
+        "pk" | "policyObj" | "groupObj" | "userObj" | "expires" | "expiring"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -67,7 +67,12 @@ export function PatchedRACPropertyMappingRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"] == null ? undefined : json["name"],
         expression: json["expression"] == null ? undefined : json["expression"],
         staticSettings: json["static_settings"] == null ? undefined : json["static_settings"],

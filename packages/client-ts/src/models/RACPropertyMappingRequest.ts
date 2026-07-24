@@ -51,7 +51,13 @@ export function instanceOfRACPropertyMappingRequest(
     value: object,
 ): value is RACPropertyMappingRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("staticSettings" in value) || value["staticSettings"] === undefined) return false;
+    if (
+        (!("staticSettings" in (value as Record<string, any>)) &&
+            !("static_settings" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["staticSettings"] === undefined &&
+            (value as Record<string, any>)["static_settings"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -67,7 +73,12 @@ export function RACPropertyMappingRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"],
         expression: json["expression"] == null ? undefined : json["expression"],
         staticSettings: json["static_settings"],

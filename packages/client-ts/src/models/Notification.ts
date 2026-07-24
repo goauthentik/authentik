@@ -96,8 +96,18 @@ export function NotificationFromJSONTyped(json: any, ignoreDiscriminator: boolea
         pk: json["pk"],
         severity: SeverityEnumFromJSON(json["severity"]),
         body: json["body"],
-        hyperlink: json["hyperlink"] == null ? undefined : json["hyperlink"],
-        hyperlinkLabel: json["hyperlink_label"] == null ? undefined : json["hyperlink_label"],
+        hyperlink:
+            json["hyperlink"] === undefined
+                ? undefined
+                : json["hyperlink"] === null
+                  ? null
+                  : json["hyperlink"],
+        hyperlinkLabel:
+            json["hyperlink_label"] === undefined
+                ? undefined
+                : json["hyperlink_label"] === null
+                  ? null
+                  : json["hyperlink_label"],
         created: new Date(json["created"]),
         event: json["event"] == null ? undefined : EventFromJSON(json["event"]),
         seen: json["seen"] == null ? undefined : json["seen"],

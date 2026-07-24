@@ -68,7 +68,12 @@ export function PatchedAuthenticatorEndpointGDTCStageRequestFromJSONTyped(
     }
     return {
         name: json["name"] == null ? undefined : json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         credentials: json["credentials"] == null ? undefined : json["credentials"],
     };

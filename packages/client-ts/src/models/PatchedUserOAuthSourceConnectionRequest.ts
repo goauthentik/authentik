@@ -69,7 +69,12 @@ export function PatchedUserOAuthSourceConnectionRequestFromJSONTyped(
     return {
         source: json["source"] == null ? undefined : json["source"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
-        accessToken: json["access_token"] == null ? undefined : json["access_token"],
+        accessToken:
+            json["access_token"] === undefined
+                ? undefined
+                : json["access_token"] === null
+                  ? null
+                  : json["access_token"],
         expires: json["expires"] == null ? undefined : new Date(json["expires"]),
     };
 }

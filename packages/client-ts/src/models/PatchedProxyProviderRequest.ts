@@ -166,7 +166,11 @@ export function PatchedProxyProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
@@ -177,7 +181,12 @@ export function PatchedProxyProviderRequestFromJSONTyped(
             json["internal_host_ssl_validation"] == null
                 ? undefined
                 : json["internal_host_ssl_validation"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
         basicAuthEnabled:
             json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],

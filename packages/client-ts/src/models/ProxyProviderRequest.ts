@@ -148,9 +148,27 @@ export interface ProxyProviderRequest {
  */
 export function instanceOfProxyProviderRequest(value: object): value is ProxyProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
-    if (!("externalHost" in value) || value["externalHost"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("externalHost" in (value as Record<string, any>)) &&
+            !("external_host" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalHost"] === undefined &&
+            (value as Record<string, any>)["external_host"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -168,7 +186,11 @@ export function ProxyProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
@@ -178,7 +200,12 @@ export function ProxyProviderRequestFromJSONTyped(
             json["internal_host_ssl_validation"] == null
                 ? undefined
                 : json["internal_host_ssl_validation"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         skipPathRegex: json["skip_path_regex"] == null ? undefined : json["skip_path_regex"],
         basicAuthEnabled:
             json["basic_auth_enabled"] == null ? undefined : json["basic_auth_enabled"],

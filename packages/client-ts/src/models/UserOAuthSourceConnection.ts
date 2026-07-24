@@ -80,10 +80,22 @@ export function instanceOfUserOAuthSourceConnection(
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
-    if (!("sourceObj" in value) || value["sourceObj"] === undefined) return false;
+    if (
+        (!("sourceObj" in (value as Record<string, any>)) &&
+            !("source_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sourceObj"] === undefined &&
+            (value as Record<string, any>)["source_obj"] === undefined)
+    )
+        return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -117,7 +129,7 @@ export function UserOAuthSourceConnectionToJSON(json: any): UserOAuthSourceConne
 export function UserOAuthSourceConnectionToJSONTyped(
     value?: Omit<
         UserOAuthSourceConnection,
-        "pk" | "user" | "source_obj" | "created" | "last_updated"
+        "pk" | "user" | "sourceObj" | "created" | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

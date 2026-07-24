@@ -201,9 +201,27 @@ export interface OAuthSourceRequest {
 export function instanceOfOAuthSourceRequest(value: object): value is OAuthSourceRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("providerType" in value) || value["providerType"] === undefined) return false;
-    if (!("consumerKey" in value) || value["consumerKey"] === undefined) return false;
-    if (!("consumerSecret" in value) || value["consumerSecret"] === undefined) return false;
+    if (
+        (!("providerType" in (value as Record<string, any>)) &&
+            !("provider_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerType"] === undefined &&
+            (value as Record<string, any>)["provider_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("consumerKey" in (value as Record<string, any>)) &&
+            !("consumer_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["consumerKey"] === undefined &&
+            (value as Record<string, any>)["consumer_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("consumerSecret" in (value as Record<string, any>)) &&
+            !("consumer_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["consumerSecret"] === undefined &&
+            (value as Record<string, any>)["consumer_secret"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -224,8 +242,17 @@ export function OAuthSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
@@ -246,10 +273,30 @@ export function OAuthSourceRequestFromJSONTyped(
                 ? undefined
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         providerType: ProviderTypeEnumFromJSON(json["provider_type"]),
-        requestTokenUrl: json["request_token_url"] == null ? undefined : json["request_token_url"],
-        authorizationUrl: json["authorization_url"] == null ? undefined : json["authorization_url"],
-        accessTokenUrl: json["access_token_url"] == null ? undefined : json["access_token_url"],
-        profileUrl: json["profile_url"] == null ? undefined : json["profile_url"],
+        requestTokenUrl:
+            json["request_token_url"] === undefined
+                ? undefined
+                : json["request_token_url"] === null
+                  ? null
+                  : json["request_token_url"],
+        authorizationUrl:
+            json["authorization_url"] === undefined
+                ? undefined
+                : json["authorization_url"] === null
+                  ? null
+                  : json["authorization_url"],
+        accessTokenUrl:
+            json["access_token_url"] === undefined
+                ? undefined
+                : json["access_token_url"] === null
+                  ? null
+                  : json["access_token_url"],
+        profileUrl:
+            json["profile_url"] === undefined
+                ? undefined
+                : json["profile_url"] === null
+                  ? null
+                  : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"],
         consumerSecret: json["consumer_secret"],

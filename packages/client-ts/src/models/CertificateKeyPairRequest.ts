@@ -45,7 +45,13 @@ export function instanceOfCertificateKeyPairRequest(
     value: object,
 ): value is CertificateKeyPairRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("certificateData" in value) || value["certificateData"] === undefined) return false;
+    if (
+        (!("certificateData" in (value as Record<string, any>)) &&
+            !("certificate_data" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["certificateData"] === undefined &&
+            (value as Record<string, any>)["certificate_data"] === undefined)
+    )
+        return false;
     return true;
 }
 

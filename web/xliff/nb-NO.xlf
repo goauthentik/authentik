@@ -10335,14 +10335,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Server validation of credential failed</source>
   <target>Servervalidering av legitimasjon feilet</target>
 </trans-unit>
-<trans-unit id="s1197b841263ebbcf">
-  <source>Require policies for application access</source>
-  <target>Krev policyer for applikasjonstilgang</target>
-</trans-unit>
-<trans-unit id="s16d1cddf9cbccdbd">
-  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
-  <target>Konfigurer om applikasjoner uten noen policy-/gruppe-/brukerbindinger skal være tilgjengelige for enhver bruker.</target>
-</trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
   <target>Ved vellykket autentisering, start autentisering på nytt i andre åpne faner.</target>
@@ -12480,6 +12472,30 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+</trans-unit>
+<trans-unit id="s3bca5a165739e8c9">
+  <source>Allow application access with no policies</source>
+</trans-unit>
+<trans-unit id="s36ecc1d57c02c225">
+  <source>Applications with no policies bound can be accessed by any user..</source>
+</trans-unit>
+<trans-unit id="s98a962f4514c9628">
+  <source>Expiring today</source>
+</trans-unit>
+<trans-unit id="se10a40e85fe55d76">
+  <source>Expiring in <x id="0" equiv-text="${formatDistanceStrict(new Date(), valid, { unit: &quot;day&quot; })}"/></source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml11">
+  <source>SAML 1.1 (required by Microsoft Entra ID / ADFS)</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml20">
+  <source>SAML 2.0</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.label">
+  <source>SAML assertion version</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.description">
+  <source>Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.</source>
 </trans-unit>
 </body>
 </file>

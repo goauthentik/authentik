@@ -63,9 +63,21 @@ export interface SCIMSourceGroup {
  * Check if a given object implements the SCIMSourceGroup interface.
  */
 export function instanceOfSCIMSourceGroup(value: object): value is SCIMSourceGroup {
-    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (
+        (!("externalId" in (value as Record<string, any>)) &&
+            !("external_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalId"] === undefined &&
+            (value as Record<string, any>)["external_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
@@ -96,7 +108,7 @@ export function SCIMSourceGroupToJSON(json: any): SCIMSourceGroup {
 }
 
 export function SCIMSourceGroupToJSONTyped(
-    value?: Omit<SCIMSourceGroup, "group_obj"> | null,
+    value?: Omit<SCIMSourceGroup, "groupObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

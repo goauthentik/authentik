@@ -70,9 +70,27 @@ export function instanceOfPermission(value: object): value is Permission {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("codename" in value) || value["codename"] === undefined) return false;
     if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
-    if (!("appLabelVerbose" in value) || value["appLabelVerbose"] === undefined) return false;
-    if (!("modelVerbose" in value) || value["modelVerbose"] === undefined) return false;
+    if (
+        (!("appLabel" in (value as Record<string, any>)) &&
+            !("app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabel"] === undefined &&
+            (value as Record<string, any>)["app_label"] === undefined)
+    )
+        return false;
+    if (
+        (!("appLabelVerbose" in (value as Record<string, any>)) &&
+            !("app_label_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabelVerbose"] === undefined &&
+            (value as Record<string, any>)["app_label_verbose"] === undefined)
+    )
+        return false;
+    if (
+        (!("modelVerbose" in (value as Record<string, any>)) &&
+            !("model_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modelVerbose"] === undefined &&
+            (value as Record<string, any>)["model_verbose"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -102,7 +120,7 @@ export function PermissionToJSON(json: any): Permission {
 export function PermissionToJSONTyped(
     value?: Omit<
         Permission,
-        "id" | "model" | "app_label" | "app_label_verbose" | "model_verbose"
+        "id" | "model" | "appLabel" | "appLabelVerbose" | "modelVerbose"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -67,7 +67,13 @@ export interface TelegramAuthRequest {
  */
 export function instanceOfTelegramAuthRequest(value: object): value is TelegramAuthRequest {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("authDate" in value) || value["authDate"] === undefined) return false;
+    if (
+        (!("authDate" in (value as Record<string, any>)) &&
+            !("auth_date" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authDate"] === undefined &&
+            (value as Record<string, any>)["auth_date"] === undefined)
+    )
+        return false;
     if (!("hash" in value) || value["hash"] === undefined) return false;
     return true;
 }
