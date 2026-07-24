@@ -36,6 +36,12 @@ export interface PatchedSourceStageRequest {
      * @memberof PatchedSourceStageRequest
      */
     resumeTimeout?: string;
+    /**
+     * Resume the flow when source matching fails because a required property is missing.
+     * @type {boolean}
+     * @memberof PatchedSourceStageRequest
+     */
+    resumeOnMissingMatchProperty?: boolean;
 }
 
 /**
@@ -62,6 +68,10 @@ export function PatchedSourceStageRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         source: json["source"] == null ? undefined : json["source"],
         resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
+        resumeOnMissingMatchProperty:
+            json["resume_on_missing_match_property"] == null
+                ? undefined
+                : json["resume_on_missing_match_property"],
     };
 }
 
@@ -81,5 +91,6 @@ export function PatchedSourceStageRequestToJSONTyped(
         name: value["name"],
         source: value["source"],
         resume_timeout: value["resumeTimeout"],
+        resume_on_missing_match_property: value["resumeOnMissingMatchProperty"],
     };
 }

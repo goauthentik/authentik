@@ -11580,6 +11580,12 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
 </trans-unit>
+<trans-unit id="stages.source.resume-on-missing-match-property.label">
+  <source>Resume on missing matching property</source>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-missing-match-property.description">
+  <source>Resume this flow when source matching fails because a required property is missing. No source connection is created.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

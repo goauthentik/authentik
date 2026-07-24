@@ -7,6 +7,7 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
+from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow
 from authentik.flows.planner import FlowPlan
@@ -126,6 +127,11 @@ class TestSourceFlowManager(TestCase):
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
+        failure = flow_manager.matcher.failure
+        self.assertIsNotNone(failure)
+        self.assertEqual(failure.reason, MatchFailureReason.MISSING_PROPERTY)
+        self.assertEqual(failure.property, "email")
+        self.assertFalse(UserOAuthSourceConnection.objects.exists())
         flow_manager.get_flow()
         # With email
         flow_manager = OAuthSourceFlowManager(
@@ -141,6 +147,7 @@ class TestSourceFlowManager(TestCase):
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.LINK)
+        self.assertIsNone(flow_manager.matcher.failure)
         flow_manager.get_flow()
 
     def test_unauthenticated_enroll_username(self):
@@ -158,6 +165,10 @@ class TestSourceFlowManager(TestCase):
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
+        failure = flow_manager.matcher.failure
+        self.assertIsNotNone(failure)
+        self.assertEqual(failure.reason, MatchFailureReason.MISSING_PROPERTY)
+        self.assertEqual(failure.property, "username")
         flow_manager.get_flow()
         # With username
         flow_manager = OAuthSourceFlowManager(
@@ -205,6 +216,7 @@ class TestSourceFlowManager(TestCase):
         )
         action, _ = flow_manager.get_action()
         self.assertEqual(action, Action.DENY)
+        self.assertIsNone(flow_manager.matcher.failure)
         flow_manager.get_flow()
 
     def test_unauthenticated_enroll_link_non_existent(self):

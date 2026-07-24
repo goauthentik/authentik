@@ -24,6 +24,13 @@ class SourceStage(Stage):
         ),
     )
 
+    resume_on_missing_match_property = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Resume the flow when source matching fails because a required property is missing."
+        ),
+    )
+
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.enterprise.stages.source.api import SourceStageSerializer

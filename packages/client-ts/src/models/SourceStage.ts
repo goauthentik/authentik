@@ -75,6 +75,12 @@ export interface SourceStage {
      * @memberof SourceStage
      */
     resumeTimeout?: string;
+    /**
+     * Resume the flow when source matching fails because a required property is missing.
+     * @type {boolean}
+     * @memberof SourceStage
+     */
+    resumeOnMissingMatchProperty?: boolean;
 }
 
 /**
@@ -110,6 +116,10 @@ export function SourceStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
         source: json["source"],
         resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
+        resumeOnMissingMatchProperty:
+            json["resume_on_missing_match_property"] == null
+                ? undefined
+                : json["resume_on_missing_match_property"],
     };
 }
 
@@ -132,5 +142,6 @@ export function SourceStageToJSONTyped(
         name: value["name"],
         source: value["source"],
         resume_timeout: value["resumeTimeout"],
+        resume_on_missing_match_property: value["resumeOnMissingMatchProperty"],
     };
 }
