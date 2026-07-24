@@ -1,7 +1,7 @@
 import "#admin/groups/ak-group-form";
 import "#admin/rbac/ObjectPermissionModal";
 import "#admin/users/UserForm";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/forms/ModalForm";
 import "#admin/endpoints/devices/DeviceUserBindingForm";
 

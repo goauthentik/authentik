@@ -1,7 +1,7 @@
 import "#admin/applications/entitlements/ApplicationEntitlementForm";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

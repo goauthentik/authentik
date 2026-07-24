@@ -4,7 +4,7 @@
 
 import "#admin/blueprints/BlueprintForm";
 import "#admin/rbac/ObjectPermissionModal";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";

@@ -8,7 +8,7 @@ import "#admin/providers/scim/SCIMProviderGroupList";
 import "#admin/providers/scim/SCIMProviderUserList";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/ak-mdx/index";

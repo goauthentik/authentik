@@ -283,6 +283,25 @@ export const styles = css`
         );
     }
 
+    :host(:not([color])),
+    :host([color="gray"]),
+    :host([color="grey"]),
+    .status-gray,
+    .status-grey {
+        --pf-c-label--BackgroundColor: var(--pf-c-label--m-gray--BackgroundColor);
+        --pf-c-label__icon--Color: var(--pf-c-label--m-gray__icon--Color);
+        --pf-c-label__content--Color: var(--pf-c-label--m-gray__content--Color);
+        --pf-c-label__content--before--BorderColor: var(
+            --pf-c-label--m-gray__content--before--BorderColor
+        );
+        --pf-c-label__content--link--hover--before--BorderColor: var(
+            --pf-c-label--m-gray__content--link--hover--before--BorderColor
+        );
+        --pf-c-label__content--link--focus--before--BorderColor: var(
+            --pf-c-label--m-gray__content--link--focus--before--BorderColor
+        );
+    }
+
     :host([outline]) {
         --ak-c-label__content--Color: var(--ak-c-label--m-outline__content--Color);
         --ak-c-label__content--before--BorderWidth: var(

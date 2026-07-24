@@ -1,4 +1,4 @@
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/EmptyState";
 import "#elements/buttons/ActionButton/index";
 import "#elements/events/LogViewer";

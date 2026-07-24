@@ -1,4 +1,4 @@
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/EmptyState";
 import "#elements/timestamp/ak-timestamp";
 

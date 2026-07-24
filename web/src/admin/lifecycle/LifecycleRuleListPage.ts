@@ -2,7 +2,7 @@ import "#admin/lifecycle/LifecycleRuleForm";
 import "#admin/lifecycle/LifecyclePreviewBanner";
 import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";

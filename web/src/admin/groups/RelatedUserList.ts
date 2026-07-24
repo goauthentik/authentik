@@ -5,7 +5,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/Dropdown";
 import "#elements/forms/DeleteBulkForm";

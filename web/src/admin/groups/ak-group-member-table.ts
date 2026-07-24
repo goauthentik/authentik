@@ -1,4 +1,4 @@
-import "#components/ak-status-label";
+import "#elements/StatusLabel";
 import "#elements/buttons/SpinnerButton/index";
 
 import { aki } from "#common/api/client";
