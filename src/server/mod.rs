@@ -39,7 +39,7 @@ use tokio::{
     sync::Mutex,
     time::{Duration, Instant, interval},
 };
-use tower::ServiceExt;
+use tower::ServiceExt as _;
 use tracing::{info, trace, warn};
 
 use crate::{outpost, outpost::proxy::ProxyOutpost, worker::Workers};
@@ -71,7 +71,7 @@ pub(crate) struct Server {
 }
 
 impl Server {
-    async fn new(socket_path: PathBuf) -> Result<Self> {
+    fn new(socket_path: PathBuf) -> Result<Self> {
         info!("starting server");
 
         let gunicorn = Command::new("gunicorn")
@@ -235,10 +235,10 @@ fn build_router(server: Arc<Server>, proxy_outpost: Arc<ArcSwapOption<ProxyOutpo
         "API request latencies in seconds"
     );
 
-    let router = if !config::get().outposts.disable_embedded_outpost {
-        Router::new().route("/outpost.goauthentik.io/ping", any(StatusCode::NO_CONTENT))
-    } else {
+    let router = if config::get().outposts.disable_embedded_outpost {
         Router::new()
+    } else {
+        Router::new().route("/outpost.goauthentik.io/ping", any(StatusCode::NO_CONTENT))
     };
 
     router
@@ -252,7 +252,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
     let arbiter = tasks.arbiter();
     let mut events_rx = arbiter.events_subscribe();
 
-    let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock")).await?);
+    let server = Arc::new(Server::new(temp_dir().join("authentik-gunicorn.sock"))?);
 
     tasks
         .build_task()
@@ -301,9 +301,9 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
 
         info!("starting embedded outpost");
         proxy_outpost.store(Some(
-            outpost::start::<ProxyOutpost>(Default::default(), tasks).await?,
+            outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks).await?,
         ));
-    };
+    }
 
     Ok(server)
 }

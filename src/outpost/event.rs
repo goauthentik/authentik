@@ -131,6 +131,9 @@ async fn watch_events_inner<O: Outpost>(
     outpost: Arc<O>,
     attempt: u32,
 ) -> Result<()> {
+    type WsWriter = Box<dyn Sink<Message, Error = WsError> + Unpin + Send>;
+    type WsReader = Box<dyn Stream<Item = Result<Message, WsError>> + Unpin + Send>;
+
     info!("refreshing outpost forcefully");
     if let Err(err) = handle_event(
         Arc::clone(&controller),
@@ -172,10 +175,7 @@ async fn watch_events_inner<O: Outpost>(
         HeaderValue::from_str(&format!("Bearer {token}"))?,
     );
 
-    let (mut ws_write, mut ws_read): (
-        Box<dyn Sink<Message, Error = WsError> + Unpin + Send>,
-        Box<dyn Stream<Item = Result<Message, WsError>> + Unpin + Send>,
-    ) = if controller.is_embedded() {
+    let (mut ws_write, mut ws_read): (WsWriter, WsReader) = if controller.is_embedded() {
         let stream = UnixStream::connect(crate::server::socket_path()).await?;
         let (ws_stream, _response) = tokio_tungstenite::client_async(request, stream).await?;
         let (write, read) = ws_stream.split();

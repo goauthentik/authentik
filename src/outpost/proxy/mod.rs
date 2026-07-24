@@ -182,7 +182,10 @@ impl Outpost for ProxyOutpost {
 
 impl ResolvesServerCert for ProxyOutpost {
     fn resolve(&self, client_hello: ClientHello<'_>) -> Option<Arc<CertifiedKey>> {
-        self.resolve_cert(&client_hello)
+        Some(
+            self.resolve_cert(&client_hello)
+                .unwrap_or_else(|| Arc::clone(&self.default_cert)),
+        )
     }
 
     fn only_raw_public_keys(&self) -> bool {
@@ -198,7 +201,7 @@ impl ProxyOutpost {
         {
             return Some(Arc::clone(&cert.certified_key));
         }
-        Some(Arc::clone(&self.default_cert))
+        None
     }
 
     #[instrument(skip(self))]

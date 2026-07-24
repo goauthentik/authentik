@@ -71,7 +71,7 @@ pub(super) async fn watch_tls_config(arbiter: Arbiter, config: RustlsConfig) -> 
         }
 
         tokio::select! {
-            () = tokio::time::sleep(Duration::from_secs(60)) => {},
+            () = tokio::time::sleep(Duration::from_mins(1)) => {},
             () = arbiter.shutdown() => return Ok(()),
         }
     }
