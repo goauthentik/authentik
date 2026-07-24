@@ -170,6 +170,7 @@ class ApplicationViewSet(
         "meta_description",
         "meta_publisher",
         "group",
+        "pbm_uuid",
     ]
     lookup_field = "slug"
     ordering = ["name"]
