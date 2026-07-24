@@ -102,11 +102,24 @@ export function NotificationTransportRequestFromJSONTyped(
         name: json["name"],
         mode: json["mode"] == null ? undefined : TransportModeEnumFromJSON(json["mode"]),
         webhookUrl: json["webhook_url"] == null ? undefined : json["webhook_url"],
-        webhookCa: json["webhook_ca"] == null ? undefined : json["webhook_ca"],
+        webhookCa:
+            json["webhook_ca"] === undefined
+                ? undefined
+                : json["webhook_ca"] === null
+                  ? null
+                  : json["webhook_ca"],
         webhookMappingBody:
-            json["webhook_mapping_body"] == null ? undefined : json["webhook_mapping_body"],
+            json["webhook_mapping_body"] === undefined
+                ? undefined
+                : json["webhook_mapping_body"] === null
+                  ? null
+                  : json["webhook_mapping_body"],
         webhookMappingHeaders:
-            json["webhook_mapping_headers"] == null ? undefined : json["webhook_mapping_headers"],
+            json["webhook_mapping_headers"] === undefined
+                ? undefined
+                : json["webhook_mapping_headers"] === null
+                  ? null
+                  : json["webhook_mapping_headers"],
         emailSubjectPrefix:
             json["email_subject_prefix"] == null ? undefined : json["email_subject_prefix"],
         emailTemplate: json["email_template"] == null ? undefined : json["email_template"],

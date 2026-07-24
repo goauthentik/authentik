@@ -107,26 +107,54 @@ export function DeviceFactsFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     return {
-        os: json["os"] == null ? undefined : OperatingSystemFromJSON(json["os"]),
-        disks: json["disks"] == null ? undefined : (json["disks"] as Array<any>).map(DiskFromJSON),
-        network: json["network"] == null ? undefined : NetworkFromJSON(json["network"]),
-        hardware: json["hardware"] == null ? undefined : HardwareFromJSON(json["hardware"]),
+        os:
+            json["os"] === undefined
+                ? undefined
+                : json["os"] === null
+                  ? null
+                  : OperatingSystemFromJSON(json["os"]),
+        disks:
+            json["disks"] === undefined
+                ? undefined
+                : json["disks"] === null
+                  ? null
+                  : (json["disks"] as Array<any>).map(DiskFromJSON),
+        network:
+            json["network"] === undefined
+                ? undefined
+                : json["network"] === null
+                  ? null
+                  : NetworkFromJSON(json["network"]),
+        hardware:
+            json["hardware"] === undefined
+                ? undefined
+                : json["hardware"] === null
+                  ? null
+                  : HardwareFromJSON(json["hardware"]),
         software:
-            json["software"] == null
+            json["software"] === undefined
                 ? undefined
-                : (json["software"] as Array<any>).map(SoftwareFromJSON),
+                : json["software"] === null
+                  ? null
+                  : (json["software"] as Array<any>).map(SoftwareFromJSON),
         processes:
-            json["processes"] == null
+            json["processes"] === undefined
                 ? undefined
-                : (json["processes"] as Array<any>).map(ProcessFromJSON),
+                : json["processes"] === null
+                  ? null
+                  : (json["processes"] as Array<any>).map(ProcessFromJSON),
         users:
-            json["users"] == null
+            json["users"] === undefined
                 ? undefined
-                : (json["users"] as Array<any>).map(DeviceUserFromJSON),
+                : json["users"] === null
+                  ? null
+                  : (json["users"] as Array<any>).map(DeviceUserFromJSON),
         groups:
-            json["groups"] == null
+            json["groups"] === undefined
                 ? undefined
-                : (json["groups"] as Array<any>).map(DeviceGroupFromJSON),
+                : json["groups"] === null
+                  ? null
+                  : (json["groups"] as Array<any>).map(DeviceGroupFromJSON),
         vendor: json["vendor"] == null ? undefined : json["vendor"],
     };
 }

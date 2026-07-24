@@ -161,6 +161,7 @@ blueprints_dir: /blueprints
 web:
   workers: 2
   threads: 4
+  base_url: ""
   path: /
   timeout_http_read_header: 5s
   timeout_http_read: 30s

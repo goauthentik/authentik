@@ -101,13 +101,43 @@ export interface AuthenticatedSession {
  */
 export function instanceOfAuthenticatedSession(value: object): value is AuthenticatedSession {
     if (!("current" in value) || value["current"] === undefined) return false;
-    if (!("userAgent" in value) || value["userAgent"] === undefined) return false;
-    if (!("geoIp" in value) || value["geoIp"] === undefined) return false;
+    if (
+        (!("userAgent" in (value as Record<string, any>)) &&
+            !("user_agent" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userAgent"] === undefined &&
+            (value as Record<string, any>)["user_agent"] === undefined)
+    )
+        return false;
+    if (
+        (!("geoIp" in (value as Record<string, any>)) &&
+            !("geo_ip" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["geoIp"] === undefined &&
+            (value as Record<string, any>)["geo_ip"] === undefined)
+    )
+        return false;
     if (!("asn" in value) || value["asn"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("lastIp" in value) || value["lastIp"] === undefined) return false;
-    if (!("lastUserAgent" in value) || value["lastUserAgent"] === undefined) return false;
-    if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
+    if (
+        (!("lastIp" in (value as Record<string, any>)) &&
+            !("last_ip" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastIp"] === undefined &&
+            (value as Record<string, any>)["last_ip"] === undefined)
+    )
+        return false;
+    if (
+        (!("lastUserAgent" in (value as Record<string, any>)) &&
+            !("last_user_agent" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUserAgent"] === undefined &&
+            (value as Record<string, any>)["last_user_agent"] === undefined)
+    )
+        return false;
+    if (
+        (!("lastUsed" in (value as Record<string, any>)) &&
+            !("last_used" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUsed"] === undefined &&
+            (value as Record<string, any>)["last_used"] === undefined)
+    )
+        return false;
     if (!("expires" in value) || value["expires"] === undefined) return false;
     return true;
 }
@@ -144,7 +174,7 @@ export function AuthenticatedSessionToJSON(json: any): AuthenticatedSession {
 export function AuthenticatedSessionToJSONTyped(
     value?: Omit<
         AuthenticatedSession,
-        "current" | "last_ip" | "last_user_agent" | "last_used" | "expires"
+        "current" | "lastIp" | "lastUserAgent" | "lastUsed" | "expires"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

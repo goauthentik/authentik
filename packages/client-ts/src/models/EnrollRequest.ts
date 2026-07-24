@@ -36,8 +36,20 @@ export interface EnrollRequest {
  * Check if a given object implements the EnrollRequest interface.
  */
 export function instanceOfEnrollRequest(value: object): value is EnrollRequest {
-    if (!("deviceSerial" in value) || value["deviceSerial"] === undefined) return false;
-    if (!("deviceName" in value) || value["deviceName"] === undefined) return false;
+    if (
+        (!("deviceSerial" in (value as Record<string, any>)) &&
+            !("device_serial" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceSerial"] === undefined &&
+            (value as Record<string, any>)["device_serial"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceName" in (value as Record<string, any>)) &&
+            !("device_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceName"] === undefined &&
+            (value as Record<string, any>)["device_name"] === undefined)
+    )
+        return false;
     return true;
 }
 

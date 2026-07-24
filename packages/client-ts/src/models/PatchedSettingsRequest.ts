@@ -31,6 +31,12 @@ export interface PatchedSettingsRequest {
      */
     avatars?: string;
     /**
+     * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+     * @type {string}
+     * @memberof PatchedSettingsRequest
+     */
+    baseUrl?: string;
+    /**
      * Enable the ability for users to change their name.
      * @type {boolean}
      * @memberof PatchedSettingsRequest
@@ -142,6 +148,7 @@ export function PatchedSettingsRequestFromJSONTyped(
     }
     return {
         avatars: json["avatars"] == null ? undefined : json["avatars"],
+        baseUrl: json["base_url"] == null ? undefined : json["base_url"],
         defaultUserChangeName:
             json["default_user_change_name"] == null ? undefined : json["default_user_change_name"],
         defaultUserChangeEmail:
@@ -157,7 +164,12 @@ export function PatchedSettingsRequestFromJSONTyped(
             json["reputation_lower_limit"] == null ? undefined : json["reputation_lower_limit"],
         reputationUpperLimit:
             json["reputation_upper_limit"] == null ? undefined : json["reputation_upper_limit"],
-        footerLinks: json["footer_links"] == null ? undefined : json["footer_links"],
+        footerLinks:
+            json["footer_links"] === undefined
+                ? undefined
+                : json["footer_links"] === null
+                  ? null
+                  : json["footer_links"],
         gdprCompliance: json["gdpr_compliance"] == null ? undefined : json["gdpr_compliance"],
         impersonation: json["impersonation"] == null ? undefined : json["impersonation"],
         impersonationRequireReason:
@@ -193,6 +205,7 @@ export function PatchedSettingsRequestToJSONTyped(
 
     return {
         avatars: value["avatars"],
+        base_url: value["baseUrl"],
         default_user_change_name: value["defaultUserChangeName"],
         default_user_change_email: value["defaultUserChangeEmail"],
         default_user_change_username: value["defaultUserChangeUsername"],

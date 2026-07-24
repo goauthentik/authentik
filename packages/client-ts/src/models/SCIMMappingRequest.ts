@@ -59,7 +59,12 @@ export function SCIMMappingRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"],
         expression: json["expression"],
     };

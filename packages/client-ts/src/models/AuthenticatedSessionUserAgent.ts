@@ -68,7 +68,13 @@ export function instanceOfAuthenticatedSessionUserAgent(
 ): value is AuthenticatedSessionUserAgent {
     if (!("device" in value) || value["device"] === undefined) return false;
     if (!("os" in value) || value["os"] === undefined) return false;
-    if (!("userAgent" in value) || value["userAgent"] === undefined) return false;
+    if (
+        (!("userAgent" in (value as Record<string, any>)) &&
+            !("user_agent" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userAgent"] === undefined &&
+            (value as Record<string, any>)["user_agent"] === undefined)
+    )
+        return false;
     if (!("string" in value) || value["string"] === undefined) return false;
     return true;
 }

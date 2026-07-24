@@ -76,6 +76,17 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
 
         return html`
             <ak-text-input
+                name="baseUrl"
+                label=${msg("Base URL", { id: "settings.base-url.label" })}
+                value="${ifDefined(settings.baseUrl)}"
+                input-hint="code"
+                help=${msg(
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company",
+                    { id: "settings.base-url.description" },
+                )}
+            >
+            </ak-text-input>
+            <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
                 value="${ifDefined(settings.avatars)}"
@@ -296,9 +307,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-switch-input
                         name="flags.coreDefaultAppAccess"
                         ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
-                        label=${msg("Require policies for application access")}
+                        label=${msg("Allow application access with no policies")}
                         help=${msg(
-                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                            "Applications with no policies bound can be accessed by any user..",
                         )}
                     >
                     </ak-switch-input>

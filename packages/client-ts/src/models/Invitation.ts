@@ -79,8 +79,20 @@ export interface Invitation {
 export function instanceOfInvitation(value: object): value is Invitation {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
-    if (!("flowObj" in value) || value["flowObj"] === undefined) return false;
+    if (
+        (!("createdBy" in (value as Record<string, any>)) &&
+            !("created_by" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["createdBy"] === undefined &&
+            (value as Record<string, any>)["created_by"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowObj" in (value as Record<string, any>)) &&
+            !("flow_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowObj"] === undefined &&
+            (value as Record<string, any>)["flow_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -95,11 +107,16 @@ export function InvitationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         pk: json["pk"],
         name: json["name"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
         createdBy: PartialUserFromJSON(json["created_by"]),
         singleUse: json["single_use"] == null ? undefined : json["single_use"],
-        flow: json["flow"] == null ? undefined : json["flow"],
+        flow: json["flow"] === undefined ? undefined : json["flow"] === null ? null : json["flow"],
         flowObj: FlowFromJSON(json["flow_obj"]),
     };
 }
@@ -109,7 +126,7 @@ export function InvitationToJSON(json: any): Invitation {
 }
 
 export function InvitationToJSONTyped(
-    value?: Omit<Invitation, "pk" | "created_by" | "flow_obj"> | null,
+    value?: Omit<Invitation, "pk" | "createdBy" | "flowObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

@@ -51,7 +51,7 @@ export function ReviewRequestFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         iteration: json["iteration"],
-        note: json["note"] == null ? undefined : json["note"],
+        note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
     };
 }
 

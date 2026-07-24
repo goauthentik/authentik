@@ -117,12 +117,30 @@ export interface ObjectAttribute {
  */
 export function instanceOfObjectAttribute(value: object): value is ObjectAttribute {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("objectType" in value) || value["objectType"] === undefined) return false;
-    if (!("objectTypeObj" in value) || value["objectTypeObj"] === undefined) return false;
+    if (
+        (!("objectType" in (value as Record<string, any>)) &&
+            !("object_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectType"] === undefined &&
+            (value as Record<string, any>)["object_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectTypeObj" in (value as Record<string, any>)) &&
+            !("object_type_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectTypeObj"] === undefined &&
+            (value as Record<string, any>)["object_type_obj"] === undefined)
+    )
+        return false;
     if (!("created" in value) || value["created"] === undefined) return false;
     if (!("key" in value) || value["key"] === undefined) return false;
     if (!("label" in value) || value["label"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     if (!("type" in value) || value["type"] === undefined) return false;
     return true;
 }
@@ -150,7 +168,12 @@ export function ObjectAttributeFromJSONTyped(
         regex: json["regex"] == null ? undefined : json["regex"],
         type: ObjectAttributeTypeEnumFromJSON(json["type"]),
         group: json["group"] == null ? undefined : json["group"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
         isRequired: json["is_required"] == null ? undefined : json["is_required"],
     };
@@ -161,7 +184,7 @@ export function ObjectAttributeToJSON(json: any): ObjectAttribute {
 }
 
 export function ObjectAttributeToJSONTyped(
-    value?: Omit<ObjectAttribute, "pk" | "object_type_obj" | "created" | "last_updated"> | null,
+    value?: Omit<ObjectAttribute, "pk" | "objectTypeObj" | "created" | "lastUpdated"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

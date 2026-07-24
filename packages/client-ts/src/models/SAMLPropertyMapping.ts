@@ -88,10 +88,34 @@ export function instanceOfSAMLPropertyMapping(value: object): value is SAMLPrope
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("expression" in value) || value["expression"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("samlName" in value) || value["samlName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("samlName" in (value as Record<string, any>)) &&
+            !("saml_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["samlName"] === undefined &&
+            (value as Record<string, any>)["saml_name"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -108,7 +132,12 @@ export function SAMLPropertyMappingFromJSONTyped(
     }
     return {
         pk: json["pk"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"],
         expression: json["expression"],
         component: json["component"],
@@ -116,7 +145,12 @@ export function SAMLPropertyMappingFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         samlName: json["saml_name"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        friendlyName:
+            json["friendly_name"] === undefined
+                ? undefined
+                : json["friendly_name"] === null
+                  ? null
+                  : json["friendly_name"],
     };
 }
 
@@ -127,7 +161,7 @@ export function SAMLPropertyMappingToJSON(json: any): SAMLPropertyMapping {
 export function SAMLPropertyMappingToJSONTyped(
     value?: Omit<
         SAMLPropertyMapping,
-        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

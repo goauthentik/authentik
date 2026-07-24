@@ -107,17 +107,65 @@ export interface LifecycleIteration {
  */
 export function instanceOfLifecycleIteration(value: object): value is LifecycleIteration {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
-    if (!("objectId" in value) || value["objectId"] === undefined) return false;
-    if (!("objectVerbose" in value) || value["objectVerbose"] === undefined) return false;
-    if (!("objectAdminUrl" in value) || value["objectAdminUrl"] === undefined) return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectId" in (value as Record<string, any>)) &&
+            !("object_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectId"] === undefined &&
+            (value as Record<string, any>)["object_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectVerbose" in (value as Record<string, any>)) &&
+            !("object_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectVerbose"] === undefined &&
+            (value as Record<string, any>)["object_verbose"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectAdminUrl" in (value as Record<string, any>)) &&
+            !("object_admin_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectAdminUrl"] === undefined &&
+            (value as Record<string, any>)["object_admin_url"] === undefined)
+    )
+        return false;
     if (!("state" in value) || value["state"] === undefined) return false;
-    if (!("openedOn" in value) || value["openedOn"] === undefined) return false;
-    if (!("gracePeriodEnd" in value) || value["gracePeriodEnd"] === undefined) return false;
-    if (!("nextReviewDate" in value) || value["nextReviewDate"] === undefined) return false;
+    if (
+        (!("openedOn" in (value as Record<string, any>)) &&
+            !("opened_on" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["openedOn"] === undefined &&
+            (value as Record<string, any>)["opened_on"] === undefined)
+    )
+        return false;
+    if (
+        (!("gracePeriodEnd" in (value as Record<string, any>)) &&
+            !("grace_period_end" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["gracePeriodEnd"] === undefined &&
+            (value as Record<string, any>)["grace_period_end"] === undefined)
+    )
+        return false;
+    if (
+        (!("nextReviewDate" in (value as Record<string, any>)) &&
+            !("next_review_date" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nextReviewDate"] === undefined &&
+            (value as Record<string, any>)["next_review_date"] === undefined)
+    )
+        return false;
     if (!("reviews" in value) || value["reviews"] === undefined) return false;
     if (!("rule" in value) || value["rule"] === undefined) return false;
-    if (!("userCanReview" in value) || value["userCanReview"] === undefined) return false;
+    if (
+        (!("userCanReview" in (value as Record<string, any>)) &&
+            !("user_can_review" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userCanReview"] === undefined &&
+            (value as Record<string, any>)["user_can_review"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -156,16 +204,16 @@ export function LifecycleIterationToJSONTyped(
     value?: Omit<
         LifecycleIteration,
         | "id"
-        | "object_id"
-        | "object_verbose"
-        | "object_admin_url"
+        | "objectId"
+        | "objectVerbose"
+        | "objectAdminUrl"
         | "state"
-        | "opened_on"
-        | "grace_period_end"
-        | "next_review_date"
+        | "openedOn"
+        | "gracePeriodEnd"
+        | "nextReviewDate"
         | "reviews"
         | "rule"
-        | "user_can_review"
+        | "userCanReview"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

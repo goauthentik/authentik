@@ -54,7 +54,13 @@ export interface UserSetting {
  * Check if a given object implements the UserSetting interface.
  */
 export function instanceOfUserSetting(value: object): value is UserSetting {
-    if (!("objectUid" in value) || value["objectUid"] === undefined) return false;
+    if (
+        (!("objectUid" in (value as Record<string, any>)) &&
+            !("object_uid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectUid"] === undefined &&
+            (value as Record<string, any>)["object_uid"] === undefined)
+    )
+        return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (!("title" in value) || value["title"] === undefined) return false;
     return true;

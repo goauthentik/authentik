@@ -116,14 +116,50 @@ export interface Group {
  */
 export function instanceOfGroup(value: object): value is Group {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("numPk" in value) || value["numPk"] === undefined) return false;
+    if (
+        (!("numPk" in (value as Record<string, any>)) &&
+            !("num_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["numPk"] === undefined &&
+            (value as Record<string, any>)["num_pk"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("parentsObj" in value) || value["parentsObj"] === undefined) return false;
-    if (!("usersObj" in value) || value["usersObj"] === undefined) return false;
-    if (!("rolesObj" in value) || value["rolesObj"] === undefined) return false;
-    if (!("inheritedRolesObj" in value) || value["inheritedRolesObj"] === undefined) return false;
+    if (
+        (!("parentsObj" in (value as Record<string, any>)) &&
+            !("parents_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["parentsObj"] === undefined &&
+            (value as Record<string, any>)["parents_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("usersObj" in (value as Record<string, any>)) &&
+            !("users_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["usersObj"] === undefined &&
+            (value as Record<string, any>)["users_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("rolesObj" in (value as Record<string, any>)) &&
+            !("roles_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rolesObj"] === undefined &&
+            (value as Record<string, any>)["roles_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("inheritedRolesObj" in (value as Record<string, any>)) &&
+            !("inherited_roles_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["inheritedRolesObj"] === undefined &&
+            (value as Record<string, any>)["inherited_roles_obj"] === undefined)
+    )
+        return false;
     if (!("children" in value) || value["children"] === undefined) return false;
-    if (!("childrenObj" in value) || value["childrenObj"] === undefined) return false;
+    if (
+        (!("childrenObj" in (value as Record<string, any>)) &&
+            !("children_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["childrenObj"] === undefined &&
+            (value as Record<string, any>)["children_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -173,13 +209,13 @@ export function GroupToJSONTyped(
     value?: Omit<
         Group,
         | "pk"
-        | "num_pk"
-        | "parents_obj"
-        | "users_obj"
-        | "roles_obj"
-        | "inherited_roles_obj"
+        | "numPk"
+        | "parentsObj"
+        | "usersObj"
+        | "rolesObj"
+        | "inheritedRolesObj"
         | "children"
-        | "children_obj"
+        | "childrenObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

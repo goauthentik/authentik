@@ -42,7 +42,13 @@ export interface SCIMProviderUserRequest {
  * Check if a given object implements the SCIMProviderUserRequest interface.
  */
 export function instanceOfSCIMProviderUserRequest(value: object): value is SCIMProviderUserRequest {
-    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (
+        (!("scimId" in (value as Record<string, any>)) &&
+            !("scim_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scimId"] === undefined &&
+            (value as Record<string, any>)["scim_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;

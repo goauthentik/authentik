@@ -85,7 +85,13 @@ export interface Token {
 export function instanceOfToken(value: object): value is Token {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -99,13 +105,23 @@ export function TokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tok
     }
     return {
         pk: json["pk"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         identifier: json["identifier"],
         intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
         user: json["user"] == null ? undefined : json["user"],
         userObj: UserFromJSON(json["user_obj"]),
         description: json["description"] == null ? undefined : json["description"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
     };
 }
@@ -115,7 +131,7 @@ export function TokenToJSON(json: any): Token {
 }
 
 export function TokenToJSONTyped(
-    value?: Omit<Token, "pk" | "user_obj"> | null,
+    value?: Omit<Token, "pk" | "userObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

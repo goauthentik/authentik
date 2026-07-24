@@ -95,16 +95,61 @@ export interface CertificateKeyPair {
 export function instanceOfCertificateKeyPair(value: object): value is CertificateKeyPair {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("fingerprintSha256" in value) || value["fingerprintSha256"] === undefined) return false;
-    if (!("fingerprintSha1" in value) || value["fingerprintSha1"] === undefined) return false;
-    if (!("certExpiry" in value) || value["certExpiry"] === undefined) return false;
-    if (!("certSubject" in value) || value["certSubject"] === undefined) return false;
-    if (!("privateKeyAvailable" in value) || value["privateKeyAvailable"] === undefined)
+    if (
+        (!("fingerprintSha256" in (value as Record<string, any>)) &&
+            !("fingerprint_sha256" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fingerprintSha256"] === undefined &&
+            (value as Record<string, any>)["fingerprint_sha256"] === undefined)
+    )
         return false;
-    if (!("keyType" in value) || value["keyType"] === undefined) return false;
-    if (!("certificateDownloadUrl" in value) || value["certificateDownloadUrl"] === undefined)
+    if (
+        (!("fingerprintSha1" in (value as Record<string, any>)) &&
+            !("fingerprint_sha1" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fingerprintSha1"] === undefined &&
+            (value as Record<string, any>)["fingerprint_sha1"] === undefined)
+    )
         return false;
-    if (!("privateKeyDownloadUrl" in value) || value["privateKeyDownloadUrl"] === undefined)
+    if (
+        (!("certExpiry" in (value as Record<string, any>)) &&
+            !("cert_expiry" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["certExpiry"] === undefined &&
+            (value as Record<string, any>)["cert_expiry"] === undefined)
+    )
+        return false;
+    if (
+        (!("certSubject" in (value as Record<string, any>)) &&
+            !("cert_subject" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["certSubject"] === undefined &&
+            (value as Record<string, any>)["cert_subject"] === undefined)
+    )
+        return false;
+    if (
+        (!("privateKeyAvailable" in (value as Record<string, any>)) &&
+            !("private_key_available" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["privateKeyAvailable"] === undefined &&
+            (value as Record<string, any>)["private_key_available"] === undefined)
+    )
+        return false;
+    if (
+        (!("keyType" in (value as Record<string, any>)) &&
+            !("key_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["keyType"] === undefined &&
+            (value as Record<string, any>)["key_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("certificateDownloadUrl" in (value as Record<string, any>)) &&
+            !("certificate_download_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["certificateDownloadUrl"] === undefined &&
+            (value as Record<string, any>)["certificate_download_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("privateKeyDownloadUrl" in (value as Record<string, any>)) &&
+            !("private_key_download_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["privateKeyDownloadUrl"] === undefined &&
+            (value as Record<string, any>)["private_key_download_url"] === undefined)
+    )
         return false;
     if (!("managed" in value) || value["managed"] === undefined) return false;
     return true;
@@ -144,14 +189,14 @@ export function CertificateKeyPairToJSONTyped(
     value?: Omit<
         CertificateKeyPair,
         | "pk"
-        | "fingerprint_sha256"
-        | "fingerprint_sha1"
-        | "cert_expiry"
-        | "cert_subject"
-        | "private_key_available"
-        | "key_type"
-        | "certificate_download_url"
-        | "private_key_download_url"
+        | "fingerprintSha256"
+        | "fingerprintSha1"
+        | "certExpiry"
+        | "certSubject"
+        | "privateKeyAvailable"
+        | "keyType"
+        | "certificateDownloadUrl"
+        | "privateKeyDownloadUrl"
         | "managed"
     > | null,
     ignoreDiscriminator: boolean = false,

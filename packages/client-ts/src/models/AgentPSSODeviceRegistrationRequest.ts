@@ -50,11 +50,34 @@ export interface AgentPSSODeviceRegistrationRequest {
 export function instanceOfAgentPSSODeviceRegistrationRequest(
     value: object,
 ): value is AgentPSSODeviceRegistrationRequest {
-    if (!("deviceSigningKey" in value) || value["deviceSigningKey"] === undefined) return false;
-    if (!("deviceEncryptionKey" in value) || value["deviceEncryptionKey"] === undefined)
+    if (
+        (!("deviceSigningKey" in (value as Record<string, any>)) &&
+            !("device_signing_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceSigningKey"] === undefined &&
+            (value as Record<string, any>)["device_signing_key"] === undefined)
+    )
         return false;
-    if (!("signKeyId" in value) || value["signKeyId"] === undefined) return false;
-    if (!("encKeyId" in value) || value["encKeyId"] === undefined) return false;
+    if (
+        (!("deviceEncryptionKey" in (value as Record<string, any>)) &&
+            !("device_encryption_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceEncryptionKey"] === undefined &&
+            (value as Record<string, any>)["device_encryption_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("signKeyId" in (value as Record<string, any>)) &&
+            !("sign_key_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["signKeyId"] === undefined &&
+            (value as Record<string, any>)["sign_key_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("encKeyId" in (value as Record<string, any>)) &&
+            !("enc_key_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["encKeyId"] === undefined &&
+            (value as Record<string, any>)["enc_key_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
