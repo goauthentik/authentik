@@ -240,6 +240,7 @@ pub(super) async fn handle_auth_callback(
     }
 
     let Some(code) = params.code.filter(|code| !code.is_empty()) else {
+        warn!("missing oauth code");
         return Ok(StatusCode::BAD_REQUEST.into_response());
     };
 
