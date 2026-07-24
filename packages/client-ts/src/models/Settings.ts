@@ -155,7 +155,12 @@ export function SettingsFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
             json["reputation_lower_limit"] == null ? undefined : json["reputation_lower_limit"],
         reputationUpperLimit:
             json["reputation_upper_limit"] == null ? undefined : json["reputation_upper_limit"],
-        footerLinks: json["footer_links"] == null ? undefined : json["footer_links"],
+        footerLinks:
+            json["footer_links"] === undefined
+                ? undefined
+                : json["footer_links"] === null
+                  ? null
+                  : json["footer_links"],
         gdprCompliance: json["gdpr_compliance"] == null ? undefined : json["gdpr_compliance"],
         impersonation: json["impersonation"] == null ? undefined : json["impersonation"],
         impersonationRequireReason:

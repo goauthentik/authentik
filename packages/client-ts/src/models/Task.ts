@@ -124,13 +124,43 @@ export interface Task {
  * Check if a given object implements the Task interface.
  */
 export function instanceOfTask(value: object): value is Task {
-    if (!("actorName" in value) || value["actorName"] === undefined) return false;
-    if (!("relObjAppLabel" in value) || value["relObjAppLabel"] === undefined) return false;
-    if (!("relObjModel" in value) || value["relObjModel"] === undefined) return false;
+    if (
+        (!("actorName" in (value as Record<string, any>)) &&
+            !("actor_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["actorName"] === undefined &&
+            (value as Record<string, any>)["actor_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("relObjAppLabel" in (value as Record<string, any>)) &&
+            !("rel_obj_app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["relObjAppLabel"] === undefined &&
+            (value as Record<string, any>)["rel_obj_app_label"] === undefined)
+    )
+        return false;
+    if (
+        (!("relObjModel" in (value as Record<string, any>)) &&
+            !("rel_obj_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["relObjModel"] === undefined &&
+            (value as Record<string, any>)["rel_obj_model"] === undefined)
+    )
+        return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("logs" in value) || value["logs"] === undefined) return false;
-    if (!("previousLogs" in value) || value["previousLogs"] === undefined) return false;
-    if (!("aggregatedStatus" in value) || value["aggregatedStatus"] === undefined) return false;
+    if (
+        (!("previousLogs" in (value as Record<string, any>)) &&
+            !("previous_logs" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["previousLogs"] === undefined &&
+            (value as Record<string, any>)["previous_logs"] === undefined)
+    )
+        return false;
+    if (
+        (!("aggregatedStatus" in (value as Record<string, any>)) &&
+            !("aggregated_status" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["aggregatedStatus"] === undefined &&
+            (value as Record<string, any>)["aggregated_status"] === undefined)
+    )
+        return false;
     if (!("description" in value) || value["description"] === undefined) return false;
     return true;
 }
@@ -150,10 +180,20 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         state: json["state"] == null ? undefined : TaskStatusEnumFromJSON(json["state"]),
         mtime: json["mtime"] == null ? undefined : new Date(json["mtime"]),
         retries: json["retries"] == null ? undefined : json["retries"],
-        eta: json["eta"] == null ? undefined : new Date(json["eta"]),
+        eta:
+            json["eta"] === undefined
+                ? undefined
+                : json["eta"] === null
+                  ? null
+                  : new Date(json["eta"]),
         relObjAppLabel: json["rel_obj_app_label"],
         relObjModel: json["rel_obj_model"],
-        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        relObjId:
+            json["rel_obj_id"] === undefined
+                ? undefined
+                : json["rel_obj_id"] === null
+                  ? null
+                  : json["rel_obj_id"],
         uid: json["uid"],
         logs: (json["logs"] as Array<any>).map(LogEventFromJSON),
         previousLogs: (json["previous_logs"] as Array<any>).map(LogEventFromJSON),
@@ -169,7 +209,7 @@ export function TaskToJSON(json: any): Task {
 export function TaskToJSONTyped(
     value?: Omit<
         Task,
-        "rel_obj_app_label" | "rel_obj_model" | "uid" | "logs" | "previous_logs" | "description"
+        "relObjAppLabel" | "relObjModel" | "uid" | "logs" | "previousLogs" | "description"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

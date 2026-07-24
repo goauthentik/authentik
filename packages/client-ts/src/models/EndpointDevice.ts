@@ -83,7 +83,13 @@ export interface EndpointDevice {
  * Check if a given object implements the EndpointDevice interface.
  */
 export function instanceOfEndpointDevice(value: object): value is EndpointDevice {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("facts" in value) || value["facts"] === undefined) return false;
     return true;
@@ -104,13 +110,23 @@ export function EndpointDeviceFromJSONTyped(
         deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
         pbmUuid: json["pbm_uuid"],
         name: json["name"],
-        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroup:
+            json["access_group"] === undefined
+                ? undefined
+                : json["access_group"] === null
+                  ? null
+                  : json["access_group"],
         accessGroupObj:
             json["access_group_obj"] == null
                 ? undefined
                 : DeviceAccessGroupFromJSON(json["access_group_obj"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
@@ -121,7 +137,7 @@ export function EndpointDeviceToJSON(json: any): EndpointDevice {
 }
 
 export function EndpointDeviceToJSONTyped(
-    value?: Omit<EndpointDevice, "pbm_uuid" | "facts"> | null,
+    value?: Omit<EndpointDevice, "pbmUuid" | "facts"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

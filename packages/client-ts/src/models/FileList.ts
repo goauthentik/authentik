@@ -52,7 +52,13 @@ export interface FileList {
  */
 export function instanceOfFileList(value: object): value is FileList {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("mimeType" in value) || value["mimeType"] === undefined) return false;
+    if (
+        (!("mimeType" in (value as Record<string, any>)) &&
+            !("mime_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["mimeType"] === undefined &&
+            (value as Record<string, any>)["mime_type"] === undefined)
+    )
+        return false;
     if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }
@@ -70,7 +76,11 @@ export function FileListFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         mimeType: json["mime_type"],
         url: json["url"],
         themedUrls:
-            json["themed_urls"] == null ? undefined : ThemedUrlsFromJSON(json["themed_urls"]),
+            json["themed_urls"] === undefined
+                ? undefined
+                : json["themed_urls"] === null
+                  ? null
+                  : ThemedUrlsFromJSON(json["themed_urls"]),
     };
 }
 

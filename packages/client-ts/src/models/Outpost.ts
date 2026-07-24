@@ -101,11 +101,34 @@ export function instanceOfOutpost(value: object): value is Outpost {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
     if (!("providers" in value) || value["providers"] === undefined) return false;
-    if (!("providersObj" in value) || value["providersObj"] === undefined) return false;
-    if (!("serviceConnectionObj" in value) || value["serviceConnectionObj"] === undefined)
+    if (
+        (!("providersObj" in (value as Record<string, any>)) &&
+            !("providers_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providersObj"] === undefined &&
+            (value as Record<string, any>)["providers_obj"] === undefined)
+    )
         return false;
-    if (!("refreshIntervalS" in value) || value["refreshIntervalS"] === undefined) return false;
-    if (!("tokenIdentifier" in value) || value["tokenIdentifier"] === undefined) return false;
+    if (
+        (!("serviceConnectionObj" in (value as Record<string, any>)) &&
+            !("service_connection_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["serviceConnectionObj"] === undefined &&
+            (value as Record<string, any>)["service_connection_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("refreshIntervalS" in (value as Record<string, any>)) &&
+            !("refresh_interval_s" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["refreshIntervalS"] === undefined &&
+            (value as Record<string, any>)["refresh_interval_s"] === undefined)
+    )
+        return false;
+    if (
+        (!("tokenIdentifier" in (value as Record<string, any>)) &&
+            !("token_identifier" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenIdentifier"] === undefined &&
+            (value as Record<string, any>)["token_identifier"] === undefined)
+    )
+        return false;
     if (!("config" in value) || value["config"] === undefined) return false;
     return true;
 }
@@ -125,12 +148,21 @@ export function OutpostFromJSONTyped(json: any, ignoreDiscriminator: boolean): O
         providers: json["providers"],
         providersObj: (json["providers_obj"] as Array<any>).map(ProviderFromJSON),
         serviceConnection:
-            json["service_connection"] == null ? undefined : json["service_connection"],
+            json["service_connection"] === undefined
+                ? undefined
+                : json["service_connection"] === null
+                  ? null
+                  : json["service_connection"],
         serviceConnectionObj: ServiceConnectionFromJSON(json["service_connection_obj"]),
         refreshIntervalS: json["refresh_interval_s"],
         tokenIdentifier: json["token_identifier"],
         config: json["config"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
     };
 }
 
@@ -141,11 +173,7 @@ export function OutpostToJSON(json: any): Outpost {
 export function OutpostToJSONTyped(
     value?: Omit<
         Outpost,
-        | "pk"
-        | "providers_obj"
-        | "service_connection_obj"
-        | "refresh_interval_s"
-        | "token_identifier"
+        "pk" | "providersObj" | "serviceConnectionObj" | "refreshIntervalS" | "tokenIdentifier"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

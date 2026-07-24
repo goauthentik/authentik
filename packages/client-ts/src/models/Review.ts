@@ -78,7 +78,7 @@ export function ReviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
         iteration: json["iteration"],
         reviewer: PartialUserFromJSON(json["reviewer"]),
         timestamp: new Date(json["timestamp"]),
-        note: json["note"] == null ? undefined : json["note"],
+        note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
     };
 }
 

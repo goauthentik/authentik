@@ -70,9 +70,27 @@ export function instanceOfPagination(value: object): value is Pagination {
     if (!("previous" in value) || value["previous"] === undefined) return false;
     if (!("count" in value) || value["count"] === undefined) return false;
     if (!("current" in value) || value["current"] === undefined) return false;
-    if (!("totalPages" in value) || value["totalPages"] === undefined) return false;
-    if (!("startIndex" in value) || value["startIndex"] === undefined) return false;
-    if (!("endIndex" in value) || value["endIndex"] === undefined) return false;
+    if (
+        (!("totalPages" in (value as Record<string, any>)) &&
+            !("total_pages" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["totalPages"] === undefined &&
+            (value as Record<string, any>)["total_pages"] === undefined)
+    )
+        return false;
+    if (
+        (!("startIndex" in (value as Record<string, any>)) &&
+            !("start_index" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["startIndex"] === undefined &&
+            (value as Record<string, any>)["start_index"] === undefined)
+    )
+        return false;
+    if (
+        (!("endIndex" in (value as Record<string, any>)) &&
+            !("end_index" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["endIndex"] === undefined &&
+            (value as Record<string, any>)["end_index"] === undefined)
+    )
+        return false;
     return true;
 }
 

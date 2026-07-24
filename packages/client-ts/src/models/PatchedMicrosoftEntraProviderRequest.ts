@@ -138,7 +138,12 @@ export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        filterGroup:
+            json["filter_group"] === undefined
+                ? undefined
+                : json["filter_group"] === null
+                  ? null
+                  : json["filter_group"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined

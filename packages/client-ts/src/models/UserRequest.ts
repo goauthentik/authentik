@@ -104,7 +104,12 @@ export function UserRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        lastLogin:
+            json["last_login"] === undefined
+                ? undefined
+                : json["last_login"] === null
+                  ? null
+                  : new Date(json["last_login"]),
         groups: json["groups"] == null ? undefined : json["groups"],
         roles: json["roles"] == null ? undefined : json["roles"],
         email: json["email"] == null ? undefined : json["email"],

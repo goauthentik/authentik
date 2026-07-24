@@ -47,7 +47,13 @@ export interface PolicyTestResult {
 export function instanceOfPolicyTestResult(value: object): value is PolicyTestResult {
     if (!("passing" in value) || value["passing"] === undefined) return false;
     if (!("messages" in value) || value["messages"] === undefined) return false;
-    if (!("logMessages" in value) || value["logMessages"] === undefined) return false;
+    if (
+        (!("logMessages" in (value as Record<string, any>)) &&
+            !("log_messages" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["logMessages"] === undefined &&
+            (value as Record<string, any>)["log_messages"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -74,7 +80,7 @@ export function PolicyTestResultToJSON(json: any): PolicyTestResult {
 }
 
 export function PolicyTestResultToJSONTyped(
-    value?: Omit<PolicyTestResult, "messages" | "log_messages"> | null,
+    value?: Omit<PolicyTestResult, "messages" | "logMessages"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

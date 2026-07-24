@@ -154,21 +154,61 @@ export function instanceOfMicrosoftEntraProvider(value: object): value is Micros
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
-        !("assignedBackchannelApplicationSlug" in value) ||
-        value["assignedBackchannelApplicationSlug"] === undefined
+        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
     )
         return false;
     if (
-        !("assignedBackchannelApplicationName" in value) ||
-        value["assignedBackchannelApplicationName"] === undefined
+        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
     )
         return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
-    if (!("clientSecret" in value) || value["clientSecret"] === undefined) return false;
-    if (!("tenantId" in value) || value["tenantId"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("clientSecret" in (value as Record<string, any>)) &&
+            !("client_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientSecret"] === undefined &&
+            (value as Record<string, any>)["client_secret"] === undefined)
+    )
+        return false;
+    if (
+        (!("tenantId" in (value as Record<string, any>)) &&
+            !("tenant_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tenantId"] === undefined &&
+            (value as Record<string, any>)["tenant_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -202,7 +242,12 @@ export function MicrosoftEntraProviderFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        filterGroup:
+            json["filter_group"] === undefined
+                ? undefined
+                : json["filter_group"] === null
+                  ? null
+                  : json["filter_group"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined
@@ -226,11 +271,11 @@ export function MicrosoftEntraProviderToJSONTyped(
         MicrosoftEntraProvider,
         | "pk"
         | "component"
-        | "assigned_backchannel_application_slug"
-        | "assigned_backchannel_application_name"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "assignedBackchannelApplicationSlug"
+        | "assignedBackchannelApplicationName"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -85,12 +85,42 @@ export function instanceOfExtraRoleObjectPermission(
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("codename" in value) || value["codename"] === undefined) return false;
     if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
-    if (!("objectPk" in value) || value["objectPk"] === undefined) return false;
+    if (
+        (!("appLabel" in (value as Record<string, any>)) &&
+            !("app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabel"] === undefined &&
+            (value as Record<string, any>)["app_label"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectPk" in (value as Record<string, any>)) &&
+            !("object_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectPk"] === undefined &&
+            (value as Record<string, any>)["object_pk"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("appLabelVerbose" in value) || value["appLabelVerbose"] === undefined) return false;
-    if (!("modelVerbose" in value) || value["modelVerbose"] === undefined) return false;
-    if (!("objectDescription" in value) || value["objectDescription"] === undefined) return false;
+    if (
+        (!("appLabelVerbose" in (value as Record<string, any>)) &&
+            !("app_label_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabelVerbose"] === undefined &&
+            (value as Record<string, any>)["app_label_verbose"] === undefined)
+    )
+        return false;
+    if (
+        (!("modelVerbose" in (value as Record<string, any>)) &&
+            !("model_verbose" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modelVerbose"] === undefined &&
+            (value as Record<string, any>)["model_verbose"] === undefined)
+    )
+        return false;
+    if (
+        (!("objectDescription" in (value as Record<string, any>)) &&
+            !("object_description" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectDescription"] === undefined &&
+            (value as Record<string, any>)["object_description"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -128,11 +158,11 @@ export function ExtraRoleObjectPermissionToJSONTyped(
         | "id"
         | "codename"
         | "model"
-        | "app_label"
+        | "appLabel"
         | "name"
-        | "app_label_verbose"
-        | "model_verbose"
-        | "object_description"
+        | "appLabelVerbose"
+        | "modelVerbose"
+        | "objectDescription"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

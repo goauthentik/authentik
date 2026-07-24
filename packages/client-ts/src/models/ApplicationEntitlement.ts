@@ -48,7 +48,13 @@ export interface ApplicationEntitlement {
  * Check if a given object implements the ApplicationEntitlement interface.
  */
 export function instanceOfApplicationEntitlement(value: object): value is ApplicationEntitlement {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("app" in value) || value["app"] === undefined) return false;
     return true;
@@ -78,7 +84,7 @@ export function ApplicationEntitlementToJSON(json: any): ApplicationEntitlement 
 }
 
 export function ApplicationEntitlementToJSONTyped(
-    value?: Omit<ApplicationEntitlement, "pbm_uuid"> | null,
+    value?: Omit<ApplicationEntitlement, "pbmUuid"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

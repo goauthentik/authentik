@@ -84,12 +84,22 @@ export function PatchedTokenRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         identifier: json["identifier"] == null ? undefined : json["identifier"],
         intent: json["intent"] == null ? undefined : IntentEnumFromJSON(json["intent"]),
         user: json["user"] == null ? undefined : json["user"],
         description: json["description"] == null ? undefined : json["description"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
     };
 }

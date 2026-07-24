@@ -76,9 +76,18 @@ export function PatchedDockerServiceConnectionRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         local: json["local"] == null ? undefined : json["local"],
         url: json["url"] == null ? undefined : json["url"],
-        tlsVerification: json["tls_verification"] == null ? undefined : json["tls_verification"],
+        tlsVerification:
+            json["tls_verification"] === undefined
+                ? undefined
+                : json["tls_verification"] === null
+                  ? null
+                  : json["tls_verification"],
         tlsAuthentication:
-            json["tls_authentication"] == null ? undefined : json["tls_authentication"],
+            json["tls_authentication"] === undefined
+                ? undefined
+                : json["tls_authentication"] === null
+                  ? null
+                  : json["tls_authentication"],
     };
 }
 

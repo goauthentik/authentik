@@ -72,14 +72,38 @@ export interface SystemInfoRuntime {
  * Check if a given object implements the SystemInfoRuntime interface.
  */
 export function instanceOfSystemInfoRuntime(value: object): value is SystemInfoRuntime {
-    if (!("pythonVersion" in value) || value["pythonVersion"] === undefined) return false;
+    if (
+        (!("pythonVersion" in (value as Record<string, any>)) &&
+            !("python_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pythonVersion"] === undefined &&
+            (value as Record<string, any>)["python_version"] === undefined)
+    )
+        return false;
     if (!("environment" in value) || value["environment"] === undefined) return false;
     if (!("architecture" in value) || value["architecture"] === undefined) return false;
     if (!("platform" in value) || value["platform"] === undefined) return false;
     if (!("uname" in value) || value["uname"] === undefined) return false;
-    if (!("opensslVersion" in value) || value["opensslVersion"] === undefined) return false;
-    if (!("opensslFipsEnabled" in value) || value["opensslFipsEnabled"] === undefined) return false;
-    if (!("authentikVersion" in value) || value["authentikVersion"] === undefined) return false;
+    if (
+        (!("opensslVersion" in (value as Record<string, any>)) &&
+            !("openssl_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["opensslVersion"] === undefined &&
+            (value as Record<string, any>)["openssl_version"] === undefined)
+    )
+        return false;
+    if (
+        (!("opensslFipsEnabled" in (value as Record<string, any>)) &&
+            !("openssl_fips_enabled" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["opensslFipsEnabled"] === undefined &&
+            (value as Record<string, any>)["openssl_fips_enabled"] === undefined)
+    )
+        return false;
+    if (
+        (!("authentikVersion" in (value as Record<string, any>)) &&
+            !("authentik_version" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authentikVersion"] === undefined &&
+            (value as Record<string, any>)["authentik_version"] === undefined)
+    )
+        return false;
     return true;
 }
 

@@ -51,10 +51,28 @@ export interface DeviceChallenge {
  * Check if a given object implements the DeviceChallenge interface.
  */
 export function instanceOfDeviceChallenge(value: object): value is DeviceChallenge {
-    if (!("deviceClass" in value) || value["deviceClass"] === undefined) return false;
-    if (!("deviceUid" in value) || value["deviceUid"] === undefined) return false;
+    if (
+        (!("deviceClass" in (value as Record<string, any>)) &&
+            !("device_class" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceClass"] === undefined &&
+            (value as Record<string, any>)["device_class"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceUid" in (value as Record<string, any>)) &&
+            !("device_uid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceUid"] === undefined &&
+            (value as Record<string, any>)["device_uid"] === undefined)
+    )
+        return false;
     if (!("challenge" in value) || value["challenge"] === undefined) return false;
-    if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
+    if (
+        (!("lastUsed" in (value as Record<string, any>)) &&
+            !("last_used" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUsed"] === undefined &&
+            (value as Record<string, any>)["last_used"] === undefined)
+    )
+        return false;
     return true;
 }
 
