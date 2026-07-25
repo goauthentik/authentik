@@ -3,10 +3,12 @@ import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/table/filter-select";
 
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { RadioOption } from "#elements/forms/Radio";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -99,29 +101,28 @@ export class RoleListPage extends TablePage<Role> {
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.hideManaged}
-                            @change=${() => {
-                                this.hideManaged = !this.hideManaged;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideManaged: this.hideManaged,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">${msg("Hide managed roles")}</span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        {
+                            label: msg("Hide managed"),
+                            value: true,
+                        },
+                        {
+                            label: msg("All"),
+                            value: false,
+                        },
+                    ]}
+                    .value=${this.hideManaged}
+                    @change=${(ev: CustomEvent<RadioOption<boolean>>) => {
+                        this.hideManaged = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({
+                            hideManaged: this.hideManaged,
+                        });
+                    }}
+                >
+                </ak-table-filter-select>
             </div>
         </div>`;
     }

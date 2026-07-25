@@ -13,6 +13,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/table/filter-select";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -20,6 +21,7 @@ import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
 
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
+import { RadioOption } from "#elements/forms/Radio";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
@@ -105,7 +107,7 @@ export class UserListPage extends WithLicenseSummary(
     public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
-    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    protected filterStatus = getURLParam<boolean | undefined>("filterStatus", undefined);
 
     @state()
     protected userPaths: UserPath | null = null;
@@ -151,7 +153,7 @@ export class UserListPage extends WithLicenseSummary(
         const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: this.filterStatus,
             includeGroups: false,
         });
 
@@ -177,7 +179,7 @@ export class UserListPage extends WithLicenseSummary(
         return {
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: this.filterStatus ? true : undefined,
         };
     };
 
@@ -260,36 +262,32 @@ export class UserListPage extends WithLicenseSummary(
     protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label
-                        class="pf-c-switch"
-                        for="hide-deactivated-users"
-                        aria-labelledby="hide-deactivated-users-label"
-                    >
-                        <input
-                            id="hide-deactivated-users"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${!this.hideDeactivated}
-                            @change=${() => {
-                                this.hideDeactivated = !this.hideDeactivated;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideDeactivated: this.hideDeactivated,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
-                            ${msg("Show deactivated users")}
-                        </span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        {
+                            label: msg("All"),
+                            value: undefined,
+                        },
+                        {
+                            label: msg("Active"),
+                            value: true,
+                        },
+                        {
+                            label: msg("Inactive"),
+                            value: false,
+                        },
+                    ]}
+                    .value=${this.filterStatus}
+                    @change=${(ev: CustomEvent<RadioOption<boolean | undefined>>) => {
+                        this.filterStatus = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({
+                            filterStatus: this.filterStatus,
+                        });
+                    }}
+                >
+                </ak-table-filter-select>
             </div>
         </div>`;
     }
