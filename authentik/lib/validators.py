@@ -25,7 +25,7 @@ BCRYPT_SALT_LENGTH = 22
 BCRYPT_CHECKSUM_LENGTH = 31
 
 
-class PasswordHashRequiresOverride(ValueError):
+class PasswordHashRequiresOverride(Exception):
     """An imported password hash does not match the default security policy."""
 
     messages: list[str]
@@ -49,6 +49,8 @@ def _decode_password_hash(
     hasher = identify_hasher(password_hash)
     decoded = hasher.decode(password_hash)
 
+    # Exact types are intentional: each configured hash format must have explicitly
+    # audited structural validation instead of inheriting another format's checks.
     if type(hasher) is PBKDF2PasswordHasher:
         _decode_base64(decoded["hash"], 32)
     elif type(hasher) is PBKDF2SHA1PasswordHasher:
@@ -67,6 +69,8 @@ def _decode_password_hash(
             or not set(decoded["salt"] + decoded["checksum"]).issubset(BCRYPT_ALPHABET)
         ):
             raise ValueError
+    else:
+        raise ValueError
 
     return hasher, decoded
 
@@ -75,6 +79,7 @@ def validate_password_hash(password_hash: str, *, require_current: bool = False)
     """Validate an encoded Django password and, optionally, its security parameters."""
     try:
         hasher, decoded = _decode_password_hash(password_hash)
+    # Django's built-in hashers assert their algorithm after parsing the encoded value.
     except (AssertionError, TypeError, ValueError) as exc:
         raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
@@ -82,8 +87,15 @@ def validate_password_hash(password_hash: str, *, require_current: bool = False)
         return
 
     messages: list[str] = []
-    # Keep this handling in sync with the hashers configured in settings.PASSWORD_HASHERS.
-    if type(hasher) in (PBKDF2PasswordHasher, PBKDF2SHA1PasswordHasher):
+    if type(hasher) is PBKDF2SHA1PasswordHasher:
+        messages.append(
+            _(
+                "%(algorithm)s hashes are not accepted by authentik's current password "
+                "hashing policy."
+            )
+            % {"algorithm": hasher.algorithm}
+        )
+    elif type(hasher) is PBKDF2PasswordHasher:
         if decoded["iterations"] != hasher.iterations:
             messages.append(
                 _("%(algorithm)s hashes must use %(iterations)d iterations.")
@@ -142,8 +154,7 @@ def validate_password_hash(password_hash: str, *, require_current: bool = False)
         messages.append(
             _(
                 "Password hash salt does not meet authentik's current requirement of "
-                "%(expected_entropy)d bits of entropy. Importing it can enable timing-based "
-                "user enumeration."
+                "%(expected_entropy)d bits of entropy."
             )
             % {"expected_entropy": hasher.salt_entropy}
         )

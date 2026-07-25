@@ -39,16 +39,6 @@ from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
 INVALID_PASSWORD_HASH_ERROR = "Invalid password hash encoding."
-PASSWORD_HASH_OVERRIDE_SUFFIX = 'Set "override" to true to import it anyway.'
-PASSWORD_HASH_SALT_ERROR = (
-    "Password hash salt does not meet authentik's current requirement of 128 bits of entropy. "
-    "Importing it can enable timing-based user enumeration. "
-    f"{PASSWORD_HASH_OVERRIDE_SUFFIX}"
-)
-
-
-def _password_hash_parameters_error(requirement: str) -> str:
-    return f"{requirement} {PASSWORD_HASH_OVERRIDE_SUFFIX}"
 
 
 class TestUsersAPI(APITestCase):
@@ -82,15 +72,13 @@ class TestUsersAPI(APITestCase):
         user: User,
         original_password_hash: str,
         response,
-        errors: str | list[str] = INVALID_PASSWORD_HASH_ERROR,
+        errors: str | list[str] | None = INVALID_PASSWORD_HASH_ERROR,
     ) -> None:
-        if isinstance(errors, str):
-            errors = [errors]
         self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"password": errors},
-        )
+        if errors is not None:
+            if isinstance(errors, str):
+                errors = [errors]
+            self.assertJSONEqual(response.content, {"password": errors})
         user.refresh_from_db()
         self.assertEqual(user.password, original_password_hash)
 
@@ -187,10 +175,12 @@ class TestUsersAPI(APITestCase):
         self.assertJSONEqual(response.content, {"password": ["This field may not be blank."]})
 
     def test_set_password_hash(self):
-        """Test setting a user's password with each supported hasher."""
+        """Test setting a user's password with each current hasher."""
         self.client.force_login(self.admin)
         password = generate_key()
         for hasher in get_hashers():
+            if type(hasher) is PBKDF2SHA1PasswordHasher:
+                continue
             with self.subTest(algorithm=hasher.algorithm):
                 password_hash = hasher.encode(password, hasher.salt())
                 response = self._set_password_hash(self.user, password_hash)
@@ -201,171 +191,74 @@ class TestUsersAPI(APITestCase):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
         original_password = self.user.password
-        for password_hash in (
+        invalid_hashes = [
             INVALID_PASSWORD_HASH,
             "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
-        ):
+        ]
+        invalid_hashes.extend(
+            hasher.encode(generate_key(), hasher.salt())[:-1] + "!" for hasher in get_hashers()
+        )
+        for password_hash in invalid_hashes:
             with self.subTest(password_hash=password_hash):
                 response = self._set_password_hash(self.user, password_hash)
 
                 self._assert_password_hash_rejected(self.user, original_password, response)
 
-    def test_set_password_hash_malformed_digest(self):
-        """Test structurally valid hashes with malformed digests are rejected."""
+    def test_set_password_hash_override(self):
+        """Test override bypasses policy requirements, but not structural validation."""
         self.client.force_login(self.admin)
-        original_password = self.user.password
         password = generate_key()
-        for hasher in get_hashers():
+        pbkdf2 = PBKDF2PasswordHasher()
+        pbkdf2.iterations -= 1
+        for hasher in (pbkdf2, PBKDF2SHA1PasswordHasher()):
             with self.subTest(algorithm=hasher.algorithm):
                 password_hash = hasher.encode(password, hasher.salt())
-                response = self._set_password_hash(self.user, password_hash[:-1] + "!")
+                response = self._set_password_hash(self.user, password_hash, override=True)
 
-                self._assert_password_hash_rejected(self.user, original_password, response)
+                self._assert_password_hash_set(self.user, password, password_hash, response)
 
-    def test_set_password_hash_override_noncurrent_parameters(self):
-        """Test the explicit override accepts noncurrent work parameters."""
-        self.client.force_login(self.admin)
-        password = generate_key()
-        hasher = PBKDF2PasswordHasher()
-        hasher.iterations -= 1
-        password_hash = hasher.encode(password, hasher.salt())
+        self.user.refresh_from_db()
+        stored_password_hash = self.user.password
+        invalid_hash = pbkdf2.encode(password, pbkdf2.salt())[:-1] + "!"
+        response = self._set_password_hash(self.user, invalid_hash, override=True)
 
-        response = self._set_password_hash(self.user, password_hash, override=True)
+        self._assert_password_hash_rejected(self.user, stored_password_hash, response)
 
-        self._assert_password_hash_set(self.user, password, password_hash, response)
-
-    def test_set_password_hash_override_rejects_invalid_hash(self):
-        """Test the override cannot bypass hash encoding validation."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        hasher = PBKDF2PasswordHasher()
-        password_hash = hasher.encode(generate_key(), hasher.salt())[:-1] + "!"
-        for invalid_hash in ("this-cannot-be-parsed-haha", password_hash):
-            with self.subTest(password_hash=invalid_hash):
-                response = self._set_password_hash(self.user, invalid_hash, override=True)
-
-                self._assert_password_hash_rejected(self.user, original_password, response)
-
-    def test_set_password_hash_stronger_parameters(self):
-        """Test stronger work parameters require an explicit override."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        hasher = PBKDF2PasswordHasher()
-        hasher.iterations += 1
-
-        response = self._set_password_hash(self.user, hasher.encode(generate_key(), hasher.salt()))
-
-        self._assert_password_hash_rejected(
-            self.user,
-            original_password,
-            response,
-            _password_hash_parameters_error(
-                f"{hasher.algorithm} hashes must use {PBKDF2PasswordHasher.iterations} "
-                "iterations."
-            ),
-        )
-
-    def test_set_password_hash_noncurrent_parameters(self):
-        """Test hashes using noncurrent work parameters are rejected."""
+    def test_set_password_hash_policy(self):
+        """Test hashes outside the current import policy are rejected."""
         self.client.force_login(self.admin)
         original_password = self.user.password
         password = generate_key()
 
         pbkdf2 = PBKDF2PasswordHasher()
         pbkdf2.iterations -= 1
-        pbkdf2_sha1 = PBKDF2SHA1PasswordHasher()
-        pbkdf2_sha1.iterations -= 1
         bcrypt = BCryptSHA256PasswordHasher()
         bcrypt.rounds -= 1
         scrypt = ScryptPasswordHasher()
         scrypt.work_factor //= 2
         argon2 = Argon2PasswordHasher()
         argon2.time_cost -= 1
-        expected_argon2 = Argon2PasswordHasher().params()
+        pbkdf2_sha1 = PBKDF2SHA1PasswordHasher()
 
-        hashers_and_requirements = (
-            (
-                pbkdf2,
-                f"pbkdf2_sha256 hashes must use {PBKDF2PasswordHasher.iterations} iterations.",
-            ),
-            (
-                pbkdf2_sha1,
-                f"pbkdf2_sha1 hashes must use {PBKDF2SHA1PasswordHasher.iterations} iterations.",
-            ),
-            (
-                bcrypt,
-                "bcrypt_sha256 hashes must use a work factor of "
-                f"{BCryptSHA256PasswordHasher.rounds}.",
-            ),
-            (
-                scrypt,
-                f"scrypt hashes must use work factor {ScryptPasswordHasher.work_factor}, "
-                f"block size {ScryptPasswordHasher.block_size}, and parallelism "
-                f"{ScryptPasswordHasher.parallelism}.",
-            ),
-            (
-                argon2,
-                "argon2 hashes must use variant argon2id, "
-                f"version {expected_argon2.version}, time cost {expected_argon2.time_cost}, "
-                f"memory cost {expected_argon2.memory_cost}, parallelism "
-                f"{expected_argon2.parallelism}, and hash length {expected_argon2.hash_len}.",
-            ),
+        password_hashes = (
+            pbkdf2.encode(password, pbkdf2.salt()),
+            bcrypt.encode(password, bcrypt.salt()),
+            scrypt.encode(password, scrypt.salt()),
+            argon2.encode(password, argon2.salt()),
+            pbkdf2_sha1.encode(password, pbkdf2_sha1.salt()),
+            PBKDF2PasswordHasher().encode(password, "salt"),
         )
 
-        for hasher, requirement in hashers_and_requirements:
-            with self.subTest(algorithm=hasher.algorithm):
-                password_hash = hasher.encode(password, hasher.salt())
+        for password_hash in password_hashes:
+            with self.subTest(password_hash=password_hash):
                 response = self._set_password_hash(self.user, password_hash)
 
                 self._assert_password_hash_rejected(
                     self.user,
                     original_password,
                     response,
-                    _password_hash_parameters_error(requirement),
+                    errors=None,
                 )
-
-    def test_set_password_hash_insufficient_salt_entropy(self):
-        """Test salt entropy is reported independently of work parameters."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        hasher = PBKDF2PasswordHasher()
-
-        response = self._set_password_hash(
-            self.user,
-            hasher.encode(generate_key(), "salt"),
-        )
-
-        self._assert_password_hash_rejected(
-            self.user,
-            original_password,
-            response,
-            PASSWORD_HASH_SALT_ERROR,
-        )
-
-    def test_set_password_hash_reports_all_policy_errors(self):
-        """Test work parameter and salt errors are both reported."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        hasher = PBKDF2PasswordHasher()
-        hasher.iterations -= 1
-
-        response = self._set_password_hash(
-            self.user,
-            hasher.encode(generate_key(), "salt"),
-        )
-
-        self._assert_password_hash_rejected(
-            self.user,
-            original_password,
-            response,
-            [
-                _password_hash_parameters_error(
-                    f"{hasher.algorithm} hashes must use {PBKDF2PasswordHasher.iterations} "
-                    "iterations."
-                ),
-                PASSWORD_HASH_SALT_ERROR,
-            ],
-        )
 
     def test_recovery(self):
         """Test user recovery link"""

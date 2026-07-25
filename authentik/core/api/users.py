@@ -247,7 +247,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
+            instance.set_password_from_hash_unchecked(password_hash)
             instance.save()
         elif password:
             instance.set_password(password)
@@ -467,7 +467,7 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True, validators=[validate_password_hash])
+    password = CharField(required=True)
     override = BooleanField(
         default=False,
         help_text=_(
@@ -478,16 +478,16 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Enforce the default password hash import policy."""
-        if attrs["override"]:
-            return attrs
         try:
-            validate_password_hash(attrs["password"], require_current=True)
+            validate_password_hash(attrs["password"], require_current=not attrs["override"])
         except PasswordHashRequiresOverride as exc:
             messages = [
                 PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE % {"reason": reason}
                 for reason in exc.messages
             ]
             raise ValidationError({"password": messages}) from exc
+        except ValidationError as exc:
+            raise ValidationError({"password": exc.detail}) from exc
         return attrs
 
 
