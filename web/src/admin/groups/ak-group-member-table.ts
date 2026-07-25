@@ -80,6 +80,7 @@ export class GroupMemberSelectTable extends Table<User> {
                         { label: msg("Active"), value: "active" as const },
                         { label: msg("All"), value: "all" as const },
                     ]}
+                    group=${msg("User status")}
                     .value=${this.userListFilter}
                     @change=${(ev: CustomEvent<FilterOption<UserListFilter>>) => {
                         this.userListFilter = ev.detail.value;

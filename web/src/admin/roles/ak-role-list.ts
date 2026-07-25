@@ -112,6 +112,7 @@ export class RoleListPage extends TablePage<Role> {
                             value: false,
                         },
                     ]}
+                    group=${msg("Managed")}
                     .value=${this.hideManaged}
                     @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideManaged = ev.detail.value;

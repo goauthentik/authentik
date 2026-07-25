@@ -496,6 +496,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                         { label: msg("Hide service-accounts"), value: true },
                         { label: msg("All"), value: false },
                     ]}
+                    group=${msg("User type")}
                     .value=${this.hideServiceAccounts}
                     @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideServiceAccounts = ev.detail.value;

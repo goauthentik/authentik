@@ -277,6 +277,7 @@ export class UserListPage extends WithLicenseSummary(
                             value: false,
                         },
                     ]}
+                    group=${msg("User status")}
                     .value=${this.filterStatus}
                     @change=${(ev: CustomEvent<FilterOption<boolean | undefined>>) => {
                         this.filterStatus = ev.detail.value;

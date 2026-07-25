@@ -139,6 +139,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         { label: msg("Hide managed"), value: true },
                         { label: msg("All"), value: false },
                     ]}
+                    group=${msg("Managed")}
                     .value=${this.hideManaged}
                     @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideManaged = ev.detail.value;

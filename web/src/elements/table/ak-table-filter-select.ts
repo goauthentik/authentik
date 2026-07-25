@@ -1,5 +1,3 @@
-import { groupBy } from "#common/utils";
-
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -18,7 +16,6 @@ export interface FilterOption<T extends Jsonifiable | undefined> {
     default?: boolean;
     value: T;
     disabled?: boolean;
-    group?: string;
 }
 
 /**
@@ -38,6 +35,9 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
 
     @property({ attribute: false })
     selectedOption?: FilterOption<T>;
+
+    @property()
+    group?: string;
 
     @property({ attribute: false })
     value: T | null = null;
@@ -89,23 +89,15 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
 
     renderMenu(): SlottedTemplateResult {
         if (!this.open) return nothing;
-        const grouped = groupBy(this.options, (opt) => opt.group || "");
-        if (grouped.length < 2 && grouped[0][0] === "") {
-            return html`<ul class="pf-c-select__menu" role="listbox">
-                ${grouped[0][1].map((opt) => this.renderOption(opt))}
-            </ul>`;
-        }
         return html`<div class="pf-c-select__menu">
-            ${grouped.map(([group, items]) => {
-                return html`<div class="pf-c-select__menu-group">
-                    <div class="pf-c-select__menu-group-title" id="Status" aria-hidden="true">
-                        ${group}
-                    </div>
-                    <ul role="listbox">
-                        ${items.map((opt) => this.renderOption(opt))}
-                    </ul>
-                </div>`;
-            })}
+            <div class="pf-c-select__menu-group">
+                <div class="pf-c-select__menu-group-title" id="Status" aria-hidden="true">
+                    ${this.group}
+                </div>
+                <ul role="listbox">
+                    ${this.options.map((opt) => this.renderOption(opt))}
+                </ul>
+            </div>
         </div>`;
     }
 
