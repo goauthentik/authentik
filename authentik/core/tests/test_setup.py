@@ -1,8 +1,10 @@
 from http import HTTPStatus
 from os import environ
+from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
@@ -182,6 +184,7 @@ class TestSetup(FlowTestCase):
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
 
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH", None)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD"] = generate_id()
         environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
         pre_startup.send(sender=self)
@@ -200,6 +203,7 @@ class TestSetup(FlowTestCase):
         User.objects.filter(username="akadmin").delete()
         Setup.set(False)
 
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
         password = generate_id()
         password_hash = make_password(password)
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = password_hash
@@ -210,3 +214,32 @@ class TestSetup(FlowTestCase):
         user = User.objects.get(username="akadmin")
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
+
+    def test_setup_bootstrap_env_malformed_password_hash(self):
+        """Test setup rejects a malformed password hash from the environment."""
+        User.objects.filter(username="akadmin").delete()
+        Setup.set(False)
+
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM="
+        pre_startup.send(sender=self)
+        with self.assertRaises(ValidationError):
+            post_startup.send(sender=self)
+
+        self.assertFalse(Setup.get())
+        self.assertFalse(User.objects.filter(username="akadmin").exists())
+
+    def test_setup_bootstrap_env_apply_failure(self):
+        """Test setup remains incomplete when the bootstrap blueprint fails to apply."""
+        Setup.set(False)
+        environ["AUTHENTIK_BOOTSTRAP_TOKEN"] = generate_id()
+        pre_startup.send(sender=self)
+
+        with (
+            patch("authentik.core.setup.signals.Importer.apply", return_value=False),
+            patch("authentik.core.setup.signals.LOGGER.warning") as warning,
+        ):
+            post_startup.send(sender=self)
+
+        self.assertFalse(Setup.get())
+        warning.assert_any_call("Failed to apply bootstrap blueprint", tenant="public")
