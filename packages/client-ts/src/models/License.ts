@@ -60,12 +60,30 @@ export interface License {
  * Check if a given object implements the License interface.
  */
 export function instanceOfLicense(value: object): value is License {
-    if (!("licenseUuid" in value) || value["licenseUuid"] === undefined) return false;
+    if (
+        (!("licenseUuid" in (value as Record<string, any>)) &&
+            !("license_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["licenseUuid"] === undefined &&
+            (value as Record<string, any>)["license_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("key" in value) || value["key"] === undefined) return false;
     if (!("expiry" in value) || value["expiry"] === undefined) return false;
-    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
-    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
+    if (
+        (!("internalUsers" in (value as Record<string, any>)) &&
+            !("internal_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["internalUsers"] === undefined &&
+            (value as Record<string, any>)["internal_users"] === undefined)
+    )
+        return false;
+    if (
+        (!("externalUsers" in (value as Record<string, any>)) &&
+            !("external_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalUsers"] === undefined &&
+            (value as Record<string, any>)["external_users"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -94,7 +112,7 @@ export function LicenseToJSON(json: any): License {
 export function LicenseToJSONTyped(
     value?: Omit<
         License,
-        "license_uuid" | "name" | "expiry" | "internal_users" | "external_users"
+        "licenseUuid" | "name" | "expiry" | "internalUsers" | "externalUsers"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

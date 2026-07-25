@@ -241,8 +241,17 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
@@ -266,7 +275,12 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
             json["pre_authentication_flow"] == null ? undefined : json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         ssoUrl: json["sso_url"] == null ? undefined : json["sso_url"],
-        sloUrl: json["slo_url"] == null ? undefined : json["slo_url"],
+        sloUrl:
+            json["slo_url"] === undefined
+                ? undefined
+                : json["slo_url"] === null
+                  ? null
+                  : json["slo_url"],
         allowIdpInitiated:
             json["allow_idp_initiated"] == null ? undefined : json["allow_idp_initiated"],
         forceAuthn: json["force_authn"] == null ? undefined : json["force_authn"],
@@ -278,8 +292,18 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
             json["binding_type"] == null
                 ? undefined
                 : BindingTypeEnumFromJSON(json["binding_type"]),
-        verificationKp: json["verification_kp"] == null ? undefined : json["verification_kp"],
-        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
+        verificationKp:
+            json["verification_kp"] === undefined
+                ? undefined
+                : json["verification_kp"] === null
+                  ? null
+                  : json["verification_kp"],
+        signingKp:
+            json["signing_kp"] === undefined
+                ? undefined
+                : json["signing_kp"] === null
+                  ? null
+                  : json["signing_kp"],
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -292,7 +316,12 @@ export function PatchedSAMLSourceRequestFromJSONTyped(
             json["temporary_user_delete_after"] == null
                 ? undefined
                 : json["temporary_user_delete_after"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
         signedAssertion: json["signed_assertion"] == null ? undefined : json["signed_assertion"],
         signedResponse: json["signed_response"] == null ? undefined : json["signed_response"],
     };

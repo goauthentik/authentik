@@ -81,7 +81,12 @@ export function RedirectStageRequestFromJSONTyped(
         keepContext: json["keep_context"] == null ? undefined : json["keep_context"],
         mode: RedirectStageModeEnumFromJSON(json["mode"]),
         targetStatic: json["target_static"] == null ? undefined : json["target_static"],
-        targetFlow: json["target_flow"] == null ? undefined : json["target_flow"],
+        targetFlow:
+            json["target_flow"] === undefined
+                ? undefined
+                : json["target_flow"] === null
+                  ? null
+                  : json["target_flow"],
     };
 }
 

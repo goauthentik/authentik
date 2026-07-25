@@ -15,7 +15,12 @@ from structlog.stdlib import get_logger
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import PropertyMapping, Provider, User, default_token_key
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.outposts.models import OutpostModel
 from authentik.policies.models import PolicyBindingModel
@@ -96,7 +101,10 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     maximum_connections = models.IntegerField(default=1)
 
     property_mappings = models.ManyToManyField(
-        "authentik_core.PropertyMapping", default=None, blank=True
+        "authentik_core.PropertyMapping",
+        default=None,
+        blank=True,
+        through="EndpointPropertyMapping",
     )
 
     @property
@@ -111,6 +119,25 @@ class Endpoint(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("RAC Endpoint")
         verbose_name_plural = _("RAC Endpoints")
+
+
+class EndpointPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_providers_rac_endpoint_property_mappings"
+        unique_together = (("property_mapping", "endpoint"),)
+        verbose_name = _("Endpoint Property Mapping")
+        verbose_name_plural = _("Endpoint Property Mappings")
+
+    def __str__(self):
+        return (
+            f"EndpointPropertyMapping for Endpoint {self.endpoint_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
 
 
 class RACPropertyMapping(PropertyMapping):

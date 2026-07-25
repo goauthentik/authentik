@@ -60,7 +60,13 @@ export function instanceOfInitialPermissions(value: object): value is InitialPer
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("role" in value) || value["role"] === undefined) return false;
-    if (!("permissionsObj" in value) || value["permissionsObj"] === undefined) return false;
+    if (
+        (!("permissionsObj" in (value as Record<string, any>)) &&
+            !("permissions_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["permissionsObj"] === undefined &&
+            (value as Record<string, any>)["permissions_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -89,7 +95,7 @@ export function InitialPermissionsToJSON(json: any): InitialPermissions {
 }
 
 export function InitialPermissionsToJSONTyped(
-    value?: Omit<InitialPermissions, "pk" | "permissions_obj"> | null,
+    value?: Omit<InitialPermissions, "pk" | "permissionsObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

@@ -94,7 +94,13 @@ export interface PromptRequest {
  */
 export function instanceOfPromptRequest(value: object): value is PromptRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("fieldKey" in value) || value["fieldKey"] === undefined) return false;
+    if (
+        (!("fieldKey" in (value as Record<string, any>)) &&
+            !("field_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fieldKey"] === undefined &&
+            (value as Record<string, any>)["field_key"] === undefined)
+    )
+        return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
     return true;

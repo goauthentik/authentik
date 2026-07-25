@@ -58,8 +58,20 @@ export function instanceOfUserServiceAccountResponse(
 ): value is UserServiceAccountResponse {
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("token" in value) || value["token"] === undefined) return false;
-    if (!("userUid" in value) || value["userUid"] === undefined) return false;
-    if (!("userPk" in value) || value["userPk"] === undefined) return false;
+    if (
+        (!("userUid" in (value as Record<string, any>)) &&
+            !("user_uid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userUid"] === undefined &&
+            (value as Record<string, any>)["user_uid"] === undefined)
+    )
+        return false;
+    if (
+        (!("userPk" in (value as Record<string, any>)) &&
+            !("user_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userPk"] === undefined &&
+            (value as Record<string, any>)["user_pk"] === undefined)
+    )
+        return false;
     return true;
 }
 

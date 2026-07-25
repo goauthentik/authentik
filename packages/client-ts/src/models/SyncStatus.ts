@@ -48,7 +48,13 @@ export interface SyncStatus {
  * Check if a given object implements the SyncStatus interface.
  */
 export function instanceOfSyncStatus(value: object): value is SyncStatus {
-    if (!("isRunning" in value) || value["isRunning"] === undefined) return false;
+    if (
+        (!("isRunning" in (value as Record<string, any>)) &&
+            !("is_running" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isRunning"] === undefined &&
+            (value as Record<string, any>)["is_running"] === undefined)
+    )
+        return false;
     return true;
 }
 
