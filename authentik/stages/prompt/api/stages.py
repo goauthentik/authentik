@@ -1,5 +1,7 @@
 """Prompt Stage API Views"""
 
+from django.db import transaction
+from django.db.models import Prefetch
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -7,20 +9,41 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import HttpChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.generators import generate_id
 from authentik.lib.utils.errors import exception_to_string
-from authentik.stages.prompt.models import Prompt, PromptStage
+from authentik.stages.prompt.models import Prompt, PromptStage, PromptStageField
 from authentik.stages.prompt.stage import PromptChallenge, PromptStageView
 
 
 class PromptStageSerializer(StageSerializer):
     """PromptStage Serializer"""
+
+    @transaction.atomic()
+    def _set_fields(self, instance: PromptStage, prompts: list[Prompt]) -> None:
+        """Persist the stage's fields with a per-stage order taken from the list position,
+        so the order a field is shown in is a property of its use in this stage."""
+        PromptStageField.objects.filter(prompt_stage=instance).delete()
+        PromptStageField.objects.bulk_create(
+            PromptStageField(prompt_stage=instance, prompt=prompt, order=order)
+            for order, prompt in enumerate(prompts)
+        )
+
+    def create(self, validated_data: dict) -> PromptStage:
+        fields = validated_data.pop("fields", [])
+        instance = super().create(validated_data)
+        self._set_fields(instance, fields)
+        return instance
+
+    def update(self, instance: PromptStage, validated_data: dict) -> PromptStage:
+        fields = validated_data.pop("fields", None)
+        instance = super().update(instance, validated_data)
+        if fields is not None:
+            self._set_fields(instance, fields)
+        return instance
 
     class Meta:
         model = PromptStage
@@ -35,7 +58,8 @@ class PromptStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = PromptStage.objects.prefetch_related(
         "flow_set",
-        "fields",
+        # Fields are returned in their per-stage order (PromptStageField.order)
+        Prefetch("fields", queryset=Prompt.objects.order_by("promptstagefield__order")),
         "validation_policies",
     ).all()
     serializer_class = PromptStageSerializer
@@ -43,67 +67,20 @@ class PromptStageViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
     search_fields = ["name"]
 
-
-class PromptSerializer(ModelSerializer):
-    """Prompt Serializer"""
-
-    prompt_stages_obj = PromptStageSerializer(
-        source="promptstage_set", many=True, required=False, read_only=True
-    )
-
-    class Meta:
-        model = Prompt
-        fields = [
-            "pk",
-            "name",
-            "field_key",
-            "label",
-            "type",
-            "required",
-            "placeholder",
-            "initial_value",
-            "order",
-            "prompt_stages_obj",
-            "sub_text",
-            "placeholder_expression",
-            "initial_value_expression",
-        ]
-
-
-class PromptViewSet(UsedByMixin, ModelViewSet):
-    """Prompt Viewset"""
-
-    queryset = Prompt.objects.all().prefetch_related(
-        "promptstage_set",
-        "promptstage_set__flow_set",
-        "promptstage_set__fields",
-        "promptstage_set__validation_policies",
-    )
-    serializer_class = PromptSerializer
-    ordering = ["field_key"]
-    filterset_fields = ["field_key", "name", "label", "type", "placeholder"]
-    search_fields = ["field_key", "name", "label", "type", "placeholder"]
-
     @extend_schema(
-        request=PromptSerializer,
+        request=PromptStageSerializer,
         responses={
             200: PromptChallenge,
         },
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request: Request) -> Response:
-        """Preview a prompt as a challenge, just like a flow would receive"""
-        # Remove a couple things from the request, the serializer will fail on these
-        # when previewing an existing prompt
-        # and since we don't plan to save from this, set a random name and remove the stage
-        request.data["name"] = generate_id()
-        request.data.pop("promptstage_set", None)
-        # Validate data, same as a normal edit/create request
-        prompt = PromptSerializer(data=request.data)
-        prompt.is_valid(raise_exception=True)
-        # Convert serializer to prompt instance
-        prompt_model = Prompt(**prompt.validated_data)
-        # Convert to field challenge
+        """Preview the whole stage as a challenge, just like a flow would receive"""
+        # Load the referenced prompts in the order they were submitted, so the preview
+        # reflects the per-stage field order being edited.
+        prompt_pks = request.data.get("fields", [])
+        prompts_by_pk = {str(p.pk): p for p in Prompt.objects.filter(pk__in=prompt_pks)}
+        prompt_models = [prompts_by_pk[str(pk)] for pk in prompt_pks if str(pk) in prompts_by_pk]
         try:
             fields = PromptStageView(
                 FlowExecutorView(
@@ -111,7 +88,7 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
                     request=request._request,
                 ),
                 request=request._request,
-            ).get_prompt_challenge_fields([prompt_model], {}, dry_run=True)
+            ).get_prompt_challenge_fields(prompt_models, {}, dry_run=True)
         except PropertyMappingExpressionException as exc:
             return Response(
                 {

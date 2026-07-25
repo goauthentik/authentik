@@ -32225,6 +32225,32 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/prompt/stages/preview/:
+    post:
+      operationId: stages_prompt_stages_preview_create
+      description: Preview the whole stage as a challenge, just like a flow would
+        receive
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptChallenge'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/redirect/:
     get:
       operationId: stages_redirect_list

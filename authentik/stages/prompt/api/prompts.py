@@ -1,0 +1,105 @@
+"""Prompt Stage API Views"""
+
+from drf_spectacular.utils import extend_schema
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.flows.challenge import HttpChallengeResponse
+from authentik.flows.planner import FlowPlan
+from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.generators import generate_id
+from authentik.lib.utils.errors import exception_to_string
+from authentik.stages.prompt.api.stages import PromptStageSerializer
+from authentik.stages.prompt.models import Prompt
+from authentik.stages.prompt.stage import PromptChallenge, PromptStageView
+
+
+class PromptSerializer(ModelSerializer):
+    """Prompt Serializer"""
+
+    prompt_stages_obj = PromptStageSerializer(
+        source="promptstage_set", many=True, required=False, read_only=True
+    )
+
+    class Meta:
+        model = Prompt
+        fields = [
+            "pk",
+            "name",
+            "field_key",
+            "label",
+            "type",
+            "required",
+            "placeholder",
+            "initial_value",
+            "order",
+            "prompt_stages_obj",
+            "sub_text",
+            "placeholder_expression",
+            "initial_value_expression",
+        ]
+
+
+class PromptViewSet(UsedByMixin, ModelViewSet):
+    """Prompt Viewset"""
+
+    queryset = Prompt.objects.all().prefetch_related(
+        "promptstage_set",
+        "promptstage_set__flow_set",
+        "promptstage_set__fields",
+        "promptstage_set__validation_policies",
+    )
+    serializer_class = PromptSerializer
+    ordering = ["field_key"]
+    filterset_fields = ["field_key", "name", "label", "type", "placeholder"]
+    search_fields = ["field_key", "name", "label", "type", "placeholder"]
+
+    @extend_schema(
+        request=PromptSerializer,
+        responses={
+            200: PromptChallenge,
+        },
+    )
+    @action(detail=False, methods=["POST"])
+    def preview(self, request: Request) -> Response:
+        """Preview a prompt as a challenge, just like a flow would receive"""
+        # Remove a couple things from the request, the serializer will fail on these
+        # when previewing an existing prompt
+        # and since we don't plan to save from this, set a random name and remove the stage
+        request.data["name"] = generate_id()
+        request.data.pop("promptstage_set", None)
+        # Validate data, same as a normal edit/create request
+        prompt = PromptSerializer(data=request.data)
+        prompt.is_valid(raise_exception=True)
+        # Convert serializer to prompt instance
+        prompt_model = Prompt(**prompt.validated_data)
+        # Convert to field challenge
+        try:
+            fields = PromptStageView(
+                FlowExecutorView(
+                    plan=FlowPlan(""),
+                    request=request._request,
+                ),
+                request=request._request,
+            ).get_prompt_challenge_fields([prompt_model], {}, dry_run=True)
+        except PropertyMappingExpressionException as exc:
+            return Response(
+                {
+                    "non_field_errors": [
+                        exception_to_string(exc.exc),
+                    ]
+                },
+                status=400,
+            )
+        challenge = PromptChallenge(
+            data={
+                "fields": fields,
+            },
+        )
+        challenge.is_valid()
+        return HttpChallengeResponse(challenge)
