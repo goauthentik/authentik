@@ -3,6 +3,8 @@ import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -39,20 +41,35 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Authenticator type name")}
-                ?required=${false}
-                name="friendlyName"
-            >
+            <ak-form-element-horizontal ?required=${false} name="friendlyName">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "friendlyName",
+                    },
+                    msg("Authenticator type name"),
+                )}
                 <input
+                    id="friendlyName"
                     type="text"
                     value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
@@ -65,12 +82,18 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
             </ak-form-element-horizontal>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Token count")}
-                        required
-                        name="tokenCount"
-                    >
+                    <ak-form-element-horizontal required name="tokenCount">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "tokenCount",
+                                required: true,
+                            },
+                            msg("Token count"),
+                        )}
                         <input
+                            id="tokenCount"
                             type="text"
                             value="${this.instance?.tokenCount ?? 6}"
                             class="pf-c-form-control"
@@ -82,12 +105,18 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Token length")}
-                        required
-                        name="tokenLength"
-                    >
+                    <ak-form-element-horizontal required name="tokenLength">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "tokenLength",
+                                required: true,
+                            },
+                            msg("Token length"),
+                        )}
                         <input
+                            id="tokenLength"
                             type="number"
                             value="${this.instance?.tokenLength ?? 12}"
                             min="1"
@@ -101,11 +130,17 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Configuration flow")}
-                        name="configureFlow"
-                    >
+                    <ak-form-element-horizontal name="configureFlow">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "configureFlow",
+                            },
+                            msg("Configuration flow"),
+                        )}
                         <ak-search-select
+                            id="configureFlow"
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
