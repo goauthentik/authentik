@@ -12,7 +12,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-import "#elements/table/filter-select";
+import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";

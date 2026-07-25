@@ -1,14 +1,14 @@
-import { AKElement } from "#elements/Base";
-import { RadioOption } from "#elements/forms/Radio";
+import { AKElement } from '#elements/Base';
+import { RadioOption } from '#elements/forms/Radio';
 
-import { Jsonifiable } from "type-fest";
+import { Jsonifiable } from 'type-fest';
 
-import { PropertyValues } from "lit";
-import { html, nothing } from "lit-html";
-import { classMap } from "lit-html/directives/class-map.js";
-import { customElement, property } from "lit/decorators.js";
+import { PropertyValues } from 'lit';
+import { html, nothing } from 'lit-html';
+import { classMap } from 'lit-html/directives/class-map.js';
+import { customElement, property } from 'lit/decorators.js';
 
-import PFSelect from "@patternfly/patternfly/components/Select/select.css";
+import PFSelect from '@patternfly/patternfly/components/Select/select.css';
 
 /**
  * Select element specifically used for table filters.
@@ -16,7 +16,7 @@ import PFSelect from "@patternfly/patternfly/components/Select/select.css";
  * @event {change} - Event fired when a selection is made
  */
 @customElement("ak-table-filter-select")
-export class FilterSelect<T extends Jsonifiable> extends AKElement {
+export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
     static styles = [PFSelect];
 
     @property({ type: Boolean, reflect: true })
@@ -94,5 +94,11 @@ export class FilterSelect<T extends Jsonifiable> extends AKElement {
             </button>
             ${this.renderMenu()}
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-table-filter-select": TableFilterSelect<Jsonifiable>;
     }
 }
