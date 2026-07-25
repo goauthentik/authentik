@@ -1,6 +1,6 @@
-import { AKElement } from "#elements/Base";
-
 import { reorderKeys, SortableReorderDetail } from "./reorder.js";
+
+import { AKElement } from "#elements/Base";
 
 import { css, CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";

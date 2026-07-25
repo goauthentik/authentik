@@ -1,38 +1,38 @@
-import '#admin/stages/prompt/PromptForm';
-import '#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider';
-import '#elements/ak-sortable-list/ak-sortable-list';
-import '#elements/forms/FormGroup';
-import '#elements/forms/HorizontalFormElement';
-import '#elements/forms/ModalForm';
-import '#elements/forms/SearchSelect/index';
-import '#flow/stages/prompt/PromptStage';
+import "#admin/stages/prompt/PromptForm";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-sortable-list/ak-sortable-list";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
+import "#elements/forms/SearchSelect/index";
+import "#flow/stages/prompt/PromptStage";
 
-import { policiesProvider, policiesSelector, resolvePrompts } from './PromptStageFormHelpers.js';
+import { policiesProvider, policiesSelector, resolvePrompts } from "./PromptStageFormHelpers.js";
 
-import { aki } from '#common/api/client';
-import { PFSize } from '#common/enums';
-import { parseAPIResponseError } from '#common/errors/network';
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
+import { parseAPIResponseError } from "#common/errors/network";
 
-import { SlottedTemplateResult } from '#elements/types';
+import { SlottedTemplateResult } from "#elements/types";
 
-import { AKFormErrors, ErrorProp } from '#components/ak-field-errors';
+import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 
-import { BaseStageForm } from '#admin/stages/BaseStageForm';
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import type { StageHost } from '#flow/types';
+import type { StageHost } from "#flow/types";
 
-import { Prompt, PromptChallenge, PromptStage, StagesApi } from '@goauthentik/api';
+import { Prompt, PromptChallenge, PromptStage, StagesApi } from "@goauthentik/api";
 
-import { msg, str } from '@lit/localize';
-import { css, CSSResult, html, nothing, TemplateResult } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
-import { repeat } from 'lit/directives/repeat.js';
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { repeat } from "lit/directives/repeat.js";
 
-import PFButton from '@patternfly/patternfly/components/Button/button.css';
-import PFDataList from '@patternfly/patternfly/components/DataList/data-list.css';
-import PFTitle from '@patternfly/patternfly/components/Title/title.css';
-import PFGrid from '@patternfly/patternfly/layouts/Grid/grid.css';
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 /**
  * Captures the submitted preview payload instead of advancing a flow.
