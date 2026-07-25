@@ -38,8 +38,4 @@ class Migration(migrations.Migration):
             field=models.IntegerField(default=0),
         ),
         migrations.RunPython(copy_prompt_order_to_field, migrations.RunPython.noop),
-        migrations.AlterUniqueTogether(
-            name="promptstagefield",
-            unique_together={("prompt_stage", "prompt", "order")},
-        ),
     ]

@@ -389,7 +389,7 @@ class PromptStageField(SimpleThroughModel):
 
     class Meta:
         db_table = "authentik_stages_prompt_promptstage_fields"
-        unique_together = (("prompt_stage", "prompt", "order"),)
+        unique_together = (("prompt_stage", "prompt"),)
         ordering = ["order"]
         verbose_name = _("Prompt Stage Field")
         verbose_name_plural = _("Prompt Stage Fields")

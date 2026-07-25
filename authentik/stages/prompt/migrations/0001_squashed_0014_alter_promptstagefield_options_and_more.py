@@ -412,8 +412,4 @@ class Migration(migrations.Migration):
             code=copy_prompt_order_to_field,
             reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
-        migrations.AlterUniqueTogether(
-            name="promptstagefield",
-            unique_together={("prompt_stage", "prompt", "order")},
-        ),
     ]
