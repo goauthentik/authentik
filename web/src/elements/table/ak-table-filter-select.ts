@@ -1,3 +1,5 @@
+import { groupBy } from "#common/utils";
+
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -49,35 +51,62 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
         }
     }
 
-    renderMenu() {
+    renderOption(opt: FilterOption<T>): SlottedTemplateResult {
+        const inner = html`${opt.label}
+        ${this.selectedOption?.value === opt.value
+            ? html`<span class="pf-c-select__menu-item-icon">
+                  <i class="fa fa-check"></i>
+              </span>`
+            : nothing}`;
+        return html`<li role="presentation" class="pf-c-select__menu-wrapper">
+            <button
+                class=${classMap({
+                    "pf-c-select__menu-item": true,
+                    "pf-m-selected": this.selectedOption?.value === opt.value,
+                    "pf-m-description": !!opt.description,
+                })}
+                role="option"
+                type="button"
+                @click=${() => {
+                    this.selectedOption = opt;
+                    this.dispatchEvent(
+                        new CustomEvent("change", {
+                            detail: opt,
+                        }),
+                    );
+                    this.open = false;
+                }}
+            >
+                ${opt.description
+                    ? html`<span class="pf-c-select__menu-item-main">${inner}</span>
+                          <span class="pf-c-select__menu-item-description">
+                              ${opt.description}
+                          </span>`
+                    : inner}
+            </button>
+        </li>`;
+    }
+
+    renderMenu(): SlottedTemplateResult {
         if (!this.open) return nothing;
-        return html`<ul class="pf-c-select__menu" role="listbox">
-            ${this.options.map((opt) => {
-                return html`<li role="presentation" class="pf-c-select__menu-wrapper">
-                    <button
-                        class="pf-c-select__menu-item"
-                        role="option"
-                        type="button"
-                        @click=${() => {
-                            this.selectedOption = opt;
-                            this.dispatchEvent(
-                                new CustomEvent("change", {
-                                    detail: opt,
-                                }),
-                            );
-                            this.open = false;
-                        }}
-                    >
-                        <span class="pf-c-select__menu-item-main">${opt.label}</span>
-                        ${opt.description
-                            ? html`<span class="pf-c-select__menu-item-description">
-                                  ${opt.description}
-                              </span>`
-                            : nothing}
-                    </button>
-                </li>`;
+        const grouped = groupBy(this.options, (opt) => opt.group || "");
+        if (grouped.length < 2 && grouped[0][0] === "") {
+            return html`<ul class="pf-c-select__menu" role="listbox">
+                ${grouped[0][1].map((opt) => this.renderOption(opt))}
+            </ul>`;
+        }
+        return html`<div class="pf-c-select__menu">
+            ${grouped.map(([group, items]) => {
+                return html`<div class="pf-c-select__menu-group">
+                    <div class="pf-c-select__menu-group-title" id="Status" aria-hidden="true">
+                        ${group}
+                    </div>
+                    <ul role="listbox">
+                        ${items.map((opt) => this.renderOption(opt))}
+                    </ul>
+                </div>`;
             })}
-        </ul>`;
+        </div>`;
     }
 
     render() {
