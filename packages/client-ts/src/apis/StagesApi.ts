@@ -1266,6 +1266,7 @@ export interface StagesPromptPromptsListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    pks?: Array<string>;
     placeholder?: string;
     search?: string;
     type?: PromptTypeEnum;
@@ -12838,6 +12839,10 @@ export class StagesApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pks"] != null) {
+            queryParameters["pks"] = requestParameters["pks"];
         }
 
         if (requestParameters["placeholder"] != null) {

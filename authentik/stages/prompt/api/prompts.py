@@ -1,5 +1,6 @@
 """Prompt Stage API Views"""
 
+from django_filters import FilterSet, ModelMultipleChoiceFilter
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -45,6 +46,18 @@ class PromptSerializer(ModelSerializer):
         ]
 
 
+class PromptFilter(FilterSet):
+
+    pks = ModelMultipleChoiceFilter(
+        field_name="prompt_uuid",
+        queryset=Prompt.objects.all(),
+    )
+
+    class Meta:
+        model = Prompt
+        fields = ["field_key", "name", "label", "type", "placeholder"]
+
+
 class PromptViewSet(UsedByMixin, ModelViewSet):
     """Prompt Viewset"""
 
@@ -56,7 +69,7 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
     )
     serializer_class = PromptSerializer
     ordering = ["field_key"]
-    filterset_fields = ["field_key", "name", "label", "type", "placeholder"]
+    filterset_class = PromptFilter
     search_fields = ["field_key", "name", "label", "type", "placeholder"]
 
     @extend_schema(

@@ -31799,6 +31799,15 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
+        name: pks
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: placeholder
         schema:
           type: string

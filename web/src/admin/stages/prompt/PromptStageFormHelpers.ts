@@ -9,13 +9,19 @@ import { PoliciesApi, Policy, Prompt, StagesApi } from "@goauthentik/api";
  * the given order (which encodes the per-stage field order).
  */
 export async function resolvePrompts(pks: string[]): Promise<Prompt[]> {
-    const stages = aki(StagesApi);
-    const settled = await Promise.allSettled(
-        pks.map((promptUuid) => stages.stagesPromptPromptsRetrieve({ promptUuid })),
-    );
-    return settled
-        .filter((result): result is PromiseFulfilledResult<Prompt> => result.status === "fulfilled")
-        .map((result) => result.value);
+    if (pks.length === 0) {
+        return [];
+    }
+    const { results } = await aki(StagesApi).stagesPromptPromptsList({
+        pks,
+        // Fetch them all in one page; the caller passes one stage's worth of fields.
+        pageSize: pks.length,
+    });
+    // The `pks` filter does not preserve order, so sort back into the requested (per-stage) order.
+    const orderByPk = new Map(pks.map((pk, index) => [pk, index]));
+    return results
+        .filter((prompt) => orderByPk.has(prompt.pk))
+        .sort((a, b) => (orderByPk.get(a.pk) ?? 0) - (orderByPk.get(b.pk) ?? 0));
 }
 
 const policyToSelect = (p: Policy) => [p.pk, `${p.name} (${p.verboseName})`, p.name, p];
