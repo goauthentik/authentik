@@ -21,12 +21,12 @@ import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
 
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
-import { RadioOption } from "#elements/forms/Radio";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -278,7 +278,7 @@ export class UserListPage extends WithLicenseSummary(
                         },
                     ]}
                     .value=${this.filterStatus}
-                    @change=${(ev: CustomEvent<RadioOption<boolean | undefined>>) => {
+                    @change=${(ev: CustomEvent<FilterOption<boolean | undefined>>) => {
                         this.filterStatus = ev.detail.value;
                         this.page = 1;
                         this.fetch();

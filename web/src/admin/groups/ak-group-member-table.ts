@@ -4,7 +4,7 @@ import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
 
-import { RadioOption } from "#elements/forms/Radio";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -81,7 +81,7 @@ export class GroupMemberSelectTable extends Table<User> {
                         { label: msg("All"), value: "all" as const },
                     ]}
                     .value=${this.userListFilter}
-                    @change=${(ev: CustomEvent<RadioOption<UserListFilter>>) => {
+                    @change=${(ev: CustomEvent<FilterOption<UserListFilter>>) => {
                         this.userListFilter = ev.detail.value;
                         this.page = 1;
                         this.fetch();

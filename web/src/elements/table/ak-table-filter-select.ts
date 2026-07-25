@@ -1,14 +1,23 @@
-import { AKElement } from '#elements/Base';
-import { RadioOption } from '#elements/forms/Radio';
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
 
-import { Jsonifiable } from 'type-fest';
+import { Jsonifiable } from "type-fest";
 
-import { PropertyValues } from 'lit';
-import { html, nothing } from 'lit-html';
-import { classMap } from 'lit-html/directives/class-map.js';
-import { customElement, property } from 'lit/decorators.js';
+import { PropertyValues } from "lit";
+import { html, nothing } from "lit-html";
+import { classMap } from "lit-html/directives/class-map.js";
+import { customElement, property } from "lit/decorators.js";
 
-import PFSelect from '@patternfly/patternfly/components/Select/select.css';
+import PFSelect from "@patternfly/patternfly/components/Select/select.css";
+
+export interface FilterOption<T extends Jsonifiable | undefined> {
+    label: string;
+    description?: SlottedTemplateResult;
+    default?: boolean;
+    value: T;
+    disabled?: boolean;
+    group?: string;
+}
 
 /**
  * Select element specifically used for table filters.
@@ -23,10 +32,10 @@ export class TableFilterSelect<T extends Jsonifiable> extends AKElement {
     open = false;
 
     @property({ type: Array })
-    options: RadioOption<T>[] = [];
+    options: FilterOption<T>[] = [];
 
     @property({ attribute: false })
-    selectedOption?: RadioOption<T>;
+    selectedOption?: FilterOption<T>;
 
     @property({ attribute: false })
     value: T | null = null;

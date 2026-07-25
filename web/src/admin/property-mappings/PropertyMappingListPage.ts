@@ -25,8 +25,8 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { RadioOption } from "#elements/forms/Radio";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -140,7 +140,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         { label: msg("All"), value: false },
                     ]}
                     .value=${this.hideManaged}
-                    @change=${(ev: CustomEvent<RadioOption<boolean>>) => {
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();

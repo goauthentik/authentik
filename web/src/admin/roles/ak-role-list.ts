@@ -8,8 +8,8 @@ import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
-import { RadioOption } from "#elements/forms/Radio";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -113,7 +113,7 @@ export class RoleListPage extends TablePage<Role> {
                         },
                     ]}
                     .value=${this.hideManaged}
-                    @change=${(ev: CustomEvent<RadioOption<boolean>>) => {
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();

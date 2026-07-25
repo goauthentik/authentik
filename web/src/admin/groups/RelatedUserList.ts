@@ -19,10 +19,10 @@ import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { IconEditButton, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
-import { RadioOption } from "#elements/forms/Radio";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -497,7 +497,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                         { label: msg("All"), value: false },
                     ]}
                     .value=${this.hideServiceAccounts}
-                    @change=${(ev: CustomEvent<RadioOption<boolean>>) => {
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
                         this.hideServiceAccounts = ev.detail.value;
                         this.page = 1;
                         this.fetch();
