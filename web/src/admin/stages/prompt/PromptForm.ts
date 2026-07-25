@@ -197,22 +197,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </ak-stage-prompt>
                     </div>
                 </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__body">${msg("Data preview")}</div>
+                    <div class="pf-c-card__body">
+                        <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
+                    </div>
+                </div>
                 ${this.previewError
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                               <div class="pf-c-card__body">${msg("Preview errors")}</div>
                               <div class="pf-c-card__body">
                                   ${AKFormErrors({ errors: [this.previewError] })}
-                              </div>
-                          </div>
-                      `
-                    : nothing}
-                ${this.previewResult
-                    ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Data preview")}</div>
-                              <div class="pf-c-card__body">
-                                  <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
                               </div>
                           </div>
                       `
