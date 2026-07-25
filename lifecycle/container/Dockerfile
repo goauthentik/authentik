@@ -253,10 +253,10 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /data /media /blueprints && \
+    mkdir -p /certs /data/media /media /blueprints && \
     mkdir -p /authentik/.ssh && \
     mkdir -p /ak-root && \
-    chown authentik:authentik /certs /data /media /authentik/.ssh /ak-root
+    chown -R authentik:authentik /certs /data /media /authentik/.ssh /ak-root
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
