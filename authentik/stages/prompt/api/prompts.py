@@ -50,6 +50,7 @@ class PromptFilter(FilterSet):
 
     pks = ModelMultipleChoiceFilter(
         field_name="prompt_uuid",
+        to_field_name="prompt_uuid",
         queryset=Prompt.objects.all(),
     )
 

@@ -694,6 +694,32 @@ class TestPromptStage(FlowTestCase):
         with self.assertRaises(ValueError):
             prompt.save()
 
+    def test_api_list_filter_pks(self):
+        """The `pks` filter returns exactly the requested prompts (by UUID)"""
+        first = Prompt.objects.create(
+            name=generate_id(), field_key="first", label="a", type=FieldTypes.TEXT
+        )
+        second = Prompt.objects.create(
+            name=generate_id(), field_key="second", label="b", type=FieldTypes.TEXT
+        )
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:prompt-list"),
+            data={"pks": [str(first.pk), str(second.pk)]},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        returned = {result["pk"] for result in response.json()["results"]}
+        self.assertEqual(returned, {str(first.pk), str(second.pk)})
+
+    def test_api_list_filter_pks_invalid(self):
+        """An invalid UUID in the `pks` filter is a clean 400, not a server error"""
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:prompt-list"),
+            data={"pks": ["not-a-uuid"]},
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_api_preview(self):
         """Test API preview"""
         self.client.force_login(self.user)
