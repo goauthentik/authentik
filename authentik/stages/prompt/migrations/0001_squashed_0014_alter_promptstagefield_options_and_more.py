@@ -25,7 +25,6 @@ def set_generated_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         prompt.save()
 
 
-
 def migrate_placeholder_expressions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     from authentik.stages.prompt.models import CHOICE_FIELDS
 
@@ -56,138 +55,357 @@ def copy_prompt_order_to_field(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
 class Migration(migrations.Migration):
 
-    replaces = [('authentik_stages_prompt', '0001_initial'), ('authentik_stages_prompt', '0002_auto_20200920_1859'), ('authentik_stages_prompt', '0003_auto_20210222_1821'), ('authentik_stages_prompt', '0004_prompt_sub_text'), ('authentik_stages_prompt', '0005_alter_prompt_field_key'), ('authentik_stages_prompt', '0006_alter_prompt_type'), ('authentik_stages_prompt', '0007_prompt_placeholder_expression'), ('authentik_stages_prompt', '0008_alter_prompt_type'), ('authentik_stages_prompt', '0009_prompt_name'), ('authentik_stages_prompt', '0010_alter_prompt_placeholder_alter_prompt_type'), ('authentik_stages_prompt', '0011_prompt_initial_value_prompt_initial_value_expression_and_more'), ('authentik_stages_prompt', '0012_alter_prompt_type'), ('authentik_stages_prompt', '0013_promptstageprompt_alter_promptstage_fields_and_more'), ('authentik_stages_prompt', '0014_alter_promptstagefield_options_and_more')]
+    replaces = [
+        ("authentik_stages_prompt", "0001_initial"),
+        ("authentik_stages_prompt", "0002_auto_20200920_1859"),
+        ("authentik_stages_prompt", "0003_auto_20210222_1821"),
+        ("authentik_stages_prompt", "0004_prompt_sub_text"),
+        ("authentik_stages_prompt", "0005_alter_prompt_field_key"),
+        ("authentik_stages_prompt", "0006_alter_prompt_type"),
+        ("authentik_stages_prompt", "0007_prompt_placeholder_expression"),
+        ("authentik_stages_prompt", "0008_alter_prompt_type"),
+        ("authentik_stages_prompt", "0009_prompt_name"),
+        ("authentik_stages_prompt", "0010_alter_prompt_placeholder_alter_prompt_type"),
+        (
+            "authentik_stages_prompt",
+            "0011_prompt_initial_value_prompt_initial_value_expression_and_more",
+        ),
+        ("authentik_stages_prompt", "0012_alter_prompt_type"),
+        ("authentik_stages_prompt", "0013_promptstageprompt_alter_promptstage_fields_and_more"),
+        ("authentik_stages_prompt", "0014_alter_promptstagefield_options_and_more"),
+    ]
 
     initial = True
 
     dependencies = [
-        ('authentik_flows', '0007_auto_20200703_2059'),
-        ('authentik_policies', '0003_auto_20200908_1542'),
-        ('authentik_policies', '0011_policybinding_failure_result_and_more'),
+        ("authentik_flows", "0007_auto_20200703_2059"),
+        ("authentik_policies", "0003_auto_20200908_1542"),
+        ("authentik_policies", "0011_policybinding_failure_result_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Prompt',
+            name="Prompt",
             fields=[
-                ('prompt_uuid', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('field_key', models.TextField(help_text='Name of the form field, also used to store the value')),
-                ('label', models.TextField()),
-                ('type', models.CharField(choices=[('text', 'Text: Simple Text input'), ('text_read_only', 'Text (read-only): Simple Text input, but cannot be edited.'), ('username', 'Username: Same as Text input, but checks for and prevents duplicate usernames.'), ('email', 'Email: Text field with Email type.'), ('password', 'Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.'), ('number', 'Number'), ('checkbox', 'Checkbox'), ('date', 'Date'), ('date-time', 'Date Time'), ('file', 'File: File upload for arbitrary files. File content will be available in flow context as data-URI'), ('separator', 'Separator: Static Separator Line'), ('hidden', 'Hidden: Hidden field, can be used to insert data into form.'), ('static', 'Static: Static value, displayed as-is.'), ('ak-locale', 'authentik: Selection of locales authentik supports')], max_length=100)),
-                ('required', models.BooleanField(default=True)),
-                ('placeholder', models.TextField(blank=True)),
-                ('order', models.IntegerField(default=0)),
-                ('sub_text', models.TextField(blank=True, default='')),
-                ('placeholder_expression', models.BooleanField(default=False)),
-                ('name', models.TextField(default='')),
+                (
+                    "prompt_uuid",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                (
+                    "field_key",
+                    models.TextField(
+                        help_text="Name of the form field, also used to store the value"
+                    ),
+                ),
+                ("label", models.TextField()),
+                (
+                    "type",
+                    models.CharField(
+                        choices=[
+                            ("text", "Text: Simple Text input"),
+                            (
+                                "text_read_only",
+                                "Text (read-only): Simple Text input, but cannot be edited.",
+                            ),
+                            (
+                                "username",
+                                "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                            ),
+                            ("email", "Email: Text field with Email type."),
+                            (
+                                "password",
+                                "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.",
+                            ),
+                            ("number", "Number"),
+                            ("checkbox", "Checkbox"),
+                            ("date", "Date"),
+                            ("date-time", "Date Time"),
+                            (
+                                "file",
+                                "File: File upload for arbitrary files. File content will be available in flow context as data-URI",
+                            ),
+                            ("separator", "Separator: Static Separator Line"),
+                            (
+                                "hidden",
+                                "Hidden: Hidden field, can be used to insert data into form.",
+                            ),
+                            ("static", "Static: Static value, displayed as-is."),
+                            ("ak-locale", "authentik: Selection of locales authentik supports"),
+                        ],
+                        max_length=100,
+                    ),
+                ),
+                ("required", models.BooleanField(default=True)),
+                ("placeholder", models.TextField(blank=True)),
+                ("order", models.IntegerField(default=0)),
+                ("sub_text", models.TextField(blank=True, default="")),
+                ("placeholder_expression", models.BooleanField(default=False)),
+                ("name", models.TextField(default="")),
             ],
             options={
-                'verbose_name': 'Prompt',
-                'verbose_name_plural': 'Prompts',
+                "verbose_name": "Prompt",
+                "verbose_name_plural": "Prompts",
             },
         ),
         migrations.CreateModel(
-            name='PromptStage',
+            name="PromptStage",
             fields=[
-                ('stage_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='authentik_flows.stage')),
-                ('fields', models.ManyToManyField(to='authentik_stages_prompt.prompt')),
-                ('validation_policies', models.ManyToManyField(blank=True, to='authentik_policies.policy')),
+                (
+                    "stage_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="authentik_flows.stage",
+                    ),
+                ),
+                ("fields", models.ManyToManyField(to="authentik_stages_prompt.prompt")),
+                (
+                    "validation_policies",
+                    models.ManyToManyField(blank=True, to="authentik_policies.policy"),
+                ),
             ],
             options={
-                'verbose_name': 'Prompt Stage',
-                'verbose_name_plural': 'Prompt Stages',
+                "verbose_name": "Prompt Stage",
+                "verbose_name_plural": "Prompt Stages",
             },
-            bases=('authentik_flows.stage',),
+            bases=("authentik_flows.stage",),
         ),
         migrations.RunPython(
             code=set_generated_name,
         ),
         migrations.AlterField(
-            model_name='prompt',
-            name='name',
+            model_name="prompt",
+            name="name",
             field=models.TextField(unique=True),
         ),
         migrations.AlterField(
-            model_name='prompt',
-            name='type',
-            field=models.CharField(choices=[('text', 'Text: Simple Text input'), ('text_area', 'Text area: Multiline Text Input.'), ('text_read_only', 'Text (read-only): Simple Text input, but cannot be edited.'), ('text_area_read_only', 'Text area (read-only): Multiline Text input, but cannot be edited.'), ('username', 'Username: Same as Text input, but checks for and prevents duplicate usernames.'), ('email', 'Email: Text field with Email type.'), ('password', 'Password: Masked input, multiple inputs of this type on the same prompt need to be identical.'), ('number', 'Number'), ('checkbox', 'Checkbox'), ('radio-button-group', 'Fixed choice field rendered as a group of radio buttons.'), ('dropdown', 'Fixed choice field rendered as a dropdown.'), ('date', 'Date'), ('date-time', 'Date Time'), ('file', 'File: File upload for arbitrary files. File content will be available in flow context as data-URI'), ('separator', 'Separator: Static Separator Line'), ('hidden', 'Hidden: Hidden field, can be used to insert data into form.'), ('static', 'Static: Static value, displayed as-is.'), ('ak-locale', 'authentik: Selection of locales authentik supports')], max_length=100),
+            model_name="prompt",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("text", "Text: Simple Text input"),
+                    ("text_area", "Text area: Multiline Text Input."),
+                    (
+                        "text_read_only",
+                        "Text (read-only): Simple Text input, but cannot be edited.",
+                    ),
+                    (
+                        "text_area_read_only",
+                        "Text area (read-only): Multiline Text input, but cannot be edited.",
+                    ),
+                    (
+                        "username",
+                        "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                    ),
+                    ("email", "Email: Text field with Email type."),
+                    (
+                        "password",
+                        "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
+                    ),
+                    ("number", "Number"),
+                    ("checkbox", "Checkbox"),
+                    (
+                        "radio-button-group",
+                        "Fixed choice field rendered as a group of radio buttons.",
+                    ),
+                    ("dropdown", "Fixed choice field rendered as a dropdown."),
+                    ("date", "Date"),
+                    ("date-time", "Date Time"),
+                    (
+                        "file",
+                        "File: File upload for arbitrary files. File content will be available in flow context as data-URI",
+                    ),
+                    ("separator", "Separator: Static Separator Line"),
+                    ("hidden", "Hidden: Hidden field, can be used to insert data into form."),
+                    ("static", "Static: Static value, displayed as-is."),
+                    ("ak-locale", "authentik: Selection of locales authentik supports"),
+                ],
+                max_length=100,
+            ),
         ),
         migrations.AddField(
-            model_name='prompt',
-            name='initial_value',
-            field=models.TextField(blank=True, help_text='Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.'),
+            model_name="prompt",
+            name="initial_value",
+            field=models.TextField(
+                blank=True,
+                help_text="Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.",
+            ),
         ),
         migrations.AddField(
-            model_name='prompt',
-            name='initial_value_expression',
+            model_name="prompt",
+            name="initial_value_expression",
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(
-            model_name='prompt',
-            name='placeholder',
-            field=models.TextField(blank=True, help_text='Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.'),
+            model_name="prompt",
+            name="placeholder",
+            field=models.TextField(
+                blank=True,
+                help_text="Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.",
+            ),
         ),
         migrations.RunPython(
             code=migrate_placeholder_expressions,
         ),
         migrations.AlterField(
-            model_name='prompt',
-            name='type',
-            field=models.CharField(choices=[('text', 'Text: Simple Text input'), ('text_area', 'Text area: Multiline Text Input.'), ('text_read_only', 'Text (read-only): Simple Text input, but cannot be edited.'), ('text_area_read_only', 'Text area (read-only): Multiline Text input, but cannot be edited.'), ('username', 'Username: Same as Text input, but checks for and prevents duplicate usernames.'), ('email', 'Email: Text field with Email type.'), ('password', 'Password: Masked input, multiple inputs of this type on the same prompt need to be identical.'), ('number', 'Number'), ('checkbox', 'Checkbox'), ('radio-button-group', 'Fixed choice field rendered as a group of radio buttons.'), ('dropdown', 'Fixed choice field rendered as a dropdown.'), ('date', 'Date'), ('date-time', 'Date Time'), ('file', 'File: File upload for arbitrary files. File content will be available in flow context as data-URI'), ('separator', 'Separator: Static Separator Line'), ('hidden', 'Hidden: Hidden field, can be used to insert data into form.'), ('static', 'Static: Static value, displayed as-is.'), ('alert_info', 'Alert (Info): Static alert box with info styling'), ('alert_warning', 'Alert (Warning): Static alert box with warning styling'), ('alert_danger', 'Alert (Danger): Static alert box with danger styling'), ('ak-locale', 'authentik: Selection of locales authentik supports')], max_length=100),
+            model_name="prompt",
+            name="type",
+            field=models.CharField(
+                choices=[
+                    ("text", "Text: Simple Text input"),
+                    ("text_area", "Text area: Multiline Text Input."),
+                    (
+                        "text_read_only",
+                        "Text (read-only): Simple Text input, but cannot be edited.",
+                    ),
+                    (
+                        "text_area_read_only",
+                        "Text area (read-only): Multiline Text input, but cannot be edited.",
+                    ),
+                    (
+                        "username",
+                        "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                    ),
+                    ("email", "Email: Text field with Email type."),
+                    (
+                        "password",
+                        "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
+                    ),
+                    ("number", "Number"),
+                    ("checkbox", "Checkbox"),
+                    (
+                        "radio-button-group",
+                        "Fixed choice field rendered as a group of radio buttons.",
+                    ),
+                    ("dropdown", "Fixed choice field rendered as a dropdown."),
+                    ("date", "Date"),
+                    ("date-time", "Date Time"),
+                    (
+                        "file",
+                        "File: File upload for arbitrary files. File content will be available in flow context as data-URI",
+                    ),
+                    ("separator", "Separator: Static Separator Line"),
+                    ("hidden", "Hidden: Hidden field, can be used to insert data into form."),
+                    ("static", "Static: Static value, displayed as-is."),
+                    ("alert_info", "Alert (Info): Static alert box with info styling"),
+                    ("alert_warning", "Alert (Warning): Static alert box with warning styling"),
+                    ("alert_danger", "Alert (Danger): Static alert box with danger styling"),
+                    ("ak-locale", "authentik: Selection of locales authentik supports"),
+                ],
+                max_length=100,
+            ),
         ),
         migrations.SeparateDatabaseAndState(
             state_operations=[
                 migrations.CreateModel(
-                    name='PromptStageField',
+                    name="PromptStageField",
                     fields=[
-                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                        ('prompt', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authentik_stages_prompt.prompt')),
-                        ('prompt_stage', models.ForeignKey(db_column='promptstage_id', on_delete=django.db.models.deletion.CASCADE, to='authentik_stages_prompt.promptstage')),
+                        (
+                            "id",
+                            models.AutoField(
+                                auto_created=True,
+                                primary_key=True,
+                                serialize=False,
+                                verbose_name="ID",
+                            ),
+                        ),
+                        (
+                            "prompt",
+                            models.ForeignKey(
+                                on_delete=django.db.models.deletion.CASCADE,
+                                to="authentik_stages_prompt.prompt",
+                            ),
+                        ),
+                        (
+                            "prompt_stage",
+                            models.ForeignKey(
+                                db_column="promptstage_id",
+                                on_delete=django.db.models.deletion.CASCADE,
+                                to="authentik_stages_prompt.promptstage",
+                            ),
+                        ),
                     ],
                     options={
-                        'db_table': 'authentik_stages_prompt_promptstage_fields',
-                        'unique_together': {('prompt_stage', 'prompt')},
-                        'verbose_name': 'Prompt Stage Field',
-                        'verbose_name_plural': 'Prompt Stage Fields',
+                        "db_table": "authentik_stages_prompt_promptstage_fields",
+                        "unique_together": {("prompt_stage", "prompt")},
+                        "verbose_name": "Prompt Stage Field",
+                        "verbose_name_plural": "Prompt Stage Fields",
                     },
                 ),
                 migrations.AlterField(
-                    model_name='promptstage',
-                    name='fields',
-                    field=models.ManyToManyField(through='authentik_stages_prompt.PromptStageField', to='authentik_stages_prompt.prompt'),
+                    model_name="promptstage",
+                    name="fields",
+                    field=models.ManyToManyField(
+                        through="authentik_stages_prompt.PromptStageField",
+                        to="authentik_stages_prompt.prompt",
+                    ),
                 ),
             ],
         ),
         migrations.SeparateDatabaseAndState(
             state_operations=[
                 migrations.CreateModel(
-                    name='PromptStageValidationPolicy',
+                    name="PromptStageValidationPolicy",
                     fields=[
-                        ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                        ('prompt_stage', models.ForeignKey(db_column='promptstage_id', on_delete=django.db.models.deletion.CASCADE, to='authentik_stages_prompt.promptstage')),
-                        ('policy', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='authentik_policies.policy')),
+                        (
+                            "id",
+                            models.AutoField(
+                                auto_created=True,
+                                primary_key=True,
+                                serialize=False,
+                                verbose_name="ID",
+                            ),
+                        ),
+                        (
+                            "prompt_stage",
+                            models.ForeignKey(
+                                db_column="promptstage_id",
+                                on_delete=django.db.models.deletion.CASCADE,
+                                to="authentik_stages_prompt.promptstage",
+                            ),
+                        ),
+                        (
+                            "policy",
+                            models.ForeignKey(
+                                on_delete=django.db.models.deletion.CASCADE,
+                                to="authentik_policies.policy",
+                            ),
+                        ),
                     ],
                     options={
-                        'db_table': 'authentik_stages_prompt_promptstage_validation_policies',
-                        'unique_together': {('prompt_stage', 'policy')},
-                        'verbose_name': 'Prompt Stage Validation Policy',
-                        'verbose_name_plural': 'Prompt Stage Validation Policys',
+                        "db_table": "authentik_stages_prompt_promptstage_validation_policies",
+                        "unique_together": {("prompt_stage", "policy")},
+                        "verbose_name": "Prompt Stage Validation Policy",
+                        "verbose_name_plural": "Prompt Stage Validation Policys",
                     },
                 ),
                 migrations.AlterField(
-                    model_name='promptstage',
-                    name='validation_policies',
-                    field=models.ManyToManyField(blank=True, through='authentik_stages_prompt.PromptStageValidationPolicy', to='authentik_policies.policy'),
+                    model_name="promptstage",
+                    name="validation_policies",
+                    field=models.ManyToManyField(
+                        blank=True,
+                        through="authentik_stages_prompt.PromptStageValidationPolicy",
+                        to="authentik_policies.policy",
+                    ),
                 ),
             ],
         ),
         migrations.AlterModelOptions(
-            name='promptstagefield',
-            options={'ordering': ['order'], 'verbose_name': 'Prompt Stage Field', 'verbose_name_plural': 'Prompt Stage Fields'},
+            name="promptstagefield",
+            options={
+                "ordering": ["order"],
+                "verbose_name": "Prompt Stage Field",
+                "verbose_name_plural": "Prompt Stage Fields",
+            },
         ),
         migrations.AddField(
-            model_name='promptstagefield',
-            name='order',
+            model_name="promptstagefield",
+            name="order",
             field=models.IntegerField(default=0),
         ),
         migrations.RunPython(
@@ -195,7 +413,7 @@ class Migration(migrations.Migration):
             reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
         migrations.AlterUniqueTogether(
-            name='promptstagefield',
-            unique_together={('prompt_stage', 'prompt', 'order')},
+            name="promptstagefield",
+            unique_together={("prompt_stage", "prompt", "order")},
         ),
     ]

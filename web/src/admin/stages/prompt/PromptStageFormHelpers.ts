@@ -4,46 +4,18 @@ import { DualSelectPair } from "#elements/ak-dual-select/types";
 
 import { PoliciesApi, Policy, Prompt, StagesApi } from "@goauthentik/api";
 
-import { msg, str } from "@lit/localize";
-
-const promptToSelect = (p: Prompt) => [
-    p.pk,
-    msg(str`${p.name} ("${p.fieldKey}", of type ${p.type})`),
-    p.name,
-    p,
-];
-
-export async function promptFieldsProvider(page = 1, search = "") {
-    const prompts = await aki(StagesApi).stagesPromptPromptsList({
-        ordering: "field_name,order",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: prompts.pagination,
-        options: prompts.results.map(promptToSelect),
-    };
-}
-
-export function promptFieldsSelector(instanceFields: string[] | undefined) {
-    if (!instanceFields) {
-        return async (options: DualSelectPair<Prompt>[]) =>
-            options.filter(([_0, _1, _2, prompt]: DualSelectPair<Prompt>) => prompt !== undefined);
-    }
-    return async () => {
-        const stages = aki(StagesApi);
-        const prompts = await Promise.allSettled(
-            instanceFields.map((instanceId) =>
-                stages.stagesPromptPromptsRetrieve({ promptUuid: instanceId }),
-            ),
-        );
-        return prompts
-            .filter((p) => p.status === "fulfilled")
-            .map((p) => p.value)
-            .map(promptToSelect);
-    };
+/**
+ * Resolve an ordered list of prompt UUIDs to their full {@link Prompt} objects, preserving
+ * the given order (which encodes the per-stage field order).
+ */
+export async function resolvePrompts(pks: string[]): Promise<Prompt[]> {
+    const stages = aki(StagesApi);
+    const settled = await Promise.allSettled(
+        pks.map((promptUuid) => stages.stagesPromptPromptsRetrieve({ promptUuid })),
+    );
+    return settled
+        .filter((result): result is PromiseFulfilledResult<Prompt> => result.status === "fulfilled")
+        .map((result) => result.value);
 }
 
 const policyToSelect = (p: Policy) => [p.pk, `${p.name} (${p.verboseName})`, p.name, p];

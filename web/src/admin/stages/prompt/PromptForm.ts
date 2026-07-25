@@ -66,9 +66,21 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptRequest: data,
             });
         }
-        return aki(StagesApi).stagesPromptPromptsCreate({
-            promptRequest: data,
-        });
+        return aki(StagesApi)
+            .stagesPromptPromptsCreate({
+                promptRequest: data,
+            })
+            .then((created) => {
+                // Let embedding forms (e.g. the prompt stage editor) pick up the new field.
+                this.dispatchEvent(
+                    new CustomEvent<Prompt>("ak-prompt-created", {
+                        detail: created,
+                        bubbles: true,
+                        composed: true,
+                    }),
+                );
+                return created;
+            });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
@@ -343,6 +355,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                 />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Default position when this field is first added to a stage. The order within a stage is set on the stage itself.",
+                    )}
+                </p>
             </ak-form-element-horizontal>`;
     }
 }

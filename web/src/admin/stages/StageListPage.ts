@@ -20,6 +20,7 @@ import { ModelEnum, Stage, StagesApi } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { PFSize } from "#common/enums";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
@@ -97,7 +98,9 @@ export class StageListPage extends TablePage<Stage> {
                 })}
             </ul>`,
             html`<div class="ak-c-table__actions">
-                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconEditButtonByTagName(item.component, item.pk, null, {
+                    size: PFSize.XLarge,
+                })}
                 ${IconPermissionButton(item.name, {
                     model: item.metaModelName as ModelEnum,
                     objectPk: item.pk,
