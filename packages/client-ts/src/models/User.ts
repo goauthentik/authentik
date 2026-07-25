@@ -154,15 +154,51 @@ export function instanceOfUser(value: object): value is User {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("dateJoined" in value) || value["dateJoined"] === undefined) return false;
-    if (!("isSuperuser" in value) || value["isSuperuser"] === undefined) return false;
-    if (!("groupsObj" in value) || value["groupsObj"] === undefined) return false;
-    if (!("rolesObj" in value) || value["rolesObj"] === undefined) return false;
+    if (
+        (!("dateJoined" in (value as Record<string, any>)) &&
+            !("date_joined" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["dateJoined"] === undefined &&
+            (value as Record<string, any>)["date_joined"] === undefined)
+    )
+        return false;
+    if (
+        (!("isSuperuser" in (value as Record<string, any>)) &&
+            !("is_superuser" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isSuperuser"] === undefined &&
+            (value as Record<string, any>)["is_superuser"] === undefined)
+    )
+        return false;
+    if (
+        (!("groupsObj" in (value as Record<string, any>)) &&
+            !("groups_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupsObj"] === undefined &&
+            (value as Record<string, any>)["groups_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("rolesObj" in (value as Record<string, any>)) &&
+            !("roles_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rolesObj"] === undefined &&
+            (value as Record<string, any>)["roles_obj"] === undefined)
+    )
+        return false;
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("uuid" in value) || value["uuid"] === undefined) return false;
-    if (!("passwordChangeDate" in value) || value["passwordChangeDate"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
+    if (
+        (!("passwordChangeDate" in (value as Record<string, any>)) &&
+            !("password_change_date" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordChangeDate"] === undefined &&
+            (value as Record<string, any>)["password_change_date"] === undefined)
+    )
+        return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -179,7 +215,12 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        lastLogin:
+            json["last_login"] === undefined
+                ? undefined
+                : json["last_login"] === null
+                  ? null
+                  : new Date(json["last_login"]),
         dateJoined: new Date(json["date_joined"]),
         isSuperuser: json["is_superuser"],
         groups: json["groups"] == null ? undefined : json["groups"],
@@ -210,15 +251,15 @@ export function UserToJSONTyped(
     value?: Omit<
         User,
         | "pk"
-        | "date_joined"
-        | "is_superuser"
-        | "groups_obj"
-        | "roles_obj"
+        | "dateJoined"
+        | "isSuperuser"
+        | "groupsObj"
+        | "rolesObj"
         | "avatar"
         | "uid"
         | "uuid"
-        | "password_change_date"
-        | "last_updated"
+        | "passwordChangeDate"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -81,7 +81,12 @@ export function UserConsentFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         pk: json["pk"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         user: UserFromJSON(json["user"]),
         application: ApplicationFromJSON(json["application"]),

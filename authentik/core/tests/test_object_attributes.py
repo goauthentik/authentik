@@ -94,6 +94,26 @@ class TestObjectAttributes(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(res.content, {f"attributes_{attr.key}": ["This field is required"]})
 
+    def test_user_attrib_validation_no_required_blank(self):
+        attr = ObjectAttribute.objects.create(
+            object_type=ContentType.objects.get_for_model(User),
+            label="foo",
+            key=generate_id(),
+            type=ObjectAttribute.AttributeType.TEXT,
+            is_required=False,
+        )
+        res = self.client.post(
+            reverse("authentik_api:user-list"),
+            data={
+                "username": generate_id(),
+                "name": "test",
+                "attributes": {
+                    attr.key: "",
+                },
+            },
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+
     def test_user_attrib_validation_unique(self):
         attr = ObjectAttribute.objects.create(
             object_type=ContentType.objects.get_for_model(User),

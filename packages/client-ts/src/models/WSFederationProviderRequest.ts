@@ -16,6 +16,8 @@ import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
 import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
+import type { SamlVersionEnum } from "./SamlVersionEnum";
+import { SamlVersionEnumFromJSON, SamlVersionEnumToJSON } from "./SamlVersionEnum";
 import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
 import {
     SignatureAlgorithmEnumFromJSON,
@@ -101,6 +103,12 @@ export interface WSFederationProviderRequest {
      */
     authnContextClassRefMapping?: string | null;
     /**
+     * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+     * @type {SamlVersionEnum}
+     * @memberof WSFederationProviderRequest
+     */
+    samlVersion?: SamlVersionEnum;
+    /**
      *
      * @type {DigestAlgorithmEnum}
      * @memberof WSFederationProviderRequest
@@ -151,9 +159,27 @@ export function instanceOfWSFederationProviderRequest(
     value: object,
 ): value is WSFederationProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
-    if (!("replyUrl" in value) || value["replyUrl"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("replyUrl" in (value as Record<string, any>)) &&
+            !("reply_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["replyUrl"] === undefined &&
+            (value as Record<string, any>)["reply_url"] === undefined)
+    )
+        return false;
     if (!("wtrealm" in value) || value["wtrealm"] === undefined) return false;
     return true;
 }
@@ -172,7 +198,11 @@ export function WSFederationProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
@@ -190,11 +220,22 @@ export function WSFederationProviderRequestFromJSONTyped(
             json["session_valid_not_on_or_after"] == null
                 ? undefined
                 : json["session_valid_not_on_or_after"],
-        nameIdMapping: json["name_id_mapping"] == null ? undefined : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] == null
+        nameIdMapping:
+            json["name_id_mapping"] === undefined
                 ? undefined
-                : json["authn_context_class_ref_mapping"],
+                : json["name_id_mapping"] === null
+                  ? null
+                  : json["name_id_mapping"],
+        authnContextClassRefMapping:
+            json["authn_context_class_ref_mapping"] === undefined
+                ? undefined
+                : json["authn_context_class_ref_mapping"] === null
+                  ? null
+                  : json["authn_context_class_ref_mapping"],
+        samlVersion:
+            json["saml_version"] == null
+                ? undefined
+                : SamlVersionEnumFromJSON(json["saml_version"]),
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -203,8 +244,18 @@ export function WSFederationProviderRequestFromJSONTyped(
             json["signature_algorithm"] == null
                 ? undefined
                 : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signingKp:
+            json["signing_kp"] === undefined
+                ? undefined
+                : json["signing_kp"] === null
+                  ? null
+                  : json["signing_kp"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
@@ -240,6 +291,7 @@ export function WSFederationProviderRequestToJSONTyped(
         session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
         name_id_mapping: value["nameIdMapping"],
         authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
+        saml_version: SamlVersionEnumToJSON(value["samlVersion"]),
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],

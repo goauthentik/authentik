@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password, identify_hasher
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
@@ -568,24 +568,15 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    @staticmethod
-    def validate_password_hash(password_hash: str):
-        """Validate that the value is a recognized Django password hash."""
-        identify_hasher(password_hash)  # Raises ValueError if invalid
-
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
-        must already be a valid Django password hash, and it is stored directly on the
-        user after validation.
+        must already be validated by the caller, and it is stored directly on the user.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
-
-        Raises ValueError if the hash format is not recognized.
         """
-        self.validate_password_hash(password_hash)
         if self.pk and signal:
             from authentik.core.signals import password_hash_changed
 
@@ -1476,9 +1467,12 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         if value is None:
             return
 
+        field_kwargs = {}
+
         match (self.type):
             case self.AttributeType.TEXT:
                 field_cls = CharField
+                field_kwargs["allow_blank"] = True
             case self.AttributeType.NUMBER:
                 field_cls = IntegerField
             case self.AttributeType.BOOLEAN:
@@ -1486,7 +1480,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
             case _:
                 raise ValidationError("Invalid field type")
 
-        field = field_cls(required=False)
+        field = field_cls(required=False, **field_kwargs)
         if self.is_array:
             field = ListField(
                 child=field,
