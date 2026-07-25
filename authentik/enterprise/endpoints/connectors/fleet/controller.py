@@ -240,11 +240,11 @@ class FleetController(BaseController[DBC]):
                 "fleetdm.com": {
                     "policies": [
                         delete_none_values({"name": policy["name"], "status": policy["response"]})
-                        for policy in host.get("policies", [])
+                        for policy in (host.get("policies") or [])
                     ],
                     "agent_version": fleet_version,
                     # Host UUID is required for conditional access matching
-                    "uuid": host.get("uuid", "").lower(),
+                    "uuid": (host.get("uuid") or "").lower(),
                 },
             },
         }
