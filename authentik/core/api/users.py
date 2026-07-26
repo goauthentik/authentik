@@ -14,7 +14,6 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django.utils.translation import gettext_lazy
 from django_filters.filters import (
     BooleanFilter,
     CharFilter,
@@ -98,6 +97,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
+from authentik.lib.validators import validate_password_hash
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -107,10 +107,6 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-
-INVALID_PASSWORD_HASH_MESSAGE = gettext_lazy(
-    "Invalid password hash format. Must be a valid Django password hash."
-)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -213,7 +209,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance: User = super().create(validated_data)
         if is_blueprint:
@@ -233,7 +228,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password = validated_data.pop("password", None)
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
-            self._validate_password_inputs(password, password_hash)
 
         instance = super().update(instance, validated_data)
         if is_blueprint:
@@ -245,18 +239,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
-
-    def _validate_password_inputs(self, password: str | None, password_hash: str | None):
-        """Validate mutually-exclusive password inputs before any model mutation."""
-        if password is not None and password_hash is not None:
-            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
-        if password_hash is None:
-            return
-        try:
-            User.validate_password_hash(password_hash)
-        except ValueError as exc:
-            LOGGER.warning("Failed to identify password hash format", exc_info=exc)
-            raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
@@ -334,6 +316,12 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         return roles
 
     def validate(self, attrs: dict) -> dict:
+        if (
+            SERIALIZER_CONTEXT_BLUEPRINT in self.context
+            and attrs.get("password") is not None
+            and attrs.get("password_hash") is not None
+        ):
+            raise ValidationError(_("Cannot set both password and password_hash. Use only one."))
         if self.instance and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
             raise ValidationError(_("Can't modify internal service account users"))
         return super().validate(attrs)
@@ -475,7 +463,7 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True)
+    password = CharField(required=True, validators=[validate_password_hash])
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -884,9 +872,6 @@ class UserViewSet(
         try:
             user.set_password_from_hash(body.validated_data["password"], request=request)
             user.save()
-        except ValueError as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(data={"password": [INVALID_PASSWORD_HASH_MESSAGE]}, status=400)
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)

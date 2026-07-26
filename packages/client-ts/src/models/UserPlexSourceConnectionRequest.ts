@@ -46,7 +46,13 @@ export function instanceOfUserPlexSourceConnectionRequest(
 ): value is UserPlexSourceConnectionRequest {
     if (!("source" in value) || value["source"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
-    if (!("plexToken" in value) || value["plexToken"] === undefined) return false;
+    if (
+        (!("plexToken" in (value as Record<string, any>)) &&
+            !("plex_token" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["plexToken"] === undefined &&
+            (value as Record<string, any>)["plex_token"] === undefined)
+    )
+        return false;
     return true;
 }
 

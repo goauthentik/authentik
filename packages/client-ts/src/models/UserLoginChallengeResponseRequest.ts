@@ -38,7 +38,13 @@ export interface UserLoginChallengeResponseRequest {
 export function instanceOfUserLoginChallengeResponseRequest(
     value: object,
 ): value is UserLoginChallengeResponseRequest {
-    if (!("rememberMe" in value) || value["rememberMe"] === undefined) return false;
+    if (
+        (!("rememberMe" in (value as Record<string, any>)) &&
+            !("remember_me" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rememberMe"] === undefined &&
+            (value as Record<string, any>)["remember_me"] === undefined)
+    )
+        return false;
     return true;
 }
 
