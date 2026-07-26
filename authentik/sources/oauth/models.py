@@ -301,6 +301,15 @@ class WeChatOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("WeChat OAuth Sources")
 
 
+class TikTokOAuthSource(CreatableType, OAuthSource):
+    """Social Login using TikTok."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("TikTok OAuth Source")
+        verbose_name_plural = _("TikTok OAuth Sources")
+
+
 class OAuthSourcePropertyMapping(PropertyMapping):
     """Map OAuth properties to User or Group object attributes"""
 
