@@ -89,6 +89,10 @@ fn startup_response(accept_header: &str) -> Response {
     Response::from_parts(parts, body.into())
 }
 
+#[expect(
+    clippy::too_many_arguments,
+    reason = "We need all that data to forward the request properly"
+)]
 async fn forward_request(
     ClientIp(client_ip): ClientIp,
     Host(host): Host,
