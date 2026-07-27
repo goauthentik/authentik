@@ -72,8 +72,8 @@ TikTok users are identified by their `union_id` (if available) or `open_id`.
 - **Union ID**: Unique across all apps owned by the same developer account. authentik prioritizes this as the username.
 - **Open ID**: Unique to the specific app. Used as a fallback if `union_id` is not returned.
 
-:::info
-TikTok does not provide the user's email address through any scope. If your enrollment flow requires an email address, collect it with a prompt stage.
+:::info No email address
+TikTok does not expose an email address for the authenticated user. As a result, the source cannot populate the user's email during enrollment. If your enrollment flow requires an email, add a [Prompt stage](../../../../add-secure-apps/flows-stages/stages/prompt/index.md) to collect one, or map it with a [source property mapping](../../property-mappings/index.md).
 :::
 
 ## Resources
