@@ -41,7 +41,9 @@ export class RequestEntitlementModal extends Table<RequestableTarget> {
             const { link } = await aki(RequestsApi).requestsGrantRequestsCreate({
                 grantRequestCreateRequest: { pbms: [pbmUuid] },
             });
-            window.location.assign(link);
+            if (link) {
+                window.location.assign(link);
+            }
         } catch (error) {
             showAPIErrorMessage(error);
         }

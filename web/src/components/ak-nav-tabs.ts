@@ -43,8 +43,7 @@ export class NavTabs extends AKElement {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
         const currents = this.items.filter((item) => {
             const ourPath = item.link.split(";")[0];
-            const pathIsWholePath = new RegExp(`^${ourPath}$`).test(activePath);
-            return pathIsWholePath;
+            return ourPath === activePath;
         });
         this.currentItem = currents.length > 0 ? currents[0] : undefined;
     };

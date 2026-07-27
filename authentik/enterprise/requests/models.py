@@ -96,6 +96,7 @@ class RequestRuleBinding(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Request Rule Binding")
         verbose_name_plural = _("Request Rule Bindings")
+        unique_together = ("rule", "target")
 
 
 # PBM here configures who can approve
@@ -372,7 +373,7 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
             EventAction.ACCESS_REQUEST_REVOKED, model=self, targets=list(self.targets.all())
         ).from_http(request, user)
 
-    class Meta:
+    class Meta(ExpiringModel.Meta):
         verbose_name = _("Grant Request")
         verbose_name_plural = _("Grant Requests")
         permissions = [
@@ -395,6 +396,7 @@ class GrantRequestTarget(InternallyManagedMixin, models.Model):
     class Meta:
         verbose_name = _("Grant Request Target")
         verbose_name_plural = _("Grant Request Targets")
+        unique_together = ("request", "target")
 
     def __str__(self):
         return f"Grant Request-target {self.request_id} to {self.target_id}"
