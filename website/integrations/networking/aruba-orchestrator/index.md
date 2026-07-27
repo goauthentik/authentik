@@ -51,6 +51,9 @@ Aruba Orchestrator requires either a role attribute or a default role for SAML u
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
         - Set the **Audience** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
+        - Set the **SLS URL** to`https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
         - Under **Advanced protocol settings** > **Property mappings**, add the newly created property mapping.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.

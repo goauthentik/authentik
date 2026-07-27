@@ -8,7 +8,7 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 ## What is GLPI?
 
-> GLPI (Gestionnaire Libre de Parc Informatique) is an open-source IT asset management and service desk software. It helps organizations manage hardware, software, tickets, users, and IT services in a centralized environment.
+> GLPI is a free and open-source IT asset management and service desk application. It helps organizations manage hardware, software, tickets, users, and IT services in one central system.
 >
 > -- https://www.glpi-project.org
 
@@ -23,118 +23,120 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## GLPI samlSSO plugin configuration
-
-:::info
-By default, GLPI only offers OAuth authentication to subscribers. This guide describes how to integrate authentik with GLPI via SAML using the community plugin named [samlSSO](https://github.com/DonutsNL/samlsso).
-:::
+This guide uses the community [samlSSO](https://github.com/DonutsNL/samlsso) plugin for GLPI 11 and later. For GLPI 10, use the older `glpisaml` release series from the same project.
 
 ### Install the samlSSO plugin
 
-1. Download the latest release from the [samlSSO GitHub project](https://github.com/DonutsNL/samlsso).
-2. Unpack the release ZIP file into the `glpi/data/marketplace` directory of your GLPI installation.
-3. Log in to GLPI as an administrator and navigate to **Setup** > **Plugins**.
-4. Click the Install icon (folder with a `+` symbol) next to the **samlSSO** plugin.
-5. In the pop-up window that opens, click **Enable**.
+1. Log in to GLPI as an administrator.
+2. Navigate to **Setup** > **Plugins** and install the **samlSSO** plugin from the GLPI Marketplace.
+3. Enable the plugin.
 
-### Add a samlSSO instance
+If the plugin is not available from the Marketplace in your installation, download a compatible release from the [samlSSO GitHub releases](https://github.com/DonutsNL/samlsso/releases), extract it to `<GLPI_ROOT>/plugins/samlsso`, then install and enable it from **Setup** > **Plugins**.
+
+### Create a SAML application in GLPI
+
+Create the GLPI-side SAML configuration first so that you can copy the generated service provider endpoints into authentik.
 
 1. Navigate to **Setup** > **samlSSO**.
-2. Click the **Add** button and configure the following required settings:
+2. Click **Add** and configure the following settings:
     - On the **General** tab:
         - **Friendly name**: `authentik`
-        - **Is active**: toggled on
+        - **Is active**: enabled
     - On the **Security** tab:
-        - **Strict**: toggled on
-        - **JIT user creation**: toggled on
+        - **Strict**: enabled
+        - **JIT user creation**: enabled
 
 3. Click **Save**.
-4. Open the `authentik` samlSSO instance, navigate to the **Service Provider** tab, and take note of the **AcsUrl** and **sloURL**. These values will be required in the next section.
+4. Open the `authentik` samlSSO configuration, navigate to the **Service Provider** tab, and note the **AcsUrl** and **SloUrl** values.
 
 ## authentik configuration
 
-To support the integration of GLPI with authentik, you need to create property mappings, and an application/provider pair in authentik.
+To support the integration of GLPI with authentik, you need to create property mappings and an application/provider pair in authentik.
 
-### Create property mappings in authentik
+### Create property mappings
+
+GLPI uses the SAML `givenname` and `surname` claims when creating users through JIT provisioning.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
-3. Configure the first mapping for the user's _given name_ (first name):
+3. Configure the first mapping for the user's given name:
     - **Name**: `givenname`
     - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
-    - **Friendly Name**: Leave blank
     - **Expression**:
 
-    ```python
-    return request.user.name.split(" ", 1)[0]
-    ```
+        ```python
+        return request.user.name.split(" ", 1)[0]
+        ```
 
-4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _surname_:
+4. Click **Finish**.
+5. Repeat the process to create a mapping for the user's surname:
     - **Name**: `surname`
     - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
-    - **Friendly Name**: Leave blank
     - **Expression**:
 
-    ```python
-    return request.user.name.split(" ", 1)[-1]
-    ```
+        ```python
+        return request.user.name.split(" ", 1)[-1]
+        ```
 
-5. Click **Finish**.
+6. Click **Finish**.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. Alternatively, you can first create a provider separately, then create the application and connect it with the provider.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set the **ACS URL** to the **AcsURL** value from GLPI.
-        - Set the **SLS URL** to the **sloURL** value from GLPI.
-        - Under **Advanced protocol settings**:
-            - Select any available **Signing Certificate** and enable **Sign assertions**.
-            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
-            - Under **Property mappings**, add the two property mappings that you created in the previous section: `givenname` and `surname`.
+    - **Configure the Provider**: provide a name, the authorization flow to use for this provider, and the following required configurations:
+        - **ACS URL**: the **AcsUrl** value from GLPI.
+        - **SLS URL**: the **SloUrl** value from GLPI.
+        - Under **Advanced protocol settings**, select any available **Signing Certificate**.
+        - Under **Advanced protocol settings**, set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+        - Under **Advanced protocol settings**, add the `givenname` and `surname` property mappings that you created earlier. Leave the managed email property mapping selected.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Download certificate file
+### Download the signing certificate
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
-3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
+1. Navigate to **Applications** > **Providers** and click the provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**.
+
+The downloaded file is required when configuring the identity provider settings in GLPI.
 
 ## GLPI configuration
 
+### Configure the identity provider
+
 1. Log in to GLPI as an administrator and navigate to **Setup** > **samlSSO**.
-2. Click on the **authentik** samlSSO instance and configure the following settings:
-    - On the **Identity Provider** tab:
-        - Set the **Entity ID** to `https://authentik.company/application/saml/<application_slug>/metadata/`
-        - Set the **SSO URL** to `https://authentik.company/application/saml/<application_slug>/`.
-        - Set the **SLO URL** to `https://authentik.company/application/saml/<application_slug>/`.
-        - Set **X509 certificate** to the contents of the certificate file that you downloaded from authentik.
+2. Click the `authentik` samlSSO configuration.
+3. On the **Identity Provider** tab, configure the following settings:
+    - **Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **SLO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **X509 certificate**: paste the contents of the signing certificate file that you downloaded from authentik.
 
-3. Click **Save** to apply the changes.
+4. Click **Save**.
 
-### JIT rules _(optional)_
+### Configure JIT import rules _(optional)_
 
-It's possible to auto-assign profiles and groups when a user is created in GLPI.
+You can use JIT import rules to assign GLPI profiles, groups, and entities when samlSSO creates a user.
 
-1. Log in to GLPI as an administrator, navigate to **Setup** > **samlSSO** > **JIT import rules**, and click **Add**.
-2. Provide a **Name**, **Logical operator** type, set **Active** to `Yes`, and then click **Add**.
-3. Configure the following settings:
-    - On the **Criteria** tab, create a criterion to match users.
-    - On the **Actions** tab, create actions to apply to matched users.
-        - You may want to add `recursive=yes` as an action, so that matched users have access to all entities.
-4. Once finished, return to the **Rule** tab and click **Save**.
+1. Navigate to **Setup** > **samlSSO** > **JIT import rules** and click **Add**.
+2. Provide a **Name**, select a **Logical operator**, set **Active** to **Yes**, and click **Add**.
+3. On the **Criteria** tab, create criteria that match the users that should receive the rule's actions.
+4. On the **Actions** tab, create the actions that GLPI applies to matching users.
+    - To grant access to child entities, add an action that sets `recursive` to `yes`.
+
+5. Return to the **Rule** tab and click **Save**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with GLPI, log out and click the new authentik login button on the right side. You should be redirected to authentik and once authenticated, you will be signed in to GLPI.
+To confirm that authentik is properly configured with GLPI, log out of GLPI and click the **authentik** login button on the right side. After you authenticate with authentik, GLPI signs you in.
 
 ## Resources
 
-- [samlSSO plugin documentation](https://glpi-plugins.readthedocs.io/en/latest/saml/requirements.html)
-- [samlSSO plugin wiki](https://github.com/DonutsNL/samlsso/wiki)
+- [samlSSO plugin repository](https://github.com/DonutsNL/samlsso)
+- [GLPI Help Center - Plugins](https://help.glpi-project.org/documentation/modules/configuration/plugins)
+- [GLPI Help Center - SAML plugin](https://help.glpi-project.org/doc-plugins/plugins-glpi/saml)

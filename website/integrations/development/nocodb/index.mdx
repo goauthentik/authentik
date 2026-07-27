@@ -1,0 +1,88 @@
+---
+title: Integrate with NocoDB
+sidebar_label: NocoDB
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is NocoDB?
+
+> NocoDB is a no-code database platform that provides a spreadsheet interface for creating applications and workflows with data from databases and other sources.
+>
+> -- https://nocodb.com/
+
+## Preparation
+
+The following placeholder is used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info NocoDB requirements
+OIDC SSO is available on NocoDB Cloud Business plans and higher, and on licensed self-hosted Business plans and higher. NocoDB Cloud also requires domain verification before you configure SSO. Domain verification is outside the scope of this guide.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of NocoDB with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with a temporary value of `https://temp.temp`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## NocoDB configuration
+
+### Configure the OIDC provider
+
+1. Log in to NocoDB as an administrator and open the SSO settings for your plan:
+    - For a Business plan, navigate to **Workspace Settings** > **Authentication**.
+    - For an Enterprise plan, open the user menu in the bottom-left corner, select **Admin Panel**, and then select **Single Sign-On (SSO)**.
+2. Click **New Provider** and select **OpenID Connect (OIDC)**.
+3. Enter a **Display name**, such as `authentik`. NocoDB uses this name on the login page.
+4. Copy the **Redirect URL**. You need this value to update the authentik provider in the next section.
+5. Configure the following settings, but keep the configuration page open:
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+    - **Authorization URL**: `https://authentik.company/application/o/authorize/`
+    - **Token URL**: `https://authentik.company/application/o/token/`
+    - **Userinfo URL**: `https://authentik.company/application/o/userinfo/`
+    - **JWK Set URL**: `https://authentik.company/application/o/<application_slug>/jwks/`
+    - **Scope**: `openid profile email offline_access`
+    - **Username Attribute**: `email`
+
+### Update the authentik provider
+
+1. In a separate browser tab, log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the provider that you created for NocoDB.
+3. Replace the temporary **Redirect URI** with the **Redirect URL** that you copied from NocoDB. Keep the URI type set to `Strict` `Authorization`.
+4. Click **Update** to save the provider.
+
+### Save the NocoDB provider
+
+Return to the NocoDB configuration page and click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with NocoDB, log out of NocoDB and click **Sign in with authentik**. You should be redirected to authentik and returned to NocoDB after authentication. If the SSO option does not appear immediately, refresh the NocoDB login page.
+
+## Resources
+
+- [NocoDB Docs - Authentication & SSO](https://nocodb.com/docs/product-docs/account-settings/authentication)
+- [NocoDB Docs - Configure an OIDC provider](https://nocodb.com/docs/product-docs/account-settings/authentication/oidc-sso/auth0)
+- [NocoDB Docs - SSO FAQs](https://nocodb.com/docs/product-docs/account-settings/authentication/FAQs)

@@ -5,7 +5,7 @@ authentik_version: "2025.2"
 
 The Email Authenticator Setup stage registers an email-based authenticator for the current user, enabling one-time codes to be sent via email during subsequent authentications.
 
-## Overview
+## About the email authenticator setup stage
 
 During enrollment, the user supplies an email address if one is not already known, then confirms ownership by entering a one-time code.
 

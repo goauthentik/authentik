@@ -10,6 +10,15 @@ GRANT_TYPE_REFRESH_TOKEN = "refresh_token"  # nosec
 GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials"
 GRANT_TYPE_PASSWORD = "password"  # nosec
 GRANT_TYPE_DEVICE_CODE = "urn:ietf:params:oauth:grant-type:device_code"
+GRANT_TYPE_TOKEN_EXCHANGE = "urn:ietf:params:oauth:grant-type:token-exchange"  # nosec
+
+# Token type identifiers for the token exchange grant
+# https://datatracker.ietf.org/doc/html/rfc8693#section-3
+TOKEN_TYPE_URI_ACCESS_TOKEN = "urn:ietf:params:oauth:token-type:access_token"  # nosec
+TOKEN_TYPE_URI_JWT = "urn:ietf:params:oauth:token-type:jwt"  # nosec
+
+# Access tokens are themselves JWTs, so both identifiers denote the same artifact
+TOKEN_EXCHANGE_TOKEN_TYPES = {TOKEN_TYPE_URI_ACCESS_TOKEN, TOKEN_TYPE_URI_JWT}
 
 QS_LOGIN_HINT = "login_hint"
 
@@ -30,6 +39,7 @@ SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 SCOPE_OFFLINE_ACCESS = "offline_access"
+SCOPE_BOUND_KEY = "bound_key"
 
 UI_LOCALES = "ui_locales"
 
@@ -38,6 +48,7 @@ PKCE_METHOD_PLAIN = "plain"
 PKCE_METHOD_S256 = "S256"
 
 TOKEN_TYPE = "Bearer"  # nosec
+JWT_TYPE_DPOP_ID_TOKEN = "dpop+id_token"
 
 SCOPE_AUTHENTIK_API = "goauthentik.io/api"
 
