@@ -10,7 +10,7 @@ use ak_common::{config, db};
 use axum::{
     Extension, Router,
     body::Body,
-    extract::{Request, State},
+    extract::{OriginalUri, Request, State},
     http::{
         HeaderName, HeaderValue, StatusCode, Uri,
         header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
@@ -96,6 +96,7 @@ async fn forward_request(
     State(server): State<Arc<Server>>,
     TrustedProxy(trusted_proxy): TrustedProxy,
     tls_state: Option<Extension<TlsState>>,
+    OriginalUri(uri): OriginalUri,
     mut request: Request,
 ) -> Result<Response> {
     let accept_header = request
@@ -111,13 +112,7 @@ async fn forward_request(
     let uri = Uri::builder()
         .scheme("http")
         .authority("localhost:8000")
-        .path_and_query(
-            request
-                .uri()
-                .path_and_query()
-                .map(|x| x.as_str())
-                .unwrap_or_default(),
-        )
+        .path_and_query(uri.path_and_query().map(|x| x.as_str()).unwrap_or_default())
         .build()?;
     *request.uri_mut() = uri;
 
@@ -266,17 +261,17 @@ async fn health_live(State(server): State<Arc<Server>>) -> Result<StatusCode> {
 }
 
 pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
-    // Router for endpoints handled in rust
-    let our_router = wrap_router(
+    // Router for monitoring endpoints, under /-/
+    let monitoring_router = wrap_router(
         Router::new()
-            .route("/-/health/ready/", any(health_ready))
-            .route("/-/health/live/", any(health_live))
-            .route("/-/{*wild}", any(StatusCode::NOT_FOUND))
-            .with_state(Arc::clone(server))
-            .merge(super::r#static::build_router()),
+            .route("/health/ready/", any(health_ready))
+            .route("/health/live/", any(health_live))
+            .fallback(any(StatusCode::NOT_FOUND))
+            .with_state(Arc::clone(server)),
         true,
     );
-
+    // Static files
+    let static_router = wrap_router(super::r#static::build_router(), true);
     // Router for endpoints handled in Python
     let gunicorn_router = wrap_router(
         Router::new()
@@ -286,28 +281,26 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
         config::get().debug,
     );
 
-    let path = &config::get().web.path;
-    let router = if path == "/" {
-        Router::new().merge(our_router).merge(gunicorn_router)
+    let router = Router::new()
+        .nest("/-/", monitoring_router.clone())
+        .merge(static_router)
+        .merge(gunicorn_router);
+
+    let web_path = &config::get().web.path;
+    let router = if web_path == "/" {
+        router
     } else {
         let redirect_response = (
             StatusCode::FOUND,
-            [(LOCATION, HeaderValue::from_str(path)?)],
+            [(LOCATION, HeaderValue::from_str(web_path)?)],
         );
         let redirect_router = wrap_router(Router::new().route("/", any(redirect_response)), true);
 
         Router::new()
             .merge(redirect_router)
-            .nest(
-                &path,
-                Router::new()
-                    .merge(our_router.clone())
-                    .merge(gunicorn_router),
-            )
-            .merge(our_router)
+            .nest(web_path, router)
+            .nest("/-/", monitoring_router)
     };
-
-    dbg!(&router);
 
     Ok(router)
 }
