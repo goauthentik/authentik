@@ -103,10 +103,22 @@ export interface EndpointDeviceDetails {
  * Check if a given object implements the EndpointDeviceDetails interface.
  */
 export function instanceOfEndpointDeviceDetails(value: object): value is EndpointDeviceDetails {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("facts" in value) || value["facts"] === undefined) return false;
-    if (!("connectionsObj" in value) || value["connectionsObj"] === undefined) return false;
+    if (
+        (!("connectionsObj" in (value as Record<string, any>)) &&
+            !("connections_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["connectionsObj"] === undefined &&
+            (value as Record<string, any>)["connections_obj"] === undefined)
+    )
+        return false;
     if (!("policies" in value) || value["policies"] === undefined) return false;
     if (!("connections" in value) || value["connections"] === undefined) return false;
     return true;
@@ -127,13 +139,23 @@ export function EndpointDeviceDetailsFromJSONTyped(
         deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
         pbmUuid: json["pbm_uuid"],
         name: json["name"],
-        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroup:
+            json["access_group"] === undefined
+                ? undefined
+                : json["access_group"] === null
+                  ? null
+                  : json["access_group"],
         accessGroupObj:
             json["access_group_obj"] == null
                 ? undefined
                 : DeviceAccessGroupFromJSON(json["access_group_obj"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         connectionsObj: (json["connections_obj"] as Array<any>).map(DeviceConnectionFromJSON),
@@ -147,7 +169,7 @@ export function EndpointDeviceDetailsToJSON(json: any): EndpointDeviceDetails {
 }
 
 export function EndpointDeviceDetailsToJSONTyped(
-    value?: Omit<EndpointDeviceDetails, "pbm_uuid" | "facts" | "policies" | "connections"> | null,
+    value?: Omit<EndpointDeviceDetails, "pbmUuid" | "facts" | "policies" | "connections"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

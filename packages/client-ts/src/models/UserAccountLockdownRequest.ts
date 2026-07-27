@@ -47,7 +47,7 @@ export function UserAccountLockdownRequestFromJSONTyped(
         return json;
     }
     return {
-        user: json["user"] == null ? undefined : json["user"],
+        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
     };
 }
 

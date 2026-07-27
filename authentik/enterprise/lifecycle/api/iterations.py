@@ -10,14 +10,14 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.core.api.groups import PartialUserSerializer
+from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
 from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
 from authentik.enterprise.lifecycle.utils import (
     ContentTypeField,
-    ReviewerGroupSerializer,
-    ReviewerUserSerializer,
     admin_link_for_model,
     parse_content_type,
     start_of_day,
@@ -26,9 +26,9 @@ from authentik.lib.utils.time import timedelta_from_string
 
 
 class RelatedRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
-    reviewer_groups = ReviewerGroupSerializer(many=True, read_only=True)
+    reviewer_groups = PartialGroupSerializer(many=True, read_only=True)
     min_reviewers = IntegerField(read_only=True)
-    reviewers = ReviewerUserSerializer(many=True, read_only=True)
+    reviewers = PartialUserSerializer(many=True, read_only=True)
 
     class Meta:
         model = LifecycleRule

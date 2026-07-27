@@ -96,18 +96,60 @@ export interface Device {
  * Check if a given object implements the Device interface.
  */
 export function instanceOfDevice(value: object): value is Device {
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
     if (!("confirmed" in value) || value["confirmed"] === undefined) return false;
     if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("lastUpdated" in value) || value["lastUpdated"] === undefined) return false;
-    if (!("lastUsed" in value) || value["lastUsed"] === undefined) return false;
-    if (!("extraDescription" in value) || value["extraDescription"] === undefined) return false;
-    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (
+        (!("lastUsed" in (value as Record<string, any>)) &&
+            !("last_used" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUsed"] === undefined &&
+            (value as Record<string, any>)["last_used"] === undefined)
+    )
+        return false;
+    if (
+        (!("extraDescription" in (value as Record<string, any>)) &&
+            !("extra_description" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["extraDescription"] === undefined &&
+            (value as Record<string, any>)["extra_description"] === undefined)
+    )
+        return false;
+    if (
+        (!("externalId" in (value as Record<string, any>)) &&
+            !("external_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalId"] === undefined &&
+            (value as Record<string, any>)["external_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -142,15 +184,15 @@ export function DeviceToJSON(json: any): Device {
 export function DeviceToJSONTyped(
     value?: Omit<
         Device,
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
         | "type"
         | "created"
-        | "last_updated"
-        | "last_used"
-        | "extra_description"
-        | "external_id"
+        | "lastUpdated"
+        | "lastUsed"
+        | "extraDescription"
+        | "externalId"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

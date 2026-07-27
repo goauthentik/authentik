@@ -69,21 +69,68 @@ export interface SystemInfo {
      * @memberof SystemInfo
      */
     readonly embeddedOutpostHost: string;
+    /**
+     * Configured external base URL. Can be empty
+     * @type {string}
+     * @memberof SystemInfo
+     */
+    readonly baseUrl: string;
 }
 
 /**
  * Check if a given object implements the SystemInfo interface.
  */
 export function instanceOfSystemInfo(value: object): value is SystemInfo {
-    if (!("httpHeaders" in value) || value["httpHeaders"] === undefined) return false;
-    if (!("httpHost" in value) || value["httpHost"] === undefined) return false;
-    if (!("httpIsSecure" in value) || value["httpIsSecure"] === undefined) return false;
+    if (
+        (!("httpHeaders" in (value as Record<string, any>)) &&
+            !("http_headers" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["httpHeaders"] === undefined &&
+            (value as Record<string, any>)["http_headers"] === undefined)
+    )
+        return false;
+    if (
+        (!("httpHost" in (value as Record<string, any>)) &&
+            !("http_host" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["httpHost"] === undefined &&
+            (value as Record<string, any>)["http_host"] === undefined)
+    )
+        return false;
+    if (
+        (!("httpIsSecure" in (value as Record<string, any>)) &&
+            !("http_is_secure" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["httpIsSecure"] === undefined &&
+            (value as Record<string, any>)["http_is_secure"] === undefined)
+    )
+        return false;
     if (!("runtime" in value) || value["runtime"] === undefined) return false;
     if (!("brand" in value) || value["brand"] === undefined) return false;
-    if (!("serverTime" in value) || value["serverTime"] === undefined) return false;
-    if (!("embeddedOutpostDisabled" in value) || value["embeddedOutpostDisabled"] === undefined)
+    if (
+        (!("serverTime" in (value as Record<string, any>)) &&
+            !("server_time" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["serverTime"] === undefined &&
+            (value as Record<string, any>)["server_time"] === undefined)
+    )
         return false;
-    if (!("embeddedOutpostHost" in value) || value["embeddedOutpostHost"] === undefined)
+    if (
+        (!("embeddedOutpostDisabled" in (value as Record<string, any>)) &&
+            !("embedded_outpost_disabled" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["embeddedOutpostDisabled"] === undefined &&
+            (value as Record<string, any>)["embedded_outpost_disabled"] === undefined)
+    )
+        return false;
+    if (
+        (!("embeddedOutpostHost" in (value as Record<string, any>)) &&
+            !("embedded_outpost_host" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["embeddedOutpostHost"] === undefined &&
+            (value as Record<string, any>)["embedded_outpost_host"] === undefined)
+    )
+        return false;
+    if (
+        (!("baseUrl" in (value as Record<string, any>)) &&
+            !("base_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["baseUrl"] === undefined &&
+            (value as Record<string, any>)["base_url"] === undefined)
+    )
         return false;
     return true;
 }
@@ -105,6 +152,7 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         serverTime: new Date(json["server_time"]),
         embeddedOutpostDisabled: json["embedded_outpost_disabled"],
         embeddedOutpostHost: json["embedded_outpost_host"],
+        baseUrl: json["base_url"],
     };
 }
 
@@ -115,13 +163,14 @@ export function SystemInfoToJSON(json: any): SystemInfo {
 export function SystemInfoToJSONTyped(
     value?: Omit<
         SystemInfo,
-        | "http_headers"
-        | "http_host"
-        | "http_is_secure"
+        | "httpHeaders"
+        | "httpHost"
+        | "httpIsSecure"
         | "brand"
-        | "server_time"
-        | "embedded_outpost_disabled"
-        | "embedded_outpost_host"
+        | "serverTime"
+        | "embeddedOutpostDisabled"
+        | "embeddedOutpostHost"
+        | "baseUrl"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

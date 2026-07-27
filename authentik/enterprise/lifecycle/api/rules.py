@@ -4,14 +4,14 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.groups import PartialUserSerializer
+from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import User
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.lifecycle.models import LifecycleRule
 from authentik.enterprise.lifecycle.utils import (
     ContentTypeField,
-    ReviewerGroupSerializer,
-    ReviewerUserSerializer,
 )
 from authentik.lib.utils.time import timedelta_from_string
 
@@ -19,11 +19,11 @@ from authentik.lib.utils.time import timedelta_from_string
 class LifecycleRuleSerializer(EnterpriseRequiredMixin, ModelSerializer):
     content_type = ContentTypeField()
     target_verbose = SerializerMethodField()
-    reviewer_groups_obj = ReviewerGroupSerializer(
+    reviewer_groups_obj = PartialGroupSerializer(
         many=True, read_only=True, source="reviewer_groups"
     )
     reviewers = SlugRelatedField(slug_field="uuid", many=True, queryset=User.objects.all())
-    reviewers_obj = ReviewerUserSerializer(many=True, read_only=True, source="reviewers")
+    reviewers_obj = PartialUserSerializer(many=True, read_only=True, source="reviewers")
 
     class Meta:
         model = LifecycleRule

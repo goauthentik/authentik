@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { ReviewerUser } from "./ReviewerUser";
-import { ReviewerUserFromJSON } from "./ReviewerUser";
+import type { PartialUser } from "./PartialUser";
+import { PartialUserFromJSON } from "./PartialUser";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -36,10 +36,10 @@ export interface Review {
     iteration: string;
     /**
      *
-     * @type {ReviewerUser}
+     * @type {PartialUser}
      * @memberof Review
      */
-    readonly reviewer: ReviewerUser;
+    readonly reviewer: PartialUser;
     /**
      *
      * @type {Date}
@@ -76,9 +76,9 @@ export function ReviewFromJSONTyped(json: any, ignoreDiscriminator: boolean): Re
     return {
         id: json["id"],
         iteration: json["iteration"],
-        reviewer: ReviewerUserFromJSON(json["reviewer"]),
+        reviewer: PartialUserFromJSON(json["reviewer"]),
         timestamp: new Date(json["timestamp"]),
-        note: json["note"] == null ? undefined : json["note"],
+        note: json["note"] === undefined ? undefined : json["note"] === null ? null : json["note"],
     };
 }
 

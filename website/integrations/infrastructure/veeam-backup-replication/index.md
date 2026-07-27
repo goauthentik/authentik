@@ -4,6 +4,8 @@ sidebar_label: Veeam Backup & Replication
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Veeam Backup & Replication?
 
 > Veeam Backup & Replication is a comprehensive data protection and disaster recovery solution. It enables image-level backups of virtual, physical, and cloud workloads and supports flexible restore options across the entire environment.
@@ -23,7 +25,11 @@ This documentation lists only the settings that you need to change from their de
 
 You need one or more existing groups in authentik to assign roles in Veeam Backup & Replication.
 
-## Veeam Backup & Replication pre-configuration
+## authentik configuration
+
+To support the integration of Veeam Backup & Replication with authentik, you need to download the Veeam Backup & Replication service provider metadata and then create an application/provider pair in authentik.
+
+### Download the service provider metadata
 
 1. Log in to the Veeam Backup & Replication console as an administrator.
 2. From the main menu, select **Users & Roles**.
@@ -32,11 +38,9 @@ You need one or more existing groups in authentik to assign roles in Veeam Backu
 5. Under **Service Provider (SP) information**, click **Install** to select a valid Veeam Backup & Replication server certificate.
 6. Under **Service Provider (SP) information**, click **Download** to save the service provider metadata XML file. You will upload this file to authentik in the next section.
 
-## authentik configuration
+### Create an application and provider
 
-To support the integration of Veeam Backup & Replication with authentik, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -76,6 +80,5 @@ To confirm that authentik is properly configured with Veeam Backup & Replication
 
 ## Resources
 
-- [Veeam - Veeam Backup & Replication](https://www.veeam.com/products/veeam-data-platform/backup-recovery.html)
 - [Veeam Help Center - SAML Authentication](https://helpcenter.veeam.com/docs/vbr/userguide/identity_provider.html?ver=13)
 - [Veeam Help Center - Logging in to Veeam Backup & Replication](https://helpcenter.veeam.com/docs/vbr/userguide/logon_to_console.html)

@@ -21,8 +21,10 @@ ADFS
 AKMDX
 ASVS
 Algs
+Backblaze
 CASB
 CLDR
+Cloudflare
 DOTADIW
 Docsmg
 GDTC
@@ -61,11 +63,13 @@ SMTPD
 SNPEGO
 SPSSO
 SVGOMG
+SeaweedFS
 Sfdc
 TOTP
 Transifex
 Unenrollment
 Unmigrate
+Wasabi
 Wsfed
 Xen
 Xmldsig
@@ -77,7 +81,9 @@ akflow
 akprox
 allinone
 asns
+backblazeb2
 cbor
+cloudflarestorage
 copylefted
 cves
 describedby
@@ -108,6 +114,7 @@ kadmin
 kiprop
 kubeadm
 labelledby
+wasabisys
 LLM
 LLMS
 mcomplete
@@ -135,6 +142,7 @@ recws
 retag
 rnds
 rsa
+runit
 RSTR
 sbdocs
 schedulable

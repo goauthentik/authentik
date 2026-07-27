@@ -36,8 +36,20 @@ export interface EventStats {
  * Check if a given object implements the EventStats interface.
  */
 export function instanceOfEventStats(value: object): value is EventStats {
-    if (!("uniqueUsers" in value) || value["uniqueUsers"] === undefined) return false;
-    if (!("countStep" in value) || value["countStep"] === undefined) return false;
+    if (
+        (!("uniqueUsers" in (value as Record<string, any>)) &&
+            !("unique_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["uniqueUsers"] === undefined &&
+            (value as Record<string, any>)["unique_users"] === undefined)
+    )
+        return false;
+    if (
+        (!("countStep" in (value as Record<string, any>)) &&
+            !("count_step" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["countStep"] === undefined &&
+            (value as Record<string, any>)["count_step"] === undefined)
+    )
+        return false;
     return true;
 }
 

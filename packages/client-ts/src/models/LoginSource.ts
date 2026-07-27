@@ -66,7 +66,12 @@ export function LoginSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         name: json["name"],
-        iconUrl: json["icon_url"] == null ? undefined : json["icon_url"],
+        iconUrl:
+            json["icon_url"] === undefined
+                ? undefined
+                : json["icon_url"] === null
+                  ? null
+                  : json["icon_url"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         challenge: LoginChallengeTypesFromJSON(json["challenge"]),
     };

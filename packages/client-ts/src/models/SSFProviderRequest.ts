@@ -55,7 +55,13 @@ export interface SSFProviderRequest {
  */
 export function instanceOfSSFProviderRequest(value: object): value is SSFProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("signingKey" in value) || value["signingKey"] === undefined) return false;
+    if (
+        (!("signingKey" in (value as Record<string, any>)) &&
+            !("signing_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["signingKey"] === undefined &&
+            (value as Record<string, any>)["signing_key"] === undefined)
+    )
+        return false;
     return true;
 }
 
