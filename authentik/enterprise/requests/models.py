@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import AttributesMixin, User
+from authentik.core.models import AttributesMixin, Group, User
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.lib.models import (
@@ -256,9 +256,16 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         if not rule.min_reviewers_is_per_group:
             return len(passing_approvers) >= rule.min_reviewers
         for group_id in group_ids:
-            members_approving = User.objects.filter(
-                pk__in=passing_approvers, groups=group_id
-            ).count()
+            # Count members of the group *or any descendant* -- reviewer eligibility
+            # (reviewers_among -> FilterPolicyEngine) matches groups with descendants,
+            # so the per-group quota must too, else a child-group reviewer would count
+            # as eligible yet never toward their group's quota.
+            descendants = Group.objects.filter(pk=group_id).with_descendants()
+            members_approving = (
+                User.objects.filter(pk__in=passing_approvers, groups__in=descendants)
+                .distinct()
+                .count()
+            )
             if members_approving < rule.min_reviewers:
                 return False
         return True
@@ -281,7 +288,12 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         """Record a single reviewer's approval/denial. A denial immediately finalizes the
         request as denied; an approval only finalizes it (and grants access) once
         `is_satisfied` is true across every rule attached to the request's targets."""
-        if self.status != RequestStatus.CREATED:
+        # Lock the row so two concurrent final approvals can't both pass the
+        # CREATED guard and both grant access / emit events. `including_expired()` so a
+        # request whose pending window has lapsed (excluded by the default manager) can
+        # still be acted upon, matching the viewset's get_object().
+        locked = GrantRequest.objects.including_expired().select_for_update().get(pk=self.pk)
+        if locked.status != RequestStatus.CREATED:
             return
         if user.pk == self.created_by_id:
             return
@@ -311,6 +323,12 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         if status != RequestStatus.APPROVED:
             return
         grant_expires = now() + timedelta_from_string(self.requested_expiry)
+        # Until now `expires` held the pending-window lapse timer; once approved the
+        # request row should live as long as the grant it created, so it is not reaped
+        # by clean_expired_models while access is still live (which would orphan the
+        # PolicyBinding and drop the audit/revoke trail).
+        self.expires = grant_expires
+        self.save()
         for target in GrantRequestTarget.objects.filter(request=self).all():
             target_binding = PolicyBinding.objects.create(
                 user=self.created_by,
@@ -336,7 +354,9 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     def revoke(self, request: HttpRequest, user: User):
         """End an active grant immediately, and mark the request revoked. A no-op unless the
         request is currently approved."""
-        if self.status != RequestStatus.APPROVED:
+        # Lock the row so a concurrent approval/revoke can't race this transition.
+        locked = GrantRequest.objects.including_expired().select_for_update().get(pk=self.pk)
+        if locked.status != RequestStatus.APPROVED:
             return
         for target in GrantRequestTarget.objects.filter(request=self, binding__isnull=False):
             # Expire the PolicyBindings created (rather than deleting them,

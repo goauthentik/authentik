@@ -94,7 +94,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     class GrantRequestCreateSerializer(PassiveSerializer):
 
         pbms = PolicyBindingModelForeignKey(
-            queryset=PolicyBindingModel.objects.select_subclasses(), many=True
+            queryset=PolicyBindingModel.objects.select_subclasses(),
+            many=True,
+            allow_empty=False,
         )
         expiry = CharField(
             required=False,
@@ -127,7 +129,10 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         # it -- unlike app access, absence of bindings must not mean "anyone passes".
         engine.empty_result = False
         passing_rules = engine.build().result
-        if rules.exclude(pk__in=passing_rules).exists():
+        # The user only needs to be an eligible reviewer of *at least one* rule attached
+        # to the request's targets -- rules are satisfied independently (see
+        # GrantRequest.is_satisfied), and this must match what `pending_review` lists.
+        if rules.exists() and not passing_rules.exists():
             raise ValidationError("User does not have permissions to act on this object")
 
     def destroy(self, request: Request, *args, **kwargs):
