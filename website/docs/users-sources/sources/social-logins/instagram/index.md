@@ -1,13 +1,13 @@
 ---
-title: Log in with Instagram
-sidebar_label: Instagram
+title: Log in with Instagram Business
+sidebar_label: Instagram Business
 tags:
     - source
     - instagram
     - meta
 ---
 
-This source lets users authenticate with their Instagram credentials by configuring Instagram as a federated identity provider with OAuth 2.0.
+This source lets users authenticate with their Instagram credentials by configuring Instagram Business as a federated identity provider with OAuth 2.0.
 
 :::warning Professional accounts only
 This source uses the Instagram API with Instagram Login, which only supports Instagram **professional** accounts (Business or Creator). Personal Instagram accounts cannot authenticate through this source. Meta permanently shut down the Instagram Basic Display API, which was the only integration that supported consumer accounts, on December 4, 2024.
@@ -39,12 +39,12 @@ To integrate Instagram with authentik, create an app in the Meta for Developers 
 
 ## authentik configuration
 
-To support the integration of Instagram with authentik, you need to create an Instagram OAuth source in authentik.
+To support the integration of Instagram with authentik, you need to create an Instagram Business OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
-    - **Select type**: select **Instagram OAuth Source** as the source type.
-    - **Create Instagram OAuth Source**: provide a name, a slug that must match the slug used in the OAuth redirect URI (e.g. `instagram`), and the following required configurations:
+    - **Select type**: select **Instagram Business OAuth Source** as the source type.
+    - **Create Instagram Business OAuth Source**: provide a name, a slug that must match the slug used in the OAuth redirect URI (e.g. `instagram`), and the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: enter the **Instagram app ID** from Instagram.
             - **Consumer Secret**: enter the **Instagram app secret** from Instagram.

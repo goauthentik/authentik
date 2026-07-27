@@ -58,7 +58,7 @@ class InstagramType(SourceType):
 
     callback_view = InstagramOAuthCallback
     redirect_view = InstagramOAuthRedirect
-    verbose_name = "Instagram"
+    verbose_name = "Instagram Business"
     name = "instagram"
 
     authorization_url = "https://www.instagram.com/oauth/authorize"

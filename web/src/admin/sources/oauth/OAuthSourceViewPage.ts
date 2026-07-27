@@ -50,7 +50,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
         case ProviderTypeEnum.Google:
             return "Google";
         case ProviderTypeEnum.Instagram:
-            return "Instagram";
+            return "Instagram Business";
         case ProviderTypeEnum.Mailcow:
             return "Mailcow";
         case ProviderTypeEnum.Openidconnect:
