@@ -31,7 +31,7 @@ To support the integration of Dashy with authentik, you need to create an applic
 
 If you want to manage Dashy administrator access through authentik, create or choose a group for Dashy administrators and add the appropriate users to it. Dashy checks the `groups` claim from the ID token for the group name that you configure later.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
