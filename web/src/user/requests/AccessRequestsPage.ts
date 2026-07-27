@@ -32,13 +32,11 @@ export class AccessRequestsPage extends AKElement {
     toReview?: PaginatedResponse<GrantRequest>;
 
     override async connectedCallback(): Promise<void> {
+        super.connectedCallback();
         aki(RequestsApi)
             .requestsGrantRequestsPendingReviewList({})
             .then((rev) => {
                 this.toReview = rev;
-            })
-            .finally(() => {
-                super.connectedCallback();
             });
     }
 
