@@ -1,6 +1,6 @@
 use std::{fmt::Display, sync::Arc};
 
-use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash};
+use ak_common::{Arbiter, Tasks, VERSION, api, arbiter, authentik_build_hash, config};
 use axum::http::{HeaderValue, header::AUTHORIZATION};
 use eyre::{Result, eyre};
 use futures::{Sink, SinkExt as _, Stream, StreamExt as _};
@@ -150,7 +150,7 @@ async fn watch_events_inner<O: Outpost>(
     }
 
     let host = if controller.is_embedded() {
-        Url::parse("http://localhost").expect("infallible")
+        Url::parse(&format!("http://localhost{}", config::get().web.path))?
     } else {
         let server_config = api::ServerConfig::new()?;
         server_config.host
