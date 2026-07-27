@@ -107,6 +107,7 @@ jobs:
           dependencies: ${{ matrix.deps }}
       - name: Create required files
         run: |
+          mkdir -p web/dist/standalone/loading
           touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
       - name: run job
         run: make ci-lint-${{ matrix.job }}
@@ -442,6 +443,7 @@ jobs:
           uv run make migrate
       - name: Create required files
         run: |
+          mkdir -p web/dist/standalone/loading
           touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
       - name: run tests
         run: |
