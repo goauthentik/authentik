@@ -4,7 +4,7 @@ title: TOTP authenticator setup stage
 
 The TOTP Authenticator Setup stage enrolls a time-based one-time password authenticator for the user, such as Google Authenticator, Authy, 1Password, or similar authenticator apps.
 
-## Overview
+## About the TOTP authenticator setup stage
 
 This stage creates a TOTP authenticator for the current user and presents a standard OTP configuration URL that authenticator apps can scan or import.
 

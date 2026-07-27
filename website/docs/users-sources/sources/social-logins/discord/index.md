@@ -49,7 +49,7 @@ For instructions on embedding the new source within a flow, such as an authoriza
 
 ## Optional additional configuration
 
-### Syncing Discord roles and avatars to authentik
+### Sync Discord roles and avatars to authentik
 
 The following property mapping allows you to synchronize roles from a Discord guild to roles in authentik.
 
@@ -132,7 +132,7 @@ return {
 7. Under **OAuth Attribute mapping** add the newly created property mapping to **Selected User Property Mappings**.
 8. Click **Update**.
 
-### Checking Discord Guild membership
+### Check Discord Guild membership
 
 :::info
 Ensure that the Discord OAuth source in **Federation and Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings** > **Scopes**.
@@ -183,7 +183,7 @@ return user_matched
 8. Select the policy that you previously created and click **Create Policy Binding**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
-### Checking Discord Guild role membership
+### Check Discord Guild role membership
 
 :::info
 Ensure that the Discord OAuth source in **Federation and Social login** has the additional `guilds guilds.members.read` scopes added under **Protocol settings** > **Scopes**.

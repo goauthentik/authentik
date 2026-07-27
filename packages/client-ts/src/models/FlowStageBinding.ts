@@ -95,11 +95,22 @@ export interface FlowStageBinding {
  */
 export function instanceOfFlowStageBinding(value: object): value is FlowStageBinding {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("policybindingmodelPtrId" in value) || value["policybindingmodelPtrId"] === undefined)
+    if (
+        (!("policybindingmodelPtrId" in (value as Record<string, any>)) &&
+            !("policybindingmodel_ptr_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policybindingmodelPtrId"] === undefined &&
+            (value as Record<string, any>)["policybindingmodel_ptr_id"] === undefined)
+    )
         return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("stage" in value) || value["stage"] === undefined) return false;
-    if (!("stageObj" in value) || value["stageObj"] === undefined) return false;
+    if (
+        (!("stageObj" in (value as Record<string, any>)) &&
+            !("stage_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["stageObj"] === undefined &&
+            (value as Record<string, any>)["stage_obj"] === undefined)
+    )
+        return false;
     if (!("order" in value) || value["order"] === undefined) return false;
     return true;
 }
@@ -141,7 +152,7 @@ export function FlowStageBindingToJSON(json: any): FlowStageBinding {
 }
 
 export function FlowStageBindingToJSONTyped(
-    value?: Omit<FlowStageBinding, "pk" | "policybindingmodel_ptr_id" | "stage_obj"> | null,
+    value?: Omit<FlowStageBinding, "pk" | "policybindingmodelPtrId" | "stageObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

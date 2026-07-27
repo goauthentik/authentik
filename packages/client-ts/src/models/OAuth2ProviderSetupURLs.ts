@@ -69,8 +69,20 @@ export function instanceOfOAuth2ProviderSetupURLs(value: object): value is OAuth
     if (!("issuer" in value) || value["issuer"] === undefined) return false;
     if (!("authorize" in value) || value["authorize"] === undefined) return false;
     if (!("token" in value) || value["token"] === undefined) return false;
-    if (!("userInfo" in value) || value["userInfo"] === undefined) return false;
-    if (!("providerInfo" in value) || value["providerInfo"] === undefined) return false;
+    if (
+        (!("userInfo" in (value as Record<string, any>)) &&
+            !("user_info" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userInfo"] === undefined &&
+            (value as Record<string, any>)["user_info"] === undefined)
+    )
+        return false;
+    if (
+        (!("providerInfo" in (value as Record<string, any>)) &&
+            !("provider_info" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerInfo"] === undefined &&
+            (value as Record<string, any>)["provider_info"] === undefined)
+    )
+        return false;
     if (!("logout" in value) || value["logout"] === undefined) return false;
     if (!("jwks" in value) || value["jwks"] === undefined) return false;
     return true;
@@ -105,7 +117,7 @@ export function OAuth2ProviderSetupURLsToJSON(json: any): OAuth2ProviderSetupURL
 export function OAuth2ProviderSetupURLsToJSONTyped(
     value?: Omit<
         OAuth2ProviderSetupURLs,
-        "issuer" | "authorize" | "token" | "user_info" | "provider_info" | "logout" | "jwks"
+        "issuer" | "authorize" | "token" | "userInfo" | "providerInfo" | "logout" | "jwks"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

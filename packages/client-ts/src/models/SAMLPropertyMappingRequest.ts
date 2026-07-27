@@ -58,7 +58,13 @@ export function instanceOfSAMLPropertyMappingRequest(
 ): value is SAMLPropertyMappingRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("expression" in value) || value["expression"] === undefined) return false;
-    if (!("samlName" in value) || value["samlName"] === undefined) return false;
+    if (
+        (!("samlName" in (value as Record<string, any>)) &&
+            !("saml_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["samlName"] === undefined &&
+            (value as Record<string, any>)["saml_name"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -74,11 +80,21 @@ export function SAMLPropertyMappingRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"],
         expression: json["expression"],
         samlName: json["saml_name"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        friendlyName:
+            json["friendly_name"] === undefined
+                ? undefined
+                : json["friendly_name"] === null
+                  ? null
+                  : json["friendly_name"],
     };
 }
 

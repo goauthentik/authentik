@@ -138,7 +138,13 @@ export interface PlexSourceRequest {
 export function instanceOfPlexSourceRequest(value: object): value is PlexSourceRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
-    if (!("plexToken" in value) || value["plexToken"] === undefined) return false;
+    if (
+        (!("plexToken" in (value as Record<string, any>)) &&
+            !("plex_token" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["plexToken"] === undefined &&
+            (value as Record<string, any>)["plex_token"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -159,8 +165,17 @@ export function PlexSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:

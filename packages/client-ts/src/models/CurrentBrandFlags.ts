@@ -19,7 +19,7 @@
  */
 export interface CurrentBrandFlags {
     /**
-     * Configure if applications without any policy/group/user bindings should be accessible to any user.
+     * Applications with no policies bound can be accessed by any user.
      * @type {boolean}
      * @memberof CurrentBrandFlags
      */
@@ -49,16 +49,34 @@ export interface CurrentBrandFlags {
  * Check if a given object implements the CurrentBrandFlags interface.
  */
 export function instanceOfCurrentBrandFlags(value: object): value is CurrentBrandFlags {
-    if (!("coreDefaultAppAccess" in value) || value["coreDefaultAppAccess"] === undefined)
-        return false;
     if (
-        !("enterpriseAuditIncludeExpandedDiff" in value) ||
-        value["enterpriseAuditIncludeExpandedDiff"] === undefined
+        (!("coreDefaultAppAccess" in (value as Record<string, any>)) &&
+            !("core_default_app_access" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["coreDefaultAppAccess"] === undefined &&
+            (value as Record<string, any>)["core_default_app_access"] === undefined)
     )
         return false;
-    if (!("flowsContinuousLogin" in value) || value["flowsContinuousLogin"] === undefined)
+    if (
+        (!("enterpriseAuditIncludeExpandedDiff" in (value as Record<string, any>)) &&
+            !("enterprise_audit_include_expanded_diff" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["enterpriseAuditIncludeExpandedDiff"] === undefined &&
+            (value as Record<string, any>)["enterprise_audit_include_expanded_diff"] === undefined)
+    )
         return false;
-    if (!("flowsRefreshOthers" in value) || value["flowsRefreshOthers"] === undefined) return false;
+    if (
+        (!("flowsContinuousLogin" in (value as Record<string, any>)) &&
+            !("flows_continuous_login" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
+            (value as Record<string, any>)["flows_continuous_login"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowsRefreshOthers" in (value as Record<string, any>)) &&
+            !("flows_refresh_others" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowsRefreshOthers"] === undefined &&
+            (value as Record<string, any>)["flows_refresh_others"] === undefined)
+    )
+        return false;
     return true;
 }
 

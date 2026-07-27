@@ -74,8 +74,20 @@ export interface RadiusOutpostConfig {
 export function instanceOfRadiusOutpostConfig(value: object): value is RadiusOutpostConfig {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("applicationSlug" in value) || value["applicationSlug"] === undefined) return false;
-    if (!("authFlowSlug" in value) || value["authFlowSlug"] === undefined) return false;
+    if (
+        (!("applicationSlug" in (value as Record<string, any>)) &&
+            !("application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["applicationSlug"] === undefined &&
+            (value as Record<string, any>)["application_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("authFlowSlug" in (value as Record<string, any>)) &&
+            !("auth_flow_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authFlowSlug"] === undefined &&
+            (value as Record<string, any>)["auth_flow_slug"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -98,7 +110,12 @@ export function RadiusOutpostConfigFromJSONTyped(
         clientNetworks: json["client_networks"] == null ? undefined : json["client_networks"],
         sharedSecret: json["shared_secret"] == null ? undefined : json["shared_secret"],
         mfaSupport: json["mfa_support"] == null ? undefined : json["mfa_support"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
     };
 }
 

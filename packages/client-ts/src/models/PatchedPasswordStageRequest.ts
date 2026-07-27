@@ -79,7 +79,12 @@ export function PatchedPasswordStageRequestFromJSONTyped(
             json["backends"] == null
                 ? undefined
                 : (json["backends"] as Array<any>).map(BackendsEnumFromJSON),
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         failedAttemptsBeforeCancel:
             json["failed_attempts_before_cancel"] == null
                 ? undefined

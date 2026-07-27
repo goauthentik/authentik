@@ -115,12 +115,42 @@ export function instanceOfSCIMSource(value: object): value is SCIMSource {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("managed" in value) || value["managed"] === undefined) return false;
-    if (!("rootUrl" in value) || value["rootUrl"] === undefined) return false;
-    if (!("tokenObj" in value) || value["tokenObj"] === undefined) return false;
+    if (
+        (!("rootUrl" in (value as Record<string, any>)) &&
+            !("root_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rootUrl"] === undefined &&
+            (value as Record<string, any>)["root_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("tokenObj" in (value as Record<string, any>)) &&
+            !("token_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenObj"] === undefined &&
+            (value as Record<string, any>)["token_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -162,12 +192,12 @@ export function SCIMSourceToJSONTyped(
         SCIMSource,
         | "pk"
         | "component"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
         | "managed"
-        | "root_url"
-        | "token_obj"
+        | "rootUrl"
+        | "tokenObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
