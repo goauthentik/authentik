@@ -10,7 +10,7 @@ tags:
 This source lets users authenticate with their Instagram credentials by configuring Instagram as a federated identity provider with OAuth 2.0.
 
 :::warning Professional accounts only
-Instagram Login uses the Instagram API with Instagram Login, which only supports Instagram **professional** accounts (Business or Creator). Personal Instagram accounts cannot authenticate through this source: Meta permanently shut down the Instagram Basic Display API, which was the only integration that supported consumer accounts, on December 4, 2024.
+This source uses the Instagram API with Instagram Login, which only supports Instagram **professional** accounts (Business or Creator). Personal Instagram accounts cannot authenticate through this source. Meta permanently shut down the Instagram Basic Display API, which was the only integration that supported consumer accounts, on December 4, 2024.
 :::
 
 :::info No email address
