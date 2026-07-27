@@ -49,7 +49,7 @@ Arcane blocks account merging when an existing local account has the same email 
 
 3. Click **Finish** to save the property mapping.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
