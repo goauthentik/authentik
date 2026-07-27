@@ -10,6 +10,8 @@ import { TableColumn } from "#elements/table/TableColumn";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import renderDescriptionList from "#components/DescriptionList";
+
 import { AccessRequestFulfillForm } from "#admin/requests/AccessRequestFulfillForm";
 import { renderTargetSummary } from "#admin/requests/RequestableTargetHelpers";
 
@@ -18,6 +20,9 @@ import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit-html";
 import { customElement } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 
 function statusLabel(status: RequestStatus): string {
     switch (status) {
@@ -40,6 +45,8 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
     public expandable: boolean = true;
     public searchEnabled: boolean = true;
 
+    static styles = [...super.styles, PFDescriptionList, PFList];
+
     protected async apiEndpoint(): Promise<PaginatedResponse<GrantRequest, object>> {
         return aki(RequestsApi).requestsGrantRequestsList({
             ...(await this.defaultEndpointConfig()),
@@ -55,7 +62,25 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
     ];
 
     protected renderExpanded(item: GrantRequest): SlottedTemplateResult {
-        return html`${JSON.stringify(item.requesterData)}<br />${item.targets}`;
+        return html`${renderDescriptionList(
+            [
+                [
+                    msg("Requester Data"),
+                    html`<pre>${JSON.stringify(item.requesterData, null, 4)}</pre>`,
+                ],
+                [
+                    msg("Targets"),
+                    html`
+                        <ul class="pf-c-list">
+                            ${item.targetObjs.map((obj) => {
+                                return html`<li>${obj.label} (${obj.verboseName})</li>`;
+                            })}
+                        </ul>
+                    `,
+                ],
+            ],
+            { horizontal: true },
+        )}`;
     }
 
     renderActions(item: GrantRequest): SlottedTemplateResult {
