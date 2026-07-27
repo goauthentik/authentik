@@ -25,7 +25,7 @@ To integrate TikTok with authentik, register an app with Login Kit on the [TikTo
 5. Submit the app for review. TikTok only issues authorizations to end users once the app is approved.
 6. From the app's **Credentials** page, note the **Client key** and **Client secret**.
 
-:::info
+:::warning HTTPS required
 TikTok requires the redirect URI to use HTTPS. A plain `http://` callback, including `localhost`, is rejected at the authorization step.
 :::
 
