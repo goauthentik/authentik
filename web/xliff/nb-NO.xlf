@@ -3182,10 +3182,6 @@
   <source>Whether users added to this group will have superuser privileges.</source>
   <target>Om brukere som legges til i denne gruppen, vil ha superbruker-privilegier.</target>
 </trans-unit>
-<trans-unit id="s25bacc19d98b444e">
-  <source>Parent Group</source>
-  <target>Overordnet gruppe</target>
-</trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
   <target>Roller</target>
@@ -12496,6 +12492,30 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="wsfed.saml-version.description">
   <source>Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.</source>
+</trans-unit>
+<trans-unit id="settings.base-url.label">
+  <source>Base URL</source>
+</trans-unit>
+<trans-unit id="settings.base-url.description">
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company</source>
+</trans-unit>
+<trans-unit id="sb83f872f267d8506">
+  <source>Sync Group Hierarchy</source>
+</trans-unit>
+<trans-unit id="s9589dc36c516341a">
+  <source>Sync group hierarchy from LDAP directories.</source>
+</trans-unit>
+<trans-unit id="s9e8574c0abf42187">
+  <source>Additional Parent Group</source>
+</trans-unit>
+<trans-unit id="banner.dismiss.aria-label">
+  <source>Dismiss banner</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.action">
+  <source>Configure it in the system settings</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.label">
+  <source>The base URL has not been configured.</source>
 </trans-unit>
 </body>
 </file>
