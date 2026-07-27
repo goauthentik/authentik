@@ -105,6 +105,9 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: ${{ matrix.deps }}
+      - name: Create required files
+        run: |
+          touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
@@ -437,6 +440,9 @@ jobs:
       - name: Prepare database
         run: |
           uv run make migrate
+      - name: Create required files
+        run: |
+          touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace

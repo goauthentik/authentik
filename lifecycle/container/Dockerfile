@@ -119,6 +119,10 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 # See https://github.com/aws/aws-lc-rs/issues/569
 ENV AWS_LC_FIPS_SYS_CC=clang
 
+COPY --from=node-builder /work/web/robots.txt /build/web/robots.txt
+COPY --from=node-builder /work/web/security.txt /build/web/security.txt
+COPY --from=node-builder /work/web/dist/standalone/loading/startup.html /build/web/dist/standalone/loading/startup.html
+
 RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=bind,target=Cargo.toml,src=Cargo.toml \
     --mount=type=bind,target=Cargo.lock,src=Cargo.lock \
