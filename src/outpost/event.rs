@@ -175,8 +175,22 @@ async fn watch_events_inner<O: Outpost>(
         HeaderValue::from_str(&format!("Bearer {token}"))?,
     );
 
-    let (mut ws_write, mut ws_read): (WsWriter, WsReader) = if controller.is_embedded() {
-        let stream = UnixStream::connect(crate::server::socket_path()).await?;
+    // Embedded outposts run inside the core server and reach it over its unix socket,
+    // which only exists when built with the `core` feature.
+    let embedded_stream = if controller.is_embedded() {
+        #[cfg(feature = "core")]
+        {
+            Some(UnixStream::connect(crate::server::socket_path()).await?)
+        }
+        #[cfg(not(feature = "core"))]
+        {
+            None::<UnixStream>
+        }
+    } else {
+        None
+    };
+
+    let (mut ws_write, mut ws_read): (WsWriter, WsReader) = if let Some(stream) = embedded_stream {
         let (ws_stream, _response) = tokio_tungstenite::client_async(request, stream).await?;
         let (write, read) = ws_stream.split();
         (Box::new(write), Box::new(read))
