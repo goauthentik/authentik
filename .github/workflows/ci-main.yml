@@ -108,7 +108,9 @@ jobs:
       - name: Create required files
         run: |
           mkdir -p web/dist/standalone/loading
-          touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
@@ -444,7 +446,9 @@ jobs:
       - name: Create required files
         run: |
           mkdir -p web/dist/standalone/loading
-          touch web/robots.txt web/security.txt web/dist/standalone/loading/startup.html
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
