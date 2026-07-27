@@ -93,7 +93,8 @@ def get_default_ui_footer_links():
     return get_current_tenant().footer_links
 
 
-class PublicFlagsField(FlagJSONField): ...
+class PublicFlagsField(FlagJSONField):
+    pass
 
 
 class FlagsJSONExtension(OpenApiSerializerFieldExtension):
