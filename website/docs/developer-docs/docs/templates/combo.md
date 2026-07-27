@@ -28,9 +28,9 @@ Use this section if there are several big topics or categories of info that the 
 
 In this section, inform the reader of anything they need to do, or have configured or installed, before they start following the procedural instructions below.
 
-## Overview of steps/workflow (optional section)
+## About the workflow (optional section)
 
-If the task is quite long or complex, it might be good to add a bullet list of the main steps, or even a diagram of the workflow, just so that the reader can first familiarize themselves with the 50,000 meter view before they dive into the detailed steps.
+For a long or complex task, add a bullet list of the main steps or a workflow diagram before the detailed procedure.
 
 ## First several group steps
 

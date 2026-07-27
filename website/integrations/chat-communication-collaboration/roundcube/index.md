@@ -66,6 +66,7 @@ To support the integration of Roundcube with authentik, you need to create a sco
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://roundcube.company/index.php/login/oauth`.
         - Select any available signing key.
+        - Under **Advanced protocol settings**, set **Logout URI** to `https://roundcube.company/index.php/login/backchannel` and **Logout Method** to `Back-channel`.
         - Under **Advanced protocol settings** > **Scopes**, add the following scopes to **Selected Scopes**:
             - The `dovecotprofile` scope mapping that you previously created.
             - `authentik default OAuth Mapping: OpenID 'offline_access'`
@@ -88,6 +89,7 @@ $config['oauth_token_uri'] = 'https://authentik.company/application/o/token/';
 $config['oauth_identity_uri'] = 'https://authentik.company/application/o/userinfo/';
 $config['oauth_scope'] = 'email openid dovecotprofile offline_access';
 $config['oauth_identity_fields'] = ['email'];
+$config['oauth_cache'] = 'db';
 ```
 
 :::tip Roundcube debugging

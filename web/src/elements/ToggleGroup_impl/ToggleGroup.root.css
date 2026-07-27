@@ -1,0 +1,61 @@
+/**
+ * @file Document-level CSS Custom Properties for ToggleGroup components.
+ */
+
+:root {
+    --pf-c-toggle-group__button--PaddingTop: var(--pf-global--spacer--form-element);
+    --pf-c-toggle-group__button--PaddingRight: var(--pf-global--spacer--md);
+    --pf-c-toggle-group__button--PaddingBottom: var(--pf-global--spacer--form-element);
+    --pf-c-toggle-group__button--PaddingLeft: var(--pf-global--spacer--md);
+    --pf-c-toggle-group__button--FontSize: var(--pf-global--FontSize--sm);
+    --pf-c-toggle-group__button--LineHeight: calc(
+        var(--pf-global--FontSize--md) * var(--pf-global--LineHeight--md)
+    );
+    --pf-c-toggle-group__button--Color: var(--pf-global--Color--100);
+    --pf-c-toggle-group__button--BackgroundColor: var(--pf-global--BackgroundColor--100);
+    --pf-c-toggle-group__button--ZIndex: auto;
+    --pf-c-toggle-group__button--hover--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --pf-c-toggle-group__button--hover--ZIndex: var(--pf-global--ZIndex--xs);
+    --pf-c-toggle-group__button--hover--before--BorderColor: var(--pf-global--BorderColor--200);
+    --pf-c-toggle-group__button--focus--BackgroundColor: var(--pf-global--BackgroundColor--200);
+    --pf-c-toggle-group__button--focus--ZIndex: var(--pf-global--ZIndex--xs);
+    --pf-c-toggle-group__button--focus--before--BorderColor: var(--pf-global--BorderColor--200);
+    --pf-c-toggle-group__button--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    --pf-c-toggle-group__button--disabled--Color: var(--pf-global--disabled-color--100);
+    --pf-c-toggle-group__button--before--BorderWidth: var(--pf-global--BorderWidth--sm);
+    --pf-c-toggle-group__button--before--BorderColor: var(--pf-global--BorderColor--100);
+    --pf-c-toggle-group__item--item--MarginLeft: calc(-1 * var(--pf-global--BorderWidth--sm));
+    --pf-c-toggle-group__item--first-child__button--BorderTopLeftRadius: var(
+        --pf-global--BorderRadius--sm
+    );
+    --pf-c-toggle-group__item--first-child__button--BorderBottomLeftRadius: var(
+        --pf-global--BorderRadius--sm
+    );
+    --pf-c-toggle-group__item--last-child__button--BorderTopRightRadius: var(
+        --pf-global--BorderRadius--sm
+    );
+    --pf-c-toggle-group__item--last-child__button--BorderBottomRightRadius: var(
+        --pf-global--BorderRadius--sm
+    );
+    --pf-c-toggle-group__icon--text--MarginLeft: var(--pf-global--spacer--sm);
+    --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--pf-global--palette--blue-50);
+    --pf-c-toggle-group__button--m-selected--before--BorderColor: var(
+        --pf-global--primary-color--100
+    );
+    --pf-c-toggle-group__button--m-selected--ZIndex: var(--pf-global--ZIndex--xs);
+    --pf-c-toggle-group--m-compact__button--PaddingTop: 0;
+    --pf-c-toggle-group--m-compact__button--PaddingRight: var(--pf-global--spacer--sm);
+    --pf-c-toggle-group--m-compact__button--PaddingBottom: 0;
+    --pf-c-toggle-group--m-compact__button--PaddingLeft: var(--pf-global--spacer--sm);
+    --pf-c-toggle-group--m-compact__button--FontSize: var(--pf-global--FontSize--xs);
+}
+
+html[data-theme="dark"] {
+    --pf-c-toggle-group__button--hover--BackgroundColor: var(--pf-global--palette--black-700);
+    --pf-c-toggle-group__button--focus--BackgroundColor: var(--pf-global--palette--black-700);
+    --pf-c-toggle-group__button--disabled--BackgroundColor: var(--pf-global--palette--black-600);
+    --pf-c-toggle-group__button--disabled--Color: var(--pf-global--palette--black-100);
+    --pf-c-toggle-group__button--Color: var(--ak-dark-foreground);
+    --pf-c-toggle-group__button--BackgroundColor: var(--ak-dark-background-light);
+    --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--pf-global--primary-color--100);
+}

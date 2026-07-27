@@ -68,9 +68,21 @@ export interface ConnectionToken {
  */
 export function instanceOfConnectionToken(value: object): value is ConnectionToken {
     if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
+    if (
+        (!("providerObj" in (value as Record<string, any>)) &&
+            !("provider_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerObj"] === undefined &&
+            (value as Record<string, any>)["provider_obj"] === undefined)
+    )
+        return false;
     if (!("endpoint" in value) || value["endpoint"] === undefined) return false;
-    if (!("endpointObj" in value) || value["endpointObj"] === undefined) return false;
+    if (
+        (!("endpointObj" in (value as Record<string, any>)) &&
+            !("endpoint_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["endpointObj"] === undefined &&
+            (value as Record<string, any>)["endpoint_obj"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
@@ -101,7 +113,7 @@ export function ConnectionTokenToJSON(json: any): ConnectionToken {
 }
 
 export function ConnectionTokenToJSONTyped(
-    value?: Omit<ConnectionToken, "provider_obj" | "endpoint_obj" | "user"> | null,
+    value?: Omit<ConnectionToken, "providerObj" | "endpointObj" | "user"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

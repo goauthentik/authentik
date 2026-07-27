@@ -63,7 +63,13 @@ export function instanceOfTransactionApplicationRequest(
     value: object,
 ): value is TransactionApplicationRequest {
     if (!("app" in value) || value["app"] === undefined) return false;
-    if (!("providerModel" in value) || value["providerModel"] === undefined) return false;
+    if (
+        (!("providerModel" in (value as Record<string, any>)) &&
+            !("provider_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerModel"] === undefined &&
+            (value as Record<string, any>)["provider_model"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
 }

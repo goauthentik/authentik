@@ -83,14 +83,32 @@ export interface StagePrompt {
  * Check if a given object implements the StagePrompt interface.
  */
 export function instanceOfStagePrompt(value: object): value is StagePrompt {
-    if (!("fieldKey" in value) || value["fieldKey"] === undefined) return false;
+    if (
+        (!("fieldKey" in (value as Record<string, any>)) &&
+            !("field_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fieldKey"] === undefined &&
+            (value as Record<string, any>)["field_key"] === undefined)
+    )
+        return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
     if (!("required" in value) || value["required"] === undefined) return false;
     if (!("placeholder" in value) || value["placeholder"] === undefined) return false;
-    if (!("initialValue" in value) || value["initialValue"] === undefined) return false;
+    if (
+        (!("initialValue" in (value as Record<string, any>)) &&
+            !("initial_value" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["initialValue"] === undefined &&
+            (value as Record<string, any>)["initial_value"] === undefined)
+    )
+        return false;
     if (!("order" in value) || value["order"] === undefined) return false;
-    if (!("subText" in value) || value["subText"] === undefined) return false;
+    if (
+        (!("subText" in (value as Record<string, any>)) &&
+            !("sub_text" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["subText"] === undefined &&
+            (value as Record<string, any>)["sub_text"] === undefined)
+    )
+        return false;
     if (!("choices" in value) || value["choices"] === undefined) return false;
     return true;
 }

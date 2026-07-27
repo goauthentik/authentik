@@ -14,7 +14,6 @@ from dramatiq.results.errors import ResultTimeout
 
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     Session,
     Token,
     User,
@@ -23,6 +22,7 @@ from authentik.core.models import (
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
+from authentik.lib.models import ExpiringModel
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import class_to_path

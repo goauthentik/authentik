@@ -4,7 +4,7 @@ title: Endpoint stage
 
 The Endpoint stage checks whether the current browser or device is known to authentik's Endpoint Devices system and injects device facts into flow context.
 
-## Overview
+## About the endpoint stage
 
 This stage integrates with [Endpoint Devices](../../../../endpoint-devices/index.mdx). It can associate the current session with a managed endpoint and make device facts available to policies and later stages.
 

@@ -67,5 +67,5 @@ If you selected **OAuth (Interactive)** as the **Authentication mode** for the S
 2. Navigate to **Applications** > **Providers** and click the name of the new SCIM provider.
 3. Next to **OAuth Status**, click **(Re-)Authenticate**.
 4. You should be redirected to the SCIM endpoint that you are provisioning to for authentication.
-5. Once authenticated, you should be redirected back to authentik. If successful, **OAuth Status** should now show as **Authenticated**.
+5. After you authenticate, you should be redirected back to authentik. If successful, **OAuth Status** should now show as **Authenticated**.
    This step is only required when initially configuring the SCIM provider; subsequent authentications will be automatic.

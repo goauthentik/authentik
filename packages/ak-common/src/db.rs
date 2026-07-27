@@ -27,9 +27,11 @@ async fn get_connect_opts() -> Result<PgConnectOptions> {
         .host(&config.postgresql.host)
         .port(config.postgresql.port)
         .username(&config.postgresql.user)
-        .password(&config.postgresql.password)
         .database(&config.postgresql.name)
         .ssl_mode(PgSslMode::from_str(&config.postgresql.sslmode)?);
+    if !config.postgresql.password.is_empty() {
+        opts = opts.password(&config.postgresql.password);
+    }
     if let Some(sslrootcert) = &config.postgresql.sslrootcert {
         let from_fs = read_to_string(sslrootcert).await;
         let data = from_fs.as_ref().unwrap_or(sslrootcert).as_bytes().to_vec();
