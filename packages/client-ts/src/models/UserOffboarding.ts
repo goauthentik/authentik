@@ -103,12 +103,42 @@ export interface UserOffboarding {
 export function instanceOfUserOffboarding(value: object): value is UserOffboarding {
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
-    if (!("scheduledAt" in value) || value["scheduledAt"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("scheduledAt" in (value as Record<string, any>)) &&
+            !("scheduled_at" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scheduledAt"] === undefined &&
+            (value as Record<string, any>)["scheduled_at"] === undefined)
+    )
+        return false;
     if (!("status" in value) || value["status"] === undefined) return false;
-    if (!("createdByObj" in value) || value["createdByObj"] === undefined) return false;
-    if (!("createdAt" in value) || value["createdAt"] === undefined) return false;
-    if (!("executedAt" in value) || value["executedAt"] === undefined) return false;
+    if (
+        (!("createdByObj" in (value as Record<string, any>)) &&
+            !("created_by_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["createdByObj"] === undefined &&
+            (value as Record<string, any>)["created_by_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("createdAt" in (value as Record<string, any>)) &&
+            !("created_at" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["createdAt"] === undefined &&
+            (value as Record<string, any>)["created_at"] === undefined)
+    )
+        return false;
+    if (
+        (!("executedAt" in (value as Record<string, any>)) &&
+            !("executed_at" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["executedAt"] === undefined &&
+            (value as Record<string, any>)["executed_at"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -145,7 +175,7 @@ export function UserOffboardingToJSON(json: any): UserOffboarding {
 export function UserOffboardingToJSONTyped(
     value?: Omit<
         UserOffboarding,
-        "id" | "user_obj" | "status" | "created_by_obj" | "created_at" | "executed_at"
+        "id" | "userObj" | "status" | "createdByObj" | "createdAt" | "executedAt"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
