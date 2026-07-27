@@ -443,7 +443,7 @@ dev = [
     { name = "colorama", specifier = "==0.4.6" },
     { name = "constructs", specifier = "==10.7.1" },
     { name = "coverage", extras = ["toml"], specifier = "==7.15.2" },
-    { name = "daphne", specifier = "==4.2.2" },
+    { name = "daphne", specifier = "==4.2.3" },
     { name = "debugpy", specifier = "==1.8.21" },
     { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==6.0.7" },
     { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.17.0" },
@@ -1101,7 +1101,7 @@ wheels = [
 
 [[package]]
 name = "daphne"
-version = "4.2.2"
+version = "4.2.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
@@ -1109,9 +1109,9 @@ dependencies = [
     { name = "autobahn", version = "26.6.2", source = { registry = "https://pypi.org/simple" }, marker = "platform_python_implementation != 'PyPy' or sys_platform != 'win32'" },
     { name = "twisted", extra = ["tls"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/64/d3/65ff32c01cc64d44441b038dbb7cfb0c6a5507a1c937b3d41bd99af7bdc4/daphne-4.2.2.tar.gz", hash = "sha256:6c3527d4ce32630ae054dfb0ef5578e9a35d2f39f0ebcd02ef4f9129a121ce8d", size = 47601, upload-time = "2026-06-03T10:53:13.31Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/23/81d442839029f3f343e536650ee49dbfb5a444520876fadb5b5f19f33c02/daphne-4.2.3.tar.gz", hash = "sha256:1c458f81926b37301cadc8ec1b6316d9a5db53fba061fc4826610395fe5d5c81", size = 47898, upload-time = "2026-07-21T13:15:19.753Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/ab/85534d9cbca09f3c10f58fc2093659062280ed5703707c0b41dbca8ec297/daphne-4.2.2-py3-none-any.whl", hash = "sha256:466ba8a7c31c5b758953095b451dbad9dc23e5783c68a3716e5fc7aa5f26d168", size = 29466, upload-time = "2026-06-03T10:53:11.841Z" },
+    { url = "https://files.pythonhosted.org/packages/bd/0c/59e966c167880904f2e6a235c63169760dce58ba8062a7a153a6183539cc/daphne-4.2.3-py3-none-any.whl", hash = "sha256:34442c539a98111f4d8cac98a7204aeeb53811229bd96063e6fbe740e97078c9", size = 29715, upload-time = "2026-07-21T13:15:18.588Z" },
 ]
 
 [[package]]

@@ -83,7 +83,7 @@ dev = [
   "colorama==0.4.6",
   "constructs==10.7.1",
   "coverage[toml]==7.15.2",
-  "daphne==4.2.2",
+  "daphne==4.2.3",
   "debugpy==1.8.21",
   "django-stubs[compatible-mypy]==6.0.7",
   "djangorestframework-stubs[compatible-mypy]==3.17.0",
