@@ -32,8 +32,8 @@
 
     --ak-c-tooltip--ShowDelay: 100ms;
     --ak-c-tooltip--HideDelay: 150ms;
-    --ak-c-tooltip--Offset: 0.75rem;
-    --ak-c-tooltip__arrow--Size: 0.975rem;
+    --ak-c-tooltip--Offset: 0.4rem;
+    --ak-c-tooltip__arrow--Size: 0.5rem;
     --ak-c-tooltip__arrow--Width: var(--ak-c-tooltip__arrow--Size);
     --ak-c-tooltip__arrow--Height: var(--ak-c-tooltip__arrow--Size);
 

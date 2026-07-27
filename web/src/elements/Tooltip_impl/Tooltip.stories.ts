@@ -124,6 +124,46 @@ export const WithSlottedContent: Story = {
     `,
 };
 
+export const WithAnimatedContent: Story = {
+    args: {
+        htmlFor: "slotted-button",
+        placement: "right",
+        trigger: "focus",
+    },
+    render: (args) => html`
+        <style>
+            .pulse {
+                display: inline-block;
+                font-size: 2rem;
+                animation: pulse-animation 1s infinite;
+            }
+
+            @keyframes pulse-animation {
+                0% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.3);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+        </style>
+        <div style="padding: 100px; display: flex; justify-content: center;">
+            <button
+                id="slotted-button"
+                style="padding: 10px 20px; font-size: 16px; cursor: pointer;"
+            >
+                Hover for rich content
+            </button>
+            <ak-tooltip for=${args.htmlFor} placement=${args.placement}>
+                <strong class="pulse">❤️</strong>
+            </ak-tooltip>
+        </div>
+    `,
+};
+
 export const AllPlacements: Story = {
     render: () => html`
         <div
@@ -211,7 +251,7 @@ export const OverflowContainer: Story = {
             </div>
 
             <ak-tooltip
-                style="--pf-v5-c-tooltip__content--BackgroundColor: repeating-linear-gradient(45deg, hsl(43, 74%, 42%), hsl(43, 74%, 42%) 0.5rem, hsl(201, 12%, 40%) 0.5rem, hsl(201, 12%, 40%) 1rem);"
+                style="--ak-c-tooltip__content--BackgroundColor: repeating-linear-gradient(45deg, hsl(43, 74%, 42%), hsl(43, 74%, 42%) 0.5rem, hsl(201, 12%, 40%) 0.5rem, hsl(201, 12%, 40%) 1rem);"
                 for="overflow-btn"
                 placement="right"
                 ><div style="white-space: nowrap; font-weight: bold;">
@@ -253,7 +293,7 @@ export const OverflowContainerViaBuilder: Story = {
 
                 <style>
                     .creature {
-                        --pf-v5-c-tooltip__content--BackgroundColor: linear-gradient(
+                        --ak-c-tooltip__content--BackgroundColor: linear-gradient(
                             132deg,
                             #000000,
                             #00ff00,

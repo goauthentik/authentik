@@ -1,3 +1,7 @@
+/**
+ * @file Implementation code for the Tooltip component
+ */
+
 import { findNearestSibling } from "../utils/nearestSibling.js";
 import { parseLength } from "../utils/parseSize.js";
 import { TooltipInitialState, type TooltipState } from "./StateMachine";
@@ -47,7 +51,7 @@ function parseDelay(delay: string) {
  * - @attr {string} for - Like a `<label>`, the ID (or selector) of a sibling element which the
  *   tooltip will appear nearby.
  *
- * or:
+ * or:<
  *
  * - @property {HTMLElement} target - A direct reference to the anchor element. Takes precedence over
  *   "for" attribute. Unlike HTMLLabelElement.control, this property is read/write.

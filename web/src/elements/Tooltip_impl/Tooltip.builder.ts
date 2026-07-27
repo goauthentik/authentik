@@ -1,5 +1,5 @@
 /**
- * @file Function to generate default tooltips
+ * @file Function to generate default Tooltip instances
  */
 
 import { Tooltip, type Trigger } from "../Tooltip";
