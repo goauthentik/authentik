@@ -65,6 +65,21 @@ entries:
     name: initial-setup-field-password-repeat
   model: authentik_stages_prompt.prompt
 - attrs:
+    order: 400
+    label: Base URL
+    field_key: base_url
+    type: text
+    required: true
+    placeholder: https://authentik.company
+    placeholder_expression: false
+    initial_value_expression: true
+    initial_value: |
+      return request.http_request.build_absolute_uri("/").rstrip("/")
+  id: prompt-field-base-url
+  identifiers:
+    name: initial-setup-field-base-url
+  model: authentik_stages_prompt.prompt
+- attrs:
     expression: |
       # This policy sets the user for the currently running flow
       # by injecting "pending_user"
@@ -91,6 +106,26 @@ entries:
   identifiers:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      # Validate the base URL entered during setup
+      from django.core.exceptions import ValidationError
+      from django.core.validators import URLValidator
+
+      base_url = ((request.context.get("prompt_data") or {}).get("base_url") or "").strip()
+      # Empty is handled by the field's own `required` flag; only check non-empty values.
+      if not base_url:
+          return True
+      try:
+          URLValidator()(base_url)
+      except ValidationError:
+          ak_message("Enter a valid URL, for example https://authentik.company")
+          return False
+      return True
+  id: policy-default-oobe-base-url-valid
+  identifiers:
+    name: default-oobe-base-url-valid
+  model: authentik_policies_expression.expressionpolicy
 - state: absent
   identifiers:
     name: default-oobe-flow-set-authentication
@@ -99,8 +134,11 @@ entries:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
+    - !KeyOf prompt-field-base-url
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
+    validation_policies:
+    - !KeyOf policy-default-oobe-base-url-valid
   id: stage-default-oobe-password
   identifiers:
     name: stage-default-oobe-password

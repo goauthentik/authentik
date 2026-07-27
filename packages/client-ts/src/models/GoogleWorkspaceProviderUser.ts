@@ -66,9 +66,21 @@ export function instanceOfGoogleWorkspaceProviderUser(
     value: object,
 ): value is GoogleWorkspaceProviderUser {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("googleId" in value) || value["googleId"] === undefined) return false;
+    if (
+        (!("googleId" in (value as Record<string, any>)) &&
+            !("google_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["googleId"] === undefined &&
+            (value as Record<string, any>)["google_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -100,7 +112,7 @@ export function GoogleWorkspaceProviderUserToJSON(json: any): GoogleWorkspacePro
 }
 
 export function GoogleWorkspaceProviderUserToJSONTyped(
-    value?: Omit<GoogleWorkspaceProviderUser, "id" | "user_obj" | "attributes"> | null,
+    value?: Omit<GoogleWorkspaceProviderUser, "id" | "userObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

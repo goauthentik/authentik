@@ -92,12 +92,30 @@ export interface RequestRuleBinding {
  * Check if a given object implements the RequestRuleBinding interface.
  */
 export function instanceOfRequestRuleBinding(value: object): value is RequestRuleBinding {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("rule" in value) || value["rule"] === undefined) return false;
-    if (!("ruleObj" in value) || value["ruleObj"] === undefined) return false;
+    if (
+        (!("ruleObj" in (value as Record<string, any>)) &&
+            !("rule_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["ruleObj"] === undefined &&
+            (value as Record<string, any>)["rule_obj"] === undefined)
+    )
+        return false;
     if (!("target" in value) || value["target"] === undefined) return false;
     if (!("related" in value) || value["related"] === undefined) return false;
-    if (!("relatedObj" in value) || value["relatedObj"] === undefined) return false;
+    if (
+        (!("relatedObj" in (value as Record<string, any>)) &&
+            !("related_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["relatedObj"] === undefined &&
+            (value as Record<string, any>)["related_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -135,7 +153,7 @@ export function RequestRuleBindingToJSON(json: any): RequestRuleBinding {
 }
 
 export function RequestRuleBindingToJSONTyped(
-    value?: Omit<RequestRuleBinding, "pbm_uuid" | "rule_obj" | "related" | "related_obj"> | null,
+    value?: Omit<RequestRuleBinding, "pbmUuid" | "ruleObj" | "related" | "relatedObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

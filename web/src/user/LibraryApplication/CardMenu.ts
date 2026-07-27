@@ -1,6 +1,7 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
 import "#elements/buttons/Dropdown";
+import "#elements/Divider";
 
 import { truncateWords } from "#common/strings";
 
@@ -85,7 +86,7 @@ export const CardMenu: LitFC<CardMenuProps> = ({
                                   : null}
                           </div>
                       </li>
-                      <hr class="pf-c-divider" />`
+                      <ak-divider></ak-divider>`
                 : null}
             ${editURL
                 ? html`<li role="presentation">

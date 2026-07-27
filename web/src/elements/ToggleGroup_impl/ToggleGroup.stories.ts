@@ -1,14 +1,18 @@
-import "#elements/messages/MessageContainer";
-import "../ak-toggle-group.js";
+/**
+ * @file Storybook stories for the default ToggleGroup component implementation
+ */
 
-import AkToggleGroup from "../ak-toggle-group.js";
+import "#elements/messages/MessageContainer";
+import "../ToggleGroup";
+
+import { ToggleGroup, ToggleGroupEvent } from "../ToggleGroup";
 
 import { Meta } from "@storybook/web-components";
 
 import { html, TemplateResult } from "lit";
 
-const metadata: Meta<AkToggleGroup> = {
-    title: "Components / Toggle Group",
+const metadata: Meta<ToggleGroup> = {
+    title: "Elements / Toggle Group",
     component: "ak-toggle-group",
     parameters: {
         docs: {
@@ -21,17 +25,7 @@ const metadata: Meta<AkToggleGroup> = {
 
 export default metadata;
 
-const LIGHT = "pf-t-light";
-function injectTheme() {
-    setTimeout(() => {
-        if (!document.body.classList.contains(LIGHT)) {
-            document.body.classList.add(LIGHT);
-        }
-    });
-}
-
 const container = (testItem: TemplateResult) => {
-    injectTheme();
     return html` <div style="padding: 2em">
         <style>
             li {
@@ -52,15 +46,25 @@ const testOptions = [
     ["weird", "Option Three: The Weird One"],
 ];
 
-export const ToggleGroup = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const displayChange = (ev: any) => {
-        document.getElementById("toggle-message-pad")!.innerText =
-            `Value selected: ${ev.detail.value}`;
+export const Default = () => {
+    const displayChange = (ev: ToggleGroupEvent) => {
+        document.getElementById("toggle-message-pad")!.innerText = `Value selected: ${ev.value}`;
     };
 
     return container(
         html`<ak-toggle-group @ak-toggle=${displayChange}>
+            ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
+        </ak-toggle-group>`,
+    );
+};
+
+export const Compact = () => {
+    const displayChange = (ev: ToggleGroupEvent) => {
+        document.getElementById("toggle-message-pad")!.innerText = `Value selected: ${ev.value}`;
+    };
+
+    return container(
+        html`<ak-toggle-group compact @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
         </ak-toggle-group>`,
     );

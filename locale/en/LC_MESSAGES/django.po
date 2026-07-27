@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-22 00:27+0000\n"
+"POT-Creation-Date: 2026-07-24 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -325,9 +325,7 @@ msgid "This field is required."
 msgstr ""
 
 #: authentik/core/apps.py
-msgid ""
-"Configure if applications without any policy/group/user bindings should be "
-"accessible to any user."
+msgid "Applications with no policies bound can be accessed by any user."
 msgstr ""
 
 #: authentik/core/models.py
@@ -1360,6 +1358,20 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 1.1"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 2.0"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid ""
+"SAML assertion version to issue in the security token. Microsoft Entra ID "
+"and classic ADFS-style relying parties typically require SAML 1.1."
 msgstr ""
 
 #: authentik/enterprise/providers/ws_federation/models.py

@@ -3554,6 +3554,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3578,6 +3579,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -3625,6 +3627,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3657,6 +3660,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3688,6 +3692,7 @@ paths:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3714,6 +3719,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -3743,6 +3749,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User added
@@ -3774,6 +3781,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User removed
@@ -3799,6 +3807,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4526,6 +4535,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4550,6 +4560,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4576,6 +4587,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4607,6 +4619,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4637,6 +4650,7 @@ paths:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4662,6 +4676,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -4690,6 +4705,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully started impersonation
@@ -4717,6 +4733,7 @@ paths:
               $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4750,6 +4767,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully sent recover email
@@ -4778,6 +4796,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4813,6 +4832,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4835,6 +4855,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4861,6 +4882,7 @@ paths:
               $ref: '#/components/schemas/UserAccountLockdownRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5019,6 +5041,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -5038,6 +5061,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully ended impersonation
@@ -5053,6 +5077,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5074,6 +5099,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5099,6 +5125,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5693,7 +5720,7 @@ paths:
       tags:
       - endpoints
       security:
-      - {}
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6200,6 +6227,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6222,6 +6251,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -20498,6 +20529,14 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: saml_version
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: |+
+            SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
@@ -24611,6 +24650,10 @@ paths:
           type: boolean
       - in: query
         name: start_tls
+        schema:
+          type: boolean
+      - in: query
+        name: sync_group_hierarchy
         schema:
           type: boolean
       - in: query
@@ -38341,8 +38384,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -43541,6 +43584,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -43760,6 +43806,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -50955,6 +51004,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -52660,6 +52712,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -52720,8 +52778,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -53180,6 +53238,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -57432,6 +57496,11 @@ components:
       - disabled
       - disabled_deleted
       type: string
+    SamlVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     Schedule:
       type: object
       properties:
@@ -57712,6 +57781,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -57770,8 +57845,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -57799,6 +57874,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -57859,8 +57940,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -58408,7 +58489,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host
@@ -60572,6 +60658,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -60605,6 +60697,10 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -60618,6 +60714,7 @@ components:
       - pk
       - reply_url
       - url_download_metadata
+      - url_issuer
       - url_wsfed
       - verbose_name
       - verbose_name_plural
@@ -60685,6 +60782,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -60820,6 +60923,15 @@ components:
           authentik_providers_ws_federation.wsfederationprovider: '#/components/schemas/WSFederationProviderRequest'
   securitySchemes:
     authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
       type: http
       scheme: bearer
 servers:
