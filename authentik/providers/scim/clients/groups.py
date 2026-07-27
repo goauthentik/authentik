@@ -1,5 +1,6 @@
 """Group client"""
 
+from copy import deepcopy
 from itertools import batched
 from typing import Any
 
@@ -135,12 +136,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._patch_add_users(connection, users)
         return connection
 
-    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderGroup):
         """Check if a group is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
         return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
