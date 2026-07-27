@@ -4,7 +4,7 @@ title: Authenticator validation stage
 
 The Authenticator Validation stage validates an already enrolled authenticator.
 
-## Overview
+## About the authenticator validation stage
 
 This stage is used during authentication after a user has already enrolled one or more authenticators with a setup stage, such as:
 

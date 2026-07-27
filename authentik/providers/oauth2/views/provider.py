@@ -22,6 +22,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
     OAuth2Provider,
     ResponseMode,
@@ -117,6 +118,7 @@ class ProviderInfoView(View):
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
+            "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
         if provider.encryption_key:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]

@@ -201,26 +201,69 @@ export function instanceOfSCIMProvider(value: object): value is SCIMProvider {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
-        !("assignedBackchannelApplicationSlug" in value) ||
-        value["assignedBackchannelApplicationSlug"] === undefined
+        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
     )
         return false;
     if (
-        !("assignedBackchannelApplicationName" in value) ||
-        value["assignedBackchannelApplicationName"] === undefined
+        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
     )
         return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
     if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("authOauthTokenLastUpdated" in value) || value["authOauthTokenLastUpdated"] === undefined)
+    if (
+        (!("authOauthTokenLastUpdated" in (value as Record<string, any>)) &&
+            !("auth_oauth_token_last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authOauthTokenLastUpdated"] === undefined &&
+            (value as Record<string, any>)["auth_oauth_token_last_updated"] === undefined)
+    )
         return false;
-    if (!("authOauthTokenExpires" in value) || value["authOauthTokenExpires"] === undefined)
+    if (
+        (!("authOauthTokenExpires" in (value as Record<string, any>)) &&
+            !("auth_oauth_token_expires" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authOauthTokenExpires"] === undefined &&
+            (value as Record<string, any>)["auth_oauth_token_expires"] === undefined)
+    )
         return false;
-    if (!("authOauthUrlCallback" in value) || value["authOauthUrlCallback"] === undefined)
+    if (
+        (!("authOauthUrlCallback" in (value as Record<string, any>)) &&
+            !("auth_oauth_url_callback" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authOauthUrlCallback"] === undefined &&
+            (value as Record<string, any>)["auth_oauth_url_callback"] === undefined)
+    )
         return false;
-    if (!("authOauthUrlStart" in value) || value["authOauthUrlStart"] === undefined) return false;
+    if (
+        (!("authOauthUrlStart" in (value as Record<string, any>)) &&
+            !("auth_oauth_url_start" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authOauthUrlStart"] === undefined &&
+            (value as Record<string, any>)["auth_oauth_url_start"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -252,7 +295,12 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["auth_mode"] == null
                 ? undefined
                 : SCIMAuthenticationModeEnumFromJSON(json["auth_mode"]),
-        authOauth: json["auth_oauth"] == null ? undefined : json["auth_oauth"],
+        authOauth:
+            json["auth_oauth"] === undefined
+                ? undefined
+                : json["auth_oauth"] === null
+                  ? null
+                  : json["auth_oauth"],
         authOauthParams: json["auth_oauth_params"] == null ? undefined : json["auth_oauth_params"],
         authOauthTokenLastUpdated:
             json["auth_oauth_token_last_updated"] == null
@@ -292,15 +340,15 @@ export function SCIMProviderToJSONTyped(
         SCIMProvider,
         | "pk"
         | "component"
-        | "assigned_backchannel_application_slug"
-        | "assigned_backchannel_application_name"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
-        | "auth_oauth_token_last_updated"
-        | "auth_oauth_token_expires"
-        | "auth_oauth_url_callback"
-        | "auth_oauth_url_start"
+        | "assignedBackchannelApplicationSlug"
+        | "assignedBackchannelApplicationName"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "authOauthTokenLastUpdated"
+        | "authOauthTokenExpires"
+        | "authOauthUrlCallback"
+        | "authOauthUrlStart"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

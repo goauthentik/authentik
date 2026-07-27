@@ -63,8 +63,20 @@ export interface MutualTLSStageRequest {
 export function instanceOfMutualTLSStageRequest(value: object): value is MutualTLSStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("mode" in value) || value["mode"] === undefined) return false;
-    if (!("certAttribute" in value) || value["certAttribute"] === undefined) return false;
-    if (!("userAttribute" in value) || value["userAttribute"] === undefined) return false;
+    if (
+        (!("certAttribute" in (value as Record<string, any>)) &&
+            !("cert_attribute" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["certAttribute"] === undefined &&
+            (value as Record<string, any>)["cert_attribute"] === undefined)
+    )
+        return false;
+    if (
+        (!("userAttribute" in (value as Record<string, any>)) &&
+            !("user_attribute" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userAttribute"] === undefined &&
+            (value as Record<string, any>)["user_attribute"] === undefined)
+    )
+        return false;
     return true;
 }
 

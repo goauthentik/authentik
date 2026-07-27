@@ -47,7 +47,13 @@ export interface RedirectURIRequest {
  * Check if a given object implements the RedirectURIRequest interface.
  */
 export function instanceOfRedirectURIRequest(value: object): value is RedirectURIRequest {
-    if (!("matchingMode" in value) || value["matchingMode"] === undefined) return false;
+    if (
+        (!("matchingMode" in (value as Record<string, any>)) &&
+            !("matching_mode" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["matchingMode"] === undefined &&
+            (value as Record<string, any>)["matching_mode"] === undefined)
+    )
+        return false;
     if (!("url" in value) || value["url"] === undefined) return false;
     return true;
 }

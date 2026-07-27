@@ -40,6 +40,18 @@ Login flow that follows the default pattern (username/email, then password), but
 
 You can force two-factor authentication by editing the _Not configured action_ in the Authenticator Validation Stage.
 
+## Log in with an email magic link
+
+Blueprint path: `example/flows-login-email-magic-link.yaml`
+
+Flow: right-click <DownloadLink to="/blueprints/example/flows-login-email-magic-link.yaml">here</DownloadLink> and save the file.
+
+Passwordless login flow that lets users sign in from a link sent to their email address. Users enter their email address or username, authentik sends them a confirmation link, and they are signed in after they open the link.
+
+Before importing this flow, make sure that global email settings are configured and that users have valid email addresses. Use this flow only when access to the user's email inbox is an acceptable sign-in factor for your environment.
+
+After import, review the Email stage binding in the flow. The example uses the built-in account confirmation email template. You can replace it with a [custom email template](../../stages/email/index.md#custom-templates) if you want the email text to match the magic-link login experience.
+
 ## Log in with conditional CAPTCHA
 
 Blueprint path: `example/flows-login-conditional-captcha.yaml`
@@ -48,7 +60,7 @@ Flow: right-click <DownloadLink to="/blueprints/example/flows-login-conditional-
 
 Login flow that conditionally shows users a CAPTCHA, based on the reputation of their IP and username.
 
-By default, the CAPTCHA test keys are used. You can get a proper key [here](https://www.google.com/recaptcha/intro/v3.html).
+By default, the CAPTCHA test keys are used. You can get a production key from the [Google reCAPTCHA website](https://www.google.com/recaptcha/intro/v3.html).
 
 ## Recovery with email and MFA verification
 

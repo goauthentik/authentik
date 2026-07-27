@@ -66,9 +66,21 @@ export function instanceOfMicrosoftEntraProviderUser(
     value: object,
 ): value is MicrosoftEntraProviderUser {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (
+        (!("microsoftId" in (value as Record<string, any>)) &&
+            !("microsoft_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["microsoftId"] === undefined &&
+            (value as Record<string, any>)["microsoft_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -100,7 +112,7 @@ export function MicrosoftEntraProviderUserToJSON(json: any): MicrosoftEntraProvi
 }
 
 export function MicrosoftEntraProviderUserToJSONTyped(
-    value?: Omit<MicrosoftEntraProviderUser, "id" | "user_obj" | "attributes"> | null,
+    value?: Omit<MicrosoftEntraProviderUser, "id" | "userObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
