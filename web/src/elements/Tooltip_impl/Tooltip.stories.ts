@@ -7,15 +7,11 @@ import "../Tooltip";
 import type { Tooltip } from "../Tooltip";
 import { akTooltip } from "../Tooltip";
 
-import { placements } from "@floating-ui/utils";
+import { type Placement, placements } from "@floating-ui/utils";
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-const describe = (story: string, tag = "story") => ({
-    parameters: { docs: { description: { [tag]: story } } },
-});
 
 const DESCRIPTION =
     "A tooltip component that uses the HTML dialog element for positioning and the top layer. Tooltips can be triggered by hover or focus events.";
@@ -230,11 +226,11 @@ export const OverflowContainer: Story = {
 export const OverflowContainerViaBuilder: Story = {
     render: () => {
         const tooltipContent = {
-            content: html`<div style="white-space: nowrap; font-weight: bold; color: black;">
+            content: html`<div style="white-space: nowrap; font-weight: bold;">
                 [Keanu Reeves voice] "Whoa."
             </div>`,
             htmlFor: "overflow-button-2",
-            placement: "top",
+            placement: "top" as Placement,
             class: "creature",
         };
 

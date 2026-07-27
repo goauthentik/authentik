@@ -33,14 +33,12 @@
     --ak-c-tooltip--ShowDelay: 100ms;
     --ak-c-tooltip--HideDelay: 150ms;
     --ak-c-tooltip--Offset: 0.75rem;
-    --ak-c-tooltip--arrow--Size: 0.975rem;
+    --ak-c-tooltip__arrow--Size: 0.975rem;
     --ak-c-tooltip__arrow--Width: var(--ak-c-tooltip__arrow--Size);
     --ak-c-tooltip__arrow--Height: var(--ak-c-tooltip__arrow--Size);
 
     --ak-c-tooltip--TimingFunction: var(--pf-global--TimingFunction);
     --ak-c-tooltip--TransitionDuration: var(--pf-global--TransitionDuration);
-
-    
 }
 
 html[theme="dark"],

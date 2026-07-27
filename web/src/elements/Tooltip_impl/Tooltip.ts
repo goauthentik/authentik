@@ -1,4 +1,3 @@
-import { getDeepActiveElement } from "../utils/getDeepActiveElement.js";
 import { findNearestSibling } from "../utils/nearestSibling.js";
 import { parseLength } from "../utils/parseSize.js";
 import { TooltipInitialState, type TooltipState } from "./StateMachine";
@@ -200,7 +199,7 @@ export class Tooltip extends LitElement {
 
         if (!(anchor instanceof HTMLElement)) {
             console.warn(
-                `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`
+                `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`,
             );
             return null;
         }
@@ -256,11 +255,11 @@ export class Tooltip extends LitElement {
         super.willUpdate(changed);
         this.hideDelay = parseDelay(
             getComputedStyle(this)?.getPropertyValue("--ak-c-tooltip--HideDelay") ??
-                DEFAULT_HIDE_DELAY
+                DEFAULT_HIDE_DELAY,
         );
         this.showDelay = parseDelay(
             getComputedStyle(this)?.getPropertyValue("--ak-c-tooltip--ShowDelay") ??
-                DEFAULT_SHOW_DELAY
+                DEFAULT_SHOW_DELAY,
         );
     }
 
@@ -302,7 +301,7 @@ export class Tooltip extends LitElement {
 
     #updatePosition = async () => {
         const offsetDistance = parseLength(
-            getComputedStyle(this).getPropertyValue("--ak-c-tooltip--Offset")
+            getComputedStyle(this).getPropertyValue("--ak-c-tooltip--Offset"),
         );
 
         const [anchor, dialog] = [this.anchor, this.dialog.value];
@@ -311,8 +310,7 @@ export class Tooltip extends LitElement {
         }
 
         const middleware: Middleware[] = [offset(offsetDistance), flip(), shift()];
-
-        const { x, y, placement, middlewareData } = await computePosition(anchor, dialog, {
+        const { x, y, placement } = await computePosition(anchor, dialog, {
             placement: this.placement,
             middleware,
         });
@@ -348,7 +346,6 @@ export class Tooltip extends LitElement {
             return;
         }
 
-        const elementWithFocus = getDeepActiveElement();
         dialog.inert = true;
         dialog.show();
         dialog.inert = false;

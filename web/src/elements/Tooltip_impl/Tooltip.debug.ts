@@ -60,7 +60,7 @@ export function TooltipWithHover<Base extends TooltipConstructor>(Superclass: Ba
 
             if (!(anchor instanceof HTMLElement)) {
                 console.warn(
-                    `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`
+                    `ak-tooltip: element '${this.htmlFor}' does not resolve to an HTMLElement`,
                 );
                 return;
             }

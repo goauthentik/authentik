@@ -28,10 +28,10 @@ const localDimensions = (container: Element, styles?: MaybeStyles, content?: str
     return dimensions;
 };
 
-const localWidth = (container: Element, styles?: MaybeStyles, content?: string) =>
+export const localWidth = (container: Element, styles?: MaybeStyles, content?: string) =>
     localDimensions(container, styles, content).width;
 
-const localHeight = (container: Element, styles?: MaybeStyles, content?: string) =>
+export const localHeight = (container: Element, styles?: MaybeStyles, content?: string) =>
     localDimensions(container, styles, content).height;
 
 const elementFontSize = (element: Element) => parseFloat(getComputedStyle(element, "").fontSize);

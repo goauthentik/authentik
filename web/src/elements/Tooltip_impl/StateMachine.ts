@@ -41,6 +41,8 @@ import type { Tooltip } from "./Tooltip";
 
 type Timeout = ReturnType<typeof setTimeout> | null;
 
+export type TooltipState = TooltipInitialState | ScheduledShow | TooltipShown | ScheduledHide;
+
 abstract class TooltipEvents {
     protected type: string = "";
     protected timer: Timeout = null;
@@ -84,6 +86,10 @@ type TooltipStateConstructor<T extends TooltipState> = new (host: Tooltip) => T;
 // waiting for any event that will cancel that timeout, or *transitioning* the dialog from hide to
 // show.
 
+// The `eslint` exception here are because ESlint can't, but Typescript can, tell that these
+// constructors aren't being access until the runtime, and that since they're syntactic sugar on top
+// of the function that constructs an object they're hoisted like ordinary functions.
+
 // The tooltip isn't being shown, nor is anyone hovering near the anchor.
 export class TooltipInitialState extends TooltipEvents {
     readonly type = "tooltip-hidden";
@@ -94,6 +100,7 @@ export class TooltipInitialState extends TooltipEvents {
     }
 
     public onAnchorEnter = () => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         this.setState(ScheduledShow);
     };
 }
@@ -107,6 +114,7 @@ class ScheduledShow extends TooltipEvents {
     constructor(host: Tooltip) {
         super(host);
         this.timer = setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
             this.setState(TooltipShown);
         }, host.showDelay);
     }
@@ -127,6 +135,7 @@ class TooltipShown extends TooltipEvents {
     }
 
     public onAnchorLeave = () => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         this.setState(ScheduledHide);
     };
 
@@ -155,5 +164,3 @@ class ScheduledHide extends TooltipEvents {
         this.onTooltipEnter();
     };
 }
-
-export type TooltipState = TooltipInitialState | ScheduledShow | TooltipShown | ScheduledHide;
