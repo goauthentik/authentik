@@ -1,0 +1,97 @@
+.ak-plans {
+    --ak-plans-seam: 2.5rem;
+    --ak-plans-pad: clamp(1.25rem, 3vw, 2rem);
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 1.5rem 0 2rem;
+    border: 1px solid var(--ifm-color-emphasis-200);
+    background-color: var(--ifm-background-surface-color);
+}
+
+.ak-plans__plan {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--ak-plans-pad);
+}
+
+.ak-plans__plan:not(.ak-plans__plan--lead) {
+    padding-left: calc(var(--ak-plans-pad) + var(--ak-plans-seam));
+}
+
+.ak-plans__plan--lead {
+    padding-right: calc(var(--ak-plans-pad) + var(--ak-plans-seam));
+    margin-right: calc(var(--ak-plans-seam) * -1);
+    background-color: color-mix(
+        in srgb,
+        var(--ifm-color-primary) 8%,
+        var(--ifm-background-surface-color)
+    );
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--ak-plans-seam)) 100%, 0 100%);
+}
+
+.ak-plans h3 {
+    margin-bottom: 0.4rem;
+    font-size: 1.25rem;
+}
+
+.ak-plans p {
+    max-width: 42ch;
+}
+
+.ak-plans .button {
+    margin-top: auto;
+}
+
+.ak-plans__buy {
+    border: 2px solid currentcolor;
+    color: var(--ifm-color-primary-darkest);
+}
+
+.ak-plans__buy:hover,
+.ak-plans__buy:focus-visible {
+    background-color: var(--ifm-color-primary-darkest);
+    color: var(--white);
+}
+
+.ak-plans__pricing {
+    grid-column: 1 / -1;
+    padding: 0.85rem var(--ak-plans-pad);
+    border-top: 1px solid var(--ifm-color-emphasis-200);
+    font-size: 0.9375rem;
+}
+
+.ak-plans__pricing svg {
+    width: 0.8em;
+    height: 0.8em;
+    vertical-align: baseline;
+}
+
+[data-theme="dark"] .ak-plans__buy {
+    color: var(--ifm-color-primary-light);
+}
+
+[data-theme="dark"] .ak-plans__buy:hover,
+[data-theme="dark"] .ak-plans__buy:focus-visible {
+    background-color: var(--ifm-color-primary-light);
+    color: var(--ifm-background-color);
+}
+
+@media (max-width: 768px) {
+    .ak-plans {
+        grid-template-columns: 1fr;
+    }
+
+    .ak-plans__plan--lead {
+        padding-right: var(--ak-plans-pad);
+        padding-bottom: calc(var(--ak-plans-pad) + var(--ak-plans-seam) / 2);
+        margin-right: 0;
+        margin-bottom: calc(var(--ak-plans-seam) / -2);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--ak-plans-seam) / 2));
+    }
+
+    .ak-plans__plan:not(.ak-plans__plan--lead) {
+        padding-left: var(--ak-plans-pad);
+    }
+}
