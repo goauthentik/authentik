@@ -30,10 +30,13 @@ class InstagramOAuthRedirect(OAuthRedirect):
     """Instagram OAuth2 Redirect"""
 
     def get_additional_parameters(self, source: OAuthSource):  # pragma: no cover
-        # Instagram separates scopes with commas rather than spaces, so anything beyond a
-        # single scope has to be passed as one comma-joined value
+        # Instagram's authorize endpoint rejects the request with "Invalid platform app"
+        # unless these are present, even when a valid Instagram App ID is used.
+        # https://developers.facebook.com/docs/instagram-platform/instagram-api-with-instagram-login/business-login
         return {
             "scope": ["instagram_business_basic"],
+            "enable_fb_login": "0",
+            "force_authentication": "1",
         }
 
 

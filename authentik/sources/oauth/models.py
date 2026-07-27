@@ -247,6 +247,15 @@ class GoogleOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("Google OAuth Sources")
 
 
+class InstagramOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Instagram."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Instagram OAuth Source")
+        verbose_name_plural = _("Instagram OAuth Sources")
+
+
 class EntraIDOAuthSource(CreatableType, OAuthSource):
     """Social Login using Entra ID."""
 
