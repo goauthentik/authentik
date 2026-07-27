@@ -5,7 +5,7 @@ toc_max_heading_level: 4
 
 The User Login stage attaches the current `pending_user` to a new authentik session.
 
-## Overview
+## About the user login stage
 
 This stage is usually the final stage in authentication, enrollment and recovery flows, signing the user in immediately upon success.
 

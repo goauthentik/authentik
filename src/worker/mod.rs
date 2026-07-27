@@ -185,6 +185,7 @@ impl Worker {
     }
 }
 
+#[expect(clippy::missing_trait_methods, reason = "We don't use pin drop")]
 impl Drop for Worker {
     fn drop(&mut self) {
         if let Err(err) = std::fs::remove_file(&self.socket_path) {

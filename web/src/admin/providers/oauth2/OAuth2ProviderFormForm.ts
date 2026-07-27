@@ -141,6 +141,7 @@ const grantTypes = [
     [GrantTypesEnum.ClientCredentials, msg("Client credentials")],
     [GrantTypesEnum.Password, msg("Password")],
     [GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
+    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
 ];
 
 const defaultGrantTypes = [

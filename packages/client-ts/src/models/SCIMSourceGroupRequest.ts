@@ -54,7 +54,13 @@ export interface SCIMSourceGroupRequest {
  * Check if a given object implements the SCIMSourceGroupRequest interface.
  */
 export function instanceOfSCIMSourceGroupRequest(value: object): value is SCIMSourceGroupRequest {
-    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (
+        (!("externalId" in (value as Record<string, any>)) &&
+            !("external_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalId"] === undefined &&
+            (value as Record<string, any>)["external_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     return true;
