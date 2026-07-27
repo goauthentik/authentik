@@ -9,6 +9,7 @@ import { PaginatedResponse } from "#common/api/responses";
 
 import { AKSkipToContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { paramURL } from "#elements/router/RouterOutlet";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -33,11 +34,11 @@ export class AccessRequestsPage extends AKElement {
 
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
-        aki(RequestsApi)
-            .requestsGrantRequestsPendingReviewList({})
-            .then((rev) => {
-                this.toReview = rev;
-            });
+        try {
+            this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
+        } catch (error) {
+            showAPIErrorMessage(error);
+        }
     }
 
     protected override render(): SlottedTemplateResult {
@@ -45,7 +46,7 @@ export class AccessRequestsPage extends AKElement {
             <div class="pf-c-page__main">
                 ${(this.toReview?.pagination.count || 0) > 0
                     ? html`<div class="pf-c-banner pf-m-info">
-                          ${msg("Reviews to request: ")}
+                          ${msg("Requests to review: ")}
                           <a
                               href=${paramURL("/requests", {
                                   page: "page-for-review",

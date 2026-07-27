@@ -39,7 +39,7 @@ function createNotificationModeOptions(): RadioOption<NotificationModeEnum>[] {
         },
         {
             value: NotificationModeEnum.RandomMinReviewers,
-            label: msg("A random subset of size minimum reviewers, from everyone who can approve"),
+            label: msg("A random subset (of size “minimum reviewers”) of everyone who can approve"),
         },
     ] satisfies RadioOption<NotificationModeEnum>[];
 }

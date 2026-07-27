@@ -1,6 +1,5 @@
 import { aki } from "#common/api/client";
 
-import { AKModal } from "#elements/dialogs/ak-modal";
 import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -49,19 +48,14 @@ export class RequestEntitlementModal extends Table<RequestableTarget> {
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<RequestableTarget>> {
-        const entitlements = await aki(CoreApi).coreApplicationEntitlementsRequestableList({
+        // The "app has exactly one requestable entitlement" shortcut is handled by the
+        // caller (BrowseRequestable) before this modal ever opens; auto-selecting on
+        // count === 1 here would also fire whenever a search happens to narrow to a
+        // single result, silently submitting a request the user didn't click.
+        return aki(CoreApi).coreApplicationEntitlementsRequestableList({
             ...(await this.defaultEndpointConfig()),
             app: this.app?.pk,
         });
-
-        if (entitlements.pagination.count === 1) {
-            this.rowClickListener(entitlements.results[0]);
-
-            if (this.parentElement instanceof AKModal) {
-                this.parentElement.close();
-            }
-        }
-        return entitlements;
     }
 
     protected columns: TableColumn[] = [
