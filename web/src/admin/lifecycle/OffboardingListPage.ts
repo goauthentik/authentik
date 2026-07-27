@@ -5,7 +5,6 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/timestamp/ak-timestamp";
 
 import { aki } from "#common/api/client";
-import { me } from "#common/users";
 
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -17,7 +16,7 @@ import { LifecycleApi, OffboardingStatusEnum, UserOffboarding } from "@goauthent
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-offboarding-list")
 export class OffboardingListPage extends TablePage<UserOffboarding> {
@@ -30,23 +29,12 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     );
     public override pageIcon = "pf-icon pf-icon-user";
 
-    @property()
     public override order = "scheduled_at";
 
     protected override searchEnabled = true;
 
     @state()
     showOnlyPending = true;
-
-    @state()
-    protected currentUserPk?: number;
-
-    public connectedCallback(): void {
-        super.connectedCallback();
-        me().then((session) => {
-            this.currentUserPk = session.user.pk;
-        });
-    }
 
     // Shared by the bulk and per-row cancel paths so they stay in sync.
     #cancelOffboarding = (item: UserOffboarding) =>
@@ -64,21 +52,21 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         });
     }
 
+    protected togglePendingOffboardingFilter = (): void => {
+        this.showOnlyPending = !this.showOnlyPending;
+        this.page = 1;
+        this.fetch();
+    };
+
     protected override renderToolbar(): TemplateResult {
-        return html`
-            <ak-switch-input
+        return html`<ak-switch-input
                 name="showOnlyPending"
                 ?checked=${this.showOnlyPending}
                 label=${msg("Only show pending offboardings")}
-                @change=${() => {
-                    this.showOnlyPending = !this.showOnlyPending;
-                    this.page = 1;
-                    this.fetch();
-                }}
+                @change=${this.togglePendingOffboardingFilter}
             >
             </ak-switch-input>
-            ${super.renderToolbar()}
-        `;
+            ${super.renderToolbar()}`;
     }
 
     protected override columns: TableColumn[] = [
@@ -110,9 +98,9 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         // Only a pending offboarding can be cancelled, and never your own — the
         // backend enforces both, so hide the control rather than offer a dead 403.
         const cancelable =
-            item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUserPk;
+            item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUser?.pk;
         if (!cancelable) {
-            return html`${msg("-")}`;
+            return msg("-");
         }
         return html`<ak-forms-delete-bulk
             object-label=${msg("Offboarding(s)")}
