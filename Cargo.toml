@@ -24,7 +24,7 @@ argh = "= 0.1.19"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
 aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
-clap = { version = "= 4.6.2", features = ["derive", "env"] }
+clap = { version = "= 4.6.4", features = ["derive", "env"] }
 client-ip = { version = "0.2.1", features = ["forwarded-header"] }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
@@ -39,7 +39,7 @@ durstr = "= 0.5.1"
 eyre = "= 0.6.12"
 forwarded-header-value = "= 0.1.1"
 futures = "= 0.3.33"
-glob = "= 0.3.3"
+glob = "= 0.3.4"
 hyper-unix-socket = "= 0.6.1"
 hyper-util = "= 0.1.20"
 ipnet = { version = "= 2.12.0", features = ["serde"] }
@@ -79,7 +79,7 @@ sentry = { version = "= 0.48.5", default-features = false, features = [
   "tracing",
 ] }
 serde = { version = "= 1.0.229", features = ["derive"] }
-serde_json = "= 1.0.150"
+serde_json = "= 1.0.151"
 serde_repr = "= 0.1.21"
 serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
@@ -97,11 +97,11 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
 ] }
 tempfile = "= 3.27.0"
 thiserror = "= 2.0.19"
-time = { version = "= 0.3.53", features = ["macros"] }
-tokio = { version = "= 1.52.4", features = ["full", "tracing"] }
+time = { version = "= 0.3.54", features = ["macros"] }
+tokio = { version = "= 1.53.0", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
-tokio-util = { version = "= 0.7.18", features = ["full"] }
+tokio-util = { version = "= 0.7.19", features = ["full"] }
 tower = "= 0.5.3"
 tower-http = { version = "= 0.7.0", features = ["timeout"] }
 tracing = "= 0.1.44"
@@ -113,7 +113,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.5", features = ["serde", "v4"] }
+uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 which = "= 8.0.5"
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }

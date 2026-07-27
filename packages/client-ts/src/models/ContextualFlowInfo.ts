@@ -62,7 +62,13 @@ export interface ContextualFlowInfo {
  * Check if a given object implements the ContextualFlowInfo interface.
  */
 export function instanceOfContextualFlowInfo(value: object): value is ContextualFlowInfo {
-    if (!("cancelUrl" in value) || value["cancelUrl"] === undefined) return false;
+    if (
+        (!("cancelUrl" in (value as Record<string, any>)) &&
+            !("cancel_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cancelUrl"] === undefined &&
+            (value as Record<string, any>)["cancel_url"] === undefined)
+    )
+        return false;
     if (!("layout" in value) || value["layout"] === undefined) return false;
     return true;
 }
@@ -82,9 +88,11 @@ export function ContextualFlowInfoFromJSONTyped(
         title: json["title"] == null ? undefined : json["title"],
         background: json["background"] == null ? undefined : json["background"],
         backgroundThemedUrls:
-            json["background_themed_urls"] == null
+            json["background_themed_urls"] === undefined
                 ? undefined
-                : ThemedUrlsFromJSON(json["background_themed_urls"]),
+                : json["background_themed_urls"] === null
+                  ? null
+                  : ThemedUrlsFromJSON(json["background_themed_urls"]),
         cancelUrl: json["cancel_url"],
         layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
     };

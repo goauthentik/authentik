@@ -114,7 +114,12 @@ export function PatchedObjectAttributeRequestFromJSONTyped(
         regex: json["regex"] == null ? undefined : json["regex"],
         type: json["type"] == null ? undefined : ObjectAttributeTypeEnumFromJSON(json["type"]),
         group: json["group"] == null ? undefined : json["group"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
         isRequired: json["is_required"] == null ? undefined : json["is_required"],
     };

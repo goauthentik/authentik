@@ -110,7 +110,12 @@ export function PatchedLifecycleRuleRequestFromJSONTyped(
             json["content_type"] == null
                 ? undefined
                 : ContentTypeEnumFromJSON(json["content_type"]),
-        objectId: json["object_id"] == null ? undefined : json["object_id"],
+        objectId:
+            json["object_id"] === undefined
+                ? undefined
+                : json["object_id"] === null
+                  ? null
+                  : json["object_id"],
         interval: json["interval"] == null ? undefined : json["interval"],
         gracePeriod: json["grace_period"] == null ? undefined : json["grace_period"],
         reviewerGroups: json["reviewer_groups"] == null ? undefined : json["reviewer_groups"],

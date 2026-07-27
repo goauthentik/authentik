@@ -214,6 +214,7 @@ import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata"
 import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
 import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider";
 import { type SAMLProviderRequest, SAMLProviderRequestToJSON } from "../models/SAMLProviderRequest";
+import { type SamlVersionEnum } from "../models/SamlVersionEnum";
 import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider";
 import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup";
 import {
@@ -923,6 +924,7 @@ export interface ProvidersWsfedListRequest {
     page?: number;
     pageSize?: number;
     propertyMappings?: Array<string>;
+    samlVersion?: SamlVersionEnum;
     search?: string;
     sessionValidNotOnOrAfter?: string;
     signAssertion?: boolean;
@@ -9430,6 +9432,10 @@ export class ProvidersApi extends runtime.BaseAPI {
 
         if (requestParameters["propertyMappings"] != null) {
             queryParameters["property_mappings"] = requestParameters["propertyMappings"];
+        }
+
+        if (requestParameters["samlVersion"] != null) {
+            queryParameters["saml_version"] = requestParameters["samlVersion"];
         }
 
         if (requestParameters["search"] != null) {
