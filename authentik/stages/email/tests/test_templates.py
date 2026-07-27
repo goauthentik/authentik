@@ -58,6 +58,19 @@ class TestEmailStageTemplates(FlowTestCase):
             unlink(file)
             unlink(file2)
 
+    def test_custom_template_multipart(self):
+        """Test with multipart templates"""
+        with self.settings(TEMPLATES=get_templates_setting(self.dir)):
+            txt_file = self.dir / "multipart.txt"
+            txt_file.write_text("")
+            choices = get_template_choices()
+            self.assertEqual(len(choices), 6)
+
+            html_file = self.dir / "multipart.html"
+            html_file.write_text("")
+            choices = get_template_choices()
+            self.assertEqual(len(choices), 6)
+
     def test_custom_template_invalid_syntax(self):
         """Test with custom template"""
         with open(self.dir / Path("invalid.html"), "w+", encoding="utf-8") as _invalid:
