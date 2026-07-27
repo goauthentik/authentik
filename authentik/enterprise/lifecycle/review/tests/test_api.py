@@ -5,7 +5,11 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
-from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
+from authentik.enterprise.lifecycle.review.models import (
+    LifecycleIteration,
+    LifecycleRule,
+    ReviewState,
+)
 from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 
