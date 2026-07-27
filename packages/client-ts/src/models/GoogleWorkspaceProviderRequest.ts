@@ -117,9 +117,20 @@ export function instanceOfGoogleWorkspaceProviderRequest(
     value: object,
 ): value is GoogleWorkspaceProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("delegatedSubject" in value) || value["delegatedSubject"] === undefined) return false;
+    if (
+        (!("delegatedSubject" in (value as Record<string, any>)) &&
+            !("delegated_subject" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["delegatedSubject"] === undefined &&
+            (value as Record<string, any>)["delegated_subject"] === undefined)
+    )
+        return false;
     if (!("credentials" in value) || value["credentials"] === undefined) return false;
-    if (!("defaultGroupEmailDomain" in value) || value["defaultGroupEmailDomain"] === undefined)
+    if (
+        (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
+            !("default_group_email_domain" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["defaultGroupEmailDomain"] === undefined &&
+            (value as Record<string, any>)["default_group_email_domain"] === undefined)
+    )
         return false;
     return true;
 }
@@ -147,7 +158,12 @@ export function GoogleWorkspaceProviderRequestFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        filterGroup:
+            json["filter_group"] === undefined
+                ? undefined
+                : json["filter_group"] === null
+                  ? null
+                  : json["filter_group"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined

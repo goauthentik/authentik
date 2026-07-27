@@ -23802,6 +23802,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: sync_group_hierarchy
+        schema:
+          type: boolean
+      - in: query
         name: sync_groups
         schema:
           type: boolean
@@ -37521,14 +37525,6 @@ components:
         flags:
           type: object
           properties:
-            core_default_app_access:
-              type: boolean
-              description: Applications with no policies bound can be accessed by
-                any user.
-            enterprise_audit_include_expanded_diff:
-              type: boolean
-              description: Include additional information in audit logs, may incur
-                a performance penalty.
             flows_continuous_login:
               type: boolean
               description: Upon successful authentication, re-start authentication
@@ -37538,8 +37534,6 @@ components:
               description: Refresh other tabs after successful authentication.
               deprecated: true
           required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
           readOnly: true
@@ -42647,6 +42641,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -42866,6 +42863,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -49967,6 +49967,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -51602,6 +51605,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56409,6 +56418,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56496,6 +56511,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -57105,7 +57126,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host

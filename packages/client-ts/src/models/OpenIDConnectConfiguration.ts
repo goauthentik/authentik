@@ -93,26 +93,74 @@ export function instanceOfOpenIDConnectConfiguration(
     value: object,
 ): value is OpenIDConnectConfiguration {
     if (!("issuer" in value) || value["issuer"] === undefined) return false;
-    if (!("authorizationEndpoint" in value) || value["authorizationEndpoint"] === undefined)
-        return false;
-    if (!("tokenEndpoint" in value) || value["tokenEndpoint"] === undefined) return false;
-    if (!("userinfoEndpoint" in value) || value["userinfoEndpoint"] === undefined) return false;
-    if (!("endSessionEndpoint" in value) || value["endSessionEndpoint"] === undefined) return false;
-    if (!("introspectionEndpoint" in value) || value["introspectionEndpoint"] === undefined)
-        return false;
-    if (!("jwksUri" in value) || value["jwksUri"] === undefined) return false;
-    if (!("responseTypesSupported" in value) || value["responseTypesSupported"] === undefined)
-        return false;
     if (
-        !("idTokenSigningAlgValuesSupported" in value) ||
-        value["idTokenSigningAlgValuesSupported"] === undefined
+        (!("authorizationEndpoint" in (value as Record<string, any>)) &&
+            !("authorization_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationEndpoint"] === undefined &&
+            (value as Record<string, any>)["authorization_endpoint"] === undefined)
     )
         return false;
-    if (!("subjectTypesSupported" in value) || value["subjectTypesSupported"] === undefined)
+    if (
+        (!("tokenEndpoint" in (value as Record<string, any>)) &&
+            !("token_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenEndpoint"] === undefined &&
+            (value as Record<string, any>)["token_endpoint"] === undefined)
+    )
         return false;
     if (
-        !("tokenEndpointAuthMethodsSupported" in value) ||
-        value["tokenEndpointAuthMethodsSupported"] === undefined
+        (!("userinfoEndpoint" in (value as Record<string, any>)) &&
+            !("userinfo_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userinfoEndpoint"] === undefined &&
+            (value as Record<string, any>)["userinfo_endpoint"] === undefined)
+    )
+        return false;
+    if (
+        (!("endSessionEndpoint" in (value as Record<string, any>)) &&
+            !("end_session_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["endSessionEndpoint"] === undefined &&
+            (value as Record<string, any>)["end_session_endpoint"] === undefined)
+    )
+        return false;
+    if (
+        (!("introspectionEndpoint" in (value as Record<string, any>)) &&
+            !("introspection_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["introspectionEndpoint"] === undefined &&
+            (value as Record<string, any>)["introspection_endpoint"] === undefined)
+    )
+        return false;
+    if (
+        (!("jwksUri" in (value as Record<string, any>)) &&
+            !("jwks_uri" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["jwksUri"] === undefined &&
+            (value as Record<string, any>)["jwks_uri"] === undefined)
+    )
+        return false;
+    if (
+        (!("responseTypesSupported" in (value as Record<string, any>)) &&
+            !("response_types_supported" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["responseTypesSupported"] === undefined &&
+            (value as Record<string, any>)["response_types_supported"] === undefined)
+    )
+        return false;
+    if (
+        (!("idTokenSigningAlgValuesSupported" in (value as Record<string, any>)) &&
+            !("id_token_signing_alg_values_supported" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["idTokenSigningAlgValuesSupported"] === undefined &&
+            (value as Record<string, any>)["id_token_signing_alg_values_supported"] === undefined)
+    )
+        return false;
+    if (
+        (!("subjectTypesSupported" in (value as Record<string, any>)) &&
+            !("subject_types_supported" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["subjectTypesSupported"] === undefined &&
+            (value as Record<string, any>)["subject_types_supported"] === undefined)
+    )
+        return false;
+    if (
+        (!("tokenEndpointAuthMethodsSupported" in (value as Record<string, any>)) &&
+            !("token_endpoint_auth_methods_supported" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenEndpointAuthMethodsSupported"] === undefined &&
+            (value as Record<string, any>)["token_endpoint_auth_methods_supported"] === undefined)
     )
         return false;
     return true;

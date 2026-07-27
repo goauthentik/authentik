@@ -78,10 +78,34 @@ export function instanceOfInvitationStage(value: object): value is InvitationSta
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowSet" in (value as Record<string, any>)) &&
+            !("flow_set" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowSet"] === undefined &&
+            (value as Record<string, any>)["flow_set"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -118,7 +142,7 @@ export function InvitationStageToJSON(json: any): InvitationStage {
 export function InvitationStageToJSONTyped(
     value?: Omit<
         InvitationStage,
-        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "flow_set"
+        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "flowSet"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

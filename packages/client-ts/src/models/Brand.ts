@@ -144,7 +144,13 @@ export interface Brand {
  * Check if a given object implements the Brand interface.
  */
 export function instanceOfBrand(value: object): value is Brand {
-    if (!("brandUuid" in value) || value["brandUuid"] === undefined) return false;
+    if (
+        (!("brandUuid" in (value as Record<string, any>)) &&
+            !("brand_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandUuid"] === undefined &&
+            (value as Record<string, any>)["brand_uuid"] === undefined)
+    )
+        return false;
     if (!("domain" in value) || value["domain"] === undefined) return false;
     return true;
 }
@@ -171,18 +177,67 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
                 ? undefined
                 : json["branding_default_flow_background"],
         flowAuthentication:
+<<<<<<< HEAD
             json["flow_authentication"] == null ? undefined : json["flow_authentication"],
         flowUserSwitch: json["flow_user_switch"] == null ? undefined : json["flow_user_switch"],
         flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
         flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
+=======
+            json["flow_authentication"] === undefined
+                ? undefined
+                : json["flow_authentication"] === null
+                  ? null
+                  : json["flow_authentication"],
+        flowInvalidation:
+            json["flow_invalidation"] === undefined
+                ? undefined
+                : json["flow_invalidation"] === null
+                  ? null
+                  : json["flow_invalidation"],
+        flowRecovery:
+            json["flow_recovery"] === undefined
+                ? undefined
+                : json["flow_recovery"] === null
+                  ? null
+                  : json["flow_recovery"],
+        flowUnenrollment:
+            json["flow_unenrollment"] === undefined
+                ? undefined
+                : json["flow_unenrollment"] === null
+                  ? null
+                  : json["flow_unenrollment"],
+>>>>>>> main
         flowUserSettings:
-            json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
-        flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
-        flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
+            json["flow_user_settings"] === undefined
+                ? undefined
+                : json["flow_user_settings"] === null
+                  ? null
+                  : json["flow_user_settings"],
+        flowDeviceCode:
+            json["flow_device_code"] === undefined
+                ? undefined
+                : json["flow_device_code"] === null
+                  ? null
+                  : json["flow_device_code"],
+        flowLockdown:
+            json["flow_lockdown"] === undefined
+                ? undefined
+                : json["flow_lockdown"] === null
+                  ? null
+                  : json["flow_lockdown"],
         defaultApplication:
-            json["default_application"] == null ? undefined : json["default_application"],
-        webCertificate: json["web_certificate"] == null ? undefined : json["web_certificate"],
+            json["default_application"] === undefined
+                ? undefined
+                : json["default_application"] === null
+                  ? null
+                  : json["default_application"],
+        webCertificate:
+            json["web_certificate"] === undefined
+                ? undefined
+                : json["web_certificate"] === null
+                  ? null
+                  : json["web_certificate"],
         clientCertificates:
             json["client_certificates"] == null ? undefined : json["client_certificates"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
@@ -194,7 +249,7 @@ export function BrandToJSON(json: any): Brand {
 }
 
 export function BrandToJSONTyped(
-    value?: Omit<Brand, "brand_uuid"> | null,
+    value?: Omit<Brand, "brandUuid"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

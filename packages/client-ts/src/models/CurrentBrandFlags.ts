@@ -19,18 +19,6 @@
  */
 export interface CurrentBrandFlags {
     /**
-     * Applications with no policies bound can be accessed by any user.
-     * @type {boolean}
-     * @memberof CurrentBrandFlags
-     */
-    coreDefaultAppAccess: boolean;
-    /**
-     * Include additional information in audit logs, may incur a performance penalty.
-     * @type {boolean}
-     * @memberof CurrentBrandFlags
-     */
-    enterpriseAuditIncludeExpandedDiff: boolean;
-    /**
      * Upon successful authentication, re-start authentication in other open tabs.
      * @type {boolean}
      * @memberof CurrentBrandFlags
@@ -49,16 +37,20 @@ export interface CurrentBrandFlags {
  * Check if a given object implements the CurrentBrandFlags interface.
  */
 export function instanceOfCurrentBrandFlags(value: object): value is CurrentBrandFlags {
-    if (!("coreDefaultAppAccess" in value) || value["coreDefaultAppAccess"] === undefined)
-        return false;
     if (
-        !("enterpriseAuditIncludeExpandedDiff" in value) ||
-        value["enterpriseAuditIncludeExpandedDiff"] === undefined
+        (!("flowsContinuousLogin" in (value as Record<string, any>)) &&
+            !("flows_continuous_login" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
+            (value as Record<string, any>)["flows_continuous_login"] === undefined)
     )
         return false;
-    if (!("flowsContinuousLogin" in value) || value["flowsContinuousLogin"] === undefined)
+    if (
+        (!("flowsRefreshOthers" in (value as Record<string, any>)) &&
+            !("flows_refresh_others" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowsRefreshOthers"] === undefined &&
+            (value as Record<string, any>)["flows_refresh_others"] === undefined)
+    )
         return false;
-    if (!("flowsRefreshOthers" in value) || value["flowsRefreshOthers"] === undefined) return false;
     return true;
 }
 
@@ -74,8 +66,6 @@ export function CurrentBrandFlagsFromJSONTyped(
         return json;
     }
     return {
-        coreDefaultAppAccess: json["core_default_app_access"],
-        enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
         flowsRefreshOthers: json["flows_refresh_others"],
     };
@@ -94,8 +84,6 @@ export function CurrentBrandFlagsToJSONTyped(
     }
 
     return {
-        core_default_app_access: value["coreDefaultAppAccess"],
-        enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
         flows_continuous_login: value["flowsContinuousLogin"],
         flows_refresh_others: value["flowsRefreshOthers"],
     };

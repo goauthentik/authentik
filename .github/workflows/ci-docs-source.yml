@@ -23,8 +23,15 @@ jobs:
         run: |
           uv run make migrate
           uv run ak build_source_docs
-      - name: Publish
+      - uses: nwtgck/actions-netlify@d22a32a27c918fe470bbc562e984f80ec48c2668 # v4.0.0
+        id: netlify
+        with:
+          publish-dir: "./source_docs"
+          production-deploy: true
+          enable-commit-comment: false
+          enable-pull-request-comment: false
+          enable-commit-status: false
+          enable-github-deployment: false
         env:
-          NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        run: pnpm dlx netlify-cli deploy --dir=source_docs --prod
+          NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59

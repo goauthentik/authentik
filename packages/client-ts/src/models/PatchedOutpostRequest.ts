@@ -82,9 +82,18 @@ export function PatchedOutpostRequestFromJSONTyped(
         type: json["type"] == null ? undefined : OutpostTypeEnumFromJSON(json["type"]),
         providers: json["providers"] == null ? undefined : json["providers"],
         serviceConnection:
-            json["service_connection"] == null ? undefined : json["service_connection"],
+            json["service_connection"] === undefined
+                ? undefined
+                : json["service_connection"] === null
+                  ? null
+                  : json["service_connection"],
         config: json["config"] == null ? undefined : json["config"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
     };
 }
 

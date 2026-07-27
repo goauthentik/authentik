@@ -50,7 +50,13 @@ export interface InvitationSendEmailRequest {
 export function instanceOfInvitationSendEmailRequest(
     value: object,
 ): value is InvitationSendEmailRequest {
-    if (!("emailAddresses" in value) || value["emailAddresses"] === undefined) return false;
+    if (
+        (!("emailAddresses" in (value as Record<string, any>)) &&
+            !("email_addresses" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["emailAddresses"] === undefined &&
+            (value as Record<string, any>)["email_addresses"] === undefined)
+    )
+        return false;
     return true;
 }
 

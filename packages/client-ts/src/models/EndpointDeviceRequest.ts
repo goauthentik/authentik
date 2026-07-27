@@ -90,13 +90,23 @@ export function EndpointDeviceRequestFromJSONTyped(
     return {
         deviceUuid: json["device_uuid"] == null ? undefined : json["device_uuid"],
         name: json["name"],
-        accessGroup: json["access_group"] == null ? undefined : json["access_group"],
+        accessGroup:
+            json["access_group"] === undefined
+                ? undefined
+                : json["access_group"] === null
+                  ? null
+                  : json["access_group"],
         accessGroupObj:
             json["access_group_obj"] == null
                 ? undefined
                 : DeviceAccessGroupRequestFromJSON(json["access_group_obj"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }

@@ -230,32 +230,99 @@ export interface WSFederationProvider {
 export function instanceOfWSFederationProvider(value: object): value is WSFederationProvider {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("assignedApplicationSlug" in value) || value["assignedApplicationSlug"] === undefined)
-        return false;
-    if (!("assignedApplicationName" in value) || value["assignedApplicationName"] === undefined)
-        return false;
     if (
-        !("assignedBackchannelApplicationSlug" in value) ||
-        value["assignedBackchannelApplicationSlug"] === undefined
+        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_application_slug"] === undefined)
     )
         return false;
     if (
-        !("assignedBackchannelApplicationName" in value) ||
-        value["assignedBackchannelApplicationName"] === undefined
+        (!("assignedApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_application_name"] === undefined)
     )
         return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("replyUrl" in value) || value["replyUrl"] === undefined) return false;
+    if (
+        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("replyUrl" in (value as Record<string, any>)) &&
+            !("reply_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["replyUrl"] === undefined &&
+            (value as Record<string, any>)["reply_url"] === undefined)
+    )
+        return false;
     if (!("wtrealm" in value) || value["wtrealm"] === undefined) return false;
-    if (!("urlDownloadMetadata" in value) || value["urlDownloadMetadata"] === undefined)
+    if (
+        (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
+            !("url_download_metadata" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
+            (value as Record<string, any>)["url_download_metadata"] === undefined)
+    )
         return false;
-    if (!("urlWsfed" in value) || value["urlWsfed"] === undefined) return false;
-    if (!("urlIssuer" in value) || value["urlIssuer"] === undefined) return false;
+    if (
+        (!("urlWsfed" in (value as Record<string, any>)) &&
+            !("url_wsfed" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["urlWsfed"] === undefined &&
+            (value as Record<string, any>)["url_wsfed"] === undefined)
+    )
+        return false;
+    if (
+        (!("urlIssuer" in (value as Record<string, any>)) &&
+            !("url_issuer" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["urlIssuer"] === undefined &&
+            (value as Record<string, any>)["url_issuer"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -274,7 +341,11 @@ export function WSFederationProviderFromJSONTyped(
         pk: json["pk"],
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
@@ -300,11 +371,18 @@ export function WSFederationProviderFromJSONTyped(
             json["session_valid_not_on_or_after"] == null
                 ? undefined
                 : json["session_valid_not_on_or_after"],
-        nameIdMapping: json["name_id_mapping"] == null ? undefined : json["name_id_mapping"],
-        authnContextClassRefMapping:
-            json["authn_context_class_ref_mapping"] == null
+        nameIdMapping:
+            json["name_id_mapping"] === undefined
                 ? undefined
-                : json["authn_context_class_ref_mapping"],
+                : json["name_id_mapping"] === null
+                  ? null
+                  : json["name_id_mapping"],
+        authnContextClassRefMapping:
+            json["authn_context_class_ref_mapping"] === undefined
+                ? undefined
+                : json["authn_context_class_ref_mapping"] === null
+                  ? null
+                  : json["authn_context_class_ref_mapping"],
         samlVersion:
             json["saml_version"] == null
                 ? undefined
@@ -317,8 +395,18 @@ export function WSFederationProviderFromJSONTyped(
             json["signature_algorithm"] == null
                 ? undefined
                 : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
-        signingKp: json["signing_kp"] == null ? undefined : json["signing_kp"],
-        encryptionKp: json["encryption_kp"] == null ? undefined : json["encryption_kp"],
+        signingKp:
+            json["signing_kp"] === undefined
+                ? undefined
+                : json["signing_kp"] === null
+                  ? null
+                  : json["signing_kp"],
+        encryptionKp:
+            json["encryption_kp"] === undefined
+                ? undefined
+                : json["encryption_kp"] === null
+                  ? null
+                  : json["encryption_kp"],
         signAssertion: json["sign_assertion"] == null ? undefined : json["sign_assertion"],
         signLogoutRequest:
             json["sign_logout_request"] == null ? undefined : json["sign_logout_request"],
@@ -341,16 +429,16 @@ export function WSFederationProviderToJSONTyped(
         WSFederationProvider,
         | "pk"
         | "component"
-        | "assigned_application_slug"
-        | "assigned_application_name"
-        | "assigned_backchannel_application_slug"
-        | "assigned_backchannel_application_name"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
-        | "url_download_metadata"
-        | "url_wsfed"
-        | "url_issuer"
+        | "assignedApplicationSlug"
+        | "assignedApplicationName"
+        | "assignedBackchannelApplicationSlug"
+        | "assignedBackchannelApplicationName"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "urlDownloadMetadata"
+        | "urlWsfed"
+        | "urlIssuer"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
