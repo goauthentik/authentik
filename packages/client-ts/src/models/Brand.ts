@@ -177,18 +177,17 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
                 ? undefined
                 : json["branding_default_flow_background"],
         flowAuthentication:
-<<<<<<< HEAD
-            json["flow_authentication"] == null ? undefined : json["flow_authentication"],
-        flowUserSwitch: json["flow_user_switch"] == null ? undefined : json["flow_user_switch"],
-        flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
-        flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
-        flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
-=======
             json["flow_authentication"] === undefined
                 ? undefined
                 : json["flow_authentication"] === null
                   ? null
                   : json["flow_authentication"],
+        flowUserSwitch:
+            json["flow_user_switch"] === undefined
+                ? undefined
+                : json["flow_user_switch"] === null
+                  ? null
+                  : json["flow_user_switch"],
         flowInvalidation:
             json["flow_invalidation"] === undefined
                 ? undefined
@@ -207,7 +206,6 @@ export function BrandFromJSONTyped(json: any, ignoreDiscriminator: boolean): Bra
                 : json["flow_unenrollment"] === null
                   ? null
                   : json["flow_unenrollment"],
->>>>>>> main
         flowUserSettings:
             json["flow_user_settings"] === undefined
                 ? undefined

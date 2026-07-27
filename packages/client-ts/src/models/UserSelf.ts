@@ -118,11 +118,6 @@ export function instanceOfUserSelf(value: object): value is UserSelf {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-<<<<<<< HEAD
-    if (!("isActive" in value) || value["isActive"] === undefined) return false;
-    if (!("isSuperuser" in value) || value["isSuperuser"] === undefined) return false;
-    if (!("isCurrent" in value) || value["isCurrent"] === undefined) return false;
-=======
     if (
         (!("isActive" in (value as Record<string, any>)) &&
             !("is_active" in (value as Record<string, any>))) ||
@@ -137,7 +132,13 @@ export function instanceOfUserSelf(value: object): value is UserSelf {
             (value as Record<string, any>)["is_superuser"] === undefined)
     )
         return false;
->>>>>>> main
+    if (
+        (!("isCurrent" in (value as Record<string, any>)) &&
+            !("is_current" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isCurrent"] === undefined &&
+            (value as Record<string, any>)["is_current"] === undefined)
+    )
+        return false;
     if (!("groups" in value) || value["groups"] === undefined) return false;
     if (!("roles" in value) || value["roles"] === undefined) return false;
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
@@ -187,14 +188,9 @@ export function UserSelfToJSONTyped(
     value?: Omit<
         UserSelf,
         | "pk"
-<<<<<<< HEAD
-        | "is_active"
-        | "is_superuser"
-        | "is_current"
-=======
         | "isActive"
         | "isSuperuser"
->>>>>>> main
+        | "isCurrent"
         | "groups"
         | "roles"
         | "avatar"
