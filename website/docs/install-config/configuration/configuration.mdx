@@ -225,7 +225,7 @@ Use index `1`, `2`, and so on for additional replicas.
     - Parameters passed with this setting will override those passed with other settings.
     - The value must be a base64-encoded JSON dictionary.
 
-### Using a PostgreSQL Connection Pooler
+### Use a PostgreSQL connection pooler {#using-a-postgresql-connection-pooler}
 
 If authentik connects through a pooler such as PgBouncer or Pgpool, review these settings carefully:
 
@@ -241,6 +241,40 @@ If authentik connects through a pooler such as PgBouncer or Pgpool, review these
 
     When using transaction pooling, set this to `true`. Server-side cursors keep state across queries and will break when subsequent queries are sent over different backend connections.
 
+#### Session-scoped operations and transaction-mode poolers
+
+Some authentik subsystems need to keep state alive on a single PostgreSQL backend connection across multiple statements:
+
+- The Django Channels Postgres layer issues `LISTEN channels_messages` on a long-lived connection.
+- The dramatiq worker issues `LISTEN authentik.tasks.<queue>.enqueue` and uses session-scoped `pg_advisory_lock(<message-lock-id>)` / `pg_advisory_unlock(<message-lock-id>)` to coordinate message consumption.
+- The startup migration script holds `pg_advisory_lock(1000)` across the entire migrate + system-check pass.
+
+A transaction-pooling pooler (PgBouncer in `pool_mode = transaction`, Cloud SQL's managed connection pooling, etc.) returns the backend to the pool at every `COMMIT`, which breaks all of the above. The pooler may also rewrite which physical backend handles the next statement, so the registered `LISTEN` channel disappears and any session-scoped advisory locks become unreachable.
+
+To run the bulk of ORM traffic through a transaction-pooling pooler while keeping the LISTEN/NOTIFY and advisory-lock paths working, configure a second endpoint that points either directly at PostgreSQL or at a session-mode pooler:
+
+- `AUTHENTIK_POSTGRESQL__DIRECT__HOST`
+- `AUTHENTIK_POSTGRESQL__DIRECT__PORT`
+- `AUTHENTIK_POSTGRESQL__DIRECT__NAME`
+- `AUTHENTIK_POSTGRESQL__DIRECT__USER`
+- `AUTHENTIK_POSTGRESQL__DIRECT__PASSWORD`
+- `AUTHENTIK_POSTGRESQL__DIRECT__SSLMODE`
+- `AUTHENTIK_POSTGRESQL__DIRECT__SSLROOTCERT`
+- `AUTHENTIK_POSTGRESQL__DIRECT__SSLCERT`
+- `AUTHENTIK_POSTGRESQL__DIRECT__SSLKEY`
+- `AUTHENTIK_POSTGRESQL__DIRECT__CONN_OPTIONS`
+
+Any setting left unset falls back to the corresponding top-level `AUTHENTIK_POSTGRESQL__*` value, so the common case of "same database, different endpoint" only requires `AUTHENTIK_POSTGRESQL__DIRECT__HOST` (and optionally `AUTHENTIK_POSTGRESQL__DIRECT__PORT`).
+
+When any of these are set, authentik:
+
+- Adds a Django database alias named `direct` that points at this endpoint. The alias is automatically excluded from the read-replica pool and from migrations — the underlying database is migrated through the `default` endpoint.
+- Routes the Channels Postgres layer's connection pool and its LISTEN connection through the `direct` alias.
+- Routes the dramatiq worker's `_listen_connection` and `_locks_connection` through the `direct` alias. The main task-table ORM queries (enqueue, status updates) continue to use the `default` alias.
+- Opens the startup migration advisory-lock connection against the direct endpoint.
+
+If `AUTHENTIK_POSTGRESQL__DIRECT__*` is not set, all of these connections share the same endpoint as the rest of ORM traffic, and putting a transaction-pool pooler in front of `AUTHENTIK_POSTGRESQL__HOST` will silently break LISTEN/NOTIFY and the dramatiq advisory locks.
+
 ### Recommended starting points
 
 These are good starting points for common deployments:
@@ -251,6 +285,11 @@ These are good starting points for common deployments:
 - PgBouncer or Pgpool in transaction mode:
     - set `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS=true`
     - keep `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE=0` unless you have a reason to change it
+    - configure `AUTHENTIK_POSTGRESQL__DIRECT__HOST` (and `AUTHENTIK_POSTGRESQL__DIRECT__PORT` if needed) to point either directly at PostgreSQL or at a session-mode pooler endpoint, so the channel layer, worker LISTEN connection, and migration advisory lock keep working
+- Cloud SQL with managed connection pooling:
+    - the managed pooler is PgBouncer in transaction mode, so all of the above applies
+    - point `AUTHENTIK_POSTGRESQL__HOST` at the pooled endpoint
+    - point `AUTHENTIK_POSTGRESQL__DIRECT__HOST` at Cloud SQL's direct endpoint (the one that bypasses the pooler)
 - TLS-secured PostgreSQL:
     - keep `AUTHENTIK_POSTGRESQL__SSLMODE=verify-ca` or use `verify-full` if hostname verification is available
 
@@ -428,7 +467,7 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
-For more information on S3 storage, see [S3 storage setup](../../sys-mgmt/ops/storage-s3.md).
+For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.md).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -778,6 +817,22 @@ Configure the path under which authentik is served. For example to access authen
 
 Defaults to `/`.
 
+### `AUTHENTIK_WEB__BASE_URL`:ak-version[2026.8]
+
+The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
+
+This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.md) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
+
+:::info
+Set this to the scheme and host only, without a path. All of authentik is served under [`AUTHENTIK_WEB__PATH`](#authentik_web__path) (`/` by default), and that prefix is already part of every link authentik generates. So even when you serve authentik under a subpath, for example `AUTHENTIK_WEB__PATH=/authentik/`, the base URL stays `https://authentik.company`, and generated links resolve under `https://authentik.company/authentik/`.
+:::
+
+Defaults to an empty string.
+
+This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
+
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 
 Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
@@ -812,7 +867,7 @@ Additional [system settings](../../sys-mgmt/settings.md) are configurable using 
 
 ## Custom python settings
 
-To modify additional settings further than the options above allow, you can create a custom Python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
+To modify additional settings further than the options above allow, you can create a custom Python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. The [`authentik/root/settings.py` file](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py) defines all default settings.
 
 :::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.

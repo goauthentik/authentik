@@ -1,12 +1,12 @@
 ---
-title: Integrate with ArgoCD
-sidebar_label: ArgoCD
+title: Integrate with Argo CD
+sidebar_label: Argo CD
 support_level: community
 ---
 
 import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-## What is ArgoCD?
+## What is Argo CD?
 
 > Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
 >
@@ -16,7 +16,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 The following placeholders are used in this guide:
 
-- `argocd.company` is the FQDN of the ArgoCD installation.
+- `argocd.company` is the FQDN of the Argo CD installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -27,56 +27,57 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of ArgoCD with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Argo CD with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://argocd.company/api/dex/callback` and `https://localhost:8085/auth/callback`.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://argocd.company/api/dex/callback`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Create the users and administrator groups
+### Create the groups
 
-Using the authentik Admin interface, navigate to **Directory** > **Groups** and click **Create** to create two required groups: `ArgoCD Admins` for administrator users and `ArgoCD Viewers` for read-only users.
+Using the authentik Admin interface, navigate to **Directory** > **Groups** and click **Create** to create the groups that Argo CD will use for RBAC:
+
+- `Argo CD Admins` for administrator users.
+- `Argo CD Viewers` for read-only users.
 
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
-## ArgoCD configuration
+## Argo CD configuration
 
-:::info
-We're not going to use the oidc config, but instead the "dex", oidc doesn't allow ArgoCD CLI usage while DEX does.
-:::
+This guide uses the bundled Dex connector in Argo CD. With this configuration, Argo CD can use authentik for the web UI and the CLI, and can map authentik groups to Argo CD RBAC roles.
 
-### Step 1 - Add the OIDC Secret to ArgoCD
+### Add the client secret
 
 In the `argocd-secret` Secret, add the following value to the `data` field:
 
-```yaml
-dex.authentik.clientSecret: <base 64 encoded value of the Client Secret from the Provider above>
+```yaml title="argocd-secret"
+dex.authentik.clientSecret: <base64_encoded_client_secret_from_authentik>
 ```
 
-If using Helm, the above can be added to `configs.secret.extra` in your ArgoCD Helm `values.yaml` file as shown below, securely substituting the string however you see fit:
+If you use the Argo CD Helm chart, add the client secret to `configs.secret.extra` instead:
 
-```yaml
+```yaml title="values.yaml"
 configs:
     secret:
         extra:
-            dex.authentik.clientSecret: "${argocd_authentik_client_secret}"
+            dex.authentik.clientSecret: <Client Secret from authentik>
 ```
 
-### Step 2 - configure ArgoCD to use authentik as OIDC backend
+### Configure Dex
 
-In the `argocd-cm` ConfigMap, add the following to the data field:
+In the `argocd-cm` ConfigMap, add the following values to the `data` field:
 
-```yaml
+```yaml title="argocd-cm"
 url: https://argocd.company
 dex.config: |
     connectors:
@@ -94,17 +95,31 @@ dex.config: |
       id: authentik
 ```
 
-### Step 3 - Map the `ArgoCD Admins` group to ArgoCD's admin role
+If you use the Argo CD Helm chart, add these values to `configs.cm` instead.
 
-In the `argocd-rbac-cm` ConfigMap, add the following to the data field (or create it if it's not already there):
+### Map the groups
 
-```yaml
+In the `argocd-rbac-cm` ConfigMap, add the following values to the `data` field:
+
+```yaml title="argocd-rbac-cm"
 policy.csv: |
-    g, ArgoCD Admins, role:admin
-    g, ArgoCD Viewers, role:readonly
+    g, Argo CD Admins, role:admin
+    g, Argo CD Viewers, role:readonly
 ```
 
-If you already had an "admin" group and thus didn't create the `ArgoCD Admins` one, just replace `ArgoCD Admins` with your existing group name.
-If you did not opt to create a read-only group, or chose to use one with a different name in authentik, rename or remove here accordingly.
+If you already use different group names in authentik, replace `Argo CD Admins` and `Argo CD Viewers` with the matching group names. If you do not need the read-only group, remove that line.
 
-Apply all the modified manifests, and you should be able to log in to ArgoCD both through the UI and the CLI.
+If you use the Argo CD Helm chart, add these values to `configs.rbac` instead.
+
+Apply all modified manifests or Helm values. Group membership is evaluated when users authenticate, so users should log out and log back in after you change their Argo CD group membership.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Argo CD, open Argo CD and log in with authentik. You should also be able to log in with the Argo CD CLI.
+
+## Resources
+
+- [Argo CD documentation - User management and SSO](https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/)
+- [Argo CD documentation - RBAC configuration](https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/)
+- [Argo CD Helm chart values](https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/values.yaml)
+- [Dex documentation - OpenID Connect connector](https://dexidp.io/docs/connectors/oidc/)

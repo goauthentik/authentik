@@ -137,7 +137,18 @@ export interface EventsEventsStatsRetrieveRequest {
 
 export interface EventsEventsTopPerUserListRequest {
     action?: string;
+    actions?: Array<EventActions>;
+    brandName?: string;
+    clientIp?: string;
+    contextAuthorizedApp?: string;
+    contextDevice?: string;
+    contextModelApp?: string;
+    contextModelName?: string;
+    contextModelPk?: string;
+    ordering?: string;
+    search?: string;
     topN?: number;
+    username?: string;
 }
 
 export interface EventsEventsUpdateRequest {
@@ -921,8 +932,52 @@ export class EventsApi extends runtime.BaseAPI {
             queryParameters["action"] = requestParameters["action"];
         }
 
+        if (requestParameters["actions"] != null) {
+            queryParameters["actions"] = requestParameters["actions"];
+        }
+
+        if (requestParameters["brandName"] != null) {
+            queryParameters["brand_name"] = requestParameters["brandName"];
+        }
+
+        if (requestParameters["clientIp"] != null) {
+            queryParameters["client_ip"] = requestParameters["clientIp"];
+        }
+
+        if (requestParameters["contextAuthorizedApp"] != null) {
+            queryParameters["context_authorized_app"] = requestParameters["contextAuthorizedApp"];
+        }
+
+        if (requestParameters["contextDevice"] != null) {
+            queryParameters["context_device"] = requestParameters["contextDevice"];
+        }
+
+        if (requestParameters["contextModelApp"] != null) {
+            queryParameters["context_model_app"] = requestParameters["contextModelApp"];
+        }
+
+        if (requestParameters["contextModelName"] != null) {
+            queryParameters["context_model_name"] = requestParameters["contextModelName"];
+        }
+
+        if (requestParameters["contextModelPk"] != null) {
+            queryParameters["context_model_pk"] = requestParameters["contextModelPk"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
         if (requestParameters["topN"] != null) {
             queryParameters["top_n"] = requestParameters["topN"];
+        }
+
+        if (requestParameters["username"] != null) {
+            queryParameters["username"] = requestParameters["username"];
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

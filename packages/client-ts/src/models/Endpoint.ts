@@ -101,11 +101,29 @@ export function instanceOfEndpoint(value: object): value is Endpoint {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
+    if (
+        (!("providerObj" in (value as Record<string, any>)) &&
+            !("provider_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerObj"] === undefined &&
+            (value as Record<string, any>)["provider_obj"] === undefined)
+    )
+        return false;
     if (!("protocol" in value) || value["protocol"] === undefined) return false;
     if (!("host" in value) || value["host"] === undefined) return false;
-    if (!("authMode" in value) || value["authMode"] === undefined) return false;
-    if (!("launchUrl" in value) || value["launchUrl"] === undefined) return false;
+    if (
+        (!("authMode" in (value as Record<string, any>)) &&
+            !("auth_mode" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authMode"] === undefined &&
+            (value as Record<string, any>)["auth_mode"] === undefined)
+    )
+        return false;
+    if (
+        (!("launchUrl" in (value as Record<string, any>)) &&
+            !("launch_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["launchUrl"] === undefined &&
+            (value as Record<string, any>)["launch_url"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -138,7 +156,7 @@ export function EndpointToJSON(json: any): Endpoint {
 }
 
 export function EndpointToJSONTyped(
-    value?: Omit<Endpoint, "pk" | "provider_obj" | "launch_url"> | null,
+    value?: Omit<Endpoint, "pk" | "providerObj" | "launchUrl"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

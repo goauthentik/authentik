@@ -44,7 +44,13 @@ export interface MicrosoftEntraProviderGroupRequest {
 export function instanceOfMicrosoftEntraProviderGroupRequest(
     value: object,
 ): value is MicrosoftEntraProviderGroupRequest {
-    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (
+        (!("microsoftId" in (value as Record<string, any>)) &&
+            !("microsoft_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["microsoftId"] === undefined &&
+            (value as Record<string, any>)["microsoft_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;

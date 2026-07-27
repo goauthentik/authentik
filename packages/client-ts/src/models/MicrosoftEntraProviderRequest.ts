@@ -111,9 +111,27 @@ export function instanceOfMicrosoftEntraProviderRequest(
     value: object,
 ): value is MicrosoftEntraProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
-    if (!("clientSecret" in value) || value["clientSecret"] === undefined) return false;
-    if (!("tenantId" in value) || value["tenantId"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("clientSecret" in (value as Record<string, any>)) &&
+            !("client_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientSecret"] === undefined &&
+            (value as Record<string, any>)["client_secret"] === undefined)
+    )
+        return false;
+    if (
+        (!("tenantId" in (value as Record<string, any>)) &&
+            !("tenant_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tenantId"] === undefined &&
+            (value as Record<string, any>)["tenant_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -140,7 +158,12 @@ export function MicrosoftEntraProviderRequestFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        filterGroup:
+            json["filter_group"] === undefined
+                ? undefined
+                : json["filter_group"] === null
+                  ? null
+                  : json["filter_group"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined

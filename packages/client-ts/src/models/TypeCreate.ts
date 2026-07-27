@@ -69,7 +69,13 @@ export function instanceOfTypeCreate(value: object): value is TypeCreate {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("description" in value) || value["description"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("modelName" in value) || value["modelName"] === undefined) return false;
+    if (
+        (!("modelName" in (value as Record<string, any>)) &&
+            !("model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modelName"] === undefined &&
+            (value as Record<string, any>)["model_name"] === undefined)
+    )
+        return false;
     return true;
 }
 
