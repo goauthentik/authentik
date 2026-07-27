@@ -4,24 +4,20 @@ import IconExternalLink from "@theme/Icon/ExternalLink";
 
 export function EnterpriseCTA() {
     return (
-        <section className="ak-enterprise" aria-labelledby="choose-an-enterprise-plan">
-            <div className="ak-enterprise__copy">
-                <h3>Enterprise and Enterprise Plus</h3>
-                <p>
-                    Compare both plans, see current pricing, and either start a subscription or
-                    schedule a call with our team.
-                </p>
-            </div>
+        <div className="button-row ak-enterprise-actions">
+            <a className="button button--primary" href="mailto:sales@goauthentik.io">
+                Contact sales
+            </a>
 
             <a
-                className="button button--primary ak-enterprise__cta"
+                className="button ak-enterprise-pricing"
                 href="https://goauthentik.io/pricing/"
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                View pricing
+                See Enterprise details
                 <IconExternalLink />
             </a>
-        </section>
+        </div>
     );
 }

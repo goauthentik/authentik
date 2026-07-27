@@ -1,66 +1,35 @@
-.ak-enterprise {
-    --ak-enterprise-seam: 2.5rem;
-    --ak-enterprise-pad: clamp(1.25rem, 3vw, 2rem);
-
-    display: grid;
-    align-items: center;
-    grid-template-columns: minmax(0, 1fr) auto;
-    margin: 1.5rem 0 2rem;
-    border: 1px solid var(--ifm-color-emphasis-200);
-    background-color: var(--ifm-background-surface-color);
+.ak-enterprise-actions {
+    margin: 1.25rem 0 2rem;
 }
 
-.ak-enterprise__copy {
-    align-self: stretch;
-    padding: var(--ak-enterprise-pad);
-    padding-right: calc(var(--ak-enterprise-pad) + var(--ak-enterprise-seam));
-    margin-right: calc(var(--ak-enterprise-seam) * -1);
-    background-color: color-mix(
-        in srgb,
-        var(--ifm-color-primary) 8%,
-        var(--ifm-background-surface-color)
-    );
-    clip-path: polygon(0 0, 100% 0, calc(100% - var(--ak-enterprise-seam)) 100%, 0 100%);
+.ak-enterprise-actions .button {
+    padding: 0.625rem 1.75rem;
+    font-size: 1.0625rem;
 }
 
-.ak-enterprise__copy h3 {
-    margin-bottom: 0.4rem;
-    font-size: 1.25rem;
-}
-
-.ak-enterprise__copy p {
-    margin-bottom: 0;
-    max-width: 46ch;
-}
-
-.ak-enterprise__cta {
-    margin: var(--ak-enterprise-pad);
-    margin-left: calc(var(--ak-enterprise-pad) + var(--ak-enterprise-seam));
-    padding: 1rem 2rem;
-    font-size: 1.125rem;
-}
-
-.ak-enterprise__cta svg {
+.ak-enterprise-actions svg {
     width: 0.8em;
     height: 0.8em;
     vertical-align: baseline;
 }
 
-@media (max-width: 768px) {
-    .ak-enterprise {
-        grid-template-columns: 1fr;
-    }
+.ak-enterprise-pricing {
+    border: 2px solid currentcolor;
+    color: var(--ifm-color-primary-darkest);
+}
 
-    .ak-enterprise__copy {
-        padding-right: var(--ak-enterprise-pad);
-        padding-bottom: calc(var(--ak-enterprise-pad) + var(--ak-enterprise-seam) / 2);
-        margin-right: 0;
-        margin-bottom: calc(var(--ak-enterprise-seam) / -2);
-        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - var(--ak-enterprise-seam) / 2));
-    }
+.ak-enterprise-pricing:hover,
+.ak-enterprise-pricing:focus-visible {
+    background-color: var(--ifm-color-primary-darkest);
+    color: var(--white);
+}
 
-    .ak-enterprise__cta {
-        margin-left: var(--ak-enterprise-pad);
-        text-align: center;
-    }
+[data-theme="dark"] .ak-enterprise-pricing {
+    color: var(--ifm-color-primary-light);
+}
+
+[data-theme="dark"] .ak-enterprise-pricing:hover,
+[data-theme="dark"] .ak-enterprise-pricing:focus-visible {
+    background-color: var(--ifm-color-primary-light);
+    color: var(--ifm-background-color);
 }
