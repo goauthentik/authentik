@@ -72,6 +72,12 @@ With this recovery flow, the user is sent an email after they've identified them
 
 There's also <DownloadLink to="/blueprints/example/flows-recovery-email-verification.yaml">a version</DownloadLink> of this flow available without MFA validation at `example/flows-recovery-email-verification.yaml`, which is not recommended.
 
+:::note Skip the email stage
+To skip the email stage in the flow, bind the same `default-recovery-skip-if-restored` policy used by the identification stage to the email stage.
+
+Users who meet the policy criteria will then proceed directly to the MFA validation stage.
+:::
+
 ## User deletion
 
 Blueprint path: `example/flows-unenrollment.yaml`
