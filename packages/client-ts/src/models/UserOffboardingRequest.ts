@@ -62,7 +62,13 @@ export interface UserOffboardingRequest {
  */
 export function instanceOfUserOffboardingRequest(value: object): value is UserOffboardingRequest {
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("scheduledAt" in value) || value["scheduledAt"] === undefined) return false;
+    if (
+        (!("scheduledAt" in (value as Record<string, any>)) &&
+            !("scheduled_at" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scheduledAt"] === undefined &&
+            (value as Record<string, any>)["scheduled_at"] === undefined)
+    )
+        return false;
     return true;
 }
 

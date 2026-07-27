@@ -167,6 +167,10 @@ export const ROUTES: Route[] = [
         await import("#admin/lifecycle/ReviewListPage");
         return html`<ak-review-list></ak-review-list>`;
     }),
+    new Route(new RegExp("^/events/offboardings$"), async () => {
+        await import("#admin/lifecycle/OffboardingListPage");
+        return html`<ak-offboarding-list></ak-offboarding-list>`;
+    }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");
         return html`<ak-outpost-list></ak-outpost-list>`;
