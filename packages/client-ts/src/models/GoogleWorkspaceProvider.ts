@@ -160,21 +160,54 @@ export function instanceOfGoogleWorkspaceProvider(value: object): value is Googl
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
-        !("assignedBackchannelApplicationSlug" in value) ||
-        value["assignedBackchannelApplicationSlug"] === undefined
+        (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_slug"] === undefined)
     )
         return false;
     if (
-        !("assignedBackchannelApplicationName" in value) ||
-        value["assignedBackchannelApplicationName"] === undefined
+        (!("assignedBackchannelApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_backchannel_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedBackchannelApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_backchannel_application_name"] === undefined)
     )
         return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("delegatedSubject" in value) || value["delegatedSubject"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("delegatedSubject" in (value as Record<string, any>)) &&
+            !("delegated_subject" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["delegatedSubject"] === undefined &&
+            (value as Record<string, any>)["delegated_subject"] === undefined)
+    )
+        return false;
     if (!("credentials" in value) || value["credentials"] === undefined) return false;
-    if (!("defaultGroupEmailDomain" in value) || value["defaultGroupEmailDomain"] === undefined)
+    if (
+        (!("defaultGroupEmailDomain" in (value as Record<string, any>)) &&
+            !("default_group_email_domain" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["defaultGroupEmailDomain"] === undefined &&
+            (value as Record<string, any>)["default_group_email_domain"] === undefined)
+    )
         return false;
     return true;
 }
@@ -209,7 +242,12 @@ export function GoogleWorkspaceProviderFromJSONTyped(
             json["exclude_users_service_account"] == null
                 ? undefined
                 : json["exclude_users_service_account"],
-        filterGroup: json["filter_group"] == null ? undefined : json["filter_group"],
+        filterGroup:
+            json["filter_group"] === undefined
+                ? undefined
+                : json["filter_group"] === null
+                  ? null
+                  : json["filter_group"],
         userDeleteAction:
             json["user_delete_action"] == null
                 ? undefined
@@ -234,11 +272,11 @@ export function GoogleWorkspaceProviderToJSONTyped(
         GoogleWorkspaceProvider,
         | "pk"
         | "component"
-        | "assigned_backchannel_application_slug"
-        | "assigned_backchannel_application_name"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
+        | "assignedBackchannelApplicationSlug"
+        | "assignedBackchannelApplicationName"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

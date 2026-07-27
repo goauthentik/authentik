@@ -55,8 +55,20 @@ export interface DeviceConnection {
 export function instanceOfDeviceConnection(value: object): value is DeviceConnection {
     if (!("device" in value) || value["device"] === undefined) return false;
     if (!("connector" in value) || value["connector"] === undefined) return false;
-    if (!("connectorObj" in value) || value["connectorObj"] === undefined) return false;
-    if (!("latestSnapshot" in value) || value["latestSnapshot"] === undefined) return false;
+    if (
+        (!("connectorObj" in (value as Record<string, any>)) &&
+            !("connector_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["connectorObj"] === undefined &&
+            (value as Record<string, any>)["connector_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("latestSnapshot" in (value as Record<string, any>)) &&
+            !("latest_snapshot" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["latestSnapshot"] === undefined &&
+            (value as Record<string, any>)["latest_snapshot"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -84,7 +96,7 @@ export function DeviceConnectionToJSON(json: any): DeviceConnection {
 }
 
 export function DeviceConnectionToJSONTyped(
-    value?: Omit<DeviceConnection, "connector_obj" | "latest_snapshot"> | null,
+    value?: Omit<DeviceConnection, "connectorObj" | "latestSnapshot"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

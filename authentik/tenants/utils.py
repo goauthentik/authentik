@@ -26,3 +26,8 @@ def get_unique_identifier() -> str:
             return install_id
         return str(get_current_tenant().tenant_uuid)
     return install_id
+
+
+def normalize_base_url(value: str | None) -> str:
+    """Normalize a configured base URL: strip whitespace and trailing slashes."""
+    return (value or "").strip().rstrip("/")

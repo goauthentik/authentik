@@ -51,10 +51,34 @@ export interface FlowInspectorPlan {
  * Check if a given object implements the FlowInspectorPlan interface.
  */
 export function instanceOfFlowInspectorPlan(value: object): value is FlowInspectorPlan {
-    if (!("currentStage" in value) || value["currentStage"] === undefined) return false;
-    if (!("nextPlannedStage" in value) || value["nextPlannedStage"] === undefined) return false;
-    if (!("planContext" in value) || value["planContext"] === undefined) return false;
-    if (!("sessionId" in value) || value["sessionId"] === undefined) return false;
+    if (
+        (!("currentStage" in (value as Record<string, any>)) &&
+            !("current_stage" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["currentStage"] === undefined &&
+            (value as Record<string, any>)["current_stage"] === undefined)
+    )
+        return false;
+    if (
+        (!("nextPlannedStage" in (value as Record<string, any>)) &&
+            !("next_planned_stage" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nextPlannedStage"] === undefined &&
+            (value as Record<string, any>)["next_planned_stage"] === undefined)
+    )
+        return false;
+    if (
+        (!("planContext" in (value as Record<string, any>)) &&
+            !("plan_context" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["planContext"] === undefined &&
+            (value as Record<string, any>)["plan_context"] === undefined)
+    )
+        return false;
+    if (
+        (!("sessionId" in (value as Record<string, any>)) &&
+            !("session_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["sessionId"] === undefined &&
+            (value as Record<string, any>)["session_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -84,7 +108,7 @@ export function FlowInspectorPlanToJSON(json: any): FlowInspectorPlan {
 export function FlowInspectorPlanToJSONTyped(
     value?: Omit<
         FlowInspectorPlan,
-        "current_stage" | "next_planned_stage" | "plan_context" | "session_id"
+        "currentStage" | "nextPlannedStage" | "planContext" | "sessionId"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

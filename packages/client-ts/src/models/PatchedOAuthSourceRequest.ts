@@ -221,8 +221,17 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         promoted: json["promoted"] == null ? undefined : json["promoted"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
         userPropertyMappings:
             json["user_property_mappings"] == null ? undefined : json["user_property_mappings"],
         groupPropertyMappings:
@@ -246,10 +255,30 @@ export function PatchedOAuthSourceRequestFromJSONTyped(
             json["provider_type"] == null
                 ? undefined
                 : ProviderTypeEnumFromJSON(json["provider_type"]),
-        requestTokenUrl: json["request_token_url"] == null ? undefined : json["request_token_url"],
-        authorizationUrl: json["authorization_url"] == null ? undefined : json["authorization_url"],
-        accessTokenUrl: json["access_token_url"] == null ? undefined : json["access_token_url"],
-        profileUrl: json["profile_url"] == null ? undefined : json["profile_url"],
+        requestTokenUrl:
+            json["request_token_url"] === undefined
+                ? undefined
+                : json["request_token_url"] === null
+                  ? null
+                  : json["request_token_url"],
+        authorizationUrl:
+            json["authorization_url"] === undefined
+                ? undefined
+                : json["authorization_url"] === null
+                  ? null
+                  : json["authorization_url"],
+        accessTokenUrl:
+            json["access_token_url"] === undefined
+                ? undefined
+                : json["access_token_url"] === null
+                  ? null
+                  : json["access_token_url"],
+        profileUrl:
+            json["profile_url"] === undefined
+                ? undefined
+                : json["profile_url"] === null
+                  ? null
+                  : json["profile_url"],
         pkce: json["pkce"] == null ? undefined : PKCEMethodEnumFromJSON(json["pkce"]),
         consumerKey: json["consumer_key"] == null ? undefined : json["consumer_key"],
         consumerSecret: json["consumer_secret"] == null ? undefined : json["consumer_secret"],

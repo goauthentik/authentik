@@ -53,8 +53,20 @@ export interface CertificateGenerationRequest {
 export function instanceOfCertificateGenerationRequest(
     value: object,
 ): value is CertificateGenerationRequest {
-    if (!("commonName" in value) || value["commonName"] === undefined) return false;
-    if (!("validityDays" in value) || value["validityDays"] === undefined) return false;
+    if (
+        (!("commonName" in (value as Record<string, any>)) &&
+            !("common_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["commonName"] === undefined &&
+            (value as Record<string, any>)["common_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("validityDays" in (value as Record<string, any>)) &&
+            !("validity_days" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["validityDays"] === undefined &&
+            (value as Record<string, any>)["validity_days"] === undefined)
+    )
+        return false;
     return true;
 }
 

@@ -3,7 +3,7 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -11,6 +11,8 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import {
     oauth2ProviderSelector,
@@ -29,8 +31,7 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export type ProxyModeValue = { value: ProxyMode };
-export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
+export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {

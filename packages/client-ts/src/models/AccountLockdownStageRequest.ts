@@ -85,9 +85,11 @@ export function AccountLockdownStageRequestFromJSONTyped(
         deleteSessions: json["delete_sessions"] == null ? undefined : json["delete_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
         selfServiceCompletionFlow:
-            json["self_service_completion_flow"] == null
+            json["self_service_completion_flow"] === undefined
                 ? undefined
-                : json["self_service_completion_flow"],
+                : json["self_service_completion_flow"] === null
+                  ? null
+                  : json["self_service_completion_flow"],
     };
 }
 

@@ -1,3 +1,7 @@
+/**
+ * @file A function that returns a ScheduleList ready to drop into any view
+ */
+
 import "#components/tasks/ScheduleList";
 
 import { ModelEnum } from "@goauthentik/api";

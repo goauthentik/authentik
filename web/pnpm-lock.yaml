@@ -36,9 +36,6 @@ catalogs:
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
-    typescript-eslint:
-      specifier: ^8.64.0
-      version: 8.64.0
 
 overrides:
   '@goauthentik/esbuild-plugin-live-reload>esbuild': ^0.28.1
@@ -441,37 +438,6 @@ importers:
 
   packages/node-domexception: {}
 
-  packages/prettier-config:
-    dependencies:
-      format-imports:
-        specifier: ^4.0.8
-        version: 4.0.8(jiti@2.7.0)
-    devDependencies:
-      '@eslint/js':
-        specifier: 'catalog:'
-        version: 9.39.5
-      '@goauthentik/tsconfig':
-        specifier: link:../tsconfig
-        version: link:../tsconfig
-      '@types/node':
-        specifier: 'catalog:'
-        version: 26.1.1
-      eslint:
-        specifier: 'catalog:'
-        version: 9.39.5(jiti@2.7.0)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.8.3
-      prettier-plugin-packagejson:
-        specifier: ^3.0.2
-        version: 3.0.2(prettier@3.8.3)
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
-      typescript-eslint:
-        specifier: 'catalog:'
-        version: 8.64.0(eslint@9.39.5(jiti@2.7.0))(typescript@6.0.3)
-
   packages/sfe:
     dependencies:
       '@goauthentik/api':
@@ -553,8 +519,6 @@ importers:
       '@swc/core-win32-x64-msvc':
         specifier: ^1.15.40
         version: 1.15.43
-
-  packages/tsconfig: {}
 
 packages:
 

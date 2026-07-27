@@ -146,19 +146,47 @@ export interface Flow {
  */
 export function instanceOfFlow(value: object): value is Flow {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("policybindingmodelPtrId" in value) || value["policybindingmodelPtrId"] === undefined)
+    if (
+        (!("policybindingmodelPtrId" in (value as Record<string, any>)) &&
+            !("policybindingmodel_ptr_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policybindingmodelPtrId"] === undefined &&
+            (value as Record<string, any>)["policybindingmodel_ptr_id"] === undefined)
+    )
         return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (!("title" in value) || value["title"] === undefined) return false;
     if (!("designation" in value) || value["designation"] === undefined) return false;
-    if (!("backgroundUrl" in value) || value["backgroundUrl"] === undefined) return false;
-    if (!("backgroundThemedUrls" in value) || value["backgroundThemedUrls"] === undefined)
+    if (
+        (!("backgroundUrl" in (value as Record<string, any>)) &&
+            !("background_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["backgroundUrl"] === undefined &&
+            (value as Record<string, any>)["background_url"] === undefined)
+    )
+        return false;
+    if (
+        (!("backgroundThemedUrls" in (value as Record<string, any>)) &&
+            !("background_themed_urls" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["backgroundThemedUrls"] === undefined &&
+            (value as Record<string, any>)["background_themed_urls"] === undefined)
+    )
         return false;
     if (!("stages" in value) || value["stages"] === undefined) return false;
     if (!("policies" in value) || value["policies"] === undefined) return false;
-    if (!("cacheCount" in value) || value["cacheCount"] === undefined) return false;
-    if (!("exportUrl" in value) || value["exportUrl"] === undefined) return false;
+    if (
+        (!("cacheCount" in (value as Record<string, any>)) &&
+            !("cache_count" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["cacheCount"] === undefined &&
+            (value as Record<string, any>)["cache_count"] === undefined)
+    )
+        return false;
+    if (
+        (!("exportUrl" in (value as Record<string, any>)) &&
+            !("export_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["exportUrl"] === undefined &&
+            (value as Record<string, any>)["export_url"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -210,13 +238,13 @@ export function FlowToJSONTyped(
     value?: Omit<
         Flow,
         | "pk"
-        | "policybindingmodel_ptr_id"
-        | "background_url"
-        | "background_themed_urls"
+        | "policybindingmodelPtrId"
+        | "backgroundUrl"
+        | "backgroundThemedUrls"
         | "stages"
         | "policies"
-        | "cache_count"
-        | "export_url"
+        | "cacheCount"
+        | "exportUrl"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

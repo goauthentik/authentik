@@ -6,10 +6,6 @@ support_level: community
 
 import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-:::info
-These instructions apply to all projects in the Frappe Family, including ERPNext.
-:::
-
 ## What is Frappe?
 
 > Frappe is a full stack, batteries-included, web framework written in Python and JavaScript.
@@ -22,10 +18,11 @@ The following placeholders are used in this guide:
 
 - `frappe.company` is the FQDN of the Frappe installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `provider` is the name for the social login provider in Frappe.
+
+These instructions apply to Frappe Framework apps that use Social Login Key, including ERPNext.
 
 :::info
-This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
 ## authentik configuration
@@ -34,64 +31,58 @@ This documentation only lists the settings that have been changed from their def
 
 To support the integration of Frappe with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/<provider-name>`. Replace `<provider-name>` with the name of the provider in Frappe.
-    - Select any available signing key.
-    - Under **Advanced protocol settings**, set **Subject mode** to be `Based on the Users's username`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/authentik`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Frappe configuration
 
-1. **Navigate to Integrations**
-    - From the Frappe main menu, go to **Integrations** and then select **Social Login Key**.
-
-2. **Add a New Social Login Key**
-    - Click the black **+ New** button in the top-right corner.
-      ![](./frappe1.png)
-
-3. **Enter the Required Settings**
+1. Log in to Frappe as an administrator.
+2. From the Frappe main menu, navigate to **Integrations** and select **Social Login Key**.
+3. Click **+ New**.
+4. Configure the following settings:
     - **Client Credentials**
-        - **Enable Social Login**: Turn the toggle to the **on** position.
-        - **Client ID**: Enter the Client ID from authentik.
-        - **Client Secret**: Enter the Client Secret from authentik.
-
+        - **Enable Social Login**: enable this option.
+        - **Provider Name**: `authentik`.
+        - **Client ID**: Client ID from authentik.
+        - **Client Secret**: Client Secret from authentik.
     - **Configuration**
-        - **Sign-ups**: Set to **Allow**.
-          ![](./frappe2.png)
-
+        - **Sign ups**: `Allow`.
     - **Identity Details**
-        - **Base URL**: `https://authentik.company/`
-        - **Client URLs**:
-            - **Authorize URL**: `/application/o/authorize/`
-            - **Access Token URL**: `/application/o/token/`
-            - **Redirect URL**: `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/<provider-name>` (replace `<provider-name>` with the name of the provider in Frappe)
-            - **API Endpoint**: `/application/o/userinfo/`
-              ![](./frappe3.png)
-
+        - **Base URL**: `https://authentik.company`
+    - **Client URLs**
+        - **Authorize URL**: `/application/o/authorize/`
+        - **Access Token URL**: `/application/o/token/`
+        - **Redirect URL**: `/api/method/frappe.integrations.oauth2_logins.custom/authentik`
+        - **API Endpoint**: `/application/o/userinfo/`
     - **Client Information**
         - **Auth URL Data**:
-            ```json
-            { "response_type": "code", "scope": "email profile openid" }
-            ```
-            ![](./frappe4.png)
 
-4. **Save the Configuration**
-    - Click the black **Save** button in the top-right corner to complete the setup.
+            ```json
+            {
+                "response_type": "code",
+                "scope": "openid email profile"
+            }
+            ```
+
+5. Click **Save**.
 
 ## Configuration verification
 
-To verify that authentik is correctly set up with Frappe, navigate to your Frappe installation and click **Login with Provider**. A successful login should redirect you to the main page of your installation.
+To confirm that authentik is properly configured with Frappe, log out of Frappe and click the login button for your configured provider. A successful login should redirect you to authentik and return you to Frappe after authentication.
 
 ## Resources
 
-- [Frappe's official OpenID Connect guide](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)
+- [Frappe Docs - Adding Social Login Provider](https://docs.frappe.io/framework/user/en/guides/app-development/adding-social-login-provider)
+- [Frappe Docs - How To Enable Social Logins](https://docs.frappe.io/framework/user/en/guides/deployment/how-to-enable-social-logins)
+- [Frappe Docs - OpenID Connect and Frappe social login](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)

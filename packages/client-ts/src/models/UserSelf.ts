@@ -112,14 +112,32 @@ export function instanceOfUserSelf(value: object): value is UserSelf {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("isActive" in value) || value["isActive"] === undefined) return false;
-    if (!("isSuperuser" in value) || value["isSuperuser"] === undefined) return false;
+    if (
+        (!("isActive" in (value as Record<string, any>)) &&
+            !("is_active" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isActive"] === undefined &&
+            (value as Record<string, any>)["is_active"] === undefined)
+    )
+        return false;
+    if (
+        (!("isSuperuser" in (value as Record<string, any>)) &&
+            !("is_superuser" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isSuperuser"] === undefined &&
+            (value as Record<string, any>)["is_superuser"] === undefined)
+    )
+        return false;
     if (!("groups" in value) || value["groups"] === undefined) return false;
     if (!("roles" in value) || value["roles"] === undefined) return false;
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("settings" in value) || value["settings"] === undefined) return false;
-    if (!("systemPermissions" in value) || value["systemPermissions"] === undefined) return false;
+    if (
+        (!("systemPermissions" in (value as Record<string, any>)) &&
+            !("system_permissions" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["systemPermissions"] === undefined &&
+            (value as Record<string, any>)["system_permissions"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -156,14 +174,14 @@ export function UserSelfToJSONTyped(
     value?: Omit<
         UserSelf,
         | "pk"
-        | "is_active"
-        | "is_superuser"
+        | "isActive"
+        | "isSuperuser"
         | "groups"
         | "roles"
         | "avatar"
         | "uid"
         | "settings"
-        | "system_permissions"
+        | "systemPermissions"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
