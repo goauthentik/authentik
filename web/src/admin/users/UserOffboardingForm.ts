@@ -109,9 +109,12 @@ export class UserOffboardingForm extends ModelForm<UserOffboarding, string> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${msg("The offboarding action runs at this time.", {
-                        id: "offboarding.field.scheduled-for.description",
-                    })}
+                    ${msg(
+                        "The offboarding runs on the next scheduled check after this time (within a few minutes).",
+                        {
+                            id: "offboarding.field.scheduled-for.description",
+                        },
+                    )}
                 </p>
             </ak-form-element-horizontal>
 

@@ -1,5 +1,3 @@
-import "#admin/lifecycle/LifecyclePreviewBanner";
-import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#components/ak-switch-input";
 import "#elements/buttons/SpinnerButton/index";
@@ -14,11 +12,11 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { offboardingActionLabel, OffboardingStatus } from "#admin/lifecycle/utils";
 
-import { LifecycleApi, ModelEnum, OffboardingStatusEnum, UserOffboarding } from "@goauthentik/api";
+import { LifecycleApi, OffboardingStatusEnum, UserOffboarding } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 @customElement("ak-offboarding-list")
 export class OffboardingListPage extends TablePage<UserOffboarding> {
@@ -31,13 +29,21 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
     );
     public override pageIcon = "pf-icon pf-icon-user";
 
-    @property()
     public override order = "scheduled_at";
 
     protected override searchEnabled = true;
 
     @state()
     showOnlyPending = true;
+
+    // Shared by the bulk and per-row cancel paths so they stay in sync.
+    #cancelOffboarding = (item: UserOffboarding) =>
+        aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id });
+
+    #cancelMetadata = (item: UserOffboarding) => [
+        { key: msg("User"), value: item.userObj.username },
+        { key: msg("Action"), value: offboardingActionLabel(item.action) },
+    ];
 
     protected async apiEndpoint(): Promise<PaginatedResponse<UserOffboarding>> {
         return aki(LifecycleApi).lifecycleUserOffboardingList({
@@ -46,25 +52,21 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         });
     }
 
-    protected override renderSectionBefore(): SlottedTemplateResult {
-        return html`<ak-lifecycle-preview-banner></ak-lifecycle-preview-banner>`;
-    }
+    protected togglePendingOffboardingFilter = (): void => {
+        this.showOnlyPending = !this.showOnlyPending;
+        this.page = 1;
+        this.fetch();
+    };
 
     protected override renderToolbar(): TemplateResult {
-        return html`
-            <ak-switch-input
+        return html`<ak-switch-input
                 name="showOnlyPending"
                 ?checked=${this.showOnlyPending}
                 label=${msg("Only show pending offboardings")}
-                @change=${() => {
-                    this.showOnlyPending = !this.showOnlyPending;
-                    this.page = 1;
-                    this.fetch();
-                }}
+                @change=${this.togglePendingOffboardingFilter}
             >
             </ak-switch-input>
-            ${super.renderToolbar()}
-        `;
+            ${super.renderToolbar()}`;
     }
 
     protected override columns: TableColumn[] = [
@@ -81,18 +83,34 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
         return html`<ak-forms-delete-bulk
             object-label=${msg("Offboarding(s)")}
             action=${msg("canceled")}
-            button-label=${msg("Cancel")}
+            button-label=${msg("Cancel Offboardings")}
             .objects=${this.selectedElements}
-            .delete=${(item: UserOffboarding) =>
-                aki(LifecycleApi).lifecycleUserOffboardingDestroy({ id: item.id })}
-            .metadata=${(item: UserOffboarding) => [
-                { key: msg("User"), value: item.userObj.username },
-                { key: msg("Action"), value: offboardingActionLabel(item.action) },
-            ]}
+            .delete=${this.#cancelOffboarding}
+            .metadata=${this.#cancelMetadata}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Cancel")}
+                ${msg("Cancel Offboardings")}
             </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected renderRowActions(item: UserOffboarding): SlottedTemplateResult {
+        // Only a pending offboarding can be cancelled, and never your own — the
+        // backend enforces both, so hide the control rather than offer a dead 403.
+        const cancelable =
+            item.status === OffboardingStatusEnum.Pending && item.user !== this.currentUser?.pk;
+        if (!cancelable) {
+            return msg("-");
+        }
+        return html`<ak-forms-delete-bulk
+            object-label=${msg("Offboarding(s)")}
+            action=${msg("canceled")}
+            button-label=${msg("Cancel Offboarding")}
+            .objects=${[item]}
+            .delete=${this.#cancelOffboarding}
+            .metadata=${this.#cancelMetadata}
+        >
+            <button slot="trigger" class="pf-c-button pf-m-secondary">${msg("Cancel")}</button>
         </ak-forms-delete-bulk>`;
     }
 
@@ -103,11 +121,7 @@ export class OffboardingListPage extends TablePage<UserOffboarding> {
             html`<ak-timestamp .timestamp=${item.scheduledAt} datetime></ak-timestamp>`,
             OffboardingStatus({ status: item.status }),
             item.createdByObj?.username ?? msg("-"),
-            html`<ak-rbac-object-permission-modal
-                model=${ModelEnum.AuthentikLifecycleUseroffboarding}
-                objectPk=${item.id}
-            >
-            </ak-rbac-object-permission-modal>`,
+            this.renderRowActions(item),
         ];
     }
 }

@@ -157,17 +157,59 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : json["branding_default_flow_background"],
         flowAuthentication:
-            json["flow_authentication"] == null ? undefined : json["flow_authentication"],
-        flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
-        flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
-        flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
+            json["flow_authentication"] === undefined
+                ? undefined
+                : json["flow_authentication"] === null
+                  ? null
+                  : json["flow_authentication"],
+        flowInvalidation:
+            json["flow_invalidation"] === undefined
+                ? undefined
+                : json["flow_invalidation"] === null
+                  ? null
+                  : json["flow_invalidation"],
+        flowRecovery:
+            json["flow_recovery"] === undefined
+                ? undefined
+                : json["flow_recovery"] === null
+                  ? null
+                  : json["flow_recovery"],
+        flowUnenrollment:
+            json["flow_unenrollment"] === undefined
+                ? undefined
+                : json["flow_unenrollment"] === null
+                  ? null
+                  : json["flow_unenrollment"],
         flowUserSettings:
-            json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
-        flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
-        flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
+            json["flow_user_settings"] === undefined
+                ? undefined
+                : json["flow_user_settings"] === null
+                  ? null
+                  : json["flow_user_settings"],
+        flowDeviceCode:
+            json["flow_device_code"] === undefined
+                ? undefined
+                : json["flow_device_code"] === null
+                  ? null
+                  : json["flow_device_code"],
+        flowLockdown:
+            json["flow_lockdown"] === undefined
+                ? undefined
+                : json["flow_lockdown"] === null
+                  ? null
+                  : json["flow_lockdown"],
         defaultApplication:
-            json["default_application"] == null ? undefined : json["default_application"],
-        webCertificate: json["web_certificate"] == null ? undefined : json["web_certificate"],
+            json["default_application"] === undefined
+                ? undefined
+                : json["default_application"] === null
+                  ? null
+                  : json["default_application"],
+        webCertificate:
+            json["web_certificate"] === undefined
+                ? undefined
+                : json["web_certificate"] === null
+                  ? null
+                  : json["web_certificate"],
         clientCertificates:
             json["client_certificates"] == null ? undefined : json["client_certificates"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],

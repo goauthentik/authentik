@@ -95,8 +95,20 @@ export interface SSFStream {
 export function instanceOfSSFStream(value: object): value is SSFStream {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
-    if (!("providerObj" in value) || value["providerObj"] === undefined) return false;
-    if (!("deliveryMethod" in value) || value["deliveryMethod"] === undefined) return false;
+    if (
+        (!("providerObj" in (value as Record<string, any>)) &&
+            !("provider_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["providerObj"] === undefined &&
+            (value as Record<string, any>)["provider_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("deliveryMethod" in (value as Record<string, any>)) &&
+            !("delivery_method" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deliveryMethod"] === undefined &&
+            (value as Record<string, any>)["delivery_method"] === undefined)
+    )
+        return false;
     if (!("format" in value) || value["format"] === undefined) return false;
     if (!("iss" in value) || value["iss"] === undefined) return false;
     return true;
@@ -116,7 +128,12 @@ export function SSFStreamFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         provider: json["provider"],
         providerObj: SSFProviderFromJSON(json["provider_obj"]),
         deliveryMethod: DeliveryMethodEnumFromJSON(json["delivery_method"]),
-        endpointUrl: json["endpoint_url"] == null ? undefined : json["endpoint_url"],
+        endpointUrl:
+            json["endpoint_url"] === undefined
+                ? undefined
+                : json["endpoint_url"] === null
+                  ? null
+                  : json["endpoint_url"],
         eventsRequested:
             json["events_requested"] == null
                 ? undefined
@@ -132,7 +149,7 @@ export function SSFStreamToJSON(json: any): SSFStream {
 }
 
 export function SSFStreamToJSONTyped(
-    value?: Omit<SSFStream, "pk" | "provider_obj"> | null,
+    value?: Omit<SSFStream, "pk" | "providerObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

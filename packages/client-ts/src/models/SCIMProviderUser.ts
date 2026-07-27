@@ -64,9 +64,21 @@ export interface SCIMProviderUser {
  */
 export function instanceOfSCIMProviderUser(value: object): value is SCIMProviderUser {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("scimId" in value) || value["scimId"] === undefined) return false;
+    if (
+        (!("scimId" in (value as Record<string, any>)) &&
+            !("scim_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["scimId"] === undefined &&
+            (value as Record<string, any>)["scim_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -98,7 +110,7 @@ export function SCIMProviderUserToJSON(json: any): SCIMProviderUser {
 }
 
 export function SCIMProviderUserToJSONTyped(
-    value?: Omit<SCIMProviderUser, "id" | "user_obj" | "attributes"> | null,
+    value?: Omit<SCIMProviderUser, "id" | "userObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
