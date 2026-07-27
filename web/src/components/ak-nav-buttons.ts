@@ -142,7 +142,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
         </div>`;
     }
 
-    protected renderImpersonation(): SlottedTemplateResult {
+    protected renderImpersonation() {
         if (!this.impersonating) return nothing;
 
         const onClick = async () => {
