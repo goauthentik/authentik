@@ -110,7 +110,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
-            # Dedup by pk so a caller passing the same target twice can't mint duplicate
+            # De-dupe by pk so a caller passing the same target twice can't mint duplicate
             # GrantRequestTargets (and therefore duplicate granted PolicyBindings).
             deduped = list({pbm.pk: pbm for pbm in pbms}.values())
             for pbm in deduped:
