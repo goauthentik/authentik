@@ -162,6 +162,7 @@ export const ModelEnum = {
     AuthentikLifecycleLifecyclerule: "authentik_lifecycle.lifecyclerule",
     AuthentikLifecycleLifecycleiteration: "authentik_lifecycle.lifecycleiteration",
     AuthentikLifecycleReview: "authentik_lifecycle.review",
+    AuthentikLifecycleUseroffboarding: "authentik_lifecycle.useroffboarding",
     AuthentikPoliciesUniquePasswordUniquepasswordpolicy:
         "authentik_policies_unique_password.uniquepasswordpolicy",
     AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider:
@@ -176,6 +177,10 @@ export const ModelEnum = {
     AuthentikProvidersWsFederationWsfederationprovider:
         "authentik_providers_ws_federation.wsfederationprovider",
     AuthentikReportsDataexport: "authentik_reports.dataexport",
+    AuthentikRequestsRequestrulechildbinding: "authentik_requests.requestrulechildbinding",
+    AuthentikRequestsRequestrulebinding: "authentik_requests.requestrulebinding",
+    AuthentikRequestsRequestrule: "authentik_requests.requestrule",
+    AuthentikRequestsGrantrequest: "authentik_requests.grantrequest",
     AuthentikStagesAccountLockdownAccountlockdownstage:
         "authentik_stages_account_lockdown.accountlockdownstage",
     AuthentikStagesAuthenticatorEndpointGdtcAuthenticatorendpointgdtcstage:

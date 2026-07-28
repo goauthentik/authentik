@@ -32,6 +32,12 @@ export interface Application {
      */
     readonly pk: string;
     /**
+     *
+     * @type {string}
+     * @memberof Application
+     */
+    readonly pbmUuid: string;
+    /**
      * Application's display Name.
      * @type {string}
      * @memberof Application
@@ -140,6 +146,13 @@ export interface Application {
  */
 export function instanceOfApplication(value: object): value is Application {
     if (!("pk" in value) || value["pk"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("slug" in value) || value["slug"] === undefined) return false;
     if (
@@ -190,6 +203,7 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         pk: json["pk"],
+        pbmUuid: json["pbm_uuid"],
         name: json["name"],
         slug: json["slug"],
         provider:
@@ -229,6 +243,7 @@ export function ApplicationToJSONTyped(
     value?: Omit<
         Application,
         | "pk"
+        | "pbmUuid"
         | "providerObj"
         | "backchannelProvidersObj"
         | "launchUrl"

@@ -62,7 +62,9 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
     [null, msg("Applications"), null, [
         ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
         ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
-        ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_REGEX})$`]],]
+        ["/outpost/outposts", msg("Outposts"), [`^/outpost/outposts/(?<id>${UUID_REGEX})$`]],
+        ["/requests/rules", msg("Request Rules"), {enterprise:true}],
+        ["/requests/access-requests", msg("Access Requests"), {enterprise:true}],]
     ],
     [null, msg("Endpoint Devices"), null, [
         ["/endpoints/devices", msg("Devices"), [`^/endpoints/devices/(?<uuid>${UUID_REGEX})$`]],
@@ -75,6 +77,7 @@ export const createAdminSidebarEntries = (): readonly SidebarEntry[] => [
         ["/events/transports", msg("Notification Transports")],
         ["/events/lifecycle-rules", msg("Lifecycle Rules"), {enterprise:true}],
         ["/events/lifecycle-reviews", msg("Reviews"), {enterprise:true}],
+        ["/events/offboardings", msg("Offboardings"), {enterprise:true}],
         ["/events/exports", msg("Data Exports"), {enterprise:true}]]
     ],
     [null, msg("Customization"), null, [

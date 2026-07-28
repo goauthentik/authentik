@@ -95,6 +95,7 @@ class EventAction(models.TextChoices):
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
+    USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
@@ -134,6 +135,11 @@ class EventAction(models.TextChoices):
     REVIEW_OVERDUE = "review_overdue"
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
+
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_APPROVED = "access_request_approved"
+    ACCESS_REQUEST_DENIED = "access_request_denied"
+    ACCESS_REQUEST_REVOKED = "access_request_revoked"
 
     CUSTOM_PREFIX = "custom_"
 
