@@ -8,13 +8,14 @@ tags:
     - docker
 ---
 
-import NPMInstallScriptsAdmonition from "./\_npm-install-scripts-admonition.mdx";
+import InstallScriptsAdmonition from "./\_install-scripts-admonition.mdx";
 
 If you're focusing solely on frontend development, you can create a minimal development environment using Docker and Node.js. This setup allows you to make and preview changes to the frontend in real-time, without needing to interact with the backend.
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en) (24 or later)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used by the `web` workspace. Install it directly, or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 - [Make](https://www.gnu.org/software/make/) (3 or later)
@@ -50,14 +51,14 @@ If you're focusing solely on frontend development, you can create a minimal deve
                 - ${PWD}/local.env.yml:/local.env.yml
     ```
 
-4. From the repository root, run the frontend build script. This will install the npm packages needed to run the frontend project and start the project in watch mode.
+4. From the repository root, run the frontend build script. This will install the packages needed to run the frontend project and start the project in watch mode.
 
     ```shell
     make node-install
     make web-watch
     ```
 
-    <NPMInstallScriptsAdmonition />
+    <InstallScriptsAdmonition />
 
 5. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 

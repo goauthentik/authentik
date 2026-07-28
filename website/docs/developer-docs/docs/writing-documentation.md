@@ -7,7 +7,7 @@ import Tabs from "@theme/Tabs";
 
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation, from fixing typos and adding content to writing completely new topics.
 
-The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `npm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `pnpm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to a package script within the `website` directory.
 
 ## Documentation subdomains
 
@@ -39,6 +39,7 @@ Adhering to the following guidelines will help us get your PRs merged more easil
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en) (24 or later)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used by the `website` workspace. Install it directly, or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
 - [Make](https://www.gnu.org/software/make/) (3 or later)
 
 <Tabs defaultValue="macOS">
@@ -47,13 +48,13 @@ Adhering to the following guidelines will help us get your PRs merged more easil
 Install the required dependencies on macOS using Homebrew:
 
 ```shell
-brew install node@24
+brew install node@24 pnpm
 ```
 
 </TabItem>
 <TabItem value="Linux">
 
-[Download Node.js version 24](https://nodejs.org/en/download/current) for your Linux distribution.
+[Download Node.js version 24](https://nodejs.org/en/download/current) for your Linux distribution, then install pnpm by following the [pnpm installation guide](https://pnpm.io/installation) or by running `corepack enable pnpm`.
 
 </TabItem>
 <TabItem value="Windows">

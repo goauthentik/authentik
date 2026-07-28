@@ -18,13 +18,14 @@ To simplify translation you can use [Transifex](https://explore.transifex.com/au
 
 ### Prerequisites
 
-- Node (any recent version should work, we use 16.x to build)
+- [Node.js](https://nodejs.org/en) (24 or later)
+- [pnpm](https://pnpm.io/installation) (11.9 or later). Install it directly, or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
 - Make (again, any recent version should work)
 - Docker
 
 ### Frontend
 
-Run `npm i` in the `/web` folder to install all dependencies.
+Run `pnpm install` in the `/web` folder to install all dependencies.
 
 Ensure the language code is in the `lit-localize.json` file in `web/`:
 
