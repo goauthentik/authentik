@@ -35,6 +35,7 @@ CODEOWNERS                              @goauthentik/infrastructure
 /packages/django-dramatiq-postgres      @goauthentik/backend
 # Web packages
 .npmrc                                  @goauthentik/frontend
+.nvmrc                                  @goauthentik/frontend
 tsconfig.json                           @goauthentik/frontend
 package.json                            @goauthentik/frontend
 package-lock.json                       @goauthentik/frontend
