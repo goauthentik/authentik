@@ -29,7 +29,7 @@ RUN npm run build && \
     npm run build:sfe
 
 # Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.2-trixie@sha256:4a7137ea573f79c86ae451ff05817ed762ef5597fcf732259e97abeb3108d873 AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.26.5-trixie@sha256:4ee9ffa999b4583ce281939cdff828763083610292f252279a0cee77473bd9a7 AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
