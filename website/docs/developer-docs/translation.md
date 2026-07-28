@@ -18,8 +18,8 @@ To simplify translation you can use [Transifex](https://explore.transifex.com/au
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en) (24 or later)
-- [pnpm](https://pnpm.io/installation) (11.9 or later). Install it directly, or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
+- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), installed by following the [pnpm installation guide](https://pnpm.io/installation) or by running `corepack enable pnpm`
 - Make (again, any recent version should work)
 - Docker
 

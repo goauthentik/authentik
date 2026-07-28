@@ -14,11 +14,20 @@ If you're focusing solely on frontend development, you can create a minimal deve
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en) (24 or later)
-- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used by the `web` workspace. Install it directly, or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
+- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used by the `web` workspace
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 - [Make](https://www.gnu.org/software/make/) (3 or later)
+
+Install Node.js with [nvm](https://github.com/nvm-sh/nvm), one of the version managers recommended on the Node.js download page, then install pnpm by following the [pnpm installation guide](https://pnpm.io/installation):
+
+```shell
+nvm install 24
+nvm use 24
+```
+
+Alternatively, run `corepack enable pnpm` to have Node.js manage the pnpm version pinned in `package.json`.
 
 ### Instructions
 
