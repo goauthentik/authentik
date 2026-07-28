@@ -4,12 +4,11 @@ import "#elements/forms/ConfirmationForm";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
+import { renderTargetSummary } from "#common/requests/utils";
 
 import { WithSession } from "#elements/mixins/session";
 import { RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-
-import { renderTargetSummary } from "#user/requests/RequestableTargetHelpers";
 
 import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 

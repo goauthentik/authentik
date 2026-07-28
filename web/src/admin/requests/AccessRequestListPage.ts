@@ -3,6 +3,7 @@ import "#elements/forms/ConfirmationForm";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
+import { renderTargetSummary } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
 import { RowType, Timestamp } from "#elements/table/Table";
@@ -13,7 +14,6 @@ import { SlottedTemplateResult } from "#elements/types";
 import renderDescriptionList from "#components/DescriptionList";
 
 import { AccessRequestFulfillForm } from "#admin/requests/AccessRequestFulfillForm";
-import { renderTargetSummary } from "#admin/requests/RequestableTargetHelpers";
 
 import { GrantRequest, RequestsApi, RequestStatus } from "@goauthentik/api";
 
