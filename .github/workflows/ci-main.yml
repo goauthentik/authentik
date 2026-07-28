@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
@@ -512,7 +516,7 @@ jobs:
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}"
     needs:
       - build-compute-tags
       - publish

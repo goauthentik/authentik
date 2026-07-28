@@ -3150,10 +3150,6 @@
   <source>Last login</source>
   <target>最後のログイン</target>
 </trans-unit>
-<trans-unit id="s85a91d843c3eb4ad">
-  <source>Show inactive users</source>
-  <target>無効なユーザーを表示</target>
-</trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
   <target>ユーザーを選択</target>
@@ -3185,10 +3181,6 @@
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
   <target>このグループに追加されたユーザーがスーパーユーザー権限を持つかどうかです。</target>
-</trans-unit>
-<trans-unit id="s25bacc19d98b444e">
-  <source>Parent Group</source>
-  <target>親グループ</target>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
@@ -4880,10 +4872,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Property Mapping(s)</source>
   <target>プロパティマッピング</target>
 </trans-unit>
-<trans-unit id="sc39fb3ff3753d5ab">
-  <source>Hide managed mappings</source>
-  <target>管理マッピングを非表示</target>
-</trans-unit>
 <trans-unit id="s7468e87263dfff7e">
   <source>Identifier</source>
   <target>識別子</target>
@@ -5403,10 +5391,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
   <target>ユーザー検索</target>
-</trans-unit>
-<trans-unit id="s7c6c86d9a97ed706">
-  <source>Show deactivated users</source>
-  <target>非アクティブ化されたユーザーを表示</target>
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
@@ -9013,9 +8997,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
 </trans-unit>
-<trans-unit id="s3b4ad8abf4f08c35">
-  <source>Hide managed roles</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -11604,6 +11585,156 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="wsfed.saml-version.description">
   <source>Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.</source>
+</trans-unit>
+<trans-unit id="settings.base-url.label">
+  <source>Base URL</source>
+</trans-unit>
+<trans-unit id="settings.base-url.description">
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company</source>
+</trans-unit>
+<trans-unit id="sb83f872f267d8506">
+  <source>Sync Group Hierarchy</source>
+</trans-unit>
+<trans-unit id="s9589dc36c516341a">
+  <source>Sync group hierarchy from LDAP directories.</source>
+</trans-unit>
+<trans-unit id="s9e8574c0abf42187">
+  <source>Additional Parent Group</source>
+</trans-unit>
+<trans-unit id="banner.dismiss.aria-label">
+  <source>Dismiss banner</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.action">
+  <source>Configure it in the system settings</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.label">
+  <source>The base URL has not been configured.</source>
+</trans-unit>
+<trans-unit id="sf993bb199fefbe04">
+  <source>All</source>
+</trans-unit>
+<trans-unit id="sfa1b95e8d5f908ef">
+  <source>Search for an offboarding by username...</source>
+</trans-unit>
+<trans-unit id="s666e836aa05114ac">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="s56d1d0a4e7bf5ae5">
+  <source>Scheduled deactivation or deletion of users, and their outcomes.</source>
+</trans-unit>
+<trans-unit id="s4677a21818ee3277">
+  <source>Only show pending offboardings</source>
+</trans-unit>
+<trans-unit id="s39689ea96631ed97">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="scae52d94b155a605">
+  <source>Scheduled by</source>
+</trans-unit>
+<trans-unit id="s116de51b09153006">
+  <source>Offboarding(s)</source>
+</trans-unit>
+<trans-unit id="see8b386a20d5d43a">
+  <source>canceled</source>
+</trans-unit>
+<trans-unit id="sdaf25bddf0323e13">
+  <source>Cancel Offboardings</source>
+</trans-unit>
+<trans-unit id="s3dfc819b4986e252">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="s78636b92c1a3909c">
+  <source>Pending</source>
+</trans-unit>
+<trans-unit id="s39ad5f4fbea4fb3f">
+  <source>Offboardings</source>
+</trans-unit>
+<trans-unit id="sfcfc3964931c0d94">
+  <source>Hide managed</source>
+</trans-unit>
+<trans-unit id="s3ac26c004d6ba636">
+  <source>Managed</source>
+</trans-unit>
+<trans-unit id="common.boolean.yes">
+  <source>Yes</source>
+</trans-unit>
+<trans-unit id="common.boolean.no">
+  <source>No</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.success">
+  <source>Successfully cancelled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.error">
+  <source>Failed to cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.confirm.label">
+  <source>Cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.header">
+  <source>Cancel scheduled offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.description">
+  <source>The following scheduled offboarding will be cancelled:</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.tooltip">
+  <source>Offboarding scheduled for <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/></source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.trigger.label">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.submit.label">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.header">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.trigger.label">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name">
+  <source>User Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name-plural">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.success">
+  <source>Successfully scheduled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.action.label">
+  <source>Action</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.label">
+  <source>Deactivate</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.description">
+  <source>Lock the user out of authentik without removing their account.</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.label">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.description">
+  <source>Permanently delete the user's account.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.label">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.description">
+  <source>The offboarding runs on the next scheduled check after this time (within a few minutes).</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.label">
+  <source>Revoke sessions</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.description">
+  <source>Revoke all of the user's sessions when offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.label">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.description">
+  <source>Revoke all of the user's tokens when offboarding.</source>
+</trans-unit>
+<trans-unit id="sbe3eca5340d724c3">
+  <source>User was offboarded</source>
 </trans-unit>
 </body>
 </file>
