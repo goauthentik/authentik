@@ -14,7 +14,7 @@ on:
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
-  cancel-in-progress: "${{ !contains(github.ref, 'version-') && !contains(github.ref, 'main') && !contains(github.ref, 'next') }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
 
 env:
   POSTGRES_DB: authentik
