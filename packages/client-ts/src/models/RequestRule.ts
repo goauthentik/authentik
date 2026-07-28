@@ -90,7 +90,13 @@ export interface RequestRule {
  * Check if a given object implements the RequestRule interface.
  */
 export function instanceOfRequestRule(value: object): value is RequestRule {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
     return true;
@@ -124,7 +130,12 @@ export function RequestRuleFromJSONTyped(json: any, ignoreDiscriminator: boolean
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
-        requestFlow: json["request_flow"] == null ? undefined : json["request_flow"],
+        requestFlow:
+            json["request_flow"] === undefined
+                ? undefined
+                : json["request_flow"] === null
+                  ? null
+                  : json["request_flow"],
     };
 }
 
@@ -133,7 +144,7 @@ export function RequestRuleToJSON(json: any): RequestRule {
 }
 
 export function RequestRuleToJSONTyped(
-    value?: Omit<RequestRule, "pbm_uuid" | "targets"> | null,
+    value?: Omit<RequestRule, "pbmUuid" | "targets"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

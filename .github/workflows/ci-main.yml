@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
@@ -490,7 +494,7 @@ jobs:
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
       # Docker login is required for attestations
-      - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
+      - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -512,7 +516,7 @@ jobs:
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}"
     needs:
       - build-compute-tags
       - publish

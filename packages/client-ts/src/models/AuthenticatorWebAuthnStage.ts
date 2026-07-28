@@ -145,11 +145,40 @@ export function instanceOfAuthenticatorWebAuthnStage(
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("flowSet" in value) || value["flowSet"] === undefined) return false;
-    if (!("deviceTypeRestrictionsObj" in value) || value["deviceTypeRestrictionsObj"] === undefined)
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowSet" in (value as Record<string, any>)) &&
+            !("flow_set" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowSet"] === undefined &&
+            (value as Record<string, any>)["flow_set"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceTypeRestrictionsObj" in (value as Record<string, any>)) &&
+            !("device_type_restrictions_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceTypeRestrictionsObj"] === undefined &&
+            (value as Record<string, any>)["device_type_restrictions_obj"] === undefined)
+    )
         return false;
     return true;
 }
@@ -173,16 +202,23 @@ export function AuthenticatorWebAuthnStageFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         userVerification:
             json["user_verification"] == null
                 ? undefined
                 : UserVerificationEnumFromJSON(json["user_verification"]),
         authenticatorAttachment:
-            json["authenticator_attachment"] == null
+            json["authenticator_attachment"] === undefined
                 ? undefined
-                : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
+                : json["authenticator_attachment"] === null
+                  ? null
+                  : AuthenticatorAttachmentEnumFromJSON(json["authenticator_attachment"]),
         residentKeyRequirement:
             json["resident_key_requirement"] == null
                 ? undefined
@@ -213,11 +249,11 @@ export function AuthenticatorWebAuthnStageToJSONTyped(
         AuthenticatorWebAuthnStage,
         | "pk"
         | "component"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
-        | "flow_set"
-        | "device_type_restrictions_obj"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "flowSet"
+        | "deviceTypeRestrictionsObj"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

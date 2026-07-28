@@ -134,16 +134,41 @@ export function IdentificationStageRequestFromJSONTyped(
             json["user_fields"] == null
                 ? undefined
                 : (json["user_fields"] as Array<any>).map(UserFieldsEnumFromJSON),
-        passwordStage: json["password_stage"] == null ? undefined : json["password_stage"],
-        captchaStage: json["captcha_stage"] == null ? undefined : json["captcha_stage"],
+        passwordStage:
+            json["password_stage"] === undefined
+                ? undefined
+                : json["password_stage"] === null
+                  ? null
+                  : json["password_stage"],
+        captchaStage:
+            json["captcha_stage"] === undefined
+                ? undefined
+                : json["captcha_stage"] === null
+                  ? null
+                  : json["captcha_stage"],
         caseInsensitiveMatching:
             json["case_insensitive_matching"] == null
                 ? undefined
                 : json["case_insensitive_matching"],
         showMatchedUser: json["show_matched_user"] == null ? undefined : json["show_matched_user"],
-        enrollmentFlow: json["enrollment_flow"] == null ? undefined : json["enrollment_flow"],
-        recoveryFlow: json["recovery_flow"] == null ? undefined : json["recovery_flow"],
-        passwordlessFlow: json["passwordless_flow"] == null ? undefined : json["passwordless_flow"],
+        enrollmentFlow:
+            json["enrollment_flow"] === undefined
+                ? undefined
+                : json["enrollment_flow"] === null
+                  ? null
+                  : json["enrollment_flow"],
+        recoveryFlow:
+            json["recovery_flow"] === undefined
+                ? undefined
+                : json["recovery_flow"] === null
+                  ? null
+                  : json["recovery_flow"],
+        passwordlessFlow:
+            json["passwordless_flow"] === undefined
+                ? undefined
+                : json["passwordless_flow"] === null
+                  ? null
+                  : json["passwordless_flow"],
         sources: json["sources"] == null ? undefined : json["sources"],
         showSourceLabels:
             json["show_source_labels"] == null ? undefined : json["show_source_labels"],
@@ -151,7 +176,12 @@ export function IdentificationStageRequestFromJSONTyped(
             json["pretend_user_exists"] == null ? undefined : json["pretend_user_exists"],
         enableRememberMe:
             json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
-        webauthnStage: json["webauthn_stage"] == null ? undefined : json["webauthn_stage"],
+        webauthnStage:
+            json["webauthn_stage"] === undefined
+                ? undefined
+                : json["webauthn_stage"] === null
+                  ? null
+                  : json["webauthn_stage"],
     };
 }
 

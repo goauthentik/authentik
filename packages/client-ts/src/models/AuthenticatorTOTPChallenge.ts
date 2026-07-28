@@ -66,9 +66,27 @@ export interface AuthenticatorTOTPChallenge {
 export function instanceOfAuthenticatorTOTPChallenge(
     value: object,
 ): value is AuthenticatorTOTPChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
-    if (!("configUrl" in value) || value["configUrl"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
+    if (
+        (!("configUrl" in (value as Record<string, any>)) &&
+            !("config_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["configUrl"] === undefined &&
+            (value as Record<string, any>)["config_url"] === undefined)
+    )
+        return false;
     return true;
 }
 

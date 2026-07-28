@@ -94,7 +94,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     class GrantRequestCreateSerializer(PassiveSerializer):
 
         pbms = PolicyBindingModelForeignKey(
-            queryset=PolicyBindingModel.objects.select_subclasses(), many=True
+            queryset=PolicyBindingModel.objects.select_subclasses(),
+            many=True,
+            allow_empty=False,
         )
         expiry = CharField(
             required=False,
@@ -108,12 +110,15 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
         def validate_pbms(self, pbms: list[PolicyBindingModel]) -> list[PolicyBindingModel]:
             request = self.context["request"]
-            for pbm in pbms:
+            # De-dupe by pk so a caller passing the same target twice can't mint duplicate
+            # GrantRequestTargets (and therefore duplicate granted PolicyBindings).
+            deduped = list({pbm.pk: pbm for pbm in pbms}.values())
+            for pbm in deduped:
                 if not isinstance(pbm, RequestableModel | RequestableChildModel):
                     raise ValidationError(f"'{pbm}' is not requestable")
                 if not user_can_request(pbm, request.user, request):
                     raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")
-            return pbms
+            return deduped
 
     class GrantRequestFulfillSerializer(PassiveSerializer):
 
@@ -127,7 +132,10 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         # it -- unlike app access, absence of bindings must not mean "anyone passes".
         engine.empty_result = False
         passing_rules = engine.build().result
-        if rules.exclude(pk__in=passing_rules).exists():
+        # The user only needs to be an eligible reviewer of *at least one* rule attached
+        # to the request's targets -- rules are satisfied independently (see
+        # GrantRequest.is_satisfied), and this must match what `pending_review` lists.
+        if rules.exists() and not passing_rules.exists():
             raise ValidationError("User does not have permissions to act on this object")
 
     def destroy(self, request: Request, *args, **kwargs):
@@ -212,7 +220,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     )
     @action([HTTPMethod.PATCH], detail=True, permission_classes=[IsAuthenticated])
     @validate(GrantRequestFulfillSerializer)
-    @permission_required("fulfill_grantrequest")
+    @permission_required("authentik_requests.fulfill_grantrequest")
     def fulfill(self, request: Request, body: GrantRequestFulfillSerializer, *args, **kwargs):
         grant: GrantRequest = self.get_object()
         if request.user.pk == grant.created_by_id:
@@ -233,7 +241,7 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         },
     )
     @action([HTTPMethod.DELETE], detail=True, permission_classes=[IsAuthenticated])
-    @permission_required("revoke_grantrequest")
+    @permission_required("authentik_requests.revoke_grantrequest")
     def revoke(self, request: Request, *args, **kwargs):
         """Immediately end an active grant. Available to the same reviewers who could
         approve it in the first place."""

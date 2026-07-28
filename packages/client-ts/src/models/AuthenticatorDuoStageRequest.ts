@@ -75,9 +75,27 @@ export function instanceOfAuthenticatorDuoStageRequest(
     value: object,
 ): value is AuthenticatorDuoStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
-    if (!("clientSecret" in value) || value["clientSecret"] === undefined) return false;
-    if (!("apiHostname" in value) || value["apiHostname"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("clientSecret" in (value as Record<string, any>)) &&
+            !("client_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientSecret"] === undefined &&
+            (value as Record<string, any>)["client_secret"] === undefined)
+    )
+        return false;
+    if (
+        (!("apiHostname" in (value as Record<string, any>)) &&
+            !("api_hostname" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["apiHostname"] === undefined &&
+            (value as Record<string, any>)["api_hostname"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -94,7 +112,12 @@ export function AuthenticatorDuoStageRequestFromJSONTyped(
     }
     return {
         name: json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         clientId: json["client_id"],
         clientSecret: json["client_secret"],

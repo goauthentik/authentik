@@ -112,7 +112,12 @@ export function PatchedRequestRuleRequestFromJSONTyped(
             json["min_reviewers_is_per_group"] == null
                 ? undefined
                 : json["min_reviewers_is_per_group"],
-        requestFlow: json["request_flow"] == null ? undefined : json["request_flow"],
+        requestFlow:
+            json["request_flow"] === undefined
+                ? undefined
+                : json["request_flow"] === null
+                  ? null
+                  : json["request_flow"],
     };
 }
 

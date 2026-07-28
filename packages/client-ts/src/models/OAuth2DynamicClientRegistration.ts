@@ -105,7 +105,13 @@ export interface OAuth2DynamicClientRegistration {
 export function instanceOfOAuth2DynamicClientRegistration(
     value: object,
 ): value is OAuth2DynamicClientRegistration {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
 }
@@ -137,13 +143,17 @@ export function OAuth2DynamicClientRegistrationFromJSONTyped(
                 ? undefined
                 : ClientTypeEnumFromJSON(json["default_client_type"]),
         defaultAuthorizationFlow:
-            json["default_authorization_flow"] == null
+            json["default_authorization_flow"] === undefined
                 ? undefined
-                : json["default_authorization_flow"],
+                : json["default_authorization_flow"] === null
+                  ? null
+                  : json["default_authorization_flow"],
         defaultInvalidationFlow:
-            json["default_invalidation_flow"] == null
+            json["default_invalidation_flow"] === undefined
                 ? undefined
-                : json["default_invalidation_flow"],
+                : json["default_invalidation_flow"] === null
+                  ? null
+                  : json["default_invalidation_flow"],
         defaultPropertyMappings:
             json["default_property_mappings"] == null
                 ? undefined
@@ -168,7 +178,7 @@ export function OAuth2DynamicClientRegistrationToJSON(json: any): OAuth2DynamicC
 }
 
 export function OAuth2DynamicClientRegistrationToJSONTyped(
-    value?: Omit<OAuth2DynamicClientRegistration, "pbm_uuid"> | null,
+    value?: Omit<OAuth2DynamicClientRegistration, "pbmUuid"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

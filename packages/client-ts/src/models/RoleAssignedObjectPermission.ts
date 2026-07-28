@@ -55,10 +55,28 @@ export interface RoleAssignedObjectPermission {
 export function instanceOfRoleAssignedObjectPermission(
     value: object,
 ): value is RoleAssignedObjectPermission {
-    if (!("rolePk" in value) || value["rolePk"] === undefined) return false;
+    if (
+        (!("rolePk" in (value as Record<string, any>)) &&
+            !("role_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rolePk"] === undefined &&
+            (value as Record<string, any>)["role_pk"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("objectPermissions" in value) || value["objectPermissions"] === undefined) return false;
-    if (!("modelPermissions" in value) || value["modelPermissions"] === undefined) return false;
+    if (
+        (!("objectPermissions" in (value as Record<string, any>)) &&
+            !("object_permissions" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectPermissions"] === undefined &&
+            (value as Record<string, any>)["object_permissions"] === undefined)
+    )
+        return false;
+    if (
+        (!("modelPermissions" in (value as Record<string, any>)) &&
+            !("model_permissions" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["modelPermissions"] === undefined &&
+            (value as Record<string, any>)["model_permissions"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -90,7 +108,7 @@ export function RoleAssignedObjectPermissionToJSON(json: any): RoleAssignedObjec
 }
 
 export function RoleAssignedObjectPermissionToJSONTyped(
-    value?: Omit<RoleAssignedObjectPermission, "role_pk" | "name"> | null,
+    value?: Omit<RoleAssignedObjectPermission, "rolePk" | "name"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

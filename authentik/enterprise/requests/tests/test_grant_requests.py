@@ -354,6 +354,92 @@ class GrantRequestsTests(APITestCase):
         self.assertGreater(binding.expires, before + timedelta(minutes=9))
         self.assertLess(binding.expires, before + timedelta(minutes=11))
 
+    def test_approved_request_not_reaped_after_pending_window(self):
+        """On approval `expires` must switch from the pending-window timer to the grant's
+        lifetime, so an approved-and-active request isn't deleted by clean_expired_models
+        (which would orphan the granted PolicyBinding and drop the audit/revoke trail)."""
+        reviewer = create_test_user()
+        self._grant_perms(reviewer)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule, target=app)
+        PolicyBinding.objects.create(target=rule, user=reviewer, order=0)
+
+        requester = create_test_user()
+        # Pending window already lapsed, but the grant should last a long time.
+        req = GrantRequest.objects.create(
+            created_by=requester,
+            expiring=True,
+            expires=now() - timedelta(minutes=1),
+            requested_expiry="hours=100",
+        )
+        GrantRequestTarget.objects.create(request=req, target=app)
+
+        self.client.force_login(reviewer)
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+
+        req = GrantRequest.objects.including_expired().get(pk=req.pk)
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        self.assertGreater(req.expires, now())
+        self.assertTrue(req.is_active)
+        # Mirror what clean_expired_models would delete; the approved request must not be in it.
+        reapable = (
+            GrantRequest.objects.including_expired()
+            .exclude(expiring=False)
+            .exclude(expiring=True, expires__gt=now())
+        )
+        self.assertNotIn(req, list(reapable))
+
+    def test_fulfill_reviewer_of_single_rule_can_act(self):
+        """A request spanning two rules: a reviewer eligible for only one of them can
+        still record their approval (matching what pending_review lists), and the request
+        is finalized only once every rule is independently satisfied."""
+        reviewer_a = create_test_user()
+        self._grant_perms(reviewer_a)
+        reviewer_b = create_test_user()
+        self._grant_perms(reviewer_b)
+
+        app_a = Application.objects.create(name=generate_id(), slug=generate_id())
+        app_b = Application.objects.create(name=generate_id(), slug=generate_id())
+        rule_a = RequestRule.objects.create(name=generate_id())
+        rule_b = RequestRule.objects.create(name=generate_id())
+        RequestRuleBinding.objects.create(rule=rule_a, target=app_a)
+        RequestRuleBinding.objects.create(rule=rule_b, target=app_b)
+        PolicyBinding.objects.create(target=rule_a, user=reviewer_a, order=0)
+        PolicyBinding.objects.create(target=rule_b, user=reviewer_b, order=0)
+
+        requester = create_test_user()
+        req = GrantRequest.objects.create(created_by=requester)
+        GrantRequestTarget.objects.create(request=req, target=app_a)
+        GrantRequestTarget.objects.create(request=req, target=app_b)
+
+        # reviewer_a is eligible for rule_a only -> may act, but doesn't yet satisfy rule_b
+        self.client.force_login(reviewer_a)
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.CREATED)
+
+        # reviewer_b satisfies rule_b -> every rule now satisfied -> approved
+        self.client.force_login(reviewer_b)
+        res = self.client.patch(
+            reverse("authentik_api:grantrequest-fulfill", kwargs={"pk": req.pk}),
+            data={"status": "approved", "data": {}},
+        )
+        self.assertEqual(res.status_code, 204, res.content)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        self.assertTrue(PolicyBinding.objects.filter(user=requester, target=app_a).exists())
+        self.assertTrue(PolicyBinding.objects.filter(user=requester, target=app_b).exists())
+
     def test_revoke_active_grant(self):
         """A reviewer can revoke an approved (active) grant, expiring its PolicyBinding"""
         reviewer = create_test_user()

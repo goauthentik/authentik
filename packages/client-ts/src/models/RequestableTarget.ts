@@ -66,10 +66,34 @@ export interface RequestableTarget {
  * Check if a given object implements the RequestableTarget interface.
  */
 export function instanceOfRequestableTarget(value: object): value is RequestableTarget {
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
     return true;
@@ -103,7 +127,7 @@ export function RequestableTargetToJSON(json: any): RequestableTarget {
 export function RequestableTargetToJSONTyped(
     value?: Omit<
         RequestableTarget,
-        "verbose_name" | "verbose_name_plural" | "meta_model_name" | "pbm_uuid" | "label" | "parent"
+        "verboseName" | "verboseNamePlural" | "metaModelName" | "pbmUuid" | "label" | "parent"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

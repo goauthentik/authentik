@@ -4,13 +4,13 @@ import "#user/requests/AccessRequestFulfillForm";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
+import { renderTargetSummary } from "#common/requests/utils";
 
 import { modalInvoker } from "#elements/dialogs";
 import { RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AccessRequestFulfillForm } from "#user/requests/AccessRequestFulfillForm";
-import { renderTargetSummary } from "#user/requests/RequestableTargetHelpers";
 
 import { GrantRequest, RequestsApi } from "@goauthentik/api";
 

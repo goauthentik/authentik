@@ -178,7 +178,7 @@ pub struct PostgreSQLConfig {
 pub struct ListenConfig {
     pub http: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
-    pub debug_tokio: SocketAddr,
+    pub debug_tokio: Option<SocketAddr>,
     pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 

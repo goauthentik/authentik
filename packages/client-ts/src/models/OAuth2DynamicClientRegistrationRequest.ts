@@ -129,13 +129,17 @@ export function OAuth2DynamicClientRegistrationRequestFromJSONTyped(
                 ? undefined
                 : ClientTypeEnumFromJSON(json["default_client_type"]),
         defaultAuthorizationFlow:
-            json["default_authorization_flow"] == null
+            json["default_authorization_flow"] === undefined
                 ? undefined
-                : json["default_authorization_flow"],
+                : json["default_authorization_flow"] === null
+                  ? null
+                  : json["default_authorization_flow"],
         defaultInvalidationFlow:
-            json["default_invalidation_flow"] == null
+            json["default_invalidation_flow"] === undefined
                 ? undefined
-                : json["default_invalidation_flow"],
+                : json["default_invalidation_flow"] === null
+                  ? null
+                  : json["default_invalidation_flow"],
         defaultPropertyMappings:
             json["default_property_mappings"] == null
                 ? undefined
