@@ -1,0 +1,55 @@
+{
+    "name": "@goauthentik/fonts",
+    "version": "1.0.0",
+    "description": "The RedHat variable typefaces used by authentik.",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/fonts"
+    },
+    "scripts": {
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./faces.css": "./faces.css"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:"
+    },
+    "files": [
+        "faces.css",
+        "*.woff2",
+        "OFL.txt"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "ignore"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public"
+    },
+    "#exports-comment": [
+        "Only faces.css needs an entry. The `url(\"./RedHatTextVF.woff2\")`",
+        "references inside it are resolved relative to that file by the",
+        "consuming bundler, not through this exports map.",
+        "There is no build step — the package is checked-in assets."
+    ]
+}
