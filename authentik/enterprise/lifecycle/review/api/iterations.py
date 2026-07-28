@@ -14,9 +14,13 @@ from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.users import PartialGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.api import EnterpriseRequiredMixin
-from authentik.enterprise.lifecycle.api.reviews import ReviewSerializer
-from authentik.enterprise.lifecycle.models import LifecycleIteration, LifecycleRule, ReviewState
-from authentik.enterprise.lifecycle.utils import (
+from authentik.enterprise.lifecycle.review.api.reviews import ReviewSerializer
+from authentik.enterprise.lifecycle.review.models import (
+    LifecycleIteration,
+    LifecycleRule,
+    ReviewState,
+)
+from authentik.enterprise.lifecycle.review.utils import (
     ContentTypeField,
     admin_link_for_model,
     parse_content_type,
