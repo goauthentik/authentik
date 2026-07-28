@@ -464,7 +464,7 @@ dev = [
     { name = "ruff", specifier = "==0.15.22" },
     { name = "selenium", specifier = "==4.46.0" },
     { name = "types-channels", specifier = "==4.3.0.20260518" },
-    { name = "types-docker", specifier = "==7.1.0.20260712" },
+    { name = "types-docker", specifier = "==7.2.0.20260720" },
     { name = "types-jwcrypto", specifier = "==1.5.8.20260720" },
     { name = "types-ldap3", specifier = "==2.9.13.20260518" },
     { name = "types-requests", specifier = "==2.33.0.20260712" },
@@ -3676,16 +3676,16 @@ wheels = [
 
 [[package]]
 name = "types-docker"
-version = "7.1.0.20260712"
+version = "7.2.0.20260720"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "types-paramiko" },
     { name = "types-requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/8b/f360f8d37368a24b815a841e1a0a2c82960bcd6ec88d3552838ef263e49f/types_docker-7.1.0.20260712.tar.gz", hash = "sha256:bb9e8ccb30941546beff5ac30b9b3bd0ffe1f676eb3e5f84d97fd8655234882a", size = 34246, upload-time = "2026-07-12T05:14:33.121Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2a/7f/e23a7af06e83d4bf8ed597c96c1d4f5792820cf4e41a384066f1e2d3aec1/types_docker-7.2.0.20260720.tar.gz", hash = "sha256:10eed9eb83be40718f56e5571d07f743d9a113aaa6caf7638b58f425cb9176fb", size = 34574, upload-time = "2026-07-20T05:27:16.868Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ec/b6/08e86105093595ded1ccaac79e415517379a7e17a1f607c8f5f0bf958352/types_docker-7.1.0.20260712-py3-none-any.whl", hash = "sha256:339dc9605151b035150688a56029fb0a53fb71c1710347828f9c3f0d0f39f3bd", size = 48278, upload-time = "2026-07-12T05:14:32.08Z" },
+    { url = "https://files.pythonhosted.org/packages/e7/84/14fdebb3492d172ad8e910c5872a2687cbc578df074c4c8c5cceaf5bfaa1/types_docker-7.2.0.20260720-py3-none-any.whl", hash = "sha256:c032d0cec89ac1ee9b962d190882fba07ca5fe0dbfd025c01e4cb78d9de0e278", size = 48628, upload-time = "2026-07-20T05:27:15.937Z" },
 ]
 
 [[package]]
