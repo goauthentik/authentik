@@ -5,13 +5,37 @@ import { aki } from "#common/api/client";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AuthenticatedSession, CoreApi } from "@goauthentik/api";
+import { AuthenticatedSession, AuthenticatedSessionGeoIp, CoreApi } from "@goauthentik/api";
 
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+/**
+ * Format the GeoIP data of a session as a human-readable location, i.e. "Toronto, Canada".
+ *
+ * Either part may be missing from the GeoIP database, in which case only the
+ * available one is used. Returns null when nothing can be resolved.
+ */
+function formatLocation(geoIp?: AuthenticatedSessionGeoIp | null): string | null {
+    if (!geoIp) return null;
+
+    let country: string | null = geoIp.country;
+
+    if (country) {
+        try {
+            country = new Intl.DisplayNames(undefined, { type: "region" }).of(country) ?? country;
+        } catch {
+            // Not a region code the runtime knows about, fall back to the raw value.
+        }
+    }
+
+    const parts = [geoIp.city, country].filter(Boolean);
+
+    return parts.length ? parts.join(", ") : null;
+}
 
 @customElement("ak-user-session-list")
 export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
@@ -71,6 +95,11 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     }
 
     row(item: AuthenticatedSession): SlottedTemplateResult[] {
+        const location = formatLocation(item.geoIp);
+        const device = [item.userAgent.userAgent?.family, item.userAgent.os?.family]
+            .filter(Boolean)
+            .join(", ");
+
         return [
             html`<div>
                     ${item.geoIp?.country
@@ -79,7 +108,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                     ${item.current ? html`${msg("(Current session)")}&nbsp;` : nothing}
                     ${item.lastIp}
                 </div>
-                <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
+                <small>${[location, device].filter(Boolean).join(" — ")}</small>`,
             Timestamp(item.lastUsed),
             Timestamp(item.expires ?? new Date()),
         ];
