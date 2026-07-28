@@ -164,6 +164,6 @@ class AuthenticatedSessionViewSet(
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        admin_authenticated_session_deleted.send(self, session=instance, request=request)
+        admin_authenticated_session_deleted.send(self, instance=instance, request=request)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
