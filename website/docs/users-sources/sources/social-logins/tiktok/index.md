@@ -57,13 +57,13 @@ Source property mappings allow you to modify or gather extra information from so
 
 The following data is retrieved from TikTok and mapped to the user's attributes in authentik:
 
-| TikTok Field             | authentik Attribute     | Description                     |
-| :----------------------- | :---------------------- | :------------------------------ |
+| TikTok Field              | authentik Attribute     | Description                     |
+| :------------------------ | :---------------------- | :------------------------------ |
 | `union_id` (or `open_id`) | `username`              | Used as the primary identifier. |
-| `display_name`           | `name`                  | The user's display name.        |
-| `avatar_url`             | `attributes.avatar_url` | URL to the user's avatar.       |
-| `open_id`                | `attributes.open_id`    | Per-app user identifier.        |
-| `union_id`               | `attributes.union_id`   | Cross-app user identifier.      |
+| `display_name`            | `name`                  | The user's display name.        |
+| `avatar_url`              | `attributes.avatar_url` | URL to the user's avatar.       |
+| `open_id`                 | `attributes.open_id`    | Per-app user identifier.        |
+| `union_id`                | `attributes.union_id`   | Cross-app user identifier.      |
 
 ### User matching
 
