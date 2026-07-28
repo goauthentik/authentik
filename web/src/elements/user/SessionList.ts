@@ -13,12 +13,6 @@ import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-/**
- * Format the GeoIP data of a session as a human-readable location, i.e. "Toronto, Canada".
- *
- * Either part may be missing from the GeoIP database, in which case only the
- * available one is used. Returns null when nothing can be resolved.
- */
 function formatLocation(geoIp?: AuthenticatedSessionGeoIp | null): string | null {
     if (!geoIp) return null;
 
