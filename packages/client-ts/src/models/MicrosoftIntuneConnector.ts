@@ -82,11 +82,41 @@ export function instanceOfMicrosoftIntuneConnector(
 ): value is MicrosoftIntuneConnector {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
-    if (!("tenantId" in value) || value["tenantId"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("tenantId" in (value as Record<string, any>)) &&
+            !("tenant_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tenantId"] === undefined &&
+            (value as Record<string, any>)["tenant_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -121,7 +151,7 @@ export function MicrosoftIntuneConnectorToJSON(json: any): MicrosoftIntuneConnec
 export function MicrosoftIntuneConnectorToJSONTyped(
     value?: Omit<
         MicrosoftIntuneConnector,
-        "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name"
+        "component" | "verboseName" | "verboseNamePlural" | "metaModelName"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
