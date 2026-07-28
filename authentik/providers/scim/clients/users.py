@@ -75,7 +75,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     "GET",
                     f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
                 )
-                users_res = users.get("Resources", [])
+                users_res = self.lower_case_keys(users.get("resources", []))
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(
@@ -120,11 +120,11 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         connection.save()
 
     def discover(self):
-        res = self._request("GET", "/Users")
+        res = self.lower_case_keys(self._request("GET", "/Users"))
         seen_items = 0
-        expected_items = int(res["totalResults"])
+        expected_items = int(res["totalresults"])
         while True:
-            for user in res["Resources"]:
+            for user in res["resources"]:
                 try:
                     self._discover_user_single(user)
                 except ValidationError:
