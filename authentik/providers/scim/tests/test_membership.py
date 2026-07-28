@@ -1,5 +1,7 @@
 """SCIM Membership tests"""
 
+from unittest.mock import patch
+
 from django.test import TestCase
 from requests_mock import Mocker
 
@@ -12,6 +14,7 @@ from authentik.providers.scim.tasks import scim_sync
 from authentik.tenants.models import Tenant
 
 
+@patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
 class SCIMMembershipTests(TestCase):
     """SCIM Membership tests"""
 
@@ -238,8 +241,7 @@ class SCIMMembershipTests(TestCase):
                     "Operations": [
                         {
                             "op": "remove",
-                            "path": "members",
-                            "value": [{"value": user_scim_id}],
+                            "path": f'members[value eq "{user_scim_id}"]',
                         }
                     ],
                 },
@@ -345,7 +347,6 @@ class SCIMMembershipTests(TestCase):
                         {
                             "op": "replace",
                             "value": {
-                                "id": group_scim_id,
                                 "displayName": group.name,
                                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                                 "externalId": str(group.pk),
@@ -455,7 +456,6 @@ class SCIMMembershipTests(TestCase):
                         {
                             "op": "replace",
                             "value": {
-                                "id": group_scim_id,
                                 "displayName": group.name,
                                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                                 "externalId": str(group.pk),

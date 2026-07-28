@@ -96,6 +96,9 @@ Salesforce JIT provisioning requires specific SAML attributes to create users on
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to `https://company.my.salesforce.com?so=00DXXXXXXXXXXXXXXX`, replacing `00DXXXXXXXXXXXXXXX` with your Salesforce Organization ID.
         - Set **Audience** to `https://company.my.salesforce.com`.
+        - Set **SLS URL** to `https://company.my.salesforce.com/services/auth/sp/saml2/logout`.
+        - Set **SLS Binding** to `Redirect`.
+        - Set **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
@@ -132,6 +135,8 @@ Salesforce JIT provisioning requires specific SAML attributes to create users on
     - **SAML Identity Location**: select **Identity is in the NameIdentifier element of the Subject statement**.
     - **Service Provider Initiated Request Binding**: `HTTP POST`
     - **Identity Provider Login URL**: enter the **SAML Endpoint** from the SAML provider that you created in authentik.
+    - **Identity Provider Single Logout URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Single Logout Request Binding**: `HTTP Redirect`
 3. Click **Save**.
 
 ### Enable Just-in-Time provisioning

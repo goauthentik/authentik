@@ -1,7 +1,8 @@
 ---
 title: Account Lockdown
-authentik_version: "2025.5.0"
+authentik_version: "2026.5"
 authentik_enterprise: true
+sidebar_position: 3
 ---
 
 Account Lockdown is a security feature that allows administrators to quickly secure a user account during emergencies, such as suspected compromise or unauthorized access. Users can also lock down their own account if they believe it has been compromised.

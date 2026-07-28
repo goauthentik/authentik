@@ -179,9 +179,27 @@ export interface OAuth2ProviderRequest {
  */
 export function instanceOfOAuth2ProviderRequest(value: object): value is OAuth2ProviderRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("authorizationFlow" in value) || value["authorizationFlow"] === undefined) return false;
-    if (!("invalidationFlow" in value) || value["invalidationFlow"] === undefined) return false;
-    if (!("redirectUris" in value) || value["redirectUris"] === undefined) return false;
+    if (
+        (!("authorizationFlow" in (value as Record<string, any>)) &&
+            !("authorization_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
+            (value as Record<string, any>)["authorization_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("invalidationFlow" in (value as Record<string, any>)) &&
+            !("invalidation_flow" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
+            (value as Record<string, any>)["invalidation_flow"] === undefined)
+    )
+        return false;
+    if (
+        (!("redirectUris" in (value as Record<string, any>)) &&
+            !("redirect_uris" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["redirectUris"] === undefined &&
+            (value as Record<string, any>)["redirect_uris"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -199,7 +217,11 @@ export function OAuth2ProviderRequestFromJSONTyped(
     return {
         name: json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow: json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
@@ -223,8 +245,18 @@ export function OAuth2ProviderRequestFromJSONTyped(
             json["include_claims_in_id_token"] == null
                 ? undefined
                 : json["include_claims_in_id_token"],
-        signingKey: json["signing_key"] == null ? undefined : json["signing_key"],
-        encryptionKey: json["encryption_key"] == null ? undefined : json["encryption_key"],
+        signingKey:
+            json["signing_key"] === undefined
+                ? undefined
+                : json["signing_key"] === null
+                  ? null
+                  : json["signing_key"],
+        encryptionKey:
+            json["encryption_key"] === undefined
+                ? undefined
+                : json["encryption_key"] === null
+                  ? null
+                  : json["encryption_key"],
         redirectUris: (json["redirect_uris"] as Array<any>).map(RedirectURIRequestFromJSON),
         logoutUri: json["logout_uri"] == null ? undefined : json["logout_uri"],
         logoutMethod:

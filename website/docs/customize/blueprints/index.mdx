@@ -1,5 +1,6 @@
 ---
 title: Blueprints
+sidebar_position: 3
 ---
 
 Blueprints provide a way to template, automate, and distribute authentik configuration. Blueprints can be used to automatically configure instances, manage infrastructure-as-code without any external tools, and to distribute application configurations. Blueprints are YAML files, whose format is described further in [File structure](./v1/structure).
@@ -8,7 +9,7 @@ Blueprints are used to manage authentik's default flows and other system objects
 
 Custom blueprints can be used to replace or modify default blueprints in certain circumstances. For example, you could create a new flow that is based on the `default-authentication-flow` but adds an additional stage or policy.
 
-## Applying blueprints
+## Apply blueprints
 
 To _apply_ a blueprint means that the content in the blueprint file is instantiated and then implemented by authentik. Blueprints can be applied in one of two ways:
 
@@ -79,7 +80,7 @@ Any additional `.yaml` file in `/blueprints` will be discovered and automaticall
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
 
-File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints are affected by this.
+File-based blueprints are automatically removed when they become unavailable. However, none of the objects created by those blueprints are affected.
 
 :::info
 Please note that, by default, blueprint discovery and evaluation is not guaranteed to follow any specific order.

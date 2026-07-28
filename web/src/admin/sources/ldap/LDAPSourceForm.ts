@@ -56,26 +56,18 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
         },
     ];
 }
+
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
-    loadInstance(pk: string): Promise<LDAPSource> {
-        return aki(SourcesApi).sourcesLdapRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: LDAPSource): Promise<LDAPSource> {
-        if (this.instance) {
-            return aki(SourcesApi).sourcesLdapPartialUpdate({
-                slug: this.instance.slug,
-                patchedLDAPSourceRequest: data,
-            });
-        }
-
-        return aki(SourcesApi).sourcesLdapCreate({
-            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesLdapRetrieve({ slug }),
+        create: (lDAPSource: LDAPSource) =>
+            aki(SourcesApi).sourcesLdapCreate({
+                lDAPSourceRequest: lDAPSource as unknown as LDAPSourceRequest,
+            }),
+        update: (slug: string, patchedLDAPSourceRequest: LDAPSource) =>
+            aki(SourcesApi).sourcesLdapPartialUpdate({ slug, patchedLDAPSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
@@ -125,6 +117,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 name="syncGroups"
                 label=${msg("Sync groups")}
                 ?checked=${this.instance?.syncGroups ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="syncGroupHierarchy"
+                label=${msg("Sync Group Hierarchy")}
+                ?checked=${this.instance?.syncGroupHierarchy ?? true}
+                help=${msg("Sync group hierarchy from LDAP directories.")}
             ></ak-switch-input>
             <ak-switch-input
                 name="deleteNotFoundObjects"
@@ -251,7 +249,10 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             </ak-form-group>
             <ak-form-group label="${msg("Additional settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal
+                        label=${msg("Additional Parent Group")}
+                        name="additionalParentGroup"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {

@@ -67,8 +67,20 @@ export interface WebAuthnDevice {
 export function instanceOfWebAuthnDevice(value: object): value is WebAuthnDevice {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("createdOn" in value) || value["createdOn"] === undefined) return false;
-    if (!("deviceType" in value) || value["deviceType"] === undefined) return false;
+    if (
+        (!("createdOn" in (value as Record<string, any>)) &&
+            !("created_on" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["createdOn"] === undefined &&
+            (value as Record<string, any>)["created_on"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceType" in (value as Record<string, any>)) &&
+            !("device_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceType"] === undefined &&
+            (value as Record<string, any>)["device_type"] === undefined)
+    )
+        return false;
     if (!("aaguid" in value) || value["aaguid"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     return true;
@@ -100,7 +112,7 @@ export function WebAuthnDeviceToJSON(json: any): WebAuthnDevice {
 }
 
 export function WebAuthnDeviceToJSONTyped(
-    value?: Omit<WebAuthnDevice, "pk" | "created_on" | "device_type" | "aaguid" | "user"> | null,
+    value?: Omit<WebAuthnDevice, "pk" | "createdOn" | "deviceType" | "aaguid" | "user"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

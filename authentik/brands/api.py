@@ -1,8 +1,10 @@
 """Serializer for brands models"""
 
-from typing import Any
+from typing import Any, get_args
 
 from django.db import models
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type, build_object_type
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -20,6 +22,7 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.brands.models import Brand
+from authentik.brands.utils import session_safe_mode
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.rbac.filters import SecretKeyFilter
@@ -90,6 +93,27 @@ def get_default_ui_footer_links():
     return get_current_tenant().footer_links
 
 
+class PublicFlagsField(FlagJSONField):
+    pass
+
+
+class FlagsJSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.brands.api.PublicFlagsField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        props = {}
+        for flag in Flag.available(visibility="public"):
+            _flag = flag()
+            props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
+            if _flag.description:
+                props[_flag.key]["description"] = _flag.description
+            if _flag.deprecated:
+                props[_flag.key]["deprecated"] = _flag.deprecated
+        return build_object_type(props, required=props.keys())
+
+
 class CurrentBrandSerializer(PassiveSerializer):
     """Partial brand information for styling"""
 
@@ -123,12 +147,21 @@ class CurrentBrandSerializer(PassiveSerializer):
     default_locale = CharField(read_only=True)
     flags = SerializerMethodField()
 
-    @extend_schema_field(field=FlagJSONField)
+    @extend_schema_field(field=PublicFlagsField)
     def get_flags(self, _):
         values = {}
         for flag in Flag.available(visibility="public"):
             values[flag().key] = flag.get()
         return values
+
+    def to_representation(self, instance: Brand) -> dict[str, Any]:
+        data = super().to_representation(instance)
+        # Suppress custom CSS for safe-mode sessions (e.g. recovery links) so that
+        # misconfigured branding cannot prevent a user from reaching the UI to fix it.
+        request = self.context.get("request")
+        if request is not None and session_safe_mode(request):
+            data["branding_custom_css"] = ""
+        return data
 
 
 class BrandViewSet(UsedByMixin, ModelViewSet):

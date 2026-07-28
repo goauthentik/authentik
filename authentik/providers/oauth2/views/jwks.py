@@ -12,6 +12,8 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     EllipticCurvePrivateKey,
     EllipticCurvePublicKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey, Ed448PublicKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import Encoding
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
@@ -99,6 +101,13 @@ class JWKSView(View):
             key_data["x"] = to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode()
             key_data["y"] = to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode()
             key_data["crv"] = ec_crv_map.get(curve_type, public_key.curve.name)
+        elif isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            public_key: Ed25519PublicKey | Ed448PublicKey = private_key.public_key()
+            key_data["kid"] = key.kid
+            key_data["kty"] = "OKP"
+            key_data["use"] = use
+            key_data["crv"] = "Ed25519" if isinstance(private_key, Ed25519PrivateKey) else "Ed448"
+            key_data["x"] = base64url_encode(public_key.public_bytes_raw()).decode()
         else:
             return key_data
         key_data["x5c"] = [b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")]

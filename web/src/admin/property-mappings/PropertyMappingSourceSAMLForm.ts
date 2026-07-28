@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceSamlRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceSamlUpdate({
-                pmUuid: this.instance.pk,
-                sAMLSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceSamlCreate({
-            sAMLSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlRetrieve({ pmUuid: pk }),
+        create: (sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlCreate({
+                sAMLSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlUpdate({
+                pmUuid: pk,
+                sAMLSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

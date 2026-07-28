@@ -6,15 +6,19 @@ import pgtrigger
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.utils import IntegrityError
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase, TaskState
 from dramatiq.errors import Retry
+from structlog.stdlib import get_logger
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.tenants.models import Tenant
+
+LOGGER = get_logger()
 
 
 class TaskStatus(models.TextChoices):
@@ -198,14 +202,19 @@ class TaskLog(InternallyManagedMixin, models.Model):
     def create_from_log_event(cls, task: Task, log_event: LogEvent) -> Self | None:
         if not task.message:
             return None
-        return cls.objects.create(
-            task=task,
-            event=log_event.event,
-            log_level=log_event.log_level,
-            logger=log_event.logger,
-            timestamp=log_event.timestamp,
-            attributes=sanitize_item(log_event.attributes),
-        )
+        try:
+            return cls.objects.create(
+                task=task,
+                event=log_event.event,
+                log_level=log_event.log_level,
+                logger=log_event.logger,
+                timestamp=log_event.timestamp,
+                attributes=sanitize_item(log_event.attributes),
+            )
+        except IntegrityError as exc:
+            LOGGER.warning("failed to save log event, writing it to console instead", exc=exc)
+            log_event.log()
+            return None
 
     @classmethod
     def bulk_create_from_log_events(
@@ -215,19 +224,25 @@ class TaskLog(InternallyManagedMixin, models.Model):
     ) -> list[Self] | None:
         if not task.message:
             return None
-        return cls.objects.bulk_create(
-            [
-                cls(
-                    task=task,
-                    event=log_event.event,
-                    log_level=log_event.log_level,
-                    logger=log_event.logger,
-                    timestamp=log_event.timestamp,
-                    attributes=sanitize_item(log_event.attributes),
-                )
-                for log_event in log_events
-            ]
-        )
+        try:
+            return cls.objects.bulk_create(
+                [
+                    cls(
+                        task=task,
+                        event=log_event.event,
+                        log_level=log_event.log_level,
+                        logger=log_event.logger,
+                        timestamp=log_event.timestamp,
+                        attributes=sanitize_item(log_event.attributes),
+                    )
+                    for log_event in log_events
+                ]
+            )
+        except IntegrityError as exc:
+            LOGGER.warning("failed to save log events, writing it to console instead", exc=exc)
+            for log_event in log_events:
+                log_event.log()
+            return None
 
     def to_log_event(self) -> LogEvent:
         return LogEvent(

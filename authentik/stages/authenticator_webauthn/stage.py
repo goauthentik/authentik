@@ -89,7 +89,9 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             )
         except WebAuthnException as exc:
             self.stage.logger.warning("registration failed", exc=exc)
-            raise ValidationError(f"Registration failed. Error: {exc}") from None
+            raise ValidationError(
+                "Registration failed. Please contact your administrator."
+            ) from None
 
         registration_data = VerifiedRegistrationData(
             registration,

@@ -60,7 +60,13 @@ export function instanceOfAuthenticatedSessionUserAgentOs(
     if (!("major" in value) || value["major"] === undefined) return false;
     if (!("minor" in value) || value["minor"] === undefined) return false;
     if (!("patch" in value) || value["patch"] === undefined) return false;
-    if (!("patchMinor" in value) || value["patchMinor"] === undefined) return false;
+    if (
+        (!("patchMinor" in (value as Record<string, any>)) &&
+            !("patch_minor" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["patchMinor"] === undefined &&
+            (value as Record<string, any>)["patch_minor"] === undefined)
+    )
+        return false;
     return true;
 }
 

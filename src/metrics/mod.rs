@@ -21,7 +21,7 @@ use crate::worker::Workers;
 
 mod handlers;
 
-fn socket_path() -> PathBuf {
+pub(crate) fn socket_path() -> PathBuf {
     temp_dir().join("authentik-metrics.sock")
 }
 

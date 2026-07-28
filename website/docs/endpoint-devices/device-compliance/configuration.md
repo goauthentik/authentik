@@ -17,6 +17,6 @@ Device compliance functionality requires the following:
 
 Verify that the endpoint device is reporting its facts on the [Devices](../manage-devices.mdx) page.
 
-## Using device compliance
+## Use device compliance
 
 Now that the endpoint device is configured, you can create [device compliance policies](./device-compliance-policy.md) to control access to applications and more.

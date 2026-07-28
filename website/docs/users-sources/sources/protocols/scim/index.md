@@ -1,5 +1,5 @@
 ---
-title: SCIM Source
+title: SCIM source
 ---
 
 The SCIM source allows other applications to directly create users and groups within authentik. SCIM provides a predefined schema for users and groups, along with a RESTful API, to enable automatic user provisioning and deprovisioning. SCIM is supported by applications such as Microsoft Entra ID, Google Workspace, and Okta.
@@ -8,19 +8,19 @@ The base SCIM URL is in the format of `https://authentik.company/source/scim/<so
 
 ## First steps
 
-To set up an SCIM source, log in to authentik as an administrator. Navigate to **Directory->Federation & Social login**, and click on **Create**. Select the **SCIM Source** type, and give the source a name.
+To set up an SCIM source, log in to authentik as an administrator. Navigate to **Directory** > **Federation and Social login** and click **Create**. Select the **SCIM Source** type and give the source a name.
 
-After the source is created, click on the name of the source in the list, and you will see the **SCIM Base URL** which is used by the SCIM client. Use the **Click to copy token** button to copy the token which is used by the client to authenticate SCIM requests.
+After the source is created, click the name of the source in the list. The page displays the **SCIM Base URL** that is used by the SCIM client. Use the **Click to copy token** button to copy the token that the client uses to authenticate SCIM requests.
 
-## Supported Options & Resource types
+## Supported options and resource types
 
 ### `/v2/Users`
 
-Endpoint to list, create, update and delete users.
+Endpoint to list, create, update, and delete users.
 
 ### `/v2/Groups`
 
-Endpoint to list, create, update and delete groups.
+Endpoint to list, create, update, and delete groups.
 
 There are also `/v2/ServiceProviderConfig` and `/v2/ResourceTypes`, which are used by SCIM-enabled applications to find out which features authentik supports.
 
@@ -32,7 +32,7 @@ By default, authentik applies the following behavior for inbound SCIM requests:
 
 ### User and group correlation
 
-On create and update, authentik may **correlate** SCIM resources to **existing** directory objects in the same tenant:
+On create and update, authentik can **correlate** SCIM resources to **existing** directory objects in the same tenant:
 
 - **Users** are matched by `userName` across the entire tenant, not only users already linked to this SCIM source.
 - **Groups** are matched by `displayName` (mapped to the group `name`) across the entire tenant, not only groups already linked to this SCIM source.
@@ -103,5 +103,5 @@ The following variables are available in the expression:
 - `urn_scim_schemas_extension_enterprise_2_0` as a dictionary
 
     :::info
-    Top-level keys which include symbols not allowed in Python syntax are converted to `_`.
+    Top-level keys that include symbols not allowed in Python syntax are converted to `_`.
     :::

@@ -23,23 +23,16 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-totp-form")
 export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPStage> {
-    loadInstance(pk: string): Promise<AuthenticatorTOTPStage> {
-        return aki(StagesApi).stagesAuthenticatorTotpRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorTotpUpdate({
-                stageUuid: this.instance.pk || "",
-                authenticatorTOTPStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesAuthenticatorTotpCreate({
-            authenticatorTOTPStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAuthenticatorTotpRetrieve({ stageUuid }),
+        create: (authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpCreate({ authenticatorTOTPStageRequest }),
+        update: (stageUuid: string, authenticatorTOTPStageRequest: AuthenticatorTOTPStage) =>
+            aki(StagesApi).stagesAuthenticatorTotpUpdate({
+                stageUuid,
+                authenticatorTOTPStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

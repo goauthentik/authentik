@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.brands.models import Brand
+from authentik.brands.models import SESSION_KEY_BRAND_SAFE_MODE, Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
 from authentik.lib.generators import generate_id
@@ -297,3 +297,33 @@ class TestBrands(APITestCase):
         res = self.client.get(reverse("authentik_core:if-user"))
         self.assertEqual(res.status_code, 200)
         self.assertIn(brand.branding_custom_css, res.content.decode())
+
+    def test_custom_css_safe_mode(self):
+        """Custom CSS is suppressed and the safe-mode class is set for safe-mode sessions"""
+        brand = create_test_brand()
+        brand.branding_custom_css = """* {
+            font-family: "Foo bar";
+        }"""
+        brand.save()
+        session = self.client.session
+        session[SESSION_KEY_BRAND_SAFE_MODE] = True
+        session.save()
+        res = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(res.status_code, 200)
+        body = res.content.decode()
+        self.assertNotIn(brand.branding_custom_css, body)
+        self.assertIn("ak-m-safe-mode", body)
+        # A banner is surfaced informing the user that branding is suppressed.
+        self.assertIn("ak-c-safe-mode", body)
+        self.assertIn("Recovery session is active. Custom branding is disabled.", body)
+
+    def test_current_brand_safe_mode(self):
+        """Current brand API suppresses custom CSS for safe-mode sessions"""
+        brand = create_test_brand()
+        brand.branding_custom_css = "* { color: red; }"
+        brand.save()
+        session = self.client.session
+        session[SESSION_KEY_BRAND_SAFE_MODE] = True
+        session.save()
+        response = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        self.assertEqual(response["branding_custom_css"], "")

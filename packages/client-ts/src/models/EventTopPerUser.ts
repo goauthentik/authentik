@@ -43,8 +43,20 @@ export interface EventTopPerUser {
  */
 export function instanceOfEventTopPerUser(value: object): value is EventTopPerUser {
     if (!("application" in value) || value["application"] === undefined) return false;
-    if (!("countedEvents" in value) || value["countedEvents"] === undefined) return false;
-    if (!("uniqueUsers" in value) || value["uniqueUsers"] === undefined) return false;
+    if (
+        (!("countedEvents" in (value as Record<string, any>)) &&
+            !("counted_events" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["countedEvents"] === undefined &&
+            (value as Record<string, any>)["counted_events"] === undefined)
+    )
+        return false;
+    if (
+        (!("uniqueUsers" in (value as Record<string, any>)) &&
+            !("unique_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["uniqueUsers"] === undefined &&
+            (value as Record<string, any>)["unique_users"] === undefined)
+    )
+        return false;
     return true;
 }
 

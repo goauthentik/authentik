@@ -7,6 +7,7 @@ use argh::FromArgs;
 use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
+mod healthcheck;
 mod metrics;
 #[cfg(feature = "core")]
 mod server;
@@ -29,6 +30,7 @@ enum Command {
     Server(server::Cli),
     #[cfg(feature = "core")]
     Worker(worker::Cli),
+    Healthcheck(healthcheck::Cli),
 }
 
 #[derive(Debug, FromArgs, PartialEq)]
@@ -53,6 +55,7 @@ fn main() -> Result<()> {
         Command::Server(_) => Mode::set(Mode::Server)?,
         #[cfg(feature = "core")]
         Command::Worker(_) => Mode::set(Mode::Worker)?,
+        Command::Healthcheck(args) => return healthcheck::run(args),
     }
 
     trace!("installing error formatting");
@@ -108,6 +111,8 @@ fn main() -> Result<()> {
                     let workers = worker::start(args, &mut tasks)?;
                     metrics.workers.store(Some(workers));
                 }
+                // We're checking for this before starting anything else
+                Command::Healthcheck(_) => unreachable!(),
             }
 
             let errors = tasks.run().await;

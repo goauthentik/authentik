@@ -95,7 +95,7 @@ server {
 
     # Proxy authentik
     # If authentik is served under a subpath, also review:
-    # https://docs.goauthentik.io/docs/install-config/configuration/#authentik_web__path
+    # https://docs.goauthentik.io/install-config/configuration/#authentik_web__path
     location / {
         proxy_pass https://authentik;
         proxy_http_version 1.1;

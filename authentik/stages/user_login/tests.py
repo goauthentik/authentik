@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import AuthenticatedSession, Session
+from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
@@ -70,6 +70,43 @@ class TestUserLoginStage(FlowTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_session_fixation_key_rotated_on_login(self):
+        """Security regression (CWE-384): the session key must rotate on login
+        so a pre-login session identifier known to an attacker can't be reused.
+        Django's ``login()`` provides this via ``cycle_key()``; pinned here
+        end-to-end through the flow executor and custom session backend."""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        pre_login_key = session.session_key
+        self.assertIsNotNone(pre_login_key)
+        # Unauthenticated session persisted before login...
+        self.assertTrue(Session.objects.filter(session_key=pre_login_key).exists())
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        post_login_key = self.client.session.session_key
+        # ...the identifier must change on authentication...
+        self.assertIsNotNone(post_login_key)
+        self.assertNotEqual(pre_login_key, post_login_key)
+        # ...the pre-login key must no longer exist...
+        self.assertFalse(Session.objects.filter(session_key=pre_login_key).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=pre_login_key).exists()
+        )
+        # ...and only the rotated key may be bound to the authenticated user.
+        self.assertTrue(
+            AuthenticatedSession.objects.filter(
+                session__session_key=post_login_key, user=self.user
+            ).exists()
+        )
 
     def test_terminate_other_sessions(self):
         """Test terminate_other_sessions"""
@@ -220,6 +257,21 @@ class TestUserLoginStage(FlowTestCase):
             component="ak-stage-access-denied",
             error_message="Flow does not apply to current user.",
         )
+
+    def test_unsaved_pending_user(self):
+        """Test that a pending user with no pk (unsaved) causes stage_invalid."""
+        unsaved = User()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = unsaved
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
 
     def test_binding_net_break_log(self):
         """Test logout_extra with exception"""

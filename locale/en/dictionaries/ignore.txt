@@ -6,6 +6,7 @@ azuread
 Azuread
 buildx
 goauthentik
+llmstxt
 lxml
 pässwörd
 phlebotinum

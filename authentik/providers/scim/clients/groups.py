@@ -1,11 +1,11 @@
 """Group client"""
 
+from copy import deepcopy
 from itertools import batched
 from typing import Any
 
 from django.db import transaction
 from django.utils.http import urlencode
-from orjson import dumps
 from pydantic import ValidationError
 
 from authentik.core.models import Group
@@ -19,9 +19,7 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.exceptions import (
-    SCIMRequestException,
-)
+from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.clients.schema import (
     SCIM_GROUP_SCHEMA,
     GroupMember,
@@ -138,14 +136,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._patch_add_users(connection, users)
         return connection
 
-    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderGroup):
         """Check if a group is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
-        return dumps(local_updated) != dumps(local_known)
+        return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
     def update(self, group: Group, connection: SCIMProviderGroup):
         """Update existing group"""
@@ -196,6 +193,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     ):
         """Update a group via PATCH request"""
         # Patch group's attributes instead of replacing it and re-adding users if we can
+        value = scim_group.model_dump(mode="json", exclude_unset=True, exclude={"id"})
         self._request(
             "PATCH",
             f"/Groups/{connection.scim_id}",
@@ -204,7 +202,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                     PatchOperation(
                         op=PatchOp.replace,
                         path=None,
-                        value=scim_group.model_dump(mode="json", exclude_unset=True),
+                        value=value,
                     )
                 ]
             ).model_dump(
@@ -274,9 +272,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             self._request(
                 "PATCH",
                 f"/Groups/{group_id}",
-                json=req.model_dump(
-                    mode="json",
-                ),
+                json=req.model_dump(mode="json", exclude_none=True),
             )
 
     @transaction.atomic
@@ -313,10 +309,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             if user.value not in users_should:
                 users_to_remove.append(user.value)
         # Check users that should be in the group and add them
-        if current_group.members is not None:
-            for user in users_should:
-                if len([x for x in current_group.members if x.value == user]) < 1:
-                    users_to_add.append(user)
+        existing_member_ids = {x.value for x in (current_group.members or [])}
+        for user in users_should:
+            if user not in existing_member_ids:
+                users_to_add.append(user)
         # Only send request if we need to make changes
         if len(users_to_add) < 1 and len(users_to_remove) < 1:
             return
@@ -394,13 +390,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             *[
                 PatchOperation(
                     op=PatchOp.remove,
-                    path="members",
-                    value=[
-                        self._create_group_member(x).model_dump(
-                            mode="json",
-                            exclude_unset=True,
-                        )
-                    ],
+                    path=f'members[value eq "{x}"]',
                 )
                 for x in user_ids
             ],
@@ -412,7 +402,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         expected_items = int(res["totalResults"])
         while True:
             for group in res["Resources"]:
-                self._discover_group_single(group)
+                try:
+                    self._discover_group_single(group)
+                except ValidationError:
+                    self.logger.warning(
+                        "failed to discover group", scim_group=group.get("externalId")
+                    )
                 seen_items += 1
             if seen_items >= expected_items:
                 break

@@ -13,12 +13,12 @@ from authentik.core.models import (
     Application,
     AuthenticatedSession,
     BackchannelProvider,
-    ExpiringModel,
     Session,
     User,
     default_token_duration,
 )
 from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
+from authentik.lib.models import ExpiringModel
 from authentik.root.ws.consumer import build_device_group
 
 # Arguments: user: User, password: str

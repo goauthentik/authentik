@@ -25,6 +25,7 @@ type RedirectChallenge struct {
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	To                   string                    `json:"to"`
+	FinalRedirect        *bool                     `json:"final_redirect,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -39,6 +40,8 @@ func NewRedirectChallenge(to string) *RedirectChallenge {
 	var component string = "xak-flow-redirect"
 	this.Component = &component
 	this.To = to
+	var finalRedirect bool = false
+	this.FinalRedirect = &finalRedirect
 	return &this
 }
 
@@ -49,6 +52,8 @@ func NewRedirectChallengeWithDefaults() *RedirectChallenge {
 	this := RedirectChallenge{}
 	var component string = "xak-flow-redirect"
 	this.Component = &component
+	var finalRedirect bool = false
+	this.FinalRedirect = &finalRedirect
 	return &this
 }
 
@@ -172,6 +177,38 @@ func (o *RedirectChallenge) SetTo(v string) {
 	o.To = v
 }
 
+// GetFinalRedirect returns the FinalRedirect field value if set, zero value otherwise.
+func (o *RedirectChallenge) GetFinalRedirect() bool {
+	if o == nil || IsNil(o.FinalRedirect) {
+		var ret bool
+		return ret
+	}
+	return *o.FinalRedirect
+}
+
+// GetFinalRedirectOk returns a tuple with the FinalRedirect field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RedirectChallenge) GetFinalRedirectOk() (*bool, bool) {
+	if o == nil || IsNil(o.FinalRedirect) {
+		return nil, false
+	}
+	return o.FinalRedirect, true
+}
+
+// HasFinalRedirect returns a boolean if a field has been set.
+func (o *RedirectChallenge) HasFinalRedirect() bool {
+	if o != nil && !IsNil(o.FinalRedirect) {
+		return true
+	}
+
+	return false
+}
+
+// SetFinalRedirect gets a reference to the given bool and assigns it to the FinalRedirect field.
+func (o *RedirectChallenge) SetFinalRedirect(v bool) {
+	o.FinalRedirect = &v
+}
+
 func (o RedirectChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -192,6 +229,9 @@ func (o RedirectChallenge) ToMap() (map[string]interface{}, error) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
 	toSerialize["to"] = o.To
+	if !IsNil(o.FinalRedirect) {
+		toSerialize["final_redirect"] = o.FinalRedirect
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -239,6 +279,7 @@ func (o *RedirectChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
 		delete(additionalProperties, "to")
+		delete(additionalProperties, "final_redirect")
 		o.AdditionalProperties = additionalProperties
 	}
 

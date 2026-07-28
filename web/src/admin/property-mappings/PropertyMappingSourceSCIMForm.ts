@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
-        return aki(PropertymappingsApi).propertymappingsSourceScimRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsSourceScimUpdate({
-                pmUuid: this.instance.pk,
-                sCIMSourcePropertyMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsSourceScimCreate({
-            sCIMSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimRetrieve({ pmUuid: pk }),
+        create: (sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimCreate({
+                sCIMSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimUpdate({
+                pmUuid: pk,
+                sCIMSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {
