@@ -65,7 +65,13 @@ export interface FlowErrorChallenge {
  * Check if a given object implements the FlowErrorChallenge interface.
  */
 export function instanceOfFlowErrorChallenge(value: object): value is FlowErrorChallenge {
-    if (!("requestId" in value) || value["requestId"] === undefined) return false;
+    if (
+        (!("requestId" in (value as Record<string, any>)) &&
+            !("request_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["requestId"] === undefined &&
+            (value as Record<string, any>)["request_id"] === undefined)
+    )
+        return false;
     return true;
 }
 

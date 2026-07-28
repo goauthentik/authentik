@@ -90,7 +90,13 @@ export interface ObjectAttributeRequest {
  * Check if a given object implements the ObjectAttributeRequest interface.
  */
 export function instanceOfObjectAttributeRequest(value: object): value is ObjectAttributeRequest {
-    if (!("objectType" in value) || value["objectType"] === undefined) return false;
+    if (
+        (!("objectType" in (value as Record<string, any>)) &&
+            !("object_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["objectType"] === undefined &&
+            (value as Record<string, any>)["object_type"] === undefined)
+    )
+        return false;
     if (!("key" in value) || value["key"] === undefined) return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
@@ -116,7 +122,12 @@ export function ObjectAttributeRequestFromJSONTyped(
         regex: json["regex"] == null ? undefined : json["regex"],
         type: ObjectAttributeTypeEnumFromJSON(json["type"]),
         group: json["group"] == null ? undefined : json["group"],
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         isUnique: json["is_unique"] == null ? undefined : json["is_unique"],
         isRequired: json["is_required"] == null ? undefined : json["is_required"],
     };

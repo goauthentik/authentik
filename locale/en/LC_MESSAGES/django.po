@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-21 00:26+0000\n"
+"POT-Creation-Date: 2026-07-28 00:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,18 +238,14 @@ msgstr ""
 msgid "User does not have permission to add members to this group."
 msgstr ""
 
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
+msgstr ""
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
 "providers are returned. When set to false, backchannel providers are excluded"
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "Invalid password hash format. Must be a valid Django password hash."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "Cannot set both password and password_hash. Use only one."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -274,6 +270,10 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "User does not have permission to assign roles."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
 msgstr ""
 
 #: authentik/core/api/users.py
@@ -321,9 +321,7 @@ msgid "This field is required."
 msgstr ""
 
 #: authentik/core/apps.py
-msgid ""
-"Configure if applications without any policy/group/user bindings should be "
-"accessible to any user."
+msgid "Applications with no policies bound can be accessed by any user."
 msgstr ""
 
 #: authentik/core/models.py
@@ -610,6 +608,30 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Object Attributes"
 msgstr ""
 
 #: authentik/core/sources/flow_manager.py
@@ -952,95 +974,174 @@ msgstr ""
 msgid "Verifying your browser..."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/reviews.py
+#: authentik/enterprise/lifecycle/offboarding/actions.py
+#, python-format
+msgid "User %(username)s was offboarded (%(action)s)"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "This user already has a pending offboarding scheduled."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Offboarding must be scheduled in the future."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Internal service accounts cannot be offboarded."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot offboard your own account."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot cancel your own offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Only a pending offboarding can be cancelled."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Deactivate"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Delete"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Completed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Failed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Absolute time at which the offboarding action is executed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's sessions when offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's tokens when offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Number of times execution has been attempted and failed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboarding"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboardings"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute due user offboardings."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute a single user offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Object does not exist"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Either a reviewer group or a reviewer must be set."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Grace period must be shorter than the interval."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Select which transports should be used to notify the reviewers. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer Group"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer Groups"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewers"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Notification Transport"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Notification Transports"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Reviewed"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Pending"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Canceled"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Go to {self._get_model_name()}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is overdue for {self.content_type.name} {str(self.object)}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Access review completed for {self.content_type.name} {str(self.object)}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Apply lifecycle rule."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Send lifecycle rule notification."
 msgstr ""
 
@@ -1332,6 +1433,20 @@ msgstr ""
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 1.1"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 2.0"
+msgstr ""
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid ""
+"SAML assertion version to issue in the security token. Microsoft Entra ID "
+"and classic ADFS-style relying parties typically require SAML 1.1."
 msgstr ""
 
 #: authentik/enterprise/providers/ws_federation/models.py
@@ -1849,6 +1964,10 @@ msgstr ""
 #: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
+msgstr ""
+
+#: authentik/lib/validators.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
 msgstr ""
 
 #: authentik/lib/validators.py
@@ -3391,6 +3510,10 @@ msgstr ""
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Sync group parentage/hierarchy from LDAP directories."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -5043,6 +5166,12 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, e."
+"g. https://authentik.company"
 msgstr ""
 
 #: authentik/tenants/models.py

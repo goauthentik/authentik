@@ -35,11 +35,6 @@ from authentik.endpoints.connectors.agent.models import (
     DeviceToken,
     EnrollmentToken,
 )
-from authentik.endpoints.connectors.agent.schema import (
-    AgentAuthSchema,
-    AgentEnrollAuthSchema,
-    DeviceFederationAuthSchema,
-)
 from authentik.endpoints.facts import DeviceFacts, OSFamily
 from authentik.endpoints.models import Device
 from authentik.events.models import Event, EventAction
@@ -118,7 +113,6 @@ class AgentConnectorViewSet(
     @extend_schema(
         request=EnrollSerializer(),
         responses={200: AgentTokenResponseSerializer},
-        auth=[{AgentEnrollAuthSchema.name: []}],
     )
     @action(
         methods=["POST"],
@@ -154,7 +148,6 @@ class AgentConnectorViewSet(
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses=AgentConfigSerializer(),
-        auth=[{AgentAuthSchema.name: []}],
     )
     @action(
         methods=["GET"],
@@ -174,7 +167,6 @@ class AgentConnectorViewSet(
     @extend_schema(
         request=DeviceFacts(),
         responses={204: OpenApiResponse(description="Successfully checked in")},
-        auth=[{AgentAuthSchema.name: []}],
     )
     @action(
         methods=["POST"],
@@ -197,7 +189,6 @@ class AgentConnectorViewSet(
             200: AgentTokenResponseSerializer(),
             404: OpenApiResponse(description="Device not found"),
         },
-        auth=[{DeviceFederationAuthSchema.name: []}],
     )
     @action(
         methods=["POST"],

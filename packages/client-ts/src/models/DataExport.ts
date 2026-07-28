@@ -73,11 +73,41 @@ export interface DataExport {
  */
 export function instanceOfDataExport(value: object): value is DataExport {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("requestedBy" in value) || value["requestedBy"] === undefined) return false;
-    if (!("requestedOn" in value) || value["requestedOn"] === undefined) return false;
-    if (!("contentType" in value) || value["contentType"] === undefined) return false;
-    if (!("queryParams" in value) || value["queryParams"] === undefined) return false;
-    if (!("fileUrl" in value) || value["fileUrl"] === undefined) return false;
+    if (
+        (!("requestedBy" in (value as Record<string, any>)) &&
+            !("requested_by" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["requestedBy"] === undefined &&
+            (value as Record<string, any>)["requested_by"] === undefined)
+    )
+        return false;
+    if (
+        (!("requestedOn" in (value as Record<string, any>)) &&
+            !("requested_on" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["requestedOn"] === undefined &&
+            (value as Record<string, any>)["requested_on"] === undefined)
+    )
+        return false;
+    if (
+        (!("contentType" in (value as Record<string, any>)) &&
+            !("content_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["contentType"] === undefined &&
+            (value as Record<string, any>)["content_type"] === undefined)
+    )
+        return false;
+    if (
+        (!("queryParams" in (value as Record<string, any>)) &&
+            !("query_params" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["queryParams"] === undefined &&
+            (value as Record<string, any>)["query_params"] === undefined)
+    )
+        return false;
+    if (
+        (!("fileUrl" in (value as Record<string, any>)) &&
+            !("file_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fileUrl"] === undefined &&
+            (value as Record<string, any>)["file_url"] === undefined)
+    )
+        return false;
     if (!("completed" in value) || value["completed"] === undefined) return false;
     return true;
 }
@@ -108,7 +138,7 @@ export function DataExportToJSON(json: any): DataExport {
 export function DataExportToJSONTyped(
     value?: Omit<
         DataExport,
-        "id" | "requested_by" | "requested_on" | "content_type" | "file_url" | "completed"
+        "id" | "requestedBy" | "requestedOn" | "contentType" | "fileUrl" | "completed"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

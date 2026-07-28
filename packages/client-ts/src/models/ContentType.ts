@@ -55,10 +55,27 @@ export interface ContentType {
  */
 export function instanceOfContentType(value: object): value is ContentType {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("appLabel" in value) || value["appLabel"] === undefined) return false;
+    if (
+        (!("appLabel" in (value as Record<string, any>)) &&
+            !("app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appLabel"] === undefined &&
+            (value as Record<string, any>)["app_label"] === undefined)
+    )
+        return false;
     if (!("model" in value) || value["model"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("fullyQualifiedModel" in value) || value["fullyQualifiedModel"] === undefined)
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("fullyQualifiedModel" in (value as Record<string, any>)) &&
+            !("fully_qualified_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fullyQualifiedModel"] === undefined &&
+            (value as Record<string, any>)["fully_qualified_model"] === undefined)
+    )
         return false;
     return true;
 }
@@ -87,7 +104,7 @@ export function ContentTypeToJSON(json: any): ContentType {
 export function ContentTypeToJSONTyped(
     value?: Omit<
         ContentType,
-        "id" | "app_label" | "model" | "verbose_name_plural" | "fully_qualified_model"
+        "id" | "appLabel" | "model" | "verboseNamePlural" | "fullyQualifiedModel"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

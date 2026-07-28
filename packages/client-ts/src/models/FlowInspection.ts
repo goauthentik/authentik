@@ -46,7 +46,13 @@ export interface FlowInspection {
  */
 export function instanceOfFlowInspection(value: object): value is FlowInspection {
     if (!("plans" in value) || value["plans"] === undefined) return false;
-    if (!("isCompleted" in value) || value["isCompleted"] === undefined) return false;
+    if (
+        (!("isCompleted" in (value as Record<string, any>)) &&
+            !("is_completed" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isCompleted"] === undefined &&
+            (value as Record<string, any>)["is_completed"] === undefined)
+    )
+        return false;
     return true;
 }
 

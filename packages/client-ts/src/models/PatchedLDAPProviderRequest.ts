@@ -124,13 +124,22 @@ export function PatchedLDAPProviderRequestFromJSONTyped(
     return {
         name: json["name"] == null ? undefined : json["name"],
         authenticationFlow:
-            json["authentication_flow"] == null ? undefined : json["authentication_flow"],
+            json["authentication_flow"] === undefined
+                ? undefined
+                : json["authentication_flow"] === null
+                  ? null
+                  : json["authentication_flow"],
         authorizationFlow:
             json["authorization_flow"] == null ? undefined : json["authorization_flow"],
         invalidationFlow: json["invalidation_flow"] == null ? undefined : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         baseDn: json["base_dn"] == null ? undefined : json["base_dn"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
         uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
         gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],

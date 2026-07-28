@@ -81,7 +81,13 @@ export function instanceOfEndpointRequest(value: object): value is EndpointReque
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("protocol" in value) || value["protocol"] === undefined) return false;
     if (!("host" in value) || value["host"] === undefined) return false;
-    if (!("authMode" in value) || value["authMode"] === undefined) return false;
+    if (
+        (!("authMode" in (value as Record<string, any>)) &&
+            !("auth_mode" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authMode"] === undefined &&
+            (value as Record<string, any>)["auth_mode"] === undefined)
+    )
+        return false;
     return true;
 }
 
