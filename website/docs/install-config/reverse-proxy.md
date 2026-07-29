@@ -80,6 +80,12 @@ Without this setting, authentik might:
 - mis-handle forwarded headers
 - make debugging login or CSRF issues more difficult
 
+## Avoiding spoofed headers
+
+Since authentik doesn't know which of the supported headers the reverse proxy is going to send, all unused headers should be stripped from the incoming request to avoid them being spoofed by the client.
+
+For example, if the reverse proxy sends the `Forwarded` header with all the required data, ensure that `X-Forwarded-Proto`, `X-Forwarded-Scheme`, `X-Forwarded-Host`, `X-Forwarded-For` and `X-Real-IP` are removed from proxied requests.
+
 ## Example: nginx
 
 The following nginx configuration is a reasonable starting point. It proxies to authentik's HTTPS listener on port `9443`.
