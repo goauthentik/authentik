@@ -17,6 +17,7 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.lib.generators import generate_id
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     AccessToken,
     ClientType,
@@ -144,7 +145,8 @@ class DynamicClientRegistrationView(View):
             grant_types=grant_types,
             authorization_flow=self.dcr.override_authorization_flow
             or self.provider.authorization_flow,
-            invalidation_flow=self.dcr.override_invalidation_flow or self.provider.invalidation_flow,
+            invalidation_flow=self.dcr.override_invalidation_flow
+            or self.provider.invalidation_flow,
             access_token_validity=self.dcr.access_token_validity
             or self.provider.access_token_validity,
             refresh_token_validity=self.dcr.refresh_token_validity
@@ -159,12 +161,33 @@ class DynamicClientRegistrationView(View):
             provider.property_mappings.set(self.provider.property_mappings.all())
 
         app_slug = self._unique_app_slug(client_name or provider.client_id)
-        Application.objects.create(
+        app = Application.objects.create(
             name=client_name or provider.client_id,
             slug=app_slug,
             provider=provider,
             group=self.dcr.default_application_group,
         )
+        bindings = PolicyBinding.objects.filter(target=self.dcr)
+        if bindings.exists():
+            new_bindings = []
+            for binding in bindings:
+                new_bindings.append(
+                    PolicyBinding(
+                        # TODO: automate this
+                        # copied over
+                        enabled=binding.enabled,
+                        policy=binding.policy,
+                        group=binding.group,
+                        user=binding.user,
+                        negate=binding.negate,
+                        timeout=binding.timeout,
+                        failure_result=binding.failure_result,
+                        order=binding.order,
+                        # new field
+                        target=app,
+                    )
+                )
+            PolicyBinding.objects.bulk_create(new_bindings)
 
         LOGGER.info(
             "DCR: registered new client",
