@@ -170,26 +170,22 @@ class DynamicClientRegistrationView(View):
             policy_engine_mode=self.dcr.policy_engine_mode,
         )
         bindings = PolicyBinding.objects.filter(target=self.dcr)
-        if bindings.exists():
-            new_bindings = []
-            for binding in bindings:
-                new_bindings.append(
-                    PolicyBinding(
-                        # TODO: automate this
-                        # copied over
-                        enabled=binding.enabled,
-                        policy=binding.policy,
-                        group=binding.group,
-                        user=binding.user,
-                        negate=binding.negate,
-                        timeout=binding.timeout,
-                        failure_result=binding.failure_result,
-                        order=binding.order,
-                        # new field
-                        target=app,
-                    )
+        if not bindings.exists():
+            bindings = PolicyBinding.objects.filter(target=self.application)
+        new_bindings = []
+        for binding in bindings:
+            new_bindings.append(
+                PolicyBinding(
+                    # Copy over all fields except the target
+                    **{
+                        k.name: getattr(binding, k.name)
+                        for k in PolicyBinding._meta.concrete_fields
+                        if k.name != "target"
+                    },
+                    target=app,
                 )
-            PolicyBinding.objects.bulk_create(new_bindings)
+            )
+        PolicyBinding.objects.bulk_create(new_bindings)
 
         LOGGER.info(
             "DCR: registered new client",
