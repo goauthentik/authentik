@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-28 00:26+0000\n"
+"POT-Creation-Date: 2026-07-29 00:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1483,6 +1483,100 @@ msgstr ""
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Only individually-selected reviewers"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "A random subset of size min_reviewers, from everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid ""
+"How long a request against this binding stays pending before it "
+"automatically lapses if not approved or denied."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "The maximum duration a grant approved against this binding can last."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rules"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Requests"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can create a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can fulfill (approve/deny) a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can revoke a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Target"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Targets"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approval"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approvals"
+msgstr ""
+
+#: authentik/enterprise/requests/tasks.py
+msgid "Send access-request review notification."
 msgstr ""
 
 #: authentik/enterprise/stages/account_lockdown/api.py
