@@ -80,7 +80,7 @@ fn main() -> Result<()> {
     tls::init()?;
 
     let _sentry = ak_tracing::sentry::install()?;
-    ak_tracing::install()?;
+    let log_filter_handle = ak_tracing::install()?;
     drop(tracing_crude);
 
     tokio::runtime::Builder::new_multi_thread()
@@ -123,7 +123,12 @@ fn main() -> Result<()> {
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(args) => {
-                    outpost::start::<outpost::proxy::ProxyOutpost>(args, &mut tasks).await?;
+                    outpost::start::<outpost::proxy::ProxyOutpost>(
+                        args,
+                        &mut tasks,
+                        Some(log_filter_handle),
+                    )
+                    .await?;
                 }
                 // We're checking for this before starting anything else
                 Command::Healthcheck(_) => unreachable!(),

@@ -364,7 +364,7 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
 
         info!("starting embedded outpost");
         server.proxy_outpost.store(Some(
-            outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks).await?,
+            outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None).await?,
         ));
     }
 

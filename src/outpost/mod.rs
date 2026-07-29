@@ -6,7 +6,7 @@ use ak_client::{
 };
 #[cfg(feature = "core")]
 use ak_common::Mode;
-use ak_common::{Tasks, VERSION, api, authentik_build_hash};
+use ak_common::{Tasks, VERSION, api, authentik_build_hash, tracing::LogFilterHandle};
 use arc_swap::ArcSwap;
 use eyre::{Result, eyre};
 use tracing::{debug, info, instrument};
@@ -138,9 +138,20 @@ impl OutpostController {
 }
 
 #[instrument(skip_all)]
-pub(crate) async fn start<O: Outpost + 'static>(_cli: O::Cli, tasks: &mut Tasks) -> Result<Arc<O>> {
+pub(crate) async fn start<O: Outpost + 'static>(
+    _cli: O::Cli,
+    tasks: &mut Tasks,
+    log_filter_handle: Option<LogFilterHandle>,
+) -> Result<Arc<O>> {
     let controller = Arc::new(OutpostController::new::<O>().await?);
     let outpost = Arc::new(O::new(Arc::clone(&controller)).await?);
+
+    if let Some(handle) = log_filter_handle
+        && let Some(new_log_level) = controller.outpost.load().config.get("log_level")
+        && let Some(new_log_level) = new_log_level.as_str()
+    {
+        handle.set_log_level(new_log_level)?;
+    }
 
     event::start(tasks, Arc::clone(&controller), Arc::clone(&outpost))?;
     Arc::clone(&outpost).start(tasks)?;
