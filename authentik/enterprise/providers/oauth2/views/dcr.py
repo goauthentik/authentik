@@ -149,15 +149,13 @@ class DynamicClientRegistrationView(View):
         if self.dcr.default_property_mappings.exists():
             provider.property_mappings.set(self.dcr.default_property_mappings.all())
 
-        # --- Optionally create Application --------------------------------
-        if self.dcr.create_application:
-            app_slug = self._unique_app_slug(client_name or provider.client_id)
-            Application.objects.create(
-                name=client_name or provider.client_id,
-                slug=app_slug,
-                provider=provider,
-                group=self.dcr.default_application_group,
-            )
+        app_slug = self._unique_app_slug(client_name or provider.client_id)
+        Application.objects.create(
+            name=client_name or provider.client_id,
+            slug=app_slug,
+            provider=provider,
+            group=self.dcr.default_application_group,
+        )
 
         LOGGER.info(
             "DCR: registered new client",

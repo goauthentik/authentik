@@ -85,17 +85,6 @@ class TestDynamicClientRegistration(TestCase):
         provider = OAuth2Provider.objects.get(client_id=body["client_id"])
         self.assertIsNotNone(provider.application)
 
-    def test_registration_no_application(self):
-        """When create_application=False, no Application is created."""
-        self.dcr.create_application = False
-        self.dcr.save()
-        token = self._access_token()
-        response = self._post({"redirect_uris": ["https://example.com/cb"]}, token=token.token)
-        self.assertEqual(response.status_code, 201)
-        body = json.loads(response.content)
-        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
-        self.assertFalse(hasattr(provider, "application") and provider.application is not None)
-
     def test_requires_redirect_uris(self):
         """redirect_uris is required."""
         token = self._access_token()

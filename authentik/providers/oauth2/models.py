@@ -752,11 +752,6 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
         verbose_name=_("Provider"),
     )
 
-    create_application = models.BooleanField(
-        default=True,
-        verbose_name=_("Create application"),
-        help_text=_("Automatically create an Application object for each registered client."),
-    )
     default_application_group = models.TextField(
         blank=True,
         default="",
