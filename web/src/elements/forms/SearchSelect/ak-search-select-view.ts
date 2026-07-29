@@ -525,26 +525,25 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
-    #blurListener = (_event: FocusEvent) => {
-        // TODO: Disabled while debugging
-        // // If we lost focus but the menu got it, don't do anything;
-        // const relatedTarget = event.relatedTarget as HTMLElement | undefined;
-        // if (
-        //     relatedTarget &&
-        //     (this.contains(relatedTarget) ||
-        //         this.renderRoot.contains(relatedTarget) ||
-        //         this.#menuRef.value?.contains(relatedTarget) ||
-        //         this.#menuRef.value?.renderRoot.contains(relatedTarget))
-        // ) {
-        //     return;
-        // }
-        // this.open = false;
-        // if (!this.value) {
-        //     if (this.#inputRef.value) {
-        //         this.#inputRef.value.value = "";
-        //     }
-        //     this.setValue(undefined);
-        // }
+    #blurListener = (event: FocusEvent) => {
+        // If we lost focus but the menu got it, don't do anything;
+        const relatedTarget = event.relatedTarget as HTMLElement | undefined;
+        if (
+            relatedTarget &&
+            (this.contains(relatedTarget) ||
+                this.renderRoot.contains(relatedTarget) ||
+                this.#menuRef.value?.contains(relatedTarget) ||
+                this.#menuRef.value?.renderRoot.contains(relatedTarget))
+        ) {
+            return;
+        }
+        this.open = false;
+        if (!this.value) {
+            if (this.#inputRef.value) {
+                this.#inputRef.value.value = "";
+            }
+            this.setValue(undefined);
+        }
     };
 
     setValue(newValue: string | undefined) {
