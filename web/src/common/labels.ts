@@ -17,6 +17,7 @@ import {
     DeviceClassesEnum,
     EventActions,
     IntentEnum,
+    ModelEnum,
     SeverityEnum,
     UserTypeEnum,
 } from "@goauthentik/api";
@@ -151,17 +152,19 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
  * @todo Add verbose_name field to now vendored OTP devices
  * @todo We seem to have these constants in the `ModelEnum` object in lowercase.
  */
-export const deviceTypeToLabel: Record<
-    string,
-    MessageFormatter<string, [context?: EventContext]>
-> = {
-    ["authentik_stages_authenticator_static.StaticDevice"]: () => msg("Static tokens"),
-    ["authentik_stages_authenticator_totp.TOTPDevice"]: () => msg("TOTP Device"),
+const DeviceTypeLabelRecord: Record<string, MessageFormatter<string, [context?: EventContext]>> = {
+    [ModelEnum.AuthentikStagesAuthenticatorStaticStaticdevice]: () => msg("Static Tokens"),
+    [ModelEnum.AuthentikStagesAuthenticatorTotpTotpdevice]: () => msg("TOTP Device"),
 };
 
-export const formatDeviceTypeName = (device: Device) => {
-    return deviceTypeToLabel[device.type]?.() ?? device?.verboseName ?? "";
-};
+export function formatDeviceTypeName(device: Device) {
+    const deviceType = device.type;
+    const normalizedKey = deviceType.toLowerCase();
+
+    const value = DeviceTypeLabelRecord[normalizedKey] || DeviceTypeLabelRecord[deviceType];
+
+    return value?.() ?? device?.verboseName ?? msg("Unknown device type");
+}
 
 export function formatDeviceChallengeMessage(deviceChallenge?: DeviceChallenge | null): string {
     switch (deviceChallenge?.deviceClass) {
