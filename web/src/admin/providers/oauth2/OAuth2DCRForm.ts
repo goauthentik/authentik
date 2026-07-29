@@ -20,6 +20,7 @@ import { customElement, property } from "lit/decorators.js";
 export class OAuth2DCRForm extends ModelForm<OAuth2DynamicClientRegistration, string> {
     public static override verboseName = msg("Dynamic Client Registration");
     public static override verboseNamePlural = msg("Dynamic Client Registration");
+    public static override createLabel = msg("Create");
 
     /**
      * The provider this configuration is (or will be) attached to.
