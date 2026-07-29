@@ -830,7 +830,7 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
         return OAuth2DynamicClientRegistrationSerializer
 
     def __str__(self):
-        return f"DCR Configuration for {self.provider}"
+        return f"DCR Configuration for {self.provider_id}"
 
     class Meta:
         verbose_name = _("OAuth2 Dynamic Client Registration")
