@@ -9,6 +9,9 @@ from unittest.mock import patch
 from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key as cryptography_load_pem_private_key,
 )
+from cryptography.x509 import (
+    load_pem_x509_certificate as cryptography_load_pem_x509_certificate,
+)
 from cryptography.x509.extensions import SubjectAlternativeName
 from cryptography.x509.general_name import DNSName
 from django.urls import reverse
@@ -26,6 +29,7 @@ from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
 from authentik.crypto.models import (
     CertificateKeyPair,
+    _load_certificate,
     _load_private_key,
     generate_key_id,
     generate_key_id_legacy,
@@ -47,6 +51,26 @@ class TestCrypto(APITestCase):
             key_data="foo",
         )
         self.assertIsNone(cert.private_key)
+
+    def test_model_certificate_cached_across_instances(self):
+        """Test model certificate is cached across model instances"""
+        keypair = create_test_cert()
+        other_keypair = create_test_cert()
+        _load_certificate.cache_clear()
+        self.addCleanup(_load_certificate.cache_clear)
+
+        with patch(
+            "authentik.crypto.models.load_pem_x509_certificate",
+            wraps=cryptography_load_pem_x509_certificate,
+        ) as loader:
+            first = CertificateKeyPair.objects.get(pk=keypair.pk)
+            second = CertificateKeyPair.objects.get(pk=keypair.pk)
+            other = CertificateKeyPair.objects.get(pk=other_keypair.pk)
+
+            self.assertIs(first.certificate, second.certificate)
+            self.assertEqual(loader.call_count, 1)
+            self.assertIsNot(first.certificate, other.certificate)
+            self.assertEqual(loader.call_count, 2)
 
     def test_model_private_key_cached_across_instances(self):
         """Test model private key is cached across model instances"""

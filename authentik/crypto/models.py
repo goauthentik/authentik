@@ -30,6 +30,12 @@ LOGGER = get_logger()
 
 
 @lru_cache(maxsize=128)
+def _load_certificate(certificate_data: str) -> Certificate:
+    """Load a PEM certificate."""
+    return load_pem_x509_certificate(certificate_data.encode("utf-8"), default_backend())
+
+
+@lru_cache(maxsize=128)
 def _load_private_key(key_data: str) -> PrivateKeyTypes:
     """Load and validate a normalized PEM private key."""
     return load_pem_private_key(
@@ -157,9 +163,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     def certificate(self) -> Certificate:
         """Get python cryptography Certificate instance"""
         if not self._cert:
-            self._cert = load_pem_x509_certificate(
-                self.certificate_data.encode("utf-8"), default_backend()
-            )
+            self._cert = _load_certificate(self.certificate_data)
         return self._cert
 
     @property
