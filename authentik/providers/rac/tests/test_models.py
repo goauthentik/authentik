@@ -1,6 +1,6 @@
 """Test RAC Models"""
 
-from django.test import TransactionTestCase
+from django.test import SimpleTestCase, TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
@@ -12,6 +12,30 @@ from authentik.providers.rac.models import (
     RACPropertyMapping,
     RACProvider,
 )
+
+
+class TestParseHost(SimpleTestCase):
+    """Test host parsing"""
+
+    def test_hosts(self):
+        """Test host parsing for all supported forms"""
+        cases = {
+            # DNS name / IPv4
+            "host.example": ("host.example", None),
+            "host.example:5901": ("host.example", "5901"),
+            "192.0.2.10:5901": ("192.0.2.10", "5901"),
+            # IPv6 literals: bracketed (with/without port) and bare
+            "[2001:db8::10c]:5901": ("2001:db8::10c", "5901"),
+            "[2001:db8::10c]": ("2001:db8::10c", None),
+            "2001:db8::10c": ("2001:db8::10c", None),
+        }
+        for host, expected in cases.items():
+            with self.subTest(host=host):
+                self.assertEqual(ConnectionToken.parse_host(host), expected)
+
+    def test_hostname_lowercased(self):
+        """Test hostname is normalised to lowercase"""
+        self.assertEqual(ConnectionToken.parse_host("Host.Example:5901"), ("host.example", "5901"))
 
 
 class TestModels(TransactionTestCase):
@@ -34,6 +58,28 @@ class TestModels(TransactionTestCase):
             provider=self.provider,
         )
 
+    def test_settings_ipv6_host(self):
+        """Test settings with IPv6 host"""
+        endpoint = Endpoint.objects.create(
+            name=generate_id(),
+            host="[2001:db8::10c]:5901",
+            protocol=Protocols.VNC,
+            provider=self.provider,
+        )
+        session = Session.objects.create(
+            session_key=generate_id(),
+            last_ip="255.255.255.255",
+        )
+        auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
+        token = ConnectionToken.objects.create(
+            provider=self.provider,
+            endpoint=endpoint,
+            session=auth_session,
+        )
+        settings = token.get_settings()
+        self.assertEqual(settings["hostname"], "2001:db8::10c")
+        self.assertEqual(settings["port"], "5901")
+
     def test_settings_merge(self):
         """Test settings merge"""
         session = Session.objects.create(
@@ -50,7 +96,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
@@ -64,7 +110,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
@@ -81,7 +127,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
@@ -101,7 +147,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
@@ -123,7 +169,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
@@ -142,7 +188,7 @@ class TestModels(TransactionTestCase):
         self.assertEqual(
             token.get_settings(),
             {
-                "hostname": self.endpoint.host.split(":")[0],
+                "hostname": self.endpoint.host.split(":")[0].lower(),
                 "port": "1324",
                 "client-name": f"authentik - {self.user}",
                 "drive-path": path,
