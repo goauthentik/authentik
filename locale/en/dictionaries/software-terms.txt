@@ -123,6 +123,7 @@ microsoft
 mmdb
 noopener
 noreferrer
+ocsp
 oktadev
 openidc
 ouia
