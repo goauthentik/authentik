@@ -143,14 +143,7 @@ class DynamicClientRegistrationView(View):
             access_token_validity=self.dcr.access_token_validity,
             refresh_token_validity=self.dcr.refresh_token_validity,
         )
-        provider._redirect_uris = [
-            {
-                "matching_mode": uri.matching_mode,
-                "url": uri.url,
-                "redirect_uri_type": uri.redirect_uri_type,
-            }
-            for uri in redirect_uris
-        ]
+        provider.redirect_uris = redirect_uris
         provider.save()
 
         if self.dcr.default_property_mappings.exists():
