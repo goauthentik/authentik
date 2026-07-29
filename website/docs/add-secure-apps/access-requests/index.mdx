@@ -17,7 +17,7 @@ This supports just-in-time and least-privilege access models. Users retain minim
 
 Access requests provide:
 
-- A self-service way for users to request access through the user interface.
+- A self-service way for users to request access through the [user interface](../../users-sources/user/user-interface.mdx).
 - Rule-based routing to the appropriate reviewers.
 - Time-limited access grants that expire automatically, without manual cleanup.
 - Audit events for request creation, approval, denial, and expiry.
@@ -46,7 +46,7 @@ Access requests provide:
 
 Request rules determine whether a request flow is used, who reviews requests, and how reviewers are notified. Users, groups, and policies are bound to a request rule to determine who is authorized to review access requests.
 
-Request rules are bound to an application, which makes the application requestable via the **Discover** page in the user interface. Users, groups, and policies can be bound to request rule bindings to determine which users are eligible to request access to the application.
+Request rules are bound to an application, which makes the application requestable via the **Discover** page in the [user interface](../../users-sources/user/user-interface.mdx). Users, groups, and policies can be bound to request rule bindings to determine which users are eligible to request access to the application.
 
 ## Request flows
 
@@ -119,7 +119,7 @@ authentik includes a `default-request` flow that is empty. This flow can be conf
 
 ### Requesting access
 
-Users see requestable applications as cards on the **Discover** page of the [user interface](link) under the **Browse** tab. Selecting a card opens the request dialog and runs the configured request flow.
+Users see requestable applications as cards on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **Browse** tab. Selecting a card opens the request dialog and runs the configured request flow.
 
 ### View pending requests
 
@@ -129,7 +129,7 @@ Users can view their pending access requests under the **My Requests** tab on th
 
 ### Approving and denying access requests
 
-Reviewers see pending requests on the **Discover** page of the [user interface](link) under the **For My Review** tab. The requester, the requested application, and the time since the request was made are listed. Reviewers click the **Review** button and can approve or deny the request, and optionally add **Notes** before clicking the **Submit** button.
+Reviewers see pending requests on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **For My Review** tab. The requester, the requested application, and the time since the request was made are listed. Reviewers click the **Review** button and can approve or deny the request, and optionally add **Notes** before clicking the **Submit** button.
 
 **[VERIFY/TODO]** more info on **Notes**
 
