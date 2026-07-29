@@ -85,7 +85,7 @@ function parseDelay(delay: string) {
  *
  */
 export class Tooltip extends LitElement {
-    static readonly styles = [Styles];
+    public static readonly styles = [Styles];
 
     /**
      * @attr {string} content: What to show in the tooltip
@@ -287,14 +287,16 @@ export class Tooltip extends LitElement {
             throw new Error("Can't happen.");
         }
 
-        const signal = { signal: this.#tooltipAbortController.signal };
-        this.dialog.value?.addEventListener("focus", this.#onTooltipEnter, signal);
-        this.dialog.value?.addEventListener("blur", this.#onTooltipLeave, signal);
+        const options = { signal: this.#tooltipAbortController.signal };
+
+        this.dialog.value?.addEventListener("focus", this.#onTooltipEnter, options);
+        this.dialog.value?.addEventListener("blur", this.#onTooltipLeave, options);
+
         if (this.trigger === "hover") {
-            this.dialog.value?.addEventListener("mouseenter", this.#onTooltipEnter, signal);
-            this.dialog.value?.addEventListener("mouseleave", this.#onTooltipLeave, signal);
-            this.dialog.value?.addEventListener("touchstart", this.#onTooltipEnter, signal);
-            this.dialog.value?.addEventListener("touchend", this.#onTooltipLeave, signal);
+            this.dialog.value?.addEventListener("mouseenter", this.#onTooltipEnter, options);
+            this.dialog.value?.addEventListener("mouseleave", this.#onTooltipLeave, options);
+            this.dialog.value?.addEventListener("touchstart", this.#onTooltipEnter, options);
+            this.dialog.value?.addEventListener("touchend", this.#onTooltipLeave, options);
         }
     }
 
