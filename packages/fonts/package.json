@@ -1,8 +1,8 @@
 {
     "name": "@goauthentik/fonts",
     "version": "1.0.0",
-    "description": "The RedHat variable typefaces used by authentik.",
-    "license": "MIT",
+    "description": "The typefaces authentik ships: the RedHat variable faces and the PatternFly icon faces.",
+    "license": "MIT AND OFL-1.1 AND CC-BY-4.0",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/goauthentik/authentik.git",
@@ -28,7 +28,9 @@
         "icons.css",
         "*.woff",
         "*.woff2",
-        "OFL.txt"
+        "LICENSE.txt",
+        "NOTICE.md",
+        "licenses/**"
     ],
     "engines": {
         "node": ">=24"
@@ -57,5 +59,12 @@
         "faces PatternFly components render glyphs from. They are separate so a",
         "consumer can take the brand faces without the icon fonts.",
         "There is no build step — the package is checked-in assets."
+    ],
+    "#license-comment": [
+        "The package itself is MIT (LICENSE.txt). The font files it redistributes",
+        "are not: the RedHat faces are OFL-1.1, Font Awesome's font files are",
+        "OFL-1.1 with the icons under CC-BY-4.0, and pficon is MIT via PatternFly.",
+        "NOTICE.md records the provenance and license of each file, and licenses/",
+        "carries the full texts. Both ship in the published package."
     ]
 }
