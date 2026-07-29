@@ -124,6 +124,45 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             "3e:28:fc:df:45:19:bb:94:0a:0c:90:98:f2:08:72:53:2a:9e:e2:76:13:02:3e:69:61:4a:d9:90:49:80:3d:34",
         )
 
+    def test_registration_options_exclude_credentials(self):
+        """Test that already registered credentials are excluded from registration options"""
+        device = WebAuthnDevice.objects.create(
+            user=self.user,
+            name=generate_id(),
+            credential_id=bytes_to_base64url(b"existing-credential"),
+            rp_id="testserver",
+        )
+        # Devices of other users, and devices registered for a different RP, must not leak into
+        # the exclusion list
+        WebAuthnDevice.objects.create(
+            user=create_test_user(),
+            name=generate_id(),
+            credential_id=bytes_to_base64url(b"other-users-credential"),
+            rp_id="testserver",
+        )
+        WebAuthnDevice.objects.create(
+            user=self.user,
+            name=generate_id(),
+            credential_id=bytes_to_base64url(b"other-rp-credential"),
+            rp_id="other.rp.example.com",
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            loads(response.content)["registration"]["excludeCredentials"],
+            [{"id": device.credential_id, "type": "public-key"}],
+        )
+
     def test_register_shared_attestation_certificate(self):
         """Test that a device sharing an attestation certificate with an existing device of
         another user can still be registered.

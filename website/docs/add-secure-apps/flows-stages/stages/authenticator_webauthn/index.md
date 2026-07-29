@@ -77,6 +77,8 @@ For backward compatibility with older browsers that do not support hints, authen
 
 ### Duplicate devices
 
+During registration, authentik sends the user's already-enrolled credentials in the `excludeCredentials` parameter. An authenticator that already holds a credential for the account refuses to create another one, and the user is told that the device is already registered. Because the list only contains the current user's credentials, the same authenticator can still be enrolled by different users.
+
 The **Prevent duplicate devices** option was removed in 2026.8. It compared attestation certificates, which manufacturers share across entire production batches, so it rejected legitimate enrollments of a second security key. No configuration replaces it, and no action is needed when upgrading.
 
 ### Device type restrictions
