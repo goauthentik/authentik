@@ -3,11 +3,10 @@
 use axum::{
     Extension, RequestPartsExt as _,
     extract::{FromRequestParts, Request},
-    http::{self, header::FORWARDED, request::Parts},
+    http::{self, request::Parts},
     middleware::Next,
     response::Response,
 };
-use forwarded_header_value::{ForwardedHeaderValue, Protocol};
 use tracing::{Span, instrument};
 
 use crate::{
@@ -16,7 +15,6 @@ use crate::{
 };
 
 const X_FORWARDED_PROTO: &str = "X-Forwarded-Proto";
-const X_FORWARDED_SCHEME: &str = "X-Forwarded-Scheme";
 
 /// Request scheme.
 ///
@@ -59,28 +57,6 @@ async fn extract_scheme(parts: &mut Parts) -> http::uri::Scheme {
             && let Ok(scheme) = proto.to_lowercase().as_str().try_into()
         {
             return scheme;
-        }
-
-        if let Some(proto) = parts.headers.get(X_FORWARDED_SCHEME)
-            && let Ok(proto) = proto.to_str()
-            && let Ok(scheme) = proto.to_lowercase().as_str().try_into()
-        {
-            return scheme;
-        }
-
-        if let Some(forwarded) = parts.headers.get(FORWARDED)
-            && let Ok(forwarded) = forwarded.to_str()
-            && let Ok(forwarded) = ForwardedHeaderValue::from_forwarded(forwarded)
-        {
-            for stanza in forwarded.iter() {
-                if let Some(forwarded_proto) = &stanza.forwarded_proto {
-                    let scheme = match forwarded_proto {
-                        Protocol::Http => http::uri::Scheme::HTTP,
-                        Protocol::Https => http::uri::Scheme::HTTPS,
-                    };
-                    return scheme;
-                }
-            }
         }
 
         if let Ok(Extension(proxy_protocol_state)) =
@@ -142,36 +118,6 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn x_forwarded_scheme_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-forwarded-scheme", "https")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let scheme = extract_scheme(&mut parts).await;
-
-        assert_eq!(scheme, http::uri::Scheme::HTTPS,);
-    }
-
-    #[tokio::test]
-    async fn forwarded_header_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("forwarded", "proto=https")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let scheme = extract_scheme(&mut parts).await;
-
-        assert_eq!(scheme, http::uri::Scheme::HTTPS,);
-    }
-
-    #[tokio::test]
     async fn x_forwarded_proto_untrusted() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
@@ -206,38 +152,6 @@ mod tests {
     async fn scheme_defaults_to_http() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let scheme = extract_scheme(&mut parts).await;
-
-        assert_eq!(scheme, http::uri::Scheme::HTTP,);
-    }
-
-    #[tokio::test]
-    async fn priority_order() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-forwarded-proto", "http")
-            .header("x-forwarded-scheme", "https")
-            .header("forwarded", "proto=https")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let scheme = extract_scheme(&mut parts).await;
-
-        assert_eq!(scheme, http::uri::Scheme::HTTP,);
-    }
-
-    #[tokio::test]
-    async fn multiple_forwarded_stanzas() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("forwarded", "proto=http, proto=https")
-            .extension(TrustedProxy(true))
             .body(Body::empty())
             .expect("Failed to create request")
             .into_parts();

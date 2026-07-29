@@ -47,14 +47,6 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
             return ip;
         }
 
-        if let Ok(ip) = client_ip::x_real_ip(&parts.headers) {
-            return ip;
-        }
-
-        if let Ok(ip) = client_ip::rightmost_forwarded(&parts.headers) {
-            return ip;
-        }
-
         if let Ok(Extension(proxy_protocol_state)) =
             parts.extract::<Extension<ProxyProtocolState>>().await
             && let Some(header) = &proxy_protocol_state.header
@@ -118,36 +110,6 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn x_real_ip_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-real-ip", "192.0.2.42")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
-    }
-
-    #[tokio::test]
-    async fn forwarded_header_trusted() {
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("forwarded", "for=192.0.2.42")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 42),);
-    }
-
-    #[tokio::test]
     async fn from_connect_info() {
         let connect_addr: SocketAddr = "192.0.2.42:34932"
             .parse()
@@ -178,24 +140,6 @@ mod tests {
         let client_ip = extract_client_ip(&mut parts).await;
 
         assert_eq!(client_ip, Ipv6Addr::LOCALHOST);
-    }
-
-    #[tokio::test]
-    async fn priority_order() {
-        // Test that X-Forwarded-For takes priority over other headers when trusted
-        let (mut parts, _) = Request::builder()
-            .uri("http://example.com/path")
-            .header("x-forwarded-for", "192.0.2.1")
-            .header("x-real-ip", "192.0.2.2")
-            .header("forwarded", "for=192.0.2.3")
-            .extension(TrustedProxy(true))
-            .body(Body::empty())
-            .expect("Failed to create request")
-            .into_parts();
-
-        let client_ip = extract_client_ip(&mut parts).await;
-
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 1),);
     }
 
     #[tokio::test]
