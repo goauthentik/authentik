@@ -2,7 +2,7 @@ import "#elements/forms/DeleteBulkForm";
 
 import { aki } from "#common/api/client";
 import { createPaginatedResponse } from "#common/api/responses";
-import { deviceTypeName } from "#common/labels";
+import { formatDeviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -96,7 +96,7 @@ export class UserDeviceTable extends Table<Device> {
         return [
             html`${item.name}`,
             html`<div>
-                    ${deviceTypeName(item)}
+                    ${formatDeviceTypeName(item)}
                     ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
                 </div>
                 ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
