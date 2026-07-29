@@ -4618,7 +4618,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/`;
+        let urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -4683,7 +4683,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        let urlPath = `/providers/oauth2-dcr/{pbm_uuid}/`;
         urlPath = urlPath.replace(
             "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
@@ -4759,7 +4759,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/`;
+        let urlPath = `/providers/oauth2-dcr/`;
 
         return {
             path: urlPath,
@@ -4823,7 +4823,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        let urlPath = `/providers/oauth2-dcr/{pbm_uuid}/`;
         urlPath = urlPath.replace(
             "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
@@ -4896,7 +4896,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        let urlPath = `/providers/oauth2-dcr/{pbm_uuid}/`;
         urlPath = urlPath.replace(
             "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),
@@ -4971,7 +4971,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/oauth2/dcr/{pbm_uuid}/`;
+        let urlPath = `/providers/oauth2-dcr/{pbm_uuid}/`;
         urlPath = urlPath.replace(
             "{pbm_uuid}",
             encodeURIComponent(String(requestParameters["pbmUuid"])),

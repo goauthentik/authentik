@@ -14,5 +14,5 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("providers/oauth2/dcr", OAuth2DynamicClientRegistrationViewSet),
+    ("providers/oauth2-dcr", OAuth2DynamicClientRegistrationViewSet),
 ]
