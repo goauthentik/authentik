@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 import "#user/LibraryApplication/index";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Tooltip";
 import "./ak-library-application-empty-list.js";
 
 import Styles from "./ak-library-impl.css";
@@ -400,22 +400,19 @@ export class LibraryPage extends WithSession(AKElement) {
             const [tooltipContent, icon] = createViewToggleContent(viewMode);
 
             return html`<button
-                id="library-view-toggle-button"
-                class="pf-c-button pf-m-plain library-view-toggle"
-                part="view-toggle"
-                type="button"
-                aria-label=${tooltipContent}
-                aria-pressed=${viewMode === ViewMode.List}
-                @click=${this.#viewToggleListener}
-            >
-                <pf-tooltip
-                    position="top"
-                    content=${tooltipContent}
-                    trigger="library-view-toggle-button"
+                    id="library-view-toggle-button"
+                    class="pf-c-button pf-m-plain library-view-toggle"
+                    part="view-toggle"
+                    type="button"
+                    aria-label=${tooltipContent}
+                    aria-pressed=${viewMode === ViewMode.List}
+                    @click=${this.#viewToggleListener}
                 >
                     ${icon}
-                </pf-tooltip>
-            </button>`;
+                </button>
+                <ak-tooltip position="top" for="library-view-toggle-button"
+                    >${tooltipContent}
+                </ak-tooltip>`;
         });
     }
 
