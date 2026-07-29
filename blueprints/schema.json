@@ -15487,11 +15487,6 @@
                     },
                     "title": "Device type restrictions"
                 },
-                "prevent_duplicate_devices": {
-                    "type": "boolean",
-                    "title": "Prevent duplicate devices",
-                    "description": "When enabled, a given device can only be registered once."
-                },
                 "max_attempts": {
                     "type": "integer",
                     "minimum": 0,
