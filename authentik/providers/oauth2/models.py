@@ -791,6 +791,7 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
         blank=True,
         verbose_name=_("Default property mappings"),
         help_text=_("Scope mappings applied to dynamically registered clients."),
+        through="DynamicClientRegistrationPropertyMapping",
     )
 
     access_token_validity = models.TextField(
@@ -834,3 +835,22 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("OAuth2 Dynamic Client Registration")
         verbose_name_plural = _("OAuth2 Dynamic Client Registrations")
+
+
+class DynamicClientRegistrationPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(ScopeMapping, on_delete=models.CASCADE)
+    dynamic_client_registration = models.ForeignKey(
+        OAuth2DynamicClientRegistration, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("property_mapping", "dynamic_client_registration"),)
+        verbose_name = _("Dynamic Client Registration Property Mapping")
+        verbose_name_plural = _("Dynamic Client Registration Property Mappings")
+
+    def __str__(self):
+        return (
+            "DynamicClientRegistrationPropertyMapping for DCR "
+            f"{self.dynamic_client_registration_id} and PropertyMapping "
+            f"{self.property_mapping_id}."
+        )
