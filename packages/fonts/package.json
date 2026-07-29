@@ -15,7 +15,8 @@
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
-        "./faces.css": "./faces.css"
+        "./faces.css": "./faces.css",
+        "./icons.css": "./icons.css"
     },
     "devDependencies": {
         "@goauthentik/prettier-config": "link:../prettier-config",
@@ -24,6 +25,8 @@
     },
     "files": [
         "faces.css",
+        "icons.css",
+        "*.woff",
         "*.woff2",
         "OFL.txt"
     ],
@@ -47,9 +50,12 @@
         "access": "public"
     },
     "#exports-comment": [
-        "Only faces.css needs an entry. The `url(\"./RedHatTextVF.woff2\")`",
-        "references inside it are resolved relative to that file by the",
+        "Only the two stylesheets need entries. The `url(\"./RedHatTextVF.woff2\")`",
+        "references inside them are resolved relative to the stylesheet by the",
         "consuming bundler, not through this exports map.",
+        "faces.css holds the RedHat brand text faces; icons.css holds the icon",
+        "faces PatternFly components render glyphs from. They are separate so a",
+        "consumer can take the brand faces without the icon fonts.",
         "There is no build step — the package is checked-in assets."
     ]
 }
