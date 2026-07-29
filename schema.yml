@@ -45549,25 +45549,19 @@ components:
           readOnly: true
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string
@@ -45597,25 +45591,19 @@ components:
       properties:
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string
@@ -51663,25 +51651,19 @@ components:
       properties:
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string

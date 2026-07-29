@@ -10933,43 +10933,30 @@
                     "type": "integer",
                     "title": "Provider"
                 },
-                "create_application": {
-                    "type": "boolean",
-                    "title": "Create application",
-                    "description": "Automatically create an Application object for each registered client."
-                },
                 "default_application_group": {
                     "type": "string",
                     "title": "Default application group",
                     "description": "Group to assign to automatically created applications."
                 },
-                "default_client_type": {
-                    "type": "string",
-                    "enum": [
-                        "confidential",
-                        "public"
-                    ],
-                    "title": "Default client type"
-                },
-                "default_authorization_flow": {
+                "override_authorization_flow": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Default authorization flow",
+                    "title": "Override authorization flow",
                     "description": "Authorization flow applied to dynamically registered clients."
                 },
-                "default_invalidation_flow": {
+                "override_invalidation_flow": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Default invalidation flow"
+                    "title": "Override invalidation flow"
                 },
-                "default_property_mappings": {
+                "override_property_mappings": {
                     "type": "array",
                     "items": {
                         "type": "string",
                         "format": "uuid",
                         "description": "Scope mappings applied to dynamically registered clients."
                     },
-                    "title": "Default property mappings",
+                    "title": "Override property mappings",
                     "description": "Scope mappings applied to dynamically registered clients."
                 },
                 "access_token_validity": {

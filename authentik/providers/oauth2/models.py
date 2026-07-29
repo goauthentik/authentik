@@ -759,32 +759,27 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
         help_text=_("Group to assign to automatically created applications."),
     )
 
-    default_client_type = models.TextField(
-        choices=ClientType.choices,
-        default=ClientType.CONFIDENTIAL,
-        verbose_name=_("Default client type"),
-    )
-    default_authorization_flow = models.ForeignKey(
+    override_authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name=_("Default authorization flow"),
+        verbose_name=_("Override authorization flow"),
         help_text=_("Authorization flow applied to dynamically registered clients."),
-        related_name="dcr_default_authorization_flow",
+        related_name="dcr_override_authorization_flow",
     )
-    default_invalidation_flow = models.ForeignKey(
+    override_invalidation_flow = models.ForeignKey(
         "authentik_flows.Flow",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name=_("Default invalidation flow"),
-        related_name="dcr_default_invalidation_flow",
+        verbose_name=_("Override invalidation flow"),
+        related_name="dcr_override_invalidation_flow",
     )
-    default_property_mappings = models.ManyToManyField(
+    override_property_mappings = models.ManyToManyField(
         ScopeMapping,
         blank=True,
-        verbose_name=_("Default property mappings"),
+        verbose_name=_("Override property mappings"),
         help_text=_("Scope mappings applied to dynamically registered clients."),
         through="DynamicClientRegistrationPropertyMapping",
     )

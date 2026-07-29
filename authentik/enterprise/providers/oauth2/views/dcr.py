@@ -13,6 +13,7 @@ from structlog.stdlib import get_logger
 
 from authentik.api.authentication import validate_auth
 from authentik.common.oauth.constants import SCOPE_AUTHENTIK_DCR
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.lib.generators import generate_id
 from authentik.policies.engine import PolicyEngine
@@ -47,6 +48,8 @@ class DynamicClientRegistrationView(View):
     """
 
     dcr: OAuth2DynamicClientRegistration
+    application: Application
+    provider: OAuth2Provider
 
     def _authenticate_access_token(self, request: HttpRequest) -> AccessToken | None:
         """Authenticate the request via a Bearer `AccessToken` carrying the
@@ -63,7 +66,8 @@ class DynamicClientRegistrationView(View):
         return access_token
 
     def _check_policy_access(self, request: HttpRequest, user: User) -> bool:
-        engine = PolicyEngine(self.dcr, user, request)
+        engine = PolicyEngine(self.application, user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         engine.build()
         return engine.result.passing
@@ -138,16 +142,21 @@ class DynamicClientRegistrationView(View):
             client_secret=generate_client_secret(),
             client_type=client_type,
             grant_types=grant_types,
-            authorization_flow=self.dcr.default_authorization_flow,
-            invalidation_flow=self.dcr.default_invalidation_flow,
-            access_token_validity=self.dcr.access_token_validity,
-            refresh_token_validity=self.dcr.refresh_token_validity,
+            authorization_flow=self.dcr.override_authorization_flow
+            or self.provider.authorization_flow,
+            invalidation_flow=self.dcr.override_invalidation_flow or self.provider.invalidation_flow,
+            access_token_validity=self.dcr.access_token_validity
+            or self.provider.access_token_validity,
+            refresh_token_validity=self.dcr.refresh_token_validity
+            or self.provider.refresh_token_validity,
         )
         provider.redirect_uris = redirect_uris
         provider.save()
 
-        if self.dcr.default_property_mappings.exists():
+        if self.dcr.override_property_mappings.exists():
             provider.property_mappings.set(self.dcr.default_property_mappings.all())
+        else:
+            provider.property_mappings.set(self.provider.property_mappings.all())
 
         app_slug = self._unique_app_slug(client_name or provider.client_id)
         Application.objects.create(
@@ -187,11 +196,11 @@ class DynamicClientRegistrationView(View):
     def dispatch(
         self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any
     ) -> HttpResponse:
-        application = get_object_or_404(Application, slug=application_slug)
-        provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
+        self.application = get_object_or_404(Application, slug=application_slug)
+        self.provider = get_object_or_404(OAuth2Provider, pk=self.application.provider_id)
 
         try:
-            self.dcr = OAuth2DynamicClientRegistration.objects.get(provider=provider)
+            self.dcr = OAuth2DynamicClientRegistration.objects.get(provider=self.provider)
         except OAuth2DynamicClientRegistration.DoesNotExist:
             return JsonResponse(
                 {
