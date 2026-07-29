@@ -6,7 +6,7 @@ use axum::{
     extract::{Query, Request, State},
     http::{
         HeaderValue, StatusCode,
-        header::{CACHE_CONTROL, CONTENT_SECURITY_POLICY, VARY},
+        header::{CACHE_CONTROL, CONTENT_SECURITY_POLICY},
     },
     middleware::{self, Next},
     response::{IntoResponse as _, Response},
