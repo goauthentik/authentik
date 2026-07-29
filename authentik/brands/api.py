@@ -68,6 +68,7 @@ class BrandSerializer(ModelSerializer):
             "flow_user_settings",
             "flow_device_code",
             "flow_lockdown",
+            "flow_request",
             "default_application",
             "web_certificate",
             "client_certificates",
@@ -143,6 +144,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
     flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
+    flow_request = CharField(source="flow_request.slug", required=False)
 
     default_locale = CharField(read_only=True)
     flags = SerializerMethodField()
@@ -190,6 +192,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_user_settings",
         "flow_device_code",
         "flow_lockdown",
+        "flow_request",
         "web_certificate",
         "client_certificates",
     ]
