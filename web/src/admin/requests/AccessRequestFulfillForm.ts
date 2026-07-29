@@ -67,6 +67,9 @@ export class AccessRequestFulfillForm extends WithSession(Form<PatchedGrantReque
                     },
                 ]}
             ></ak-radio-input>
+            <ak-form-element-horizontal label=${msg("Requestor notes")}>
+                <pre>${JSON.stringify(this.request?.requesterData, null, 4)}</pre>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Data")} name="data">
                 <ak-codemirror mode="yaml" value="${YAML.stringify({})}"> </ak-codemirror>
             </ak-form-element-horizontal>
