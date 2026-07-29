@@ -157,7 +157,7 @@ class DynamicClientRegistrationView(View):
         provider.save()
 
         if self.dcr.override_property_mappings.exists():
-            provider.property_mappings.set(self.dcr.default_property_mappings.all())
+            provider.property_mappings.set(self.dcr.override_property_mappings.all())
         else:
             provider.property_mappings.set(self.provider.property_mappings.all())
 

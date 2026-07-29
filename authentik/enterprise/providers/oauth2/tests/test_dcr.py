@@ -12,6 +12,8 @@ from authentik.common.oauth.constants import SCOPE_AUTHENTIK_DCR
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     AccessToken,
     ClientType,
@@ -20,6 +22,7 @@ from authentik.providers.oauth2.models import (
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    ScopeMapping,
 )
 
 
@@ -41,8 +44,7 @@ class TestDynamicClientRegistration(TestCase):
         )
         self.dcr = OAuth2DynamicClientRegistration.objects.create(
             provider=self.provider,
-            create_application=True,
-            default_authorization_flow=self.flow,
+            override_authorization_flow=self.flow,
         )
         self.register_url = reverse(
             "authentik_enterprise_providers_oauth2:dynamic-client-registration",
@@ -174,6 +176,80 @@ class TestDynamicClientRegistration(TestCase):
         self.assertNotIn("client_secret", body)
         provider = OAuth2Provider.objects.get(client_id=body["client_id"])
         self.assertEqual(provider.client_type, ClientType.PUBLIC)
+
+    def test_policy_access_denied(self):
+        """A failing policy binding on the application rejects registration with 403."""
+        policy = DummyPolicy.objects.create(name=generate_id(), result=False)
+        PolicyBinding.objects.create(target=self.app, policy=policy, order=0)
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 403)
+        body = json.loads(response.content)
+        self.assertEqual(body["error"], "access_denied")
+
+    def test_override_authorization_flow_applied(self):
+        """override_authorization_flow is applied to the registered provider."""
+        override_flow = create_test_flow()
+        self.dcr.override_authorization_flow = override_flow
+        self.dcr.save()
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
+        self.assertEqual(provider.authorization_flow, override_flow)
+
+    def test_default_application_group_applied(self):
+        """default_application_group is applied to the created application."""
+        group = generate_id()
+        self.dcr.default_application_group = group
+        self.dcr.save()
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
+        self.assertEqual(provider.application.group, group)
+
+    def test_all_grant_types_allowed_when_unrestricted(self):
+        """With an empty allowed_grant_types, all requested grant types are kept."""
+        token = self._access_token()
+        response = self._post(
+            {
+                "redirect_uris": ["https://example.com/cb"],
+                "grant_types": [GrantType.AUTHORIZATION_CODE, GrantType.CLIENT_CREDENTIALS],
+            },
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        self.assertIn(GrantType.AUTHORIZATION_CODE, body["grant_types"])
+        self.assertIn(GrantType.CLIENT_CREDENTIALS, body["grant_types"])
+
+    def test_override_property_mappings_applied(self):
+        """override_property_mappings are applied to the registered provider."""
+        mapping = ScopeMapping.objects.create(
+            name=generate_id(), scope_name=generate_id(), expression="return {}"
+        )
+        self.dcr.override_property_mappings.set([mapping])
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
+        self.assertTrue(provider.property_mappings.filter(pk=mapping.pk).exists())
 
     def test_registration_endpoint_in_openid_config(self):
         """registration_endpoint is advertised in .well-known/openid-configuration."""
