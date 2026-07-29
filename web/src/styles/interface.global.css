@@ -19,6 +19,7 @@
 
 @import "#styles/global/vendor/patternfly.css" layer(vendor);
 @import "@goauthentik/fonts/faces.css" layer(vendor);
+@import "@goauthentik/fonts/icons.css" layer(vendor);
 
 @import "#styles/global/theme/variables.css" layer(theme);
 @import "#styles/global/reset/scrollbars.css" layer(reset);
