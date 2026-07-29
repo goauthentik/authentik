@@ -70,6 +70,7 @@ class DynamicClientRegistrationView(View):
         engine = PolicyEngine(self.application, user, request)
         engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
+        engine.mode = self.application.policy_engine_mode
         engine.build()
         return engine.result.passing
 
@@ -166,6 +167,7 @@ class DynamicClientRegistrationView(View):
             slug=app_slug,
             provider=provider,
             group=self.dcr.default_application_group,
+            policy_engine_mode=self.dcr.policy_engine_mode,
         )
         bindings = PolicyBinding.objects.filter(target=self.dcr)
         if bindings.exists():
