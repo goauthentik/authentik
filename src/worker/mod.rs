@@ -143,7 +143,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/health/live/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         Ok(self
             .client
             .request(req)
@@ -160,7 +160,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/health/ready/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         Ok(self
             .client
             .request(req)
@@ -177,7 +177,7 @@ impl Worker {
             .method("GET")
             .uri("http://localhost:8000/-/metrics/")
             .header(HOST, "localhost")
-            .body(Body::from(""))?;
+            .body(Body::empty())?;
         self.client
             .request(req)
             .await
