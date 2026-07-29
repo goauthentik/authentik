@@ -81,7 +81,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 value="${ifDefined(settings.baseUrl)}"
                 input-hint="code"
                 help=${msg(
-                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company; Should not include the context path",
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
                     { id: "settings.base-url.description" },
                 )}
             >
