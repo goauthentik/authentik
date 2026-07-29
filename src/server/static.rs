@@ -143,9 +143,6 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
         "X-authentik-version",
         HeaderValue::from_static(env!("CARGO_PKG_VERSION")),
     );
-    response
-        .headers_mut()
-        .insert(VARY, HeaderValue::from_static("X-authentik-version, Etag"));
 
     response
 }
