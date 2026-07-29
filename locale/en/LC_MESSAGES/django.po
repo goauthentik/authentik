@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-27 00:33+0000\n"
+"POT-Creation-Date: 2026-07-29 00:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -974,95 +974,174 @@ msgstr ""
 msgid "Verifying your browser..."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/reviews.py
+#: authentik/enterprise/lifecycle/offboarding/actions.py
+#, python-format
+msgid "User %(username)s was offboarded (%(action)s)"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "This user already has a pending offboarding scheduled."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Offboarding must be scheduled in the future."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Internal service accounts cannot be offboarded."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot offboard your own account."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot cancel your own offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Only a pending offboarding can be cancelled."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Deactivate"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Delete"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Pending"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Completed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Failed"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Canceled"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Absolute time at which the offboarding action is executed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's sessions when offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's tokens when offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Number of times execution has been attempted and failed."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboarding"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboardings"
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute due user offboardings."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute a single user offboarding."
+msgstr ""
+
+#: authentik/enterprise/lifecycle/review/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Object does not exist"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Either a reviewer group or a reviewer must be set."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Grace period must be shorter than the interval."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Select which transports should be used to notify the reviewers. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer Group"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer Groups"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewer"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Reviewers"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Notification Transport"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Lifecycle Rule Notification Transports"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Reviewed"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Pending"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Canceled"
-msgstr ""
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Go to {self._get_model_name()}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is overdue for {self.content_type.name} {str(self.object)}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Access review completed for {self.content_type.name} {str(self.object)}"
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Apply lifecycle rule."
 msgstr ""
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Send lifecycle rule notification."
 msgstr ""
 
@@ -1404,6 +1483,100 @@ msgstr ""
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Only individually-selected reviewers"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "A random subset of size min_reviewers, from everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid ""
+"How long a request against this binding stays pending before it "
+"automatically lapses if not approved or denied."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "The maximum duration a grant approved against this binding can last."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rules"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Requests"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can create a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can fulfill (approve/deny) a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can revoke a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Target"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Targets"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approval"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approvals"
+msgstr ""
+
+#: authentik/enterprise/requests/tasks.py
+msgid "Send access-request review notification."
 msgstr ""
 
 #: authentik/enterprise/stages/account_lockdown/api.py

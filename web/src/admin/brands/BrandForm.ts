@@ -344,6 +344,16 @@ export class BrandForm extends ModelForm<Brand, string> {
                               </ak-alert>`
                             : null}
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
+                        <ak-flow-search
+                            placeholder=${msg("Select a request flow...")}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowRequest}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default flow used by users requesting access.")}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group label="${msg("Other global settings")} ">

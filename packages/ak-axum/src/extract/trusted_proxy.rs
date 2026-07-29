@@ -58,10 +58,12 @@ async fn extract_trusted_proxy(parts: &mut Parts) -> bool {
 pub async fn trusted_proxy_middleware(request: Request, next: Next) -> Response {
     let (mut parts, body) = request.into_parts();
 
-    let trusted_proxy = extract_trusted_proxy(&mut parts).await;
-    parts
-        .extensions
-        .insert::<TrustedProxy>(TrustedProxy(trusted_proxy));
+    if parts.extensions.get::<TrustedProxy>().is_none() {
+        let trusted_proxy = extract_trusted_proxy(&mut parts).await;
+        parts
+            .extensions
+            .insert::<TrustedProxy>(TrustedProxy(trusted_proxy));
+    }
 
     let request = Request::from_parts(parts, body);
 

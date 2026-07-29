@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
@@ -101,6 +105,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: ${{ matrix.deps }}
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
@@ -429,7 +439,16 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust,runtime
+          dependencies: system,python,rust,runtime
+      - name: Prepare database
+        run: |
+          uv run make migrate
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
