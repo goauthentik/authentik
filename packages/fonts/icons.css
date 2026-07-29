@@ -8,10 +8,12 @@
  *
  * Provenance, both taken verbatim from @patternfly/patternfly@4.224.5:
  *
- *   pficon               PatternFly's own icon set. MIT, as the package is.
+ *   pficon               PatternFly's own icon set. MIT, © Red Hat, Inc.
  *   Font Awesome 5 Free  The solid weight only, which is all PatternFly 4
  *                        bundles. The font files are SIL OFL 1.1; the icons
- *                        themselves are CC BY 4.0.
+ *                        they encode are CC BY 4.0, © Fonticons, Inc.
+ *
+ * See NOTICE.md for the full attribution and licenses/ for the license texts.
  *
  * @font-face only takes effect at the document level. Declaring these inside a
  * shadow root does nothing — components inherit the faces registered here.
