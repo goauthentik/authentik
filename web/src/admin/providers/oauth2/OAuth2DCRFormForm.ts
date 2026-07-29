@@ -12,28 +12,14 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { GrantTypeCheckboxItems } from "#admin/providers/oauth2/labels";
 import { clientTypeOptions } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
 
-import {
-    FlowDesignationEnum,
-    GrantTypeEnum,
-    OAuth2DynamicClientRegistration,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, OAuth2DynamicClientRegistration } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-const allowedGrantTypeOptions: [GrantTypeEnum, string][] = [
-    [GrantTypeEnum.AuthorizationCode, msg("Authorization Code")],
-    [GrantTypeEnum.Implicit, msg("Implicit")],
-    [GrantTypeEnum.Hybrid, msg("Hybrid")],
-    [GrantTypeEnum.RefreshToken, msg("Refresh token")],
-    [GrantTypeEnum.ClientCredentials, msg("Client credentials")],
-    [GrantTypeEnum.Password, msg("Password")],
-    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
-    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
-];
 
 export interface OAuth2DCRFormProps {
     dcr?: Partial<OAuth2DynamicClientRegistration> | null;
@@ -134,7 +120,7 @@ export function renderForm({ dcr }: OAuth2DCRFormProps) {
                 >
                     <ak-checkbox-group
                         name="allowedGrantTypes"
-                        .options=${allowedGrantTypeOptions}
+                        .options=${GrantTypeCheckboxItems}
                         .value=${dcr.allowedGrantTypes ?? []}
                     ></ak-checkbox-group>
                     <p class="pf-c-form__helper-text">
