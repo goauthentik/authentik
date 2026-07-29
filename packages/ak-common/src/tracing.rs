@@ -22,8 +22,6 @@ pub fn make_filter_layer(log_level: &str) -> Result<EnvFilter> {
 }
 
 /// Handle for changing the log level of the installed subscriber.
-///
-/// The subscriber type is erased, so this can be passed around without naming the layer stack.
 pub struct LogFilterHandle(Box<dyn Fn(EnvFilter) -> Result<()> + Send + Sync>);
 
 impl LogFilterHandle {

@@ -6,8 +6,7 @@ use ak_client::{
 };
 #[cfg(feature = "core")]
 use ak_common::Mode;
-use ak_common::tracing::LogFilterHandle;
-use ak_common::{Tasks, VERSION, api, authentik_build_hash};
+use ak_common::{Tasks, VERSION, api, authentik_build_hash, tracing::LogFilterHandle};
 use arc_swap::ArcSwap;
 use eyre::{Result, eyre};
 use tracing::{debug, info, instrument};
