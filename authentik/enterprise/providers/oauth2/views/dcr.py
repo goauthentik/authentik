@@ -176,11 +176,11 @@ class DynamicClientRegistrationView(View):
         for binding in bindings:
             new_bindings.append(
                 PolicyBinding(
-                    # Copy over all fields except the target
+                    # Copy over all fields except the target and primary key
                     **{
                         k.name: getattr(binding, k.name)
                         for k in PolicyBinding._meta.concrete_fields
-                        if k.name != "target"
+                        if k.name != "target" and not k.primary_key
                     },
                     target=app,
                 )

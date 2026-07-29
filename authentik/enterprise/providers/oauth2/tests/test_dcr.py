@@ -251,6 +251,39 @@ class TestDynamicClientRegistration(TestCase):
         provider = OAuth2Provider.objects.get(client_id=body["client_id"])
         self.assertTrue(provider.property_mappings.filter(pk=mapping.pk).exists())
 
+    def test_policy_bindings_copied_from_dcr(self):
+        """Policy bindings on the DCR config are copied onto the new application."""
+        policy = DummyPolicy.objects.create(name=generate_id(), result=True)
+        source_binding = PolicyBinding.objects.create(target=self.dcr, policy=policy, order=0)
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
+        copied = PolicyBinding.objects.filter(target=provider.application, policy=policy)
+        self.assertEqual(copied.count(), 1)
+        # The copy has its own primary key, not the source binding's.
+        self.assertNotEqual(copied.first().pk, source_binding.pk)
+
+    def test_policy_bindings_copied_from_application(self):
+        """When the DCR config has no bindings, the base application's bindings are copied."""
+        policy = DummyPolicy.objects.create(name=generate_id(), result=True)
+        PolicyBinding.objects.create(target=self.app, policy=policy, order=0)
+        token = self._access_token()
+        response = self._post(
+            {"redirect_uris": ["https://example.com/cb"]},
+            token=token.token,
+        )
+        self.assertEqual(response.status_code, 201)
+        body = json.loads(response.content)
+        provider = OAuth2Provider.objects.get(client_id=body["client_id"])
+        self.assertTrue(
+            PolicyBinding.objects.filter(target=provider.application, policy=policy).exists()
+        )
+
     def test_registration_endpoint_in_openid_config(self):
         """registration_endpoint is advertised in .well-known/openid-configuration."""
         response = self.client.get(
