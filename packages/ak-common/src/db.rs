@@ -55,7 +55,11 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
     info!("starting database watcher for config changes");
     loop {
         tokio::select! {
-            Ok(Event::ConfigChanged) = events_rx.recv() => {
+            event = events_rx.recv() => {
+                if event != Ok(Event::ConfigChanged) {
+                    continue;
+                }
+
                 trace!("config change received, refreshing database connection options");
                 let db = get();
                 db.set_connect_options(get_connect_opts().await?);

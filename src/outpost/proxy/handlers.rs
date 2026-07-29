@@ -14,7 +14,7 @@ use tracing::{debug, instrument, trace, warn};
 use crate::outpost::proxy::{ProxyOutpost, application};
 
 #[instrument(skip_all)]
-pub(super) async fn handle_ping(
+pub(crate) async fn handle_ping(
     method: Method,
     Host(host): Host,
     State(outpost): State<Arc<ProxyOutpost>>,
