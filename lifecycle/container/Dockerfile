@@ -119,8 +119,6 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     rustc --version && \
     cargo --version
 
-RUN cat /root/.rustup/settings.toml
-
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c AS uv
 # Stage: Base python image
@@ -283,7 +281,8 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    GOFIPS=1
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
