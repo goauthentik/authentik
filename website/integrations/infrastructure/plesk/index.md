@@ -72,8 +72,6 @@ To support the integration of Plesk with authentik, you need to create an applic
     - **Scopes**: `openid,email,profile`
     - **Login Button Text**: enter the text to display on the Plesk login page, for example `Log in with authentik`
 
-    ![Plesk OAuth Login Settings](plesk-oauth-settings.png)
-
 4. Click **Save** to apply the settings.
 
 ## Configuration verification
@@ -85,8 +83,6 @@ To confirm that authentik is properly configured with Plesk, open Plesk and comp
 3. Click the OAuth login button.
 4. Verify that you are redirected to authentik for authentication.
 5. After successful authentication, confirm that you can log in to your Plesk administrator account.
-
-![Plesk Login Page with OAuth Button](plesk-login-page.png)
 
 ## Resources
 
