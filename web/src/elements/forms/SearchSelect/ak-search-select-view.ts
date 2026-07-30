@@ -350,7 +350,20 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         const scroller = this.#findScrollableAncestor();
         if (!scroller) return;
 
-        scroller.scrollTop += event.deltaY;
+        const deltaY = (() => {
+            switch (event.deltaMode) {
+                case WheelEvent.DOM_DELTA_LINE: {
+                    const lh = parseFloat(getComputedStyle(scroller).lineHeight);
+                    return event.deltaY * (Number.isFinite(lh) ? lh : 16);
+                }
+                case WheelEvent.DOM_DELTA_PAGE:
+                    return event.deltaY * scroller.clientHeight;
+                default:
+                    return event.deltaY;
+            }
+        })();
+
+        scroller.scrollTop += deltaY;
         event.preventDefault();
     };
 
