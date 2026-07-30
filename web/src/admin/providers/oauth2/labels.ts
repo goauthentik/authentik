@@ -15,6 +15,7 @@ export const GrantTypeLabelRecord: Record<GrantTypeEnum, MessageFormatter<string
     [GrantTypeEnum.Password]: () => msg("Password"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode]: () => msg("Device-code"),
     [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange]: () => msg("Token exchange"),
+    [GrantTypeEnum.UnknownDefaultOpenApi]: () => msg("Unknown Grant type"),
 };
 
 export const GrantTypeCheckboxItems: CheckboxItem<GrantTypeEnum>[] = [
