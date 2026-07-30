@@ -9,7 +9,7 @@ use ak_common::Mode;
 use ak_common::{Tasks, VERSION, api, authentik_build_hash, tracing::LogFilterHandle};
 use arc_swap::ArcSwap;
 use eyre::{Error, Result, eyre};
-use tokio_retry2::{Retry, RetryError, strategy::FixedInterval};
+use tokio_retry2::{Retry, RetryError, strategy::LinearBackoff};
 use tracing::{debug, info, instrument, warn};
 use uuid::Uuid;
 
@@ -44,7 +44,7 @@ pub(crate) struct OutpostController {
 impl OutpostController {
     #[instrument(skip_all)]
     async fn get_outpost(api_config: &Configuration) -> Result<OutpostModel> {
-        let retry_strategy = FixedInterval::new(Duration::from_secs(3));
+        let retry_strategy = LinearBackoff::from_millis(500).max_delay(Duration::from_secs(5));
         let retrieve_outposts = async || {
             outposts_instances_list(
                 api_config, None, None, None, None, None, None, None, None, None, None, None, None,
