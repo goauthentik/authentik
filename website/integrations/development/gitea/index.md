@@ -69,7 +69,7 @@ Create the following application entitlements:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
-    - **Name**: Choose a descriptive name (e.g. `authentik gitea OAuth Mapping: OpenID 'gitea'`)
+    - **Name**: `authentik gitea OAuth Mapping: OpenID 'gitea'`
     - **Scope name**: `gitea`
     - **Expression**:
 
@@ -101,7 +101,7 @@ Create the following application entitlements:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the Gitea provider.
-3. Under **Advanced protocol settings** > **Scopes**, add `authentik gitea OAuth Mapping: OpenID 'gitea'` to **Selected Scopes**.
+3. Under **Advanced protocol settings** > **Scopes**, add the `authentik gitea OAuth Mapping: OpenID 'gitea'` scope mapping that you created in the previous section to **Selected Scopes**.
 4. Click **Update**.
 
 ## Gitea configuration
