@@ -23,15 +23,15 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+### Get the callback URL
+
+In Wiki.js, open **Administration** > **Authentication**, add a **Generic OpenID Connect / OAuth2** strategy, and copy the **Callback URL / Redirect URI** from the **Configuration Reference** section. You will use this URL as the redirect URI in authentik.
+
 ## authentik configuration
 
 <RedirectURI20265Note />
 
 To support the integration of Wiki.js with authentik, create an application/provider pair in authentik. If you want authentik to manage Wiki.js group membership, also create application entitlements and send them in a custom OIDC claim.
-
-### Get the callback URL
-
-In Wiki.js, open **Administration** > **Authentication**, add a **Generic OpenID Connect / OAuth2** strategy, and copy the **Callback URL / Redirect URI** from the **Configuration Reference** section. You will use this URL as the redirect URI in authentik.
 
 ### Create an application and provider
 
