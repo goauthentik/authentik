@@ -4,7 +4,6 @@ import "#elements/user/UserConsentList";
 import "#elements/user/sources/SourceSettings";
 import "#user/user-settings/details/UserPassword";
 import "#user/user-settings/details/UserSettingsFlowExecutor";
-import "#user/user-settings/agents/UserAgentList";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
 
@@ -207,12 +206,6 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                                         ${msg("Tokens and App passwords")}
                                     </div>
                                     <ak-user-token-list></ak-user-token-list>
-                                </div>
-                            </div>
-                            <div class="pf-l-stack__item">
-                                <div class="pf-c-card">
-                                    <div class="pf-c-card__title">${msg("Agents")}</div>
-                                    <ak-user-agent-list></ak-user-agent-list>
                                 </div>
                             </div>
                         </div>
