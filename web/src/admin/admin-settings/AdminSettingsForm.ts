@@ -1,30 +1,30 @@
-import "#components/ak-number-input";
-import "#components/ak-switch-input";
-import "#components/ak-text-input";
-import "#elements/ak-array-input";
-import "#elements/forms/FormGroup";
-import "#elements/forms/HorizontalFormElement";
-import "#elements/forms/Radio";
-import "#elements/forms/SearchSelect/index";
-import "#elements/utils/TimeDeltaHelp";
-import "./AdminSettingsFooterLinks.js";
-import "#elements/Alert";
+import '#components/ak-number-input';
+import '#components/ak-switch-input';
+import '#components/ak-text-input';
+import '#elements/ak-array-input';
+import '#elements/forms/FormGroup';
+import '#elements/forms/HorizontalFormElement';
+import '#elements/forms/Radio';
+import '#elements/forms/SearchSelect/index';
+import '#elements/utils/TimeDeltaHelp';
+import './AdminSettingsFooterLinks.js';
+import '#elements/Alert';
 
-import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+import { akFooterLinkInput, IFooterLinkInput } from './AdminSettingsFooterLinks.js';
 
-import { aki } from "#common/api/client";
+import { aki } from '#common/api/client';
 
-import { Form } from "#elements/forms/Form";
-import { SlottedTemplateResult } from "#elements/types";
+import { Form } from '#elements/forms/Form';
+import { SlottedTemplateResult } from '#elements/types';
 
-import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
+import { AdminApi, FooterLink, Settings, SettingsRequest } from '@goauthentik/api';
 
-import { msg } from "@lit/localize";
-import { css, CSSResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { msg } from '@lit/localize';
+import { css, CSSResult, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
-import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFList from '@patternfly/patternfly/components/List/list.css';
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
 const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
@@ -292,6 +292,13 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 )}
             >
                 <div class="pf-c-form">
+                    <ak-switch-input
+                        name="flags.enterpriseAgentAllowAny"
+                        ?checked=${settings?.flags.enterpriseAgentAllowAny ?? false}
+                        label=${msg("Allow users to create agent accounts")}
+                        help=${msg("When enabled, allow any user to create agent accounts.")}
+                    >
+                    </ak-switch-input>
                     <ak-switch-input
                         name="flags.flowsRefreshOthers"
                         ?checked=${settings?.flags.flowsRefreshOthers ?? false}

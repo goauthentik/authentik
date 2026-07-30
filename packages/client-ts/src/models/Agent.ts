@@ -94,6 +94,12 @@ export interface Agent {
      * @memberof Agent
      */
     readonly parent: PartialUser;
+    /**
+     * Identifier of the agent's API token, so its key can be retrieved/copied later.
+     * @type {string}
+     * @memberof Agent
+     */
+    readonly tokenIdentifier: string | null;
 }
 
 /**
@@ -106,6 +112,13 @@ export function instanceOfAgent(value: object): value is Agent {
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("uuid" in value) || value["uuid"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
+    if (
+        (!("tokenIdentifier" in (value as Record<string, any>)) &&
+            !("token_identifier" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenIdentifier"] === undefined &&
+            (value as Record<string, any>)["token_identifier"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -140,6 +153,7 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                   ? null
                   : new Date(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
+        tokenIdentifier: json["token_identifier"],
     };
 }
 
@@ -148,7 +162,7 @@ export function AgentToJSON(json: any): Agent {
 }
 
 export function AgentToJSONTyped(
-    value?: Omit<Agent, "pk" | "uid" | "uuid" | "parent"> | null,
+    value?: Omit<Agent, "pk" | "uid" | "uuid" | "parent" | "tokenIdentifier"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

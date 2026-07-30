@@ -1,9 +1,11 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import Application, User
+from authentik.core.models import USER_PATH_SYSTEM_PREFIX, Application, User, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.models import ExpiringModel
+
+USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
 
 
 class Agent(ExpiringModel, User):
@@ -19,13 +21,20 @@ class Agent(ExpiringModel, User):
     def create_for_user(
         cls, user: User, name: str = "", expiring: bool = False, expires=None
     ) -> Agent:
-        return cls.objects.create(
+        # An agent is a machine identity, not a login user: mark it as a service account
+        # and disable password auth. It authenticates through its issued API token.
+        agent = cls.objects.create(
             username=f"agent-{generate_id()}",
             name=name,
             owner=user,
+            type=UserTypes.SERVICE_ACCOUNT,
+            path=USER_PATH_AGENTS,
             expiring=expiring,
             expires=expires,
         )
+        agent.set_unusable_password()
+        agent.save()
+        return agent
 
     @property
     def serializer(self):

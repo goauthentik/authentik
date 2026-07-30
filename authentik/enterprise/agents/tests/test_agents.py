@@ -1,6 +1,7 @@
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 
+from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
@@ -30,8 +31,8 @@ class AgentTests(APITestCase):
 
     @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_create_for_self(self):
-        """With self-service enabled, an ordinary user can create an agent for
-        themselves (parent defaults to the requesting user) and then manage it"""
+        """Self-service creation returns a usable API token, creates a service-account
+        machine identity, and the token authenticates as the agent"""
         user = create_test_user()
         self.client.force_login(user)
 
@@ -40,17 +41,56 @@ class AgentTests(APITestCase):
             data={"label": "my-agent"},
         )
         self.assertEqual(res.status_code, 201, res.content)
+        body = res.json()
+
         agent = Agent.objects.get(owner=user)
         self.assertEqual(agent.name, "my-agent")
+        # Agents are machine identities, not login users
+        self.assertEqual(agent.type, UserTypes.SERVICE_ACCOUNT)
+        self.assertFalse(agent.has_usable_password())
+
+        # A single-use API token is returned and bound to the agent
+        self.assertTrue(body["token"])
+        token = Token.objects.get(user=agent)
+        self.assertEqual(token.intent, TokenIntents.INTENT_API)
+        self.assertEqual(token.key, body["token"])
+
+        # The token authenticates API requests as the agent
+        bearer = APIClient()
+        bearer.credentials(HTTP_AUTHORIZATION=f"Bearer {body['token']}")
+        me = bearer.get(reverse("authentik_api:user-me"))
+        self.assertEqual(me.status_code, 200)
+        self.assertEqual(me.json()["user"]["username"], agent.username)
 
         # owner_field lets the creator see and delete their own agent
         res = self.client.get(reverse("authentik_api:agent-list"))
         content = res.json()
         self.assertEqual(content["pagination"]["count"], 1)
         self.assertEqual(content["results"][0]["parent"]["pk"], user.pk)
+        self.assertEqual(content["results"][0]["token_identifier"], token.identifier)
 
         res = self.client.delete(reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk}))
         self.assertEqual(res.status_code, 204, res.content)
+        # Deleting the agent cascades to its token
+        self.assertFalse(Token.objects.filter(pk=token.pk).exists())
+
+    @patch_flag(AllowAnyAgentCreate, True)
+    def test_self_service_always_expires(self):
+        """Self-service agents are always expiring; the caller cannot opt out"""
+        user = create_test_user()
+        self.client.force_login(user)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            # Attempt to create a standing, never-expiring identity
+            data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(owner=user)
+        self.assertTrue(agent.expiring)
+        self.assertIsNotNone(agent.expires)
+        # The forced expiry is bounded (near the token duration), not the caller's 2099
+        self.assertLess(agent.expires.year, 2099)
 
     @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_cannot_create_for_other(self):
@@ -81,7 +121,11 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        self.assertTrue(Agent.objects.filter(owner=other_user).exists())
+        agent = Agent.objects.filter(owner=other_user).first()
+        self.assertIsNotNone(agent)
+        # Admins still get a token issued for the provisioned agent
+        self.assertTrue(res.json()["token"])
+        self.assertTrue(Token.objects.filter(user=agent, intent=TokenIntents.INTENT_API).exists())
 
     def test_admin_creates_agent_for_user(self):
         """An admin with add_agent can create an agent for any user"""
@@ -99,8 +143,8 @@ class AgentTests(APITestCase):
         self.assertTrue(agent.username.startswith("agent-"))
         self.assertEqual(agent.name, "support-bot")
 
-    def test_agent_defaults_to_non_expiring(self):
-        """An agent created without an explicit expiry is a standing identity"""
+    def test_admin_agent_honors_non_expiring(self):
+        """An admin-provisioned agent may be a standing (non-expiring) identity"""
         admin = create_test_user()
         self._grant_create_perm(admin)
         other_user = create_test_user()

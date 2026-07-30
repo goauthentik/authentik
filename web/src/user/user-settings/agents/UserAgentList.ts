@@ -8,6 +8,7 @@ import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
 import { formatElapsedTime } from "#common/temporal";
 
+import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -26,8 +27,8 @@ export class UserAgentList extends Table<Agent> {
 
     public override order = "username";
 
-    public override label = msg("Agents");
-    protected override emptyStateMessage = msg("No agents.");
+    public override label = msg("Agents", { id: "agent.verbose-name-plural.label" });
+    protected override emptyStateMessage = msg("No agents.", { id: "agent.list.empty" });
 
     async apiEndpoint(): Promise<PaginatedResponse<Agent>> {
         // The API scopes this to agents the current user owns (via `owner_field`).
@@ -35,9 +36,9 @@ export class UserAgentList extends Table<Agent> {
     }
 
     protected columns: TableColumn[] = [
-        [msg("Name"), "username"],
-        [msg("Expires"), "expires"],
-        [msg("Actions"), null, msg("Row Actions")],
+        [msg("Name", { id: "agent.column.name" }), "username"],
+        [msg("Expires", { id: "agent.column.expires" }), "expires"],
+        [msg("Actions", { id: "agent.column.actions" }), null, msg("Row Actions")],
     ];
 
     protected override rowLabel(item: Agent): string | null {
@@ -52,11 +53,13 @@ export class UserAgentList extends Table<Agent> {
         return html`
             ${this.#selfServiceEnabled()
                 ? html`<ak-forms-modal>
-                      <span slot="submit">${msg("Create")}</span>
-                      <span slot="header">${msg("Create Agent")}</span>
+                      <span slot="submit">${msg("Create", { id: "agent.create.submit" })}</span>
+                      <span slot="header"
+                          >${msg("Create Agent", { id: "agent.create.header" })}</span
+                      >
                       <ak-user-agent-form slot="form"></ak-user-agent-form>
                       <button slot="trigger" class="pf-c-button pf-m-secondary">
-                          ${msg("Create Agent")}
+                          ${msg("Create Agent", { id: "agent.create.trigger" })}
                       </button>
                   </ak-forms-modal>`
                 : nothing}
@@ -67,16 +70,21 @@ export class UserAgentList extends Table<Agent> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            object-label=${msg("Agent(s)")}
+            object-label=${msg("Agent(s)", { id: "agent.delete.object-label" })}
             .objects=${this.selectedElements}
-            .metadata=${(item: Agent) => [{ key: msg("Name"), value: item.name || item.username }]}
+            .metadata=${(item: Agent) => [
+                {
+                    key: msg("Name", { id: "agent.column.name" }),
+                    value: item.name || item.username,
+                },
+            ]}
             .delete=${(item: Agent) =>
                 aki(AgentsApi).agentsAgentsDestroy({
                     id: item.pk,
                 })}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${msg("Delete")}
+                ${msg("Delete", { id: "agent.delete.trigger" })}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -89,21 +97,25 @@ export class UserAgentList extends Table<Agent> {
                 ? html`<pf-tooltip position="top" .content=${item.expires.toLocaleString()}>
                       ${formatElapsedTime(item.expires)}
                   </pf-tooltip>`
-                : html`${msg("-")}`,
-            html`<ak-forms-delete-bulk
-                object-label=${msg("Agent")}
-                .objects=${[item]}
-                .delete=${(agent: Agent) =>
-                    aki(AgentsApi).agentsAgentsDestroy({
-                        id: agent.pk,
-                    })}
-            >
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Delete")}>
-                        <i aria-hidden="true" class="fas fa-trash"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-delete-bulk>`,
+                : html`${msg("-", { id: "agent.expires.never" })}`,
+            html`${IconTokenCopyButton(item.tokenIdentifier)}
+                <ak-forms-delete-bulk
+                    object-label=${msg("Agent", { id: "agent.delete.object-label-single" })}
+                    .objects=${[item]}
+                    .delete=${(agent: Agent) =>
+                        aki(AgentsApi).agentsAgentsDestroy({
+                            id: agent.pk,
+                        })}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip
+                            position="top"
+                            content=${msg("Delete", { id: "agent.delete.tooltip" })}
+                        >
+                            <i aria-hidden="true" class="fas fa-trash"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-delete-bulk>`,
         ];
     }
 }

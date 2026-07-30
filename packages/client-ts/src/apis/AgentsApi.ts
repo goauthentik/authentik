@@ -13,6 +13,7 @@
  */
 
 import { type Agent, AgentFromJSON } from "../models/Agent";
+import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
 import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest";
 import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/PaginatedAgentList";
 import * as runtime from "../runtime";
@@ -78,11 +79,13 @@ export class AgentsApi extends runtime.BaseAPI {
     async agentsAgentsCreateRaw(
         requestParameters: AgentsAgentsCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Agent>> {
+    ): Promise<runtime.ApiResponse<AgentCreated>> {
         const requestOptions = await this.agentsAgentsCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AgentFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AgentCreatedFromJSON(jsonValue),
+        );
     }
 
     /**
@@ -91,7 +94,7 @@ export class AgentsApi extends runtime.BaseAPI {
     async agentsAgentsCreate(
         requestParameters: AgentsAgentsCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Agent> {
+    ): Promise<AgentCreated> {
         const response = await this.agentsAgentsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -384,7 +384,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Agent'
+                $ref: '#/components/schemas/AgentCreated'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -35598,10 +35598,17 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        token_identifier:
+          type: string
+          nullable: true
+          description: Identifier of the agent's API token, so its key can be retrieved/copied
+            later.
+          readOnly: true
       required:
       - name
       - parent
       - pk
+      - token_identifier
       - uid
       - username
       - uuid
@@ -35790,6 +35797,21 @@ components:
           type: string
           format: date-time
           nullable: true
+    AgentCreated:
+      type: object
+      description: Response returned once when an agent is created, carrying the one-time
+        API token.
+      properties:
+        agent:
+          allOf:
+          - $ref: '#/components/schemas/Agent'
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - agent
+      - token
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO

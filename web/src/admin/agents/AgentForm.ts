@@ -2,27 +2,30 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
+import "#components/ak-hidden-text-input";
 
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
+import { ModalForm } from "#elements/forms/ModalForm";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { AKLabel } from "#components/ak-label";
 
 import {
-    CoreApi,
-    CoreUsersListRequest,
-    Agent,
+    AgentCreated,
     AgentCreateRequest,
     AgentsApi,
+    CoreApi,
+    CoreUsersListRequest,
     User,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-agent-form")
 export class AgentForm extends Form<AgentCreateRequest> {
@@ -30,18 +33,35 @@ export class AgentForm extends Form<AgentCreateRequest> {
     public static override verboseNamePlural = msg("Agents");
     public static override createLabel = msg("Create");
     public static override submitVerb = msg("Create");
+    public override cancelButtonLabel = msg("Close", { id: "agent.form.close.label" });
 
     @state()
     protected expiresAt: Date | null = null;
+
+    @property({ attribute: false })
+    public result: AgentCreated | null = null;
 
     getSuccessMessage(): string {
         return msg("Successfully created agent.");
     }
 
-    async send(data: AgentCreateRequest): Promise<Agent> {
-        return aki(AgentsApi).agentsAgentsCreate({
+    async send(data: AgentCreateRequest): Promise<AgentCreated> {
+        const result = await aki(AgentsApi).agentsAgentsCreate({
             agentCreateRequest: data,
         });
+        this.result = result;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = false;
+        }
+        return result;
+    }
+
+    public override reset(): void {
+        super.reset();
+        this.result = null;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = true;
+        }
     }
 
     #expiringChangeListener = (event: Event) => {
@@ -106,6 +126,30 @@ export class AgentForm extends Form<AgentCreateRequest> {
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>`;
+    }
+
+    protected renderResponseForm(): SlottedTemplateResult {
+        return html`<p>
+                ${msg(
+                    "Use the token below to authenticate as this agent. It is shown only once — store it now.",
+                    { id: "agent.token.description" },
+                )}
+            </p>
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-hidden-text-input
+                    label=${msg("Token", { id: "agent.token.label" })}
+                    value=${ifDefined(this.result?.token)}
+                    input-hint="code"
+                    readonly
+                ></ak-hidden-text-input>
+            </form>`;
+    }
+
+    protected override renderFormWrapper(): SlottedTemplateResult {
+        if (this.result) {
+            return this.renderResponseForm();
+        }
+        return super.renderFormWrapper();
     }
 }
 

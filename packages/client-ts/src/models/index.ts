@@ -9,6 +9,7 @@ export * from "./AgentConfig";
 export * from "./AgentConnector";
 export * from "./AgentConnectorRequest";
 export * from "./AgentCreateRequest";
+export * from "./AgentCreated";
 export * from "./AgentPSSODeviceRegistrationRequest";
 export * from "./AgentPSSODeviceRegistrationResponse";
 export * from "./AgentPSSOUserRegistrationRequest";

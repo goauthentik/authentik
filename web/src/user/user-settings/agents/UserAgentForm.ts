@@ -1,83 +1,89 @@
-import "#elements/forms/HorizontalFormElement";
+import "#components/ak-hidden-text-input";
 import "#components/ak-text-input";
-import "#components/ak-switch-input";
+import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
-import { dateTimeLocal } from "#common/temporal";
 
 import { Form } from "#elements/forms/Form";
+import { ModalForm } from "#elements/forms/ModalForm";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKLabel } from "#components/ak-label";
-
-import { Agent, AgentCreateRequest, AgentsApi } from "@goauthentik/api";
+import { AgentCreated, AgentCreateRequest, AgentsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-agent-form")
 export class UserAgentForm extends Form<AgentCreateRequest> {
-    public static override verboseName = msg("Agent");
-    public static override verboseNamePlural = msg("Agents");
-    public static override createLabel = msg("Create");
-    public static override submitVerb = msg("Create");
+    public static override verboseName = msg("Agent", { id: "agent.verbose-name.label" });
+    public static override verboseNamePlural = msg("Agents", {
+        id: "agent.verbose-name-plural.label",
+    });
+    public static override createLabel = msg("Create", { id: "agent.create.label" });
+    public static override submitVerb = msg("Create", { id: "agent.create.submit" });
+    public override cancelButtonLabel = msg("Close", { id: "agent.form.close.label" });
 
-    @state()
-    protected expiresAt: Date | null = null;
+    @property({ attribute: false })
+    public result: AgentCreated | null = null;
 
     getSuccessMessage(): string {
-        return msg("Successfully created agent.");
+        return msg("Successfully created agent.", { id: "agent.create.success" });
     }
 
-    async send(data: AgentCreateRequest): Promise<Agent> {
-        // Self-service creation: `parent` is omitted, so the server owns the agent to
-        // the requesting user.
-        return aki(AgentsApi).agentsAgentsCreate({
+    async send(data: AgentCreateRequest): Promise<AgentCreated> {
+        // Self-service creation: `parent` and expiry are set by the server (owned by the
+        // requesting user, always expiring).
+        const result = await aki(AgentsApi).agentsAgentsCreate({
             agentCreateRequest: data,
         });
+        this.result = result;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = false;
+        }
+        return result;
     }
 
-    #expiringChangeListener = (event: Event) => {
-        const expiringElement = event.target as HTMLInputElement;
-        this.expiresAt = expiringElement.checked ? new Date() : null;
-    };
+    public override reset(): void {
+        super.reset();
+        this.result = null;
+        if (this.parentElement instanceof ModalForm) {
+            this.parentElement.showSubmitButton = true;
+        }
+    }
 
     protected override renderForm(): SlottedTemplateResult {
         return html`<ak-text-input
-                name="label"
-                label=${msg("Label")}
-                value=""
-                help=${msg("Optional display name for this agent.")}
-            ></ak-text-input>
+            name="label"
+            label=${msg("Label", { id: "agent.label.label" })}
+            value=""
+            help=${msg("Optional display name for this agent.", { id: "agent.label.description" })}
+        ></ak-text-input>`;
+    }
 
-            <ak-switch-input
-                name="expiring"
-                label=${msg("Expiring")}
-                help=${msg("Whether this agent should be automatically removed once it expires.")}
-                @change=${this.#expiringChangeListener}
-                ?checked=${!!this.expiresAt}
-            ></ak-switch-input>
-
-            <ak-form-element-horizontal name="expires">
-                ${AKLabel(
-                    {
-                        slot: "label",
-                        className: "pf-c-form__group-label",
-                        htmlFor: "user-agent-expiration-date-input",
-                    },
-                    msg("Expires on"),
+    protected renderResponseForm(): SlottedTemplateResult {
+        return html`<p>
+                ${msg(
+                    "Use the token below to authenticate as this agent. It is shown only once — store it now.",
+                    { id: "agent.token.description" },
                 )}
+            </p>
+            <form class="pf-c-form pf-m-horizontal">
+                <ak-hidden-text-input
+                    label=${msg("Token", { id: "agent.token.label" })}
+                    value=${ifDefined(this.result?.token)}
+                    input-hint="code"
+                    readonly
+                ></ak-hidden-text-input>
+            </form>`;
+    }
 
-                <input
-                    id="user-agent-expiration-date-input"
-                    type="datetime-local"
-                    data-type="datetime-local"
-                    value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
-                    ?disabled=${!this.expiresAt}
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>`;
+    protected override renderFormWrapper(): SlottedTemplateResult {
+        if (this.result) {
+            return this.renderResponseForm();
+        }
+        return super.renderFormWrapper();
     }
 }
 
