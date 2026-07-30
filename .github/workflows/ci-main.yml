@@ -105,6 +105,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: ${{ matrix.deps }}
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
@@ -433,7 +439,16 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust,runtime
+          dependencies: system,python,rust,runtime
+      - name: Prepare database
+        run: |
+          uv run make migrate
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
@@ -490,11 +505,11 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # Docker login is required for attestations
-      - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7
+      - uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
