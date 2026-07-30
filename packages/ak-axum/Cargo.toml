@@ -17,6 +17,7 @@ client-ip.workspace = true
 durstr.workspace = true
 eyre.workspace = true
 futures.workspace = true
+ipnet.workspace = true
 pin-project-lite.workspace = true
 tokio-rustls.workspace = true
 tokio.workspace = true

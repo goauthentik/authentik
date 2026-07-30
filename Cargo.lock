@@ -363,6 +363,7 @@ dependencies = [
  "durstr",
  "eyre",
  "futures",
+ "ipnet",
  "pin-project-lite",
  "tokio",
  "tokio-rustls",
