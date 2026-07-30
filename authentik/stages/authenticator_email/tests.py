@@ -6,6 +6,7 @@ from unittest.mock import PropertyMock, patch
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
+from django.db.models.deletion import ProtectedError
 from django.db.utils import IntegrityError
 from django.template.exceptions import TemplateDoesNotExist
 from django.test import TestCase
@@ -64,6 +65,14 @@ class TestAuthenticatorEmailStage(FlowTestCase):
     def test_stage_str(self):
         """Test string representation of stage"""
         self.assertEqual(str(self.stage), f"Email Authenticator Stage {self.stage.name}")
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        with self.assertRaises(ProtectedError):
+            self.stage.delete()
+
+        self.assertTrue(AuthenticatorEmailStage.objects.filter(pk=self.stage.pk).exists())
+        self.assertTrue(EmailDevice.objects.filter(pk=self.device.pk).exists())
 
     def test_token_lifecycle(self):
         """Test token generation, validation and expiry"""

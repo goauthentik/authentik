@@ -14,10 +14,19 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
     min = NaN;
 
+    @property({ type: Boolean, reflect: true })
+    allowFloat = false;
+
     renderControl() {
         const setValue = (ev: InputEvent) => {
-            const value = (ev.target as HTMLInputElement).value;
-            this.value = value.trim() === "" ? NaN : parseInt(value, 10);
+            const value = (ev.target as HTMLInputElement).value.trim();
+
+            if (value === "") {
+                this.value = NaN;
+                return;
+            }
+
+            this.value = this.allowFloat === true ? parseFloat(value) : parseInt(value, 10);
         };
 
         return html`<input

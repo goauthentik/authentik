@@ -96,11 +96,6 @@ const developerCategory = {
         },
         //#endregion
 
-        {
-            type: "doc",
-            id: "developer-docs/releases/index",
-        },
-
         "developer-docs/translation",
     ],
 };

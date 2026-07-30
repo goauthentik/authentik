@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import AuthenticatedSession, Session
+from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
@@ -257,6 +257,21 @@ class TestUserLoginStage(FlowTestCase):
             component="ak-stage-access-denied",
             error_message="Flow does not apply to current user.",
         )
+
+    def test_unsaved_pending_user(self):
+        """Test that a pending user with no pk (unsaved) causes stage_invalid."""
+        unsaved = User()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = unsaved
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(response, self.flow, component="ak-stage-access-denied")
 
     def test_binding_net_break_log(self):
         """Test logout_extra with exception"""

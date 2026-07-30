@@ -296,3 +296,13 @@ def build_frontchannel_logout_url(
 
     parsed_url = parsed_url._replace(query=urlencode(query_params))
     return urlunparse(parsed_url)
+
+
+VSCHAR_START = 0x20
+VSCHAR_END = 0x7E
+
+
+def is_all_vschar(s: str) -> bool:
+    """Ensure a string is fully VSCHAR, defined by the OAuth2 RFC
+    https://datatracker.ietf.org/doc/html/rfc6749#appendix-A"""
+    return all(VSCHAR_START <= ord(c) <= VSCHAR_END for c in s)

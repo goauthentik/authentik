@@ -98,6 +98,9 @@ To integrate authentik with Absorb LMS via SAML, you will need to create an appl
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **ACS URL** to `https://company.myabsorb.com/api/rest/v2/authentication/saml`
         - Set **Audience** to `https://company.myabsorb.com`
+        - Set **SLS URL** to `https://company.myabsorb.com/api/rest/v2/authentication/samlLogout`
+        - Set **SLS Binding** to `Post`
+        - Set **Logout Method** to `Front-channel (Iframe)`
         - Under **Advanced Protocol Settings**:
             - Select any available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`
@@ -123,7 +126,10 @@ To integrate authentik with Absorb LMS via SAML, you will need to create an appl
     - **Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
 6. Click **Next** and then select an **Assigned Route** from the dropdown.
    If you selected `Identity Provider Initiated`, enable the **Automatically Redirect** option.
-7. Click **Save**.
+7. Enable the **Single Logout** toggle, and then set the following values:
+    - **External Single Logout Url**: `https://authentik.company/application/saml/<application_slug>/`
+    - (Optional) Enable **Wait for IdP Response** so that Absorb LMS waits for authentik to confirm the logout before ending the session.
+8. Click **Save**.
 
 ## Configuration verification
 

@@ -25,6 +25,7 @@ const (
 	EVENTACTIONS_LOGIN_FAILED               EventActions = "login_failed"
 	EVENTACTIONS_LOGOUT                     EventActions = "logout"
 	EVENTACTIONS_USER_WRITE                 EventActions = "user_write"
+	EVENTACTIONS_USER_OFFBOARDED            EventActions = "user_offboarded"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
@@ -53,6 +54,10 @@ const (
 	EVENTACTIONS_REVIEW_OVERDUE             EventActions = "review_overdue"
 	EVENTACTIONS_REVIEW_ATTESTED            EventActions = "review_attested"
 	EVENTACTIONS_REVIEW_COMPLETED           EventActions = "review_completed"
+	EVENTACTIONS_ACCESS_REQUEST_CREATED     EventActions = "access_request_created"
+	EVENTACTIONS_ACCESS_REQUEST_APPROVED    EventActions = "access_request_approved"
+	EVENTACTIONS_ACCESS_REQUEST_DENIED      EventActions = "access_request_denied"
+	EVENTACTIONS_ACCESS_REQUEST_REVOKED     EventActions = "access_request_revoked"
 	EVENTACTIONS_CUSTOM                     EventActions = "custom_"
 )
 
@@ -62,6 +67,7 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"login_failed",
 	"logout",
 	"user_write",
+	"user_offboarded",
 	"suspicious_request",
 	"password_set",
 	"secret_view",
@@ -90,6 +96,10 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"review_overdue",
 	"review_attested",
 	"review_completed",
+	"access_request_created",
+	"access_request_approved",
+	"access_request_denied",
+	"access_request_revoked",
 	"custom_",
 }
 
