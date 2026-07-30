@@ -83,7 +83,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
         request.user_switching_token = user_switching.decode_cookie(
-            request.COOKIES.get(user_switching.COOKIE_NAME)
+            request.COOKIES.get(settings.USER_SWITCHING_COOKIE_NAME)
         )
         request.user_switching_token_needs_update = False
         request.session = self.SessionStore(
@@ -155,9 +155,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         # It is intentionally not deleted with the session cookie.
         if request.user_switching_token and request.user_switching_token_needs_update:
             response.set_cookie(
-                user_switching.COOKIE_NAME,
+                settings.USER_SWITCHING_COOKIE_NAME,
                 user_switching.encode_cookie(request.user_switching_token),
-                max_age=user_switching.COOKIE_AGE,
+                max_age=settings.USER_SWITCHING_COOKIE_AGE,
                 domain=settings.SESSION_COOKIE_DOMAIN,
                 path=settings.SESSION_COOKIE_PATH,
                 secure=secure,

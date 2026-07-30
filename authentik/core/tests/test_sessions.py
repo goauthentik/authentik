@@ -23,7 +23,8 @@ class TestUserSwitchingSessions(TestCase):
         self.assertEqual(response.status_code, 200)
         target.refresh_from_db()
         self.assertTrue(target.is_current)
-        cookie = response.cookies[user_switching.COOKIE_NAME]
+        cookie = response.cookies[settings.USER_SWITCHING_COOKIE_NAME]
+        self.assertEqual(int(cookie["max-age"]), settings.USER_SWITCHING_COOKIE_AGE)
         self.assertEqual(
             user_switching.decode_cookie(cookie.value),
             target.user_switching_session_id,

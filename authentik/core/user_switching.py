@@ -14,8 +14,6 @@ from authentik.lib.utils.crypto import get_cookie_signing_key
 from authentik.policies.types import PolicyRequest
 
 TOKEN_LENGTH = 32
-COOKIE_NAME = "authentik_user_switching"
-COOKIE_AGE = int(timedelta(days=365).total_seconds())
 
 _SIGNING_HASH = get_cookie_signing_key()
 

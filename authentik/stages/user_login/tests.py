@@ -3,6 +3,7 @@
 from time import sleep
 from unittest.mock import patch
 
+from django.conf import settings
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
@@ -60,7 +61,9 @@ class TestUserLoginStage(FlowTestCase):
     def test_stale_user_switching_cookie_is_replaced(self):
         """A signed cookie without a switching session does not break login."""
         stale_token = generate_id(user_switching.TOKEN_LENGTH)
-        self.client.cookies[user_switching.COOKIE_NAME] = user_switching.encode_cookie(stale_token)
+        self.client.cookies[settings.USER_SWITCHING_COOKIE_NAME] = user_switching.encode_cookie(
+            stale_token
+        )
         plan = FlowPlan(
             flow_pk=self.flow.pk.hex,
             bindings=[self.binding],
@@ -80,7 +83,9 @@ class TestUserLoginStage(FlowTestCase):
         switching_session = UserSwitchingSession.objects.get(authenticated_sessions__user=self.user)
         self.assertNotEqual(switching_session.token, stale_token)
         self.assertEqual(
-            user_switching.decode_cookie(self.client.cookies[user_switching.COOKIE_NAME].value),
+            user_switching.decode_cookie(
+                self.client.cookies[settings.USER_SWITCHING_COOKIE_NAME].value
+            ),
             switching_session.token,
         )
 

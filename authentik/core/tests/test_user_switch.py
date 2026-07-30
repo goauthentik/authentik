@@ -87,7 +87,7 @@ def _login_through_flow(
 
 def _get_switching_token(client: APIClient) -> str:
     """Return the user-switching token from the test client."""
-    token = user_switching.decode_cookie(client.cookies[user_switching.COOKIE_NAME].value)
+    token = user_switching.decode_cookie(client.cookies[settings.USER_SWITCHING_COOKIE_NAME].value)
     if token is None:
         raise AssertionError("Expected a user-switching cookie")
     return token
