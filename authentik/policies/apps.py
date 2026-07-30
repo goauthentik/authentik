@@ -1,4 +1,8 @@
-"""authentik policies app config"""
+"""authentik policies app config
+
+Every system policy should be its own Django app under the `policies` app.
+For example: The 'dummy' policy is available at `authentik.policies.dummy`.
+"""
 
 from prometheus_client import Gauge, Histogram
 
@@ -21,7 +25,6 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
         "binding_order",
         "binding_target_type",
         "binding_target_name",
-        "object_pk",
         "object_type",
         "mode",
     ],

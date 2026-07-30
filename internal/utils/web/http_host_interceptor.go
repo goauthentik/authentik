@@ -14,8 +14,10 @@ type hostInterceptor struct {
 }
 
 func (t hostInterceptor) RoundTrip(r *http.Request) (*http.Response, error) {
-	r.Host = t.host
-	r.Header.Set("X-Forwarded-Proto", t.scheme)
+	if r.Host != t.host {
+		r.Host = t.host
+		r.Header.Set("X-Forwarded-Proto", t.scheme)
+	}
 	return t.inner.RoundTrip(r)
 }
 

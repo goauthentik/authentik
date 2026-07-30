@@ -1,36 +1,31 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/user-sources/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<LDAPSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: LDAPSourcePropertyMapping): Promise<LDAPSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapUpdate({
-                pmUuid: this.instance.pk,
-                lDAPSourcePropertyMappingRequest: data,
-            });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
-                lDAPSourcePropertyMappingRequest: data,
-            });
-        }
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapRetrieve({ pmUuid: pk }),
+        create: (lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapCreate({
+                lDAPSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, lDAPSourcePropertyMappingRequest: LDAPSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceLdapUpdate({
+                pmUuid: pk,
+                lDAPSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

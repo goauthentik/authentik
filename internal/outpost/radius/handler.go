@@ -2,6 +2,8 @@ package radius
 
 import (
 	"crypto/sha512"
+	"encoding/hex"
+	"net"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -10,28 +12,18 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/internal/outpost/radius/metrics"
-	"goauthentik.io/internal/utils"
 	"layeh.com/radius"
+	"layeh.com/radius/rfc2869"
 )
 
-type RadiusRequest struct {
-	*radius.Request
-	log  *log.Entry
-	id   string
-	span *sentry.Span
-	pi   *ProviderInstance
+type LogWriter struct {
+	w radius.ResponseWriter
+	l *log.Entry
 }
 
-func (r *RadiusRequest) Log() *log.Entry {
-	return r.log
-}
-
-func (r *RadiusRequest) RemoteAddr() string {
-	return utils.GetIP(r.Request.RemoteAddr)
-}
-
-func (r *RadiusRequest) ID() string {
-	return r.id
+func (lw LogWriter) Write(packet *radius.Packet) error {
+	lw.l.WithField("code", packet.Code.String()).Info("Radius Response")
+	return lw.w.Write(packet)
 }
 
 func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) {
@@ -39,7 +31,17 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		sentry.WithTransactionName("authentik.providers.radius.connect"))
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
-	rl := rs.log.WithField("code", r.Code.String()).WithField("request", rid)
+	host, _, err := net.SplitHostPort(r.RemoteAddr.String())
+	if err != nil {
+		rs.log.WithError(err).Warning("Failed to get remote IP")
+		return
+	}
+	rl := rs.log.WithFields(log.Fields{
+		"code":    r.Code.String(),
+		"request": rid,
+		"ip":      host,
+		"id":      r.Identifier,
+	})
 	selectedApp := ""
 	defer func() {
 		span.Finish()
@@ -58,6 +60,11 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 
 	rl.Info("Radius Request")
 
+	if err := nr.validateMessageAuthenticator(); err != nil {
+		rl.WithError(err).Warning("Invalid message authenticator")
+		return
+	}
+
 	// Lookup provider by shared secret
 	var pi *ProviderInstance
 	for _, p := range rs.providers {
@@ -68,13 +75,26 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		}
 	}
 	if pi == nil {
-		nr.Log().WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
-		_ = w.Write(r.Response(radius.CodeAccessReject))
+		hs := sha512.Sum512([]byte(r.Secret))
+		bs := hex.EncodeToString(hs[:])
+		nr.Log().WithField("hashed_secret", bs).Warning("No provider found")
+		_ = w.Write(nr.Reject())
 		return
 	}
 	nr.pi = pi
 
 	if nr.Code == radius.CodeAccessRequest {
 		rs.Handle_AccessRequest(w, nr)
+	}
+}
+
+func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusRequest) {
+	eap := rfc2869.EAPMessage_Get(r.Packet)
+	if len(eap) > 0 {
+		rs.log.Trace("EAP request")
+		rs.Handle_AccessRequest_EAP(w, r)
+	} else {
+		rs.log.Trace("PAP request")
+		rs.Handle_AccessRequest_PAP(w, r)
 	}
 }

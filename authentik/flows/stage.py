@@ -1,7 +1,9 @@
 """authentik stage Base view"""
 
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -13,7 +15,8 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Application, User
+from authentik.common.oauth.constants import PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+from authentik.core.models import Application, User, UserTypes
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -44,13 +47,13 @@ HIST_FLOWS_STAGE_TIME = Histogram(
 class StageView(View):
     """Abstract Stage"""
 
-    executor: "FlowExecutorView"
+    executor: FlowExecutorView
 
     request: HttpRequest = None
 
     logger: BoundLogger
 
-    def __init__(self, executor: "FlowExecutorView", **kwargs):
+    def __init__(self, executor: FlowExecutorView, **kwargs):
         self.executor = executor
         current_stage = getattr(self.executor, "current_stage", None)
         self.logger = get_logger().bind(
@@ -92,11 +95,16 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Return a challenge for the frontend to solve"""
-        challenge = self._get_challenge(*args, **kwargs)
+        try:
+            challenge = self._get_challenge(*args, **kwargs)
+        except StageInvalidException as exc:
+            self.logger.debug("Got StageInvalidException", exc=exc)
+            return self.executor.stage_invalid()
         if not challenge.is_valid():
-            self.logger.warning(
+            self.logger.error(
                 "f(ch): Invalid challenge",
                 errors=challenge.errors,
+                challenge=challenge.data,
             )
         return HttpChallengeResponse(challenge)
 
@@ -154,9 +162,19 @@ class ChallengeStageView(StageView):
                 "user": self.get_pending_user(for_display=True),
             }
 
-        except Exception as exc:
+        except Exception as exc:  # noqa
             self.logger.warning("failed to template title", exc=exc)
             return self.executor.flow.title
+
+    @property
+    def cancel_url(self) -> str:
+        from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+
+        next_param = self.request.session.get(SESSION_KEY_GET, {}).get(NEXT_ARG_NAME)
+        url = reverse("authentik_flows:cancel")
+        if next_param:
+            return f"{url}?{urlencode({NEXT_ARG_NAME: next_param})}"
+        return url
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
         with (
@@ -168,11 +186,7 @@ class ChallengeStageView(StageView):
                 stage_type=self.__class__.__name__, method="get_challenge"
             ).time(),
         ):
-            try:
-                challenge = self.get_challenge(*args, **kwargs)
-            except StageInvalidException as exc:
-                self.logger.debug("Got StageInvalidException", exc=exc)
-                return self.executor.stage_invalid()
+            challenge = self.get_challenge(*args, **kwargs)
         with start_span(
             op="authentik.flow.stage._get_challenge",
             name=self.__class__.__name__,
@@ -180,11 +194,16 @@ class ChallengeStageView(StageView):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
             if "flow_info" not in challenge.initial_data:
+                # Flow payloads can outlive the previous signed media JWT, so
+                # refreshes must mint fresh URLs instead of reusing cached ones.
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url,
-                        "cancel_url": reverse("authentik_flows:cancel"),
+                        "background": self.executor.flow.background_url(use_cache=False),
+                        "background_themed_urls": self.executor.flow.background_themed_urls(
+                            use_cache=False,
+                        ),
+                        "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                     }
                 )
@@ -224,6 +243,14 @@ class ChallengeStageView(StageView):
                 full_errors[field].append(field_error)
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
+            if settings.TEST:
+                raise StageInvalidException(
+                    (
+                        f"Invalid challenge response: \n\t{challenge_response.errors}"
+                        f"\n\nValidated data:\n\t {challenge_response.data}"
+                        f"\n\nInitial data:\n\t {challenge_response.initial_data}"
+                    ),
+                )
             self.logger.error(
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,
@@ -236,7 +263,7 @@ class AccessDeniedStage(ChallengeStageView):
 
     error_message: str | None
 
-    def __init__(self, executor: "FlowExecutorView", error_message: str | None = None, **kwargs):
+    def __init__(self, executor: FlowExecutorView, error_message: str | None = None, **kwargs):
         super().__init__(executor, **kwargs)
         self.error_message = error_message
 
@@ -276,11 +303,38 @@ class SessionEndStage(ChallengeStageView):
     that the user is likely to take after signing out of a provider."""
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        # Check for OIDC post_logout_redirect_uri in context
+        post_logout_redirect_uri = self.executor.plan.context.get(
+            PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI
+        )
+
+        if post_logout_redirect_uri:
+            self.logger.debug(
+                "SessionEndStage redirecting to post_logout_redirect_uri",
+                redirect_url=post_logout_redirect_uri,
+            )
+            return RedirectChallenge(
+                data={
+                    "to": post_logout_redirect_uri,
+                },
+            )
+
+        if not self.request.user.is_authenticated:
+            # User is logged out with no redirect URI - go to default
+            return RedirectChallenge(
+                data={
+                    "to": reverse("authentik_core:root-redirect"),
+                },
+            )
         application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
         data = {
             "component": "ak-stage-session-end",
             "brand_name": self.request.brand.branding_title,
         }
+        if self.get_pending_user().type == UserTypes.INTERNAL:
+            data["overview_url"] = self.request.build_absolute_uri(
+                reverse("authentik_core:root-redirect")
+            )
         if application:
             data["application_name"] = application.name
             data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
@@ -291,6 +345,7 @@ class SessionEndStage(ChallengeStageView):
                     "flow_slug": self.request.brand.flow_invalidation.slug,
                 },
             )
+
         return SessionEndChallenge(data=data)
 
     # This can never be reached since this challenge is created on demand and only the

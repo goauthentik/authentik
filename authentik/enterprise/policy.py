@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey
-from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.policies.types import PolicyResult
 from authentik.policies.views import PolicyAccessView
 
 
@@ -21,8 +21,6 @@ class EnterprisePolicyAccessView(PolicyAccessView):
 
     def user_has_access(self, user: User | None = None) -> PolicyResult:
         user = user or self.request.user
-        request = PolicyRequest(user)
-        request.http_request = self.request
         result = super().user_has_access(user)
         enterprise_result = self.check_license()
         if not enterprise_result.passing:

@@ -23,7 +23,6 @@ from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
@@ -55,8 +54,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -64,8 +62,8 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+
 SESSION_KEY_PLAN = "authentik/flows/plan"
-SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
@@ -103,7 +101,7 @@ class FlowExecutorView(APIView):
 
     permission_classes = [AllowAny]
 
-    flow: Flow
+    flow: Flow = None
 
     plan: FlowPlan | None = None
     current_binding: FlowStageBinding | None = None
@@ -114,7 +112,8 @@ class FlowExecutorView(APIView):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if not self.flow:
+            self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
         set_tag("authentik.flow", self.flow.slug)
 
@@ -136,7 +135,7 @@ class FlowExecutorView(APIView):
 
     def _check_flow_token(self, key: str) -> FlowPlan | None:
         """Check if the user is using a flow token to restore a plan"""
-        token: FlowToken | None = FlowToken.filter_not_expired(key=key).first()
+        token: FlowToken | None = FlowToken.objects.filter(key=key).first()
         if not token:
             return None
         plan = None
@@ -145,14 +144,25 @@ class FlowExecutorView(APIView):
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
             LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
         finally:
-            token.delete()
+            if token.revoke_on_execution:
+                token.delete()
         if not isinstance(plan, FlowPlan):
             return None
+        if existing_plan := self.request.session.get(SESSION_KEY_PLAN):
+            plan.context.update(existing_plan.context)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
+    def initialize_request(self, request, *args, **kwargs):
+        # Stubbed out `initialize_request` since we call the correct method early on
+        # in `dispatch`, and super().dispatch would call it again
+        return self.request or request
+
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        self.request = super().initialize_request(request)
+        self.initial(self.request)
+
         with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))
@@ -171,7 +181,8 @@ class FlowExecutorView(APIView):
                     # Existing plan is deleted from session and instance
                     self.plan = None
                     self.cancel()
-                self._logger.debug("f(exec): Continuing existing plan")
+                else:
+                    self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
             request.session[SESSION_KEY_GET] = get_params
@@ -182,11 +193,18 @@ class FlowExecutorView(APIView):
                 try:
                     self.plan = self._initiate_plan()
                 except FlowNonApplicableException as exc:
+                    # If we're this flow is for authentication and the user is already authenticated
+                    # continue to the next URL
+                    if (
+                        self.flow.designation == FlowDesignation.AUTHENTICATION
+                        and self.request.user.is_authenticated
+                    ):
+                        return self._flow_done()
                     self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                     return self.handle_invalid_flow(exc)
                 except EmptyFlowException as exc:
                     self._logger.warning("f(exec): Flow is empty", exc=exc)
-                    # To match behaviour with loading an empty flow plan from cache,
+                    # To match behavior with loading an empty flow plan from cache,
                     # we don't show an error message here, but rather call _flow_done()
                     return self._flow_done()
             # We don't save the Plan after getting the next stage
@@ -196,7 +214,7 @@ class FlowExecutorView(APIView):
                 # if the cached plan is from an older version, it might have different attributes
                 # in which case we just delete the plan and invalidate everything
                 next_binding = self.plan.next(self.request)
-            except Exception as exc:
+            except Exception as exc:  # noqa
                 self._logger.warning(
                     "f(exec): found incompatible flow plan, invalidating run", exc=exc
                 )
@@ -231,12 +249,13 @@ class FlowExecutorView(APIView):
         """Handle exception in stage execution"""
         if settings.DEBUG or settings.TEST:
             raise exc
-        capture_exception(exc)
         self._logger.warning(exc)
-        Event.new(
-            action=EventAction.SYSTEM_EXCEPTION,
-            message=exception_to_string(exc),
-        ).from_http(self.request)
+        if not should_ignore_exception(exc):
+            capture_exception(exc)
+            Event.new(
+                action=EventAction.SYSTEM_EXCEPTION,
+                message="System exception during flow execution.",
+            ).with_exception(exc).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
         return to_stage_response(self.request, HttpChallengeResponse(challenge))
@@ -285,7 +304,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     @extend_schema(
@@ -336,7 +355,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
-        except Exception as exc:
+        except Exception as exc:  # noqa
             return self.handle_exception(exc)
 
     def _initiate_plan(self) -> FlowPlan:
@@ -348,7 +367,7 @@ class FlowExecutorView(APIView):
             # there are no issues with the class we might've gotten
             # from the cache. If there are errors, just delete all cached flows
             _ = plan.has_stages
-        except Exception:
+        except Exception:  # noqa
             keys = cache.keys(f"{CACHE_PREFIX}*")
             cache.delete_many(keys)
             return self._initiate_plan()
@@ -381,14 +400,18 @@ class FlowExecutorView(APIView):
             # check if its an absolute URL or a relative one
             self.cancel()
             return to_stage_response(
-                self.request, redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT))
+                self.request,
+                redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT)),
+                final_redirect=True,
             )
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         self.cancel()
         if next_param and not is_url_absolute(next_param):
-            return to_stage_response(self.request, redirect_with_qs(next_param))
+            return to_stage_response(
+                self.request, redirect_with_qs(next_param), final_redirect=True
+            )
         return to_stage_response(
             self.request, self.stage_invalid(error_message=_("Invalid next URL"))
         )
@@ -448,7 +471,6 @@ class FlowExecutorView(APIView):
     def cancel(self):
         """Cancel current flow execution"""
         keys_to_delete = [
-            SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
             # We might need the initial POST payloads for later requests
@@ -472,6 +494,9 @@ class CancelView(View):
         if SESSION_KEY_PLAN in request.session:
             del request.session[SESSION_KEY_PLAN]
             LOGGER.debug("Canceled current plan")
+        next_url = self.request.GET.get(NEXT_ARG_NAME)
+        if next_url and not is_url_absolute(next_url):
+            return redirect(next_url)
         return redirect("authentik_flows:default-invalidation")
 
 
@@ -480,7 +505,8 @@ class ToDefaultFlow(View):
 
     designation: FlowDesignation | None = None
 
-    def flow_by_policy(self, request: HttpRequest, **flow_filter) -> Flow | None:
+    @staticmethod
+    def flow_by_policy(request: HttpRequest, **flow_filter) -> Flow | None:
         """Get a Flow by `**flow_filter` and check if the request from `request` can access it."""
         flows = Flow.objects.filter(**flow_filter).order_by("slug")
         for flow in flows:
@@ -494,30 +520,27 @@ class ToDefaultFlow(View):
         LOGGER.debug("flow_by_policy: no flow found", filters=flow_filter)
         return None
 
-    def get_flow(self) -> Flow:
+    @staticmethod
+    def get_flow(request: HttpRequest, designation: FlowDesignation) -> Flow:
         """Get a flow for the selected designation"""
-        brand: Brand = self.request.brand
+        brand: Brand = request.brand
         flow = None
         # First, attempt to get default flow from brand
-        if self.designation == FlowDesignation.AUTHENTICATION:
+        if designation == FlowDesignation.AUTHENTICATION:
             flow = brand.flow_authentication
-            # Check if we have a default flow from application
-            application: Application | None = self.request.session.get(SESSION_KEY_APPLICATION_PRE)
-            if application and application.provider and application.provider.authentication_flow:
-                flow = application.provider.authentication_flow
-        elif self.designation == FlowDesignation.INVALIDATION:
+        elif designation == FlowDesignation.INVALIDATION:
             flow = brand.flow_invalidation
         if flow:
             return flow
         # If no flow was set, get the first based on slug and policy
-        flow = self.flow_by_policy(self.request, designation=self.designation)
+        flow = ToDefaultFlow.flow_by_policy(request, designation=designation)
         if flow:
             return flow
         # If we still don't have a flow, 404
         raise Http404
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        flow = self.get_flow()
+        flow = ToDefaultFlow.get_flow(request, self.designation)
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
@@ -530,7 +553,9 @@ class ToDefaultFlow(View):
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+def to_stage_response(
+    request: HttpRequest, source: HttpResponse, final_redirect: bool = False
+) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
         isinstance(source, HttpResponseRedirect)
@@ -549,6 +574,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             RedirectChallenge(
                 {
                     "to": str(redirect_url),
+                    "final_redirect": final_redirect,
                 }
             )
         )
@@ -597,9 +623,4 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             raise Http404 from None
-        request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=stage.configure_flow.slug,
-        )
+        return plan.to_redirect(request, stage.configure_flow)

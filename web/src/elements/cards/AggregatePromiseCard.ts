@@ -1,9 +1,11 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/elements/Spinner";
-import { AggregateCard, type IAggregateCard } from "@goauthentik/elements/cards/AggregateCard";
+import "#elements/Spinner";
+
+import { PFSize } from "#common/enums";
+
+import { AggregateCard, type IAggregateCard } from "#elements/cards/AggregateCard";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -46,17 +48,19 @@ export class AggregatePromiseCard extends AggregateCard implements IAggregatePro
         }
         try {
             const value = await this.promise;
-            return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
+            return html`<i class="fa fa-check-circle" aria-hidden="true"></i
+                >&nbsp;${value.toString()}`;
         } catch (error: unknown) {
             console.warn(error);
-            return html`<i class="fa fa-exclamation-circle"></i>&nbsp;${this.failureMessage}`;
+            return html`<i class="fa fa-exclamation-circle" aria-hidden="true"></i>&nbsp;${this
+                    .failureMessage}`;
         }
     }
 
     renderInner(): TemplateResult {
-        return html`<p class="center-value">
+        return html`
             ${until(this.promiseProxy(), html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`)}
-        </p>`;
+        `;
     }
 }
 

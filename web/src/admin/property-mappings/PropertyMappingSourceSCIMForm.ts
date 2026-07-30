@@ -1,36 +1,31 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PropertymappingsApi, SCIMSourcePropertyMapping } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-property-mapping-source-scim-form")
 export class PropertyMappingSourceSCIMForm extends BasePropertyMappingForm<SCIMSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/user-sources/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<SCIMSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SCIMSourcePropertyMapping): Promise<SCIMSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimUpdate({
-                pmUuid: this.instance.pk,
-                sCIMSourcePropertyMappingRequest: data,
-            });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceScimCreate({
-                sCIMSourcePropertyMappingRequest: data,
-            });
-        }
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimRetrieve({ pmUuid: pk }),
+        create: (sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimCreate({
+                sCIMSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, sCIMSourcePropertyMappingRequest: SCIMSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceScimUpdate({
+                pmUuid: pk,
+                sCIMSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

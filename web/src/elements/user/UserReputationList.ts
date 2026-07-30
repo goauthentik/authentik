@@ -1,18 +1,23 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import getUnicodeFlagIcon from "country-flag-icons/unicode";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { PoliciesApi, Reputation } from "@goauthentik/api";
 
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-user-reputation-list")
 export class UserReputationList extends Table<Reputation> {
+    public static override verboseName = msg("Reputation score");
+    public static override verboseNamePlural = msg("Reputation scores");
+
     @property()
     targetUsername!: string;
 
@@ -24,7 +29,7 @@ export class UserReputationList extends Table<Reputation> {
         if (this.targetEmail !== undefined) {
             identifiers.push(this.targetEmail);
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
+        return aki(PoliciesApi).policiesReputationScoresList({
             ...(await this.defaultEndpointConfig()),
             identifierIn: identifiers,
         });
@@ -34,27 +39,29 @@ export class UserReputationList extends Table<Reputation> {
     clearOnRefresh = true;
     order = "identifier";
 
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Identifier"), "identifier"),
-            new TableColumn(msg("IP"), "ip"),
-            new TableColumn(msg("Score"), "score"),
-            new TableColumn(msg("Updated"), "updated"),
-        ];
+    protected override rowLabel(item: Reputation): string | null {
+        return item.identifier ?? null;
     }
+
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "identifier"],
+        [msg("IP"), "ip"],
+        [msg("Score"), "score"],
+        [msg("Updated"), "updated"],
+    ];
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Reputation score(s)")}
+            object-label=${msg("Reputation score(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
+                return aki(PoliciesApi).policiesReputationScoresUsedByList({
                     reputationUuid: item.pk || "",
                 });
             }}
             .delete=${(item: Reputation) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresDestroy({
+                return aki(PoliciesApi).policiesReputationScoresDestroy({
                     reputationUuid: item.pk || "",
                 });
             }}
@@ -65,16 +72,21 @@ export class UserReputationList extends Table<Reputation> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Reputation): TemplateResult[] {
+    row(item: Reputation): SlottedTemplateResult[] {
         return [
             html`${item.identifier}`,
             html`${item.ipGeoData?.country
                 ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
-                : html``}
+                : nothing}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${getRelativeTime(item.updated)}</div>
-                <small>${item.updated.toLocaleString()}</small>`,
+            Timestamp(item.updated),
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-reputation-list": UserReputationList;
     }
 }

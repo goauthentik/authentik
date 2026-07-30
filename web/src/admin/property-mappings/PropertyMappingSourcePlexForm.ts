@@ -1,36 +1,31 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { PlexSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-property-mapping-source-plex-form")
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
-    docLink(): string {
-        return "/docs/user-sources/sources/property-mappings/expressions?utm_source=authentik";
-    }
+    protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: PlexSourcePropertyMapping): Promise<PlexSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexUpdate({
-                pmUuid: this.instance.pk,
-                plexSourcePropertyMappingRequest: data,
-            });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexCreate({
-                plexSourcePropertyMappingRequest: data,
-            });
-        }
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexRetrieve({ pmUuid: pk }),
+        create: (plexSourcePropertyMappingRequest: PlexSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexCreate({
+                plexSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, plexSourcePropertyMappingRequest: PlexSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourcePlexUpdate({
+                pmUuid: pk,
+                plexSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

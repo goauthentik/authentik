@@ -35,7 +35,12 @@ class Command(TenantCommand):
             template_context={},
         )
         try:
-            send_mail(message.__dict__, stage.pk)
+            if not stage.use_global_settings:
+                message.from_email = stage.from_address
+
+            send_mail.send(message.__dict__, stage.pk).get_result(block=True)
+
+            self.stdout.write(self.style.SUCCESS(f"Test email sent to {options['to']}"))
         finally:
             if delete_stage:
                 stage.delete()

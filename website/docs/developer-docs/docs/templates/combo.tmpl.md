@@ -2,14 +2,14 @@
 title: "Markdown template: combo"
 ---
 
-add brief description of the feature/functionality
+Add a brief description of the feature or functionality.
 
-## About feature XYZ
+## About `<feature>`
 
 In this section, go into a deeper explanation of the feature, provide typical use cases, etc.
 
-:::info
-if needed, use this syntax to add a note (info) or warning (warning).
+:::info Add a title here
+If needed, use this syntax to add a note (info) or warning (warning) anywhere in the document that is appropriate.
 :::
 
 ### More info about the feature, a sub-category of info
@@ -18,26 +18,26 @@ Use this section if there are several big topics or categories of info that the 
 
 ## Prerequisites
 
-bullet list of pre-reqs
+Add a bullet list of prerequisites.
 
-## Overview of steps/workflow (Optional, only if there are a lot of steps)
+## About the workflow (optional; use only for a long procedure)
 
-describe the 50,000 meter view before they dive into the detailed steps, using a bullet list of the main steps, or even a diagram of the workflow.
+Summarize the workflow before the detailed steps, using a bullet list of the main steps or a diagram.
 
-## first several group steps
+## Complete the first group of steps
 
-1. first step
+1. First step.
 
-2. second step
+2. Second step.
 
-3. third step
+3. Third step.
 
-if you need a tabbed section to represent diff processes or code snippets for diff install environments, use an MDX tabbed component.
+If you need tabs for different processes or installation environments, convert the file to MDX and use the tabs component.
 
-## next step of grouped steps, if needed
+## Complete the next group of steps
 
 Continue with the steps...
 
-## verify the steps
+## Verify the result
 
-add verification steps
+Add verification steps.

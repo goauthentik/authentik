@@ -1,11 +1,12 @@
 """authentik expression policy evaluator"""
 
 from ipaddress import ip_address
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.events.models import Event
 from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.exceptions import PolicyException
@@ -22,7 +23,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     _messages: list[str]
 
-    policy: Optional["ExpressionPolicy"] = None
+    policy: ExpressionPolicy | None = None
 
     def __init__(self, policy_name: str | None = None):
         super().__init__(policy_name or "PolicyEvaluator")
@@ -45,6 +46,10 @@ class PolicyEvaluator(BaseEvaluator):
             self.set_http_request(request.http_request)
         self._context["request"] = request
         self._context["context"] = request.context
+        if request.obj and isinstance(request.obj, Event):
+            self._context["ak_client_ip"] = ip_address(
+                request.obj.client_ip or ClientIPMiddleware.default_ip
+            )
 
     def set_http_request(self, request: HttpRequest):
         """Update context based on http request"""
@@ -66,7 +71,7 @@ class PolicyEvaluator(BaseEvaluator):
             # PolicyExceptions should be propagated back to the process,
             # which handles recording and returning a correct result
             raise exc
-        except Exception as exc:
+        except Exception as exc:  # noqa
             LOGGER.warning("Expression error", exc=exc)
             return PolicyResult(False, str(exc))
         else:

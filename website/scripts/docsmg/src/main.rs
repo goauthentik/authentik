@@ -1,13 +1,19 @@
-use std::{fs, path::PathBuf};
+#![expect(clippy::allow_attributes_without_reason)]
+#![expect(clippy::unwrap_used)]
+
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use clap::{Parser, Subcommand};
 
 mod generate;
+mod hackyfixes;
 mod links;
 mod migrate;
 mod migratefile;
 mod r#move;
-mod hackyfixes;
 
 #[derive(Parser)]
 struct Cli {
@@ -45,41 +51,38 @@ enum Commands {
 }
 
 fn main() {
-    let _ = dotenv::from_filename("./docsmg.env");
+    let _ = dotenvy::from_filename("./docsmg.env");
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Move { old_path, new_path } => r#move::r#move(old_path, new_path),
+        Commands::Move { old_path, new_path } => r#move::r#move(&old_path, &new_path),
         Commands::Migrate { migratefile, quiet } => {
-            migrate::migrate(quiet, migratefile, cli.migrate_path)
+            migrate::migrate(quiet, &migratefile, &cli.migrate_path);
         }
         Commands::Unmigrate { migratefile, quiet } => {
-            migrate::unmigrate(quiet, migratefile, cli.migrate_path)
+            migrate::unmigrate(quiet, &migratefile, &cli.migrate_path);
         }
-        Commands::Generate { migratefile } => generate::generate(migratefile, cli.migrate_path),
+        Commands::Generate { migratefile } => {
+            generate::generate(migratefile.as_deref(), &cli.migrate_path);
+        }
     }
 }
 
-fn recurse_directory(path: PathBuf) -> Vec<PathBuf> {
+fn recurse_directory(path: &Path) -> Vec<PathBuf> {
     let paths = fs::read_dir(path).expect("path to exist");
     let mut final_paths = vec![];
-    for path in paths {
-        match path {
-            Ok(path) => {
-                if !path.path().is_file() && !path.path().is_dir() {
-                    continue;
-                } // dont go any further if not a file or directory
-                let is_dir = path.path().is_dir();
-                let path = path.path();
+    for path in paths.flatten() {
+        if !path.path().is_file() && !path.path().is_dir() {
+            continue;
+        } // dont go any further if not a file or directory
+        let is_dir = path.path().is_dir();
+        let path = path.path();
 
-                if is_dir {
-                    let mut paths = recurse_directory(path);
-                    final_paths.append(&mut paths);
-                } else {
-                    final_paths.push(path);
-                }
-            }
-            _ => {}
+        if is_dir {
+            let mut paths = recurse_directory(&path);
+            final_paths.append(&mut paths);
+        } else {
+            final_paths.push(path);
         }
     }
     final_paths

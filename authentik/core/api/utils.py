@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.db import models
 from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
@@ -20,6 +21,8 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+from authentik.lib.models import SimpleThroughModel
+
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
@@ -28,7 +31,26 @@ def is_dict(value: Any):
     raise ValidationError("Value must be a dictionary, and not have any duplicate keys.")
 
 
+class JSONDictField(JSONField):
+    """JSON Field which only allows dictionaries"""
+
+    default_validators = [is_dict]
+
+
+class JSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.core.api.utils.JSONDictField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        return build_basic_type(OpenApiTypes.OBJECT)
+
+
 class ModelSerializer(BaseModelSerializer):
+
+    # By default, JSON fields we have are used to store dictionaries
+    serializer_field_mapping = BaseModelSerializer.serializer_field_mapping.copy()
+    serializer_field_mapping[models.JSONField] = JSONDictField
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)
@@ -60,20 +82,18 @@ class ModelSerializer(BaseModelSerializer):
 
         return instance
 
+    # To be safe, DRF handles explicit through models differently than implicit ones, for example,
+    # it marks them as `read_only`. However, for "simple" through models, consisting of only the ids
+    # of the related objects, we'd like DRF to handle them as if they were automatically created.
+    def build_relational_field(self, field_name, relation_info):
+        if (
+            relation_info.model_field is not None
+            and relation_info.model_field.many_to_many
+            and issubclass(relation_info.model_field.remote_field.through, SimpleThroughModel)
+        ):
+            relation_info = relation_info._replace(has_through_model=False)
 
-class JSONDictField(JSONField):
-    """JSON Field which only allows dictionaries"""
-
-    default_validators = [is_dict]
-
-
-class JSONExtension(OpenApiSerializerFieldExtension):
-    """Generate API Schema for JSON fields as"""
-
-    target_class = "authentik.core.api.utils.JSONDictField"
-
-    def map_serializer_field(self, auto_schema, direction):
-        return build_basic_type(OpenApiTypes.OBJECT)
+        return super().build_relational_field(field_name, relation_info)
 
 
 class PassiveSerializer(Serializer):
@@ -122,3 +142,10 @@ class LinkSerializer(PassiveSerializer):
     """Returns a single link"""
 
     link = CharField()
+
+
+class ThemedUrlsSerializer(PassiveSerializer):
+    """Themed URLs - maps theme names to URLs for light and dark themes"""
+
+    light = CharField(required=False, allow_null=True)
+    dark = CharField(required=False, allow_null=True)

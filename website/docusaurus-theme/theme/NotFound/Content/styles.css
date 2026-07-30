@@ -1,0 +1,5 @@
+html[data-redirect="pending"] {
+    .theme-layout-footer {
+        visibility: hidden;
+    }
+}

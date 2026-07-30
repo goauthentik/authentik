@@ -18,6 +18,13 @@
           {{ body }}
         </td>
       </tr>
+      {% if link %}
+      <tr>
+        <td align="center" class="btn btn-primary">
+          <a id="confirm" href="{{ link.target }}" rel="noopener noreferrer" target="_blank">{{ link.label }}</a>
+        </td>
+      </tr>
+      {% endif %}
       {% if key_value %}
       <tr>
         <td>

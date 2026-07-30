@@ -7,8 +7,9 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.flows.models import NotConfiguredAction, Stage
+from authentik.lib.models import SimpleThroughModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.stages.authenticator_webauthn.models import UserVerification
+from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnHint
 
 
 class DeviceClasses(models.TextChoices):
@@ -20,6 +21,13 @@ class DeviceClasses(models.TextChoices):
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")
     SMS = "sms", _("SMS")
+    EMAIL = "email", _("Email")
+
+    @staticmethod
+    def from_model_label(model_label: str) -> DeviceClasses:
+        return getattr(
+            DeviceClasses, model_label.rsplit(".", maxsplit=1)[-1][: -len("device")].upper()
+        )
 
 
 def default_device_classes() -> list:
@@ -30,11 +38,12 @@ def default_device_classes() -> list:
         DeviceClasses.WEBAUTHN,
         DeviceClasses.DUO,
         DeviceClasses.SMS,
+        DeviceClasses.EMAIL,
     ]
 
 
 class AuthenticatorValidateStage(Stage):
-    """Validate user's configured OTP Device."""
+    """Validate user's configured Multi Factor Authentication."""
 
     not_configured_action = models.TextField(
         choices=NotConfiguredAction.choices, default=NotConfiguredAction.SKIP
@@ -49,6 +58,7 @@ class AuthenticatorValidateStage(Stage):
             "Stages used to configure Authenticator when user doesn't have any compatible "
             "devices. After this configuration Stage passes, the user is not prompted again."
         ),
+        through="AuthenticatorValidateStageConfigurationStage",
     )
 
     device_classes = ArrayField(
@@ -71,9 +81,21 @@ class AuthenticatorValidateStage(Stage):
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
     )
-    webauthn_allowed_device_types = models.ManyToManyField(
-        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
+    webauthn_hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
     )
+    webauthn_allowed_device_types = models.ManyToManyField(
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",
+        blank=True,
+        through="AuthenticatorValidateStageWebAuthnAllowedDeviceType",
+    )
+
+    email_otp_throttling_factor = models.FloatField(default=1)
+    sms_otp_throttling_factor = models.FloatField(default=1)
+    totp_otp_throttling_factor = models.FloatField(default=1)
+    static_otp_throttling_factor = models.FloatField(default=1)
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -91,6 +113,73 @@ class AuthenticatorValidateStage(Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-validate-form"
 
+    def get_throttling_factor(self, device_class: DeviceClasses) -> float | None:
+        if device_class == DeviceClasses.EMAIL:
+            return self.email_otp_throttling_factor
+        elif device_class == DeviceClasses.SMS:
+            return self.sms_otp_throttling_factor
+        elif device_class == DeviceClasses.TOTP:
+            return self.totp_otp_throttling_factor
+        elif device_class == DeviceClasses.STATIC:
+            return self.static_otp_throttling_factor
+        return None
+
     class Meta:
         verbose_name = _("Authenticator Validation Stage")
         verbose_name_plural = _("Authenticator Validation Stages")
+
+
+class AuthenticatorValidateStageConfigurationStage(SimpleThroughModel):
+    authenticator_validate_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        on_delete=models.CASCADE,
+        related_name="configuration_stage_m2m_objects",
+        db_column="authenticatorvalidatestage_id",
+    )
+    configuration_stage = models.ForeignKey(
+        Stage,
+        on_delete=models.CASCADE,
+        related_name="authenticator_validate_stage_m2m_objects",
+        db_column="stage_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_validate_authenticatorvalida3e25"
+        unique_together = (("authenticator_validate_stage", "configuration_stage"),)
+        verbose_name = _("Authenticator Validate Stage Configuration Stage")
+        verbose_name_plural = _("Authenticator Validate Stage Configuration Stages")
+
+    def __str__(self):
+        return (
+            "AuthenticatorValidateStageConfigurationStage for AuthenticatorValidateStage "
+            f"{self.authenticator_validate_stage_id} "
+            f"and ConfigurationStage {self.configuration_stage_id}."
+        )
+
+
+class AuthenticatorValidateStageWebAuthnAllowedDeviceType(SimpleThroughModel):
+    authenticator_validate_stage = models.ForeignKey(
+        AuthenticatorValidateStage,
+        on_delete=models.CASCADE,
+        related_name="webauthn_allowed_device_types_m2m_objects",
+        db_column="authenticatorvalidatestage_id",
+    )
+    webauthn_allowed_device_type = models.ForeignKey(
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType",
+        on_delete=models.CASCADE,
+        related_name="authenticator_validate_stage_m2m_objects",
+        db_column="webauthndevicetype_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_validate_authenticatorvalida8318"
+        unique_together = (("authenticator_validate_stage", "webauthn_allowed_device_type"),)
+        verbose_name = _("Authenticator Validate Stage WebAuthn Allowed Device Type")
+        verbose_name_plural = _("Authenticator Validate Stage WebAuthn Allowed Device Types")
+
+    def __str__(self):
+        return (
+            "AuthenticatorValidateStageConfigurationStage for AuthenticatorValidateStage "
+            f"{self.authenticator_validate_stage_id} "
+            f"and WebAuthnAllowedDeviceType {self.webauthn_allowed_device_type_id}."
+        )

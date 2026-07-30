@@ -3,6 +3,7 @@
 from pathlib import Path
 from uuid import uuid4
 
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -70,6 +71,13 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     )
     enabled = models.BooleanField(default=True)
     managed_models = ArrayField(models.TextField(), default=list)
+
+    # Manual link to tasks instead of using TasksModel because of loop imports
+    tasks = GenericRelation(
+        "authentik_tasks.Task",
+        content_type_field="rel_obj_content_type",
+        object_id_field="rel_obj_id",
+    )
 
     class Meta:
         verbose_name = _("Blueprint Instance")

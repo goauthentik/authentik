@@ -1,38 +1,34 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
 import { GoogleWorkspaceProviderMapping, PropertymappingsApi } from "@goauthentik/api";
 
+import { customElement } from "lit/decorators.js";
+
 @customElement("ak-property-mapping-provider-google-workspace-form")
 export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {
-    loadInstance(pk: string): Promise<GoogleWorkspaceProviderMapping> {
-        return new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: GoogleWorkspaceProviderMapping): Promise<GoogleWorkspaceProviderMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(
-                DEFAULT_CONFIG,
-            ).propertymappingsProviderGoogleWorkspaceUpdate({
-                pmUuid: this.instance.pk,
-                googleWorkspaceProviderMappingRequest: data,
-            });
-        } else {
-            return new PropertymappingsApi(
-                DEFAULT_CONFIG,
-            ).propertymappingsProviderGoogleWorkspaceCreate({
-                googleWorkspaceProviderMappingRequest: data,
-            });
-        }
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderGoogleWorkspaceRetrieve({
+                pmUuid: pk,
+            }),
+        create: (googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderGoogleWorkspaceCreate({
+                googleWorkspaceProviderMappingRequest,
+            }),
+        update: (
+            pk: string,
+            googleWorkspaceProviderMappingRequest: GoogleWorkspaceProviderMapping,
+        ) =>
+            aki(PropertymappingsApi).propertymappingsProviderGoogleWorkspaceUpdate({
+                pmUuid: pk,
+                googleWorkspaceProviderMappingRequest,
+            }),
+    };
 }
 
 declare global {

@@ -2,7 +2,7 @@
 
 import random
 import string
-from binascii import unhexlify
+from binascii import Error, unhexlify
 from os import urandom
 
 from django.core.exceptions import ValidationError
@@ -42,7 +42,7 @@ def hex_validator(length=0):
                 value = value.encode()
 
             unhexlify(value)
-        except Exception:
+        except Error:
             raise ValidationError(f"{value} is not valid hex-encoded data.") from None
 
         if (length > 0) and (len(value) != length * 2):

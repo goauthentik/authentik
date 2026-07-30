@@ -1,6 +1,6 @@
-import { msg } from "@lit/localize";
-
 import { Flow, FlowDesignationEnum, FlowLayoutEnum } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
 
 export function RenderFlowOption(flow: Flow): string {
     return `${flow.slug} (${flow.name})`;
@@ -39,6 +39,10 @@ export function LayoutToLabel(layout: FlowLayoutEnum): string {
             return msg("Sidebar left");
         case FlowLayoutEnum.SidebarRight:
             return msg("Sidebar right");
+        case FlowLayoutEnum.SidebarLeftFrameBackground:
+            return msg("Sidebar left (frame background)");
+        case FlowLayoutEnum.SidebarRightFrameBackground:
+            return msg("Sidebar right (frame background)");
         case FlowLayoutEnum.UnknownDefaultOpenApi:
             return msg("Unknown layout");
     }

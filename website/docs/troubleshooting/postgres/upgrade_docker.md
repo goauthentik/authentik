@@ -2,46 +2,121 @@
 title: Upgrade PostgreSQL on Docker Compose
 ---
 
-### Dump your database
+This guide describes a manual PostgreSQL major-version upgrade for the default authentik Docker Compose deployment.
 
-Dump your existing database with `docker compose exec postgresql pg_dump -U authentik -d authentik -cC > upgrade_backup_12.sql`.
+It assumes the PostgreSQL service is named `postgresql` and the authentik database is named `authentik`. If your Compose file uses different names, adjust the commands accordingly.
 
-Before continuing, ensure the SQL dump file (`upgrade_backup_12.sql`) includes all your database content.
+## Before you start
 
-### Stop your authentik stack
+- Make sure you have enough free disk space for:
+    - a SQL dump of the database
+    - a copy of the existing PostgreSQL data directory or volume
+    - the newly initialized PostgreSQL data directory
+- Expect downtime while the database is exported, recreated, and restored.
+- Review the [Backup and restore](../../sys-mgmt/ops/backup-restore.md) guidance before proceeding.
 
-Stop all services with `docker compose down`.
+## 1. Create a logical backup
 
-### Backup your existing database
+Create a database dump:
 
-If you use Docker volumes you can run the following command: `docker volume create authentik_database_backup && docker run --rm -v authentik_database:/from -v authentik_database_backup:/to alpine sh -c 'cd /from && cp -a . /to'`. You can find the name of the `authentik_database` volume with `docker volume ls`.
+```shell
+docker compose exec postgresql pg_dump -U authentik -d authentik -cC > authentik-postgres-backup.sql
+```
 
-If your data is a file path: `cp -a /path/to/v12-data /path/to/v12-backup`
+Before continuing, confirm that `authentik-postgres-backup.sql` exists and contains the expected database objects.
 
-### Delete your old database
+## 2. Stop your authentik stack
 
-:::::danger
-Do not execute this step without checking that the backup (previous step) completed successfully.
-:::::
+Stop all services with this command:
 
-If you use Docker volumes: `docker volume rm -f authentik_database`.
+```shell
+docker compose down
+```
 
-If your data is a file path: `rm -rf /path/to/v12-data`
+## 3. Back up the PostgreSQL data directory
 
-### Modify your docker-compose.yml file
+Back up the existing PostgreSQL data before replacing it.
 
-Update the PostgreSQL service image from `docker.io/library/postgres:12-alpine` to `docker.io/library/postgres:16-alpine`.
+If you use Docker volumes:
 
-Add `network_mode: none` to prevent connections being established to the database during the upgrade.
+```shell
+docker volume create authentik_database_backup
+docker run --rm -v authentik_database:/from -v authentik_database_backup:/to alpine sh -c 'cd /from && cp -a . /to'
+```
 
-### Recreate the database container
+You can find the exact name of the PostgreSQL volume with `docker volume ls` if it differs from `authentik_database`.
 
-Pull new images and re-create the PostgreSQL container: `docker compose pull && docker compose up --force-recreate -d postgresql`
+Alternatively, if your PostgreSQL data is stored on the host filesystem:
 
-Apply your backup to the new database: `cat upgrade_backup_12.sql | docker compose exec -T postgresql psql -U authentik`
+```shell
+cp -a /path/to/postgres-data /path/to/postgres-data-backup
+```
 
-Remove the network configuration setting `network_mode: none` that you added to the Compose file in the previous step.
+## 4. Remove the old data directory
 
-### Recreate authentik
+:::danger
+Do not continue unless both the database dump and the filesystem or volume backup completed successfully.
+:::
 
-Start authentik again: `docker compose up --force-recreate -d`
+If you use Docker volumes:
+
+```shell
+docker volume rm -f authentik_database
+```
+
+Alternatively, if your PostgreSQL data is stored on the host filesystem:
+
+```shell
+rm -rf /path/to/postgres-data
+```
+
+## 5. Update the PostgreSQL image
+
+Edit your `compose.yml` and update the PostgreSQL image tag to the new major version.
+
+For example, change:
+
+```yaml
+image: docker.io/library/postgres:12-alpine
+```
+
+to:
+
+```yaml
+image: docker.io/library/postgres:16-alpine
+```
+
+Temporarily add `network_mode: none` to the PostgreSQL service to prevent connections being established to the database during the upgrade.
+
+## 6. Recreate PostgreSQL and restore the database
+
+Pull images and start only PostgreSQL:
+
+```shell
+docker compose pull
+docker compose up --force-recreate -d postgresql
+```
+
+Restore the logical backup:
+
+```shell
+cat authentik-postgres-backup.sql | docker compose exec -T postgresql psql -U authentik
+```
+
+After the restore succeeds, remove the temporary `network_mode: none` setting from `compose.yml`.
+
+## 7. Start authentik again
+
+Start the full stack:
+
+```shell
+docker compose up --force-recreate -d
+```
+
+## 8. Verify the upgrade
+
+After the stack is healthy again:
+
+- confirm that authentik loads normally
+- check the server, worker, and postgresql logs for startup or migration errors
+- log in to authentik through the UI to verify the application is functioning normally

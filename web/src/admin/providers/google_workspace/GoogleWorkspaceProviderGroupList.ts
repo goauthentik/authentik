@@ -1,12 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#components/sync/SyncObjectForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import {
     GoogleWorkspaceProviderGroup,
@@ -15,6 +14,10 @@ import {
     SyncObjectModelEnum,
 } from "@goauthentik/api";
 
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {
     @property({ type: Number })
@@ -22,24 +25,20 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
 
     expandable = true;
 
-    searchEnabled(): boolean {
-        return true;
-    }
+    protected override searchEnabled = true;
 
     checkbox = true;
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
                     .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersGoogleWorkspaceSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersGoogleWorkspaceSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -52,10 +51,10 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Google Workspace Group(s)")}
+            object-label=${msg("Google Workspace Group(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderGroup) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsDestroy({
+                return aki(ProvidersApi).providersGoogleWorkspaceGroupsDestroy({
                     id: item.id,
                 });
             }}
@@ -67,17 +66,23 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderGroup>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceGroupsList({
+        return aki(ProvidersApi).providersGoogleWorkspaceGroupsList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
-    columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("ID"))];
+    protected override rowLabel(item: GoogleWorkspaceProviderGroup): string {
+        return item.groupObj.name;
     }
 
-    row(item: GoogleWorkspaceProviderGroup): TemplateResult[] {
+    protected columns: TableColumn[] = [
+        // ---
+        [msg("Name")],
+        [msg("ID")],
+    ];
+
+    row(item: GoogleWorkspaceProviderGroup): SlottedTemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.groupObj.pk}">
                 <div>${item.groupObj.name}</div>
@@ -87,11 +92,7 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
     }
 
     renderExpanded(item: GoogleWorkspaceProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
+        return html` <pre>${JSON.stringify(item.attributes, null, 4)}</pre>`;
     }
 }
 

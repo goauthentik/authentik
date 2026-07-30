@@ -13,14 +13,16 @@ from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
+from django_postgres_cache.models import CacheEntry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
-from authentik.lib.sentry import before_send
-from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.models import InternallyManagedMixin
+from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.utils.errors import exception_to_dict
 from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = tuple(
@@ -30,6 +32,7 @@ IGNORED_MODELS = tuple(
         Notification,
         StaticToken,
         Session,
+        CacheEntry,
     )
 )
 
@@ -40,7 +43,7 @@ _CTX_REQUEST = ContextVar[HttpRequest | None]("authentik_events_log_request", de
 
 def should_log_model(model: Model) -> bool:
     """Return true if operation on `model` should be logged"""
-    return model.__class__ not in IGNORED_MODELS
+    return model.__class__ not in IGNORED_MODELS and not isinstance(model, InternallyManagedMixin)
 
 
 def should_log_m2m(model: Model) -> bool:
@@ -170,14 +173,16 @@ class AuditMiddleware:
             thread = EventNewThread(
                 EventAction.SUSPICIOUS_REQUEST,
                 request,
-                message=exception_to_string(exception),
+                message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
-        elif before_send({}, {"exc_info": (None, exception, None)}) is not None:
+        elif not should_ignore_exception(exception):
             thread = EventNewThread(
                 EventAction.SYSTEM_EXCEPTION,
                 request,
-                message=exception_to_string(exception),
+                message=str(exception),
+                exception=exception_to_dict(exception),
             )
             thread.run()
 
@@ -195,7 +200,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -210,7 +216,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 
@@ -237,7 +244,8 @@ class AuditMiddleware:
             return
         if _CTX_IGNORE.get():
             return
-        if request.request_id != _CTX_REQUEST.get().request_id:
+        current_request = _CTX_REQUEST.get()
+        if current_request is None or request.request_id != current_request.request_id:
             return
         user = self.get_user(request)
 

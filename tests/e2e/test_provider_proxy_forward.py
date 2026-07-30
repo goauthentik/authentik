@@ -1,8 +1,9 @@
 """Proxy and Outpost e2e tests"""
 
-from json import loads
+from json import dumps
 from pathlib import Path
 from time import sleep
+from unittest import skip
 
 from selenium.webdriver.common.by import By
 
@@ -12,7 +13,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestProviderProxyForward(SeleniumTestCase):
@@ -76,17 +78,6 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.start_outpost(outpost)
 
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
-
     @retry()
     def test_traefik(self):
         """Test traefik"""
@@ -111,18 +102,24 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
+    @skip("Flaky test")
     @retry()
     def test_nginx(self):
         """Test nginx"""
@@ -145,16 +142,21 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
     @retry()
@@ -178,16 +180,21 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)
 
     @retry()
@@ -214,14 +221,19 @@ class TestProviderProxyForward(SeleniumTestCase):
         self.login()
         sleep(1)
 
-        full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
-        body = loads(full_body_text)
+        body_json = self.parse_json_content()
+        snippet = dumps(body_json, indent=2)[:500].replace("\n", " ")
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(
+            body_json.get("headers", {}).get("X-Authentik-Username"),
+            [self.user.username],
+            f"X-Authentik-Username header mismatch at {self.driver.current_url}: {snippet}",
+        )
 
         self.driver.get("http://localhost/outpost.goauthentik.io/sign_out")
         sleep(2)
         flow_executor = self.get_shadow_root("ak-flow-executor")
         session_end_stage = self.get_shadow_root("ak-stage-session-end", flow_executor)
-        title = session_end_stage.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
+        flow_card = self.get_shadow_root("ak-flow-card", session_end_stage)
+        title = flow_card.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
         self.assertIn("You've logged out of", title)

@@ -14,8 +14,9 @@ class SCIMRequestException(TransientSyncException):
     _message: str | None
 
     def __init__(self, response: Response | None = None, message: str | None = None) -> None:
+        super().__init__(response)
         self._response = response
-        self._message = message
+        self._message = message or self.error_default
 
     def detail(self) -> str:
         """Get human readable details of this error"""
@@ -26,4 +27,7 @@ class SCIMRequestException(TransientSyncException):
             return error.detail
         except ValidationError:
             pass
-        return self._message
+        return self._response.text
+
+    def __str__(self):
+        return self.detail()

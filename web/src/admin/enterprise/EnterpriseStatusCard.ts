@@ -1,74 +1,129 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { PFColor } from "@goauthentik/elements/Label";
+/**
+ * @file Display the current usage and license status of Enterprise licenses.
+ */
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import "#elements/Progress";
+import "#elements/Label";
 
-import PFCard from "@patternfly/patternfly/components/Card/card.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFProgress from "@patternfly/patternfly/components/Progress/progress.css";
-import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
-@customElement("ak-enterprise-status-card")
-export class EnterpriseStatusCard extends AKElement {
-    @state()
-    forecast?: LicenseForecast;
+import { differenceInSeconds, formatDistanceStrict } from "date-fns";
+import { match } from "ts-pattern";
 
-    @state()
-    summary?: LicenseSummary;
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-    static get styles(): CSSResult[] {
-        return [PFBase, PFDescriptionList, PFCard, PFSplit, PFProgress];
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFSplit from "@patternfly/patternfly/layouts/Split/split.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const badgeDetails = new Map<LicenseSummaryStatusEnum, [string, string]>([
+    [LicenseSummaryStatusEnum.Expired, ["red", msg("Expired")]],
+    [LicenseSummaryStatusEnum.ExpirySoon, ["orange", msg("Expiring soon")]],
+    [LicenseSummaryStatusEnum.Unlicensed, ["gray", msg("Unlicensed")]],
+    [LicenseSummaryStatusEnum.ReadOnly, ["red", msg("Read Only")]],
+    [LicenseSummaryStatusEnum.LimitExceededAdmin, ["orange", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.LimitExceededUser, ["red", msg("User Count Exceeded")]],
+    [LicenseSummaryStatusEnum.Valid, ["green", msg("Valid")]],
+]);
+
+const Styles = css`
+    .pf-c-card {
+        container-type: inline-size;
+        container-name: enterprise-status-card;
     }
 
-    renderSummaryBadge() {
-        switch (this.summary?.status) {
-            case LicenseSummaryStatusEnum.Expired:
-                return html`<ak-label color=${PFColor.Red}>${msg("Expired")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ExpirySoon:
-                return html`<ak-label color=${PFColor.Orange}>${msg("Expiring soon")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Unlicensed:
-                return html`<ak-label color=${PFColor.Grey}>${msg("Unlicensed")}</ak-label>`;
-            case LicenseSummaryStatusEnum.ReadOnly:
-                return html`<ak-label color=${PFColor.Red}>${msg("Read Only")}</ak-label>`;
-            case LicenseSummaryStatusEnum.Valid:
-                return html`<ak-label color=${PFColor.Green}>${msg("Valid")}</ak-label>`;
-            default:
-                return nothing;
+    .pf-l-split {
+        --pf-l-split--m-gutter--MarginRight: 1.5rem;
+    }
+
+    @container enterprise-status-card (width >= 480px) {
+        .pf-l-split {
+            --pf-l-split--m-gutter--MarginRight: 3rem;
         }
     }
+`;
 
-    calcUserPercentage(licensed: number, current: number) {
+const DAY_IN_SECONDS = 86400;
+
+@customElement("ak-enterprise-status-card")
+export class EnterpriseStatusCard extends AKElement {
+    static readonly styles: CSSResult[] = [PFDescriptionList, PFCard, PFSplit, PFStack, Styles];
+
+    @property({ attribute: false })
+    public forecast?: LicenseForecast;
+
+    @property({ attribute: false })
+    public summary?: LicenseSummary;
+
+    protected renderSummaryBadge() {
+        const summary = this.summary?.status;
+        if (!summary) return nothing;
+
+        const status = badgeDetails.get(summary);
+        if (!status) return nothing;
+
+        const valid = this.summary?.latestValid;
+        const today = new Date();
+        if (summary === LicenseSummaryStatusEnum.ExpirySoon && valid) {
+            const gap = differenceInSeconds(valid, today);
+            // prettier-ignore
+            status[1] = match(gap)
+                .when((g) => g < 0, () => status[1])
+                .when((g) => g > 0 && g < DAY_IN_SECONDS, () => msg("Expiring today"))
+                .otherwise(() => msg(
+                    str`Expiring in ${formatDistanceStrict(new Date(), valid, { unit: "day" })}`))
+        }
+
+        return html`<ak-label color="pf-m-${status[0]}">${status[1]}</ak-label>`;
+    }
+
+    protected calcUserPercentage(licensed: number, current: number) {
         const percentage = licensed > 0 ? Math.ceil(current / (licensed / 100)) : 0;
         if (current > 0 && licensed === 0) return Infinity;
         return percentage;
     }
 
-    render() {
+    public override render() {
         if (!this.forecast || !this.summary) {
             return html`${msg("Loading")}`;
         }
-        let internalUserPercentage = 0;
-        let externalUserPercentage = 0;
-        if (this.summary.status !== LicenseSummaryStatusEnum.Unlicensed) {
-            internalUserPercentage = this.calcUserPercentage(
-                this.summary.internalUsers,
-                this.forecast.internalUsers,
-            );
-            externalUserPercentage = this.calcUserPercentage(
-                this.summary.externalUsers,
-                this.forecast.externalUsers,
-            );
-        }
+
+        // Actual current usage counts (not the forecasted/projected fields).
+        const currentInternalUsers = this.forecast.internalUsers;
+        const currentExternalUsers = this.forecast.externalUsers;
+        const licensedInternalUsers = this.summary.internalUsers;
+        const licensedExternalUsers = this.summary.externalUsers;
+        const licensed = this.summary.status !== LicenseSummaryStatusEnum.Unlicensed;
+
+        const progressBar = (label: string, current: number, allowed: number) => {
+            const percentage = licensed ? this.calcUserPercentage(allowed, current) : 0;
+            // prettier-ignore
+            const severity = licensed
+                ? match(percentage)
+                    .when((p) => p <= 80, () => "success")
+                    .when((p) => p > 80 && p <= 100, () => "warning")
+                    .otherwise(() => "danger")
+                : null;
+
+            return html`
+                <ak-progress value=${percentage} severity=${ifPresent(severity)}>
+                    <span slot="label">${label} (${current} / ${allowed})</span>
+                    <span slot="status"> ${percentage < Infinity ? `${percentage}` : "∞"}% </span>
+                </ak-progress>
+            `;
+        };
+
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Current license status")}</div>
             <div class="pf-c-card__body">
                 <div class="pf-l-split pf-m-gutter">
-                    <dl class="pf-l-split__item pf-c-description-list pf-m-horizontal">
+                    <dl class="pf-l-split__item pf-c-description-list">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
                                 <span class="pf-c-description-list__text"
@@ -83,65 +138,17 @@ export class EnterpriseStatusCard extends AKElement {
                         </div>
                     </dl>
                     <div class="pf-l-split__item pf-m-fill">
-                        <div
-                            class="pf-c-progress ${internalUserPercentage > 100
-                                ? "pf-m-danger"
-                                : ""} ${internalUserPercentage >= 80 ? "pf-m-warning" : ""}"
-                            id="internalUsers"
-                        >
-                            <div class="pf-c-progress__description">
-                                ${msg("Internal user usage")}
-                            </div>
-                            <div class="pf-c-progress__status" aria-hidden="true">
-                                <span class="pf-c-progress__measure"
-                                    >${msg(
-                                        str`${internalUserPercentage < Infinity ? internalUserPercentage : "∞"}%`,
-                                    )}</span
-                                >
-                            </div>
-                            <div
-                                class="pf-c-progress__bar"
-                                role="progressbar"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                aria-valuenow="${internalUserPercentage}"
-                            >
-                                <div
-                                    class="pf-c-progress__indicator"
-                                    style="width:${Math.min(internalUserPercentage, 100)}%;"
-                                ></div>
-                            </div>
-                        </div>
-                        <div
-                            class="pf-c-progress ${externalUserPercentage > 100
-                                ? "pf-m-danger"
-                                : ""} ${externalUserPercentage >= 80 ? "pf-m-warning" : ""}"
-                            id="externalUsers"
-                        >
-                            <div class="pf-c-progress__description">
-                                ${msg("External user usage")}
-                            </div>
-                            <div class="pf-c-progress__status" aria-hidden="true">
-                                <span class="pf-c-progress__measure"
-                                    >${msg(
-                                        str`${externalUserPercentage < Infinity ? externalUserPercentage : "∞"}%`,
-                                    )}</span
-                                >
-                            </div>
-                            <div
-                                class="pf-c-progress__bar"
-                                role="progressbar"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                aria-valuenow="${externalUserPercentage < Infinity
-                                    ? externalUserPercentage
-                                    : "∞"}"
-                            >
-                                <div
-                                    class="pf-c-progress__indicator"
-                                    style="width:${Math.min(externalUserPercentage, 100)}%;"
-                                ></div>
-                            </div>
+                        <div class="pf-l-stack pf-m-gutter">
+                            ${progressBar(
+                                msg("Internal user usage"),
+                                currentInternalUsers,
+                                licensedInternalUsers,
+                            )}
+                            ${progressBar(
+                                msg("External user usage"),
+                                currentExternalUsers,
+                                licensedExternalUsers,
+                            )}
                         </div>
                     </div>
                 </div>

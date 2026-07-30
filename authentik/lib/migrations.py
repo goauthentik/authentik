@@ -1,9 +1,15 @@
 """Migration helpers"""
 
 from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
 from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
+
+from authentik.events.utils import cleanse_dict, sanitize_dict
+
+if TYPE_CHECKING:
+    from authentik.events.models import EventAction
 
 
 def fallback_names(app: str, model: str, field: str):
@@ -65,3 +71,12 @@ def progress_bar(iterable: Iterable):
         print_progress_bar(i + 1)
     # Print New Line on Complete
     print()
+
+
+def migration_event(
+    apps: Apps, schema_editor: BaseDatabaseSchemaEditor, action: EventAction, **kwargs
+):
+    db_alias = schema_editor.connection.alias
+    Event = apps.get_model("authentik_events", "Event")
+    event = Event(action=action, app="authentik", context=cleanse_dict(sanitize_dict(kwargs)))
+    event.save(using=db_alias)

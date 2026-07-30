@@ -8,7 +8,7 @@ from authentik.flows.models import Stage
 
 
 class UserLogoutStage(Stage):
-    """Resets the users current session."""
+    """Ends the user's session."""
 
     @property
     def serializer(self) -> type[BaseSerializer]:

@@ -29,7 +29,7 @@ class TestDevicesAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(len(body), 1)
-        self.assertEqual(body[0]["pk"], self.device1.pk)
+        self.assertEqual(body[0]["pk"], str(self.device1.pk))
 
     def test_user_api_as_admin(self):
         """Test user API"""
@@ -54,4 +54,6 @@ class TestDevicesAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(len(body), 2)
-        self.assertEqual({body[0]["pk"], body[1]["pk"]}, {self.device1.pk, self.device2.pk})
+        self.assertEqual(
+            {body[0]["pk"], body[1]["pk"]}, {str(self.device1.pk), str(self.device2.pk)}
+        )

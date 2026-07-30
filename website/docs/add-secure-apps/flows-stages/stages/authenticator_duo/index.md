@@ -2,29 +2,46 @@
 title: Duo authenticator setup stage
 ---
 
-This stage configures a Duo authenticator. To get the API Credentials for this stage, open your Duo Admin dashboard.
+The Duo Authenticator Setup stage enrolls a Duo authenticator for the current user.
 
-Go to Applications, click on Protect an Application and search for "Auth API". Click on Protect.
+## About the Duo authenticator setup stage
 
-Copy all of the integration key, secret key and API hostname, and paste them in the Stage form.
+This stage connects authentik to Duo and stores a Duo-backed authenticator for the user. Duo can then be used with the [Authenticator Validation stage](../authenticator_validate/index.md).
 
-Devices created reference the stage they were created with, since the API credentials are needed to authenticate. This also means when the stage is deleted, all devices are removed.
+## Configuration options
 
-## Importing users <span class="badge badge--version">authentik 2022.9+</span>
+- **API hostname**: the Duo API hostname for your tenant.
+- **Client ID**: Duo Auth API client identifier.
+- **Client secret**: Duo Auth API secret.
+- **Admin integration key**: optional Duo Admin API integration key, used for importing existing Duo users and authenticators.
+- **Admin secret key**: optional Duo Admin API secret, used together with the admin integration key.
+- **Authenticator type name**: optional friendly name shown to the user in self-service settings.
+- **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
+
+## Flow integration
+
+Use this stage in an enrollment or user-settings flow where the user should enroll Duo.
+
+To require Duo during authentication, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the login flow and allow the **Duo** device class.
+
+## Notes
+
+- Duo authenticators created through this stage are tied to the stage because authentik needs that stage's API credentials during authentication.
+- Deleting the stage also removes the Duo authenticators associated with it.
+
+### Import existing Duo authenticators
 
 :::info
 Due to the way the Duo API works, authentik can only automatically import existing Duo users when a Duo MFA or higher license is active.
 :::
 
-To import a device, open the Stages list in the authentik Admin interface. On the right next to the import button you'll see an import button, with which you can import Duo devices to authentik users.
+The Duo Auth API enrollment flow creates a new Duo user. If a Duo user already exists with the same username, Duo rejects the enrollment request. To use that existing Duo user in authentik, configure the optional Duo Admin API credentials on the stage and import the authenticator instead of using the enrollment flow. If the Admin API is not available, delete or rename the existing Duo user before enrolling the authenticator.
 
-The Duo username can be found by navigating to your Duo Admin dashboard and selecting _Users_ in the sidebar. Optionally if you have multiple users with the same username, you can click on a User and copy their ID from the URL, and use that to import the device.
+If you already have Duo users, you can import their authenticators into authentik from the Admin interface. The Duo username can be found in the Duo Admin dashboard under **Users**. If needed, you can also use the Duo user ID shown in the Duo Admin URL for that user.
 
-### Older versions <span class="badge badge--version">authentik 2021.9.1+</span>
+For direct API use, the import endpoint accepts:
 
-You can call the `/api/v3/stages/authenticator/duo/{stage_uuid}/import_devices/` endpoint ([see here](https://goauthentik.io/api/#post-/stages/authenticator/duo/-stage_uuid-/import_devices/)) using the following parameters:
+- `duo_user_id`: the Duo user's ID from the Duo admin portal
+- `username`: the authentik username to assign the imported authenticator to
 
--   `duo_user_id`: The Duo User's ID. This can be found in the Duo Admin Portal, navigating to the user list and clicking on a single user. Their ID is shown in th URL.
--   `username`: The authentik user's username to assign the device to.
-
-Additionally, you need to pass `stage_uuid` which is the `authenticator_duo` stage, in which you entered your API credentials.
+The `stage_uuid` in the request must be the Duo stage whose API credentials should be used.

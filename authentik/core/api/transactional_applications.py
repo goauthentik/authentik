@@ -1,15 +1,18 @@
 """transactional application and provider creation"""
 
 from django.apps import apps
+from django.db.models import Model
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema, extend_schema_field
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from yaml import ScalarNode
 
+from authentik.api.validation import validate
+from authentik.blueprints.api import check_blueprint_perms
 from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
@@ -20,8 +23,9 @@ from authentik.blueprints.v1.common import (
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Provider
+from authentik.core.models import Application, Provider
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.policies.api.bindings import PolicyBindingSerializer
 
 
 def get_provider_serializer_mapping():
@@ -45,12 +49,28 @@ class TransactionProviderField(DictField):
     """Dictionary field which can hold provider creation data"""
 
 
+class TransactionPolicyBindingSerializer(PolicyBindingSerializer):
+    """PolicyBindingSerializer which does not require target as target is set implicitly"""
+
+    def validate(self, attrs):
+        # As the PolicyBindingSerializer checks that the correct things can be bound to a target
+        # but we don't have a target here as that's set by the blueprint, pass in an empty app
+        # which will have the correct allowed combination of group/user/policy.
+        attrs["target"] = Application()
+        return super().validate(attrs)
+
+    class Meta(PolicyBindingSerializer.Meta):
+        fields = [x for x in PolicyBindingSerializer.Meta.fields if x != "target"]
+
+
 class TransactionApplicationSerializer(PassiveSerializer):
     """Serializer for creating a provider and an application in one transaction"""
 
     app = ApplicationSerializer()
     provider_model = ChoiceField(choices=list(get_provider_serializer_mapping().keys()))
     provider = TransactionProviderField()
+
+    policy_bindings = TransactionPolicyBindingSerializer(many=True, required=False)
 
     _provider_model: type[Provider] = None
 
@@ -96,6 +116,19 @@ class TransactionApplicationSerializer(PassiveSerializer):
                 id="app",
             )
         )
+        for binding in attrs.get("policy_bindings", []):
+            binding["target"] = KeyOf(None, ScalarNode(tag="", value="app"))
+            for key, value in binding.items():
+                if not isinstance(value, Model):
+                    continue
+                binding[key] = value.pk
+            blueprint.entries.append(
+                BlueprintEntry(
+                    model="authentik_policies.policybinding",
+                    state=BlueprintEntryDesiredState.MUST_CREATED,
+                    identifiers=binding,
+                )
+            )
         importer = Importer(blueprint, {})
         try:
             valid, _ = importer.validate(raise_validation_errors=True)
@@ -120,8 +153,7 @@ class TransactionApplicationResponseSerializer(PassiveSerializer):
 class TransactionalApplicationView(APIView):
     """Create provider and application and attach them in a single transaction"""
 
-    # TODO: Migrate to a more specific permission
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=TransactionApplicationSerializer(),
@@ -129,12 +161,12 @@ class TransactionalApplicationView(APIView):
             200: TransactionApplicationResponseSerializer(),
         },
     )
-    def put(self, request: Request) -> Response:
+    @validate(TransactionApplicationSerializer)
+    def put(self, request: Request, body: TransactionApplicationSerializer) -> Response:
         """Convert data into a blueprint, validate it and apply it"""
-        data = TransactionApplicationSerializer(data=request.data)
-        data.is_valid(raise_exception=True)
-
-        importer = Importer(data.validated_data, {})
+        blueprint: Blueprint = body.validated_data
+        check_blueprint_perms(blueprint, request.user, explicit_action="add")
+        importer = Importer(blueprint, {})
         applied = importer.apply()
         response = {"applied": False, "logs": []}
         response["applied"] = applied

@@ -19,9 +19,10 @@ var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
 	Help: "API request latencies in seconds",
 }, []string{"dest"})
 
-func (ws *WebServer) runMetricsServer() {
-	m := mux.NewRouter()
+func (ws *WebServer) runMetricsServer(listen string) {
 	l := log.WithField("logger", "authentik.router.metrics")
+
+	m := mux.NewRouter()
 	m.Use(sentry.SentryNoSampleMiddleware)
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
@@ -31,12 +32,11 @@ func (ws *WebServer) runMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", fmt.Sprintf("%s/-/metrics/", ws.ul.String()), nil)
+		re, err := http.NewRequest("GET", fmt.Sprintf("%s%s-/metrics/", ws.upstreamURL.String(), config.Get().Web.Path), nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.SetBasicAuth("monitor", config.Get().SecretKey)
 		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
@@ -48,10 +48,10 @@ func (ws *WebServer) runMetricsServer() {
 			return
 		}
 	})
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Starting Metrics server")
-	err := http.ListenAndServe(config.Get().Listen.Metrics, m)
+	l.WithField("listen", listen).Info("Starting Metrics server")
+	err := http.ListenAndServe(listen, m)
 	if err != nil {
 		l.WithError(err).Warning("Failed to start metrics server")
 	}
-	l.WithField("listen", config.Get().Listen.Metrics).Info("Stopping Metrics server")
+	l.WithField("listen", listen).Info("Stopping Metrics server")
 }

@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddlewareSpecForwardAuth:
     """traefik middleware forwardAuth spec"""
 
@@ -27,15 +27,17 @@ class TraefikMiddlewareSpecForwardAuth:
 
     trustForwardHeader: bool = field(default=True)
 
+    maxResponseBodySize: int = field(default=1024 * 1024 * 4)
 
-@dataclass
+
+@dataclass(slots=True)
 class TraefikMiddlewareSpec:
     """Traefik middleware spec"""
 
     forwardAuth: TraefikMiddlewareSpecForwardAuth
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddlewareMetadata:
     """Traefik Middleware metadata"""
 
@@ -44,7 +46,7 @@ class TraefikMiddlewareMetadata:
     labels: dict = field(default_factory=dict)
 
 
-@dataclass
+@dataclass(slots=True)
 class TraefikMiddleware:
     """Traefik Middleware"""
 
@@ -57,7 +59,7 @@ class TraefikMiddleware:
 class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]):
     """Kubernetes Traefik Middleware Reconciler"""
 
-    def __init__(self, controller: "KubernetesController") -> None:
+    def __init__(self, controller: KubernetesController) -> None:
         super().__init__(controller)
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
@@ -127,6 +129,7 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
                     authResponseHeaders=[
                         "X-authentik-username",
                         "X-authentik-groups",
+                        "X-authentik-entitlements",
                         "X-authentik-email",
                         "X-authentik-name",
                         "X-authentik-uid",
@@ -139,6 +142,7 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
                     ],
                     authResponseHeadersRegex="",
                     trustForwardHeader=True,
+                    maxResponseBodySize=1024 * 1024 * 4,
                 )
             ),
         )

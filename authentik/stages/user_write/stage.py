@@ -1,5 +1,6 @@
 """Write stage logic"""
 
+from copy import deepcopy
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
@@ -13,7 +14,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection, UserTypes
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.events.utils import sanitize_item
+from authentik.events.utils import sanitize_dict, sanitize_item
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
@@ -30,19 +31,27 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 
 class UserWriteStageView(StageView):
-    """Finalise Enrollment flow by creating a user object."""
+    """Finalize Enrollment flow by creating a user object."""
 
     def __init__(self, executor: FlowExecutorView, **kwargs):
         super().__init__(executor, **kwargs)
         self.disallowed_user_attributes = [
             "groups",
+            # Block attribute writes that would otherwise land on the model's
+            # primary key. An IdP that returns an `id` claim (mocksaml is one
+            # example) used to crash the enrollment flow with
+            # ValueError: Field 'id' expected a number but got '<hex>'
+            # because hasattr(user, "id") is true and setattr(user, "id", ...)
+            # was taken unchecked. See #21580.
+            "id",
+            "pk",
         ]
 
     @staticmethod
     def write_attribute(user: User, key: str, value: Any):
         """Allow use of attributes.foo.bar when writing to a user, with full
         recursion"""
-        parts = key.replace("_", ".").split(".")
+        parts = key.replace("attributes_", "attributes.", 1).split(".")
         if len(parts) < 1:  # pragma: no cover
             return
         # Function will always be called with a key like attributes.
@@ -104,7 +113,9 @@ class UserWriteStageView(StageView):
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
-            if hasattr(user, setter_name):
+            if key == "password":
+                user.set_password(value, request=self.request)
+            elif hasattr(user, setter_name):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)
@@ -113,7 +124,10 @@ class UserWriteStageView(StageView):
                 continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
-                user.attributes.update(value)
+                if isinstance(value, dict):
+                    user.attributes.update(sanitize_dict(value))
+                else:
+                    raise ValidationError("Attempt to overwrite complete attributes")
             # If using dot notation, use the correct helper to update the nested value
             elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
@@ -145,6 +159,17 @@ class UserWriteStageView(StageView):
             if connection.source.name not in user.attributes[USER_ATTRIBUTE_SOURCES]:
                 user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
 
+    @staticmethod
+    def user_state(user: User) -> dict[str, Any]:
+        """Snapshot of the user's concrete field values, used to detect whether
+        `update_user` actually changed anything. Only concrete fields are captured;
+        m2m relations (`groups`, `roles`) are handled separately and auto-managed
+        fields (`last_updated`, `password_change_date`) only change on save, so they
+        never produce a false positive when comparing before/after an update."""
+        return deepcopy(
+            {field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields}
+        )
+
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
         a new user is created."""
@@ -168,6 +193,9 @@ class UserWriteStageView(StageView):
             and SESSION_KEY_IMPERSONATE_USER not in self.request.session
         ):
             should_update_session = True
+        # Snapshot the user before applying prompt data so we can tell whether this
+        # write actually changed anything. Newly created users are always written.
+        pre_update_state = None if user_created else self.user_state(user)
         try:
             self.update_user(user)
         except ValidationError as exc:
@@ -177,16 +205,29 @@ class UserWriteStageView(StageView):
         if user.username == "":
             self.logger.warning("Aborting write to empty username", user=user)
             return self.executor.stage_invalid()
+        user_changed = user_created or pre_update_state != self.user_state(user)
+        if not user_changed:
+            # Nothing changed on the user; skip the save (and the downstream
+            # `model_updated` event / provider sync it would otherwise trigger).
+            # Group membership is still reconciled below as it is idempotent.
+            self.logger.debug(
+                "No changes to user, skipping write",
+                user=user,
+                flow_slug=self.executor.flow.slug,
+            )
         try:
             with transaction.atomic():
-                user.save()
+                if user_changed:
+                    user.save()
                 if self.executor.current_stage.create_users_group:
-                    user.ak_groups.add(self.executor.current_stage.create_users_group)
+                    user.groups.add(self.executor.current_stage.create_users_group)
                 if PLAN_CONTEXT_GROUPS in self.executor.plan.context:
-                    user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
+                    user.groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
             return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
+        if not user_changed:
+            return self.executor.stage_ok()
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:

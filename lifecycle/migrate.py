@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 """System Migration handler"""
+
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from os import environ, system
 from pathlib import Path
 from typing import Any
 
+from packaging.version import Version
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
+from authentik import authentik_version, authentik_version_family_previous
+from authentik.lib.config import CONFIG, django_db_config, postgresql_direct_connection_kwargs
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000
@@ -29,10 +32,11 @@ class BaseMigration:
     def __init__(self, cur: Any, con: Any):
         self.cur = cur
         self.con = con
+        self.log = get_logger().bind()
 
     def system_crit(self, command: str):
         """Run system command"""
-        LOGGER.debug("Running system_crit command", command=command)
+        self.log.debug("Running system_crit command", command=command)
         retval = system(command)  # nosec
         if retval != 0:
             raise CommandError("Migration error")
@@ -51,39 +55,84 @@ class BaseMigration:
         """Run the actual migration"""
 
 
-def wait_for_lock(cursor: Cursor):
+def wait_for_lock(conn: Connection, cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
     global LOCKED  # noqa: PLW0603
     LOGGER.info("waiting to acquire database lock")
-    cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
+    with conn.transaction():
+        cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     LOCKED = True
 
 
-def release_lock(cursor: Cursor):
+def release_lock(conn: Connection, cursor: Cursor):
     """Release database lock"""
     global LOCKED  # noqa: PLW0603
     if not LOCKED:
         return
     LOGGER.info("releasing database lock")
-    cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    with conn.transaction():
+        cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
     LOCKED = False
 
 
-def run_migrations():
-    conn = connect(
-        dbname=CONFIG.get("postgresql.name"),
-        user=CONFIG.get("postgresql.user"),
-        password=CONFIG.get("postgresql.password"),
-        host=CONFIG.get("postgresql.host"),
-        port=CONFIG.get_int("postgresql.port"),
-        sslmode=CONFIG.get("postgresql.sslmode"),
-        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
-        sslcert=CONFIG.get("postgresql.sslcert"),
-        sslkey=CONFIG.get("postgresql.sslkey"),
+def ensure_allowed_version(cursor: Cursor) -> None:
+    """During an upgrade, ensure that major (i.e. semver-minor) versions were not skipped."""
+    if CONFIG.get_bool("migrations.dangerously_allow_multiple_major_version_upgrades"):
+        LOGGER.warning("Omitting version check before migrations")
+        return
+
+    cursor.execute(
+        "SELECT * FROM information_schema.tables WHERE table_name = 'authentik_version_history';"
     )
+    if not cursor.rowcount:
+        return
+    cursor.execute("SELECT version FROM authentik_version_history ORDER BY timestamp DESC LIMIT 1")
+    if not cursor.rowcount:
+        return
+
+    db_version = Version(cursor.fetchone()[0])
+    previous_code_version_family = authentik_version_family_previous()
+    lowest_acceptable_version = Version(f"{previous_code_version_family}.0")
+    current_code_version = Version(authentik_version())
+
+    # Downgrades are not supported, but we don't stop them (for now)
+    if db_version > current_code_version:
+        LOGGER.warning(
+            "Unsupported downgrade detected",
+            downgrading_from=db_version,
+            downgrading_to=current_code_version,
+        )
+
+    if (
+        db_version.major == lowest_acceptable_version.major
+        and db_version.minor == lowest_acceptable_version.minor
+    ) or (
+        db_version.major == current_code_version.major
+        and db_version.minor == current_code_version.minor
+    ):
+        return
+
+    message = f"Major version skips are not allowed. See: https://docs.goauthentik.io/install-config/upgrade/?from={db_version}&to={current_code_version}"
+    LOGGER.error(
+        message,
+        from_version=db_version,
+        to_version=current_code_version,
+    )
+    raise RuntimeError(message)
+
+
+def run_migrations():
+    if CONFIG.get_bool("skip_migrations", False):
+        return
+    # `wait_for_lock` issues `pg_advisory_lock(1000)` and holds it for the full
+    # migrate + check pass. Open this against the direct endpoint when
+    # configured, otherwise a transaction-pooling pooler in front of
+    # ``postgresql.host`` would make the session-scoped lock unreachable.
+    conn = connect(**postgresql_direct_connection_kwargs(CONFIG))
     curr = conn.cursor()
     try:
-        wait_for_lock(curr)
+        wait_for_lock(conn, curr)
+        ensure_allowed_version(curr)
         for migration_path in sorted(
             Path(__file__).parent.absolute().glob("system_migrations/*.py")
         ):
@@ -97,6 +146,7 @@ def run_migrations():
                 if name != "Migration":
                     continue
                 migration = sub(curr, conn)
+                curr.execute(f"SET search_path = {CONFIG.get('postgresql.default_schema')}")
                 if migration.needs_migration():
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
@@ -112,12 +162,17 @@ def run_migrations():
                 "forget to activate a virtual environment?"
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
-        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
-        execute_from_command_line(
-            ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
-        )
+        if CONFIG.get_bool("tenants.enabled", False):
+            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        # Run django system checks for all databases
+        check_args = ["", "check"]
+        for label in django_db_config(CONFIG).keys():
+            check_args.append(f"--database={label}")
+        if not CONFIG.get_bool("debug"):
+            check_args.append("--deploy")
+        execute_from_command_line(check_args)
     finally:
-        release_lock(curr)
+        release_lock(conn, curr)
         curr.close()
         conn.close()
 

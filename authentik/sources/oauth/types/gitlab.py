@@ -7,9 +7,8 @@ and https://docs.gitlab.com/ee/integration/openid_connect_provider.html
 
 from typing import Any
 
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
-from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
 
@@ -22,15 +21,10 @@ class GitLabOAuthRedirect(OAuthRedirect):
         }
 
 
-class GitLabOAuthCallback(OAuthCallback):
-    """GitLab OAuth2 Callback"""
-
-
 @registry.register()
 class GitLabType(SourceType):
     """GitLab Type definition"""
 
-    callback_view = GitLabOAuthCallback
     redirect_view = GitLabOAuthRedirect
     verbose_name = "GitLab"
     name = "gitlab"
@@ -42,6 +36,8 @@ class GitLabType(SourceType):
     profile_url = "https://gitlab.com/oauth/userinfo"
     oidc_well_known_url = "https://gitlab.com/.well-known/openid-configuration"
     oidc_jwks_url = "https://gitlab.com/oauth/discovery/keys"
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         return {

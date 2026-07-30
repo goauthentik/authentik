@@ -13,7 +13,6 @@ class Command(TenantCommand):
         parser.add_argument("usernames", nargs="*", type=str)
 
     def handle_per_tenant(self, **options):
-        print(options)
         new_type = UserTypes(options["type"])
         qs = (
             User.objects.exclude_anonymous()

@@ -1,11 +1,12 @@
 """authentik logout stage app config"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageUserLogoutConfig(AppConfig):
+class AuthentikStageUserLogoutConfig(ManagedAppConfig):
     """authentik logout stage config"""
 
     name = "authentik.stages.user_logout"
     label = "authentik_stages_user_logout"
     verbose_name = "authentik Stages.User Logout"
+    default = True

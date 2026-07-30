@@ -7,11 +7,12 @@ const isNotFullUrl = (url: string) => !isFullUrlRe.test(url);
 const isHttp = (url: string) => isHttpRe.test(url);
 const isAuthentikSpecial = (url: string) => isAuthentikSpecialRe.test(url);
 
-export const appHasLaunchUrl = (app: Application) => {
+export const appHasLaunchUrl = (app: Application): boolean => {
     const url = app.launchUrl;
+
     return !!(
         typeof url === "string" &&
-        url !== "" &&
+        url &&
         (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url))
     );
 };

@@ -7,7 +7,12 @@ from psycopg import connect
 
 from authentik.lib.config import CONFIG
 
-QUERY = """SELECT id FROM public.authentik_install_id ORDER BY id LIMIT 1;"""
+# We need to string format the query as tables and schemas can't be set by parameters
+# not a security issue as the config value is set by the person installing authentik
+# which also has postgres credentials etc
+QUERY = """SELECT id FROM {}.authentik_install_id ORDER BY id LIMIT 1;""".format(  # nosec
+    CONFIG.get("postgresql.default_schema")
+)
 
 
 @lru_cache

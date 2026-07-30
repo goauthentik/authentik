@@ -2,79 +2,106 @@
 title: SMS authenticator setup stage
 ---
 
-This stage configures an SMS-based authenticator using either Twilio, or a generic HTTP endpoint.
+The SMS Authenticator Setup stage enrolls an SMS-based authenticator for the current user by using either Twilio or a generic HTTP endpoint.
 
-## Providers
+## About the SMS authenticator setup stage
 
-#### Twilio
+This stage stores a phone number, enabling one-time codes to be sent via SMS.
 
-Navigate to https://console.twilio.com/, and log in to your existing account, or create a new one.
+In normal mode, the enrolled phone number can later be used with the [Authenticator Validation stage](../authenticator_validate/index.md). In **verify only** mode, the stage only verifies ownership of a phone number during enrollment and stores a hash instead of the number itself.
 
-In the sidebar, navigate to _Explore Products_, then _Messaging_, and _Services_ below that.
+## Configuration options
 
-Click on _Create Messaging Service_ to create a new set of API credentials.
+- **Provider**: choose either **Twilio** or **Generic**.
+- **From number**: sender number or identifier used for outbound SMS.
+- **Account SID / External API URL**: for Twilio this is the account SID; for the generic provider this is the target API URL.
+- **Auth / token**: for Twilio this is the auth token; for the generic provider this is the bearer token or basic-auth username.
+- **Auth password**: optional password for generic basic authentication.
+- **Auth type**: choose **Basic** or **Bearer** authentication for the generic provider.
+- **Verify only**: verify phone ownership during enrollment without storing the plain phone number for later MFA use.
+- **Mapping**: optional webhook mapping used to customize the payload sent to custom providers.
+- **Authenticator type name**: optional friendly name shown to the user in self-service settings.
+- **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
-Give the service a Name, and select _Verify users_ as a use-case.
+## Flow integration
 
-In the next step, add an address from your Sender Pool. Instructions on how to create numbers are not covered here, please check the Twilio documentation [here](https://www.twilio.com/docs).
+Use this stage in an enrollment or user-settings flow where the user should add an SMS authenticator.
 
-The other two steps can be skipped using the _Skip setup_ button.
+To require SMS during login, add an [Authenticator Validation stage](../authenticator_validate/index.md) to the authentication flow and allow the **SMS** device class.
 
-Navigate back to the root of your Twilio console, and copy the Auth token. This is the value for the _Twilio Auth Token_ field in authentik. Copy the value of **Account SID**. This is the value for the _Twilio Account SID_ field in authentik.
+If you enable **Verify only**, phone numbers enrolled through this stage cannot be used by the [Authenticator Validation stage](../authenticator_validate/index.md).
 
-#### Generic
+## Notes
 
-For the generic provider, a POST request will be sent to the URL you have specified in the _External API URL_ field. The request payload looks like this
+### Twilio
 
-```json
-{
-    "From": "<value of the *From number* field>",
-    "To": "<the phone number of the user's device>",
-    "Body": "<the token that the user needs to authenticate>,
+For the Twilio provider, create a messaging service and collect the **Account SID**, **Auth token**, and a usable sender number from the Twilio console.
+
+A typical Twilio setup looks like this:
+
+1. Log in to the Twilio console.
+2. Go to **Explore Products** > **Messaging** > **Services**.
+3. Create a new messaging service and choose a verification-oriented use case.
+4. Add a sender from the service's sender pool.
+5. Copy the **Account SID** and **Auth token** into the stage configuration.
+
+Using a property mapping, you can customize the message sent via Twilio. The mapping should return a dictionary with a `message` key. For example:
+
+```python
+return {
+    "message": f"This is a custom message for {request.http_request.brand.branding_title} SMS authentication. The code is {token}."
 }
 ```
 
-Authentication can either be done as HTTP Basic, or via a Bearer Token. Any response with status 400 or above is counted as failed, and will prevent the user from proceeding.
+Useful variables in that mapping include:
 
-Starting with authentik 2022.10, a custom webhook mapping can be specified to freely customize the payload of the request. For example:
+- `device.phone_number`
+- `stage.from_number`
+- `request.http_request.brand`
+
+### Generic provider
+
+For the generic provider, authentik sends an HTTP `POST` request to the configured API URL. The default payload contains:
+
+```json
+{
+    "From": "<value of the From number field>",
+    "To": "<the phone number of the user's device>",
+    "Body": "<the token that the user needs to authenticate>",
+    "Message": "<the full SMS message>"
+}
+```
+
+Any response with status `400` or higher is treated as a failed send and blocks the user from proceeding.
+
+You can also customize the generic-provider payload with a webhook mapping. For example:
 
 ```python
 return {
     "from": stage.from_number,
     "to": device.phone_number,
-    "body": f"foo bar baz {token}".
+    "body": f"foo bar baz {token}",
 }
 ```
 
-## Verify only <span class="badge badge--version">authentik 2022.6+</span>
+### Limiting phone numbers
 
-To only verify the validity of a users' phone number, without saving it in an easily accessible way, you can enable this option. Phone numbers from devices enrolled through this stage will only have their hashed phone number saved. These devices can also not be used with the [Authenticator validation](../authenticator_validate/index.md) stage.
+To control which phone numbers are accepted, collect the number in a [Prompt stage](../prompt/index.md) and validate it with an expression policy before this stage runs. If a prompt field uses the key `phone`, the SMS setup stage will read that value from `prompt_data` instead of prompting the user again.
 
-## Limiting phone numbers
-
-To limit phone numbers (for example to a specific region code), you can create an expression policy to validate the phone number, and use a prompt stage for input.
-
-### Expression policy
-
-Create an expression policy to check the phone number:
+Example expression policy:
 
 ```python
-# Trim all whitespace in and around the user input
-phone_number = regex_replace(request.context["prompt_data"]["phone"], r'\s+', '')
+phone_number = regex_replace(request.context["prompt_data"]["phone"], r"\s+", "")
 
-# Only allow a specific region code
 if phone_number.startswith("+1234"):
     return True
 ak_message("Invalid phone number or missing region code")
 return False
 ```
 
-### Prompt stage
+A typical flow for this looks like:
 
-Create a text prompt field with the _field key_ set to `phone`. Make sure it is selected as a required field.
-
-Create a prompt stage with the phone field you created above, and select the expression policy created above as validation policy.
-
-### Flow
-
-Create a new flow to enroll SMS devices. Bind the prompt stage created above as first stage, and create/bind a _SMS Authenticator Setup Stage_, and bind it to the flow as second stage. This stage will see the `phone` field in the flow's context's `prompt_data`, and not prompt the user for a phone number.
+1. Create a required text prompt field with the key `phone`.
+2. Create a Prompt stage that contains that field.
+3. Bind the validation policy to the Prompt stage.
+4. Bind the Prompt stage before the SMS setup stage in the enrollment flow.

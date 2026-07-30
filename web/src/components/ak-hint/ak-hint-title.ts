@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -11,9 +11,7 @@ const style = css`
 
 @customElement("ak-hint-title")
 export class AkHintTitle extends AKElement {
-    static get styles() {
-        return [style];
-    }
+    static styles = [style];
 
     render() {
         return html`<div id="host" part="ak-hint-title"><slot></slot></div>`;

@@ -1,17 +1,19 @@
 Create a middleware:
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
     name: authentik
 spec:
     forwardAuth:
+        # This address should point to the cluster endpoint provided by the kubernetes service, not the Ingress.
         address: http://outpost.company:9000/outpost.goauthentik.io/auth/traefik
         trustForwardHeader: true
         authResponseHeaders:
             - X-authentik-username
             - X-authentik-groups
+            - X-authentik-entitlements
             - X-authentik-email
             - X-authentik-name
             - X-authentik-uid
@@ -21,13 +23,20 @@ spec:
             - X-authentik-meta-provider
             - X-authentik-meta-app
             - X-authentik-meta-version
+            # Add the 'authorization' header to authResponseHeaders if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
+            # - authorization
 ```
+
+:::info
+Traefik changed the apiVersion of the middleware CRD in version 3.0, for older versions please substitute "apiVersion: traefik.containo.us/v1alpha1"
+:::
 
 Add the following settings to your IngressRoute
 
 By default traefik does not allow cross-namespace references for middlewares:
 
-See [here](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
+See the [Traefik cross-namespace reference documentation](https://doc.traefik.io/traefik/v2.4/providers/kubernetes-crd/#allowcrossnamespace) to enable it.
 
 ```yaml
 spec:

@@ -1,7 +1,6 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
 from collections.abc import Callable
-from hashlib import sha512
 from ipaddress import ip_address
 from time import perf_counter, time
 from typing import Any
@@ -21,11 +20,14 @@ from jwt import PyJWTError, decode, encode
 from sentry_sdk import Scope
 from structlog.stdlib import get_logger
 
+from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
+from authentik.lib.config import CONFIG
+from authentik.lib.utils.crypto import get_cookie_signing_key
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
-SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
+SIGNING_HASH = get_cookie_signing_key()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -41,13 +43,15 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             # Since go does not consider localhost with http a secure origin
             # we can't set the secure flag.
             user_agent = request.META.get("HTTP_USER_AGENT", "")
-            if user_agent.startswith("goauthentik.io/outpost/") or "safari" in user_agent.lower():
+            if user_agent.startswith("goauthentik.io/outpost/") or (
+                "safari" in user_agent.lower() and "chrome" not in user_agent.lower()
+            ):
                 return False
             return True
         return False
 
     @staticmethod
-    def decode_session_key(key: str) -> str:
+    def decode_session_key(key: str | None) -> str | None:
         """Decode raw session cookie, and parse JWT"""
         # We need to support the standard django format of just a session key
         # for testing setups, where the session is directly set
@@ -55,14 +59,38 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         try:
             session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
-        except (KeyError, PyJWTError):
+        except KeyError, PyJWTError:
             pass
         return session_key
+
+    @staticmethod
+    def encode_session(session_key: str, user: User):
+        payload = {
+            "sid": session_key,
+            "iss": "authentik",
+            "sub": "anonymous",
+            "authenticated": user.is_authenticated,
+            "acr": ACR_AUTHENTIK_SESSION,
+        }
+        if user.is_authenticated:
+            payload["sub"] = user.uid
+        value = encode(payload=payload, key=SIGNING_HASH)
+        if settings.TEST:
+            value = session_key
+        return value
 
     def process_request(self, request: HttpRequest):
         raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         session_key = SessionMiddleware.decode_session_key(raw_session)
-        request.session = self.SessionStore(session_key)
+        request.user_switching_token = user_switching.decode_cookie(
+            request.COOKIES.get(settings.USER_SWITCHING_COOKIE_NAME)
+        )
+        request.user_switching_token_needs_update = False
+        request.session = self.SessionStore(
+            session_key,
+            last_ip=ClientIPMiddleware.get_client_ip(request),
+            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
+        )
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         """
@@ -71,6 +99,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         the session cookie if the session has been emptied.
         """
         try:
+            user_switching.reconcile_session(request)
             accessed = request.session.accessed
             modified = request.session.modified
             empty = request.session.is_empty()
@@ -111,21 +140,9 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                             "request completed. The user may have logged "
                             "out in a concurrent request, for example."
                         ) from None
-                    payload = {
-                        "sid": request.session.session_key,
-                        "iss": "authentik",
-                        "sub": "anonymous",
-                        "authenticated": request.user.is_authenticated,
-                        "acr": ACR_AUTHENTIK_SESSION,
-                    }
-                    if request.user.is_authenticated:
-                        payload["sub"] = request.user.uid
-                    value = encode(payload=payload, key=SIGNING_HASH)
-                    if settings.TEST:
-                        value = request.session.session_key
                     response.set_cookie(
                         settings.SESSION_COOKIE_NAME,
-                        value,
+                        SessionMiddleware.encode_session(request.session.session_key, request.user),
                         max_age=max_age,
                         expires=expires,
                         domain=settings.SESSION_COOKIE_DOMAIN,
@@ -134,6 +151,18 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                         httponly=settings.SESSION_COOKIE_HTTPONLY or None,
                         samesite=same_site,
                     )
+        # Keep the user-switching cookie longer-lived than the sessions it groups.
+        # It is intentionally not deleted with the session cookie.
+        if request.user_switching_token and request.user_switching_token_needs_update:
+            response.set_cookie(
+                settings.USER_SWITCHING_COOKIE_NAME,
+                user_switching.encode_cookie(request.user_switching_token),
+                max_age=settings.USER_SWITCHING_COOKIE_AGE,
+                domain=settings.SESSION_COOKIE_DOMAIN,
+                path=settings.SESSION_COOKIE_PATH,
+                secure=secure,
+                samesite=same_site,
+            )
         return response
 
 
@@ -210,7 +239,7 @@ class ClientIPMiddleware:
             return None
         delegated_ip = request.META[self.outpost_remote_ip_header]
         token = (
-            Token.filter_not_expired(
+            Token.objects.filter(
                 key=request.META.get(self.outpost_token_header), intent=TokenIntents.INTENT_API
             )
             .select_related("user")
@@ -286,7 +315,7 @@ class ChannelsLoggingMiddleware:
         except DenyConnection:
             return await send({"type": "websocket.close"})
         except Exception as exc:
-            if settings.DEBUG:
+            if settings.DEBUG or settings.TEST:
                 raise exc
             LOGGER.warning("Exception in ASGI application", exc=exc)
             return await send({"type": "websocket.close"})
@@ -310,6 +339,10 @@ class LoggingMiddleware:
 
     def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
         self.get_response = get_response
+        headers = CONFIG.get("log.http_headers", [])
+        if isinstance(headers, str):
+            headers = headers.split(",")
+        self.headers_to_log = headers
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         start = perf_counter()
@@ -324,6 +357,14 @@ class LoggingMiddleware:
 
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
+        # Those are logged by the server above
+        if request.path in ("/-/metrics/", "/-/health/live/", "/-/health/ready/"):
+            return
+        for header in self.headers_to_log:
+            header_value = request.headers.get(header)
+            if not header_value:
+                continue
+            kwargs[header.lower().replace("-", "_")] = header_value
         LOGGER.info(
             request.get_full_path(),
             remote=ClientIPMiddleware.get_client_ip(request),
@@ -331,6 +372,5 @@ class LoggingMiddleware:
             scheme=request.scheme,
             status=status_code,
             runtime=runtime,
-            user_agent=request.META.get("HTTP_USER_AGENT", ""),
             **kwargs,
         )

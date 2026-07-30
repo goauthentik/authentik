@@ -1,0 +1,36 @@
+{
+    "devicePermanentId": "6f30327d-e436-4f7a-9f89-c37a7b6bf408",
+    "keyTrustLevel": "CHROME_BROWSER_HW_KEY",
+    "virtualDeviceId": "Z5DDF07GK6",
+    "customerId": "qewrqer",
+    "deviceSignals": {
+        "deviceManufacturer": "Apple Inc.",
+        "deviceModel": "MacBookPro18,1",
+        "operatingSystem": "MAC_OS_X",
+        "osVersion": "26.2.0",
+        "displayName": "jens-mac-vm",
+        "diskEncryption": "DISK_ENCRYPTION_ENCRYPTED",
+        "serialNumber": "Z5DDF07GK6",
+        "osFirewall": "OS_FIREWALL_DISABLED",
+        "systemDnsServers": [
+            "10.120.20.250:53"
+        ],
+        "hostname": "jens-mac-vm.lab.beryju.org",
+        "macAddresses": [
+            "f4:d4:88:79:07:0e"
+        ],
+        "screenLockSecured": "SCREEN_LOCK_SECURED_ENABLED",
+        "deviceEnrollmentDomain": "beryju.org",
+        "browserVersion": "145.0.7632.76",
+        "deviceAffiliationIds": [
+            "qewrqer"
+        ],
+        "builtInDnsClientEnabled": true,
+        "chromeRemoteDesktopAppBlocked": false,
+        "safeBrowsingProtectionLevel": "STANDARD",
+        "siteIsolationEnabled": true,
+        "passwordProtectionWarningTrigger": "POLICY_UNSET",
+        "realtimeUrlCheckMode": "REALTIME_URL_CHECK_MODE_DISABLED",
+        "trigger": "TRIGGER_BROWSER_NAVIGATION"
+    }
+}

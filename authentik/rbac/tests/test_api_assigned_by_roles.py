@@ -15,6 +15,9 @@ class TestRBACRoleAPI(APITestCase):
     """Test RoleAssignedPermissionViewSet api"""
 
     def setUp(self) -> None:
+        # Make sure we have no roles to start with (e.g. Read-only from blueprints)
+        Role.objects.all().delete()
+
         self.superuser = create_test_admin_user()
 
         self.user = create_test_user()
@@ -29,7 +32,7 @@ class TestRBACRoleAPI(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         # self.user doesn't have permissions to see their (object) permissions
         self.client.force_login(self.superuser)
         res = self.client.get(
@@ -44,6 +47,7 @@ class TestRBACRoleAPI(APITestCase):
         self.assertJSONEqual(
             res.content.decode(),
             {
+                "autocomplete": {},
                 "pagination": {
                     "next": 0,
                     "previous": 0,
@@ -106,7 +110,7 @@ class TestRBACRoleAPI(APITestCase):
 
     def test_unassign_global(self):
         """Test permission unassign"""
-        self.role.assign_permission("authentik_stages_invitation.view_invitation")
+        self.role.assign_perms("authentik_stages_invitation.view_invitation")
         self.client.force_login(self.superuser)
         res = self.client.patch(
             reverse(
@@ -128,7 +132,7 @@ class TestRBACRoleAPI(APITestCase):
             name=generate_id(),
             created_by=self.superuser,
         )
-        self.role.assign_permission("authentik_stages_invitation.view_invitation", obj=inv)
+        self.role.assign_perms("authentik_stages_invitation.view_invitation", obj=inv)
         self.client.force_login(self.superuser)
         res = self.client.patch(
             reverse(

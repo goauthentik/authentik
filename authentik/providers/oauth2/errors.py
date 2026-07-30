@@ -3,11 +3,12 @@
 from urllib.parse import quote, urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.template.response import TemplateResponse
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.views import bad_request_message
-from authentik.providers.oauth2.models import GrantTypes
+from authentik.providers.oauth2.models import GrantType, RedirectURI, ResponseMode
 
 
 class OAuth2Error(SentryIgnoredException):
@@ -15,12 +16,14 @@ class OAuth2Error(SentryIgnoredException):
 
     error: str
     description: str
+    cause: str | None = None
 
-    def create_dict(self):
+    def create_dict(self, request: HttpRequest):
         """Return error as dict for JSON Rendering"""
         return {
             "error": self.error,
             "error_description": self.description,
+            "request_id": request.request_id,
         }
 
     def __repr__(self) -> str:
@@ -31,8 +34,14 @@ class OAuth2Error(SentryIgnoredException):
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=message or self.description,
+            cause=self.cause,
+            error=self.error,
             **kwargs,
         )
+
+    def with_cause(self, cause: str):
+        self.cause = cause
+        return self
 
 
 class RedirectUriError(OAuth2Error):
@@ -46,9 +55,9 @@ class RedirectUriError(OAuth2Error):
     )
 
     provided_uri: str
-    allowed_uris: list[str]
+    allowed_uris: list[RedirectURI]
 
-    def __init__(self, provided_uri: str, allowed_uris: list[str]) -> None:
+    def __init__(self, provided_uri: str, allowed_uris: list[RedirectURI]) -> None:
         super().__init__()
         self.provided_uri = provided_uri
         self.allowed_uris = allowed_uris
@@ -147,6 +156,7 @@ class AuthorizeError(OAuth2Error):
         error: str,
         grant_type: str,
         state: str,
+        response_mode: str | None = None,
         description: str | None = None,
     ):
         super().__init__()
@@ -158,14 +168,28 @@ class AuthorizeError(OAuth2Error):
         self.redirect_uri = redirect_uri
         self.grant_type = grant_type
         self.state = state
+        self.response_mode = response_mode
 
     def get_response(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper around `self.create_uri()` that checks if the resulting URI is valid
-        (we might not have self.redirect_uri set), and returns a valid HTTP Response"""
-        uri = self.create_uri()
-        if urlparse(uri).scheme != "":
-            return HttpResponseRedirect(uri)
-        return bad_request_message(request, self.description, title=self.error)
+        """Return a valid HTTP Response carrying the error to the client, using the response mode
+        requested by the client. Falls back to a generic error page when we don't have a valid
+        redirect URI to return the error to."""
+        # Without a valid redirect URI we can't return the error to the client
+        if urlparse(self.redirect_uri).scheme == "":
+            return bad_request_message(request, self.description, title=self.error)
+        # When the client requested the form_post response mode, errors must also be returned via
+        # an auto-submitting form POST to the redirect URI.
+        # See https://openid.net/specs/oauth-v2-form-post-response-mode-1_0.html
+        if self.response_mode == ResponseMode.FORM_POST:
+            attrs = {"error": self.error, "error_description": self.description}
+            if self.state:
+                attrs["state"] = self.state
+            return TemplateResponse(
+                request,
+                "if/oauth_form_post.html",
+                {"redirect_uri": self.redirect_uri, "attrs": attrs},
+            )
+        return HttpResponseRedirect(self.create_uri())
 
     def create_uri(self) -> str:
         """Get a redirect URI with the error message"""
@@ -174,7 +198,7 @@ class AuthorizeError(OAuth2Error):
         # See:
         # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
         fragment_or_query = (
-            "#" if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID] else "?"
+            "#" if self.grant_type in [GrantType.IMPLICIT, GrantType.HYBRID] else "?"
         )
 
         uri = (
@@ -217,8 +241,28 @@ class TokenError(OAuth2Error):
         ),
     }
 
-    def __init__(self, error):
+    def __init__(self, error: str):
         super().__init__()
+        self.error = error
+        self.description = self.errors[error]
+
+
+class TokenExchangeError(TokenError):
+    """
+    Token exchange errors
+    See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.2
+    Can also use codes from TokenError
+    """
+
+    errors = TokenError.errors | {
+        "invalid_target": (
+            "The authorization server is unable to issue a token for the target service "
+            "indicated by the 'resource' or 'audience' parameter"
+        ),
+    }
+
+    def __init__(self, error: str):
+        super().__init__(error)
         self.error = error
         self.description = self.errors[error]
 
@@ -243,13 +287,14 @@ class TokenRevocationError(OAuth2Error):
         self.description = self.errors[error]
 
 
-class DeviceCodeError(OAuth2Error):
+class DeviceCodeError(TokenError):
     """
     Device-code flow errors
     See https://datatracker.ietf.org/doc/html/rfc8628#section-3.2
+    Can also use codes form TokenError
     """
 
-    errors = {
+    errors = TokenError.errors | {
         "authorization_pending": (
             "The authorization request is still pending as the end user hasn't "
             "yet completed the user-interaction steps"
@@ -261,10 +306,24 @@ class DeviceCodeError(OAuth2Error):
             "authorization request but SHOULD wait for user interaction before "
             "restarting to avoid unnecessary polling."
         ),
+        "slow_down": (
+            'A variant of "authorization_pending", the authorization request is'
+            "still pending and polling should continue, but the interval MUST"
+            "be increased by 5 seconds for this and all subsequent requests."
+        ),
+        "invalid_dpop_jkt": (
+            'The "dpop_jkt" parameter is not a valid base64url-encoded SHA-256 JWK thumbprint'
+        ),
+        "dpop_jkt_required": (
+            'The "dpop_jkt" parameter is required when the "bound_key" scope is requested'
+        ),
+        "dpop_jkt_not_allowed": (
+            'The "dpop_jkt" parameter must not be set unless the "bound_key" scope is requested'
+        ),
     }
 
     def __init__(self, error: str):
-        super().__init__()
+        super().__init__(error)
         self.error = error
         self.description = self.errors[error]
 

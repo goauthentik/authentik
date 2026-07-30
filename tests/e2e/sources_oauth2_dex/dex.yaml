@@ -1,14 +1,14 @@
 ---
 enablePasswordDB: true
-issuer: http://127.0.0.1:5556/dex
+issuer: http://{{ .Env.AK_HOST }}:5556/dex
 logger:
   level: debug
 staticClients:
   - id: example-app
     name: Example App
     redirectURIs:
-      - {{ .Env.AK_REDIRECT_URL }}
-    secret: {{ .Env.AK_CLIENT_SECRET }}
+      - "{{ .Env.AK_REDIRECT_URL }}"
+    secret: "{{ .Env.AK_CLIENT_SECRET }}"
 staticPasswords:
   - email: admin@example.com
     # hash for 'password', for testing

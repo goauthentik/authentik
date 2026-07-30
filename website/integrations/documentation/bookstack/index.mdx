@@ -1,0 +1,179 @@
+---
+title: Integrate with BookStack
+sidebar_label: BookStack
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is BookStack?
+
+> BookStack is a simple, self-hosted, easy-to-use platform for organizing and storing information.
+>
+> -- https://www.bookstackapp.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `bookstack.company` is the FQDN of the BookStack installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+BookStack can use either OpenID Connect (OIDC) or SAML 2.0 for authentication. Choose one protocol and follow the matching tab throughout this guide.
+
+<Tabs
+  defaultValue="oidc"
+  values={[
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
+  ]}>
+<TabItem value="oidc">
+
+## authentik configuration
+
+To support the integration of BookStack with authentik using OIDC, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring BookStack.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because you will use them when configuring BookStack.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://bookstack.company/oidc/callback`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bookstack.company`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bookstack.company/login`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://bookstack.company/login?prevent_auto_init=true`.
+        - Select an RSA **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## BookStack configuration
+
+Update the BookStack `.env` file with the OIDC settings, then restart BookStack.
+
+```env title=".env"
+AUTH_METHOD=oidc
+OIDC_NAME=authentik
+OIDC_DISPLAY_NAME_CLAIMS=name
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+OIDC_ISSUER_DISCOVER=true
+OIDC_END_SESSION_ENDPOINT=true
+```
+
+If BookStack should immediately redirect users to authentik instead of showing the login button, also add the following setting:
+
+```env title=".env"
+AUTH_AUTO_INITIATE=true
+```
+
+### Configure role sync _(optional)_
+
+BookStack can map authentik groups to BookStack roles when the group names match BookStack role display names. If you need a different matching value for a role, edit the role in BookStack and set its **External Authentication IDs** value.
+
+```env title=".env"
+OIDC_USER_TO_GROUPS=true
+OIDC_GROUPS_CLAIM=groups
+```
+
+If BookStack should remove roles that no longer match the user's authentik groups, also add the following setting:
+
+```env title=".env"
+OIDC_REMOVE_FROM_GROUPS=true
+```
+
+If you change an existing BookStack installation from local authentication to OIDC, BookStack does not automatically link users by email address. Before switching the authentication method, log in to BookStack as an administrator and update each local user's **External Authentication ID** to the identifier that BookStack will receive from authentik.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with BookStack, open BookStack and click **Login with authentik**.
+
+</TabItem>
+<TabItem value="saml">
+
+## authentik configuration
+
+To support the integration of BookStack with authentik using SAML, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring BookStack.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://bookstack.company/saml2/acs`
+        - **Audience**: `https://bookstack.company/saml2/metadata`
+        - **SLS URL**: `https://bookstack.company/saml2/sls`
+        - **SLS Binding**: `Redirect`
+        - **Logout Method**: `Front-channel (Iframe)`
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## BookStack configuration
+
+Update the BookStack `.env` file with the SAML settings, then restart BookStack.
+
+```env title=".env"
+AUTH_METHOD=saml2
+SAML2_NAME=authentik
+SAML2_EMAIL_ATTRIBUTE=http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+SAML2_EXTERNAL_ID_ATTRIBUTE=http://schemas.goauthentik.io/2021/02/saml/uid
+SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
+SAML2_IDP_ENTITYID=https://authentik.company/application/saml/<application_slug>/metadata/
+SAML2_AUTOLOAD_METADATA=true
+```
+
+If BookStack should immediately redirect users to authentik instead of showing the login button, also add the following setting:
+
+```env title=".env"
+AUTH_AUTO_INITIATE=true
+```
+
+### Configure role sync _(optional)_
+
+BookStack can map authentik groups to BookStack roles when the group names match BookStack role display names. If you need a different matching value for a role, edit the role in BookStack and set its **External Authentication IDs** value.
+
+```env title=".env"
+SAML2_USER_TO_GROUPS=true
+SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
+```
+
+If BookStack should remove roles that no longer match the user's authentik groups, also add the following setting:
+
+```env title=".env"
+SAML2_REMOVE_FROM_GROUPS=true
+```
+
+If you change an existing BookStack installation from local authentication to SAML, BookStack does not automatically link users by email address. Before switching the authentication method, log in to BookStack as an administrator and update each local user's **External Authentication ID** to the identifier that BookStack will receive from authentik.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with BookStack, open BookStack and click **Login with authentik**.
+
+</TabItem>
+</Tabs>
+
+## Resources
+
+- [BookStack OpenID Connect authentication](https://www.bookstackapp.com/docs/admin/oidc-auth/)
+- [BookStack SAML 2.0 authentication](https://www.bookstackapp.com/docs/admin/saml2-auth/)

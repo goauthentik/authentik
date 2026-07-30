@@ -1,18 +1,24 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { aki } from "#common/api/client";
+import { createPaginatedResponse } from "#common/api/responses";
+import { deviceTypeName } from "#common/labels";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
+import { msg, str } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
 @customElement("ak-user-device-table")
 export class UserDeviceTable extends Table<Device> {
+    public static override verboseName = msg("Device");
+    public static override verboseNamePlural = msg("Devices");
+
     @property({ type: Number })
     userId?: number;
 
@@ -20,61 +26,50 @@ export class UserDeviceTable extends Table<Device> {
     clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        return new AuthenticatorsApi(DEFAULT_CONFIG)
+        return aki(AuthenticatorsApi)
             .authenticatorsAdminAllList({
                 user: this.userId,
             })
             .then((res) => {
-                return {
-                    pagination: {
-                        count: res.length,
-                        current: 1,
-                        totalPages: 1,
-                        startIndex: 1,
-                        endIndex: res.length,
-                        next: 0,
-                        previous: 0,
-                    },
-                    results: res,
-                };
+                return createPaginatedResponse(res);
             });
     }
 
-    columns(): TableColumn[] {
-        // prettier-ignore
-        return [
-            msg("Name"),
-            msg("Type"),
-            msg("Confirmed"),
-            msg("Created at"),
-            msg("Last updated at"),
-            msg("Last used at"),
-        ].map((th) => new TableColumn(th, ""));
-    }
+    protected columns: TableColumn[] = [
+        [msg("Name")],
+        [msg("Type")],
+        [msg("Confirmed")],
+        [msg("Created at")],
+        [msg("Last updated at")],
+        [msg("Last used at")],
+    ];
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
+        const api = aki(AuthenticatorsApi);
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return api.authenticatorsAdminDuoDestroy(id);
+                return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsAdminEmailDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return api.authenticatorsAdminSmsDestroy(id);
+                return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                return api.authenticatorsAdminTotpDestroy(id);
+                return api.authenticatorsAdminTotpDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_static.StaticDevice":
-                return api.authenticatorsAdminStaticDestroy(id);
+                return api.authenticatorsAdminStaticDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return api.authenticatorsAdminWebauthnDestroy(id);
+                return api.authenticatorsAdminWebauthnDestroy({ id: parseInt(device.pk, 10) });
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Device(s)")}
+            object-label=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
@@ -97,24 +92,18 @@ export class UserDeviceTable extends Table<Device> {
         >`;
     }
 
-    row(item: Device): TemplateResult[] {
+    row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}
-            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
+            html`<div>
+                    ${deviceTypeName(item)}
+                    ${item.extraDescription ? ` - ${item.extraDescription}` : ""}
+                </div>
+                ${item.externalId ? html` <small>${item.externalId}</small> ` : nothing} `,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
-            html`${item.created.getTime() > 0
-                ? html`<div>${getRelativeTime(item.created)}</div>
-                      <small>${item.created.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUpdated
-                ? html`<div>${getRelativeTime(item.lastUpdated)}</div>
-                      <small>${item.lastUpdated.toLocaleString()}</small>`
-                : html`-`}`,
-            html`${item.lastUsed
-                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
-                      <small>${item.lastUsed.toLocaleString()}</small>`
-                : html`-`}`,
+            Timestamp(item.created),
+            Timestamp(item.lastUpdated),
+            Timestamp(item.lastUsed),
         ];
     }
 }

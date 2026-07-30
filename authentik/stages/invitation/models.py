@@ -2,14 +2,15 @@
 
 from uuid import uuid4
 
+from django.core.validators import validate_slug
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import ExpiringModel, User
+from authentik.core.models import User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import ExpiringModel, SerializerModel
 
 
 class InvitationStage(Stage):
@@ -51,7 +52,7 @@ class Invitation(SerializerModel, ExpiringModel):
 
     invite_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.SlugField()
+    name = models.TextField(validators=[validate_slug])
 
     flow = models.ForeignKey(
         "authentik_flows.Flow",
@@ -84,3 +85,4 @@ class Invitation(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Invitation")
         verbose_name_plural = _("Invitations")
+        indexes = ExpiringModel.Meta.indexes

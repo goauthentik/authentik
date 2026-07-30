@@ -13,6 +13,7 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.fields import BooleanField, ListField, SerializerMethodField
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -70,7 +71,11 @@ class FlowInspectorView(APIView):
 
     flow: Flow
     _logger: BoundLogger
-    permission_classes = []
+
+    def get_permissions(self):
+        if settings.DEBUG:
+            return []
+        return [IsAuthenticated()]
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
@@ -78,7 +83,9 @@ class FlowInspectorView(APIView):
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         if settings.DEBUG:
             return
-        if request.user.has_perm("authentik_flow.inspect_flow", self.flow):
+        if request.user.has_perm(
+            "authentik_flows.inspect_flow", self.flow
+        ) or request.user.has_perm("authentik_flows.inspect_flow"):
             return
         raise Http404
 
@@ -94,6 +101,9 @@ class FlowInspectorView(APIView):
         """Get current flow state and record it"""
         plans = []
         for plan in request.session.get(SESSION_KEY_HISTORY, []):
+            plan: FlowPlan
+            if plan.flow_pk != self.flow.pk.hex:
+                continue
             plan_serializer = FlowInspectorPlanSerializer(
                 instance=plan, context={"request": request}
             )

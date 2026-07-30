@@ -215,7 +215,7 @@ entries:
       expression: |
         return {
           "attributes": {
-            "homeDirectoy": ldap.get("homeDirectory"),
+            "homeDirectory": ldap.get("homeDirectory"),
           },
         }
   - identifiers:

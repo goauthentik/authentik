@@ -7,21 +7,32 @@ from sys import version as python_version
 from typing import TypedDict
 
 from cryptography.hazmat.backends.openssl.backend import backend
+from django.conf import settings
 from django.utils.timezone import now
+from django.views.debug import SafeExceptionReporterFilter
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.license import LicenseKey
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.rbac.permissions import HasPermission
+from authentik.tenants.utils import get_current_tenant
+
+
+def fips_enabled():
+    try:
+        from authentik.enterprise.license import LicenseKey
+
+        return backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
+    except ModuleNotFoundError:
+        return None
 
 
 class RuntimeDict(TypedDict):
@@ -48,14 +59,21 @@ class SystemInfoSerializer(PassiveSerializer):
     server_time = SerializerMethodField()
     embedded_outpost_disabled = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
+    base_url = SerializerMethodField()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""
         headers = {}
+        raw_session = request._request.COOKIES.get(settings.SESSION_COOKIE_NAME)
         for key, value in request.META.items():
             if not isinstance(value, str):
                 continue
-            headers[key] = value
+            actual_value = value
+            if raw_session is not None and raw_session in actual_value:
+                actual_value = actual_value.replace(
+                    raw_session, SafeExceptionReporterFilter.cleansed_substitute
+                )
+            headers[key] = actual_value
         return headers
 
     def get_http_host(self, request: Request) -> str:
@@ -70,11 +88,9 @@ class SystemInfoSerializer(PassiveSerializer):
         """Get versions"""
         return {
             "architecture": platform.machine(),
-            "authentik_version": get_full_version(),
+            "authentik_version": authentik_full_version(),
             "environment": get_env(),
-            "openssl_fips_enabled": (
-                backend._fips_enabled if LicenseKey.get_total().status().is_valid else None
-            ),
+            "openssl_fips_enabled": fips_enabled(),
             "openssl_version": OPENSSL_VERSION,
             "platform": platform.platform(),
             "python_version": python_version,
@@ -99,6 +115,10 @@ class SystemInfoSerializer(PassiveSerializer):
         if not outposts.exists():  # pragma: no cover
             return ""
         return outposts.first().config.authentik_host
+
+    def get_base_url(self, request: Request) -> str:
+        """Configured external base URL. Can be empty"""
+        return get_current_tenant().base_url
 
 
 class SystemView(APIView):

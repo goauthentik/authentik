@@ -1,11 +1,14 @@
-import Tabs from "@theme/Tabs";
+---
+title: Caddy
+---
+
 import TabItem from "@theme/TabItem";
-
-# Caddy <span class="badge badge--version">authentik 2022.8+</span>
-
-The configuration template shown below apply to both single-application and domain-level forward auth.
+import Tabs from "@theme/Tabs";
 
 import Placeholders from "./__placeholders.md";
+import CaddyStandalone from "./_caddy_standalone.md";
+
+The configuration template shown below applies to both single-application and domain-level forward auth.
 
 <Placeholders />
 
@@ -15,8 +18,6 @@ import Placeholders from "./__placeholders.md";
     {label: 'Caddy (standalone)', value: 'caddy-standalone'},
   ]}>
   <TabItem value="caddy-standalone">
-
-import CaddyStandalone from "./_caddy_standalone.md";
 
 <CaddyStandalone />
 

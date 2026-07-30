@@ -1,4 +1,4 @@
-import type { GroupedOptions, SelectOptions } from "@goauthentik/elements/types";
+import type { GroupedOptions, SelectOptions } from "#elements/types";
 
 export function isVisibleInScrollRegion(el: HTMLElement, container: HTMLElement) {
     const elTop = el.offsetTop;

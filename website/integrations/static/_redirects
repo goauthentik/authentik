@@ -1,0 +1,30 @@
+# @file Redirect rules for the Docusaurus site.
+#
+# See https://docs.netlify.com/manage/routing/redirects/overview/
+#
+# Note: The order of the rules defines the priority of the redirect.
+#       i.e. The first rule that matches the URL will take precedence.
+
+
+#region Integrations prefix
+/integrations/*                                                     /:splat 301!
+#endregion
+
+#region GitHub integration renames
+/development/github-enterprise-cloud                              /development/ghec 301!
+/development/github-enterprise-cloud/                             /development/ghec/ 301!
+
+/development/github-organization                                  /development/ghec 301!
+/development/github-organization/                                 /development/ghec/ 301!
+
+/development/github-enterprise-emu                                /development/ghec-emu 301!
+/development/github-enterprise-emu/                               /development/ghec-emu/ 301!
+
+/development/github-enterprise-server                             /development/ghes 301!
+/development/github-enterprise-server/                            /development/ghes/ 301!
+#endregion
+
+/chat-communication-collaboration/mattermost-team-edition          /chat-communication-collaboration/mattermost 301!
+/chat-communication-collaboration/mattermost-team-edition/         /chat-communication-collaboration/mattermost/ 301!
+
+/networking/cloudflare-access                                       /security/cloudflare-access 301!

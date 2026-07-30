@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../Radio.js";
+
+import Radio from "../Radio.js";
+
 import { Meta } from "@storybook/web-components";
 
-import { TemplateResult, html } from "lit";
-
-import "../Radio";
-import Radio from "../Radio";
+import { html, TemplateResult } from "lit";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const metadata: Meta<Radio<any>> = {
@@ -22,7 +23,7 @@ const metadata: Meta<Radio<any>> = {
 export default metadata;
 
 const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 2em">
+    html` <div style="padding: 2em">
         <style>
             li {
                 display: block;
@@ -44,11 +45,8 @@ const testOptions = [
 
 export const BasicRadioElement = () => {
     const displayChange = (ev: InputEvent) => {
-        document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            (ev.target as HTMLInputElement)!.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("radio-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify((ev.target as HTMLInputElement)!.value, null, 2)}`;
     };
 
     return container(

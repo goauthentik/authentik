@@ -7,6 +7,9 @@ from django.urls import reverse
 from django.views.generic import RedirectView
 from structlog.stdlib import get_logger
 
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
+from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.views.base import OAuthClientMixin
 
@@ -30,6 +33,19 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             kwargs={"source_slug": source.slug},
         )
 
+    def _try_login_hint_extract(self) -> dict[str, str]:
+        """Check if we're running in a flow and if we have a pending user, use that
+        as login_hint"""
+        params = {}
+        plan: FlowPlan = self.request.session.get(SESSION_KEY_PLAN, None)
+        if not plan:
+            return params
+        if user := plan.context.get(PLAN_CONTEXT_PENDING_USER):
+            params["login_hint"] = user.email
+        if identifier := plan.context.get(PLAN_CONTEXT_PENDING_USER_IDENTIFIER):
+            params["login_hint"] = identifier
+        return params
+
     def get_redirect_url(self, **kwargs) -> str:
         "Build redirect url for a given source."
         slug = kwargs.get("source_slug", "")
@@ -47,4 +63,5 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
                 params["scope"] = source.additional_scopes[1:].split(" ")
             else:
                 params["scope"] += source.additional_scopes.split(" ")
+        params.update(self._try_login_hint_extract())
         return client.get_redirect_url(params)

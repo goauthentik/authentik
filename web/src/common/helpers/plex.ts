@@ -1,5 +1,4 @@
-import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "#common/sentry/index";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -19,7 +18,7 @@ export const DEFAULT_HEADERS = {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "X-Plex-Product": "authentik",
-    "X-Plex-Version": VERSION,
+    "X-Plex-Version": import.meta.env.AK_VERSION,
     "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
@@ -63,9 +62,7 @@ export class PlexAPIClient {
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(
-                clientIdentifier,
-            )}&code=${pin.code}`,
+            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
             pin: pin,
         };
     }

@@ -1,0 +1,49 @@
+name: Documentation suggestion/problem
+description: Suggest an improvement or report a problem in our docs
+labels: ["area: docs", "triage"]
+type: task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this documentation issue!
+  - type: markdown
+    attributes:
+      value: |
+
+        **Consider opening a PR!**
+        If the issue is one that you can fix, or even make a good pass at, we'd appreciate a PR.
+
+        For more information about making a contribution to the docs, and using our Style Guide and our templates, refer to ["Writing documentation"](https://docs.goauthentik.io/docs/developer-docs/docs/writing-documentation).
+  - type: textarea
+    id: issue
+    attributes:
+      label: Do you see an area that can be clarified or expanded, a technical inaccuracy, or a broken link?
+      description: "A clear and concise description of what the problem is, or where the document can be improved."
+      placeholder: "I believe we need more details about [...]"
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link
+      description: "Provide the URL or link to the exact page in the documentation to which you are referring."
+      placeholder: "If there are multiple pages, list them all"
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution
+      description: "A clear and concise description of what you suggest as a solution"
+      placeholder: "This issue could be resolved by [...]"
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: "Add any other context or screenshots about the documentation issue here."
+      placeholder: "Also note that [...]"
+    validations:
+      required: false

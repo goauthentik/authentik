@@ -1,10 +1,8 @@
 """google Type tests"""
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
-from django.test.client import RequestFactory
 
-from authentik.lib.tests.utils import dummy_get_response
+from authentik.core.tests.utils import RequestFactory
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.google import (
     GoogleOAuthRedirect,
@@ -47,9 +45,6 @@ class TestTypeGoogle(TestCase):
     def test_authorize_url(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
             source_slug=self.source.slug
         )
@@ -66,9 +61,6 @@ class TestTypeGoogle(TestCase):
     def test_authorize_url_additional(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         self.source.additional_scopes = "foo"
         self.source.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(
@@ -87,9 +79,6 @@ class TestTypeGoogle(TestCase):
     def test_authorize_url_additional_replace(self):
         """Test authorize URL"""
         request = self.request_factory.get("/")
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session.save()
         self.source.additional_scopes = "*foo"
         self.source.save()
         redirect = GoogleOAuthRedirect(request=request).get_redirect_url(

@@ -1,5 +1,7 @@
 """Flow Stage API Views"""
 
+from uuid import uuid4
+
 from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
@@ -25,7 +27,12 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
     """Stage Serializer"""
 
     component = SerializerMethodField()
-    flow_set = FlowSetSerializer(many=True, required=False)
+    flow_set = FlowSetSerializer(many=True, required=False, read_only=True)
+
+    def to_representation(self, instance: Stage):
+        if isinstance(instance, Stage) and instance.is_in_memory:
+            instance.stage_uuid = uuid4()
+        return super().to_representation(instance)
 
     def get_component(self, obj: Stage) -> str:
         """Get object type so that we know how to edit the object"""

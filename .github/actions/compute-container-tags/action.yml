@@ -1,0 +1,48 @@
+---
+name: Compute container tags
+description: Compute container tags
+
+inputs: {}
+outputs:
+  safe-branch-name:
+    description: "Safe branch name"
+    value: "${{ steps.compute-tags.outputs.safe-branch-name }}"
+  tag-full:
+    description: "Tag in the form gh-<commit sha>"
+    value: "${{ steps.compute-tags.outputs.tag-full }}"
+  tag-branch:
+    description: "Tag in the form gh-<safe-branch-name>"
+    value: "${{ steps.compute-tags.outputs.tag-branch }}"
+  tag-flux:
+    description: "Tag in the form gh-<timestamp>-<short sha>"
+    value: "${{ steps.compute-tags.outputs.tag-flux }}"
+
+runs:
+  using: "composite"
+  steps:
+    - id: compute-tags
+      shell: python
+      env:
+        SHA: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}"
+      run: |
+        import os
+        import re
+        from time import time
+
+        sha = os.environ["SHA"]
+        short_sha = sha[:7]
+
+        branch_name = os.environ["GITHUB_REF"]
+        if os.environ.get("GITHUB_HEAD_REF", "") != "":
+            branch_name = os.environ["GITHUB_HEAD_REF"]
+        safe_branch_name = re.sub(r"[^a-zA-Z0-9-]", "-", branch_name.replace("refs/heads/", ""))
+
+        tag_full = f"gh-{sha}"
+        tag_branch = f"gh-{safe_branch_name}"
+        tag_flux = f"gh-{int(time())}-{short_sha}"
+
+        with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
+            print(f"safe-branch-name={safe_branch_name}", file=_output)
+            print(f"tag-full={tag_full}", file=_output)
+            print(f"tag-branch={tag_branch}", file=_output)
+            print(f"tag-flux={tag_flux}", file=_output)

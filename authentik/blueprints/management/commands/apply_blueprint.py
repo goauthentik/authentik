@@ -1,5 +1,6 @@
 """Apply blueprint from commandline"""
 
+from argparse import ArgumentParser
 from sys import exit as sys_exit
 
 from django.core.management.base import BaseCommand, no_translations
@@ -31,5 +32,5 @@ class Command(BaseCommand):
                         sys_exit(1)
                     importer.apply()
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser: ArgumentParser):
         parser.add_argument("blueprints", nargs="+", type=str)

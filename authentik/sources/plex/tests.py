@@ -8,7 +8,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
-from authentik.sources.plex.tasks import check_plex_token_all
+from authentik.sources.plex.tasks import check_plex_token
 
 USER_INFO_RESPONSE = {
     "id": 1234123419,
@@ -76,11 +76,11 @@ class TestPlexSource(TestCase):
         """Test token check task"""
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", json=USER_INFO_RESPONSE)
-            check_plex_token_all()
+            check_plex_token.send(self.source.pk)
             self.assertFalse(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
         with Mocker() as mocker:
             mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
-            check_plex_token_all()
+            check_plex_token.send(self.source.pk)
             self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
 
     def test_user_base_properties(self):

@@ -4,10 +4,10 @@ This CLI tool is used to generate a mapping file (`migratefile`) that is then us
 
 Use this migration tool to:
 
--   generate the mapping file with the current structure
--   read the completed (manual process to define target structure) and create the directories and move the files.
--   modify the internal, cross-reference links to point to new location
--   write to the `netlify.toml` file to add redirect entries for all migrated files.
+- generate the mapping file with the current structure
+- read the completed (manual process to define target structure) and create the directories and move the files.
+- modify the internal, cross-reference links to point to new location
+- write to the `netlify.toml` file to add redirect entries for all migrated files.
 
 ## Steps to install
 
@@ -58,11 +58,11 @@ Because the structure is completely changed, you will need to modify/reconstruct
 
 ## Test the results
 
-To test the internal links, navigate up a level to `authentik` and then run `make website-watch`.
+To test the internal links, navigate up a level to `authentik` and then run `make docs-watch`.
 
 ## Troubleshooting
 
--   If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
-    -   the `docsmg.env` exists
-    -   that it is in `/website`
-    -   the content is `MIGRATE_PATH=./docs`
+- If the `docsmg generate` command pulls _all_ of the files in the repo (even non-docs files), then check that:
+    - the `docsmg.env` exists
+    - that it is in `/website`
+    - the content is `MIGRATE_PATH=./docs`

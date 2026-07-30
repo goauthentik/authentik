@@ -8,9 +8,10 @@ from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.lib.sync.outgoing import HTTP_CONFLICT
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    DryRunRejected,
     NotFoundSyncException,
     ObjectExistsSyncException,
     StopSync,
@@ -24,15 +25,19 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
     """Base client for syncing to google workspace"""
 
     domains: list
+    can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:
         super().__init__(provider)
-        self.directory_service = build(
-            "admin",
-            "directory_v1",
-            cache_discovery=False,
-            **provider.google_credentials(),
-        )
+        try:
+            self.directory_service = build(
+                "admin",
+                "directory_v1",
+                cache_discovery=False,
+                **provider.google_credentials(),
+            )
+        except GoogleAuthError as exc:
+            raise StopSync(exc) from exc
         self.__prefetch_domains()
 
     def __prefetch_domains(self):
@@ -43,6 +48,8 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
             self.domains.append(domain_name)
 
     def _request(self, request: HttpRequest):
+        if self.provider.dry_run and request.method.upper() not in SAFE_METHODS:
+            raise DryRunRejected(request.uri, request.method, request.body)
         try:
             response = request.execute()
         except GoogleAuthError as exc:

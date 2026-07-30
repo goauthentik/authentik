@@ -1,0 +1,13 @@
+/**
+ * @file Korean locale global style overrides.
+ */
+
+html[lang="ko"],
+html[lang^="ko-"] {
+    --ak-font-family-sans-serif:
+        "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif,
+        var(--ak-generic-sans-serif);
+    --ak-font-family-serif: "Noto Serif KR", var(--ak-generic-serif);
+    --ak-font-family-heading:
+        "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+}

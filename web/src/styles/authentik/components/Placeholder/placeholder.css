@@ -1,0 +1,29 @@
+.ak-c-placeholder {
+    color: var(--ak-c-placeholder--Color, var(--pf-global--Color--100));
+    font-family:
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    font-size: xx-large;
+    text-align: center;
+    place-content: center;
+    place-items: center;
+    place-self: center;
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column wrap;
+    gap: 2rem;
+}
+
+ak-interface-admin,
+ak-interface-user,
+ak-rac {
+    .ak-c-placeholder {
+        position: absolute;
+        inset: 0;
+    }
+}

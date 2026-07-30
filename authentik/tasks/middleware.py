@@ -1,0 +1,201 @@
+from collections.abc import Callable
+from typing import Any, cast
+
+from django.conf import settings
+from django.db import OperationalError
+from django_dramatiq_postgres.middleware import (
+    CurrentTask as BaseCurrentTask,
+)
+from django_dramatiq_postgres.middleware import (
+    MetricsMiddleware as BaseMetricsMiddleware,
+)
+from dramatiq.broker import Broker
+from dramatiq.message import Message
+from dramatiq.middleware import Middleware
+from psycopg.errors import Error
+from structlog.stdlib import get_logger
+
+from authentik.events.models import Event, EventAction
+from authentik.lib.sentry import should_ignore_exception
+from authentik.lib.utils.reflection import class_to_path
+from authentik.root.signals import post_startup, pre_startup, startup
+from authentik.tasks.models import Task, TaskLog, TaskStatus
+from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_current_tenant
+
+LOGGER = get_logger()
+HEALTHCHECK_LOGGER = get_logger("authentik.worker").bind()
+DB_ERRORS = (OperationalError, Error)
+
+
+class StartupSignalsMiddleware(Middleware):
+    def after_process_boot(self, broker: Broker):
+        _startup_sender = type("WorkerStartup", (object,), {})
+        pre_startup.send(sender=_startup_sender)
+        startup.send(sender=_startup_sender)
+        post_startup.send(sender=_startup_sender)
+
+
+class CurrentTask(BaseCurrentTask):
+    @classmethod
+    def get_task(cls) -> Task:
+        return cast(Task, super().get_task())
+
+
+class TenantMiddleware(Middleware):
+    def before_enqueue(self, broker: Broker, message: Message, delay: int):
+        message.options["model_create_defaults"]["tenant"] = get_current_tenant()
+
+    def before_process_message(self, broker: Broker, message: Message):
+        task: Task = message.options["task"]
+        task.tenant.activate()
+
+    def after_process_message(self, *args, **kwargs):
+        Tenant.deactivate()
+
+    after_skip_message = after_process_message
+
+
+class ModelDataMiddleware(Middleware):
+    @property
+    def actor_options(self):
+        return {"rel_obj", "uid"}
+
+    def before_enqueue(self, broker: Broker, message: Message, delay: int):
+        if "rel_obj" in message.options:
+            message.options["model_defaults"]["rel_obj"] = message.options.pop("rel_obj")
+        if "uid" in message.options:
+            message.options["model_defaults"]["_uid"] = message.options.pop("uid")
+
+
+class TaskLogMiddleware(Middleware):
+    def after_enqueue(self, broker: Broker, message: Message, delay: int | None):
+        task: Task = message.options["task"]
+        task_created: bool = message.options["task_created"]
+        if task_created:
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
+                    class_to_path(type(self)),
+                    TaskStatus.INFO,
+                    "Task has been queued",
+                    delay=delay,
+                ),
+            )
+        else:
+            TaskLog.objects.filter(task=task).update(previous=True)
+            TaskLog.create_from_log_event(
+                task,
+                Task._make_log(
+                    class_to_path(type(self)),
+                    TaskStatus.INFO,
+                    "Task will be retried",
+                    delay=delay,
+                ),
+            )
+
+    def before_process_message(self, broker: Broker, message: Message):
+        task: Task = message.options["task"]
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task is being processed")
+
+    def after_process_message(
+        self,
+        broker: Broker,
+        message: Message,
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ):
+        task: Task = message.options["task"]
+        if exception is None:
+            task.log(
+                class_to_path(type(self)),
+                TaskStatus.INFO,
+                "Task finished processing without errors",
+            )
+            return
+        task.log(
+            class_to_path(type(self)),
+            TaskStatus.ERROR,
+            exception,
+        )
+        if should_ignore_exception(exception):
+            return
+        event_kwargs = {
+            "actor": task.actor_name,
+        }
+        if task.rel_obj:
+            event_kwargs["rel_obj"] = task.rel_obj
+        Event.new(
+            EventAction.SYSTEM_TASK_EXCEPTION,
+            message=f"Task {task.actor_name} encountered an error",
+            **event_kwargs,
+        ).with_exception(exception).save()
+
+    def after_skip_message(self, broker: Broker, message: Message):
+        task: Task = message.options["task"]
+        task.log(class_to_path(type(self)), TaskStatus.INFO, "Task has been skipped")
+
+
+class LoggingMiddleware(Middleware):
+    def __init__(self):
+        self.logger = get_logger()
+
+    def after_enqueue(self, broker: Broker, message: Message, delay: int):
+        self.logger.info(
+            "Task enqueued",
+            task_id=message.message_id,
+            task_name=message.actor_name,
+        )
+
+    def before_process_message(self, broker: Broker, message: Message):
+        self.logger.info("Task started", task_id=message.message_id, task_name=message.actor_name)
+
+    def after_process_message(
+        self,
+        broker: Broker,
+        message: Message,
+        *,
+        result: Any | None = None,
+        exception: Exception | None = None,
+    ):
+        self.logger.info(
+            "Task finished",
+            task_id=message.message_id,
+            task_name=message.actor_name,
+            exc=exception,
+        )
+
+    def after_skip_message(self, broker: Broker, message: Message):
+        self.logger.info("Task skipped", task_id=message.message_id, task_name=message.actor_name)
+
+
+class DescriptionMiddleware(Middleware):
+    @property
+    def actor_options(self):
+        return {"description"}
+
+
+class MetricsMiddleware(BaseMetricsMiddleware):
+    @property
+    def forks(self) -> list[Callable[[], None]]:
+        return []
+
+    def before_worker_boot(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return super().before_worker_boot(broker, worker)
+
+        from prometheus_client import values
+        from prometheus_client.values import MultiProcessValue
+
+        values.ValueClass = MultiProcessValue(lambda: worker.worker_id)
+
+        return super().before_worker_boot(broker, worker)
+
+    def after_worker_shutdown(self, broker: Broker, worker: Any) -> None:
+        if settings.TEST:
+            return
+
+        from prometheus_client import multiprocess
+
+        multiprocess.mark_process_dead(worker.worker_id)

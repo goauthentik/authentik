@@ -1,11 +1,12 @@
 """authentik consent app"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageConsentConfig(AppConfig):
+class AuthentikStageConsentConfig(ManagedAppConfig):
     """authentik consent app"""
 
     name = "authentik.stages.consent"
     label = "authentik_stages_consent"
     verbose_name = "authentik Stages.Consent"
+    default = True

@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 from django.test import RequestFactory
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
@@ -99,7 +99,7 @@ class Command(BaseCommand):
         total_min: int = min(min(inner) for inner in values)
         total_avg = sum(sum(inner) for inner in values) / sum(len(inner) for inner in values)
 
-        print(f"Version: {__version__}")
+        print(f"Version: {authentik_version()}")
         print(f"Processes: {len(values)}")
         print(f"\tMax: {total_max * 100}ms")
         print(f"\tMin: {total_min * 100}ms")

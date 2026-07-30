@@ -1,0 +1,6 @@
+.pf-c-login__main-footer {
+    flex-flow: column;
+    gap: var(--pf-global--spacer--lg);
+    margin-block-start: 1.25rem;
+    margin-block-end: calc(-0.75 * var(--pf-c-login__main-footer--PaddingBottom));
+}

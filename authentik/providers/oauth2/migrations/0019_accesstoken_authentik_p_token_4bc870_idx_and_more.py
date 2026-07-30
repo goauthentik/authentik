@@ -11,13 +11,16 @@ class Migration(migrations.Migration):
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
-    operations = [
-        migrations.AddIndex(
-            model_name="accesstoken",
-            index=models.Index(fields=["token"], name="authentik_p_token_4bc870_idx"),
-        ),
-        migrations.AddIndex(
-            model_name="refreshtoken",
-            index=models.Index(fields=["token"], name="authentik_p_token_1a841f_idx"),
-        ),
-    ]
+    # Original preserved
+    # See https://github.com/goauthentik/authentik/issues/11874
+    # operations = [
+    #     migrations.AddIndex(
+    #         model_name="accesstoken",
+    #         index=models.Index(fields=["token"], name="authentik_p_token_4bc870_idx"),
+    #     ),
+    #     migrations.AddIndex(
+    #         model_name="refreshtoken",
+    #         index=models.Index(fields=["token"], name="authentik_p_token_1a841f_idx"),
+    #     ),
+    # ]
+    operations = []

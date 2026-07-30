@@ -5,9 +5,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik.core.models import Application, ExpiringModel, User
+from authentik.core.models import Application, User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import ExpiringModel, InternallyManagedMixin, SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 
@@ -51,7 +51,7 @@ class ConsentStage(Stage):
         verbose_name_plural = _("Consent Stages")
 
 
-class UserConsent(SerializerModel, ExpiringModel):
+class UserConsent(InternallyManagedMixin, SerializerModel, ExpiringModel):
     """Consent given by a user for an application"""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -71,3 +71,4 @@ class UserConsent(SerializerModel, ExpiringModel):
         unique_together = (("user", "application", "permissions"),)
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")
+        indexes = ExpiringModel.Meta.indexes

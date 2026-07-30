@@ -35,8 +35,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -47,8 +46,10 @@ from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
 LOGGER = get_logger()
 
-SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
+SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
+SESSION_KEY_SOURCE_FLOW_CONTEXT = "authentik/flows/source_flow_context"
+SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 
 
 class MessageStage(StageView):
@@ -78,8 +79,8 @@ class SourceFlowManager:
 
     identifier: str
 
-    user_connection_type: type[UserSourceConnection] = UserSourceConnection
-    group_connection_type: type[GroupSourceConnection] = GroupSourceConnection
+    user_connection_type: type[UserSourceConnection]
+    group_connection_type: type[GroupSourceConnection]
 
     user_info: dict[str, Any]
     policy_context: dict[str, Any]
@@ -129,6 +130,11 @@ class SourceFlowManager:
             )
             new_connection.user = self.request.user
             new_connection = self.update_user_connection(new_connection, **kwargs)
+            if existing := self.user_connection_type.objects.filter(
+                source=self.source, identifier=self.identifier
+            ).first():
+                existing = self.update_user_connection(existing)
+                return Action.AUTH, existing
             return Action.LINK, new_connection
 
         action, connection = self.matcher.get_user_action(self.identifier, self.user_properties)
@@ -214,34 +220,28 @@ class SourceFlowManager:
             }
         )
         flow_context.update(self.policy_context)
-        if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
-            token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
-            self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
-            plan = token.plan
-            plan.context[PLAN_CONTEXT_IS_RESTORED] = token
-            plan.context.update(flow_context)
-            for stage in self.get_stages_to_append(flow):
-                plan.append_stage(stage)
-            if stages:
-                for stage in stages:
-                    plan.append_stage(stage)
-            self.request.session[SESSION_KEY_PLAN] = plan
-            flow_slug = token.flow.slug
-            token.delete()
-            return redirect_with_qs(
-                "authentik_core:if-flow",
-                self.request.GET,
-                flow_slug=flow_slug,
-            )
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
-        if PLAN_CONTEXT_REDIRECT not in flow_context:
-            flow_context[PLAN_CONTEXT_REDIRECT] = final_redirect
+        flow_context.setdefault(PLAN_CONTEXT_REDIRECT, final_redirect)
 
         if not flow:
+            # We only check for the flow token here if we don't have a flow, otherwise we rely on
+            # SESSION_KEY_SOURCE_FLOW_STAGES to delegate the usage of this token and dynamically add
+            # stages that deal with this token to return to another flow
+            if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
+                token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+                self._logger.info(
+                    "Replacing source flow with overridden flow", flow=token.flow.slug
+                )
+                plan = token.plan
+                plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+                plan.context.update(flow_context)
+                for stage in self.get_stages_to_append(flow):
+                    plan.append_stage(stage)
+                if stages:
+                    for stage in stages:
+                        plan.append_stage(stage)
+                redirect = plan.to_redirect(self.request, token.flow)
+                token.delete()
+                return redirect
             return bad_request_message(
                 self.request,
                 _("Configured flow does not exist."),
@@ -260,19 +260,16 @@ class SourceFlowManager:
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=flow.slug,
-        )
+        for stage in self.request.session.get(SESSION_KEY_SOURCE_FLOW_STAGES, []):
+            plan.append_stage(stage)
+        plan.context.update(self.request.session.get(SESSION_KEY_SOURCE_FLOW_CONTEXT, {}))
+        return plan.to_redirect(self.request, flow)
 
     def handle_auth(
         self,
         connection: UserSourceConnection,
     ) -> HttpResponse:
         """Login user and redirect."""
-        flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
         return self._prepare_flow(
             self.source.authentication_flow,
             connection,
@@ -286,7 +283,11 @@ class SourceFlowManager:
                     ),
                 )
             ],
-            **flow_kwargs,
+            **{
+                PLAN_CONTEXT_PENDING_USER: connection.user,
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.user_properties),
+                PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
+            },
         )
 
     def handle_existing_link(
@@ -298,6 +299,8 @@ class SourceFlowManager:
         # When request isn't authenticated we jump straight to auth
         if not self.request.user.is_authenticated:
             return self.handle_auth(connection)
+        # When an override flow token exists we actually still use a flow for link
+        # to continue the existing flow we came from
         if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
             return self._prepare_flow(None, connection)
         connection.save()
@@ -389,10 +392,10 @@ class GroupUpdateStage(StageView):
             groups.append(group)
 
         with transaction.atomic():
-            self.user.ak_groups.remove(
-                *self.user.ak_groups.filter(groupsourceconnection__source=self.source)
+            self.user.groups.remove(
+                *self.user.groups.filter(groupsourceconnection__source=self.source)
             )
-            self.user.ak_groups.add(*groups)
+            self.user.groups.add(*groups)
 
         return True
 

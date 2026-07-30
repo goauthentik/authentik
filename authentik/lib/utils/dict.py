@@ -4,12 +4,13 @@ from typing import Any
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     """Recursively walk through `root`, checking each part of `path` separated by `sep`.
     If at any point a dict does not exist, return default"""
+    walk: Any = root
     for comp in path.split(sep):
-        if root and comp in root:
-            root = root.get(comp)
+        if walk and comp in walk:
+            walk = walk.get(comp)
         else:
             return default
-    return root
+    return walk
 
 
 def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
@@ -22,3 +23,17 @@ def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
             root[comp] = {}
         root = root.get(comp, {})
     root[path_parts[-1]] = value
+
+
+def delete_path_in_dict(root: dict, path: str, sep="."):
+    """Recursively walk through `root`, checking each part of `path` separated by `sep`
+    and delete the last value"""
+    # Walk each component of the path
+    path_parts = path.split(sep)
+    for comp in path_parts[:-1]:
+        if comp not in root:
+            return
+        root = root.get(comp, {})
+    last_path_part = path_parts[-1]
+    if last_path_part in root:
+        del root[last_path_part]

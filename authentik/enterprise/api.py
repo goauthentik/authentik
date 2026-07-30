@@ -1,6 +1,8 @@
 """Enterprise API Views"""
 
+from collections.abc import Callable
 from datetime import timedelta
+from functools import wraps
 
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -12,6 +14,7 @@ from rest_framework.fields import CharField, IntegerField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -34,6 +37,18 @@ class EnterpriseRequiredMixin:
         return super().validate(attrs)
 
 
+def enterprise_action(func: Callable):
+    """Check permissions for a single custom action"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> Response:
+        if not LicenseKey.cached_summary().status.is_valid:
+            raise ValidationError(_("Enterprise is required to use this endpoint."))
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 class LicenseSerializer(ModelSerializer):
     """License Serializer"""
 
@@ -53,6 +68,7 @@ class LicenseSerializer(ModelSerializer):
             "external_users",
         ]
         extra_kwargs = {
+            "key": {"validators": [UniqueValidator(queryset=License.objects.all())]},
             "name": {"read_only": True},
             "expiry": {"read_only": True},
             "internal_users": {"read_only": True},

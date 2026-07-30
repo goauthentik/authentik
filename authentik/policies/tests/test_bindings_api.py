@@ -14,7 +14,7 @@ class TestBindingsAPI(APITestCase):
         super().setUp()
         self.pbm = PolicyBindingModel.objects.create()
         self.user = create_test_admin_user()
-        self.group = self.user.ak_groups.first()
+        self.group = self.user.groups.first()
         self.client.force_login(self.user)
 
     def test_valid_binding(self):
@@ -38,16 +38,16 @@ class TestBindingsAPI(APITestCase):
         )
         self.assertJSONEqual(
             response.content.decode(),
-            {"non_field_errors": ["Only one of 'policy', 'group' or 'user' can be set."]},
+            {"non_field_errors": ["Only one of 'group', 'policy', 'user' can be set."]},
         )
 
     def test_invalid_too_little(self):
-        """Test invvalid binding (too little)"""
+        """Test invalid binding (too little)"""
         response = self.client.post(
             reverse("authentik_api:policybinding-list"),
             data={"target": self.pbm.pk, "order": 0},
         )
         self.assertJSONEqual(
             response.content.decode(),
-            {"non_field_errors": ["One of 'policy', 'group' or 'user' must be set."]},
+            {"non_field_errors": ["One of 'group', 'policy', 'user' must be set."]},
         )

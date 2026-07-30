@@ -5,7 +5,7 @@ from typing import Any
 from requests.exceptions import RequestException
 
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -63,6 +63,8 @@ class GitHubType(SourceType):
     )
     oidc_jwks_url = "https://token.actions.githubusercontent.com/.well-known/jwks"
 
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
+
     def get_base_user_properties(
         self,
         source: OAuthSource,
@@ -74,7 +76,7 @@ class GitHubType(SourceType):
         chosen_email = info.get("email")
         if not chosen_email:
             # The GitHub Userprofile API only returns an email address if the profile
-            # has a public email address set (despite us asking for user:email, this behaviour
+            # has a public email address set (despite us asking for user:email, this behavior
             # doesn't change.). So we fetch all the user's email addresses
             emails = client.get_github_emails(token)
             for email in emails:

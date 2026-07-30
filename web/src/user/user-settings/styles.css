@@ -1,0 +1,18 @@
+.pf-c-page {
+    --pf-c-page__header--BackgroundColor: transparent !important;
+    --pf-c-page--BackgroundColor: transparent !important;
+    --pf-c-page__main-section--BackgroundColor: transparent !important;
+}
+
+.pf-c-page__main {
+    min-height: 100dvh;
+    overflow: unset;
+}
+
+@media screen and (min-width: 1200px) {
+    :host {
+        width: 90rem;
+        max-width: 100%;
+        align-self: center;
+    }
+}
