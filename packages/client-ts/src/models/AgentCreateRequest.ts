@@ -23,7 +23,7 @@ export interface AgentCreateRequest {
      * @type {number}
      * @memberof AgentCreateRequest
      */
-    parent: number;
+    parent?: number;
     /**
      *
      * @type {string}
@@ -48,7 +48,6 @@ export interface AgentCreateRequest {
  * Check if a given object implements the AgentCreateRequest interface.
  */
 export function instanceOfAgentCreateRequest(value: object): value is AgentCreateRequest {
-    if (!("parent" in value) || value["parent"] === undefined) return false;
     return true;
 }
 
@@ -64,7 +63,7 @@ export function AgentCreateRequestFromJSONTyped(
         return json;
     }
     return {
-        parent: json["parent"],
+        parent: json["parent"] == null ? undefined : json["parent"],
         label: json["label"] == null ? undefined : json["label"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:

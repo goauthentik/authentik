@@ -9,9 +9,7 @@ from authentik.lib.models import ExpiringModel
 class Agent(ExpiringModel, User):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="agents")
-    primary_app = models.ForeignKey(
-        Application, on_delete=models.CASCADE, null=True, default=None
-    )
+    primary_app = models.ForeignKey(Application, on_delete=models.CASCADE, null=True, default=None)
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Agent")
@@ -20,7 +18,7 @@ class Agent(ExpiringModel, User):
     @classmethod
     def create_for_user(
         cls, user: User, name: str = "", expiring: bool = False, expires=None
-    ) -> "Agent":
+    ) -> Agent:
         return cls.objects.create(
             username=f"agent-{generate_id()}",
             name=name,

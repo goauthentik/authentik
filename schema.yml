@@ -377,7 +377,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AgentCreateRequest'
-        required: true
       security:
       - authentik: []
       responses:
@@ -35791,8 +35790,6 @@ components:
           type: string
           format: date-time
           nullable: true
-      required:
-      - parent
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -38852,6 +38849,9 @@ components:
               type: boolean
               description: Refresh other tabs after successful authentication.
               deprecated: true
+            enterprise_agent_allow_any:
+              type: boolean
+              description: When enabled, allow any user to create agent accounts.
           required:
           - flows_continuous_login
           - flows_refresh_others
@@ -53419,6 +53419,9 @@ components:
         flags:
           type: object
           properties:
+            enterprise_agent_allow_any:
+              type: boolean
+              description: When enabled, allow any user to create agent accounts.
             core_default_app_access:
               type: boolean
               description: Applications with no policies bound can be accessed by
@@ -53437,6 +53440,7 @@ components:
               deprecated: true
           required:
           - core_default_app_access
+          - enterprise_agent_allow_any
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
@@ -58486,6 +58490,9 @@ components:
         flags:
           type: object
           properties:
+            enterprise_agent_allow_any:
+              type: boolean
+              description: When enabled, allow any user to create agent accounts.
             core_default_app_access:
               type: boolean
               description: Applications with no policies bound can be accessed by
@@ -58504,6 +58511,7 @@ components:
               deprecated: true
           required:
           - core_default_app_access
+          - enterprise_agent_allow_any
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
@@ -58581,6 +58589,9 @@ components:
         flags:
           type: object
           properties:
+            enterprise_agent_allow_any:
+              type: boolean
+              description: When enabled, allow any user to create agent accounts.
             core_default_app_access:
               type: boolean
               description: Applications with no policies bound can be accessed by
@@ -58599,6 +58610,7 @@ components:
               deprecated: true
           required:
           - core_default_app_access
+          - enterprise_agent_allow_any
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others

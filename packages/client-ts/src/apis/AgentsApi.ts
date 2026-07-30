@@ -18,7 +18,7 @@ import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/P
 import * as runtime from "../runtime";
 
 export interface AgentsAgentsCreateRequest {
-    agentCreateRequest: AgentCreateRequest;
+    agentCreateRequest?: AgentCreateRequest;
 }
 
 export interface AgentsAgentsDestroyRequest {
@@ -46,13 +46,6 @@ export class AgentsApi extends runtime.BaseAPI {
     async agentsAgentsCreateRequestOpts(
         requestParameters: AgentsAgentsCreateRequest,
     ): Promise<runtime.RequestOpts> {
-        if (requestParameters["agentCreateRequest"] == null) {
-            throw new runtime.RequiredError(
-                "agentCreateRequest",
-                'Required parameter "agentCreateRequest" was null or undefined when calling agentsAgentsCreate().',
-            );
-        }
-
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -96,7 +89,7 @@ export class AgentsApi extends runtime.BaseAPI {
      * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
      */
     async agentsAgentsCreate(
-        requestParameters: AgentsAgentsCreateRequest,
+        requestParameters: AgentsAgentsCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Agent> {
         const response = await this.agentsAgentsCreateRaw(requestParameters, initOverrides);

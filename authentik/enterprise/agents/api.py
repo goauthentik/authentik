@@ -1,4 +1,6 @@
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import BooleanField, CharField, DateTimeField
 from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
 from rest_framework.relations import PrimaryKeyRelatedField
@@ -10,6 +12,7 @@ from authentik.api.validation import validate
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
+from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin
 
@@ -30,10 +33,12 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
 
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
+    owner_field = "owner"
+    rbac_allow_create_without_perm = True
 
     class AgentCreateSerializer(PassiveSerializer):
 
-        parent = PrimaryKeyRelatedField(queryset=User.objects.all())
+        parent = PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, default=None)
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
@@ -41,7 +46,14 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
     @extend_schema(request=AgentCreateSerializer, responses={201: AgentSerializer})
     @validate(AgentCreateSerializer)
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
-        parent: User = body.validated_data["parent"]
+        parent: User = body.validated_data.get("parent") or request.user
+        if not request.user.has_perm("authentik_agents.add_agent"):
+            # Self-service path: any user may create an agent for themselves, but only
+            # when the instance allows it, and never on behalf of someone else.
+            if not AllowAnyAgentCreate.get():
+                raise PermissionDenied(_("Self-service agent creation is not enabled."))
+            if parent != request.user:
+                raise PermissionDenied(_("You can only create agents for yourself."))
         agent = Agent.create_for_user(
             user=parent,
             name=body.validated_data.get("label", ""),

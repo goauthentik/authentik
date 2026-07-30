@@ -2,7 +2,9 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_user
+from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
+from authentik.tenants.flags import patch_flag
 
 
 class AgentTests(APITestCase):
@@ -11,8 +13,8 @@ class AgentTests(APITestCase):
         user.assign_perms_to_managed_role("authentik_agents.add_agent")
 
     def test_create_requires_permission(self):
-        """Ordinary users cannot create agents -- admin-provisioned, not
-        self-service"""
+        """Without the add_agent permission and with self-service disabled, a user
+        cannot create an agent -- neither for someone else nor for themselves"""
         user = create_test_user()
         other_user = create_test_user()
         self.client.force_login(user)
@@ -22,6 +24,64 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk},
         )
         self.assertEqual(res.status_code, 403)
+
+        res = self.client.post(reverse("authentik_api:agent-list"), data={})
+        self.assertEqual(res.status_code, 403)
+
+    @patch_flag(AllowAnyAgentCreate, True)
+    def test_self_service_create_for_self(self):
+        """With self-service enabled, an ordinary user can create an agent for
+        themselves (parent defaults to the requesting user) and then manage it"""
+        user = create_test_user()
+        self.client.force_login(user)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"label": "my-agent"},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(owner=user)
+        self.assertEqual(agent.name, "my-agent")
+
+        # owner_field lets the creator see and delete their own agent
+        res = self.client.get(reverse("authentik_api:agent-list"))
+        content = res.json()
+        self.assertEqual(content["pagination"]["count"], 1)
+        self.assertEqual(content["results"][0]["parent"]["pk"], user.pk)
+
+        res = self.client.delete(reverse("authentik_api:agent-detail", kwargs={"pk": agent.pk}))
+        self.assertEqual(res.status_code, 204, res.content)
+
+    @patch_flag(AllowAnyAgentCreate, True)
+    def test_self_service_cannot_create_for_other(self):
+        """Self-service only lets a user create agents for themselves, never for
+        another user"""
+        user = create_test_user()
+        other_user = create_test_user()
+        self.client.force_login(user)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"parent": other_user.pk},
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertFalse(Agent.objects.filter(owner=other_user).exists())
+
+    @patch_flag(AllowAnyAgentCreate, True)
+    def test_admin_creates_for_other_with_self_service_enabled(self):
+        """An admin with add_agent can still provision for any parent, regardless of
+        the self-service flag"""
+        admin = create_test_user()
+        self._grant_create_perm(admin)
+        other_user = create_test_user()
+        self.client.force_login(admin)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"parent": other_user.pk},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        self.assertTrue(Agent.objects.filter(owner=other_user).exists())
 
     def test_admin_creates_agent_for_user(self):
         """An admin with add_agent can create an agent for any user"""
