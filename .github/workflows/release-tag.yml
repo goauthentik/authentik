@@ -174,7 +174,9 @@ jobs:
     needs:
       - bump-version
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    # aws-lc-sys/aws-lc-fips-sys compile C via cc/cmake, so every target needs a matching
+    # native toolchain. Build each one on a runner of the same OS/arch instead of cross-compiling.
+    runs-on: "${{ matrix.target.runs-on }}"
     permissions:
       # Needed for checkout
       contents: read
@@ -184,10 +186,14 @@ jobs:
         type:
           - proxy
         target:
-          - x86_64-unknown-linux-gnu
-          - aarch64-unknown-linux-gnu
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
+          - triple: x86_64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          - triple: aarch64-unknown-linux-gnu
+            runs-on: ubuntu-24.04-arm
+          - triple: x86_64-apple-darwin
+            runs-on: macos-15-intel
+          - triple: aarch64-apple-darwin
+            runs-on: macos-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -196,16 +202,16 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
         with:
           rustflags: ""
-          target: "${{ matrix.target }}"
+          target: "${{ matrix.target.triple }}"
       - name: Build outpost
         run: |
           set -x
           mkdir -p build/binaries/
-          cargo build --package authentik --no-default-features --features "${{ matrix.type }}" --locked --release --target "${{ matrix.target }}"
-          cp ./target/release/authentik "build/binaries/authentik-outpost-${{ matrix.type }}-${{ matrix.target }}"
+          cargo build --package authentik --no-default-features --features "${{ matrix.type }}" --locked --release --target "${{ matrix.target.triple }}"
+          cp "./target/${{ matrix.target.triple }}/release/authentik" "build/binaries/authentik-outpost-${{ matrix.type }}-${{ matrix.target.triple }}"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
-          name: "binaries-build-${{ matrix.type }}-${{ matrix.target }}"
+          name: "binaries-build-${{ matrix.type }}-${{ matrix.target.triple }}"
           path: build/
           if-no-files-found: error
           retention-days: 2
