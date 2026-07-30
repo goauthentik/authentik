@@ -170,8 +170,17 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             elif hint_values <= platform:
                 authenticator_attachment = AuthenticatorAttachment.PLATFORM
 
+        rp_id = get_rp_id(self.request)
+
+        # Let the authenticator itself refuse to register a credential it already holds for this
+        # user.
+        exclude_credentials = [
+            device.descriptor
+            for device in WebAuthnDevice.objects.filter(user=user, rp_id=rp_id).order_by("pk")
+        ]
+
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
-            rp_id=get_rp_id(self.request),
+            rp_id=rp_id,
             rp_name=self.request.brand.branding_title,
             user_id=user.uid.encode("utf-8"),
             user_name=user.username,
@@ -182,6 +191,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 authenticator_attachment=authenticator_attachment,
             ),
             attestation=AttestationConveyancePreference.DIRECT,
+            exclude_credentials=exclude_credentials,
             hints=hints,
         )
 

@@ -36,6 +36,16 @@ export function isWebAuthnNotAllowedError(error: unknown): error is DOMException
 }
 
 /**
+ * Predicate to determine if a given error indicates that the authenticator already holds a
+ * credential for this account, and therefore refused to create another one.
+ *
+ * Raised when the authenticator matches one of the entries passed in `excludeCredentials`.
+ */
+export function isWebAuthnInvalidStateError(error: unknown): error is DOMException {
+    return error instanceof DOMException && error.name === "InvalidStateError";
+}
+
+/**
  * Check if the browser supports WebAuthn conditional UI (passkey autofill)
  */
 export async function isConditionalMediationAvailable(): Promise<boolean> {
