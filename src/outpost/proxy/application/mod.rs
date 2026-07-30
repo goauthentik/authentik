@@ -149,6 +149,10 @@ impl Application {
                     any(handlers::forward::handle_envoy),
                 )
                 .route(
+                    "/outpost.goauthentik.io/auth/envoy/",
+                    any(handlers::forward::handle_envoy),
+                )
+                .route(
                     "/outpost.goauthentik.io/auth/envoy/{*rest}",
                     any(handlers::forward::handle_envoy),
                 )
