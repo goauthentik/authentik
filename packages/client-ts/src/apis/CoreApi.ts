@@ -42,6 +42,11 @@ import {
 } from "../models/ImpersonationRequest";
 import { type IntentEnum } from "../models/IntentEnum";
 import { type Link, LinkFromJSON } from "../models/Link";
+import { type ObjectAttribute, ObjectAttributeFromJSON } from "../models/ObjectAttribute";
+import {
+    type ObjectAttributeRequest,
+    ObjectAttributeRequestToJSON,
+} from "../models/ObjectAttributeRequest";
 import {
     type PaginatedApplicationEntitlementList,
     PaginatedApplicationEntitlementListFromJSON,
@@ -56,6 +61,14 @@ import {
 } from "../models/PaginatedAuthenticatedSessionList";
 import { type PaginatedBrandList, PaginatedBrandListFromJSON } from "../models/PaginatedBrandList";
 import { type PaginatedGroupList, PaginatedGroupListFromJSON } from "../models/PaginatedGroupList";
+import {
+    type PaginatedObjectAttributeList,
+    PaginatedObjectAttributeListFromJSON,
+} from "../models/PaginatedObjectAttributeList";
+import {
+    type PaginatedRequestableTargetList,
+    PaginatedRequestableTargetListFromJSON,
+} from "../models/PaginatedRequestableTargetList";
 import { type PaginatedTokenList, PaginatedTokenListFromJSON } from "../models/PaginatedTokenList";
 import {
     type PaginatedUserConsentList,
@@ -72,6 +85,10 @@ import {
 } from "../models/PatchedApplicationRequest";
 import { type PatchedBrandRequest, PatchedBrandRequestToJSON } from "../models/PatchedBrandRequest";
 import { type PatchedGroupRequest, PatchedGroupRequestToJSON } from "../models/PatchedGroupRequest";
+import {
+    type PatchedObjectAttributeRequest,
+    PatchedObjectAttributeRequestToJSON,
+} from "../models/PatchedObjectAttributeRequest";
 import { type PatchedTokenRequest, PatchedTokenRequestToJSON } from "../models/PatchedTokenRequest";
 import { type PatchedUserRequest, PatchedUserRequestToJSON } from "../models/PatchedUserRequest";
 import { type PolicyTestResult, PolicyTestResultFromJSON } from "../models/PolicyTestResult";
@@ -122,6 +139,8 @@ import {
     type UserServiceAccountResponse,
     UserServiceAccountResponseFromJSON,
 } from "../models/UserServiceAccountResponse";
+import { type UserSwitchRequest, UserSwitchRequestToJSON } from "../models/UserSwitchRequest";
+import { type UserSwitchResponse, UserSwitchResponseFromJSON } from "../models/UserSwitchResponse";
 import { type UserTypeEnum } from "../models/UserTypeEnum";
 import * as runtime from "../runtime";
 
@@ -146,6 +165,16 @@ export interface CoreApplicationEntitlementsListRequest {
 export interface CoreApplicationEntitlementsPartialUpdateRequest {
     pbmUuid: string;
     patchedApplicationEntitlementRequest?: PatchedApplicationEntitlementRequest;
+}
+
+export interface CoreApplicationEntitlementsRequestableListRequest {
+    app?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    pbmUuid?: string;
+    search?: string;
 }
 
 export interface CoreApplicationEntitlementsRetrieveRequest {
@@ -193,6 +222,19 @@ export interface CoreApplicationsListRequest {
 export interface CoreApplicationsPartialUpdateRequest {
     slug: string;
     patchedApplicationRequest?: PatchedApplicationRequest;
+}
+
+export interface CoreApplicationsRequestableListRequest {
+    group?: string;
+    metaDescription?: string;
+    metaLaunchUrl?: string;
+    metaPublisher?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    slug?: string;
 }
 
 export interface CoreApplicationsRetrieveRequest {
@@ -256,8 +298,10 @@ export interface CoreBrandsListRequest {
     flowInvalidation?: string;
     flowLockdown?: string;
     flowRecovery?: string;
+    flowRequest?: string;
     flowUnenrollment?: string;
     flowUserSettings?: string;
+    flowUserSwitch?: string;
     ordering?: string;
     page?: number;
     pageSize?: number;
@@ -337,6 +381,38 @@ export interface CoreGroupsUpdateRequest {
 
 export interface CoreGroupsUsedByListRequest {
     groupUuid: string;
+}
+
+export interface CoreObjectAttributesCreateRequest {
+    objectAttributeRequest: ObjectAttributeRequest;
+}
+
+export interface CoreObjectAttributesDestroyRequest {
+    attributeId: string;
+}
+
+export interface CoreObjectAttributesListRequest {
+    enabled?: boolean;
+    objectTypeAppLabel?: string;
+    objectTypeModel?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface CoreObjectAttributesPartialUpdateRequest {
+    attributeId: string;
+    patchedObjectAttributeRequest?: PatchedObjectAttributeRequest;
+}
+
+export interface CoreObjectAttributesRetrieveRequest {
+    attributeId: string;
+}
+
+export interface CoreObjectAttributesUpdateRequest {
+    attributeId: string;
+    objectAttributeRequest: ObjectAttributeRequest;
 }
 
 export interface CoreTokensCreateRequest {
@@ -527,6 +603,11 @@ export interface CoreUsersSetPasswordCreateRequest {
 export interface CoreUsersSetPasswordHashCreateRequest {
     id: number;
     userPasswordHashSetRequest: UserPasswordHashSetRequest;
+}
+
+export interface CoreUsersSwitchCreateRequest {
+    next?: string;
+    userSwitchRequest?: UserSwitchRequest;
 }
 
 export interface CoreUsersUpdateRequest {
@@ -833,6 +914,93 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<ApplicationEntitlement> {
         const response = await this.coreApplicationEntitlementsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreApplicationEntitlementsRequestableList without sending the request
+     */
+    async coreApplicationEntitlementsRequestableListRequestOpts(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["app"] != null) {
+            queryParameters["app"] = requestParameters["app"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/application_entitlements/requestable/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List application entitlements which the current user can request access to
+     */
+    async coreApplicationEntitlementsRequestableListRaw(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedRequestableTargetList>> {
+        const requestOptions =
+            await this.coreApplicationEntitlementsRequestableListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedRequestableTargetListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List application entitlements which the current user can request access to
+     */
+    async coreApplicationEntitlementsRequestableList(
+        requestParameters: CoreApplicationEntitlementsRequestableListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedRequestableTargetList> {
+        const response = await this.coreApplicationEntitlementsRequestableListRaw(
             requestParameters,
             initOverrides,
         );
@@ -1422,6 +1590,105 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Application> {
         const response = await this.coreApplicationsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreApplicationsRequestableList without sending the request
+     */
+    async coreApplicationsRequestableListRequestOpts(
+        requestParameters: CoreApplicationsRequestableListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["metaDescription"] != null) {
+            queryParameters["meta_description"] = requestParameters["metaDescription"];
+        }
+
+        if (requestParameters["metaLaunchUrl"] != null) {
+            queryParameters["meta_launch_url"] = requestParameters["metaLaunchUrl"];
+        }
+
+        if (requestParameters["metaPublisher"] != null) {
+            queryParameters["meta_publisher"] = requestParameters["metaPublisher"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/applications/requestable/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * List applications which the current user can request access to
+     */
+    async coreApplicationsRequestableListRaw(
+        requestParameters: CoreApplicationsRequestableListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedApplicationList>> {
+        const requestOptions =
+            await this.coreApplicationsRequestableListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedApplicationListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * List applications which the current user can request access to
+     */
+    async coreApplicationsRequestableList(
+        requestParameters: CoreApplicationsRequestableListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedApplicationList> {
+        const response = await this.coreApplicationsRequestableListRaw(
             requestParameters,
             initOverrides,
         );
@@ -2209,12 +2476,20 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["flow_recovery"] = requestParameters["flowRecovery"];
         }
 
+        if (requestParameters["flowRequest"] != null) {
+            queryParameters["flow_request"] = requestParameters["flowRequest"];
+        }
+
         if (requestParameters["flowUnenrollment"] != null) {
             queryParameters["flow_unenrollment"] = requestParameters["flowUnenrollment"];
         }
 
         if (requestParameters["flowUserSettings"] != null) {
             queryParameters["flow_user_settings"] = requestParameters["flowUserSettings"];
+        }
+
+        if (requestParameters["flowUserSwitch"] != null) {
+            queryParameters["flow_user_switch"] = requestParameters["flowUserSwitch"];
         }
 
         if (requestParameters["ordering"] != null) {
@@ -3214,6 +3489,426 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.coreGroupsUsedByListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesCreate without sending the request
+     */
+    async coreObjectAttributesCreateRequestOpts(
+        requestParameters: CoreObjectAttributesCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["objectAttributeRequest"] == null) {
+            throw new runtime.RequiredError(
+                "objectAttributeRequest",
+                'Required parameter "objectAttributeRequest" was null or undefined when calling coreObjectAttributesCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ObjectAttributeRequestToJSON(requestParameters["objectAttributeRequest"]),
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesCreateRaw(
+        requestParameters: CoreObjectAttributesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ObjectAttribute>> {
+        const requestOptions = await this.coreObjectAttributesCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ObjectAttributeFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async coreObjectAttributesCreate(
+        requestParameters: CoreObjectAttributesCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ObjectAttribute> {
+        const response = await this.coreObjectAttributesCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesDestroy without sending the request
+     */
+    async coreObjectAttributesDestroyRequestOpts(
+        requestParameters: CoreObjectAttributesDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["attributeId"] == null) {
+            throw new runtime.RequiredError(
+                "attributeId",
+                'Required parameter "attributeId" was null or undefined when calling coreObjectAttributesDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/{attribute_id}/`;
+        urlPath = urlPath.replace(
+            "{attribute_id}",
+            encodeURIComponent(String(requestParameters["attributeId"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesDestroyRaw(
+        requestParameters: CoreObjectAttributesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.coreObjectAttributesDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async coreObjectAttributesDestroy(
+        requestParameters: CoreObjectAttributesDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.coreObjectAttributesDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesList without sending the request
+     */
+    async coreObjectAttributesListRequestOpts(
+        requestParameters: CoreObjectAttributesListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["objectTypeAppLabel"] != null) {
+            queryParameters["object_type__app_label"] = requestParameters["objectTypeAppLabel"];
+        }
+
+        if (requestParameters["objectTypeModel"] != null) {
+            queryParameters["object_type__model"] = requestParameters["objectTypeModel"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesListRaw(
+        requestParameters: CoreObjectAttributesListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedObjectAttributeList>> {
+        const requestOptions = await this.coreObjectAttributesListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedObjectAttributeListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async coreObjectAttributesList(
+        requestParameters: CoreObjectAttributesListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedObjectAttributeList> {
+        const response = await this.coreObjectAttributesListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesPartialUpdate without sending the request
+     */
+    async coreObjectAttributesPartialUpdateRequestOpts(
+        requestParameters: CoreObjectAttributesPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["attributeId"] == null) {
+            throw new runtime.RequiredError(
+                "attributeId",
+                'Required parameter "attributeId" was null or undefined when calling coreObjectAttributesPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/{attribute_id}/`;
+        urlPath = urlPath.replace(
+            "{attribute_id}",
+            encodeURIComponent(String(requestParameters["attributeId"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedObjectAttributeRequestToJSON(
+                requestParameters["patchedObjectAttributeRequest"],
+            ),
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesPartialUpdateRaw(
+        requestParameters: CoreObjectAttributesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ObjectAttribute>> {
+        const requestOptions =
+            await this.coreObjectAttributesPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ObjectAttributeFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async coreObjectAttributesPartialUpdate(
+        requestParameters: CoreObjectAttributesPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ObjectAttribute> {
+        const response = await this.coreObjectAttributesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesRetrieve without sending the request
+     */
+    async coreObjectAttributesRetrieveRequestOpts(
+        requestParameters: CoreObjectAttributesRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["attributeId"] == null) {
+            throw new runtime.RequiredError(
+                "attributeId",
+                'Required parameter "attributeId" was null or undefined when calling coreObjectAttributesRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/{attribute_id}/`;
+        urlPath = urlPath.replace(
+            "{attribute_id}",
+            encodeURIComponent(String(requestParameters["attributeId"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesRetrieveRaw(
+        requestParameters: CoreObjectAttributesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ObjectAttribute>> {
+        const requestOptions =
+            await this.coreObjectAttributesRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ObjectAttributeFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async coreObjectAttributesRetrieve(
+        requestParameters: CoreObjectAttributesRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ObjectAttribute> {
+        const response = await this.coreObjectAttributesRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for coreObjectAttributesUpdate without sending the request
+     */
+    async coreObjectAttributesUpdateRequestOpts(
+        requestParameters: CoreObjectAttributesUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["attributeId"] == null) {
+            throw new runtime.RequiredError(
+                "attributeId",
+                'Required parameter "attributeId" was null or undefined when calling coreObjectAttributesUpdate().',
+            );
+        }
+
+        if (requestParameters["objectAttributeRequest"] == null) {
+            throw new runtime.RequiredError(
+                "objectAttributeRequest",
+                'Required parameter "objectAttributeRequest" was null or undefined when calling coreObjectAttributesUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/object_attributes/{attribute_id}/`;
+        urlPath = urlPath.replace(
+            "{attribute_id}",
+            encodeURIComponent(String(requestParameters["attributeId"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: ObjectAttributeRequestToJSON(requestParameters["objectAttributeRequest"]),
+        };
+    }
+
+    /**
+     */
+    async coreObjectAttributesUpdateRaw(
+        requestParameters: CoreObjectAttributesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<ObjectAttribute>> {
+        const requestOptions = await this.coreObjectAttributesUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            ObjectAttributeFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     */
+    async coreObjectAttributesUpdate(
+        requestParameters: CoreObjectAttributesUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<ObjectAttribute> {
+        const response = await this.coreObjectAttributesUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -5415,6 +6110,68 @@ export class CoreApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<void> {
         await this.coreUsersSetPasswordHashCreateRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for coreUsersSwitchCreate without sending the request
+     */
+    async coreUsersSwitchCreateRequestOpts(
+        requestParameters: CoreUsersSwitchCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["next"] != null) {
+            queryParameters["next"] = requestParameters["next"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/switch/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSwitchRequestToJSON(requestParameters["userSwitchRequest"]),
+        };
+    }
+
+    /**
+     * Start browser user switching.
+     */
+    async coreUsersSwitchCreateRaw(
+        requestParameters: CoreUsersSwitchCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserSwitchResponse>> {
+        const requestOptions = await this.coreUsersSwitchCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserSwitchResponseFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Start browser user switching.
+     */
+    async coreUsersSwitchCreate(
+        requestParameters: CoreUsersSwitchCreateRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserSwitchResponse> {
+        const response = await this.coreUsersSwitchCreateRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**

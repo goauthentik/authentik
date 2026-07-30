@@ -27,6 +27,7 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.config import advisory_lock_db_alias
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -192,6 +193,7 @@ class KerberosSource(IncomingSyncSource):
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/kerberos/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     def get_base_user_properties(self, principal: str, **kwargs):

@@ -57,10 +57,27 @@ export function instanceOfAppleIndependentSecureEnclave(
     value: object,
 ): value is AppleIndependentSecureEnclave {
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("appleSecureEnclaveKey" in value) || value["appleSecureEnclaveKey"] === undefined)
+    if (
+        (!("appleSecureEnclaveKey" in (value as Record<string, any>)) &&
+            !("apple_secure_enclave_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appleSecureEnclaveKey"] === undefined &&
+            (value as Record<string, any>)["apple_secure_enclave_key"] === undefined)
+    )
         return false;
-    if (!("appleEnclaveKeyId" in value) || value["appleEnclaveKeyId"] === undefined) return false;
-    if (!("deviceType" in value) || value["deviceType"] === undefined) return false;
+    if (
+        (!("appleEnclaveKeyId" in (value as Record<string, any>)) &&
+            !("apple_enclave_key_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["appleEnclaveKeyId"] === undefined &&
+            (value as Record<string, any>)["apple_enclave_key_id"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceType" in (value as Record<string, any>)) &&
+            !("device_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceType"] === undefined &&
+            (value as Record<string, any>)["device_type"] === undefined)
+    )
+        return false;
     return true;
 }
 
