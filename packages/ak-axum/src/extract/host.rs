@@ -47,14 +47,13 @@ async fn extract_host(parts: &mut Parts) -> Result<String, (StatusCode, &'static
         .unwrap_or(TrustedProxy(false))
         .0;
 
-    if is_trusted {
-        if let Some(host) = parts
+    if is_trusted
+        && let Some(host) = parts
             .headers
             .get(X_FORWARDED_HOST)
             .and_then(|host| host.to_str().ok())
-        {
-            return Ok(host.to_owned());
-        }
+    {
+        return Ok(host.to_owned());
     }
 
     if let Some(host) = parts.headers.get(HOST).and_then(|host| host.to_str().ok()) {
