@@ -27,27 +27,25 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
+## Configuration methods
 
-Keycloak can be configured to use either OIDC or SAML for federated login sources. This guide covers both methods.
-
-To support the integration of Keycloak with authentik, you need to create an application/provider pair in authentik. Select the protocol that you want to use in the Keycloak configuration section and follow the complete flow in that tab.
-
-## Keycloak configuration
+Keycloak supports OIDC and SAML identity providers. Select a protocol below and complete both the authentik and Keycloak configuration in that tab.
 
 <Tabs
   defaultValue="oidc"
   values={[
-    { label: "Log in with OIDC", value: "oidc" },
-    { label: "Log in with SAML", value: "saml" },
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
 ]}>
   <TabItem value="oidc">
 
-### Configure OIDC
+## authentik configuration
 
 <RedirectURI20265Note />
 
-#### Create an application and provider
+To support the integration of Keycloak with authentik using OIDC, create an application/provider pair in authentik.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
@@ -61,7 +59,9 @@ To support the integration of Keycloak with authentik, you need to create an app
 
 3. Click **Submit** to save the new application and provider.
 
-#### Create an OIDC identity provider
+## Keycloak configuration
+
+### Create an OIDC identity provider
 
 1. Log in to Keycloak as an administrator.
 2. Select the realm where you want users to log in.
@@ -78,9 +78,11 @@ To support the integration of Keycloak with authentik, you need to create an app
   </TabItem>
   <TabItem value="saml">
 
-### Configure SAML
+## authentik configuration
 
-#### Create an application and provider
+To support the integration of Keycloak with authentik using SAML, create an application/provider pair in authentik.
+
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
@@ -99,7 +101,9 @@ To support the integration of Keycloak with authentik, you need to create an app
 
 3. Click **Submit** to save the new application and provider.
 
-#### Create a SAML identity provider
+## Keycloak configuration
+
+### Create a SAML identity provider
 
 1. Log in to Keycloak as an administrator.
 2. Select the realm where you want users to log in.
