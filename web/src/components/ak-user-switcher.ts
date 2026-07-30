@@ -25,12 +25,6 @@ import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css"
 export class UserSwitcher extends WithSession(AKElement) {
     static styles = [PFButton, PFDropdown, Styles];
 
-    get #users(): readonly UserSelf[] {
-        return isAPIResultReady(this.session)
-            ? [this.session.user, ...(this.session.users ?? [])]
-            : [];
-    }
-
     async #startSwitch(userPk?: number): Promise<void> {
         const { redirect } = await aki(CoreApi).coreUsersSwitchCreate({
             next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
@@ -87,27 +81,16 @@ export class UserSwitcher extends WithSession(AKElement) {
         </li>`;
     }
 
-    #renderSignOut(): SlottedTemplateResult {
-        return html`<a
-            class="pf-c-dropdown__menu-item"
-            part="menu-item"
-            role="menuitem"
-            href=${`${globalAK().api.base}flows/-/default/invalidation/`}
-        >
-            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-            ${msg("Sign out current user", {
-                id: "user-switcher.actions.sign-out-current.label",
-            })}
-        </a>`;
-    }
-
     render(): SlottedTemplateResult {
         if (!this.currentUser) {
             return null;
         }
 
         const enabled = Boolean(globalAK().brand.flowUserSwitch);
-        const users = enabled ? this.#users : this.#users.filter((user) => user.isCurrent);
+        const allUsers: readonly UserSelf[] = isAPIResultReady(this.session)
+            ? [this.session.user, ...(this.session.users ?? [])]
+            : [];
+        const users = enabled ? allUsers : allUsers.filter((user) => user.isCurrent);
 
         return html`<ak-dropdown class="pf-c-dropdown" part="switcher">
             <button
@@ -156,7 +139,19 @@ export class UserSwitcher extends WithSession(AKElement) {
                           </button>
                       </li>`
                     : null}
-                <li role="presentation">${this.#renderSignOut()}</li>
+                <li role="presentation">
+                    <a
+                        class="pf-c-dropdown__menu-item"
+                        part="menu-item"
+                        role="menuitem"
+                        href=${`${globalAK().api.base}flows/-/default/invalidation/`}
+                    >
+                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                        ${msg("Sign out current user", {
+                            id: "user-switcher.actions.sign-out-current.label",
+                        })}
+                    </a>
+                </li>
             </menu>
         </ak-dropdown>`;
     }

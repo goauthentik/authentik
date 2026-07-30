@@ -34,22 +34,6 @@ def activate_session(session_key: str, token: str) -> None:
         switching_session.save(update_fields=["current_session"])
 
 
-def _generate_token() -> str:
-    """Generate a new opaque user switching token."""
-    return generate_id(TOKEN_LENGTH)
-
-
-def _validate_token(token: str | None) -> str | None:
-    """Return the token if it is a well-formed opaque token, else None."""
-    if not token:
-        return None
-    if len(token) != TOKEN_LENGTH:
-        return None
-    if not token.isalnum():
-        return None
-    return token
-
-
 def encode_cookie(token: str) -> str:
     """Encode the opaque token as a signed cookie value."""
     return encode(
@@ -70,8 +54,8 @@ def decode_cookie(raw: str | None) -> str | None:
         payload = decode(raw, _SIGNING_HASH, algorithms=["HS256"])
     except PyJWTError:
         return None
-    token = _validate_token(payload.get("user_switching"))
-    if token and UserSwitchingSession.objects.filter(token=token).exists():
+    token = payload.get("user_switching")
+    if isinstance(token, str) and UserSwitchingSession.objects.filter(token=token).exists():
         return token
     return None
 
@@ -82,7 +66,7 @@ def ensure_request_token(request: HttpRequest) -> str | None:
     if not hasattr(request, "user_switching_token"):
         return None
     if not request.user_switching_token:
-        switching_session = UserSwitchingSession.objects.create(token=_generate_token())
+        switching_session = UserSwitchingSession.objects.create(token=generate_id(TOKEN_LENGTH))
         request.user_switching_token = switching_session.token
         request.user_switching_token_needs_update = True
     return request.user_switching_token

@@ -145,8 +145,8 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.info("eh", exc=exc)
             return False
 
-    def _detach_session(self) -> None:
-        """Continue on a new session so the current login stays usable as a switch target."""
+    def _start_new_session(self) -> None:
+        """Move the flow to a new session while preserving the current login."""
         old_session = self.request.session
         flow_query_params = old_session.get(SESSION_KEY_GET)
         # Move the active plan so audit events keep context and old logins cannot resume it.
@@ -160,17 +160,6 @@ class UserLoginStageView(ChallengeStageView):
         self.request.session[SESSION_KEY_PLAN] = self.executor.plan
         if flow_query_params is not None:
             self.request.session[SESSION_KEY_GET] = flow_query_params
-
-    def _get_valid_user_switch_target(self, user: User) -> AuthenticatedSession | None:
-        """Return the live target session for an in-progress user switch."""
-        target_session_id = self.executor.plan.context.get(PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION)
-        if not target_session_id:
-            return None
-        return (
-            user_switching.target_sessions(self.request, user.pk, target_session_id)
-            .select_related("session", "user")
-            .first()
-        )
 
     def do_login(self, request: HttpRequest, remember: bool | None = None) -> HttpResponse:
         """Attach the currently pending user to the current session.
@@ -193,7 +182,14 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.debug("pending user is not saved, refusing to log in")
             return self.executor.stage_invalid()
         if PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in self.executor.plan.context:
-            target_session = self._get_valid_user_switch_target(user)
+            target_session_id = self.executor.plan.context[PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION]
+            target_session = (
+                user_switching.target_sessions(self.request, user.pk, target_session_id)
+                .select_related("session", "user")
+                .first()
+                if target_session_id
+                else None
+            )
             if not target_session:
                 message = _("The selected session is no longer available. Please try again.")
                 self.logger.warning(message)
@@ -212,7 +208,7 @@ class UserLoginStageView(ChallengeStageView):
             and self.request.user.is_authenticated
             and self.request.user.pk != user.pk
         ):
-            self._detach_session()
+            self._start_new_session()
             if user_switching_token:
                 Session.objects.filter(
                     authenticatedsession__user=user,

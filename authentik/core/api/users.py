@@ -66,6 +66,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -90,11 +91,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
-from authentik.core.views.user_switch import (
-    UserAddView,
-    UserSwitchView,
-    get_user_switching_sessions,
-)
+from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -657,22 +654,6 @@ class UserViewSet(
             JSONSearchField(User, "attributes"),
         ]
 
-    def _get_user_switch_targets(self) -> list[dict[str, Any]]:
-        """Return the other live user sessions available to this browser."""
-        if not self.request.user.is_authenticated:
-            return []
-        targets = []
-        for authenticated_session in get_user_switching_sessions(self.request._request):
-            if authenticated_session.user_id == self.request.user.pk:
-                continue
-            targets.append(
-                UserSelfSerializer(
-                    instance=authenticated_session.user,
-                    context={"request": self.request},
-                ).data
-            )
-        return targets
-
     def get_queryset(self):
         base_qs = User.objects.all().exclude_anonymous()
         # Always prefetch groups since group PKs are always serialized.
@@ -725,12 +706,12 @@ class UserViewSet(
     @validate(UserSwitchSerializer)
     def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
         """Start browser user switching."""
-        if body.validated_data["action"] == UserSwitchAction.ADD:
-            response = UserAddView.as_view()(request._request)
-        else:
-            response = UserSwitchView.as_view()(
-                request._request, user_pk=body.validated_data["user_pk"]
-            )
+        user_pk = (
+            None
+            if body.validated_data["action"] == UserSwitchAction.ADD
+            else body.validated_data["user_pk"]
+        )
+        response = start_user_switch_flow(request._request, user_pk)
         if isinstance(response, HttpResponseRedirect):
             return Response({"redirect": response.url})
         return response
@@ -881,10 +862,27 @@ class UserViewSet(
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request, "is_current": True}
+        users = []
+        user_switching_token = getattr(request._request, "user_switching_token", None)
+        if request.user.is_authenticated and user_switching_token:
+            sessions = (
+                user_switching.live_sessions(user_switching_token)
+                .exclude(user_id=request.user.pk)
+                .select_related("session", "user")
+                .order_by("user_id", "-session__last_used")
+                .distinct("user_id")
+            )
+            users = [
+                UserSelfSerializer(
+                    instance=authenticated_session.user,
+                    context={"request": request},
+                ).data
+                for authenticated_session in sessions
+            ]
         serializer = SessionUserSerializer(
             data={
                 "user": UserSelfSerializer(instance=request.user, context=context).data,
-                "users": self._get_user_switch_targets(),
+                "users": users,
             }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
