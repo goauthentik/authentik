@@ -413,7 +413,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 seen_items += 1
             if seen_items >= expected_items:
                 break
-            res = self._request("GET", f"/Groups?startIndex={seen_items + 1}")
+            res = self.lower_case_keys(self._request("GET", f"/Groups?startIndex={seen_items + 1}"))
 
     def _discover_group_single(self, group: dict):
         scim_group = SCIMGroupSchema.model_validate(group)
