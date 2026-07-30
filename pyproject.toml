@@ -24,8 +24,13 @@ dependencies = [
   "django-postgres-extra==2.0.9",
   "django-prometheus==2.4.1",
   "django-storages[s3]==1.14.6",
+<<<<<<< HEAD
   "django-tenants==3.10.1",
   "django==5.2.15",
+=======
+  "django-tenants==3.10.2",
+  "django==5.2.16",
+>>>>>>> ccc779e2f (core: bump django from 5.2.15 to v5.2.16 (#24526))
   "djangoql==0.19.1",
   "djangorestframework==3.17.1",
   "docker==7.1.0",
