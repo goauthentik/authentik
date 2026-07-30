@@ -43,7 +43,7 @@ dependencies = [
   "kubernetes==36.0.3",
   "ldap3==2.9.1",
   "lxml==6.1.1",
-  "msgraph-sdk==1.59.2",
+  "msgraph-sdk==1.60.0",
   "msgspec==0.21.1",
   "opencontainers==0.0.15",
   "packaging==26.2",
@@ -76,7 +76,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.261.0",
+  "aws-cdk-lib==2.262.0",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",
@@ -104,7 +104,7 @@ dev = [
   "ruff==0.15.22",
   "selenium==4.46.0",
   "types-channels==4.3.0.20260518",
-  "types-docker==7.2.0.20260720",
+  "types-docker==7.2.0.20260722",
   "types-jwcrypto==1.5.8.20260720",
   "types-ldap3==2.9.13.20260518",
   "types-requests==2.33.0.20260712",

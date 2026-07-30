@@ -36,7 +36,7 @@ export class AccessRequestFulfillForm extends Form<PatchedGrantRequestFulfillReq
         });
     }
 
-    protected renderForm(): SlottedTemplateResult | null {
+    protected renderForm(): SlottedTemplateResult {
         return html`
             <ak-text-input
                 label=${msg("Requester")}
@@ -60,6 +60,9 @@ export class AccessRequestFulfillForm extends Form<PatchedGrantRequestFulfillReq
                     },
                 ]}
             ></ak-radio-input>
+            <ak-form-element-horizontal label=${msg("Requestor notes")}>
+                <pre>${JSON.stringify(this.request?.requesterData, null, 4)}</pre>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Note")} name="data">
                 <ak-codemirror mode="yaml" value="${YAML.stringify({})}"> </ak-codemirror>
             </ak-form-element-horizontal>

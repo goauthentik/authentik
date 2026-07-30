@@ -45,7 +45,7 @@ jobs:
     needs:
       - metadata
     steps:
-      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
       - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c # v4.5.2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
