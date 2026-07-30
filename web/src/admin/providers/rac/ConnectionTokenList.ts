@@ -18,6 +18,9 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
+    public static override verboseName = msg("Connection Token");
+    public static override verboseNamePlural = msg("Connection Tokens");
+
     checkbox = true;
     clearOnRefresh = true;
 

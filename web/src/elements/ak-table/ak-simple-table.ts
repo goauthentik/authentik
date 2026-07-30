@@ -115,7 +115,7 @@ export class SimpleTable
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -135,7 +135,7 @@ export class SimpleTable
      *
      * Overrides the static `verboseNamePlural` property for this instance.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public set verboseNamePlural(value: string | null) {
         this.#verboseNamePlural = value;
 

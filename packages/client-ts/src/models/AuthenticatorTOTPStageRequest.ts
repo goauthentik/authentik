@@ -71,7 +71,12 @@ export function AuthenticatorTOTPStageRequestFromJSONTyped(
     }
     return {
         name: json["name"],
-        configureFlow: json["configure_flow"] == null ? undefined : json["configure_flow"],
+        configureFlow:
+            json["configure_flow"] === undefined
+                ? undefined
+                : json["configure_flow"] === null
+                  ? null
+                  : json["configure_flow"],
         friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
         digits: DigitsEnumFromJSON(json["digits"]),
     };

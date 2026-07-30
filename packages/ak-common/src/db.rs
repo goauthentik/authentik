@@ -2,7 +2,7 @@ use std::{str::FromStr as _, sync::OnceLock, time::Duration};
 
 use eyre::Result;
 use sqlx::{
-    ConnectOptions as _, Executor as _, PgConnection, PgPool,
+    AssertSqlSafe, ConnectOptions as _, Executor as _, PgConnection, PgPool,
     postgres::{PgConnectOptions, PgPoolOptions, PgSslMode},
 };
 use tokio::fs::read_to_string;
@@ -27,9 +27,11 @@ async fn get_connect_opts() -> Result<PgConnectOptions> {
         .host(&config.postgresql.host)
         .port(config.postgresql.port)
         .username(&config.postgresql.user)
-        .password(&config.postgresql.password)
         .database(&config.postgresql.name)
         .ssl_mode(PgSslMode::from_str(&config.postgresql.sslmode)?);
+    if !config.postgresql.password.is_empty() {
+        opts = opts.password(&config.postgresql.password);
+    }
     if let Some(sslrootcert) = &config.postgresql.sslrootcert {
         let from_fs = read_to_string(sslrootcert).await;
         let data = from_fs.as_ref().unwrap_or(sslrootcert).as_bytes().to_vec();
@@ -53,7 +55,11 @@ async fn update_connect_opts_on_config_change(arbiter: Arbiter) -> Result<()> {
     info!("starting database watcher for config changes");
     loop {
         tokio::select! {
-            Ok(Event::ConfigChanged) = events_rx.recv() => {
+            event = events_rx.recv() => {
+                if event != Ok(Event::ConfigChanged) {
+                    continue;
+                }
+
                 trace!("config change received, refreshing database connection options");
                 let db = get();
                 db.set_connect_options(get_connect_opts().await?);
@@ -85,7 +91,7 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
                     "SET application_name = '{application_name}'; SET search_path = \
                      '{default_schema}';"
                 );
-                conn.execute(query.as_str()).await?;
+                conn.execute(AssertSqlSafe(query)).await?;
                 Ok(())
             })
         });

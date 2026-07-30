@@ -31,7 +31,7 @@ pub struct PartialUser {
         with = "::serde_with::rust::double_option",
         skip_serializing_if = "Option::is_none"
     )]
-    pub last_login: Option<Option<String>>,
+    pub last_login: Option<Option<chrono::DateTime<chrono::FixedOffset>>>,
     #[serde(rename = "email", skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]

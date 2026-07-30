@@ -17,7 +17,7 @@ export interface LocaleOptionsProps {
 export const LocaleOptions: LitFC<LocaleOptionsProps> = ({ entries, activeLocaleTag }) => {
     return repeat(
         entries,
-        ([languageTag]) => languageTag,
+        ([languageTag]) => `${activeLocaleTag}-${languageTag}`,
         ([languageTag, localizedDisplayName, relativeDisplayName]) => {
             const pseudo = languageTag === PseudoLanguageTag;
 

@@ -30,7 +30,13 @@ export interface InstallID {
  * Check if a given object implements the InstallID interface.
  */
 export function instanceOfInstallID(value: object): value is InstallID {
-    if (!("installId" in value) || value["installId"] === undefined) return false;
+    if (
+        (!("installId" in (value as Record<string, any>)) &&
+            !("install_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["installId"] === undefined &&
+            (value as Record<string, any>)["install_id"] === undefined)
+    )
+        return false;
     return true;
 }
 

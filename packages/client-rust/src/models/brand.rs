@@ -44,6 +44,13 @@ pub struct Brand {
     )]
     pub flow_authentication: Option<Option<uuid::Uuid>>,
     #[serde(
+        rename = "flow_user_switch",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub flow_user_switch: Option<Option<uuid::Uuid>>,
+    #[serde(
         rename = "flow_invalidation",
         default,
         with = "::serde_with::rust::double_option",
@@ -85,6 +92,13 @@ pub struct Brand {
         skip_serializing_if = "Option::is_none"
     )]
     pub flow_lockdown: Option<Option<uuid::Uuid>>,
+    #[serde(
+        rename = "flow_request",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub flow_request: Option<Option<uuid::Uuid>>,
     /// When set, external users will be redirected to this application after authenticating.
     #[serde(
         rename = "default_application",
@@ -124,12 +138,14 @@ impl Brand {
             branding_custom_css: None,
             branding_default_flow_background: None,
             flow_authentication: None,
+            flow_user_switch: None,
             flow_invalidation: None,
             flow_recovery: None,
             flow_unenrollment: None,
             flow_user_settings: None,
             flow_device_code: None,
             flow_lockdown: None,
+            flow_request: None,
             default_application: None,
             web_certificate: None,
             client_certificates: None,

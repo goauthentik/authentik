@@ -108,7 +108,7 @@
 
 /* #region Icon */
 
-ak-app-icon {
+[part="app-list"]:not([data-view-mode="list"]) ak-app-icon {
     --icon-height: 50%;
     --icon-font-size: calc(var(--app-card-min-width) / 2.3);
     --app-icon--shadow-background-color: var(--pf-c-card--BackgroundColor);
@@ -285,4 +285,163 @@ ak-app-icon {
         system-ui,
         -apple-system,
         monospace;
+}
+
+/* #region List view */
+
+[part="app-list"][data-view-mode="list"] {
+    display: block;
+
+    [part="app-group"] {
+        display: block;
+        width: 100%;
+    }
+
+    .app-group-rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+    }
+
+    .app-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / -1;
+        align-items: center;
+        gap: var(--pf-global--spacer--md);
+        padding: var(--pf-global--spacer--sm) var(--pf-global--spacer--md);
+        border-block-end: 1px solid var(--pf-global--BorderColor--300);
+        background-color: transparent;
+        transition: background-color 120ms ease-in-out;
+
+        &:last-child {
+            border-block-end: none;
+        }
+
+        &:hover {
+            background-color: color-mix(
+                in srgb,
+                var(--pf-c-card--BackgroundColor) 100%,
+                var(--pf-global--BorderColor--100) 35%
+            );
+        }
+
+        &[aria-selected="true"] {
+            background-color: color-mix(
+                in srgb,
+                var(--pf-c-card--BackgroundColor) 100%,
+                var(--ak-accent) 12%
+            );
+        }
+    }
+
+    .app-row-link {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1 / span 2;
+        align-items: center;
+        gap: var(--pf-global--spacer--md);
+        min-width: 0;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+
+        &:hover .row-title,
+        &:focus-visible .row-title {
+            text-decoration: underline;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--ak-accent);
+            outline-offset: 2px;
+            border-radius: var(--pf-global--BorderRadius--sm);
+        }
+    }
+
+    [part="row-icon-host"] {
+        flex: 0 0 auto;
+        align-self: center;
+        width: auto;
+
+        &::part(icon) {
+            position: static;
+            inset: auto;
+        }
+    }
+
+    .row-text {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 0.125rem;
+    }
+
+    .row-title {
+        font-weight: 600;
+        line-height: 1.3;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .row-meta {
+        color: var(--pf-global--Color--200);
+        font-size: var(--pf-global--FontSize--sm);
+        line-height: 1.3;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    /* Re-anchor the kebab menu (CardMenu) to the right edge of the row
+     * instead of the absolutely-positioned card overlay used in grid view. */
+    [part="card-header-actions"] {
+        position: static;
+        inset: auto;
+        flex: 0 0 auto;
+        align-self: center;
+    }
+
+    [part="card-header-actions-button"] {
+        --pf-c-dropdown__toggle--PaddingTop: var(--pf-global--spacer--xs);
+        --pf-c-dropdown__toggle--PaddingBottom: var(--pf-global--spacer--xs);
+        --pf-c-dropdown__toggle--PaddingLeft: var(--pf-global--spacer--sm);
+        --pf-c-dropdown__toggle--PaddingRight: var(--pf-global--spacer--sm);
+
+        color: var(--pf-global--Color--200);
+        border-radius: var(--pf-global--BorderRadius--sm);
+
+        &:hover,
+        &:focus-visible {
+            color: var(--ak-accent);
+            background-color: var(--pf-c-card--m-flat--BorderColor);
+        }
+    }
+
+    [part="card-header-actions-icon"] {
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    /* Anchor the popover to the kebab's right edge so it opens down-left
+     * and stays inside the viewport (grid view's center anchor pushes it
+     * off the screen when the kebab sits at a row's right edge). */
+    &[data-anchor-strategy="anchor-position"] [part="card-header-actions-menu"] {
+        inset-inline-start: auto;
+        inset-inline-end: anchor(end);
+        inset-block-start: anchor(end);
+
+        @media (min-width: 390px) {
+            inset-inline-start: auto;
+        }
+    }
+
+    &[data-anchor-strategy="fallback"] [part="card-header-actions-menu"] {
+        inset-block-start: 100%;
+        inset-inline-start: auto;
+        inset-inline-end: 0;
+    }
 }

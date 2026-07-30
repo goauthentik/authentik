@@ -33,11 +33,11 @@ PhotoPrism requires HTTPS for OpenID Connect (OIDC). Make sure that the `PHOTOPR
 
 To support the integration of PhotoPrism with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, a slug, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value as it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
@@ -49,18 +49,20 @@ To support the integration of PhotoPrism with authentik, you need to create an a
 
 ## PhotoPrism configuration
 
-Configure PhotoPrism with the OIDC settings from authentik. Add the following settings to your PhotoPrism `.env` file:
+Configure PhotoPrism with the OIDC settings from authentik. Add the following settings to your PhotoPrism environment file:
 
-```text title=".env"
+```env title=".env"
 PHOTOPRISM_SITE_URL=https://photoprism.company/
 PHOTOPRISM_OIDC_URI=https://authentik.company/application/o/<application_slug>/
 PHOTOPRISM_OIDC_CLIENT=<Client ID from authentik>
 PHOTOPRISM_OIDC_SECRET=<Client Secret from authentik>
 PHOTOPRISM_OIDC_SCOPES=openid email profile
 PHOTOPRISM_OIDC_PROVIDER=authentik
-# Optional: Automatically redirect unauthenticated users to authentik.
-PHOTOPRISM_OIDC_REDIRECT=false
-# Optional: Allow PhotoPrism to create new accounts from OIDC logins.
+```
+
+To allow PhotoPrism to create accounts for new OIDC users, also add the following setting:
+
+```env title=".env"
 PHOTOPRISM_OIDC_REGISTER=true
 ```
 

@@ -31,12 +31,14 @@ type Brand struct {
 	BrandingCustomCss             *string        `json:"branding_custom_css,omitempty"`
 	BrandingDefaultFlowBackground *string        `json:"branding_default_flow_background,omitempty"`
 	FlowAuthentication            NullableString `json:"flow_authentication,omitempty"`
+	FlowUserSwitch                NullableString `json:"flow_user_switch,omitempty"`
 	FlowInvalidation              NullableString `json:"flow_invalidation,omitempty"`
 	FlowRecovery                  NullableString `json:"flow_recovery,omitempty"`
 	FlowUnenrollment              NullableString `json:"flow_unenrollment,omitempty"`
 	FlowUserSettings              NullableString `json:"flow_user_settings,omitempty"`
 	FlowDeviceCode                NullableString `json:"flow_device_code,omitempty"`
 	FlowLockdown                  NullableString `json:"flow_lockdown,omitempty"`
+	FlowRequest                   NullableString `json:"flow_request,omitempty"`
 	// When set, external users will be redirected to this application after authenticating.
 	DefaultApplication NullableString `json:"default_application,omitempty"`
 	// Web Certificate used by the authentik Core webserver.
@@ -351,6 +353,49 @@ func (o *Brand) UnsetFlowAuthentication() {
 	o.FlowAuthentication.Unset()
 }
 
+// GetFlowUserSwitch returns the FlowUserSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowUserSwitch() string {
+	if o == nil || IsNil(o.FlowUserSwitch.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowUserSwitch.Get()
+}
+
+// GetFlowUserSwitchOk returns a tuple with the FlowUserSwitch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowUserSwitchOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowUserSwitch.Get(), o.FlowUserSwitch.IsSet()
+}
+
+// HasFlowUserSwitch returns a boolean if a field has been set.
+func (o *Brand) HasFlowUserSwitch() bool {
+	if o != nil && o.FlowUserSwitch.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowUserSwitch gets a reference to the given NullableString and assigns it to the FlowUserSwitch field.
+func (o *Brand) SetFlowUserSwitch(v string) {
+	o.FlowUserSwitch.Set(&v)
+}
+
+// SetFlowUserSwitchNil sets the value for FlowUserSwitch to be an explicit nil
+func (o *Brand) SetFlowUserSwitchNil() {
+	o.FlowUserSwitch.Set(nil)
+}
+
+// UnsetFlowUserSwitch ensures that no value is present for FlowUserSwitch, not even an explicit nil
+func (o *Brand) UnsetFlowUserSwitch() {
+	o.FlowUserSwitch.Unset()
+}
+
 // GetFlowInvalidation returns the FlowInvalidation field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetFlowInvalidation() string {
 	if o == nil || IsNil(o.FlowInvalidation.Get()) {
@@ -609,6 +654,49 @@ func (o *Brand) UnsetFlowLockdown() {
 	o.FlowLockdown.Unset()
 }
 
+// GetFlowRequest returns the FlowRequest field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetFlowRequest() string {
+	if o == nil || IsNil(o.FlowRequest.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.FlowRequest.Get()
+}
+
+// GetFlowRequestOk returns a tuple with the FlowRequest field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetFlowRequestOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.FlowRequest.Get(), o.FlowRequest.IsSet()
+}
+
+// HasFlowRequest returns a boolean if a field has been set.
+func (o *Brand) HasFlowRequest() bool {
+	if o != nil && o.FlowRequest.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetFlowRequest gets a reference to the given NullableString and assigns it to the FlowRequest field.
+func (o *Brand) SetFlowRequest(v string) {
+	o.FlowRequest.Set(&v)
+}
+
+// SetFlowRequestNil sets the value for FlowRequest to be an explicit nil
+func (o *Brand) SetFlowRequestNil() {
+	o.FlowRequest.Set(nil)
+}
+
+// UnsetFlowRequest ensures that no value is present for FlowRequest, not even an explicit nil
+func (o *Brand) UnsetFlowRequest() {
+	o.FlowRequest.Unset()
+}
+
 // GetDefaultApplication returns the DefaultApplication field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Brand) GetDefaultApplication() string {
 	if o == nil || IsNil(o.DefaultApplication.Get()) {
@@ -792,6 +880,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if o.FlowAuthentication.IsSet() {
 		toSerialize["flow_authentication"] = o.FlowAuthentication.Get()
 	}
+	if o.FlowUserSwitch.IsSet() {
+		toSerialize["flow_user_switch"] = o.FlowUserSwitch.Get()
+	}
 	if o.FlowInvalidation.IsSet() {
 		toSerialize["flow_invalidation"] = o.FlowInvalidation.Get()
 	}
@@ -809,6 +900,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	}
 	if o.FlowLockdown.IsSet() {
 		toSerialize["flow_lockdown"] = o.FlowLockdown.Get()
+	}
+	if o.FlowRequest.IsSet() {
+		toSerialize["flow_request"] = o.FlowRequest.Get()
 	}
 	if o.DefaultApplication.IsSet() {
 		toSerialize["default_application"] = o.DefaultApplication.Get()
@@ -875,12 +969,14 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "branding_custom_css")
 		delete(additionalProperties, "branding_default_flow_background")
 		delete(additionalProperties, "flow_authentication")
+		delete(additionalProperties, "flow_user_switch")
 		delete(additionalProperties, "flow_invalidation")
 		delete(additionalProperties, "flow_recovery")
 		delete(additionalProperties, "flow_unenrollment")
 		delete(additionalProperties, "flow_user_settings")
 		delete(additionalProperties, "flow_device_code")
 		delete(additionalProperties, "flow_lockdown")
+		delete(additionalProperties, "flow_request")
 		delete(additionalProperties, "default_application")
 		delete(additionalProperties, "web_certificate")
 		delete(additionalProperties, "client_certificates")

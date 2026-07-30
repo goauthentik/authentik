@@ -16,23 +16,22 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {
-    loadInstance(pk: string): Promise<AuthenticatorEndpointGDTCStage> {
-        return aki(StagesApi).stagesAuthenticatorEndpointGdtcRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorEndpointGDTCStage): Promise<AuthenticatorEndpointGDTCStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorEndpointGdtcPartialUpdate({
-                stageUuid: this.instance.pk || "",
-                patchedAuthenticatorEndpointGDTCStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesAuthenticatorEndpointGdtcCreate({
-            authenticatorEndpointGDTCStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcRetrieve({ stageUuid }),
+        create: (authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStage) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcCreate({
+                authenticatorEndpointGDTCStageRequest,
+            }),
+        update: (
+            stageUuid: string,
+            patchedAuthenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStage,
+        ) =>
+            aki(StagesApi).stagesAuthenticatorEndpointGdtcPartialUpdate({
+                stageUuid,
+                patchedAuthenticatorEndpointGDTCStageRequest,
+            }),
+    };
 
     static styles = [...super.styles, PFBanner];
 

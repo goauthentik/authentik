@@ -35,23 +35,16 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {
-    loadInstance(pk: number): Promise<MicrosoftEntraProvider> {
-        return aki(ProvidersApi).providersMicrosoftEntraRetrieve({
-            id: pk,
-        });
-    }
-
-    async send(data: MicrosoftEntraProvider): Promise<MicrosoftEntraProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersMicrosoftEntraUpdate({
-                id: this.instance.pk,
-                microsoftEntraProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersMicrosoftEntraCreate({
-            microsoftEntraProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersMicrosoftEntraRetrieve({ id }),
+        create: (microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
+            aki(ProvidersApi).providersMicrosoftEntraCreate({ microsoftEntraProviderRequest }),
+        update: (id: number, microsoftEntraProviderRequest: MicrosoftEntraProvider) =>
+            aki(ProvidersApi).providersMicrosoftEntraUpdate({
+                id,
+                microsoftEntraProviderRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <ak-form-element-horizontal label=${msg("Provider Name")} required name="name">

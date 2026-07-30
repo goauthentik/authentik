@@ -63,9 +63,12 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
         }
 
     def run_test(
-        self, test_name: str, test_plan_config: dict[str, Any], test_variant: dict[str, Any]
+        self,
+        test_name: str,
+        test_plan_config: dict[str, Any],
+        test_variant: dict[str, Any] | None = None,
     ):
-        self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
+        self.conformance = Conformance(f"https://{self.host}:8443", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
             test_name,
@@ -82,7 +85,14 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             )
             module_id = module_instance["id"]
             self.run_single_test(module_id)
-            self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
+            module = self.conformance.wait_for_state(
+                module_id, ["FINISHED"], timeout=self.wait_timeout
+            )
+            self.assertIn(
+                module["result"],
+                ["PASSED", "SKIPPED", "WARNING", "REVIEW"],
+                f"Module {module['testName']} did not finish with expected status.",
+            )
             sleep(2)
         self.conformance.export_html(plan_id, Path(__file__).parent / "exports")
 

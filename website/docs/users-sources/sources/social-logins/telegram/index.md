@@ -1,10 +1,9 @@
 ---
 title: Log in with Telegram
 sidebar_label: Telegram
-support_level: community
 ---
 
-Configuring Telegram as a source allows users to authenticate within authentik using their Telegram account credentials.
+This source lets users authenticate with their Telegram account credentials.
 
 ## Preparation
 
@@ -23,7 +22,7 @@ To use Telegram as a source, you first need to register a Telegram bot:
 The domain name set in Telegram must **exactly** match the FQDN of the authentik installation.
 :::
 
-Now that the bot is configured you can proceed to creating a source in authentik.
+After the bot is configured, create a source in authentik.
 
 ## authentik configuration
 
@@ -37,7 +36,7 @@ Now that the bot is configured you can proceed to creating a source in authentik
 
 3. Click **Save**.
 
-:::note
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
@@ -50,11 +49,11 @@ For instructions on how to display the new source on the authentik login page, r
 Telegram user data is accessible to Telegram source property mappings as a dictionary named `info`.
 The dictionary contains the following fields:
 
-- `id` - Telegram user ID
-- `username` - Username of the user. Might not be present.
-- `first_name` - First name of the user. Might not be present.
-- `last_name` - Last name of the user. Might not be present.
-- `photo_url` - URL of the user's profile photo. Might not be present.
+- `id`: Telegram user ID.
+- `username`: Username of the user. Might not be present.
+- `first_name`: First name of the user. Might not be present.
+- `last_name`: Last name of the user. Might not be present.
+- `photo_url`: URL of the user's profile photo. Might not be present.
 
 ## Resources
 

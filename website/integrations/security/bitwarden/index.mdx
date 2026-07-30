@@ -48,14 +48,14 @@ You can configure Bitwarden to use either OIDC or SAML; this guide explains both
 
 To support the integration of Bitwarden with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add the redirect URIs for your Bitwarden deployment:
             - For Bitwarden Cloud US:
                 - Add a **Redirect URI** of type `Strict` `Authorization` as `https://sso.bitwarden.com/oidc-signin`.
@@ -95,13 +95,13 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 To support the integration of Bitwarden with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Temporarily set the **ACS URL** to `https://temp.temp`
@@ -133,6 +133,10 @@ To support the integration of Bitwarden with authentik, you need to create an ap
         - **X509 public certificate**: Paste the contents of your certificate file, without the `-----BEGIN CERTIFICATE-----` and `-----END CERTIFICATE-----` lines.
 4. Under **SAML service provider configuration**, note the **SP entity ID** and **Assertion consumer service (ACS) URL** values because they will be required in the next section.
 5. Click **Save**.
+
+:::info Bitwarden Single Logout support
+Bitwarden [does not yet support Single Logout](https://bitwarden.com/help/configure-sso-saml/) but recommends pre-configuring the **Single log-out service URL** for future use.
+:::
 
 ## Reconfigure authentik provider
 

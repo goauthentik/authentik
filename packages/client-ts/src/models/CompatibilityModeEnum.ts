@@ -21,6 +21,7 @@ export const CompatibilityModeEnum = {
     Aws: "aws",
     Slack: "slack",
     Sfdc: "sfdc",
+    Gitlab: "gitlab",
     Webex: "webex",
     Vcenter: "vcenter",
     UnknownDefaultOpenApi: "11184809",

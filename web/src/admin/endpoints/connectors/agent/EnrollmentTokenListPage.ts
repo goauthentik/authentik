@@ -26,6 +26,9 @@ import { customElement, property } from "lit/decorators.js";
 export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
     #api = aki(EndpointsApi);
 
+    public static override verboseName = msg("Enrollment Token");
+    public static override verboseNamePlural = msg("Enrollment Tokens");
+
     protected override searchEnabled = true;
     protected emptyStateMessage = msg("No enrollment tokens found for this connector.");
 

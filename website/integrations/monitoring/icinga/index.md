@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info Prerequisites
-This guide assumes the `oidc` module from RISE-GmbH is already installed, enabled, and configured with a database resource. Refer to the [module installation documentation](https://github.com/RISE-GmbH/icingaweb2-module-oidc/blob/main/doc/02-Installation.md) for the prerequisites.
+This guide assumes the `oidc` module from RISE-GmbH is already installed, enabled, and configured with a database resource. Refer to the [module installation documentation](https://github.com/RISE-GmbH/icingaweb2-module-oidc/blob/main/doc/02-Installation.md) for the installation and database setup.
 :::
 
 :::info
@@ -37,9 +37,9 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **slug** value because you will use it when configuring Icinga Web 2.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Icinga Web 2.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-    - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://icinga.company/icingaweb2/oidc/authentication/realm?name=authentik`.
         - Select any available signing key.
@@ -50,7 +50,7 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
 ## Icinga Web 2 configuration
 
 1. Log in to Icinga Web 2 as an administrator.
-2. Open the OIDC module and click **New Provider**.
+2. In the left navigation, open **Oidc** > **Provider**, and click **New Provider**.
 3. Configure the following fields:
     - **Name**: `authentik` (must match the value of the `name` query parameter in the redirect URI you registered in authentik).
     - **Url**: `https://authentik.company/application/o/<application_slug>/`
@@ -58,7 +58,7 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
     - **Appname**: the Client ID from the authentik provider.
     - **Caption**: the label shown on the new login button on the Icinga Web 2 sign-in page, for example `Sign in with authentik`.
     - **Custom Username**: `preferred_username`
-    - **Groups to sync** _(optional)_: a comma-separated list of the groups that should be imported into the Icinga database (see the info box below). You can use wildcard patterns, for example `icinga-*`.
+    - **Groups to sync**: a comma-separated list of the authentik groups that should be imported into the Icinga Web 2 database for role assignments. You can use wildcard patterns, for example `icinga-*`.
     - **Required Groups** _(optional)_: a comma-separated list of groups the user must be a member of in order to be allowed to log in via authentik. Leave empty to allow any authenticated authentik user.
     - **Button Color**: choose the background color of the login button.
     - **Text Color**: choose a text color that contrasts with the button color.
@@ -67,7 +67,7 @@ To support the integration of Icinga Web 2 with authentik, you need to create an
 4. Click **Create Provider** to save the configuration.
 
 :::info Group synchronization
-The OIDC module imports the groups matched by **Groups to sync** into Icinga Web 2. To avoid creating unrelated group entries in **Access Control**, restrict this field to the groups that are used for Icinga permissions, for example `icinga-admins, icinga-users`.
+The OIDC module imports the groups matched by **Groups to sync** into Icinga Web 2. To avoid creating unrelated group entries in **Access Control**, restrict this field to the groups that are used for Icinga Web 2 role assignments, for example `icinga-admins, icinga-users`.
 :::
 
 ### Grant permissions to authentik users and groups
@@ -84,7 +84,6 @@ To confirm that authentik is properly configured with Icinga Web 2, log out of I
 
 ## Resources
 
-- [RISE-GmbH OIDC module for Icinga Web 2 on GitHub](https://github.com/RISE-GmbH/icingaweb2-module-oidc)
 - [RISE-GmbH OIDC module installation documentation](https://github.com/RISE-GmbH/icingaweb2-module-oidc/blob/main/doc/02-Installation.md)
 - [RISE-GmbH OIDC module configuration documentation](https://github.com/RISE-GmbH/icingaweb2-module-oidc/blob/main/doc/03-Configuration.md)
 - [Icinga Web 2 access control documentation](https://icinga.com/docs/icinga-web/latest/doc/06-Security/)

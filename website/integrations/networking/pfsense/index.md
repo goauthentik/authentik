@@ -6,156 +6,113 @@ support_level: community
 
 ## What is pfSense?
 
-> The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
+> pfSense is a free and open source firewall and router that also features unified threat management, load balancing, multi WAN, and more.
 >
 > -- https://www.pfsense.org/
 
-:::info
-This is based on authentik 2022.3.3 and pfSense 2.6.0-amd64
-:::
+This guide configures pfSense to authenticate users against authentik through LDAP.
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of authentik.
-- `pfsense-user` is the name of the authentik Service account we'll create.
-- `DC=ldap,DC=goauthentik,DC=io` is the Base DN of the LDAP Provider (default)
+- `authentik.company` is the FQDN of the authentik installation.
+- `ldap.company` is the FQDN that pfSense uses to reach the authentik LDAP outpost.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-### Step 1 - Service account
+## authentik configuration
 
-In authentik, create a service account (under _Directory/Users_) for pfSense to use as the LDAP Binder and take note of the password generated.
+To support the integration of pfSense with authentik, you need to create an LDAP application/provider pair, a service account, and an LDAP outpost in authentik.
 
-In this example, we'll use `pfsense-user` as the Service account's username
+### Create an application and provider in authentik
 
-:::info
-If you didn't keep the password, you can copy it from _Directory/Tokens & App password_.
-:::
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **LDAP Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name) and the bind flow to use for this provider.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-### Step 2 - LDAP Provider
+3. Click **Submit** to save the new application and provider.
 
-In authentik, create a LDAP Provider (under _Applications/Providers_) with these settings :
+### Create a service account and LDAP outpost
 
-- Name : LDAP
-- Bind DN : `DC=ldap,DC=goauthentik,DC=io`
-- Certificate : `self-signed`
+After creating the application/provider pair, follow the LDAP provider setup to create a [service account](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-a-service-account), assign the [LDAP search permission](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#assign-the-ldap-search-permission-to-the-service-account) to the service account, and [create an LDAP outpost](/docs/add-secure-apps/providers/ldap/create-ldap-provider/#create-an-ldap-outpost) for the pfSense LDAP provider.
 
-### Step 3 - Application
+## pfSense configuration
 
-In authentik, create an application (under _Resources/Applications_) with these settings :
+### Configure the LDAPS certificate
 
-- Name: LDAP
-- Slug: ldap
-- Provider: LDAP
+pfSense must trust the certificate presented by the authentik LDAP outpost for `ldap.company`.
 
-### Step 4 - Outpost
+If you use a certificate from an authority that pfSense already trusts, no pfSense certificate authority setup is required.
 
-In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` that uses the LDAP Application you created in _Step 3_.
+To create a certificate in pfSense for the authentik LDAP provider:
 
-- Name: LDAP
-- Type: LDAP
+1. In pfSense, navigate to **System** > **Certificates** and open the **Authorities** tab.
+2. Click **Add** and configure the certificate authority:
+    - **Descriptive Name**: `pfSense CA`
+    - **Method**: `Create an internal Certificate Authority`
+    - **Common Name**: `pfSense CA`
+3. Click **Save**.
+4. Open the **Certificates** tab.
+5. Click **Add/Sign** and configure the certificate:
+    - **Method**: `Create an internal Certificate`
+    - **Descriptive Name**: `ldap.company`
+    - **Certificate authority**: `pfSense CA`
+    - **Common Name**: `ldap.company`
+    - **Certificate Type**: `Server Certificate`
+6. Click **Save**.
+7. Export the certificate and private key from pfSense.
+8. In authentik, navigate to **System** > **Certificates** and import the exported certificate and private key.
+9. Navigate to **Applications** > **Providers** and edit the LDAP provider.
+10. Set **Certificate** to the imported certificate.
+11. Set **TLS Server Name** to `ldap.company`.
+12. Click **Update**.
 
-## pfSense insecure setup (without SSL)
+### Add the LDAP authentication server
 
-:::caution
-This setup should only be used for testing purposes, because passwords will be sent in clear text to authentik.
-:::
+1. In pfSense, navigate to **System** > **User Manager** and open the **Authentication Servers** tab.
+2. Click **Add**.
+3. Set **Type** to `LDAP`.
+4. Configure the LDAP server:
+    - **Descriptive name**: `LDAP authentik`
+    - **Hostname or IP address**: `ldap.company`
+    - **Transport**: `SSL/TLS Encrypted`
+    - **Peer Certificate Authority**: `pfSense CA`
+    - **Search scope**: `Entire Subtree`
+    - **Base DN**: `dc=ldap,dc=goauthentik,dc=io`
+    - **Authentication containers**: `ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **Extended Query**: enable the setting and set **Query** to `&(objectClass=user)`.
+    - **Bind Anonymous**: unchecked
+    - **Bind Credentials**:
+        - **User DN**: `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+        - **Password**: the password for the `ldapservice` service account.
+    - **Group member attribute**: `memberOf`
+5. Click **Save**.
 
-Add your authentik LDAP server to pfSense by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.
+### Configure pfSense groups
 
-Change the following fields
+If pfSense should use LDAP group membership for local privileges, create matching local groups in pfSense and assign the required privileges to those groups. The local group names must match the LDAP group names returned during authentication.
 
-- Descriptive name: LDAP authentik
-- Hostname or IP address: `authentik.company`
-- Port value: 389
-- Transport: Standard TCP
-- Base DN: `DC=ldap,DC=goauthentik,DC=io`
-- Search Scope: Subtree
-- Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
-- Bind anonymous: **Unchecked**
-- Bind credentials:
-    - User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
-    - Password: `<pfsense-user password from step 2>`
-- Group member attribute: `memberOf`
-- Allow unauthenticated bind: **Unchecked**
+### Change the default authentication server
 
-## pfSense secure setup (with SSL)
+1. In pfSense, navigate to **System** > **User Manager** and open the **Settings** tab.
+2. Set **Authentication Server** to `LDAP authentik`.
+3. Click **Save**.
 
-When enabling SSL, authentik will send a certificate to pfSense. This certificate has to be signed by a certificate authority trusted by pfSense. In this setup we will create our own certificate authority in pfSense and create a certificate that will be used by authentik.
+## Configuration verification
 
-### Step 1 - certificate authority
+To confirm that authentik is properly configured with pfSense, navigate to **Diagnostics** > **Authentication** in pfSense, select `LDAP authentik` as the authentication server, and test with an authentik user.
 
-In pfSense, create a certificate authority under _System/Cert. Manager_ and click the `+ Add` button.
+After the test succeeds, open pfSense in a private browser window and log in with an authentik user.
 
-- Descriptive Name: `pfSense CA`
-- Method: Create an internal Certificate Authority
-- Common Name : `pfSense CA`
+## Resources
 
-### Step 2 - server certificate
-
-In pfSense, create a server certificate under _System/Cert. Manager_. Go to the _Certificates_ tab then click the `+ Add` button.
-
-Change the following fields
-
-- Method: Create an internal Certificate
-- Descriptive name: `authentik.company`
-- Lifetime: `398`
-- Common Name: `authentik.company`
-- Certificate Type: `Server Certificate`
-
-All other fields can be left blank.
-
-### Step 3 - Certificate import
-
-In pfsense, export the public **and** the private key of the certificate by going under _System/Cert. Manager_ and then to the _Certificate_ tab.
-
-![](./pfsense-certificate-export.png)
-
-In authentik, import the public **and** the private key by going under _System/Certificates_ and then click on `create`.
-
-### Step 4 - Provider configuration
-
-In authentik, edit the LDAP provider configuration under _Applications/Providers_ and select the certificate we just imported.
-
-### Step 5 - pfSense authentication server
-
-In pfSense, add your authentik LDAP server by going to your pfSense Web UI and clicking the `+ Add` under _System/User Manager/Authentication Servers_.
-
-Change the following fields
-
-- Descriptive name: LDAP authentik
-- Hostname or IP address: `authentik.company`
-- Port value: 636
-- Transport: SSL/TLS Encrypted
-- Peer Certificate Authority: `pfSense CA`
-- Base DN: `DC=ldap,DC=goauthentik,DC=io`
-- Search Scope: Subtree
-- Authentication containers: `OU=users,DC=ldap,DC=goauthentik,DC=io`
-- Bind anonymous: **Unchecked**
-- Bind credentials:
-    - User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
-    - Password: `<pfsense-user password from step 2>`
-- Extended Query: &(objectClass=user)
-- Allow unauthenticated bind: **Unchecked**
-
-## Test your setup
-
-In pfSense, you can validate the authentication backend setup by going to _Diagnostics/Authentication_ and then select `LDAP authentik` as _Authentication Server_.
-
-You can use the credentials of an authentik user, pfSense will tell you if the connection was successful or not. If it is, congratulations, you can now change the pfSense default authentication backend.
-
-## Change pfSense default authentication backend
-
-In pfSense, you can change the authentication backend used by the Web UI by going to _System/User Manager_ and then click on _Settings_ tab.
-
-- Authentication Server: `LDAP authentik`
-
-## Notes
-
-:::tip
-Secure LDAP more by creating a group for your `DN Bind` users and restricting the `Search group` of the LDAP Provider to them.
-:::
+- [pfSense Documentation - LDAP Authentication Servers](https://docs.netgate.com/pfsense/en/latest/usermanager/ldap.html)
+- [pfSense Documentation - Certificate Authority Management](https://docs.netgate.com/pfsense/en/latest/certificates/ca.html)
+- [pfSense Documentation - Certificate Management](https://docs.netgate.com/pfsense/en/latest/certificates/certificate.html)
+- [pfSense Documentation - Troubleshooting Authentication](https://docs.netgate.com/pfsense/en/latest/troubleshooting/authentication.html)

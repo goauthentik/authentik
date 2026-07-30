@@ -64,7 +64,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon}
-                      ><span>${msg("No objects found.")}</span>
+                      ><span>${this.formatEmptyStateMessage()}</span>
                       <div slot="body">
                           ${this.search ? this.renderEmptyClearSearch() : nothing}
                           <p>

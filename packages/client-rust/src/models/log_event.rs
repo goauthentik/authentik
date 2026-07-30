@@ -14,7 +14,7 @@ use crate::models;
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LogEvent {
     #[serde(rename = "timestamp")]
-    pub timestamp: String,
+    pub timestamp: chrono::DateTime<chrono::FixedOffset>,
     #[serde(rename = "log_level")]
     pub log_level: models::LogLevelEnum,
     #[serde(rename = "logger")]
@@ -28,7 +28,7 @@ pub struct LogEvent {
 impl LogEvent {
     /// Single log message with all context logged.
     pub fn new(
-        timestamp: String,
+        timestamp: chrono::DateTime<chrono::FixedOffset>,
         log_level: models::LogLevelEnum,
         logger: String,
         event: String,

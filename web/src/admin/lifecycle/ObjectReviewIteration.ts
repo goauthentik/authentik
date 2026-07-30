@@ -244,7 +244,7 @@ export class ObjectReviewIteration extends Table<Review> {
     protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html` <ak-empty-state icon="pf-icon-task"
-                ><span>${this.emptyStateMessage}</span></ak-empty-state
+                ><span>${this.formatEmptyStateMessage()}</span></ak-empty-state
             >`,
         );
     }

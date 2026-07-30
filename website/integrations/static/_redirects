@@ -24,4 +24,7 @@
 /development/github-enterprise-server/                            /development/ghes/ 301!
 #endregion
 
+/chat-communication-collaboration/mattermost-team-edition          /chat-communication-collaboration/mattermost 301!
+/chat-communication-collaboration/mattermost-team-edition/         /chat-communication-collaboration/mattermost/ 301!
+
 /networking/cloudflare-access                                       /security/cloudflare-access 301!

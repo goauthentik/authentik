@@ -256,6 +256,26 @@ export class BrandForm extends ModelForm<Brand, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("User switch flow", {
+                            id: "brand.form.flow-user-switch.label",
+                        })}
+                        name="flowUserSwitch"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select a user switch flow...", {
+                                id: "brand.form.flow-user-switch.placeholder",
+                            })}
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.flowUserSwitch}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
+                                { id: "brand.form.flow-user-switch.description" },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Invalidation Flow")}
                         name="flowInvalidation"
                     >
@@ -343,6 +363,16 @@ export class BrandForm extends ModelForm<Brand, string> {
                                   )}
                               </ak-alert>`
                             : null}
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
+                        <ak-flow-search
+                            placeholder=${msg("Select a request flow...")}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowRequest}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default flow used by users requesting access.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

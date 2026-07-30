@@ -1,162 +1,93 @@
 ---
 title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
+support_level: community
 ---
 
 ## What is QNAP NAS?
 
-> QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.
+> QNAP designs and delivers network-attached storage, video surveillance, and networking solutions.
 >
-> -- https://en.wikipedia.org/wiki/QNAP_Systems
-
-Connecting a QNAP NAS to an LDAP directory is a little unusual because it is **not** well documented what QNAP does behind the scenes.
+> -- https://www.qnap.com/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `ldap.baseDN` is the Base DN you configure in the LDAP provider.
-- `ldap.domain` is (typically) a FQDN for your domain. Usually
-  it is just the components of your base DN. For example, if
-  `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io` then the domain
-  might be `ldap.goauthentik.io`.
-- `ldap.searchGroup` is the "Search Group" that can see all
-  users and groups in authentik.
-- `qnap.serviceAccount` is a service account created in authentik.
-- `qnap.serviceAccountToken` is the service account token generated
-  by authentik.
+- `ldap.baseDN` is the base DN configured in the authentik LDAP provider.
+- `ldap.domain` is the FQDN that resolves to the authentik LDAP outpost. This is commonly derived from the base DN. For example, if `ldap.baseDN` is `dc=ldap,dc=goauthentik,dc=io`, then `ldap.domain` might be `ldap.goauthentik.io`.
+- `qnap.serviceAccount` is the authentik service account that QNAP NAS uses to bind to LDAP.
+- `qnap.serviceAccountPassword` is the app password generated for the service account by authentik.
+
+Connecting a QNAP NAS to authentik LDAP requires a two-step service configuration. First, use the QNAP web interface to store the encrypted bind password. Then, edit the generated LDAP configuration over SSH so QNAP can search authentik's LDAP structure.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an LDAP Provider if you don't already have one set up.
-This guide assumes you will be running with TLS. See the [LDAP provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
-
-Remember the `ldap.baseDN` you configured for the provider, as you'll
-need it in the SSSD configuration.
-
-Create a new service account for all of your hosts to use to connect
-to LDAP and perform searches. Make sure this service account is added
-to `ldap.searchGroup`.
-
-:::caution
-The QNAP LDAP client configuration has issues with passwords that are too long.
-Maximum password length: \<= 66 characters.
+:::warning Password length
+The QNAP LDAP client configuration has issues with passwords that are longer than 66 characters. Use a service account app password that is 66 characters or shorter.
 :::
 
-## Deployment
+## authentik configuration
 
-Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that your QNAP NAS can access.
+To support the integration of QNAP NAS with authentik, you need an LDAP application and provider, a service account with LDAP search permissions, and an LDAP outpost.
 
-The outpost will connect to authentik and configure itself.
+### Create the LDAP resources
 
-## NAS configuration
+1. Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create or reuse the LDAP application and provider, create a service account, assign the LDAP search permission, and create an LDAP outpost.
+2. Use `qnap.serviceAccount` as the service account username and copy its generated app password as `qnap.serviceAccountPassword`.
+3. Note the provider's **Base DN** value as `ldap.baseDN`.
+4. Open the LDAP application's **Policy / Group / User Bindings** tab and bind `qnap.serviceAccount` and any users or groups that should be able to authenticate to QNAP NAS.
+5. Ensure that the LDAP application is selected on the outpost and deploy the outpost where the QNAP NAS can reach it as `ldap.domain`.
 
-The procedure is a two-step setup:
+## QNAP NAS configuration
 
-1. QNAP Web UI: used to set up and store initial data, especially the encrypted bind password.
-2. SSH config edit: used to adapt settings so the NAS can communicate with the authentik LDAP outpost.
+### Configure LDAP in the web interface
 
-:::info
-The config edit is essential, as QNAP relies on certain non-configurable settings.
-The search for users and groups relies on a fixed filter for
-`objectClass` in `posixAccount` or `posixGroup` classes.
+1. Log in to the QNAP web interface as an administrator.
+2. Navigate to **Control Panel** > **Privilege** > **Domain Security**.
+3. Select **LDAP authentication**.
+4. Configure the LDAP settings for your environment, using `ldap.domain`, `ldap.baseDN`, `qnap.serviceAccount`, and `qnap.serviceAccountPassword`.
+5. Click **Apply**.
 
-Also by default the search scope is set to `one` (`singleLevel`), which can be
-adapted in the config to `sub` (`wholeSubtree`).
+![QNAP domain security LDAP configuration](./qnap-ldap-configuration.png)
 
-### Sample LDAP request from QNAP
-
-Default search for users
-
-```text
-Scope: 1 (singleLevel)
-Deref Aliases: 0 (neverDerefAliases)
-Size Limit: 0
-Time Limit: 0
-Types Only: false
-Filter: (objectClass=posixAccount)
-Attributes:
-    uid
-    userPassword
-    uidNumber
-    gidNumber
-    cn
-    homeDirectory
-    loginShell
-    gecos
-    description
-    objectClass
-```
-
-Default search for groups
-
-```text
-Scope: 1 (singleLevel)
-Deref Aliases: 0 (neverDerefAliases)
-Size Limit: 0
-Time Limit: 0
-Types Only: false
-Filter: (objectClass=posixGroup)
-Attributes:
-    cn
-    userPassword
-    memberUid
-    gidNumber
-```
-
+:::warning Configuration overwrite
+Each time you click **Apply** in the QNAP LDAP web interface, QNAP overwrites `/etc/config/nss_ldap.conf` with generated values. Repeat the SSH changes below after saving LDAP settings in the web interface.
 :::
 
-### QNAP Web UI
+The web interface step is required because QNAP stores the encrypted bind password in `/etc/config/nss_ldap.ensecret`.
 
-Configure the following values and "Apply"
-![qnap domain security](./qnap-ldap-configuration.png)
+### Update the LDAP configuration over SSH
 
-:::caution
-With each save (Apply) in the UI the `/etc/config/nss_ldap.conf` will be overwritten with default values.
-:::
+QNAP searches users and groups with fixed filters for the `posixAccount` and `posixGroup` object classes. It also uses a single-level search scope unless the generated configuration is changed. The configuration below maps those object classes to authentik objects and keeps the search bases explicit.
 
-:::info
-The UI configuration is necessary because it saves the encrypted password
-in `/etc/config/nss_ldap.ensecret`.
-:::
-
-### SSH
-
-Connect your QNAP NAS via SSH.
-First stop the LDAP Service:
+Connect to the QNAP NAS over SSH and stop the LDAP service:
 
 ```bash
 /sbin/setcfg LDAP Enable FALSE
 /etc/init.d/ldap.sh stop
 ```
 
-Edit the file at `/etc/config/nss_ldap.conf`:
+Edit `/etc/config/nss_ldap.conf`:
 
-```conf
+```ini title="/etc/config/nss_ldap.conf"
 host                        ${ldap.domain}
 base                        ${ldap.baseDN}
 uri                         ldaps://${ldap.domain}/
 ssl                         on
 rootbinddn                  cn=${qnap.serviceAccount},ou=users,${ldap.baseDN}
-# authentik has no memberUid therefore switch to
 nss_schema                  rfc2307bis
 
-# remap object classes to authentik ones
 nss_map_objectclass         posixAccount    user
 nss_map_objectclass         shadowAccount   user
 nss_map_objectclass         posixGroup      group
 
-# remap attributes
-# uid to cn is essential otherwise only id usernames will occur
 nss_map_attribute           uid             cn
-# map displayName information into comments field
 nss_map_attribute           gecos           displayName
-# see https://ldapwiki.com/wiki/Wiki.jsp?page=GroupOfUniqueNames%20vs%20groupOfNames
 nss_map_attribute           uniqueMember    member
 
-# configure scope per search filter
 nss_base_passwd             ou=users,${ldap.baseDN}?one
 nss_base_shadow             ou=users,${ldap.baseDN}?one
 nss_base_group              ou=groups,${ldap.baseDN}?one
@@ -169,25 +100,26 @@ tls_ciphers                 EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA
 nss_initgroups_ignoreusers  admin,akadmin
 ```
 
-Now start the LDAP service:
+The configuration remaps QNAP's expected `posixAccount` and `posixGroup` object classes to authentik's `user` and `group` object classes. It also maps `uid` to `cn` so QNAP displays authentik usernames instead of internal IDs.
+
+Start the LDAP service:
 
 ```bash
 /sbin/setcfg LDAP Enable TRUE
 /etc/init.d/ldap.sh start
 ```
 
-To see if the connection is working, type
+## Configuration verification
+
+To confirm that authentik is properly configured with QNAP NAS, connect to the NAS over SSH and list users and groups:
 
 ```bash
-# list users
-$ getent passwd
+getent passwd
+getent group
 ```
 
-The output should list local users and authentik accounts.
+The output should include local QNAP entries and entries from authentik.
 
-```bash
-# list groups
-$ getent group
-```
+## Resources
 
-The output should list local and authentik groups.
+- [QNAP tutorial: connecting a QNAP NAS to an LDAP directory](https://www.qnap.com/en/how-to/tutorial/article/connecting-a-qnap-nas-to-an-ldap-directory)

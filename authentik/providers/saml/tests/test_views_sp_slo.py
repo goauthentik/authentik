@@ -548,11 +548,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
             relay_state="https://sp.example.com/return",
         )
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_frontchannel_native_post_binding(self, mock_auth_session):
+    def test_frontchannel_native_post_binding(self):
         """Test FRONTCHANNEL_NATIVE with POST binding parses request correctly"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_NATIVE
         self.provider.sls_binding = SAMLBindings.POST
         self.provider.save()
@@ -580,11 +577,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.FRONTCHANNEL_NATIVE)
         self.assertEqual(view.provider.sls_binding, SAMLBindings.POST)
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_frontchannel_native_redirect_binding(self, mock_auth_session):
+    def test_frontchannel_native_redirect_binding(self):
         """Test FRONTCHANNEL_NATIVE with REDIRECT binding creates redirect URL"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_NATIVE
         self.provider.sls_binding = SAMLBindings.REDIRECT
         self.provider.save()
@@ -610,11 +604,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify the logout request was parsed
         self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_frontchannel_iframe_post_binding(self, mock_auth_session):
+    def test_frontchannel_iframe_post_binding(self):
         """Test FRONTCHANNEL_IFRAME with POST binding creates IframeLogoutStageView"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
         self.provider.sls_binding = SAMLBindings.POST
         self.provider.save()
@@ -640,11 +631,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify the logout request was parsed
         self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_frontchannel_iframe_redirect_binding(self, mock_auth_session):
+    def test_frontchannel_iframe_redirect_binding(self):
         """Test FRONTCHANNEL_IFRAME with REDIRECT binding"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
         self.provider.sls_binding = SAMLBindings.REDIRECT
         self.provider.save()
@@ -670,11 +658,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify the logout request was parsed
         self.assertIn("authentik/providers/saml/logout_request", view.plan_context)
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_backchannel_parses_request(self, mock_auth_session):
+    def test_backchannel_parses_request(self):
         """Test BACKCHANNEL mode parses request correctly"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.BACKCHANNEL
         self.provider.sls_binding = SAMLBindings.POST
         self.provider.save()
@@ -702,11 +687,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         self.assertEqual(view.provider.logout_method, SAMLLogoutMethods.BACKCHANNEL)
         self.assertEqual(view.provider.sls_binding, SAMLBindings.POST)
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_no_sls_url_only_session_end(self, mock_auth_session):
+    def test_no_sls_url_only_session_end(self):
         """Test that only SessionEndStage is appended when sls_url is empty"""
-        mock_auth_session.from_request.return_value = None
-
         # Create provider without sls_url
         provider_no_sls = SAMLProvider.objects.create(
             name="no-sls-provider",
@@ -751,11 +733,8 @@ class TestSPInitiatedSLOLogoutMethods(TestCase):
         # Verify the provider has no sls_url
         self.assertEqual(view.provider.sls_url, "")
 
-    @patch("authentik.providers.saml.views.sp_slo.AuthenticatedSession")
-    def test_relay_state_propagation(self, mock_auth_session):
+    def test_relay_state_propagation(self):
         """Test that relay state from logout request is passed through to response"""
-        mock_auth_session.from_request.return_value = None
-
         self.provider.logout_method = SAMLLogoutMethods.FRONTCHANNEL_IFRAME
         self.provider.save()
 

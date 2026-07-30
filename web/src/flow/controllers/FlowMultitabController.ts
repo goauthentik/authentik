@@ -1,8 +1,10 @@
-import { globalAK } from "#common/global";
-
 import type { Interface } from "#elements/Interface";
 
-import { multiTabOrchestrateLeave } from "#flow/tabs/orchestrator";
+import { AKMultiTabEvent } from "#flow/tabs/events";
+import {
+    multiTabOrchestrateLeave as dispatchTabExit,
+    suppressNextExitForSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { ChallengeTypes, IdentificationChallenge } from "@goauthentik/api";
 
@@ -34,37 +36,47 @@ export class FlowMultitabController implements ReactiveController {
         /* no op */
     }
 
-    onMultitab = () => {
+    protected multiTabListener = () => {
         const { challenge } = this.host;
-        if (!challenge) {
-            return;
-        }
 
-        if (isIdentificationChallenge(challenge) && challenge.applicationPreLaunch) {
-            multiTabOrchestrateLeave();
-            window.location.assign(challenge.applicationPreLaunch);
+        if (!challenge) {
             return;
         }
 
         const qs = new URLSearchParams(window.location.search);
         const next = qs.get("next");
+
         if (next) {
             const url = new URL(next, window.location.origin);
-            if (!url.pathname.startsWith(`${globalAK().api.relBase}if/flow`)) {
-                multiTabOrchestrateLeave();
+
+            if (url.origin === window.location.origin) {
+                suppressNextExitForSameOriginNavigation();
+            } else {
+                dispatchTabExit();
             }
+
             window.location.assign(url);
+
+            return;
+        }
+
+        if (isIdentificationChallenge(challenge) && challenge.applicationPreLaunch) {
+            dispatchTabExit();
+
+            window.location.assign(challenge.applicationPreLaunch);
         }
     };
 
-    hostConnected() {
+    public hostConnected() {
         this.#abortController?.abort();
         this.#abortController = new AbortController();
+
         const { signal } = this.#abortController;
-        window.addEventListener("ak-multitab-continue", this.onMultitab, { signal });
+
+        window.addEventListener(AKMultiTabEvent.eventName, this.multiTabListener, { signal });
     }
 
-    hostDisconnected() {
+    public hostDisconnected() {
         this.#abortController?.abort();
         this.#abortController = null;
     }

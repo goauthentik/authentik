@@ -93,6 +93,7 @@ class Migration(migrations.Migration):
                     ("aws", "AWS"),
                     ("slack", "Slack"),
                     ("sfdc", "Salesforce"),
+                    ("gitlab", "GitLab"),
                     ("webex", "Webex"),
                     ("vcenter", "vCenter"),
                 ],

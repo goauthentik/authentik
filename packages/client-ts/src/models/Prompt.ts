@@ -109,10 +109,22 @@ export interface Prompt {
 export function instanceOfPrompt(value: object): value is Prompt {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("fieldKey" in value) || value["fieldKey"] === undefined) return false;
+    if (
+        (!("fieldKey" in (value as Record<string, any>)) &&
+            !("field_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["fieldKey"] === undefined &&
+            (value as Record<string, any>)["field_key"] === undefined)
+    )
+        return false;
     if (!("label" in value) || value["label"] === undefined) return false;
     if (!("type" in value) || value["type"] === undefined) return false;
-    if (!("promptStagesObj" in value) || value["promptStagesObj"] === undefined) return false;
+    if (
+        (!("promptStagesObj" in (value as Record<string, any>)) &&
+            !("prompt_stages_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["promptStagesObj"] === undefined &&
+            (value as Record<string, any>)["prompt_stages_obj"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -148,7 +160,7 @@ export function PromptToJSON(json: any): Prompt {
 }
 
 export function PromptToJSONTyped(
-    value?: Omit<Prompt, "pk" | "prompt_stages_obj"> | null,
+    value?: Omit<Prompt, "pk" | "promptStagesObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

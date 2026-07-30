@@ -221,6 +221,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 name="privateKey"
                 label=${msg("Secret Key")}
                 input-hint="code"
+                plaintext
                 ?required=${!this.instance}
                 ?revealed=${!this.instance}
                 placeholder=${msg("Paste your CAPTCHA secret key...")}
@@ -263,6 +264,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     help=${msg(
                         "Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.",
                     )}
+                    ?allowFloat=${true}
                 ></ak-number-input>
                 <ak-number-input
                     label=${msg("Score Maximum Threshold")}
@@ -272,6 +274,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     help=${msg(
                         "Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.",
                     )}
+                    ?allowFloat=${true}
                 ></ak-number-input>
                 <ak-switch-input
                     ?checked=${formValues.errorOnInvalidScore}
