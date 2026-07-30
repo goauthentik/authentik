@@ -3,6 +3,11 @@
 from json import loads
 from uuid import UUID
 
+<<<<<<< HEAD
+=======
+from cryptography.hazmat.primitives.serialization import Encoding
+from cryptography.x509 import load_der_x509_certificate
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext as __
@@ -46,6 +51,16 @@ PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/
 PLAN_CONTEXT_WEBAUTHN_ATTEMPT = "goauthentik.io/stages/authenticator_webauthn/attempt"
 
 
+<<<<<<< HEAD
+=======
+@dataclass
+class VerifiedRegistrationData:
+    registration: VerifiedRegistration
+    attest_cert: str | None = None
+    attest_cert_fingerprint: str | None = None
+
+
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
     """WebAuthn Challenge"""
 
@@ -77,10 +92,32 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
             self.stage.logger.warning("registration failed", exc=exc)
             raise ValidationError(f"Registration failed. Error: {exc}") from None
 
+<<<<<<< HEAD
         credential_id_exists = WebAuthnDevice.objects.filter(
             credential_id=bytes_to_base64url(registration.credential_id)
         ).first()
         if credential_id_exists:
+=======
+        registration_data = VerifiedRegistrationData(registration)
+        stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
+
+        att_obj = parse_attestation_object(registration.attestation_object)
+        if (
+            att_obj
+            and att_obj.att_stmt
+            and att_obj.att_stmt.x5c is not None
+            and len(att_obj.att_stmt.x5c) > 0
+        ):
+            cert = load_der_x509_certificate(att_obj.att_stmt.x5c[0])
+            registration_data.attest_cert = cert.public_bytes(
+                encoding=Encoding.PEM,
+            ).decode("utf-8")
+            registration_data.attest_cert_fingerprint = fingerprint_sha256(cert)
+
+        if WebAuthnDevice.objects.filter(
+            credential_id=bytes_to_base64url(registration.credential_id)
+        ).exists():
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
             raise ValidationError("Credential ID already exists.")
 
         stage: AuthenticatorWebAuthnStage = self.stage.executor.current_stage
@@ -175,6 +212,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Webauthn Challenge has already been validated
+<<<<<<< HEAD
         webauthn_credential: VerifiedRegistration = response.validated_data["response"]
         existing_device = WebAuthnDevice.objects.filter(
             credential_id=bytes_to_base64url(webauthn_credential.credential_id)
@@ -198,4 +236,25 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             )
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
+=======
+        webauthn_credential: VerifiedRegistrationData = response.validated_data["response"]
+        name = "WebAuthn Device"
+        device_type = WebAuthnDeviceType.objects.filter(
+            aaguid=webauthn_credential.registration.aaguid
+        ).first()
+        if device_type and device_type.description:
+            name = device_type.description
+        WebAuthnDevice.objects.create(
+            name=name,
+            user=self.get_pending_user(),
+            public_key=bytes_to_base64url(webauthn_credential.registration.credential_public_key),
+            credential_id=bytes_to_base64url(webauthn_credential.registration.credential_id),
+            sign_count=webauthn_credential.registration.sign_count,
+            rp_id=get_rp_id(self.request),
+            device_type=device_type,
+            aaguid=webauthn_credential.registration.aaguid,
+            attestation_certificate_pem=webauthn_credential.attest_cert,
+            attestation_certificate_fingerprint=webauthn_credential.attest_cert_fingerprint,
+        )
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
         return self.executor.stage_ok()

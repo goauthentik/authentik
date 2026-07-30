@@ -5,7 +5,7 @@ from base64 import b64decode
 from django.urls import reverse
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -132,6 +132,44 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                         ),
                     },
                 },
+            },
+            SERVER_NAME="localhost",
+            SERVER_PORT="9000",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertTrue(WebAuthnDevice.objects.filter(user=self.user).exists())
+
+    def test_register_shared_attestation_certificate(self):
+        """Test that a device sharing an attestation certificate with an existing device of
+        another user can still be registered.
+
+        Attestation certificates are shared across entire manufacturing batches, so they must
+        never be treated as identifying an individual device."""
+        WebAuthnDevice.objects.create(
+            user=create_test_user(),
+            name=generate_id(),
+            credential_id=bytes_to_base64url(b"batch-sibling-credential"),
+            rp_id="localhost",
+            attestation_certificate_fingerprint=(
+                "3e:28:fc:df:45:19:bb:94:0a:0c:90:98:f2:08:72:53:"
+                "2a:9e:e2:76:13:02:3e:69:61:4a:d9:90:49:80:3d:34"
+            ),
+        )
+
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
+            b"iHIX3AtkZZCxSYLxOhk80ZXI7RnAC0Pb4WTk9dEJ4eLJdzoh8jRmjKW2U9oE/CBn5n6Zj67BIIZvFL3lpiwJwg=="
+        )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={
+                "component": "ak-stage-authenticator-webauthn",
+                "response": loads(load_fixture("fixtures/register.json")),
             },
             SERVER_NAME="localhost",
             SERVER_PORT="9000",

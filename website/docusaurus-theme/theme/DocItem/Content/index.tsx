@@ -8,6 +8,12 @@
  * support badges, and Authentik version badges.
  */
 
+<<<<<<< HEAD
+=======
+import "./styles.css";
+
+import { MarkdownPageActions } from "#components/MarkdownPageActions.tsx";
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 import { SupportBadge } from "#components/SupportBadge.tsx";
 import { VersionBadge } from "#components/VersionBadge.tsx";
 
@@ -121,13 +127,19 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
-            {syntheticTitle ? (
-                <header>
-                    <Heading as="h1">{syntheticTitle}</Heading>
+            <header>
+                <div className="authentik-doc-title-row">
+                    {syntheticTitle ? (
+                        <Heading as="h1">{syntheticTitle}</Heading>
+                    ) : (
+                        <span className="authentik-doc-title-spacer" />
+                    )}
 
-                    <BadgeGroup badges={badges} />
-                </header>
-            ) : null}
+                    <MarkdownPageActions />
+                </div>
+
+                {syntheticTitle ? <BadgeGroup badges={badges} /> : null}
+            </header>
 
             <MDXContent>{children}</MDXContent>
         </div>

@@ -359,14 +359,54 @@ name = "autobahn"
 version = "24.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+<<<<<<< HEAD
     { name = "cryptography" },
     { name = "hyperlink" },
     { name = "setuptools" },
     { name = "txaio" },
+=======
+    { name = "cbor2" },
+    { name = "cffi" },
+    { name = "cryptography" },
+    { name = "hyperlink" },
+    { name = "py-ubjson" },
+    { name = "txaio" },
+    { name = "u-msgpack-python" },
+    { name = "ujson" },
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/38/f2/8dffb3b709383ba5b47628b0cc4e43e8d12d59eecbddb62cfccac2e7cf6a/autobahn-24.4.2.tar.gz", hash = "sha256:a2d71ef1b0cf780b6d11f8b205fd2c7749765e65795f2ea7d823796642ee92c9", size = 482700, upload-time = "2024-08-02T09:26:48.241Z" }
 wheels = [
+<<<<<<< HEAD
     { url = "https://files.pythonhosted.org/packages/13/ee/a6475f39ef6c6f41c33da6b193e0ffd2c6048f52e1698be6253c59301b72/autobahn-24.4.2-py2.py3-none-any.whl", hash = "sha256:c56a2abe7ac78abbfb778c02892d673a4de58fd004d088cd7ab297db25918e81", size = 666965, upload-time = "2024-08-02T09:26:44.274Z" },
+=======
+    { url = "https://files.pythonhosted.org/packages/f6/58/e498821606db57305c8f3c26d9b28fd73e4e0583a1f48330df500721c418/autobahn-25.12.2-cp314-cp314-win_amd64.whl", hash = "sha256:18b12e8af7fc115487715afa10b3f5b5a4b5989bebbe05b71722cf9fce7b1bfb", size = 2184111, upload-time = "2025-12-15T11:13:12.461Z" },
+]
+
+[[package]]
+name = "autobahn"
+version = "26.6.2"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "platform_python_implementation != 'PyPy' or sys_platform != 'win32'",
+]
+dependencies = [
+    { name = "cbor2" },
+    { name = "cffi" },
+    { name = "cryptography" },
+    { name = "hyperlink" },
+    { name = "msgpack", marker = "platform_python_implementation == 'CPython'" },
+    { name = "txaio" },
+    { name = "u-msgpack-python", marker = "platform_python_implementation != 'CPython'" },
+    { name = "ujson" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/16/47/f0321f2465025fe6b2e4ebcbe2a46838e701f0865894838fe13f4128d131/autobahn-26.6.2.tar.gz", hash = "sha256:51c96b778c739f0a3e78aaea4beba4df05db9092267c7813a7d13c643cbc28f7", size = 14041630, upload-time = "2026-06-19T15:11:41.215Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/58/ea997510f4a6cbcf6444a20e742271efd49828ab69174b940513926ffdfe/autobahn-26.6.2-cp314-cp314-macosx_15_0_arm64.whl", hash = "sha256:35e7ca0a0202dda00887f836ca01efc889036dbfd9f4ec5a11c2c5915dd29860", size = 1974519, upload-time = "2026-06-19T15:11:30.575Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/e0/7bec571c751f19abaeca291c7c8a9159e87c324725d13ab83148d9d8ef89/autobahn-26.6.2-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:136058e9013b6bf52832270700e5f3cb451d6d5bb6b9dde8fb074edc5478414d", size = 2242427, upload-time = "2026-06-19T15:11:31.987Z" },
+    { url = "https://files.pythonhosted.org/packages/84/8c/ef5fa6dec57e157a9d91c5ea419a50d63bd6e29c5b3530ed3e1baa2793f9/autobahn-26.6.2-cp314-cp314-win_amd64.whl", hash = "sha256:d4b4febde993fdc1c7276cf63e4564fc4a7cc97db2c756df45a84468919cf9dc", size = 2194115, upload-time = "2026-06-19T15:11:33.22Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/3b/e32562732e38099e94ddbf29a77a4f3654b27b9e391c05b9c697f7655026/autobahn-26.6.2-cp314-cp314t-manylinux_2_24_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:4040bc01400f7d7b2444495cba64555d93515357da15d0911c8ff667339abadd", size = 2082300, upload-time = "2026-06-19T15:11:34.435Z" },
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 ]
 
 [[package]]
@@ -2429,11 +2469,19 @@ wheels = [
 
 [[package]]
 name = "pyasn1"
+<<<<<<< HEAD
 version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ba/e9/01f1a64245b89f039897cb0130016d79f77d52669aae6ee7b159a6c4c018/pyasn1-0.6.1.tar.gz", hash = "sha256:6f580d2bdd84365380830acf45550f2511469f673cb4a5ae3857a3170128b034", size = 145322, upload-time = "2024-09-10T22:41:42.55Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c8/f1/d6a797abb14f6283c0ddff96bbdd46937f64122b8c925cab503dd37f8214/pyasn1-0.6.1-py3-none-any.whl", hash = "sha256:0d632f46f2ba09143da3a8afe9e33fb6f92fa2320ab7e886e2d0f7672af84629", size = 83135, upload-time = "2024-09-11T16:00:36.122Z" },
+=======
+version = "0.6.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/9a/23310166d960def5897e91fe20e5b724601b02a22e84ba1f94232c0b7f67/pyasn1-0.6.4.tar.gz", hash = "sha256:9c447d8431c947fe4c8febc4ed9e760bc29011a5b01e5c74b67025bd9fb8ce81", size = 151262, upload-time = "2026-07-09T01:12:33.988Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9a/3b/6163796d69c3977d1e4287bea4a6979161cbbdd170ebb430511e8e1999ce/pyasn1-0.6.4-py3-none-any.whl", hash = "sha256:deda9277cfd454080ec40b207fb6df82206a3a2688735233cdcd8d3d565f088b", size = 84410, upload-time = "2026-07-09T01:12:32.92Z" },
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 ]
 
 [[package]]
@@ -2984,11 +3032,19 @@ wheels = [
 
 [[package]]
 name = "setuptools"
+<<<<<<< HEAD
 version = "80.9.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz", hash = "sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c", size = 1319958, upload-time = "2025-05-27T00:56:51.443Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl", hash = "sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922", size = 1201486, upload-time = "2025-05-27T00:56:49.664Z" },
+=======
+version = "83.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/26/f5d29e25ffdb535afef2d35cdb55b325298f96debd670da4c325e08d70f4/setuptools-83.0.0.tar.gz", hash = "sha256:025bccbbf0fa05b6192bc64ae1e7b16e001fd6d6d4d5de03c97b1c1ade523bef", size = 1154254, upload-time = "2026-07-04T15:31:22.699Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl", hash = "sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3", size = 1008090, upload-time = "2026-07-04T15:31:20.885Z" },
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 ]
 
 [[package]]

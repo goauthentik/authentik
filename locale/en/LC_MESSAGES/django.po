@@ -8,7 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2025-08-11 00:12+0000\n"
+=======
+"POT-Creation-Date: 2026-07-30 16:00+0000\n"
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +156,77 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
+<<<<<<< HEAD
+=======
+#: authentik/core/api/users.py
+msgid "Can't create internal service accounts"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "A user/group with these details already exists"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Unable to create user"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Unknown error occurred"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr ""
+
+#: authentik/core/apps.py
+msgid "Applications with no policies bound can be accessed by any user."
+msgstr ""
+
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 #: authentik/core/models.py
 msgid "name"
 msgstr ""
@@ -373,6 +448,14 @@ msgid "Sessions"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr ""
 
@@ -431,6 +514,14 @@ msgstr ""
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
 msgstr ""
 
 #: authentik/crypto/api.py
@@ -3736,6 +3827,10 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
+msgstr ""
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

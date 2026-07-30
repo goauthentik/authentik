@@ -82,7 +82,19 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
+<<<<<<< HEAD
     device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+=======
+    hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
+    )
+
+    device_type_restrictions = models.ManyToManyField(
+        "WebAuthnDeviceType", blank=True, through="AuthenticatorWebAuthnStageDeviceTypeRestriction"
+    )
+>>>>>>> a690485a1 (website/docs: release 2026.8: fix missing headers (#24522))
 
     max_attempts = models.PositiveIntegerField(default=0)
 
