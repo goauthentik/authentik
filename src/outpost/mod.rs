@@ -8,8 +8,9 @@ use ak_client::{
 use ak_common::Mode;
 use ak_common::{Tasks, VERSION, api, authentik_build_hash, tracing::LogFilterHandle};
 use arc_swap::ArcSwap;
-use eyre::{Result, eyre};
-use tracing::{debug, info, instrument};
+use eyre::{Error, Result, eyre};
+use tokio_retry2::{Retry, RetryError, strategy::LinearBackoff};
+use tracing::{debug, info, instrument, warn};
 use uuid::Uuid;
 
 pub(crate) mod event;
@@ -43,10 +44,23 @@ pub(crate) struct OutpostController {
 impl OutpostController {
     #[instrument(skip_all)]
     async fn get_outpost(api_config: &Configuration) -> Result<OutpostModel> {
-        let outposts = outposts_instances_list(
-            api_config, None, None, None, None, None, None, None, None, None, None, None, None,
-        )
-        .await?;
+        let retry_strategy = LinearBackoff::from_millis(500).max_delay(Duration::from_secs(5));
+        let retrieve_outposts = async || {
+            outposts_instances_list(
+                api_config, None, None, None, None, None, None, None, None, None, None, None, None,
+            )
+            .await
+            .map_err(Error::new)
+            .map_err(RetryError::transient)
+        };
+        let retry_notify = |err: &Error, _duration| {
+            warn!(
+                ?err,
+                "Failed to fetch outpost from API, retrying in 3 seconds"
+            );
+        };
+
+        let outposts = Retry::spawn_notify(retry_strategy, retrieve_outposts, retry_notify).await?;
 
         let Some(outpost) = outposts.results.into_iter().next() else {
             return Err(eyre!(
