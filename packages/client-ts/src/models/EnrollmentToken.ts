@@ -69,8 +69,20 @@ export interface EnrollmentToken {
  * Check if a given object implements the EnrollmentToken interface.
  */
 export function instanceOfEnrollmentToken(value: object): value is EnrollmentToken {
-    if (!("tokenUuid" in value) || value["tokenUuid"] === undefined) return false;
-    if (!("deviceGroupObj" in value) || value["deviceGroupObj"] === undefined) return false;
+    if (
+        (!("tokenUuid" in (value as Record<string, any>)) &&
+            !("token_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenUuid"] === undefined &&
+            (value as Record<string, any>)["token_uuid"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceGroupObj" in (value as Record<string, any>)) &&
+            !("device_group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceGroupObj"] === undefined &&
+            (value as Record<string, any>)["device_group_obj"] === undefined)
+    )
+        return false;
     if (!("connector" in value) || value["connector"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     return true;
@@ -89,12 +101,22 @@ export function EnrollmentTokenFromJSONTyped(
     }
     return {
         tokenUuid: json["token_uuid"],
-        deviceGroup: json["device_group"] == null ? undefined : json["device_group"],
+        deviceGroup:
+            json["device_group"] === undefined
+                ? undefined
+                : json["device_group"] === null
+                  ? null
+                  : json["device_group"],
         deviceGroupObj: DeviceAccessGroupFromJSON(json["device_group_obj"]),
         connector: json["connector"],
         name: json["name"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
     };
 }
 
@@ -103,7 +125,7 @@ export function EnrollmentTokenToJSON(json: any): EnrollmentToken {
 }
 
 export function EnrollmentTokenToJSONTyped(
-    value?: Omit<EnrollmentToken, "token_uuid" | "device_group_obj"> | null,
+    value?: Omit<EnrollmentToken, "tokenUuid" | "deviceGroupObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

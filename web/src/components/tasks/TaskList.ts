@@ -5,11 +5,13 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "#components/tasks/TaskStatus";
 import "#components/tasks/TaskStatusSummary";
+import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -109,18 +111,6 @@ export class TaskList extends Table<Task> {
         });
     }
 
-    #toggleShowOnlyStandalone = () => {
-        this.showOnlyStandalone = !this.showOnlyStandalone;
-        this.page = 1;
-        return this.fetch();
-    };
-
-    #toggleExcludeSuccessful = () => {
-        this.excludeSuccessful = !this.excludeSuccessful;
-        this.page = 1;
-        return this.fetch();
-    };
-
     protected override rowLabel(item: Task): string | null {
         return item.description ?? item.actorName ?? null;
     }
@@ -144,40 +134,34 @@ export class TaskList extends Table<Task> {
     renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    ${this.relObjId === undefined
-                        ? html` <label class="pf-c-switch">
-                              <input
-                                  class="pf-c-switch__input"
-                                  type="checkbox"
-                                  ?checked=${this.showOnlyStandalone}
-                                  @change=${this.#toggleShowOnlyStandalone}
-                              />
-                              <span class="pf-c-switch__toggle">
-                                  <span class="pf-c-switch__toggle-icon">
-                                      <i class="fas fa-check" aria-hidden="true"> </i>
-                                  </span>
-                              </span>
-                              <span class="pf-c-switch__label">
-                                  ${msg("Show only standalone tasks")}
-                              </span>
-                          </label>`
-                        : nothing}
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.excludeSuccessful}
-                            @change=${this.#toggleExcludeSuccessful}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"> </i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label"> ${msg("Exclude successful tasks")} </span>
-                    </label>
-                </div>
+                ${this.relObjId === undefined
+                    ? html`<ak-table-filter-select
+                          .options=${[
+                              { label: msg("Show only standalone tasks"), value: true },
+                              { label: msg("Show all tasks"), value: false },
+                          ]}
+                          group=${msg("Standalone")}
+                          .value=${this.showOnlyStandalone}
+                          @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                              this.showOnlyStandalone = ev.detail.value;
+                              this.page = 1;
+                              this.fetch();
+                          }}
+                      ></ak-table-filter-select>`
+                    : nothing}
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Exclude successful tasks"), value: true },
+                        { label: msg("Include successful tasks"), value: false },
+                    ]}
+                    group=${msg("Successful tasks")}
+                    .value=${this.excludeSuccessful}
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                        this.excludeSuccessful = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }
@@ -220,9 +204,16 @@ export class TaskList extends Table<Task> {
     renderExpanded(item: Task): TemplateResult {
         return html`<div class="pf-c-content">
             <p class="pf-c-title pf-u-mb-md">${msg("Current execution logs")}</p>
-            <ak-log-viewer .items=${item.logs}></ak-log-viewer>
-            <p class="pf-c-title pf-u-mt-xl pf-u-mb-md">${msg("Previous executions logs")}</p>
-            <ak-log-viewer .items=${item.previousLogs}></ak-log-viewer>
+            <ak-log-viewer display-box="contents" .items=${item.logs}></ak-log-viewer>
+            ${item.previousLogs.length > 0
+                ? html`<p class="pf-c-title pf-u-mt-xl pf-u-mb-md">
+                          ${msg("Previous executions logs")}
+                      </p>
+                      <ak-log-viewer
+                          display-box="contents"
+                          .items=${item.previousLogs}
+                      ></ak-log-viewer>`
+                : nothing}
         </div>`;
     }
 }

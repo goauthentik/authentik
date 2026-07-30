@@ -148,11 +148,41 @@ export interface IdentificationChallenge {
  * Check if a given object implements the IdentificationChallenge interface.
  */
 export function instanceOfIdentificationChallenge(value: object): value is IdentificationChallenge {
-    if (!("userFields" in value) || value["userFields"] === undefined) return false;
-    if (!("passwordFields" in value) || value["passwordFields"] === undefined) return false;
-    if (!("flowDesignation" in value) || value["flowDesignation"] === undefined) return false;
-    if (!("primaryAction" in value) || value["primaryAction"] === undefined) return false;
-    if (!("showSourceLabels" in value) || value["showSourceLabels"] === undefined) return false;
+    if (
+        (!("userFields" in (value as Record<string, any>)) &&
+            !("user_fields" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userFields"] === undefined &&
+            (value as Record<string, any>)["user_fields"] === undefined)
+    )
+        return false;
+    if (
+        (!("passwordFields" in (value as Record<string, any>)) &&
+            !("password_fields" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["passwordFields"] === undefined &&
+            (value as Record<string, any>)["password_fields"] === undefined)
+    )
+        return false;
+    if (
+        (!("flowDesignation" in (value as Record<string, any>)) &&
+            !("flow_designation" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["flowDesignation"] === undefined &&
+            (value as Record<string, any>)["flow_designation"] === undefined)
+    )
+        return false;
+    if (
+        (!("primaryAction" in (value as Record<string, any>)) &&
+            !("primary_action" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["primaryAction"] === undefined &&
+            (value as Record<string, any>)["primary_action"] === undefined)
+    )
+        return false;
+    if (
+        (!("showSourceLabels" in (value as Record<string, any>)) &&
+            !("show_source_labels" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["showSourceLabels"] === undefined &&
+            (value as Record<string, any>)["show_source_labels"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -174,7 +204,11 @@ export function IdentificationChallengeFromJSONTyped(
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         userFields: json["user_fields"] == null ? null : json["user_fields"],
         pendingUserIdentifier:
-            json["pending_user_identifier"] == null ? undefined : json["pending_user_identifier"],
+            json["pending_user_identifier"] === undefined
+                ? undefined
+                : json["pending_user_identifier"] === null
+                  ? null
+                  : json["pending_user_identifier"],
         passwordFields: json["password_fields"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
@@ -183,9 +217,11 @@ export function IdentificationChallengeFromJSONTyped(
             json["application_pre_launch"] == null ? undefined : json["application_pre_launch"],
         flowDesignation: FlowDesignationEnumFromJSON(json["flow_designation"]),
         captchaStage:
-            json["captcha_stage"] == null
+            json["captcha_stage"] === undefined
                 ? undefined
-                : CaptchaChallengeFromJSON(json["captcha_stage"]),
+                : json["captcha_stage"] === null
+                  ? null
+                  : CaptchaChallengeFromJSON(json["captcha_stage"]),
         enrollUrl: json["enroll_url"] == null ? undefined : json["enroll_url"],
         recoveryUrl: json["recovery_url"] == null ? undefined : json["recovery_url"],
         passwordlessUrl: json["passwordless_url"] == null ? undefined : json["passwordless_url"],
@@ -197,7 +233,12 @@ export function IdentificationChallengeFromJSONTyped(
         showSourceLabels: json["show_source_labels"],
         enableRememberMe:
             json["enable_remember_me"] == null ? undefined : json["enable_remember_me"],
-        passkeyChallenge: json["passkey_challenge"] == null ? undefined : json["passkey_challenge"],
+        passkeyChallenge:
+            json["passkey_challenge"] === undefined
+                ? undefined
+                : json["passkey_challenge"] === null
+                  ? null
+                  : json["passkey_challenge"],
     };
 }
 

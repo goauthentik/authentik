@@ -38,7 +38,13 @@ export interface AuthenticatorDuoStageManualDeviceImportRequest {
 export function instanceOfAuthenticatorDuoStageManualDeviceImportRequest(
     value: object,
 ): value is AuthenticatorDuoStageManualDeviceImportRequest {
-    if (!("duoUserId" in value) || value["duoUserId"] === undefined) return false;
+    if (
+        (!("duoUserId" in (value as Record<string, any>)) &&
+            !("duo_user_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["duoUserId"] === undefined &&
+            (value as Record<string, any>)["duo_user_id"] === undefined)
+    )
+        return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     return true;
 }

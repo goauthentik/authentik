@@ -92,7 +92,12 @@ export function PartialUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        lastLogin:
+            json["last_login"] === undefined
+                ? undefined
+                : json["last_login"] === null
+                  ? null
+                  : new Date(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],

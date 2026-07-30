@@ -48,6 +48,12 @@ DATABASE_ERRORS = (
     OperationalError,
 )
 
+CONSUMABLE_TASK_STATES: set[TaskState] = set(TaskState) - {
+    TaskState.DONE,
+    TaskState.REJECTED,
+    TaskState.WAITING_FOR_DEPENDENCIES,
+}
+
 
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
     return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
@@ -77,6 +83,7 @@ class PostgresBroker(Broker):
         *args: Any,
         middleware: list[Middleware] | None = None,
         db_alias: str = DEFAULT_DB_ALIAS,
+        direct_db_alias: str | None = None,
         **kwargs: Any,
     ) -> None:
         super().__init__(*args, middleware=[], **kwargs)  # type: ignore[misc]
@@ -86,6 +93,12 @@ class PostgresBroker(Broker):
         self.queues = set()
 
         self.db_alias = db_alias
+        # Django alias used for connections that must hold a stable PG backend
+        # across statements (consumer LISTEN, session-scoped advisory locks).
+        # When unset, both fall back to db_alias. When set, ORM queries continue
+        # via db_alias (which may go through a transaction pooler) while LISTEN
+        # and lock connections go through direct_db_alias.
+        self.direct_db_alias = direct_db_alias or db_alias
         self.middleware = []
         if middleware:
             raise ImproperlyConfigured(
@@ -114,6 +127,7 @@ class PostgresBroker(Broker):
         return self.consumer_class(
             broker=self,
             db_alias=self.db_alias,
+            direct_db_alias=self.direct_db_alias,
             queue_name=queue_name,
             prefetch=prefetch,
             timeout=timeout,
@@ -235,6 +249,7 @@ class _PostgresConsumer(Consumer):
         queue_name: str,
         prefetch: int,
         timeout: int,
+        direct_db_alias: str | None = None,
         **kwargs: Any,
     ) -> None:
         self.logger = get_logger(__name__, type(self))
@@ -242,6 +257,8 @@ class _PostgresConsumer(Consumer):
         self.pending: set[str] = set()
         self.broker = broker
         self.db_alias = db_alias
+        # See PostgresBroker.__init__ for the rationale. None falls back to db_alias.
+        self.direct_db_alias = direct_db_alias or db_alias
         self.queue_name = queue_name
         self.timeout = timeout // 1000
         self.to_unlock: set[str] = set()
@@ -268,6 +285,7 @@ class _PostgresConsumer(Consumer):
             self.scheduler = import_string(Conf().scheduler_class)()
             self.scheduler.broker = self.broker
             self.scheduler.db_alias = self.db_alias
+            self.scheduler.direct_db_alias = self.direct_db_alias
             self.scheduler_interval = timedelta(seconds=Conf().scheduler_interval)
             self.scheduler_last_run = timezone.now() - self.scheduler_interval
 
@@ -279,15 +297,35 @@ class _PostgresConsumer(Consumer):
     def locks_connection(self) -> DatabaseWrapper:
         if self._locks_connection is not None and self._locks_connection.is_usable():
             return self._locks_connection
-        self._locks_connection = cast(DatabaseWrapper, connections.create_connection(self.db_alias))
+
+        if self._locks_connection is not None:
+            try:
+                self._locks_connection.close()
+            except DATABASE_ERRORS as exc:
+                self.logger.warning("Failed to close old unusable locks connection", exc=exc)
+
+        # Use the direct alias to bypass any transaction pooler: pg_advisory_lock
+        # and pg_advisory_unlock are session-scoped and must run on the same backend.
+        self._locks_connection = cast(
+            DatabaseWrapper, connections.create_connection(self.direct_db_alias)
+        )
         return self._locks_connection
 
     @property
     def listen_connection(self) -> DatabaseWrapper:
         if self._listen_connection is not None and self._listen_connection.is_usable():
             return self._listen_connection
+
+        if self._listen_connection is not None:
+            try:
+                self._listen_connection.close()
+            except DATABASE_ERRORS as exc:
+                self.logger.warning("Failed to close old unusable listen connection", exc=exc)
+
+        # Use the direct alias to bypass any transaction pooler: LISTEN
+        # registration is session-scoped and is lost if the pooler swaps backends.
         self._listen_connection = cast(
-            DatabaseWrapper, connections.create_connection(self.db_alias)
+            DatabaseWrapper, connections.create_connection(self.direct_db_alias)
         )
         # Required for notifications
         # See https://www.psycopg.org/psycopg3/docs/advanced/async.html#asynchronous-notifications
@@ -343,13 +381,7 @@ class _PostgresConsumer(Consumer):
         pending = set(
             self.query_set.exclude(message_id__in=self.in_processing)
             .filter(queue_name=self.queue_name)
-            .exclude(
-                state__in=(
-                    TaskState.DONE,
-                    TaskState.REJECTED,
-                    TaskState.WAITING_FOR_DEPENDENCIES,
-                )
-            )
+            .filter(state__in=CONSUMABLE_TASK_STATES)
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
             .values_list("message_id", flat=True)
@@ -385,7 +417,7 @@ class _PostgresConsumer(Consumer):
                     WHERE
                         {table}.{message_id} = %(message_id)s
                         AND
-                        {table}.{state} != ALL(%(excluded_states)s)
+                        {table}.{state} = ANY(%(consumable_states)s)
                         AND
                         ({table}.{eta} < %(maximum_eta)s OR {table}.{eta} IS NULL)
                         AND
@@ -401,11 +433,7 @@ class _PostgresConsumer(Consumer):
                     "state": TaskState.CONSUMED.value,
                     "mtime": timezone.now(),
                     "message_id": message_id,
-                    "excluded_states": [
-                        TaskState.DONE.value,
-                        TaskState.REJECTED.value,
-                        TaskState.WAITING_FOR_DEPENDENCIES.value,
-                    ],
+                    "consumable_states": [state.value for state in CONSUMABLE_TASK_STATES],
                     "maximum_eta": timezone.now() + timedelta(seconds=self.timeout),
                     "lock_id": self._get_message_lock_id(message_id),
                 },
