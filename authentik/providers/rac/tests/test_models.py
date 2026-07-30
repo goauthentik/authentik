@@ -34,7 +34,7 @@ class TestParseHost(SimpleTestCase):
                 self.assertEqual(ConnectionToken.parse_host(host), expected)
 
     def test_hostname_lowercased(self):
-        """Test hostname is normalised to lowercase"""
+        """Test hostname is normalized to lowercase"""
         self.assertEqual(ConnectionToken.parse_host("Host.Example:5901"), ("host.example", "5901"))
 
 

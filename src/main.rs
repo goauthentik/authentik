@@ -7,10 +7,12 @@ use argh::FromArgs;
 use eyre::{Result, eyre};
 use tracing::{error, info, trace};
 
+#[cfg(feature = "core")]
+pub(crate) mod brands;
 mod healthcheck;
 mod metrics;
 #[cfg(feature = "proxy")]
-mod outpost;
+pub(crate) mod outpost;
 #[cfg(feature = "core")]
 mod server;
 #[cfg(feature = "core")]
@@ -78,7 +80,7 @@ fn main() -> Result<()> {
     tls::init()?;
 
     let _sentry = ak_tracing::sentry::install()?;
-    ak_tracing::install()?;
+    let log_filter_handle = ak_tracing::install()?;
     drop(tracing_crude);
 
     tokio::runtime::Builder::new_multi_thread()
@@ -97,20 +99,22 @@ fn main() -> Result<()> {
             let metrics = metrics::start(&mut tasks)?;
 
             #[cfg(feature = "core")]
-            if Mode::get() == Mode::AllInOne || Mode::get() == Mode::Worker {
+            if Mode::is_core() {
                 db::init(&mut tasks).await?;
             }
 
             match cli.command {
                 #[cfg(feature = "core")]
                 Command::AllInOne(_) => {
-                    server::start(server::Cli::default(), &mut tasks).await?;
                     let workers = worker::start(worker::Cli::default(), &mut tasks)?;
                     metrics.workers.store(Some(workers));
+                    let server = server::start(server::Cli::default(), &mut tasks).await?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Server(args) => {
-                    server::start(args, &mut tasks).await?;
+                    let server = server::start(args, &mut tasks).await?;
+                    metrics.server.store(Some(server));
                 }
                 #[cfg(feature = "core")]
                 Command::Worker(args) => {
@@ -119,7 +123,12 @@ fn main() -> Result<()> {
                 }
                 #[cfg(feature = "proxy")]
                 Command::Proxy(args) => {
-                    outpost::start::<outpost::proxy::ProxyOutpost>(args, &mut tasks).await?;
+                    outpost::start::<outpost::proxy::ProxyOutpost>(
+                        args,
+                        &mut tasks,
+                        Some(log_filter_handle),
+                    )
+                    .await?;
                 }
                 // We're checking for this before starting anything else
                 Command::Healthcheck(_) => unreachable!(),
