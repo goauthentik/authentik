@@ -715,6 +715,7 @@ export interface SourcesLdapListRequest {
     slug?: string;
     sni?: boolean;
     startTls?: boolean;
+    syncGroupHierarchy?: boolean;
     syncGroups?: boolean;
     syncParentGroup?: string;
     syncUsers?: boolean;
@@ -870,7 +871,7 @@ export interface SourcesSamlListRequest {
     enabled?: boolean;
     enrollmentFlow?: string;
     forceAuthn?: boolean;
-    issuer?: string;
+    issuerOverride?: string;
     managed?: string;
     name?: string;
     nameIdPolicy?: SAMLNameIDPolicyEnum;
@@ -5968,6 +5969,10 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["start_tls"] = requestParameters["startTls"];
         }
 
+        if (requestParameters["syncGroupHierarchy"] != null) {
+            queryParameters["sync_group_hierarchy"] = requestParameters["syncGroupHierarchy"];
+        }
+
         if (requestParameters["syncGroups"] != null) {
             queryParameters["sync_groups"] = requestParameters["syncGroups"];
         }
@@ -7741,8 +7746,8 @@ export class SourcesApi extends runtime.BaseAPI {
             queryParameters["force_authn"] = requestParameters["forceAuthn"];
         }
 
-        if (requestParameters["issuer"] != null) {
-            queryParameters["issuer"] = requestParameters["issuer"];
+        if (requestParameters["issuerOverride"] != null) {
+            queryParameters["issuer_override"] = requestParameters["issuerOverride"];
         }
 
         if (requestParameters["managed"] != null) {

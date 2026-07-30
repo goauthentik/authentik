@@ -95,9 +95,15 @@ export function PatchedPolicyBindingRequestFromJSONTyped(
         return json;
     }
     return {
-        policy: json["policy"] == null ? undefined : json["policy"],
-        group: json["group"] == null ? undefined : json["group"],
-        user: json["user"] == null ? undefined : json["user"],
+        policy:
+            json["policy"] === undefined
+                ? undefined
+                : json["policy"] === null
+                  ? null
+                  : json["policy"],
+        group:
+            json["group"] === undefined ? undefined : json["group"] === null ? null : json["group"],
+        user: json["user"] === undefined ? undefined : json["user"] === null ? null : json["user"],
         target: json["target"] == null ? undefined : json["target"],
         negate: json["negate"] == null ? undefined : json["negate"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],

@@ -1,0 +1,114 @@
+---
+title: Integrate with Gotify
+sidebar_label: Gotify
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Gotify?
+
+> Gotify is a self-hosted server for sending and receiving messages in real time over WebSockets. It includes a web UI and REST API, with an Android app and command-line client.
+>
+> -- https://gotify.net/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `gotify.company` is the FQDN of the Gotify installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Gotify with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Gotify.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gotify.company/auth/oidc/callback`.
+        - If users will log in from the Gotify Android app, add another **Redirect URI** of type `Strict` `Authorization` as `gotify://oidc/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Gotify configuration
+
+Choose the configuration method that matches your Gotify deployment.
+
+<Tabs
+defaultValue="environment-file"
+values={[
+{ label: "Environment file", value: "environment-file" },
+{ label: "Container or service", value: "container-service" },
+]}>
+<TabItem value="environment-file">
+
+Add the following settings to the Gotify environment file:
+
+```env title="gotify-server.env"
+GOTIFY_OIDC_ENABLED=true
+GOTIFY_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+GOTIFY_OIDC_CLIENTID=<Client ID from authentik>
+GOTIFY_OIDC_CLIENTSECRET=<Client Secret from authentik>
+GOTIFY_OIDC_REDIRECTURL=https://gotify.company/auth/oidc/callback
+```
+
+Restart Gotify to apply the changes.
+
+</TabItem>
+<TabItem value="container-service">
+
+Set the following environment variables for the Gotify container or service:
+
+```env title=".env"
+GOTIFY_OIDC_ENABLED=true
+GOTIFY_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+GOTIFY_OIDC_CLIENTID=<Client ID from authentik>
+GOTIFY_OIDC_CLIENTSECRET=<Client Secret from authentik>
+GOTIFY_OIDC_REDIRECTURL=https://gotify.company/auth/oidc/callback
+```
+
+Restart the Gotify container or service to apply the changes.
+
+</TabItem>
+</Tabs>
+
+Use the same callback URL for the authentik **Redirect URI** and `GOTIFY_OIDC_REDIRECTURL`. If Gotify is served from a subpath, include the subpath before `/auth/oidc/callback` in both values.
+
+### Link existing users _(optional)_
+
+Gotify creates a local user when a new user logs in with OIDC. If a Gotify user with the same username already exists, Gotify rejects the login until you enable existing-user linking:
+
+```env title="gotify-server.env"
+GOTIFY_OIDC_LINK_BY_USERNAME=true
+```
+
+:::warning Existing-account linking
+Enable existing-user linking only if usernames in authentik correspond to the same people as the matching Gotify usernames.
+:::
+
+To permit only existing Gotify users to log in, also set `GOTIFY_OIDC_AUTOREGISTER=false`.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Gotify, log out of Gotify and click the **Login with OIDC** button on the login page. You should be redirected to authentik to log in, then redirected back to the Gotify web UI.
+
+## Resources
+
+- [Gotify documentation - OpenID Connect](https://gotify.net/docs/oidc)
+- [Gotify documentation - Configuration](https://gotify.net/docs/config)

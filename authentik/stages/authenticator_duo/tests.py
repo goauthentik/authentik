@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
+from django.db.models.deletion import ProtectedError
 from django.test.client import RequestFactory
 from django.urls import reverse
 
@@ -36,6 +37,22 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage.admin_integration_key = ""
         with self.assertRaises(ValueError):
             self.assertEqual(stage.admin_client().ikey, stage.admin_integration_key)
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        device = DuoDevice.objects.create(user=self.user, stage=stage)
+
+        with self.assertRaises(ProtectedError):
+            stage.delete()
+
+        self.assertTrue(AuthenticatorDuoStage.objects.filter(pk=stage.pk).exists())
+        self.assertTrue(DuoDevice.objects.filter(pk=device.pk).exists())
 
     def test_api_enrollment_invalid(self):
         """Test `enrollment_status`"""

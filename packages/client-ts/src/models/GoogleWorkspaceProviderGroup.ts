@@ -66,9 +66,21 @@ export function instanceOfGoogleWorkspaceProviderGroup(
     value: object,
 ): value is GoogleWorkspaceProviderGroup {
     if (!("id" in value) || value["id"] === undefined) return false;
-    if (!("googleId" in value) || value["googleId"] === undefined) return false;
+    if (
+        (!("googleId" in (value as Record<string, any>)) &&
+            !("google_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["googleId"] === undefined &&
+            (value as Record<string, any>)["google_id"] === undefined)
+    )
+        return false;
     if (!("group" in value) || value["group"] === undefined) return false;
-    if (!("groupObj" in value) || value["groupObj"] === undefined) return false;
+    if (
+        (!("groupObj" in (value as Record<string, any>)) &&
+            !("group_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupObj"] === undefined &&
+            (value as Record<string, any>)["group_obj"] === undefined)
+    )
+        return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("attributes" in value) || value["attributes"] === undefined) return false;
     return true;
@@ -100,7 +112,7 @@ export function GoogleWorkspaceProviderGroupToJSON(json: any): GoogleWorkspacePr
 }
 
 export function GoogleWorkspaceProviderGroupToJSONTyped(
-    value?: Omit<GoogleWorkspaceProviderGroup, "id" | "group_obj" | "attributes"> | null,
+    value?: Omit<GoogleWorkspaceProviderGroup, "id" | "groupObj" | "attributes"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

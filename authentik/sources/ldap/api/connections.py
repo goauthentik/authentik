@@ -10,10 +10,7 @@ from authentik.core.api.sources import (
     UserSourceConnectionViewSet,
 )
 from authentik.core.api.users import PartialGroupSerializer
-from authentik.sources.ldap.models import (
-    GroupLDAPSourceConnection,
-    UserLDAPSourceConnection,
-)
+from authentik.sources.ldap.models import GroupLDAPSourceConnection, UserLDAPSourceConnection
 
 
 class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
@@ -25,7 +22,7 @@ class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
 
 
 class UserLDAPSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
-    queryset = UserLDAPSourceConnection.objects.all()
+    queryset = UserLDAPSourceConnection.objects.select_related("user").all()
     serializer_class = UserLDAPSourceConnectionSerializer
 
 
@@ -38,5 +35,5 @@ class GroupLDAPSourceConnectionSerializer(GroupSourceConnectionSerializer):
 
 
 class GroupLDAPSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
-    queryset = GroupLDAPSourceConnection.objects.all()
+    queryset = GroupLDAPSourceConnection.objects.select_related("group").all()
     serializer_class = GroupLDAPSourceConnectionSerializer
