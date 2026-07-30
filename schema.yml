@@ -37317,9 +37317,6 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -37365,9 +37362,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -50059,9 +50053,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
