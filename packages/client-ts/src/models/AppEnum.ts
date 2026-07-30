@@ -89,11 +89,13 @@ export const AppEnum = {
     AuthentikEnterprisePoliciesUniquePassword: "authentik.enterprise.policies.unique_password",
     AuthentikEnterpriseProvidersGoogleWorkspace: "authentik.enterprise.providers.google_workspace",
     AuthentikEnterpriseProvidersMicrosoftEntra: "authentik.enterprise.providers.microsoft_entra",
+    AuthentikEnterpriseProvidersOauth2: "authentik.enterprise.providers.oauth2",
     AuthentikEnterpriseProvidersRadius: "authentik.enterprise.providers.radius",
     AuthentikEnterpriseProvidersScim: "authentik.enterprise.providers.scim",
     AuthentikEnterpriseProvidersSsf: "authentik.enterprise.providers.ssf",
     AuthentikEnterpriseProvidersWsFederation: "authentik.enterprise.providers.ws_federation",
     AuthentikEnterpriseReports: "authentik.enterprise.reports",
+    AuthentikEnterpriseRequests: "authentik.enterprise.requests",
     AuthentikEnterpriseStagesAccountLockdown: "authentik.enterprise.stages.account_lockdown",
     AuthentikEnterpriseStagesAuthenticatorEndpointGdtc:
         "authentik.enterprise.stages.authenticator_endpoint_gdtc",

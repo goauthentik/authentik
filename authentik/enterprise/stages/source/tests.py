@@ -23,7 +23,7 @@ class TestSourceStage(FlowTestCase):
     def setUp(self):
         self.source = SAMLSource.objects.create(
             slug=generate_id(),
-            issuer="authentik",
+            issuer_override="authentik",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )

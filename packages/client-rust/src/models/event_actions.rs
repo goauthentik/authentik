@@ -21,6 +21,8 @@ pub enum EventActions {
     Logout,
     #[serde(rename = "user_write")]
     UserWrite,
+    #[serde(rename = "user_offboarded")]
+    UserOffboarded,
     #[serde(rename = "suspicious_request")]
     SuspiciousRequest,
     #[serde(rename = "password_set")]
@@ -77,6 +79,14 @@ pub enum EventActions {
     ReviewAttested,
     #[serde(rename = "review_completed")]
     ReviewCompleted,
+    #[serde(rename = "access_request_created")]
+    AccessRequestCreated,
+    #[serde(rename = "access_request_approved")]
+    AccessRequestApproved,
+    #[serde(rename = "access_request_denied")]
+    AccessRequestDenied,
+    #[serde(rename = "access_request_revoked")]
+    AccessRequestRevoked,
     #[serde(rename = "custom_")]
     Custom,
 }
@@ -88,6 +98,7 @@ impl std::fmt::Display for EventActions {
             Self::LoginFailed => write!(f, "login_failed"),
             Self::Logout => write!(f, "logout"),
             Self::UserWrite => write!(f, "user_write"),
+            Self::UserOffboarded => write!(f, "user_offboarded"),
             Self::SuspiciousRequest => write!(f, "suspicious_request"),
             Self::PasswordSet => write!(f, "password_set"),
             Self::SecretView => write!(f, "secret_view"),
@@ -116,6 +127,10 @@ impl std::fmt::Display for EventActions {
             Self::ReviewOverdue => write!(f, "review_overdue"),
             Self::ReviewAttested => write!(f, "review_attested"),
             Self::ReviewCompleted => write!(f, "review_completed"),
+            Self::AccessRequestCreated => write!(f, "access_request_created"),
+            Self::AccessRequestApproved => write!(f, "access_request_approved"),
+            Self::AccessRequestDenied => write!(f, "access_request_denied"),
+            Self::AccessRequestRevoked => write!(f, "access_request_revoked"),
             Self::Custom => write!(f, "custom_"),
         }
     }

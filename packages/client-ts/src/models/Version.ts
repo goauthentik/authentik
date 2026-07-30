@@ -60,12 +60,42 @@ export interface Version {
  * Check if a given object implements the Version interface.
  */
 export function instanceOfVersion(value: object): value is Version {
-    if (!("versionCurrent" in value) || value["versionCurrent"] === undefined) return false;
-    if (!("versionLatest" in value) || value["versionLatest"] === undefined) return false;
-    if (!("versionLatestValid" in value) || value["versionLatestValid"] === undefined) return false;
-    if (!("buildHash" in value) || value["buildHash"] === undefined) return false;
+    if (
+        (!("versionCurrent" in (value as Record<string, any>)) &&
+            !("version_current" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionCurrent"] === undefined &&
+            (value as Record<string, any>)["version_current"] === undefined)
+    )
+        return false;
+    if (
+        (!("versionLatest" in (value as Record<string, any>)) &&
+            !("version_latest" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionLatest"] === undefined &&
+            (value as Record<string, any>)["version_latest"] === undefined)
+    )
+        return false;
+    if (
+        (!("versionLatestValid" in (value as Record<string, any>)) &&
+            !("version_latest_valid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionLatestValid"] === undefined &&
+            (value as Record<string, any>)["version_latest_valid"] === undefined)
+    )
+        return false;
+    if (
+        (!("buildHash" in (value as Record<string, any>)) &&
+            !("build_hash" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["buildHash"] === undefined &&
+            (value as Record<string, any>)["build_hash"] === undefined)
+    )
+        return false;
     if (!("outdated" in value) || value["outdated"] === undefined) return false;
-    if (!("outpostOutdated" in value) || value["outpostOutdated"] === undefined) return false;
+    if (
+        (!("outpostOutdated" in (value as Record<string, any>)) &&
+            !("outpost_outdated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["outpostOutdated"] === undefined &&
+            (value as Record<string, any>)["outpost_outdated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -94,12 +124,12 @@ export function VersionToJSON(json: any): Version {
 export function VersionToJSONTyped(
     value?: Omit<
         Version,
-        | "version_current"
-        | "version_latest"
-        | "version_latest_valid"
-        | "build_hash"
+        | "versionCurrent"
+        | "versionLatest"
+        | "versionLatestValid"
+        | "buildHash"
         | "outdated"
-        | "outpost_outdated"
+        | "outpostOutdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

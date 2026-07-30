@@ -45,8 +45,20 @@ export interface SyncObjectRequest {
  * Check if a given object implements the SyncObjectRequest interface.
  */
 export function instanceOfSyncObjectRequest(value: object): value is SyncObjectRequest {
-    if (!("syncObjectModel" in value) || value["syncObjectModel"] === undefined) return false;
-    if (!("syncObjectId" in value) || value["syncObjectId"] === undefined) return false;
+    if (
+        (!("syncObjectModel" in (value as Record<string, any>)) &&
+            !("sync_object_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["syncObjectModel"] === undefined &&
+            (value as Record<string, any>)["sync_object_model"] === undefined)
+    )
+        return false;
+    if (
+        (!("syncObjectId" in (value as Record<string, any>)) &&
+            !("sync_object_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["syncObjectId"] === undefined &&
+            (value as Record<string, any>)["sync_object_id"] === undefined)
+    )
+        return false;
     return true;
 }
 
