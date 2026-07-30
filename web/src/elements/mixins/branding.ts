@@ -115,7 +115,7 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
             }
 
             public get brandingMapTiles(): string {
-                return this.brand.brandingMapTiles || DefaultBrand.brandingMapTiles;
+                return this.brand.brandingMapTiles ?? DefaultBrand.brandingMapTiles;
             }
         }
 
