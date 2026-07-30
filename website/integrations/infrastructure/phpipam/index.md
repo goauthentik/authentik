@@ -96,8 +96,6 @@ phpIPAM requires the `display_name` and `email` SAML attributes when JIT provisi
             return ""
             ```
 
-![Screenshot of phpIPAM property mappings in authentik](./phpipam-property-mappings.png)
-
 The example `groups` mapping sends phpIPAM group names. Adjust `Operators` and `Guests` to match the groups that exist in your phpIPAM installation. The example `modules` mapping grants read/write access to all modules for operators and read-only access to all modules for guests.
 
 ### Create an application and provider
@@ -118,10 +116,6 @@ The example `groups` mapping sends phpIPAM group names. Adjust `Operators` and `
     - **Configure Bindings** _(optional)_: create [bindings](/docs/add-secure-apps/bindings-overview/) for `admin-permission-group`, `operator-permission-group`, and `guest-permission-group` so that only members of those groups can access phpIPAM from authentik.
 
 3. Click **Submit** to save the new application and provider.
-
-![Screenshot of the phpIPAM SAML provider protocol settings](./phpipam-saml-provider-protocol-settings.png)
-![Screenshot of the phpIPAM SAML provider advanced protocol settings](./phpipam-saml-advanced-provider-protocol-settings.png)
-![Screenshot of the phpIPAM application bindings in authentik](./ipam-saml-application-bindings.png)
 
 ### Download the signing certificate
 
@@ -144,17 +138,11 @@ The example `groups` mapping sends phpIPAM group names. Adjust `Operators` and `
     - **IDP X.509 public cert**: paste the contents of the signing certificate that you downloaded from authentik.
 5. Click **Save**.
 
-![Screenshot of the phpIPAM SAML2 authentication method configuration](./phpipam-auth-method-config.png)
-
 ## Configuration verification
 
 To verify that authentik is correctly integrated with phpIPAM, log out of phpIPAM and open the phpIPAM login page. Click the SAML2 login link to sign in with authentik.
 
-![Screenshot of the SAML2 login link on the phpIPAM login page](./ipam-saml2-login-location.png)
-
 After you sign in, phpIPAM creates or updates the local user with the SAML attributes from authentik. Test users from each permission group to confirm that the expected phpIPAM role, group membership, and module permissions are applied.
-
-![Screenshot of automatically provisioned phpIPAM users and permissions](./phpipam-automatic-user-creation-permissions.png)
 
 ## Resources
 
