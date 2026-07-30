@@ -1,5 +1,6 @@
 //! Verification of authentik-issued access tokens (used as ID tokens).
 
+use base64::{Engine as _, engine::general_purpose::URL_SAFE_NO_PAD as BASE64_URL_SAFE_NO_PAD};
 use eyre::{Result, eyre};
 use jsonwebtoken::{Algorithm, DecodingKey, Validation, decode, decode_header, jwk::JwkSet};
 
@@ -41,6 +42,16 @@ pub(crate) fn verify_hs256(
 /// Extract the `kid` from a token header without verifying the signature.
 pub(crate) fn token_kid(token: &str) -> Result<Option<String>> {
     Ok(decode_header(token)?.kid)
+}
+
+/// The `iss` a token claims, read without verifying anything.
+///
+/// For error messages only — never trust the result.
+pub(crate) fn unverified_issuer(token: &str) -> Option<String> {
+    let payload = token.split('.').nth(1)?;
+    let payload = BASE64_URL_SAFE_NO_PAD.decode(payload).ok()?;
+    let claims: serde_json::Value = serde_json::from_slice(&payload).ok()?;
+    Some(claims.get("iss")?.as_str()?.to_owned())
 }
 
 /// Verify an RS256-signed token against the JWK matching its `kid`.
