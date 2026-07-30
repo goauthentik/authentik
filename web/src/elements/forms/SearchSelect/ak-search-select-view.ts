@@ -20,7 +20,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
-const DISMISS_THRESHOLD = 250;
+const DEFAULT_REFOCUS_DELAY = 250;
 
 /**
  * Whether this browser can position *and* size the menu against its anchor purely
@@ -303,9 +303,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     #clickListener = (event: Event) => {
         if (this.readOnly) return;
 
+        const computedRefocusDelay = getComputedStyle(this)?.getPropertyValue(
+            "--ak-search-select--RefocusDelay",
+        );
+
+        const refocusDelay = parseInt(computedRefocusDelay, 10) || DEFAULT_REFOCUS_DELAY;
+
         // If this same click just light-dismissed the open popover, treat it as a
         // close: leave `open` false instead of toggling it back on.
-        const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < DISMISS_THRESHOLD;
+        const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < refocusDelay;
 
         this.open = dismissedByThisClick ? false : !this.open;
         this.#inputRef.value?.focus();
