@@ -1,5 +1,6 @@
 """Group client"""
 
+from copy import deepcopy
 from itertools import batched
 from typing import Any
 
@@ -111,11 +112,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
-                groups = self._request(
-                    "GET",
-                    f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
+                groups = self.lower_case_keys(
+                    self._request(
+                        "GET",
+                        f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
+                    )
                 )
-                groups_res = groups.get("Resources", [])
+                groups_res = groups.get("resources", [])
                 if len(groups_res) < 1:
                     raise exc
                 connection = SCIMProviderGroup.objects.create(
@@ -135,12 +138,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self._patch_add_users(connection, users)
         return connection
 
-    def diff(self, local_created: dict[str, Any], connection: SCIMProviderUser):
+    def diff(self, local_created: dict[str, Any], connection: SCIMProviderGroup):
         """Check if a group is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
         return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
@@ -397,11 +399,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         )
 
     def discover(self):
-        res = self._request("GET", "/Groups")
+        res = self.lower_case_keys(self._request("GET", "/Groups"))
         seen_items = 0
-        expected_items = int(res["totalResults"])
+        expected_items = int(res["totalresults"])
         while True:
-            for group in res["Resources"]:
+            for group in res["resources"]:
                 try:
                     self._discover_group_single(group)
                 except ValidationError:
@@ -411,7 +413,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 seen_items += 1
             if seen_items >= expected_items:
                 break
-            res = self._request("GET", f"/Groups?startIndex={seen_items + 1}")
+            res = self.lower_case_keys(self._request("GET", f"/Groups?startIndex={seen_items + 1}"))
 
     def _discover_group_single(self, group: dict):
         scim_group = SCIMGroupSchema.model_validate(group)

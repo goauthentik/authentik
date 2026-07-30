@@ -59,7 +59,13 @@ export function instanceOfAuthenticatedSessionGeoIp(
     if (!("continent" in value) || value["continent"] === undefined) return false;
     if (!("country" in value) || value["country"] === undefined) return false;
     if (!("lat" in value) || value["lat"] === undefined) return false;
-    if (!("_long" in value) || value["_long"] === undefined) return false;
+    if (
+        (!("_long" in (value as Record<string, any>)) &&
+            !("long" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["_long"] === undefined &&
+            (value as Record<string, any>)["long"] === undefined)
+    )
+        return false;
     if (!("city" in value) || value["city"] === undefined) return false;
     return true;
 }

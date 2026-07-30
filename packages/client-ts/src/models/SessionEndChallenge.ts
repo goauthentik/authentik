@@ -88,9 +88,27 @@ export interface SessionEndChallenge {
  * Check if a given object implements the SessionEndChallenge interface.
  */
 export function instanceOfSessionEndChallenge(value: object): value is SessionEndChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
-    if (!("brandName" in value) || value["brandName"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
+    if (
+        (!("brandName" in (value as Record<string, any>)) &&
+            !("brand_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["brandName"] === undefined &&
+            (value as Record<string, any>)["brand_name"] === undefined)
+    )
+        return false;
     return true;
 }
 

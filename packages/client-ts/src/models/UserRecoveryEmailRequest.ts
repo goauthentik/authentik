@@ -38,7 +38,13 @@ export interface UserRecoveryEmailRequest {
 export function instanceOfUserRecoveryEmailRequest(
     value: object,
 ): value is UserRecoveryEmailRequest {
-    if (!("emailStage" in value) || value["emailStage"] === undefined) return false;
+    if (
+        (!("emailStage" in (value as Record<string, any>)) &&
+            !("email_stage" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["emailStage"] === undefined &&
+            (value as Record<string, any>)["email_stage"] === undefined)
+    )
+        return false;
     return true;
 }
 

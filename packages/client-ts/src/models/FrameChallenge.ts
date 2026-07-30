@@ -65,7 +65,13 @@ export interface FrameChallenge {
  */
 export function instanceOfFrameChallenge(value: object): value is FrameChallenge {
     if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("loadingText" in value) || value["loadingText"] === undefined) return false;
+    if (
+        (!("loadingText" in (value as Record<string, any>)) &&
+            !("loading_text" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["loadingText"] === undefined &&
+            (value as Record<string, any>)["loading_text"] === undefined)
+    )
+        return false;
     return true;
 }
 

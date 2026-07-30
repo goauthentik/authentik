@@ -49,7 +49,13 @@ export interface NetworkInterfaceRequest {
  */
 export function instanceOfNetworkInterfaceRequest(value: object): value is NetworkInterfaceRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("hardwareAddress" in value) || value["hardwareAddress"] === undefined) return false;
+    if (
+        (!("hardwareAddress" in (value as Record<string, any>)) &&
+            !("hardware_address" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["hardwareAddress"] === undefined &&
+            (value as Record<string, any>)["hardware_address"] === undefined)
+    )
+        return false;
     return true;
 }
 

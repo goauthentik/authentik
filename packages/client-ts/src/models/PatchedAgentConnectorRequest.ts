@@ -137,10 +137,19 @@ export function PatchedAgentConnectorRequestFromJSONTyped(
                 : json["auth_terminate_session_on_expiry"],
         refreshInterval: json["refresh_interval"] == null ? undefined : json["refresh_interval"],
         authorizationFlow:
-            json["authorization_flow"] == null ? undefined : json["authorization_flow"],
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
         nssUidOffset: json["nss_uid_offset"] == null ? undefined : json["nss_uid_offset"],
         nssGidOffset: json["nss_gid_offset"] == null ? undefined : json["nss_gid_offset"],
-        challengeKey: json["challenge_key"] == null ? undefined : json["challenge_key"],
+        challengeKey:
+            json["challenge_key"] === undefined
+                ? undefined
+                : json["challenge_key"] === null
+                  ? null
+                  : json["challenge_key"],
         challengeIdleTimeout:
             json["challenge_idle_timeout"] == null ? undefined : json["challenge_idle_timeout"],
         challengeTriggerCheckIn:

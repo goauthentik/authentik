@@ -69,14 +69,6 @@
   <source>Stop impersonation</source>
   <target>Lopeta käyttäjänä esiintyminen</target>
 </trans-unit>
-<trans-unit id="s6abff64e7ff7fde9">
-  <source>Avatar image</source>
-  <target>Avatar-kuva</target>
-</trans-unit>
-<trans-unit id="s7cfe12cd14df9950">
-  <source>Sign out</source>
-  <target>Kirjaudu ulos</target>
-</trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
   <target>Ylläpitäjä</target>
@@ -3155,10 +3147,6 @@
   <source>Last login</source>
   <target>Viimeisin kirjautuminen</target>
 </trans-unit>
-<trans-unit id="s85a91d843c3eb4ad">
-  <source>Show inactive users</source>
-  <target>Näytä passiiviset käyttäjät</target>
-</trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
   <target>Valitse käyttäjiä</target>
@@ -3190,10 +3178,6 @@
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
   <target>Annetaanko tähän ryhmään lisätyille käyttäjille pääkäyttäjän oikeudet.</target>
-</trans-unit>
-<trans-unit id="s25bacc19d98b444e">
-  <source>Parent Group</source>
-  <target>Ylemmän tason ryhmä</target>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
@@ -4882,10 +4866,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source>Property Mapping(s)</source>
   <target>Ominaisuuskytkennät</target>
 </trans-unit>
-<trans-unit id="sc39fb3ff3753d5ab">
-  <source>Hide managed mappings</source>
-  <target>Piilota hallitut kytkennät</target>
-</trans-unit>
 <trans-unit id="s7468e87263dfff7e">
   <source>Identifier</source>
   <target>Tunniste</target>
@@ -5406,10 +5386,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
   <target>Käyttäjähaku</target>
-</trans-unit>
-<trans-unit id="s7c6c86d9a97ed706">
-  <source>Show deactivated users</source>
-  <target>Näytä käytöstä poistetut käyttäjät</target>
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
@@ -7911,10 +7887,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Overall license status</source>
   <target>Yleinen lisenssin tila</target>
 </trans-unit>
-<trans-unit id="s087d6f07b52b30ec">
-  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
-  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
   <target>Lisenssit</target>
@@ -9028,9 +9000,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
 </trans-unit>
-<trans-unit id="s3b4ad8abf4f08c35">
-  <source>Hide managed roles</source>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
 </trans-unit>
@@ -9908,12 +9877,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc0cb70cfd086d048">
   <source>Server validation of credential failed</source>
-</trans-unit>
-<trans-unit id="s1197b841263ebbcf">
-  <source>Require policies for application access</source>
-</trans-unit>
-<trans-unit id="s16d1cddf9cbccdbd">
-  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
 </trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
@@ -11470,12 +11433,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s7445550f2bfb2f2f">
   <source>No notes.</source>
 </trans-unit>
-<trans-unit id="s4891ccdb173626ba">
-  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
-</trans-unit>
-<trans-unit id="scad748da438c56d4">
-  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
-</trans-unit>
 <trans-unit id="s0502740c80377fe0">
   <source>Enrollment Flows</source>
 </trans-unit>
@@ -11598,6 +11555,548 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc8d9d9b824e7e8e9">
   <source>New Attribute</source>
+</trans-unit>
+<trans-unit id="s8d0c9855df034712">
+  <source>User Count Exceeded</source>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+</trans-unit>
+<trans-unit id="s3bca5a165739e8c9">
+  <source>Allow application access with no policies</source>
+</trans-unit>
+<trans-unit id="s36ecc1d57c02c225">
+  <source>Applications with no policies bound can be accessed by any user..</source>
+</trans-unit>
+<trans-unit id="s98a962f4514c9628">
+  <source>Expiring today</source>
+</trans-unit>
+<trans-unit id="se10a40e85fe55d76">
+  <source>Expiring in <x id="0" equiv-text="${formatDistanceStrict(new Date(), valid, { unit: &quot;day&quot; })}"/></source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml11">
+  <source>SAML 1.1 (required by Microsoft Entra ID / ADFS)</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml20">
+  <source>SAML 2.0</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.label">
+  <source>SAML assertion version</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.description">
+  <source>Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.</source>
+</trans-unit>
+<trans-unit id="settings.base-url.label">
+  <source>Base URL</source>
+</trans-unit>
+<trans-unit id="settings.base-url.description">
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).</source>
+</trans-unit>
+<trans-unit id="sb83f872f267d8506">
+  <source>Sync Group Hierarchy</source>
+</trans-unit>
+<trans-unit id="s9589dc36c516341a">
+  <source>Sync group hierarchy from LDAP directories.</source>
+</trans-unit>
+<trans-unit id="s9e8574c0abf42187">
+  <source>Additional Parent Group</source>
+</trans-unit>
+<trans-unit id="banner.dismiss.aria-label">
+  <source>Dismiss banner</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.action">
+  <source>Configure it in the system settings</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.label">
+  <source>The base URL has not been configured.</source>
+</trans-unit>
+<trans-unit id="sf993bb199fefbe04">
+  <source>All</source>
+</trans-unit>
+<trans-unit id="sfa1b95e8d5f908ef">
+  <source>Search for an offboarding by username...</source>
+</trans-unit>
+<trans-unit id="s666e836aa05114ac">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="s56d1d0a4e7bf5ae5">
+  <source>Scheduled deactivation or deletion of users, and their outcomes.</source>
+</trans-unit>
+<trans-unit id="s4677a21818ee3277">
+  <source>Only show pending offboardings</source>
+</trans-unit>
+<trans-unit id="s39689ea96631ed97">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="scae52d94b155a605">
+  <source>Scheduled by</source>
+</trans-unit>
+<trans-unit id="s116de51b09153006">
+  <source>Offboarding(s)</source>
+</trans-unit>
+<trans-unit id="see8b386a20d5d43a">
+  <source>canceled</source>
+</trans-unit>
+<trans-unit id="sdaf25bddf0323e13">
+  <source>Cancel Offboardings</source>
+</trans-unit>
+<trans-unit id="s3dfc819b4986e252">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="s78636b92c1a3909c">
+  <source>Pending</source>
+</trans-unit>
+<trans-unit id="s39ad5f4fbea4fb3f">
+  <source>Offboardings</source>
+</trans-unit>
+<trans-unit id="sfcfc3964931c0d94">
+  <source>Hide managed</source>
+</trans-unit>
+<trans-unit id="s3ac26c004d6ba636">
+  <source>Managed</source>
+</trans-unit>
+<trans-unit id="common.boolean.yes">
+  <source>Yes</source>
+</trans-unit>
+<trans-unit id="common.boolean.no">
+  <source>No</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.success">
+  <source>Successfully cancelled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.error">
+  <source>Failed to cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.confirm.label">
+  <source>Cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.header">
+  <source>Cancel scheduled offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.description">
+  <source>The following scheduled offboarding will be cancelled:</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.tooltip">
+  <source>Offboarding scheduled for <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/></source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.trigger.label">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.submit.label">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.header">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.trigger.label">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name">
+  <source>User Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name-plural">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.success">
+  <source>Successfully scheduled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.action.label">
+  <source>Action</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.label">
+  <source>Deactivate</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.description">
+  <source>Lock the user out of authentik without removing their account.</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.label">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.description">
+  <source>Permanently delete the user's account.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.label">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.description">
+  <source>The offboarding runs on the next scheduled check after this time (within a few minutes).</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.label">
+  <source>Revoke sessions</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.description">
+  <source>Revoke all of the user's sessions when offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.label">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.description">
+  <source>Revoke all of the user's tokens when offboarding.</source>
+</trans-unit>
+<trans-unit id="sbe3eca5340d724c3">
+  <source>User was offboarded</source>
+</trans-unit>
+<trans-unit id="s7a677507399dca59">
+  <source>Request rules</source>
+</trans-unit>
+<trans-unit id="s2072c9a69b14fee2">
+  <source>Configure rules which grant users the ability to request access to this app.</source>
+</trans-unit>
+<trans-unit id="s1fc34f990dd8e442">
+  <source>Request flow</source>
+</trans-unit>
+<trans-unit id="s3926945b8747fe55">
+  <source>Select a request flow...</source>
+</trans-unit>
+<trans-unit id="sf0e0d71b74a9e77f">
+  <source>Default flow used by users requesting access.</source>
+</trans-unit>
+<trans-unit id="sa6e1274964f6a4b4">
+  <source>Fulfill request</source>
+</trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+</trans-unit>
+<trans-unit id="sd348917df892e7a5">
+  <source>Requester</source>
+</trans-unit>
+<trans-unit id="s7e09dc48031bb282">
+  <source>Fulfiller</source>
+</trans-unit>
+<trans-unit id="sfecdd5e13f68c9ba">
+  <source>Approved</source>
+</trans-unit>
+<trans-unit id="s93390561e1afc0b6">
+  <source>Denied</source>
+</trans-unit>
+<trans-unit id="sac8256732f2ee1e5">
+  <source>Data</source>
+</trans-unit>
+<trans-unit id="sfa9d8c928d994bf5">
+  <source>Revoked</source>
+</trans-unit>
+<trans-unit id="s5105f7e2595f69cf">
+  <source>Access Requests</source>
+</trans-unit>
+<trans-unit id="scbf29ce484222325">
+  <source></source>
+</trans-unit>
+<trans-unit id="sf7eeef8b4d6e602d">
+  <source>Apps</source>
+</trans-unit>
+<trans-unit id="s2fe7939fcead9e47">
+  <source>Requester Data</source>
+</trans-unit>
+<trans-unit id="s116f756708f81fc1">
+  <source>Targets</source>
+</trans-unit>
+<trans-unit id="sd85e6d7c4f752f89">
+  <source>Fulfill</source>
+</trans-unit>
+<trans-unit id="s570f91a499d87fa4">
+  <source>Successfully revoked grant</source>
+</trans-unit>
+<trans-unit id="sb64a788e51aa5737">
+  <source>Failed to revoke grant</source>
+</trans-unit>
+<trans-unit id="s0e871352ba4b17d3">
+  <source>Revoke</source>
+</trans-unit>
+<trans-unit id="s6e05f32519eb6551">
+  <source>Revoke grant</source>
+</trans-unit>
+<trans-unit id="s312cccc7c299a685">
+  <source>Are you sure you want to revoke this grant? Access will be removed immediately.</source>
+</trans-unit>
+<trans-unit id="sf4cfca0c6dcd5cc8">
+  <source>Entitlement(s)</source>
+</trans-unit>
+<trans-unit id="s98b0bb374889b323">
+  <source>Request rule binding(s)</source>
+</trans-unit>
+<trans-unit id="sd700d2a7e8fe68e7">
+  <source>Bind existing rule</source>
+</trans-unit>
+<trans-unit id="s84d52a11b0a6dbd2">
+  <source>These bindings control which users/groups can request access to this object.</source>
+</trans-unit>
+<trans-unit id="s3c7ee40c88248316">
+  <source>No request rules bound.</source>
+</trans-unit>
+<trans-unit id="sb9c80985c2d1542c">
+  <source>No request rules are currently bound to this object.</source>
+</trans-unit>
+<trans-unit id="s8709be0a895e659b">
+  <source>Request rule actions</source>
+</trans-unit>
+<trans-unit id="s377403d8bfe91b11">
+  <source>Request Rule Binding</source>
+</trans-unit>
+<trans-unit id="s233deb4e19198786">
+  <source>Request Rule Bindings</source>
+</trans-unit>
+<trans-unit id="sc3564115b1095d47">
+  <source>Pending expiry</source>
+</trans-unit>
+<trans-unit id="s6aed0f4539da522a">
+  <source>How long a request against this binding stays pending before it automatically lapses if not approved or denied.</source>
+</trans-unit>
+<trans-unit id="sc44b28e93e47e9a5">
+  <source>Maximum granted expiry</source>
+</trans-unit>
+<trans-unit id="s2d0e00ac0ae213d9">
+  <source>The maximum duration a grant approved against this binding can last. Requesters may ask for less, but never more.</source>
+</trans-unit>
+<trans-unit id="sf896f79b1a8d4630">
+  <source>Additional entitlements</source>
+</trans-unit>
+<trans-unit id="s79f726678209b6a4">
+  <source>Available entitlements</source>
+</trans-unit>
+<trans-unit id="s79bcc347f11b5328">
+  <source>Granted entitlements</source>
+</trans-unit>
+<trans-unit id="s6c360d11fb96de23">
+  <source>Application entitlements granted alongside access to this object when a request is approved.</source>
+</trans-unit>
+<trans-unit id="sc1d364a9eb95428f">
+  <source>Everyone who can approve</source>
+</trans-unit>
+<trans-unit id="s1d7c1b9c4e4df721">
+  <source>Only individually-selected reviewers</source>
+</trans-unit>
+<trans-unit id="se75f92adbb736d2e">
+  <source>A random subset (of size “minimum reviewers”) of everyone who can approve</source>
+</trans-unit>
+<trans-unit id="sa8b63f3fcf8c7990">
+  <source>Request Rule</source>
+</trans-unit>
+<trans-unit id="s3a275c6dabb31cb9">
+  <source>Request Rules</source>
+</trans-unit>
+<trans-unit id="s847bbdf12f129557">
+  <source>Type a name for this request rule...</source>
+</trans-unit>
+<trans-unit id="s7adc3ba259e3407b">
+  <source>Number of reviewers that must approve the request before it is granted.</source>
+</trans-unit>
+<trans-unit id="s9129035195f5d21c">
+  <source>Notify</source>
+</trans-unit>
+<trans-unit id="saedaac3c39d38950">
+  <source>Who to notify when a request is created against this rule.</source>
+</trans-unit>
+<trans-unit id="sa12ce38de4a60975">
+  <source>Optional flow to use when a user requests access to a target bound to this rule.</source>
+</trans-unit>
+<trans-unit id="sec1b7428fb52aa12">
+  <source>Select which transports should be used to notify reviewers. If none are selected, the notification will only be shown in the authentik UI.</source>
+</trans-unit>
+<trans-unit id="seeff588bc60db034">
+  <source>Search for a request rule by name...</source>
+</trans-unit>
+<trans-unit id="s26f4259720f742fa">
+  <source>Define who can approve access requests for the objects these rules are bound to.</source>
+</trans-unit>
+<trans-unit id="s5b612c6c619807b0">
+  <source>Bound to</source>
+</trans-unit>
+<trans-unit id="s0a6c5f79e64745b8">
+  <source>Request rule(s)</source>
+</trans-unit>
+<trans-unit id="s569fd8461083ddc0">
+  <source><x id="0" equiv-text="${item.targets.length}"/> object(s)</source>
+</trans-unit>
+<trans-unit id="s2479a752090884e8">
+  <source>These bindings control which users/groups can approve requests.</source>
+</trans-unit>
+<trans-unit id="s3ab67886838d8ce6">
+  <source>Access request created</source>
+</trans-unit>
+<trans-unit id="s623bd29021bd66ed">
+  <source>Access request approved</source>
+</trans-unit>
+<trans-unit id="sb369884c94dd6c09">
+  <source>Access request denied</source>
+</trans-unit>
+<trans-unit id="sec37b60630a51c4c">
+  <source>Access request revoked</source>
+</trans-unit>
+<trans-unit id="se1d45bc0235e1e95">
+  <source>Show all schedules</source>
+</trans-unit>
+<trans-unit id="s70019e824a0ddf65">
+  <source>Show all tasks</source>
+</trans-unit>
+<trans-unit id="s31bf1464d6e1e996">
+  <source>Standalone</source>
+</trans-unit>
+<trans-unit id="s10e05123a5ebc6d9">
+  <source>Include successful tasks</source>
+</trans-unit>
+<trans-unit id="s2d6a5f1d98d0738e">
+  <source>Discover</source>
+</trans-unit>
+<trans-unit id="s6b3ade1f5b1361a6">
+  <source>Requests to review: </source>
+</trans-unit>
+<trans-unit id="sfccc1509c1ccb5af">
+  <source>Access requests</source>
+</trans-unit>
+<trans-unit id="s99fa943a22c13e67">
+  <source>Browse</source>
+</trans-unit>
+<trans-unit id="s7ad2216da77cf1c7">
+  <source>My Requests</source>
+</trans-unit>
+<trans-unit id="sc54fa983c3064e46">
+  <source>For My Review</source>
+</trans-unit>
+<trans-unit id="sc9caf0426eadbec7">
+  <source>Nothing available to request.</source>
+</trans-unit>
+<trans-unit id="sa18bee42f167d8a5">
+  <source>There's currently nothing you're eligible to request access to.</source>
+</trans-unit>
+<trans-unit id="se7e7bc73ad0cf1a9">
+  <source>Requestable applications</source>
+</trans-unit>
+<trans-unit id="sd3489b7df892f8a3">
+  <source>Requested</source>
+</trans-unit>
+<trans-unit id="s1c0f85facbc5e032">
+  <source>Successfully cancelled request</source>
+</trans-unit>
+<trans-unit id="sace831616cf735f4">
+  <source>Failed to cancel request</source>
+</trans-unit>
+<trans-unit id="sdc8e4cc65cb74f16">
+  <source>Cancel request</source>
+</trans-unit>
+<trans-unit id="s69882ac7b03b16d4">
+  <source>Are you sure you want to cancel this pending request?</source>
+</trans-unit>
+<trans-unit id="sccd6f7d0d94e8b9c">
+  <source>No requests yet.</source>
+</trans-unit>
+<trans-unit id="s87e7dd8fdbee7446">
+  <source>Requests you've made for access will show up here.</source>
+</trans-unit>
+<trans-unit id="s8a9b9b19ed901231">
+  <source>Nothing to review.</source>
+</trans-unit>
+<trans-unit id="sa4c37312c86d7ceb">
+  <source>Requests waiting on your approval will show up here.</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.search-placeholder">
+  <source>Search for an entitlement...</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.empty-state">
+  <source>No entitlements found for this application.</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.header">
+  <source>Select entitlement</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.column.entitlement">
+  <source>Entitlement</source>
+</trans-unit>
+<trans-unit id="s02af005e476ed332">
+  <source>Requestor notes</source>
+</trans-unit>
+<trans-unit id="h91e3f27bdaf2308c">
+  <source>When enabled, fulfilling the request requires at least that many reviewers
+                        from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When disabled,
+                        the value is a total across all reviewer groups.</source>
+</trans-unit>
+<trans-unit id="s2359768b2b1758f1">
+  <source>Unknown Grant type</source>
+</trans-unit>
+<trans-unit id="s22c7fdd77bf0e826">
+  <source>Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s3ceb0c74bfc02e24">
+  <source>Successfully updated Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="sb0f2f6351f4feb26">
+  <source>Successfully enabled Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="s293ab004e5f8471b">
+  <source>Default application group</source>
+</trans-unit>
+<trans-unit id="sb9447a484a8e36db">
+  <source>Group assigned to automatically created applications.</source>
+</trans-unit>
+<trans-unit id="sb3932671e3f5c1f8">
+  <source>Override authorization flow</source>
+</trans-unit>
+<trans-unit id="sd00e1714556429bc">
+  <source>Authorization flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s37a7c8fd3eb8c9dd">
+  <source>Override invalidation flow</source>
+</trans-unit>
+<trans-unit id="s6ceeb9457b7428bb">
+  <source>Invalidation flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="sa4ad8a8c594e1355">
+  <source>Override property mappings</source>
+</trans-unit>
+<trans-unit id="s476bf94eb185f36c">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s9c21e17fba762b70">
+  <source>Access token validity</source>
+</trans-unit>
+<trans-unit id="sfac8408c13382097">
+  <source>Maximum access token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sec80d3ef86fdb459">
+  <source>Refresh token validity</source>
+</trans-unit>
+<trans-unit id="scf699415de52233e">
+  <source>Maximum refresh token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sdf7ebf88f98e5728">
+  <source>Allowed grant types</source>
+</trans-unit>
+<trans-unit id="s35ec166b7499880b">
+  <source>If none are selected, all grant types are allowed.</source>
+</trans-unit>
+<trans-unit id="s752c7742ccf74988">
+  <source>Dynamic Client Registration is not enabled.</source>
+</trans-unit>
+<trans-unit id="s8057d48d01ca8a97">
+  <source>Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).</source>
+</trans-unit>
+<trans-unit id="s617985af530d2fb3">
+  <source>Enable Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s8f47c8a79b1a4062">
+  <source>Dynamic application policies</source>
+</trans-unit>
+<trans-unit id="safbe8177d10f3a25">
+  <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.label">
+  <source>User switch flow</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.placeholder">
+  <source>Select a user switch flow...</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.description">
+  <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.label">
+  <source>Switch user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.add-user.label">
+  <source>Add another user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.sign-out-current.label">
+  <source>Sign out current user</source>
 </trans-unit>
 </body>
 </file>
