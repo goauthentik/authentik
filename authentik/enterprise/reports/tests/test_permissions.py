@@ -2,10 +2,10 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_user
-from authentik.enterprise.reports.tests.utils import patch_license
+from authentik.enterprise.tests import enterprise_test
 
 
-@patch_license
+@enterprise_test()
 class TestExportPermissions(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_user()

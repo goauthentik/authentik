@@ -53,6 +53,8 @@ To support the integration of Snipe-IT with authentik, you need an LDAP applicat
 4. Click **Next**.
 5. Copy the generated app password from the confirmation screen because it will be required later.
 
+If you configured bindings on the LDAP application, ensure that `snipeit-user` is allowed by those bindings so that Snipe-IT can bind to the LDAP provider.
+
 ### Assign LDAP search permissions
 
 1. Navigate to **Directory** > **Roles** and click **Create**.
@@ -145,6 +147,10 @@ Snipe-IT imports users only when the mapped first name and last name values are 
 ## Configuration verification
 
 To confirm that authentik is properly configured with Snipe-IT, open Snipe-IT, log out, and then log back in with SAML.
+
+:::info Snipe-IT Single Logout issue
+Snipe-IT has a known issue validating signed SAML Single Logout messages, which produces the error `There was an error with SAML SLS: invalid_logout_response Reason: Signature validation failed. Logout Response rejected`. If you encounter this, add `security.logoutResponseSigned=false` to the **SAML Custom Settings** field on the Snipe-IT SAML settings page. See the [Snipe-IT SAML documentation](https://snipe-it.readme.io/docs/saml) for details.
+:::
 
 ## Resources
 

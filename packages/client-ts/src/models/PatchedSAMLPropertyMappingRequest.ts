@@ -73,11 +73,21 @@ export function PatchedSAMLPropertyMappingRequestFromJSONTyped(
         return json;
     }
     return {
-        managed: json["managed"] == null ? undefined : json["managed"],
+        managed:
+            json["managed"] === undefined
+                ? undefined
+                : json["managed"] === null
+                  ? null
+                  : json["managed"],
         name: json["name"] == null ? undefined : json["name"],
         expression: json["expression"] == null ? undefined : json["expression"],
         samlName: json["saml_name"] == null ? undefined : json["saml_name"],
-        friendlyName: json["friendly_name"] == null ? undefined : json["friendly_name"],
+        friendlyName:
+            json["friendly_name"] === undefined
+                ? undefined
+                : json["friendly_name"] === null
+                  ? null
+                  : json["friendly_name"],
     };
 }
 

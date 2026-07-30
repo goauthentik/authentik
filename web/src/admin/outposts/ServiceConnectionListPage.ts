@@ -1,3 +1,7 @@
+/**
+ * @file Display the table of Outpost Integrations, along with Schedules and Tasks for each
+ */
+
 import "#admin/outposts/ServiceConnectionDockerForm";
 import "#admin/outposts/ServiceConnectionKubernetesForm";
 import "#admin/outposts/ak-service-connection-wizard";
@@ -6,8 +10,6 @@ import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#components/tasks/ScheduleList";
-import "#components/tasks/TaskList";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -18,6 +20,9 @@ import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
 
 import { AKServiceConnectionWizard } from "#admin/outposts/ak-service-connection-wizard";
 
@@ -102,39 +107,10 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     }
 
     renderExpanded(item: ServiceConnection): TemplateResult {
-        const [appLabel, modelName] = item.metaModelName.split(".");
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Schedules")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-schedule-list>
-                        </div>
-                    </dd>
-                </div>
-            </dl>
-            <dl class="pf-c-description-list pf-m-horizontal">
-                <div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Tasks")}</span>
-                    </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
-                            <ak-task-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${item.pk}"
-                            ></ak-task-list>
-                        </div>
-                    </dd>
-                </div>
-            </dl>`;
+        return html`
+            ${scheduleCard(item.metaModelName as ModelEnum, item.pk)}
+            ${taskCard(item.metaModelName as ModelEnum, item.pk)}
+        `;
     }
 
     renderToolbarSelected(): TemplateResult {

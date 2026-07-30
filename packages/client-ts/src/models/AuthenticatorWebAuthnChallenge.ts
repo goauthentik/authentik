@@ -66,8 +66,20 @@ export interface AuthenticatorWebAuthnChallenge {
 export function instanceOfAuthenticatorWebAuthnChallenge(
     value: object,
 ): value is AuthenticatorWebAuthnChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
     if (!("registration" in value) || value["registration"] === undefined) return false;
     return true;
 }

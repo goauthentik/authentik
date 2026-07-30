@@ -80,9 +80,21 @@ export function instanceOfTokenModel(value: object): value is TokenModel {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("isExpired" in value) || value["isExpired"] === undefined) return false;
+    if (
+        (!("isExpired" in (value as Record<string, any>)) &&
+            !("is_expired" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isExpired"] === undefined &&
+            (value as Record<string, any>)["is_expired"] === undefined)
+    )
+        return false;
     if (!("scope" in value) || value["scope"] === undefined) return false;
-    if (!("idToken" in value) || value["idToken"] === undefined) return false;
+    if (
+        (!("idToken" in (value as Record<string, any>)) &&
+            !("id_token" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["idToken"] === undefined &&
+            (value as Record<string, any>)["id_token"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -99,7 +111,12 @@ export function TokenModelFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         provider: ProviderFromJSON(json["provider"]),
         user: UserFromJSON(json["user"]),
         isExpired: json["is_expired"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         scope: json["scope"],
         idToken: json["id_token"],
         revoked: json["revoked"] == null ? undefined : json["revoked"],
@@ -111,7 +128,7 @@ export function TokenModelToJSON(json: any): TokenModel {
 }
 
 export function TokenModelToJSONTyped(
-    value?: Omit<TokenModel, "pk" | "is_expired" | "id_token"> | null,
+    value?: Omit<TokenModel, "pk" | "isExpired" | "idToken"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
