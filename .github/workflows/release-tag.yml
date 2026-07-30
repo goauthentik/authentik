@@ -203,6 +203,8 @@ jobs:
         with:
           rustflags: ""
           target: "${{ matrix.target.triple }}"
+      - name: Setup go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
       - name: Build outpost
         run: |
           set -x
