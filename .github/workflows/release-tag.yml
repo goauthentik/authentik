@@ -203,8 +203,12 @@ jobs:
         with:
           rustflags: ""
           target: "${{ matrix.target.triple }}"
+      # aws-lc-fips-sys needs Go and Perl to generate its FIPS sources.
       - name: Setup go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+          cache: false
       - name: Build outpost
         run: |
           set -x
