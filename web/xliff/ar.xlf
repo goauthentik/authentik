@@ -12525,7 +12525,7 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>Base URL</source>
 </trans-unit>
 <trans-unit id="settings.base-url.description">
-  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company</source>
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).</source>
 </trans-unit>
 <trans-unit id="sb83f872f267d8506">
   <source>Sync Group Hierarchy</source>
@@ -12815,11 +12815,6 @@ Bindings to groups/users are checked against the user of the event.</target>
 <trans-unit id="s7adc3ba259e3407b">
   <source>Number of reviewers that must approve the request before it is granted.</source>
 </trans-unit>
-<trans-unit id="h0e12915b0a4f35ea">
-  <source>If checked, fulfilling the request will require at least that many
-                        reviewers from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When
-                        disabled, the value is a total across all reviewer groups.</source>
-</trans-unit>
 <trans-unit id="s9129035195f5d21c">
   <source>Notify</source>
 </trans-unit>
@@ -12939,6 +12934,14 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.column.entitlement">
   <source>Entitlement</source>
+</trans-unit>
+<trans-unit id="s02af005e476ed332">
+  <source>Requestor notes</source>
+</trans-unit>
+<trans-unit id="h91e3f27bdaf2308c">
+  <source>When enabled, fulfilling the request requires at least that many reviewers
+                        from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When disabled,
+                        the value is a total across all reviewer groups.</source>
 </trans-unit>
 </body>
 </file>
