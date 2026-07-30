@@ -116,3 +116,22 @@ test("buildLLMSOutputs writes per-category index at the slug path with a label h
     assert.ok(![...outputs.keys()].some((k) => k.includes("Topic A Label")), "no label-named path");
     assert.ok(outputs.get("llms.txt")?.includes("## Topic A Label"), "root heading uses the LABEL");
 });
+
+test("buildLLMSOutputs emits dev-server files from source routes without Docusaurus routes", async () => {
+    const outputs = await buildLLMSOutputs({
+        siteDir: FIXTURE,
+        outDir: "/tmp/ignored",
+        siteUrl: "https://docs.x",
+        title: "authentik Documentation",
+        description: "Unified auth.",
+        routesPaths: [],
+        options: {
+            sections: [{ path: ".", routeBasePath: "/" }],
+            groupBy: "topic",
+            crossLinks: [],
+        },
+    });
+
+    assert.ok(outputs.has("index.md"), "root markdown is served from /index.md");
+    assert.ok(outputs.has("topic-a/page-one.md"), "source path route gets a markdown payload");
+});
