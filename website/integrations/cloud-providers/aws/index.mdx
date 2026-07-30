@@ -32,10 +32,6 @@ IAM Identity Center requires users to exist before they can log in with an exter
 SCIM provisioning is only supported with IAM Identity Center. It is not supported with [Amazon Web Services (Classic IAM)](../aws-classic/index.mdx).
 :::
 
-## authentik configuration
-
-To support the integration of AWS IAM Identity Center with authentik, you need to download the IAM Identity Center SAML metadata, then create an application/provider pair in authentik.
-
 ### Download the service provider metadata
 
 1. Log in to the AWS Management Console as an administrator.
@@ -45,6 +41,10 @@ To support the integration of AWS IAM Identity Center with authentik, you need t
 5. Under **Service provider metadata**, click **Download metadata file**.
 6. Note the **AWS access portal sign-in URL**.
 7. Keep this browser tab open. You need to return to it after you configure authentik.
+
+## authentik configuration
+
+To support the integration of AWS IAM Identity Center with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider
 
