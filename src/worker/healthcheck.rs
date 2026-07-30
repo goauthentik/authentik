@@ -63,8 +63,8 @@ async fn fallback() -> StatusCode {
 pub(super) fn build_router(workers: Arc<Workers>) -> Router {
     wrap_router(
         Router::new()
-            .route("/-/heath/ready/", any(health_ready))
-            .route("/-/heath/live/", any(health_live))
+            .route("/-/health/ready/", any(health_ready))
+            .route("/-/health/live/", any(health_live))
             .fallback(fallback)
             .with_state(workers),
         true,
