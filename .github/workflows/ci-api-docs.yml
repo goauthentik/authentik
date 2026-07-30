@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 jobs:
   lint:
     runs-on: ubuntu-latest

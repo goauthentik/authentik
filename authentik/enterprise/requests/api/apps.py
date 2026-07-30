@@ -1,5 +1,4 @@
 from http import HTTPMethod
-from typing import TYPE_CHECKING
 
 from django.db.models import Q, QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -20,9 +19,6 @@ from authentik.enterprise.requests.models import RequestRuleBinding
 from authentik.policies.engine import ListPolicyEngine
 from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 
-if TYPE_CHECKING:
-    from authentik.enterprise.requests.models import RequestRule
-
 REQUESTABLE_FILTER_BACKENDS = [QLSearch, DjangoFilterBackend, NullsAwareOrderingFilter]
 
 
@@ -30,9 +26,9 @@ def granting_rule_bindings(
     pbms: QuerySet[PolicyBindingModel] | list[PolicyBindingModel],
     user: User,
     request: Request,
-) -> QuerySet[RequestRule]:
-    """The RequestRule(s) that make any of `pbms` requestable by `user`, i.e. `user`
-    passes the rule's own PolicyBindings."""
+) -> QuerySet[RequestRuleBinding]:
+    """The RequestRuleBinding(s) that make any of `pbms` requestable by `user`, i.e.
+    `user` passes the rule's own PolicyBindings."""
     rule_bindings = RequestRuleBinding.objects.filter(
         Q(target__in=pbms) | Q(related__in=pbms)
     ).distinct()

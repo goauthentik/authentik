@@ -39,7 +39,13 @@ export function instanceOfTenantRecoveryKeyRequestRequest(
     value: object,
 ): value is TenantRecoveryKeyRequestRequest {
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("durationDays" in value) || value["durationDays"] === undefined) return false;
+    if (
+        (!("durationDays" in (value as Record<string, any>)) &&
+            !("duration_days" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["durationDays"] === undefined &&
+            (value as Record<string, any>)["duration_days"] === undefined)
+    )
+        return false;
     return true;
 }
 

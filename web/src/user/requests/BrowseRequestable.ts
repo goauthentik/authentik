@@ -67,7 +67,9 @@ export class BrowseRequestable extends AKElement {
         const { link } = await this.#requestsApi.requestsGrantRequestsCreate({
             grantRequestCreateRequest: { pbms },
         });
-        window.location.assign(link);
+        if (link) {
+            window.location.assign(link);
+        }
     };
 
     #onAppClick = async (app: Application): Promise<void> => {

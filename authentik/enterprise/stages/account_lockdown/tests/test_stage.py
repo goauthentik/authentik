@@ -22,6 +22,7 @@ from authentik.core.tests.utils import (
     create_test_flow,
     create_test_user,
 )
+from authentik.enterprise.core import revocation
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.enterprise.stages.account_lockdown.stage import (
     LOCKDOWN_EVENT_ACTION_ID,
@@ -570,7 +571,7 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         view = self.make_stage_view(plan)
-        original_has_artifacts = view._has_lockdown_artifacts
+        original_has_artifacts = revocation.has_revocable_artifacts
         target_user = self.target_user
         thread_ready = ThreadEvent()
         start_create = ThreadEvent()
@@ -599,7 +600,7 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
                     thread_done.set()
                     connection.close()
 
-        def has_artifacts_after_concurrent_create(stage, user):
+        def has_artifacts_after_concurrent_create(user, **kwargs):
             if not start_create.is_set():
                 start_create.set()
                 self.assertTrue(
@@ -609,11 +610,12 @@ class TestAccountLockdownStageConcurrency(AccountLockdownStageTestMixin, Transac
                         f"before retry check: {thread_errors}"
                     ),
                 )
-            return original_has_artifacts(stage, user)
+            return original_has_artifacts(user, **kwargs)
 
         creator = TokenCreatorThread()
-        with patch.object(
-            view, "_has_lockdown_artifacts", side_effect=has_artifacts_after_concurrent_create
+        with patch(
+            "authentik.enterprise.core.revocation.has_revocable_artifacts",
+            side_effect=has_artifacts_after_concurrent_create,
         ):
             creator.start()
             self.assertTrue(

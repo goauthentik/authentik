@@ -3554,6 +3554,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3578,6 +3579,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -3625,6 +3627,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3657,6 +3660,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3688,6 +3692,7 @@ paths:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3714,6 +3719,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -3743,6 +3749,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User added
@@ -3774,6 +3781,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User removed
@@ -3799,6 +3807,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4526,6 +4535,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4550,6 +4560,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4576,6 +4587,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4607,6 +4619,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4637,6 +4650,7 @@ paths:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4662,6 +4676,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -4690,6 +4705,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully started impersonation
@@ -4717,6 +4733,7 @@ paths:
               $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4750,6 +4767,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully sent recover email
@@ -4778,6 +4796,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4813,6 +4832,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4835,6 +4855,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4861,6 +4882,7 @@ paths:
               $ref: '#/components/schemas/UserAccountLockdownRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5019,6 +5041,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -5038,6 +5061,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully ended impersonation
@@ -5053,6 +5077,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5074,6 +5099,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5099,6 +5125,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5693,7 +5720,7 @@ paths:
       tags:
       - endpoints
       security:
-      - {}
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6200,6 +6227,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6222,6 +6251,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -9727,6 +9758,118 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/:
+    get:
+      operationId: lifecycle_user_offboarding_list
+      parameters:
+      - in: query
+        name: action
+        schema:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/OffboardingStatusEnum'
+      - in: query
+        name: user__uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserOffboardingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_offboarding_create
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOffboardingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/{id}/:
+    get:
+      operationId: lifecycle_user_offboarding_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_user_offboarding_destroy
+      description: |-
+        Cancel a pending offboarding instead of deleting the record.
+
+        The row is retained (as `CANCELED`) so the offboarding stays visible in
+        the audit history; deletion would erase who scheduled and cancelled it.
+        You cannot cancel an offboarding that targets you.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
         required: true
       tags:
       - lifecycle
@@ -18513,6 +18656,170 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2-dcr/:
+    get:
+      operationId: providers_oauth2_dcr_list
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOAuth2DynamicClientRegistrationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_oauth2_dcr_create
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2-dcr/{pbm_uuid}/:
+    get:
+      operationId: providers_oauth2_dcr_retrieve
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_oauth2_dcr_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_oauth2_dcr_partial_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOAuth2DynamicClientRegistrationRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_oauth2_dcr_destroy
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /providers/oauth2/{id}/:
     get:
       operationId: providers_oauth2_retrieve
@@ -18703,170 +19010,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/oauth2/dcr/:
-    get:
-      operationId: providers_oauth2_dcr_list
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - in: query
-        name: provider
-        schema:
-          type: integer
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedOAuth2DynamicClientRegistrationList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: providers_oauth2_dcr_create
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /providers/oauth2/dcr/{pbm_uuid}/:
-    get:
-      operationId: providers_oauth2_dcr_retrieve
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    put:
-      operationId: providers_oauth2_dcr_update
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    patch:
-      operationId: providers_oauth2_dcr_partial_update
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedOAuth2DynamicClientRegistrationRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: providers_oauth2_dcr_destroy
-      description: OAuth2 Dynamic Client Registration configuration ViewSet
-      parameters:
-      - in: path
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -20769,6 +20912,14 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: saml_version
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: |+
+            SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
@@ -24882,6 +25033,10 @@ paths:
           type: boolean
       - in: query
         name: start_tls
+        schema:
+          type: boolean
+      - in: query
+        name: sync_group_hierarchy
         schema:
           type: boolean
       - in: query
@@ -38612,14 +38767,6 @@ components:
         flags:
           type: object
           properties:
-            core_default_app_access:
-              type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
-            enterprise_audit_include_expanded_diff:
-              type: boolean
-              description: Include additional information in audit logs, may incur
-                a performance penalty.
             flows_continuous_login:
               type: boolean
               description: Upon successful authentication, re-start authentication
@@ -38629,8 +38776,6 @@ components:
               description: Refresh other tabs after successful authentication.
               deprecated: true
           required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
           - flows_continuous_login
           - flows_refresh_others
           readOnly: true
@@ -40270,6 +40415,7 @@ components:
       - login_failed
       - logout
       - user_write
+      - user_offboarded
       - suspicious_request
       - password_set
       - secret_view
@@ -43814,6 +43960,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -44033,6 +44182,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -45002,6 +45154,7 @@ components:
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
+      - authentik_lifecycle.useroffboarding
       - authentik_personas.persona
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
@@ -45505,25 +45658,19 @@ components:
           readOnly: true
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string
@@ -45553,25 +45700,19 @@ components:
       properties:
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string
@@ -46383,6 +46524,18 @@ components:
       - text
       - number
       - boolean
+      type: string
+    OffboardingActionEnum:
+      enum:
+      - deactivate
+      - delete
+      type: string
+    OffboardingStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      - canceled
       type: string
     OpenIDConnectConfiguration:
       type: object
@@ -48999,6 +49152,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedUserOffboardingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOffboarding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserPlexSourceConnectionList:
       type: object
       properties:
@@ -51361,6 +51529,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -51604,25 +51775,19 @@ components:
       properties:
         provider:
           type: integer
-        create_application:
-          type: boolean
-          description: Automatically create an Application object for each registered
-            client.
         default_application_group:
           type: string
           description: Group to assign to automatically created applications.
-        default_client_type:
-          $ref: '#/components/schemas/ClientTypeEnum'
-        default_authorization_flow:
+        override_authorization_flow:
           type: string
           format: uuid
           nullable: true
           description: Authorization flow applied to dynamically registered clients.
-        default_invalidation_flow:
+        override_invalidation_flow:
           type: string
           format: uuid
           nullable: true
-        default_property_mappings:
+        override_property_mappings:
           type: array
           items:
             type: string
@@ -53113,6 +53278,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -53173,8 +53344,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -53633,6 +53804,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -57962,6 +58139,11 @@ components:
       - disabled
       - disabled_deleted
       type: string
+    SamlVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     Schedule:
       type: object
       properties:
@@ -58242,6 +58424,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -58300,8 +58488,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -58329,6 +58517,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          format: uri
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -58389,8 +58583,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -58938,7 +59132,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host
@@ -60397,6 +60596,83 @@ components:
       required:
       - identifier
       - source
+    UserOffboarding:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingStatusEnum'
+          readOnly: true
+        created_by_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        executed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - created_by_obj
+      - executed_at
+      - id
+      - scheduled_at
+      - status
+      - user
+      - user_obj
+    UserOffboardingRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        user:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+      required:
+      - scheduled_at
+      - user
     UserPasswordHashSetRequest:
       type: object
       description: Payload to set a users' password hash directly
@@ -61102,6 +61378,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -61135,6 +61417,10 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -61148,6 +61434,7 @@ components:
       - pk
       - reply_url
       - url_download_metadata
+      - url_issuer
       - url_wsfed
       - verbose_name
       - verbose_name_plural
@@ -61215,6 +61502,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -61350,6 +61643,15 @@ components:
           authentik_providers_ws_federation.wsfederationprovider: '#/components/schemas/WSFederationProviderRequest'
   securitySchemes:
     authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
       type: http
       scheme: bearer
 servers:

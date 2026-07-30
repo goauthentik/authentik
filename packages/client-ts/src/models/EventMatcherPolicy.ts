@@ -112,10 +112,34 @@ export function instanceOfEventMatcherPolicy(value: object): value is EventMatch
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("boundTo" in value) || value["boundTo"] === undefined) return false;
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("boundTo" in (value as Record<string, any>)) &&
+            !("bound_to" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["boundTo"] === undefined &&
+            (value as Record<string, any>)["bound_to"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -139,11 +163,32 @@ export function EventMatcherPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        action: json["action"] == null ? undefined : EventActionsFromJSON(json["action"]),
-        clientIp: json["client_ip"] == null ? undefined : json["client_ip"],
-        app: json["app"] == null ? undefined : AppEnumFromJSON(json["app"]),
-        model: json["model"] == null ? undefined : ModelEnumFromJSON(json["model"]),
-        query: json["query"] == null ? undefined : json["query"],
+        action:
+            json["action"] === undefined
+                ? undefined
+                : json["action"] === null
+                  ? null
+                  : EventActionsFromJSON(json["action"]),
+        clientIp:
+            json["client_ip"] === undefined
+                ? undefined
+                : json["client_ip"] === null
+                  ? null
+                  : json["client_ip"],
+        app:
+            json["app"] === undefined
+                ? undefined
+                : json["app"] === null
+                  ? null
+                  : AppEnumFromJSON(json["app"]),
+        model:
+            json["model"] === undefined
+                ? undefined
+                : json["model"] === null
+                  ? null
+                  : ModelEnumFromJSON(json["model"]),
+        query:
+            json["query"] === undefined ? undefined : json["query"] === null ? null : json["query"],
     };
 }
 
@@ -154,7 +199,7 @@ export function EventMatcherPolicyToJSON(json: any): EventMatcherPolicy {
 export function EventMatcherPolicyToJSONTyped(
     value?: Omit<
         EventMatcherPolicy,
-        "pk" | "component" | "verbose_name" | "verbose_name_plural" | "meta_model_name" | "bound_to"
+        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

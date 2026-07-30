@@ -122,13 +122,23 @@ export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
-        lastLogin: json["last_login"] == null ? undefined : new Date(json["last_login"]),
+        lastLogin:
+            json["last_login"] === undefined
+                ? undefined
+                : json["last_login"] === null
+                  ? null
+                  : new Date(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
         uuid: json["uuid"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
     };
 }

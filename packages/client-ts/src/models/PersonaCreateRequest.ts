@@ -67,7 +67,12 @@ export function PersonaCreateRequestFromJSONTyped(
         parent: json["parent"],
         label: json["label"] == null ? undefined : json["label"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
     };
 }
 

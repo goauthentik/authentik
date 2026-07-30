@@ -12,6 +12,8 @@ import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
+import "#elements/Divider";
+import "#admin/policies/BoundPoliciesList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -53,7 +55,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -116,7 +117,6 @@ export class OAuth2ProviderViewPage extends AKElement {
         PFForm,
         PFFormControl,
         PFBanner,
-        PFDivider,
     ];
 
     constructor() {
@@ -320,7 +320,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                         </form>
                     </div>
-                    <hr class="pf-c-divider" />
+                    <ak-divider></ak-divider>
                     <div class="pf-c-card__body">
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
@@ -530,15 +530,16 @@ export class OAuth2ProviderViewPage extends AKElement {
         return html`<div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+            <div class="pf-c-card pf-l-grid__item pf-m-4-col">
                 <div class="pf-c-card__title">${msg("Dynamic Client Registration")}</div>
                 <div class="pf-c-card__body">
                     ${renderDescriptionList([
                         [
-                            msg("Create application"),
-                            html`${dcr.createApplication ? msg("Yes") : msg("No")}`,
+                            msg("Default application group"),
+                            html`${dcr.defaultApplicationGroup !== ""
+                                ? dcr.defaultApplicationGroup
+                                : "-"}`,
                         ],
-                        [msg("Default client type"), html`${TypeToLabel(dcr.defaultClientType)}`],
                         [
                             msg("Allowed grant types"),
                             html`${(dcr.allowedGrantTypes || []).length > 0
@@ -558,6 +559,19 @@ export class OAuth2ProviderViewPage extends AKElement {
                         ],
                     ])}
                 </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-8-col">
+                <div class="pf-c-card__title">${msg("Dynamic application policies")}</div>
+                <ak-bound-policies-list
+                    target=${this.dcrConfig.pbmUuid}
+                    .policyEngineMode=${this.dcrConfig.policyEngineMode}
+                >
+                    <span slot="description">
+                        ${msg(
+                            "Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.",
+                        )}
+                    </span>
+                </ak-bound-policies-list>
             </div>
         </div>`;
     }

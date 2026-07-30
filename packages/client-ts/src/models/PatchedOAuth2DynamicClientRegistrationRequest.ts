@@ -12,8 +12,6 @@
  * Do not edit the class manually.
  */
 
-import type { ClientTypeEnum } from "./ClientTypeEnum";
-import { ClientTypeEnumFromJSON, ClientTypeEnumToJSON } from "./ClientTypeEnum";
 import type { GrantTypeEnum } from "./GrantTypeEnum";
 import { GrantTypeEnumFromJSON, GrantTypeEnumToJSON } from "./GrantTypeEnum";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
@@ -32,41 +30,29 @@ export interface PatchedOAuth2DynamicClientRegistrationRequest {
      */
     provider?: number;
     /**
-     * Automatically create an Application object for each registered client.
-     * @type {boolean}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
-     */
-    createApplication?: boolean;
-    /**
      * Group to assign to automatically created applications.
      * @type {string}
      * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     defaultApplicationGroup?: string;
     /**
-     *
-     * @type {ClientTypeEnum}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
-     */
-    defaultClientType?: ClientTypeEnum;
-    /**
      * Authorization flow applied to dynamically registered clients.
      * @type {string}
      * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
-    defaultAuthorizationFlow?: string | null;
+    overrideAuthorizationFlow?: string | null;
     /**
      *
      * @type {string}
      * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
-    defaultInvalidationFlow?: string | null;
+    overrideInvalidationFlow?: string | null;
     /**
      * Scope mappings applied to dynamically registered clients.
      * @type {Array<string>}
      * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
-    defaultPropertyMappings?: Array<string>;
+    overridePropertyMappings?: Array<string>;
     /**
      * Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).
      * @type {string}
@@ -117,28 +103,26 @@ export function PatchedOAuth2DynamicClientRegistrationRequestFromJSONTyped(
     }
     return {
         provider: json["provider"] == null ? undefined : json["provider"],
-        createApplication:
-            json["create_application"] == null ? undefined : json["create_application"],
         defaultApplicationGroup:
             json["default_application_group"] == null
                 ? undefined
                 : json["default_application_group"],
-        defaultClientType:
-            json["default_client_type"] == null
+        overrideAuthorizationFlow:
+            json["override_authorization_flow"] === undefined
                 ? undefined
-                : ClientTypeEnumFromJSON(json["default_client_type"]),
-        defaultAuthorizationFlow:
-            json["default_authorization_flow"] == null
+                : json["override_authorization_flow"] === null
+                  ? null
+                  : json["override_authorization_flow"],
+        overrideInvalidationFlow:
+            json["override_invalidation_flow"] === undefined
                 ? undefined
-                : json["default_authorization_flow"],
-        defaultInvalidationFlow:
-            json["default_invalidation_flow"] == null
+                : json["override_invalidation_flow"] === null
+                  ? null
+                  : json["override_invalidation_flow"],
+        overridePropertyMappings:
+            json["override_property_mappings"] == null
                 ? undefined
-                : json["default_invalidation_flow"],
-        defaultPropertyMappings:
-            json["default_property_mappings"] == null
-                ? undefined
-                : json["default_property_mappings"],
+                : json["override_property_mappings"],
         accessTokenValidity:
             json["access_token_validity"] == null ? undefined : json["access_token_validity"],
         refreshTokenValidity:
@@ -170,12 +154,10 @@ export function PatchedOAuth2DynamicClientRegistrationRequestToJSONTyped(
 
     return {
         provider: value["provider"],
-        create_application: value["createApplication"],
         default_application_group: value["defaultApplicationGroup"],
-        default_client_type: ClientTypeEnumToJSON(value["defaultClientType"]),
-        default_authorization_flow: value["defaultAuthorizationFlow"],
-        default_invalidation_flow: value["defaultInvalidationFlow"],
-        default_property_mappings: value["defaultPropertyMappings"],
+        override_authorization_flow: value["overrideAuthorizationFlow"],
+        override_invalidation_flow: value["overrideInvalidationFlow"],
+        override_property_mappings: value["overridePropertyMappings"],
         access_token_validity: value["accessTokenValidity"],
         refresh_token_validity: value["refreshTokenValidity"],
         allowed_grant_types:

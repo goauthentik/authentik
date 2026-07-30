@@ -107,9 +107,27 @@ export interface LDAPOutpostConfig {
 export function instanceOfLDAPOutpostConfig(value: object): value is LDAPOutpostConfig {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("bindFlowSlug" in value) || value["bindFlowSlug"] === undefined) return false;
-    if (!("unbindFlowSlug" in value) || value["unbindFlowSlug"] === undefined) return false;
-    if (!("applicationSlug" in value) || value["applicationSlug"] === undefined) return false;
+    if (
+        (!("bindFlowSlug" in (value as Record<string, any>)) &&
+            !("bind_flow_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["bindFlowSlug"] === undefined &&
+            (value as Record<string, any>)["bind_flow_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("unbindFlowSlug" in (value as Record<string, any>)) &&
+            !("unbind_flow_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["unbindFlowSlug"] === undefined &&
+            (value as Record<string, any>)["unbind_flow_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("applicationSlug" in (value as Record<string, any>)) &&
+            !("application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["applicationSlug"] === undefined &&
+            (value as Record<string, any>)["application_slug"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -131,7 +149,12 @@ export function LDAPOutpostConfigFromJSONTyped(
         bindFlowSlug: json["bind_flow_slug"],
         unbindFlowSlug: json["unbind_flow_slug"],
         applicationSlug: json["application_slug"],
-        certificate: json["certificate"] == null ? undefined : json["certificate"],
+        certificate:
+            json["certificate"] === undefined
+                ? undefined
+                : json["certificate"] === null
+                  ? null
+                  : json["certificate"],
         tlsServerName: json["tls_server_name"] == null ? undefined : json["tls_server_name"],
         uidStartNumber: json["uid_start_number"] == null ? undefined : json["uid_start_number"],
         gidStartNumber: json["gid_start_number"] == null ? undefined : json["gid_start_number"],
@@ -150,7 +173,7 @@ export function LDAPOutpostConfigToJSON(json: any): LDAPOutpostConfig {
 }
 
 export function LDAPOutpostConfigToJSONTyped(
-    value?: Omit<LDAPOutpostConfig, "pk" | "unbind_flow_slug" | "application_slug"> | null,
+    value?: Omit<LDAPOutpostConfig, "pk" | "unbindFlowSlug" | "applicationSlug"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

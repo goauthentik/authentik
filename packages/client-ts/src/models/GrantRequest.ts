@@ -99,12 +99,36 @@ export interface GrantRequest {
  */
 export function instanceOfGrantRequest(value: object): value is GrantRequest {
     if (!("created" in value) || value["created"] === undefined) return false;
-    if (!("createdBy" in value) || value["createdBy"] === undefined) return false;
-    if (!("revokedBy" in value) || value["revokedBy"] === undefined) return false;
-    if (!("isActive" in value) || value["isActive"] === undefined) return false;
+    if (
+        (!("createdBy" in (value as Record<string, any>)) &&
+            !("created_by" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["createdBy"] === undefined &&
+            (value as Record<string, any>)["created_by"] === undefined)
+    )
+        return false;
+    if (
+        (!("revokedBy" in (value as Record<string, any>)) &&
+            !("revoked_by" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["revokedBy"] === undefined &&
+            (value as Record<string, any>)["revoked_by"] === undefined)
+    )
+        return false;
+    if (
+        (!("isActive" in (value as Record<string, any>)) &&
+            !("is_active" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isActive"] === undefined &&
+            (value as Record<string, any>)["is_active"] === undefined)
+    )
+        return false;
     if (!("status" in value) || value["status"] === undefined) return false;
     if (!("targets" in value) || value["targets"] === undefined) return false;
-    if (!("targetObjs" in value) || value["targetObjs"] === undefined) return false;
+    if (
+        (!("targetObjs" in (value as Record<string, any>)) &&
+            !("target_objs" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["targetObjs"] === undefined &&
+            (value as Record<string, any>)["target_objs"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -123,7 +147,12 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         revokedBy: PartialUserFromJSON(json["revoked_by"]),
         isActive: json["is_active"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
         targetObjs: (json["target_objs"] as Array<any>).map(RequestableTargetFromJSON),
@@ -138,7 +167,7 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 export function GrantRequestToJSONTyped(
     value?: Omit<
         GrantRequest,
-        "created" | "created_by" | "revoked_by" | "is_active" | "status" | "targets" | "target_objs"
+        "created" | "createdBy" | "revokedBy" | "isActive" | "status" | "targets" | "targetObjs"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

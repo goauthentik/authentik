@@ -56,7 +56,13 @@ export interface RelatedGroup {
 export function instanceOfRelatedGroup(value: object): value is RelatedGroup {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("groupUuid" in value) || value["groupUuid"] === undefined) return false;
+    if (
+        (!("groupUuid" in (value as Record<string, any>)) &&
+            !("group_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["groupUuid"] === undefined &&
+            (value as Record<string, any>)["group_uuid"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -82,7 +88,7 @@ export function RelatedGroupToJSON(json: any): RelatedGroup {
 }
 
 export function RelatedGroupToJSONTyped(
-    value?: Omit<RelatedGroup, "pk" | "group_uuid"> | null,
+    value?: Omit<RelatedGroup, "pk" | "groupUuid"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

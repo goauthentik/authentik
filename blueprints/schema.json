@@ -784,6 +784,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_lifecycle.useroffboarding"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_lifecycle.lifecycleiteration"
                         },
                         "id": {
@@ -6204,24 +6244,28 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -6348,6 +6392,7 @@
                             "authentik_providers_oauth2.add_accesstoken",
                             "authentik_providers_oauth2.add_authorizationcode",
                             "authentik_providers_oauth2.add_devicetoken",
+                            "authentik_providers_oauth2.add_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.add_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
@@ -6357,6 +6402,7 @@
                             "authentik_providers_oauth2.change_accesstoken",
                             "authentik_providers_oauth2.change_authorizationcode",
                             "authentik_providers_oauth2.change_devicetoken",
+                            "authentik_providers_oauth2.change_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.change_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
@@ -6366,6 +6412,7 @@
                             "authentik_providers_oauth2.delete_accesstoken",
                             "authentik_providers_oauth2.delete_authorizationcode",
                             "authentik_providers_oauth2.delete_devicetoken",
+                            "authentik_providers_oauth2.delete_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.delete_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
@@ -6375,6 +6422,7 @@
                             "authentik_providers_oauth2.view_accesstoken",
                             "authentik_providers_oauth2.view_authorizationcode",
                             "authentik_providers_oauth2.view_devicetoken",
+                            "authentik_providers_oauth2.view_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.view_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
@@ -7460,6 +7508,66 @@
                 }
             }
         },
+        "model_authentik_lifecycle.useroffboarding": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "scheduled_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Scheduled at",
+                    "description": "Absolute time at which the offboarding action is executed."
+                },
+                "action": {
+                    "type": "string",
+                    "enum": [
+                        "deactivate",
+                        "delete"
+                    ],
+                    "title": "Action"
+                },
+                "revoke_sessions": {
+                    "type": "boolean",
+                    "title": "Revoke sessions",
+                    "description": "Revoke all of the user's sessions when offboarding."
+                },
+                "revoke_tokens": {
+                    "type": "boolean",
+                    "title": "Revoke tokens",
+                    "description": "Revoke all of the user's tokens when offboarding."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_lifecycle.useroffboarding_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_useroffboarding",
+                            "change_useroffboarding",
+                            "delete_useroffboarding",
+                            "view_useroffboarding"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_lifecycle.lifecycleiteration": {
             "type": "object",
             "properties": {
@@ -8012,24 +8120,28 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -8156,6 +8268,7 @@
                             "authentik_providers_oauth2.add_accesstoken",
                             "authentik_providers_oauth2.add_authorizationcode",
                             "authentik_providers_oauth2.add_devicetoken",
+                            "authentik_providers_oauth2.add_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.add_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
@@ -8165,6 +8278,7 @@
                             "authentik_providers_oauth2.change_accesstoken",
                             "authentik_providers_oauth2.change_authorizationcode",
                             "authentik_providers_oauth2.change_devicetoken",
+                            "authentik_providers_oauth2.change_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.change_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
@@ -8174,6 +8288,7 @@
                             "authentik_providers_oauth2.delete_accesstoken",
                             "authentik_providers_oauth2.delete_authorizationcode",
                             "authentik_providers_oauth2.delete_devicetoken",
+                            "authentik_providers_oauth2.delete_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.delete_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
@@ -8183,6 +8298,7 @@
                             "authentik_providers_oauth2.view_accesstoken",
                             "authentik_providers_oauth2.view_authorizationcode",
                             "authentik_providers_oauth2.view_devicetoken",
+                            "authentik_providers_oauth2.view_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.view_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
@@ -9204,6 +9320,15 @@
                     "title": "AuthnContextClassRef Property Mapping",
                     "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
+                "saml_version": {
+                    "type": "string",
+                    "enum": [
+                        "1.1",
+                        "2.0"
+                    ],
+                    "title": "Saml version",
+                    "description": "SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1."
+                },
                 "digest_algorithm": {
                     "type": "string",
                     "enum": [
@@ -9832,6 +9957,7 @@
                         "login_failed",
                         "logout",
                         "user_write",
+                        "user_offboarded",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -9958,6 +10084,7 @@
                                 "login_failed",
                                 "logout",
                                 "user_write",
+                                "user_offboarded",
                                 "suspicious_request",
                                 "password_set",
                                 "secret_view",
@@ -10722,6 +10849,7 @@
                         "login_failed",
                         "logout",
                         "user_write",
+                        "user_offboarded",
                         "suspicious_request",
                         "password_set",
                         "secret_view",
@@ -10981,6 +11109,7 @@
                         "authentik_lifecycle.lifecyclerule",
                         "authentik_lifecycle.lifecycleiteration",
                         "authentik_lifecycle.review",
+                        "authentik_lifecycle.useroffboarding",
                         "authentik_personas.persona",
                         "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
@@ -11850,43 +11979,30 @@
                     "type": "integer",
                     "title": "Provider"
                 },
-                "create_application": {
-                    "type": "boolean",
-                    "title": "Create application",
-                    "description": "Automatically create an Application object for each registered client."
-                },
                 "default_application_group": {
                     "type": "string",
                     "title": "Default application group",
                     "description": "Group to assign to automatically created applications."
                 },
-                "default_client_type": {
-                    "type": "string",
-                    "enum": [
-                        "confidential",
-                        "public"
-                    ],
-                    "title": "Default client type"
-                },
-                "default_authorization_flow": {
+                "override_authorization_flow": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Default authorization flow",
+                    "title": "Override authorization flow",
                     "description": "Authorization flow applied to dynamically registered clients."
                 },
-                "default_invalidation_flow": {
+                "override_invalidation_flow": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Default invalidation flow"
+                    "title": "Override invalidation flow"
                 },
-                "default_property_mappings": {
+                "override_property_mappings": {
                     "type": "array",
                     "items": {
                         "type": "string",
                         "format": "uuid",
                         "description": "Scope mappings applied to dynamically registered clients."
                     },
-                    "title": "Default property mappings",
+                    "title": "Override property mappings",
                     "description": "Scope mappings applied to dynamically registered clients."
                 },
                 "access_token_validity": {
@@ -13514,24 +13630,28 @@
                             "authentik_lifecycle.add_lifecyclerulereviewer",
                             "authentik_lifecycle.add_lifecyclerulereviewergroup",
                             "authentik_lifecycle.add_review",
+                            "authentik_lifecycle.add_useroffboarding",
                             "authentik_lifecycle.change_lifecycleiteration",
                             "authentik_lifecycle.change_lifecyclerule",
                             "authentik_lifecycle.change_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.change_lifecyclerulereviewer",
                             "authentik_lifecycle.change_lifecyclerulereviewergroup",
                             "authentik_lifecycle.change_review",
+                            "authentik_lifecycle.change_useroffboarding",
                             "authentik_lifecycle.delete_lifecycleiteration",
                             "authentik_lifecycle.delete_lifecyclerule",
                             "authentik_lifecycle.delete_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.delete_lifecyclerulereviewer",
                             "authentik_lifecycle.delete_lifecyclerulereviewergroup",
                             "authentik_lifecycle.delete_review",
+                            "authentik_lifecycle.delete_useroffboarding",
                             "authentik_lifecycle.view_lifecycleiteration",
                             "authentik_lifecycle.view_lifecyclerule",
                             "authentik_lifecycle.view_lifecyclerulenotificationtransport",
                             "authentik_lifecycle.view_lifecyclerulereviewer",
                             "authentik_lifecycle.view_lifecyclerulereviewergroup",
                             "authentik_lifecycle.view_review",
+                            "authentik_lifecycle.view_useroffboarding",
                             "authentik_outposts.add_dockerserviceconnection",
                             "authentik_outposts.add_kubernetesserviceconnection",
                             "authentik_outposts.add_outpost",
@@ -13658,6 +13778,7 @@
                             "authentik_providers_oauth2.add_accesstoken",
                             "authentik_providers_oauth2.add_authorizationcode",
                             "authentik_providers_oauth2.add_devicetoken",
+                            "authentik_providers_oauth2.add_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.add_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.add_oauth2provider",
                             "authentik_providers_oauth2.add_oauth2providerjwtfederationprovider",
@@ -13667,6 +13788,7 @@
                             "authentik_providers_oauth2.change_accesstoken",
                             "authentik_providers_oauth2.change_authorizationcode",
                             "authentik_providers_oauth2.change_devicetoken",
+                            "authentik_providers_oauth2.change_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.change_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.change_oauth2provider",
                             "authentik_providers_oauth2.change_oauth2providerjwtfederationprovider",
@@ -13676,6 +13798,7 @@
                             "authentik_providers_oauth2.delete_accesstoken",
                             "authentik_providers_oauth2.delete_authorizationcode",
                             "authentik_providers_oauth2.delete_devicetoken",
+                            "authentik_providers_oauth2.delete_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.delete_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.delete_oauth2provider",
                             "authentik_providers_oauth2.delete_oauth2providerjwtfederationprovider",
@@ -13685,6 +13808,7 @@
                             "authentik_providers_oauth2.view_accesstoken",
                             "authentik_providers_oauth2.view_authorizationcode",
                             "authentik_providers_oauth2.view_devicetoken",
+                            "authentik_providers_oauth2.view_dynamicclientregistrationpropertymapping",
                             "authentik_providers_oauth2.view_oauth2dynamicclientregistration",
                             "authentik_providers_oauth2.view_oauth2provider",
                             "authentik_providers_oauth2.view_oauth2providerjwtfederationprovider",
@@ -14757,6 +14881,11 @@
                     ],
                     "title": "Sync outgoing trigger mode",
                     "description": "When to trigger sync for outgoing providers"
+                },
+                "sync_group_hierarchy": {
+                    "type": "boolean",
+                    "title": "Sync group hierarchy",
+                    "description": "Sync group parentage/hierarchy from LDAP directories."
                 }
             },
             "required": []

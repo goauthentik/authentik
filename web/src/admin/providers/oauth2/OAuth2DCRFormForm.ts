@@ -8,32 +8,18 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-radio-input";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
-import { clientTypeOptions } from "#admin/providers/oauth2/OAuth2ProviderFormForm";
+import { GrantTypeCheckboxItems } from "#admin/providers/oauth2/labels";
 
-import {
-    FlowDesignationEnum,
-    GrantTypeEnum,
-    OAuth2DynamicClientRegistration,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, OAuth2DynamicClientRegistration } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-const allowedGrantTypeOptions: [GrantTypeEnum, string][] = [
-    [GrantTypeEnum.AuthorizationCode, msg("Authorization Code")],
-    [GrantTypeEnum.Implicit, msg("Implicit")],
-    [GrantTypeEnum.Hybrid, msg("Hybrid")],
-    [GrantTypeEnum.RefreshToken, msg("Refresh token")],
-    [GrantTypeEnum.ClientCredentials, msg("Client credentials")],
-    [GrantTypeEnum.Password, msg("Password")],
-    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
-    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
-];
 
 export interface OAuth2DCRFormProps {
     dcr?: Partial<OAuth2DynamicClientRegistration> | null;
@@ -42,66 +28,58 @@ export interface OAuth2DCRFormProps {
 export function renderForm({ dcr }: OAuth2DCRFormProps) {
     dcr ||= {};
     return html`<ak-license-notice></ak-license-notice>
-        <ak-switch-input
-            name="createApplication"
-            label=${msg("Create application")}
-            ?checked=${dcr.createApplication ?? true}
-            help=${msg(
-                "Automatically create an Application for every client registered through this endpoint.",
-            )}
-        ></ak-switch-input>
         <ak-text-input
             name="defaultApplicationGroup"
             label=${msg("Default application group")}
             value="${ifDefined(dcr.defaultApplicationGroup)}"
             help=${msg("Group assigned to automatically created applications.")}
         ></ak-text-input>
-        <ak-radio-input
-            name="defaultClientType"
-            label=${msg("Default client type")}
-            .options=${clientTypeOptions}
-            .value=${dcr.defaultClientType}
-        ></ak-radio-input>
         <ak-form-element-horizontal
-            label=${msg("Default authorization flow")}
-            name="defaultAuthorizationFlow"
+            label=${msg("Override authorization flow")}
+            name="overrideAuthorizationFlow"
         >
             <ak-flow-search
-                label=${msg("Default authorization flow")}
+                label=${msg("Override authorization flow")}
                 placeholder=${msg("Select an authorization flow...")}
                 flowType=${FlowDesignationEnum.Authorization}
-                .currentFlow=${dcr.defaultAuthorizationFlow}
+                .currentFlow=${dcr.overrideAuthorizationFlow}
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
-                ${msg("Authorization flow applied to dynamically registered clients.")}
+                ${msg(
+                    "Authorization flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.",
+                )}
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal
-            label=${msg("Default invalidation flow")}
-            name="defaultInvalidationFlow"
+            label=${msg("Override invalidation flow")}
+            name="overrideInvalidationFlow"
         >
             <ak-flow-search
-                label=${msg("Default invalidation flow")}
+                label=${msg("Override invalidation flow")}
                 placeholder=${msg("Select an invalidation flow...")}
                 flowType=${FlowDesignationEnum.Invalidation}
-                .currentFlow=${dcr.defaultInvalidationFlow}
+                .currentFlow=${dcr.overrideInvalidationFlow}
             ></ak-flow-search>
             <p class="pf-c-form__helper-text">
-                ${msg("Invalidation flow applied to dynamically registered clients.")}
+                ${msg(
+                    "Invalidation flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.",
+                )}
             </p>
         </ak-form-element-horizontal>
         <ak-form-element-horizontal
-            label=${msg("Default property mappings")}
-            name="defaultPropertyMappings"
+            label=${msg("Override property mappings")}
+            name="overridePropertyMappings"
         >
             <ak-dual-select-dynamic-selected
                 .provider=${propertyMappingsProvider}
-                .selector=${propertyMappingsSelector(dcr.defaultPropertyMappings)}
+                .selector=${propertyMappingsSelector(dcr.overridePropertyMappings)}
                 available-label=${msg("Available Scopes")}
                 selected-label=${msg("Selected Scopes")}
             ></ak-dual-select-dynamic-selected>
             <p class="pf-c-form__helper-text">
-                ${msg("Scope mappings applied to dynamically registered clients.")}
+                ${msg(
+                    "Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.",
+                )}
             </p>
         </ak-form-element-horizontal>
         <ak-form-group open label=${msg("Advanced settings")}>
@@ -134,7 +112,7 @@ export function renderForm({ dcr }: OAuth2DCRFormProps) {
                 >
                     <ak-checkbox-group
                         name="allowedGrantTypes"
-                        .options=${allowedGrantTypeOptions}
+                        .options=${GrantTypeCheckboxItems}
                         .value=${dcr.allowedGrantTypes ?? []}
                     ></ak-checkbox-group>
                     <p class="pf-c-form__helper-text">

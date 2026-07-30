@@ -94,13 +94,22 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
             ${cardHeader}
         </div>`;
     }
+    // onAppClick intentionally takes precedence over the RAC launcher: in the
+    // requestable-browse context a card click means "request access", not "launch".
     if (onAppClick) {
+        const activate = () => {
+            onAppClick(application);
+        };
         main = html`<div
             ${primaryRef}
             role="button"
             aria-describedby=${descriptionID}
-            @click=${() => {
-                onAppClick(application);
+            @click=${activate}
+            @keydown=${(event: KeyboardEvent) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    activate();
+                }
             }}
             ${spread(extendedProps)}
         >
