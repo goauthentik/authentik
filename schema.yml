@@ -337,6 +337,113 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/:
+    get:
+      operationId: agents_agents_list
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAgentList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: agents_agents_create
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/{id}/:
+    get:
+      operationId: agents_agents_retrieve
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: agents_agents_destroy
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/admin/all/:
     get:
       operationId: authenticators_admin_all_list
@@ -11465,113 +11572,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /personas/personas/:
-    get:
-      operationId: personas_personas_list
-      description: |-
-        Admin-provisioned delegate identities. An admin creates a Persona for a given
-        parent user, then grants it access the same way as any other User -- ordinary
-        PolicyBindings pointed at whatever it needs.
-      parameters:
-      - $ref: '#/components/parameters/QueryPaginationOrdering'
-      - $ref: '#/components/parameters/QueryPaginationPage'
-      - $ref: '#/components/parameters/QueryPaginationPageSize'
-      - $ref: '#/components/parameters/QuerySearch'
-      tags:
-      - personas
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedPersonaList'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    post:
-      operationId: personas_personas_create
-      description: |-
-        Admin-provisioned delegate identities. An admin creates a Persona for a given
-        parent user, then grants it access the same way as any other User -- ordinary
-        PolicyBindings pointed at whatever it needs.
-      tags:
-      - personas
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonaCreateRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Persona'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-  /personas/personas/{id}/:
-    get:
-      operationId: personas_personas_retrieve
-      description: |-
-        Admin-provisioned delegate identities. An admin creates a Persona for a given
-        parent user, then grants it access the same way as any other User -- ordinary
-        PolicyBindings pointed at whatever it needs.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Persona.
-        required: true
-      tags:
-      - personas
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Persona'
-          description: ''
-        '400':
-          $ref: '#/components/responses/ValidationErrorResponse'
-        '403':
-          $ref: '#/components/responses/GenericErrorResponse'
-    delete:
-      operationId: personas_personas_destroy
-      description: |-
-        Admin-provisioned delegate identities. An admin creates a Persona for a given
-        parent user, then grants it access the same way as any other User -- ordinary
-        PolicyBindings pointed at whatever it needs.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Persona.
-        required: true
-      tags:
-      - personas
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -35546,6 +35546,66 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    Agent:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+      required:
+      - name
+      - parent
+      - pk
+      - uid
+      - username
+      - uuid
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -35716,6 +35776,23 @@ components:
             type: integer
       required:
       - name
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - parent
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -35870,12 +35947,12 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
+      - authentik.enterprise.agents
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
       - authentik.enterprise.endpoints.connectors.google_chrome
       - authentik.enterprise.lifecycle
-      - authentik.enterprise.personas
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
@@ -45149,13 +45226,13 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_agents.agent
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
       - authentik_lifecycle.useroffboarding
-      - authentik_personas.persona
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -46842,6 +46919,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedAgentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedAppleIndependentSecureEnclaveList:
       type: object
       properties:
@@ -48201,21 +48293,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
-        autocomplete:
-          $ref: '#/components/schemas/Autocomplete'
-      required:
-      - autocomplete
-      - pagination
-      - results
-    PaginatedPersonaList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/Persona'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -53903,83 +53980,6 @@ components:
           type: string
       required:
       - id
-    Persona:
-      type: object
-      description: |-
-        Mixin to validate that a valid enterprise license
-        exists before allowing to save the object
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        uid:
-          type: string
-          readOnly: true
-        uuid:
-          type: string
-          format: uuid
-          readOnly: true
-        expiring:
-          type: boolean
-        expires:
-          type: string
-          format: date-time
-          nullable: true
-        parent:
-          allOf:
-          - $ref: '#/components/schemas/PartialUser'
-          readOnly: true
-      required:
-      - name
-      - parent
-      - pk
-      - uid
-      - username
-      - uuid
-    PersonaCreateRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        parent:
-          type: integer
-        label:
-          type: string
-        expiring:
-          type: boolean
-          default: false
-        expires:
-          type: string
-          format: date-time
-          nullable: true
-      required:
-      - parent
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage

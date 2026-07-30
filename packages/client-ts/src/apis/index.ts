@@ -1,6 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from "./AdminApi";
+export * from "./AgentsApi";
 export * from "./AuthenticatorsApi";
 export * from "./CoreApi";
 export * from "./CryptoApi";
@@ -12,7 +13,6 @@ export * from "./LifecycleApi";
 export * from "./ManagedApi";
 export * from "./Oauth2Api";
 export * from "./OutpostsApi";
-export * from "./PersonasApi";
 export * from "./PoliciesApi";
 export * from "./PropertymappingsApi";
 export * from "./ProvidersApi";

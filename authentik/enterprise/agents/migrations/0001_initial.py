@@ -42,7 +42,10 @@ class Migration(migrations.Migration):
                 (
                     "primary_app",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="authentik_core.application"
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="authentik_core.application",
                     ),
                 ),
             ],

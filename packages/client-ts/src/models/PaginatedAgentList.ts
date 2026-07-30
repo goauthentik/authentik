@@ -12,71 +12,71 @@
  * Do not edit the class manually.
  */
 
+import type { Agent } from "./Agent";
+import { AgentFromJSON, AgentToJSON } from "./Agent";
 import type { Pagination } from "./Pagination";
 import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
-import type { Persona } from "./Persona";
-import { PersonaFromJSON, PersonaToJSON } from "./Persona";
 
 /**
  *
  * @export
- * @interface PaginatedPersonaList
+ * @interface PaginatedAgentList
  */
-export interface PaginatedPersonaList {
+export interface PaginatedAgentList {
     /**
      *
      * @type {Pagination}
-     * @memberof PaginatedPersonaList
+     * @memberof PaginatedAgentList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Persona>}
-     * @memberof PaginatedPersonaList
+     * @type {Array<Agent>}
+     * @memberof PaginatedAgentList
      */
-    results: Array<Persona>;
+    results: Array<Agent>;
     /**
      *
      * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPersonaList
+     * @memberof PaginatedAgentList
      */
     autocomplete: { [key: string]: any };
 }
 
 /**
- * Check if a given object implements the PaginatedPersonaList interface.
+ * Check if a given object implements the PaginatedAgentList interface.
  */
-export function instanceOfPaginatedPersonaList(value: object): value is PaginatedPersonaList {
+export function instanceOfPaginatedAgentList(value: object): value is PaginatedAgentList {
     if (!("pagination" in value) || value["pagination"] === undefined) return false;
     if (!("results" in value) || value["results"] === undefined) return false;
     if (!("autocomplete" in value) || value["autocomplete"] === undefined) return false;
     return true;
 }
 
-export function PaginatedPersonaListFromJSON(json: any): PaginatedPersonaList {
-    return PaginatedPersonaListFromJSONTyped(json, false);
+export function PaginatedAgentListFromJSON(json: any): PaginatedAgentList {
+    return PaginatedAgentListFromJSONTyped(json, false);
 }
 
-export function PaginatedPersonaListFromJSONTyped(
+export function PaginatedAgentListFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): PaginatedPersonaList {
+): PaginatedAgentList {
     if (json == null) {
         return json;
     }
     return {
         pagination: PaginationFromJSON(json["pagination"]),
-        results: (json["results"] as Array<any>).map(PersonaFromJSON),
+        results: (json["results"] as Array<any>).map(AgentFromJSON),
         autocomplete: json["autocomplete"],
     };
 }
 
-export function PaginatedPersonaListToJSON(json: any): PaginatedPersonaList {
-    return PaginatedPersonaListToJSONTyped(json, false);
+export function PaginatedAgentListToJSON(json: any): PaginatedAgentList {
+    return PaginatedAgentListToJSONTyped(json, false);
 }
 
-export function PaginatedPersonaListToJSONTyped(
-    value?: PaginatedPersonaList | null,
+export function PaginatedAgentListToJSONTyped(
+    value?: PaginatedAgentList | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -85,7 +85,7 @@ export function PaginatedPersonaListToJSONTyped(
 
     return {
         pagination: PaginationToJSON(value["pagination"]),
-        results: (value["results"] as Array<any>).map(PersonaToJSON),
+        results: (value["results"] as Array<any>).map(AgentToJSON),
         autocomplete: value["autocomplete"],
     };
 }

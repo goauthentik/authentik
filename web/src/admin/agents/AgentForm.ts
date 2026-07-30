@@ -14,9 +14,9 @@ import { AKLabel } from "#components/ak-label";
 import {
     CoreApi,
     CoreUsersListRequest,
-    Persona,
-    PersonaCreateRequest,
-    PersonasApi,
+    Agent,
+    AgentCreateRequest,
+    AgentsApi,
     User,
 } from "@goauthentik/api";
 
@@ -24,10 +24,10 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-@customElement("ak-persona-form")
-export class PersonaForm extends Form<PersonaCreateRequest> {
-    public static override verboseName = msg("Persona");
-    public static override verboseNamePlural = msg("Personas");
+@customElement("ak-agent-form")
+export class AgentForm extends Form<AgentCreateRequest> {
+    public static override verboseName = msg("Agent");
+    public static override verboseNamePlural = msg("Agents");
     public static override createLabel = msg("Create");
     public static override submitVerb = msg("Create");
 
@@ -35,12 +35,12 @@ export class PersonaForm extends Form<PersonaCreateRequest> {
     protected expiresAt: Date | null = null;
 
     getSuccessMessage(): string {
-        return msg("Successfully created persona.");
+        return msg("Successfully created agent.");
     }
 
-    async send(data: PersonaCreateRequest): Promise<Persona> {
-        return aki(PersonasApi).personasPersonasCreate({
-            personaCreateRequest: data,
+    async send(data: AgentCreateRequest): Promise<Agent> {
+        return aki(AgentsApi).agentsAgentsCreate({
+            agentCreateRequest: data,
         });
     }
 
@@ -68,7 +68,7 @@ export class PersonaForm extends Form<PersonaCreateRequest> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${msg("The user this persona acts on behalf of.")}
+                    ${msg("The user this agent acts on behalf of.")}
                 </p>
             </ak-form-element-horizontal>
 
@@ -82,7 +82,7 @@ export class PersonaForm extends Form<PersonaCreateRequest> {
             <ak-switch-input
                 name="expiring"
                 label=${msg("Expiring")}
-                help=${msg("Whether this persona should be automatically removed once it expires.")}
+                help=${msg("Whether this agent should be automatically removed once it expires.")}
                 @change=${this.#expiringChangeListener}
                 ?checked=${!!this.expiresAt}
             ></ak-switch-input>
@@ -92,13 +92,13 @@ export class PersonaForm extends Form<PersonaCreateRequest> {
                     {
                         slot: "label",
                         className: "pf-c-form__group-label",
-                        htmlFor: "persona-expiration-date-input",
+                        htmlFor: "agent-expiration-date-input",
                     },
                     msg("Expires on"),
                 )}
 
                 <input
-                    id="persona-expiration-date-input"
+                    id="agent-expiration-date-input"
                     type="datetime-local"
                     data-type="datetime-local"
                     value=${this.expiresAt ? dateTimeLocal(this.expiresAt) : ""}
@@ -111,6 +111,6 @@ export class PersonaForm extends Form<PersonaCreateRequest> {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-persona-form": PersonaForm;
+        "ak-agent-form": AgentForm;
     }
 }

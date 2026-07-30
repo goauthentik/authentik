@@ -15,51 +15,51 @@
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
- * @interface PersonaCreateRequest
+ * @interface AgentCreateRequest
  */
-export interface PersonaCreateRequest {
+export interface AgentCreateRequest {
     /**
      *
      * @type {number}
-     * @memberof PersonaCreateRequest
+     * @memberof AgentCreateRequest
      */
     parent: number;
     /**
      *
      * @type {string}
-     * @memberof PersonaCreateRequest
+     * @memberof AgentCreateRequest
      */
     label?: string;
     /**
      *
      * @type {boolean}
-     * @memberof PersonaCreateRequest
+     * @memberof AgentCreateRequest
      */
     expiring?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof PersonaCreateRequest
+     * @memberof AgentCreateRequest
      */
     expires?: Date | null;
 }
 
 /**
- * Check if a given object implements the PersonaCreateRequest interface.
+ * Check if a given object implements the AgentCreateRequest interface.
  */
-export function instanceOfPersonaCreateRequest(value: object): value is PersonaCreateRequest {
+export function instanceOfAgentCreateRequest(value: object): value is AgentCreateRequest {
     if (!("parent" in value) || value["parent"] === undefined) return false;
     return true;
 }
 
-export function PersonaCreateRequestFromJSON(json: any): PersonaCreateRequest {
-    return PersonaCreateRequestFromJSONTyped(json, false);
+export function AgentCreateRequestFromJSON(json: any): AgentCreateRequest {
+    return AgentCreateRequestFromJSONTyped(json, false);
 }
 
-export function PersonaCreateRequestFromJSONTyped(
+export function AgentCreateRequestFromJSONTyped(
     json: any,
     ignoreDiscriminator: boolean,
-): PersonaCreateRequest {
+): AgentCreateRequest {
     if (json == null) {
         return json;
     }
@@ -76,12 +76,12 @@ export function PersonaCreateRequestFromJSONTyped(
     };
 }
 
-export function PersonaCreateRequestToJSON(json: any): PersonaCreateRequest {
-    return PersonaCreateRequestToJSONTyped(json, false);
+export function AgentCreateRequestToJSON(json: any): AgentCreateRequest {
+    return AgentCreateRequestToJSONTyped(json, false);
 }
 
-export function PersonaCreateRequestToJSONTyped(
-    value?: PersonaCreateRequest | null,
+export function AgentCreateRequestToJSONTyped(
+    value?: AgentCreateRequest | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

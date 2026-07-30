@@ -19,87 +19,87 @@ import { PartialUserFromJSON } from "./PartialUser";
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
  * @export
- * @interface Persona
+ * @interface Agent
  */
-export interface Persona {
+export interface Agent {
     /**
      *
      * @type {number}
-     * @memberof Persona
+     * @memberof Agent
      */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      * @type {string}
-     * @memberof Persona
+     * @memberof Agent
      */
     username: string;
     /**
      * User's display name.
      * @type {string}
-     * @memberof Persona
+     * @memberof Agent
      */
     name: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
      * @type {boolean}
-     * @memberof Persona
+     * @memberof Agent
      */
     isActive?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Persona
+     * @memberof Agent
      */
     lastLogin?: Date | null;
     /**
      *
      * @type {string}
-     * @memberof Persona
+     * @memberof Agent
      */
     email?: string;
     /**
      *
      * @type {{ [key: string]: any; }}
-     * @memberof Persona
+     * @memberof Agent
      */
     attributes?: { [key: string]: any };
     /**
      *
      * @type {string}
-     * @memberof Persona
+     * @memberof Agent
      */
     readonly uid: string;
     /**
      *
      * @type {string}
-     * @memberof Persona
+     * @memberof Agent
      */
     readonly uuid: string;
     /**
      *
      * @type {boolean}
-     * @memberof Persona
+     * @memberof Agent
      */
     expiring?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Persona
+     * @memberof Agent
      */
     expires?: Date | null;
     /**
      *
      * @type {PartialUser}
-     * @memberof Persona
+     * @memberof Agent
      */
     readonly parent: PartialUser;
 }
 
 /**
- * Check if a given object implements the Persona interface.
+ * Check if a given object implements the Agent interface.
  */
-export function instanceOfPersona(value: object): value is Persona {
+export function instanceOfAgent(value: object): value is Agent {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
@@ -109,11 +109,11 @@ export function instanceOfPersona(value: object): value is Persona {
     return true;
 }
 
-export function PersonaFromJSON(json: any): Persona {
-    return PersonaFromJSONTyped(json, false);
+export function AgentFromJSON(json: any): Agent {
+    return AgentFromJSONTyped(json, false);
 }
 
-export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): Persona {
+export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Agent {
     if (json == null) {
         return json;
     }
@@ -143,12 +143,12 @@ export function PersonaFromJSONTyped(json: any, ignoreDiscriminator: boolean): P
     };
 }
 
-export function PersonaToJSON(json: any): Persona {
-    return PersonaToJSONTyped(json, false);
+export function AgentToJSON(json: any): Agent {
+    return AgentToJSONTyped(json, false);
 }
 
-export function PersonaToJSONTyped(
-    value?: Omit<Persona, "pk" | "uid" | "uuid" | "parent"> | null,
+export function AgentToJSONTyped(
+    value?: Omit<Agent, "pk" | "uid" | "uuid" | "parent"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

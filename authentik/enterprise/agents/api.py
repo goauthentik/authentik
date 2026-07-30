@@ -16,7 +16,7 @@ from authentik.enterprise.api import EnterpriseRequiredMixin
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
-    parent = PartialUserSerializer(read_only=True)
+    parent = PartialUserSerializer(source="owner", read_only=True)
 
     class Meta:
         model = Agent
@@ -42,12 +42,14 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
     @validate(AgentCreateSerializer)
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
         parent: User = body.validated_data["parent"]
-        agent = Agent.objects.create(
-            owner=parent,
-            primary_app=None,
+        agent = Agent.create_for_user(
+            user=parent,
+            name=body.validated_data.get("label", ""),
+            expiring=body.validated_data["expiring"],
+            expires=body.validated_data["expires"],
         )
         parent.assign_perms_to_managed_role(
-            ["authentik_requests.view_agent", "authentik_requests.delete_agent"],
+            ["authentik_agents.view_agent", "authentik_agents.delete_agent"],
             agent,
         )
         return Response(AgentSerializer(instance=agent).data, status=201)

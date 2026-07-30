@@ -1,5 +1,4 @@
 import "#admin/rbac/ObjectPermissionModal";
-import "#admin/requests/PersonaForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
@@ -10,20 +9,20 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PersonaForm } from "#admin/requests/PersonaForm";
+import { AgentForm } from "#admin/agents/AgentForm";
 
-import { Persona, RequestsApi } from "@goauthentik/api";
+import { Agent, AgentsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-@customElement("ak-persona-list")
-export class PersonaListPage extends TablePage<Persona> {
+@customElement("ak-agent-list")
+export class AgentListPage extends TablePage<Agent> {
     public override checkbox = true;
     public override clearOnRefresh = true;
-    public override searchPlaceholder = msg("Search for a persona...");
-    public override pageTitle = msg("Personas");
+    public override searchPlaceholder = msg("Search for a agent...");
+    public override pageTitle = msg("Agents");
     public override pageDescription = msg(
         "Admin-provisioned delegate identities that access can be requested and granted for, separately from their parent user.",
     );
@@ -33,8 +32,8 @@ export class PersonaListPage extends TablePage<Persona> {
 
     protected override searchEnabled = true;
 
-    protected async apiEndpoint(): Promise<PaginatedResponse<Persona>> {
-        return aki(RequestsApi).requestsPersonasList(await this.defaultEndpointConfig());
+    protected async apiEndpoint(): Promise<PaginatedResponse<Agent>> {
+        return aki(AgentsApi).agentsAgentsList(await this.defaultEndpointConfig());
     }
 
     protected override columns: TableColumn[] = [
@@ -47,10 +46,10 @@ export class PersonaListPage extends TablePage<Persona> {
     protected override renderToolbarSelected(): SlottedTemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html` <ak-forms-delete-bulk
-            object-label=${msg("Persona(s)")}
+            object-label=${msg("Agent(s)")}
             .objects=${this.selectedElements}
-            .delete=${(item: Persona) => {
-                return aki(RequestsApi).requestsPersonasDestroy({
+            .delete=${(item: Agent) => {
+                return aki(AgentsApi).agentsAgentsDestroy({
                     id: item.pk,
                 });
             }}
@@ -61,7 +60,7 @@ export class PersonaListPage extends TablePage<Persona> {
         </ak-forms-delete-bulk>`;
     }
 
-    protected override row(item: Persona): SlottedTemplateResult[] {
+    protected override row(item: Agent): SlottedTemplateResult[] {
         return [
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
@@ -71,11 +70,11 @@ export class PersonaListPage extends TablePage<Persona> {
             </a>`,
             item.expiring && item.expires ? Timestamp(item.expires) : msg("Never"),
             html`<ak-forms-delete-bulk
-                object-label=${msg("Persona")}
+                object-label=${msg("Agent")}
                 .objects=${[item]}
-                .delete=${(persona: Persona) => {
-                    return aki(RequestsApi).requestsPersonasDestroy({
-                        id: persona.pk,
+                .delete=${(agent: Agent) => {
+                    return aki(AgentsApi).agentsAgentsDestroy({
+                        id: agent.pk,
                     });
                 }}
             >
@@ -87,12 +86,12 @@ export class PersonaListPage extends TablePage<Persona> {
     }
 
     protected override renderObjectCreate(): SlottedTemplateResult {
-        return ModalInvokerButton(PersonaForm);
+        return ModalInvokerButton(AgentForm);
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-persona-list": PersonaListPage;
+        "ak-agent-list": AgentListPage;
     }
 }

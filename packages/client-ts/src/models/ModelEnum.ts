@@ -157,6 +157,7 @@ export const ModelEnum = {
     AuthentikTasksSchedulesSchedule: "authentik_tasks_schedules.schedule",
     AuthentikBrandsBrand: "authentik_brands.brand",
     AuthentikBlueprintsBlueprintinstance: "authentik_blueprints.blueprintinstance",
+    AuthentikAgentsAgent: "authentik_agents.agent",
     AuthentikEndpointsConnectorsFleetFleetconnector:
         "authentik_endpoints_connectors_fleet.fleetconnector",
     AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector:
@@ -165,7 +166,6 @@ export const ModelEnum = {
     AuthentikLifecycleLifecycleiteration: "authentik_lifecycle.lifecycleiteration",
     AuthentikLifecycleReview: "authentik_lifecycle.review",
     AuthentikLifecycleUseroffboarding: "authentik_lifecycle.useroffboarding",
-    AuthentikPersonasPersona: "authentik_personas.persona",
     AuthentikPoliciesUniquePasswordUniquepasswordpolicy:
         "authentik_policies_unique_password.uniquepasswordpolicy",
     AuthentikProvidersGoogleWorkspaceGoogleworkspaceprovider:
