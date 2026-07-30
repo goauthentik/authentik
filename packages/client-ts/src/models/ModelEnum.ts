@@ -57,6 +57,8 @@ export const ModelEnum = {
     AuthentikProvidersLdapLdapprovider: "authentik_providers_ldap.ldapprovider",
     AuthentikProvidersOauth2Scopemapping: "authentik_providers_oauth2.scopemapping",
     AuthentikProvidersOauth2Oauth2provider: "authentik_providers_oauth2.oauth2provider",
+    AuthentikProvidersOauth2Oauth2dynamicclientregistration:
+        "authentik_providers_oauth2.oauth2dynamicclientregistration",
     AuthentikProvidersProxyProxyprovider: "authentik_providers_proxy.proxyprovider",
     AuthentikProvidersRacRacprovider: "authentik_providers_rac.racprovider",
     AuthentikProvidersRacEndpoint: "authentik_providers_rac.endpoint",
