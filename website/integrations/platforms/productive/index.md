@@ -30,6 +30,8 @@ Single Sign-On (SSO) is available on all Productive plans. Enforcing SSO and SCI
 
 To support the integration of Productive with authentik, you need to create two property mappings and an application/provider pair in authentik.
 
+For optional SCIM provisioning, create the SCIM property mapping now. After you enable SSO and SCIM in Productive, return to the optional SCIM provider sections to finish the authentik configuration.
+
 ### Create property mappings
 
 Productive expects the SAML assertion to include `first_name` and `last_name` attributes. Because authentik stores a user's full name as a single string, create SAML provider property mappings that split the full name into first and last names.
@@ -58,7 +60,7 @@ Productive expects the SAML assertion to include `first_name` and `last_name` at
         return name.rsplit(" ", 1)[-1] if " " in name else ""
         ```
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 <SAMLProvider20265Warning />
 
@@ -77,34 +79,9 @@ Productive expects the SAML assertion to include `first_name` and `last_name` at
 
 3. Click **Submit** to save the new application and provider.
 
-## Productive configuration
-
-1. Log in to [Productive](https://app.productive.io/) as an administrator.
-2. Navigate to **Settings** > **SSO and SCIM**.
-3. Copy the **Single Sign-On URL** and **Audience URI** values. You will use these values in the next section.
-4. Keep the Productive SSO settings open.
-
-## Configure the remaining information in authentik
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the provider that you created in the previous step.
-3. Click **Edit**.
-4. Under **Protocol settings**, set **ACS URL** to the **Single Sign-On URL** value from Productive. Then, set **Audience** to the **Audience URI** value from Productive.
-5. Click **Update**.
-
-## Enable SSO in Productive
-
-1. Return to the Productive **SSO and SCIM** page.
-2. Set the following values:
-    - **Metadata URL**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **Identity Provider Single Sign-On URL**: `https://authentik.company/application/saml/<application_slug>/`
-3. Click **Enable SSO**.
-
-## SCIM provisioning _(optional)_
+### Create a SCIM property mapping _(optional)_
 
 authentik can also provision Productive users with SCIM. SCIM requires SSO to be configured first.
-
-### Create a SCIM property mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -145,14 +122,9 @@ authentik can also provision Productive users with SCIM. SCIM requires SSO to be
 
 5. Click **Finish**.
 
-### Enable SCIM in Productive
+### Create a SCIM provider _(optional)_
 
-1. Log in to [Productive](https://app.productive.io/) as an administrator.
-2. Navigate to **Settings** > **Single Sign-On** > **SCIM**.
-3. Open the **SCIM** section and click **Enable SCIM**.
-4. Copy the **Base URL** and **Bearer Token** values.
-
-### Create a SCIM provider in authentik
+Complete this section after you enable SCIM in Productive and copy its **Base URL** and **Bearer Token**.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **Create** to open the provider wizard.
@@ -165,12 +137,45 @@ authentik can also provision Productive users with SCIM. SCIM requires SSO to be
 
 3. Click **Finish** to save the provider.
 
-### Set SCIM provider as backchannel provider
+### Set the SCIM provider as a backchannel provider _(optional)_
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click the name of your Productive application.
 3. Click the plus (+) icon next to **Backchannel Providers** and select the SCIM provider that you created in the previous section.
 4. Click **Save Changes**.
+
+## Productive configuration
+
+### Configure SAML SSO
+
+1. Log in to [Productive](https://app.productive.io/) as an administrator.
+2. Navigate to **Settings** > **SSO and SCIM**.
+3. Copy the **Single Sign-On URL** and **Audience URI** values. You will use these values in the next section.
+4. Keep the Productive SSO settings open.
+
+### Update the authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the provider that you created in the previous step.
+3. Click **Edit**.
+4. Under **Protocol settings**, set **ACS URL** to the **Single Sign-On URL** value from Productive. Then, set **Audience** to the **Audience URI** value from Productive.
+5. Click **Update**.
+
+### Enable SSO
+
+1. Return to the Productive **SSO and SCIM** page.
+2. Set the following values:
+    - **Metadata URL**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Identity Provider Single Sign-On URL**: `https://authentik.company/application/saml/<application_slug>/`
+3. Click **Enable SSO**.
+
+### Enable SCIM _(optional)_
+
+1. Log in to [Productive](https://app.productive.io/) as an administrator.
+2. Navigate to **Settings** > **Single Sign-On** > **SCIM**.
+3. Open the **SCIM** section and click **Enable SCIM**.
+4. Copy the **Base URL** and **Bearer Token** values.
+5. Return to the optional **Create a SCIM provider** section under **authentik configuration** to finish the SCIM setup.
 
 ## Configuration verification
 
