@@ -10,7 +10,7 @@ use ak_common::{Tasks, VERSION, api, authentik_build_hash, tracing::LogFilterHan
 use arc_swap::ArcSwap;
 use eyre::{Error, Result, eyre};
 use tokio_retry2::{Retry, RetryError, strategy::FixedInterval};
-use tracing::{debug, error, info, instrument};
+use tracing::{debug, info, instrument, warn};
 use uuid::Uuid;
 
 pub(crate) mod event;
@@ -54,7 +54,7 @@ impl OutpostController {
             .map_err(RetryError::transient)
         };
         let retry_notify = |err: &Error, _duration| {
-            error!(
+            warn!(
                 ?err,
                 "Failed to fetch outpost from API, retrying in 3 seconds"
             );
