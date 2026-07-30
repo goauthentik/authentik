@@ -62,11 +62,35 @@ export interface LicenseSummary {
  * Check if a given object implements the LicenseSummary interface.
  */
 export function instanceOfLicenseSummary(value: object): value is LicenseSummary {
-    if (!("internalUsers" in value) || value["internalUsers"] === undefined) return false;
-    if (!("externalUsers" in value) || value["externalUsers"] === undefined) return false;
+    if (
+        (!("internalUsers" in (value as Record<string, any>)) &&
+            !("internal_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["internalUsers"] === undefined &&
+            (value as Record<string, any>)["internal_users"] === undefined)
+    )
+        return false;
+    if (
+        (!("externalUsers" in (value as Record<string, any>)) &&
+            !("external_users" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalUsers"] === undefined &&
+            (value as Record<string, any>)["external_users"] === undefined)
+    )
+        return false;
     if (!("status" in value) || value["status"] === undefined) return false;
-    if (!("latestValid" in value) || value["latestValid"] === undefined) return false;
-    if (!("licenseFlags" in value) || value["licenseFlags"] === undefined) return false;
+    if (
+        (!("latestValid" in (value as Record<string, any>)) &&
+            !("latest_valid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["latestValid"] === undefined &&
+            (value as Record<string, any>)["latest_valid"] === undefined)
+    )
+        return false;
+    if (
+        (!("licenseFlags" in (value as Record<string, any>)) &&
+            !("license_flags" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["licenseFlags"] === undefined &&
+            (value as Record<string, any>)["license_flags"] === undefined)
+    )
+        return false;
     return true;
 }
 

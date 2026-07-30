@@ -66,8 +66,18 @@ export function NotificationRequestFromJSONTyped(
         return json;
     }
     return {
-        hyperlink: json["hyperlink"] == null ? undefined : json["hyperlink"],
-        hyperlinkLabel: json["hyperlink_label"] == null ? undefined : json["hyperlink_label"],
+        hyperlink:
+            json["hyperlink"] === undefined
+                ? undefined
+                : json["hyperlink"] === null
+                  ? null
+                  : json["hyperlink"],
+        hyperlinkLabel:
+            json["hyperlink_label"] === undefined
+                ? undefined
+                : json["hyperlink_label"] === null
+                  ? null
+                  : json["hyperlink_label"],
         event: json["event"] == null ? undefined : EventRequestFromJSON(json["event"]),
         seen: json["seen"] == null ? undefined : json["seen"],
     };

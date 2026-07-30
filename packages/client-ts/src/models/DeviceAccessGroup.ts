@@ -42,7 +42,13 @@ export interface DeviceAccessGroup {
  * Check if a given object implements the DeviceAccessGroup interface.
  */
 export function instanceOfDeviceAccessGroup(value: object): value is DeviceAccessGroup {
-    if (!("pbmUuid" in value) || value["pbmUuid"] === undefined) return false;
+    if (
+        (!("pbmUuid" in (value as Record<string, any>)) &&
+            !("pbm_uuid" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pbmUuid"] === undefined &&
+            (value as Record<string, any>)["pbm_uuid"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
@@ -70,7 +76,7 @@ export function DeviceAccessGroupToJSON(json: any): DeviceAccessGroup {
 }
 
 export function DeviceAccessGroupToJSONTyped(
-    value?: Omit<DeviceAccessGroup, "pbm_uuid"> | null,
+    value?: Omit<DeviceAccessGroup, "pbmUuid"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

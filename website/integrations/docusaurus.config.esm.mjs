@@ -89,12 +89,12 @@ export default createDocusaurusConfig(
         //#region Theme
 
         themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
-
+        favicon: "https://goauthentik.io/img/icon.png",
         themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
             algolia: createAlgoliaConfig({
                 externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
             }),
-            image: "img/social.png",
+            image: "https://goauthentik.io/img/social.png",
             navbarReplacements: {
                 INTEGRATIONS_URL: "/",
             },

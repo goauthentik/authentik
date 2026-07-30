@@ -53,7 +53,13 @@ export interface SMSDevice {
 export function instanceOfSMSDevice(value: object): value is SMSDevice {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("phoneNumber" in value) || value["phoneNumber"] === undefined) return false;
+    if (
+        (!("phoneNumber" in (value as Record<string, any>)) &&
+            !("phone_number" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["phoneNumber"] === undefined &&
+            (value as Record<string, any>)["phone_number"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     return true;
 }
@@ -79,7 +85,7 @@ export function SMSDeviceToJSON(json: any): SMSDevice {
 }
 
 export function SMSDeviceToJSONTyped(
-    value?: Omit<SMSDevice, "pk" | "phone_number" | "user"> | null,
+    value?: Omit<SMSDevice, "pk" | "phoneNumber" | "user"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

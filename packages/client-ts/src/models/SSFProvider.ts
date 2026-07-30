@@ -110,14 +110,55 @@ export function instanceOfSSFProvider(value: object): value is SSFProvider {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
-    if (!("verboseName" in value) || value["verboseName"] === undefined) return false;
-    if (!("verboseNamePlural" in value) || value["verboseNamePlural"] === undefined) return false;
-    if (!("metaModelName" in value) || value["metaModelName"] === undefined) return false;
-    if (!("signingKey" in value) || value["signingKey"] === undefined) return false;
-    if (!("tokenObj" in value) || value["tokenObj"] === undefined) return false;
-    if (!("oidcAuthProvidersObj" in value) || value["oidcAuthProvidersObj"] === undefined)
+    if (
+        (!("verboseName" in (value as Record<string, any>)) &&
+            !("verbose_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseName"] === undefined &&
+            (value as Record<string, any>)["verbose_name"] === undefined)
+    )
         return false;
-    if (!("ssfUrl" in value) || value["ssfUrl"] === undefined) return false;
+    if (
+        (!("verboseNamePlural" in (value as Record<string, any>)) &&
+            !("verbose_name_plural" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["verboseNamePlural"] === undefined &&
+            (value as Record<string, any>)["verbose_name_plural"] === undefined)
+    )
+        return false;
+    if (
+        (!("metaModelName" in (value as Record<string, any>)) &&
+            !("meta_model_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["metaModelName"] === undefined &&
+            (value as Record<string, any>)["meta_model_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("signingKey" in (value as Record<string, any>)) &&
+            !("signing_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["signingKey"] === undefined &&
+            (value as Record<string, any>)["signing_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("tokenObj" in (value as Record<string, any>)) &&
+            !("token_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenObj"] === undefined &&
+            (value as Record<string, any>)["token_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("oidcAuthProvidersObj" in (value as Record<string, any>)) &&
+            !("oidc_auth_providers_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["oidcAuthProvidersObj"] === undefined &&
+            (value as Record<string, any>)["oidc_auth_providers_obj"] === undefined)
+    )
+        return false;
+    if (
+        (!("ssfUrl" in (value as Record<string, any>)) &&
+            !("ssf_url" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["ssfUrl"] === undefined &&
+            (value as Record<string, any>)["ssf_url"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -157,12 +198,12 @@ export function SSFProviderToJSONTyped(
         SSFProvider,
         | "pk"
         | "component"
-        | "verbose_name"
-        | "verbose_name_plural"
-        | "meta_model_name"
-        | "token_obj"
-        | "oidc_auth_providers_obj"
-        | "ssf_url"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "tokenObj"
+        | "oidcAuthProvidersObj"
+        | "ssfUrl"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

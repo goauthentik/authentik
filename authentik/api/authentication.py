@@ -3,7 +3,7 @@
 from hmac import compare_digest
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -17,6 +17,9 @@ from authentik.common.oauth.constants import SCOPE_AUTHENTIK_API
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.outposts.models import Outpost
+
+if TYPE_CHECKING:
+    from drf_spectacular.openapi import AutoSchema
 
 LOGGER = get_logger()
 _tmp = Path(gettempdir())
@@ -169,6 +172,6 @@ class TokenSchema(OpenApiAuthenticationExtension):
     target_class = TokenAuthentication
     name = "authentik"
 
-    def get_security_definition(self, auto_schema):
+    def get_security_definition(self, auto_schema: AutoSchema):
         """Auth schema"""
         return {"type": "http", "scheme": "bearer"}

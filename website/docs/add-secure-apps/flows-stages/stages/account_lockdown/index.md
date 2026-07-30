@@ -1,6 +1,6 @@
 ---
 title: Account Lockdown stage
-authentik_version: "2025.5.0"
+authentik_version: "2026.5.0"
 authentik_enterprise: true
 ---
 

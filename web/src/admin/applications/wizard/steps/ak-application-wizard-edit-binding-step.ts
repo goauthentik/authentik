@@ -2,7 +2,7 @@ import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
@@ -19,6 +19,7 @@ import { groupBy } from "#common/utils";
 import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
 import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
 import { withQuery } from "#elements/forms/SearchSelect/utils";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
@@ -176,8 +177,8 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     <div class="pf-c-card__body">
                         <ak-toggle-group
                             value=${this.policyGroupUser}
-                            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                                this.policyGroupUser = ev.detail.value;
+                            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                                this.policyGroupUser = ev.value;
                             }}
                         >
                             <option value=${PolicyBindingCheckTarget.Policy}>

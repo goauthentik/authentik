@@ -30,6 +30,7 @@ export interface ISearchSelectView {
     placeholder: string;
     managed: boolean;
     emptyOption: string | null;
+    actionLabel: string | null;
 }
 
 /**
@@ -54,6 +55,7 @@ export interface ISearchSelectView {
  *
  * - @fires change - When a value from the list has been positively chosen, either as a consequence of
  *   the user typing or when selecting from the list.
+ * - @fires ak-search-select-action - When the pinned action item (see `action-label`) is activated.
  *
  * - @part ak-search-select: The main Patternfly div
  * - @part ak-search-select-toggle: The Patternfly inner div
@@ -93,6 +95,10 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     public set options(options: SelectOptions) {
         this.#options = groupOptions(options);
         this.#flatOptions = optionsToFlat(this.#options);
+
+        // Custom accessors aren't instrumented by Lit, so schedule an update
+        // manually to keep the menu and display value in sync.
+        this.requestUpdate();
     }
 
     public get options() {
@@ -193,6 +199,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      */
     @property({ type: String })
     public emptyOption: string | null = null;
+
+    /**
+     * An optional label for a pinned action item rendered at the end of the dropdown, e.g.
+     * "Create new...". Activating it closes the menu and fires an
+     * `ak-search-select-action` event instead of changing the selection.
+     *
+     * @attr
+     */
+    @property({ type: String, attribute: "action-label" })
+    public actionLabel: string | null = null;
 
     //#endregion
 
@@ -383,6 +399,16 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
         }
     };
 
+    #actionListener = (event: Event) => {
+        event.stopPropagation();
+
+        this.open = false;
+
+        this.dispatchEvent(
+            new CustomEvent("ak-search-select-action", { bubbles: true, composed: true }),
+        );
+    };
+
     #changeListener = (event: InputEvent) => {
         if (this.readOnly) return;
 
@@ -422,6 +448,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             } else {
                 // If no display value found (e.g., custom creatable value), use the value itself
                 this.displayValue = this.value;
+            }
+        } else if (this.value && this.displayValue === this.value) {
+            // The display label may not have been available when the value was set,
+            // e.g. when the value was assigned before a fetch settled. Now that
+            // an update is happening, try to resolve the label once more.
+            const newDisplayValue = this.findDisplayForValue(this.value);
+
+            if (newDisplayValue) {
+                this.displayValue = newDisplayValue;
             }
         }
     }
@@ -465,7 +500,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                             @blur=${this.#blurListener}
                             @keyup=${this.#searchKeyupListener}
                             @keydown=${this.#searchKeydownListener}
-                            value=${this.displayValue}
+                            .value=${this.displayValue}
                             ?readonly=${this.readOnly}
                         />
                     </div>
@@ -486,6 +521,8 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                               @change=${this.#changeListener}
                               @blur=${this.#blurListener}
                               emptyOption=${ifPresent(emptyOption)}
+                              actionLabel=${ifPresent(this.actionLabel)}
+                              @ak-select-action=${this.#actionListener}
                               @keydown=${this.#listKeydownListener}
                               @keyup=${this.#listKeyupListener}
                           ></ak-list-select>
