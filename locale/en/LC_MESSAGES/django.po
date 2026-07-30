@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-30 14:39+0000\n"
+"POT-Creation-Date: 2026-07-30 16:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -281,6 +281,10 @@ msgid "Can't modify internal service account users"
 msgstr ""
 
 #: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
 msgstr ""
 
@@ -314,10 +318,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Email stage not found."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "This field is required."
 msgstr ""
 
 #: authentik/core/apps.py
@@ -603,6 +603,14 @@ msgid "Sessions"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr ""
 
@@ -700,6 +708,14 @@ msgstr ""
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
 msgstr ""
 
 #: authentik/crypto/api.py
@@ -5232,6 +5248,10 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
+msgstr ""
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
 msgstr ""
 
 #: authentik/stages/user_logout/models.py
