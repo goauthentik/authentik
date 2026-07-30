@@ -182,7 +182,7 @@ export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true || frontMatter.unlisted === true) {
+    if (frontMatter.draft === true) {
         return null;
     }
 

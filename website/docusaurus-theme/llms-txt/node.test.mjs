@@ -38,7 +38,6 @@ test("collectDocFiles finds md and mdx, excludes partials", () => {
     assert.deepEqual(rels, [
         "index.mdx",
         "releases/2026/v2026.5.md",
-        "releases/2026/v2026.8.md",
         "topic-a/index.mdx",
         "topic-a/page-one.md",
         "topic-b/page-two.mdx",
@@ -74,10 +73,9 @@ test("parseDocFile derives title from first heading when frontmatter has none", 
     assert.equal(info.description, "Heading-derived page body.");
 });
 
-test("parseDocFile excludes draft and unlisted files", () => {
+test("parseDocFile returns null for draft files", () => {
     const PARSE = resolve(__dirname, "__fixtures__", "parse");
     assert.equal(parseDocFile(resolve(PARSE, "draft.md"), PARSE), null);
-    assert.equal(parseDocFile(resolve(PARSE, "unlisted.md"), PARSE), null);
 });
 
 test("parseDocFile cleans a blockquote-citation intro (strips > and -- attribution)", () => {
