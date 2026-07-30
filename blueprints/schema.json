@@ -5395,6 +5395,11 @@
                     "format": "uuid",
                     "title": "Flow authentication"
                 },
+                "flow_user_switch": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow user switch"
+                },
                 "flow_invalidation": {
                     "type": "string",
                     "format": "uuid",

@@ -91,6 +91,7 @@ log:
 
 sessions:
   unauthenticated_age: days=1
+  user_switching_age: days=365
 
 error_reporting:
   enabled: false
