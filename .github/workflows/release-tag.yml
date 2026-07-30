@@ -174,9 +174,6 @@ jobs:
     needs:
       - bump-version
     timeout-minutes: 120
-    # aws-lc-sys/aws-lc-fips-sys compile C via cc/cmake, so every target needs a matching
-    # native toolchain. Build each one on a runner of the same OS/arch instead of cross-compiling.
-    runs-on: "${{ matrix.target.runs-on }}"
     permissions:
       # Needed for checkout
       contents: read
@@ -194,6 +191,7 @@ jobs:
             runs-on: macos-15-intel
           - triple: aarch64-apple-darwin
             runs-on: macos-latest
+    runs-on: "${{ matrix.target.runs-on }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -203,7 +201,6 @@ jobs:
         with:
           rustflags: ""
           target: "${{ matrix.target.triple }}"
-      # aws-lc-fips-sys needs Go and Perl to generate its FIPS sources.
       - name: Setup go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
