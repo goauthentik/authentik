@@ -71,6 +71,12 @@ export interface PatchedBrandRequest {
      * @type {string}
      * @memberof PatchedBrandRequest
      */
+    flowUserSwitch?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
     flowInvalidation?: string | null;
     /**
      *
@@ -170,6 +176,12 @@ export function PatchedBrandRequestFromJSONTyped(
                 : json["flow_authentication"] === null
                   ? null
                   : json["flow_authentication"],
+        flowUserSwitch:
+            json["flow_user_switch"] === undefined
+                ? undefined
+                : json["flow_user_switch"] === null
+                  ? null
+                  : json["flow_user_switch"],
         flowInvalidation:
             json["flow_invalidation"] === undefined
                 ? undefined
@@ -251,6 +263,7 @@ export function PatchedBrandRequestToJSONTyped(
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
         flow_authentication: value["flowAuthentication"],
+        flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
