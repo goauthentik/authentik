@@ -25,63 +25,75 @@ export const ChallengePassword = flowFactory("ak-stage-identification", {
 });
 
 // https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-export const ChallengeCaptchaTurnstileVisible = flowFactory("ak-stage-identification", {
-    userFields: ["username"],
-    passwordFields: false,
-    flowDesignation: FlowDesignationEnum.Authentication,
-    primaryAction: "Login",
-    showSourceLabels: false,
-    captchaStage: {
-        pendingUser: "",
-        pendingUserAvatar: "",
-        jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-        siteKey: "1x00000000000000000000AA",
-        interactive: true,
-    },
-});
-
-// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-export const ChallengePasswordCaptchaTurnstileVisible = flowFactory("ak-stage-identification", {
-    userFields: ["username"],
-    passwordFields: true,
-    flowDesignation: FlowDesignationEnum.Authentication,
-    primaryAction: "Login",
-    showSourceLabels: false,
-    captchaStage: {
-        pendingUser: "",
-        pendingUserAvatar: "",
-        jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-        siteKey: "1x00000000000000000000AA",
-        interactive: true,
-    },
-});
-
-// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
-export const ChallengeEverything = flowFactory("ak-stage-identification", {
-    userFields: ["username"],
-    passwordFields: true,
-    flowDesignation: FlowDesignationEnum.Authentication,
-    primaryAction: "Login",
-    showSourceLabels: false,
-    allowShowPassword: true,
-    passwordlessUrl: "qwer",
-    captchaStage: {
-        pendingUser: "",
-        pendingUserAvatar: "",
-        jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
-        siteKey: "1x00000000000000000000AA",
-        interactive: true,
-    },
-    sources: [
-        {
-            name: "Google",
-            challenge: {
-                component: "xak-flow-redirect",
-                to: "foo",
-            },
-            iconUrl: "/static/authentik/sources/google.svg",
+export const ChallengeCaptchaTurnstileVisible = flowFactory(
+    "ak-stage-identification",
+    {
+        userFields: ["username"],
+        passwordFields: false,
+        flowDesignation: FlowDesignationEnum.Authentication,
+        primaryAction: "Login",
+        showSourceLabels: false,
+        captchaStage: {
+            pendingUser: "",
+            pendingUserAvatar: "",
+            jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+            siteKey: "1x00000000000000000000AA",
+            interactive: true,
         },
-    ],
-    recoveryUrl: "foo",
-    enrollUrl: "bar",
-});
+    },
+    { tags: ["no-snapshot"] },
+);
+
+// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+export const ChallengePasswordCaptchaTurnstileVisible = flowFactory(
+    "ak-stage-identification",
+    {
+        userFields: ["username"],
+        passwordFields: true,
+        flowDesignation: FlowDesignationEnum.Authentication,
+        primaryAction: "Login",
+        showSourceLabels: false,
+        captchaStage: {
+            pendingUser: "",
+            pendingUserAvatar: "",
+            jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+            siteKey: "1x00000000000000000000AA",
+            interactive: true,
+        },
+    },
+    { tags: ["no-snapshot"] },
+);
+
+// https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+export const ChallengeEverything = flowFactory(
+    "ak-stage-identification",
+    {
+        userFields: ["username"],
+        passwordFields: true,
+        flowDesignation: FlowDesignationEnum.Authentication,
+        primaryAction: "Login",
+        showSourceLabels: false,
+        allowShowPassword: true,
+        passwordlessUrl: "qwer",
+        captchaStage: {
+            pendingUser: "",
+            pendingUserAvatar: "",
+            jsUrl: "https://challenges.cloudflare.com/turnstile/v0/api.js",
+            siteKey: "1x00000000000000000000AA",
+            interactive: true,
+        },
+        sources: [
+            {
+                name: "Google",
+                challenge: {
+                    component: "xak-flow-redirect",
+                    to: "foo",
+                },
+                iconUrl: "/static/authentik/sources/google.svg",
+            },
+        ],
+        recoveryUrl: "foo",
+        enrollUrl: "bar",
+    },
+    { tags: ["no-snapshot"] },
+);

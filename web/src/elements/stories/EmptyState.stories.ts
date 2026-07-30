@@ -141,6 +141,7 @@ export const WithAction: Story = {
 
 export const Loading: Story = {
     ...Template,
+    tags: ["no-snapshot"],
     args: {
         loading: true,
     },
@@ -148,6 +149,7 @@ export const Loading: Story = {
 
 export const LoadingWithCustomMessage: Story = {
     ...Template,
+    tags: ["no-snapshot"],
     args: {
         loading: true,
         headingText: html`<span>I <em>know</em> it's here, somewhere...</span>`,
@@ -156,6 +158,7 @@ export const LoadingWithCustomMessage: Story = {
 
 export const LoadingWithDefaultMessage: Story = {
     ...Template,
+    tags: ["no-snapshot"],
     args: {
         defaultLabel: true,
     },
@@ -163,6 +166,7 @@ export const LoadingWithDefaultMessage: Story = {
 
 export const LoadingDefaultWithOverride: Story = {
     ...Template,
+    tags: ["no-snapshot"],
     args: {
         defaultLabel: true,
         headingText: html`<span>Have they got a chance? Eh. It would take a miracle.</span>`,
@@ -171,6 +175,7 @@ export const LoadingDefaultWithOverride: Story = {
 
 export const LoadingDefaultWithButton: Story = {
     ...Template,
+    tags: ["no-snapshot"],
     args: {
         defaultLabel: true,
         primaryButtonText: html`<button>Cancel</button>`,

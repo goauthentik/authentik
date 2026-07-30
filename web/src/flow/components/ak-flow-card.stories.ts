@@ -18,6 +18,7 @@ export const Empty: StoryObj = {
             <ak-flow-card .challenge=${challenge}></ak-flow-card>
         </ak-storybook-interface-flow>`;
     },
+    tags: ["no-snapshot"],
     args: {
         theme: "automatic",
         challenge: {
