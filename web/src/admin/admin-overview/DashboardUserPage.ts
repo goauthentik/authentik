@@ -1,5 +1,6 @@
 import "#admin/admin-overview/charts/AdminModelPerDay";
 import "#elements/cards/AggregateCard";
+import "#elements/Divider";
 
 import { AKElement } from "#elements/Base";
 
@@ -12,7 +13,6 @@ import { css, CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -24,7 +24,6 @@ export class DashboardUserPage extends AKElement {
         PFPage,
         PFContent,
         PFList,
-        PFDivider,
         css`
             .big-graph-container {
                 height: 35em;
@@ -54,7 +53,7 @@ export class DashboardUserPage extends AKElement {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col">
-                        <hr class="pf-c-divider" />
+                        <ak-divider></ak-divider>
                     </div>
                     <!-- row 2 -->
                     <div

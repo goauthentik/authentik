@@ -1,0 +1,12 @@
+version: 1
+metadata:
+  name: Default - Request flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: Request access
+    title: Request access
+    authentication: require_authenticated
+  identifiers:
+    slug: default-request
+  model: authentik_flows.flow

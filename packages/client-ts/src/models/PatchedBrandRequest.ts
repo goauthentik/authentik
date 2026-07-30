@@ -71,6 +71,12 @@ export interface PatchedBrandRequest {
      * @type {string}
      * @memberof PatchedBrandRequest
      */
+    flowUserSwitch?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
     flowInvalidation?: string | null;
     /**
      *
@@ -102,6 +108,12 @@ export interface PatchedBrandRequest {
      * @memberof PatchedBrandRequest
      */
     flowLockdown?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
+    flowRequest?: string | null;
     /**
      * When set, external users will be redirected to this application after authenticating.
      * @type {string}
@@ -159,17 +171,71 @@ export function PatchedBrandRequestFromJSONTyped(
                 ? undefined
                 : json["branding_default_flow_background"],
         flowAuthentication:
-            json["flow_authentication"] == null ? undefined : json["flow_authentication"],
-        flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
-        flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
-        flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
+            json["flow_authentication"] === undefined
+                ? undefined
+                : json["flow_authentication"] === null
+                  ? null
+                  : json["flow_authentication"],
+        flowUserSwitch:
+            json["flow_user_switch"] === undefined
+                ? undefined
+                : json["flow_user_switch"] === null
+                  ? null
+                  : json["flow_user_switch"],
+        flowInvalidation:
+            json["flow_invalidation"] === undefined
+                ? undefined
+                : json["flow_invalidation"] === null
+                  ? null
+                  : json["flow_invalidation"],
+        flowRecovery:
+            json["flow_recovery"] === undefined
+                ? undefined
+                : json["flow_recovery"] === null
+                  ? null
+                  : json["flow_recovery"],
+        flowUnenrollment:
+            json["flow_unenrollment"] === undefined
+                ? undefined
+                : json["flow_unenrollment"] === null
+                  ? null
+                  : json["flow_unenrollment"],
         flowUserSettings:
-            json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
-        flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
-        flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
+            json["flow_user_settings"] === undefined
+                ? undefined
+                : json["flow_user_settings"] === null
+                  ? null
+                  : json["flow_user_settings"],
+        flowDeviceCode:
+            json["flow_device_code"] === undefined
+                ? undefined
+                : json["flow_device_code"] === null
+                  ? null
+                  : json["flow_device_code"],
+        flowLockdown:
+            json["flow_lockdown"] === undefined
+                ? undefined
+                : json["flow_lockdown"] === null
+                  ? null
+                  : json["flow_lockdown"],
+        flowRequest:
+            json["flow_request"] === undefined
+                ? undefined
+                : json["flow_request"] === null
+                  ? null
+                  : json["flow_request"],
         defaultApplication:
-            json["default_application"] == null ? undefined : json["default_application"],
-        webCertificate: json["web_certificate"] == null ? undefined : json["web_certificate"],
+            json["default_application"] === undefined
+                ? undefined
+                : json["default_application"] === null
+                  ? null
+                  : json["default_application"],
+        webCertificate:
+            json["web_certificate"] === undefined
+                ? undefined
+                : json["web_certificate"] === null
+                  ? null
+                  : json["web_certificate"],
         clientCertificates:
             json["client_certificates"] == null ? undefined : json["client_certificates"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
@@ -197,12 +263,14 @@ export function PatchedBrandRequestToJSONTyped(
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
         flow_authentication: value["flowAuthentication"],
+        flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
+        flow_request: value["flowRequest"],
         default_application: value["defaultApplication"],
         web_certificate: value["webCertificate"],
         client_certificates: value["clientCertificates"],

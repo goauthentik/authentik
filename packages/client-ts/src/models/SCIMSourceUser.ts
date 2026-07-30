@@ -63,9 +63,21 @@ export interface SCIMSourceUser {
  * Check if a given object implements the SCIMSourceUser interface.
  */
 export function instanceOfSCIMSourceUser(value: object): value is SCIMSourceUser {
-    if (!("externalId" in value) || value["externalId"] === undefined) return false;
+    if (
+        (!("externalId" in (value as Record<string, any>)) &&
+            !("external_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["externalId"] === undefined &&
+            (value as Record<string, any>)["external_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("userObj" in value) || value["userObj"] === undefined) return false;
+    if (
+        (!("userObj" in (value as Record<string, any>)) &&
+            !("user_obj" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userObj"] === undefined &&
+            (value as Record<string, any>)["user_obj"] === undefined)
+    )
+        return false;
     if (!("source" in value) || value["source"] === undefined) return false;
     return true;
 }
@@ -96,7 +108,7 @@ export function SCIMSourceUserToJSON(json: any): SCIMSourceUser {
 }
 
 export function SCIMSourceUserToJSONTyped(
-    value?: Omit<SCIMSourceUser, "user_obj"> | null,
+    value?: Omit<SCIMSourceUser, "userObj"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

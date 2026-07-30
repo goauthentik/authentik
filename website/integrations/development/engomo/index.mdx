@@ -11,8 +11,8 @@ import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 > engomo is a low-code app development platform to create enterprise apps for smartphones and tablets based on Android, iOS, or iPadOS.
 >
 > -- https://engomo.com/
->
-> This guide explains how to set up engomo to use authentik as the OAuth provider for application login on smartphones/tablets and to log in to the admin web GUI (Composer).
+
+This guide explains how to set up engomo to use authentik as the OpenID Connect (OIDC) provider for application login on smartphones and tablets, and for login to the Composer admin web GUI.
 
 ## Preparation
 
@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of Engomo with authentik, you need to create an application/provider pair in authentik.
+To support the integration of engomo with authentik, you need to create an application/provider pair in authentik.
 
 ### Create property mappings
 
@@ -40,55 +40,53 @@ To support the integration of Engomo with authentik, you need to create an appli
     - **Description**: Set an appropriate description, if desired.
     - **Expression**: `return {"preferred_username": request.user.email}`
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID** and **slug** values because they will be required later.
-    - Set the **Client type** to `Public`.
-    - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://engomo.company/auth` and `com.engomo.engomo://callback/`.
-    - Select any available signing key.
-    - Under **Advanced protocol settings**, add the scope you just created to the list of available scopes.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add two **Redirect URIs** of type `Strict` `Authorization` as `https://engomo.company/auth` and `com.engomo.engomo://callback/`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add the scope that you created earlier.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## engomo configuration
 
-Navigate to `https://engomo.company/composer` and log in with your admin credentials.
+### Add the authentication method
 
-1. Select **Server**.
-2. Select **Authentication**.
-3. Add a new authentication method by clicking on the plus icon on the right.
-4. Name: `authentik`
-5. Type: **OpenID Connect**
-6. Click **Create**.
-7. Configure the following values using information from the authentik provider:
-    - Set **Issuer** to `https://authentik.company/application/o/engomo`.
-    - Set **Client ID** to the Client ID copied from authentik.
-    - Set **Client secret** to the Client Secret copied from authentik.
+1. Open `https://engomo.company/composer` and log in with your administrator credentials.
+2. Select **Server**.
+3. Select **Authentication**.
+4. Click the plus icon to add a new authentication method.
+5. Set **Name** to `authentik`.
+6. Set **Type** to **OpenID Connect**.
+7. Click **Create**.
+8. Configure the following values using information from the authentik provider:
+    - **Issuer**: `https://authentik.company/application/o/<application_slug>/`
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+9. Click **Save**.
 
-## engomo user creation
+### Create users
 
-engomo doesn't create users automatically when signing in. So you have to do it manually right now.
-Navigate to `https://engomo.company/composer` and log in with your admin credentials.
+engomo does not automatically create users during OIDC sign-in. Create each user in engomo before they sign in with authentik.
 
-- Select **Users & Devices**.
-- Click the plus button in the Users section.
-- Choose `authentik` from the Authenticator dropdown.
-- Create your user by entering the email address as the username. This email must match the one used for the user in authentik.
+1. Open `https://engomo.company/composer` and log in with your administrator credentials.
+2. Select **Users & Devices**.
+3. In the **Users** section, click the plus icon.
+4. From the **Authenticator** dropdown, select `authentik`.
+5. Create the user with their email address as the username. This email address must match the user's email address in authentik.
 
-## Test the login
+The created user can access only the app or Composer page permissions that they have been granted in engomo.
 
-- Open a browser of your choice and open the URL `https://engomo.company`.
-- Enter the created user's email address and click the small arrow icon to log in.
-- You should be redirected to authentik (with the login flows you created) and then authentik should redirect you back to `https://engomo.company/composer` URL.
-- If you are redirected back to the `https://engomo.company/composer` URL you did everything correctly.
+## Configuration verification
 
-:::info
-The created user will only have access to the app or composer page if they have been granted the necessary permissions.
-:::
+To confirm that authentik is properly configured with engomo, open engomo, enter the email address for the user that you created, and click the arrow icon to log in. You should be redirected to authentik and returned to engomo after authentication.
+
+## Resources
+
+- [Authelia Integration - engomo OpenID Connect 1.0](https://www.authelia.com/integration/openid-connect/clients/engomo/)

@@ -17,7 +17,7 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 
 Review [Backup and restore](../../sys-mgmt/ops/backup-restore.md) before proceeding.
 
-## Overview
+## Upgrade process
 
 The upgrade flow is:
 
@@ -156,7 +156,7 @@ If `dump.sql` is missing after the restart:
 - You may need to restore from the external backup if you copied it out of the pod
 - The volume might have been recreated if you're using ephemeral storage
 
-### Restoring the original database
+### Restore the original database
 
 If you need to roll back to the old PostgreSQL data directory:
 

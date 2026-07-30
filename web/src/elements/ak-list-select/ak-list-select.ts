@@ -16,6 +16,7 @@ export interface IListSelect {
     options: SelectOptions;
     value?: string | null;
     emptyOption?: string;
+    actionLabel?: string;
 }
 
 /**
@@ -62,6 +63,16 @@ export class ListSelect extends AKElement implements IListSelect {
                 overflow-y: auto;
                 width: 100%;
             }
+
+            .ak-select-item[data-action] {
+                position: sticky;
+                bottom: 0;
+                background-color: var(
+                    --pf-c-dropdown__menu--BackgroundColor,
+                    var(--pf-global--BackgroundColor--light-100)
+                );
+                border-block-start: 1px solid var(--pf-global--BorderColor--100);
+            }
         `,
     ];
 
@@ -99,6 +110,16 @@ export class ListSelect extends AKElement implements IListSelect {
      */
     @property()
     public emptyOption?: string;
+
+    /**
+     * An optional label for a pinned action item rendered at the end of the menu, e.g.
+     * "Create new...". Activating it fires an `ak-select-action` event instead of
+     * changing the selection. If not present, no action item is rendered.
+     *
+     * @prop
+     */
+    @property()
+    public actionLabel?: string;
 
     // We have two different states that we're tracking in this component: the `value`, which is the
     // element that is currently selected according to the client, and the `index`, which is the
@@ -211,6 +232,10 @@ export class ListSelect extends AKElement implements IListSelect {
         this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
     };
 
+    #actionListener = () => {
+        this.dispatchEvent(new CustomEvent("ak-select-action", { bubbles: true, composed: true }));
+    };
+
     #delegateKey = (event: KeyboardEvent) => {
         const key = event.key;
         const lastItem = this.displayedElements.length - 1;
@@ -225,7 +250,15 @@ export class ListSelect extends AKElement implements IListSelect {
 
         const setValueAndDispatch = () => {
             event.preventDefault();
-            this.value = this.currentElement?.getAttribute("value");
+
+            const element = this.currentElement;
+
+            // The pinned action item has no value; it triggers an action instead.
+            if (element?.hasAttribute("data-action")) {
+                return this.#actionListener();
+            }
+
+            this.value = element?.getAttribute("value");
 
             this.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
         };
@@ -261,6 +294,26 @@ export class ListSelect extends AKElement implements IListSelect {
                 part="ak-list-select-button"
             >
                 ${this.emptyOption}
+            </button>
+        </li>`;
+    }
+
+    private renderActionMenuItem() {
+        return html`<li
+            role="option"
+            class="ak-select-item"
+            data-action
+            part="ak-list-select-option"
+        >
+            <button
+                class="pf-c-dropdown__menu-item"
+                type="button"
+                tabindex="0"
+                @click=${this.#actionListener}
+                part="ak-list-select-button"
+            >
+                <i class="fas fa-plus" aria-hidden="true"></i>
+                ${this.actionLabel}
             </button>
         </li>`;
     }
@@ -329,6 +382,7 @@ export class ListSelect extends AKElement implements IListSelect {
                 ${this.#options.grouped
                     ? this.renderMenuGroups(this.#options.options)
                     : this.renderMenuItems(this.#options.options)}
+                ${this.actionLabel ? this.renderActionMenuItem() : nothing}
             </menu>
         </div> `;
     }
