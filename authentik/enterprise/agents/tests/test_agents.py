@@ -92,6 +92,24 @@ class AgentTests(APITestCase):
         # The forced expiry is bounded (near the token duration), not the caller's 2099
         self.assertLess(agent.expires.year, 2099)
 
+    def test_admin_creating_for_self_always_expires(self):
+        """A privileged user (add_agent) creating an agent for THEMSELVES is still
+        self-service, so it must expire -- ownership decides, not the permission"""
+        admin = create_test_user()
+        self._grant_create_perm(admin)
+        self.client.force_login(admin)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            # No parent -> owned by the requester; try to opt out of expiry
+            data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(owner=admin)
+        self.assertTrue(agent.expiring)
+        self.assertIsNotNone(agent.expires)
+        self.assertLess(agent.expires.year, 2099)
+
     @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_cannot_create_for_other(self):
         """Self-service only lets a user create agents for themselves, never for

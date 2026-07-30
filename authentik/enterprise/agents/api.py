@@ -66,18 +66,25 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
     @validate(AgentCreateSerializer)
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
         parent: User = body.validated_data.get("parent") or request.user
-        expiring = body.validated_data["expiring"]
-        expires = body.validated_data["expires"]
-        if not request.user.has_perm("authentik_agents.add_agent"):
-            # Self-service path: any user may create an agent for themselves, but only
-            # when the instance allows it, and never on behalf of someone else.
-            if not AllowAnyAgentCreate.get():
-                raise PermissionDenied(_("Self-service agent creation is not enabled."))
-            if parent != request.user:
-                raise PermissionDenied(_("You can only create agents for yourself."))
-            # Self-service agents must always expire; the caller cannot opt out.
+        is_admin = request.user.has_perm("authentik_agents.add_agent")
+        # Self-service = creating an agent for yourself; provisioning for another user is an
+        # admin action. The distinction is ownership, not merely holding the permission.
+        self_service = parent == request.user
+
+        if not self_service and not is_admin:
+            raise PermissionDenied(_("You can only create agents for yourself."))
+        if self_service and not is_admin and not AllowAnyAgentCreate.get():
+            raise PermissionDenied(_("Self-service agent creation is not enabled."))
+
+        if self_service:
+            # Self-service agents always expire with the tenant default; the caller cannot
+            # opt out (even a superuser creating an agent for themselves).
             expiring = True
             expires = default_token_duration()
+        else:
+            # Provisioning for another user may set a custom/standing expiry.
+            expiring = body.validated_data["expiring"]
+            expires = body.validated_data["expires"]
         agent = Agent.create_for_user(
             user=parent,
             name=body.validated_data.get("label", ""),
