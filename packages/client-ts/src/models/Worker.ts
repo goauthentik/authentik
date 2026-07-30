@@ -42,9 +42,21 @@ export interface Worker {
  * Check if a given object implements the Worker interface.
  */
 export function instanceOfWorker(value: object): value is Worker {
-    if (!("workerId" in value) || value["workerId"] === undefined) return false;
+    if (
+        (!("workerId" in (value as Record<string, any>)) &&
+            !("worker_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["workerId"] === undefined &&
+            (value as Record<string, any>)["worker_id"] === undefined)
+    )
+        return false;
     if (!("version" in value) || value["version"] === undefined) return false;
-    if (!("versionMatching" in value) || value["versionMatching"] === undefined) return false;
+    if (
+        (!("versionMatching" in (value as Record<string, any>)) &&
+            !("version_matching" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["versionMatching"] === undefined &&
+            (value as Record<string, any>)["version_matching"] === undefined)
+    )
+        return false;
     return true;
 }
 

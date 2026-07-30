@@ -102,13 +102,43 @@ export function instanceOfSchedule(value: object): value is Schedule {
     if (!("id" in value) || value["id"] === undefined) return false;
     if (!("identifier" in value) || value["identifier"] === undefined) return false;
     if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("actorName" in value) || value["actorName"] === undefined) return false;
-    if (!("relObjAppLabel" in value) || value["relObjAppLabel"] === undefined) return false;
-    if (!("relObjModel" in value) || value["relObjModel"] === undefined) return false;
+    if (
+        (!("actorName" in (value as Record<string, any>)) &&
+            !("actor_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["actorName"] === undefined &&
+            (value as Record<string, any>)["actor_name"] === undefined)
+    )
+        return false;
+    if (
+        (!("relObjAppLabel" in (value as Record<string, any>)) &&
+            !("rel_obj_app_label" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["relObjAppLabel"] === undefined &&
+            (value as Record<string, any>)["rel_obj_app_label"] === undefined)
+    )
+        return false;
+    if (
+        (!("relObjModel" in (value as Record<string, any>)) &&
+            !("rel_obj_model" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["relObjModel"] === undefined &&
+            (value as Record<string, any>)["rel_obj_model"] === undefined)
+    )
+        return false;
     if (!("crontab" in value) || value["crontab"] === undefined) return false;
-    if (!("nextRun" in value) || value["nextRun"] === undefined) return false;
+    if (
+        (!("nextRun" in (value as Record<string, any>)) &&
+            !("next_run" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nextRun"] === undefined &&
+            (value as Record<string, any>)["next_run"] === undefined)
+    )
+        return false;
     if (!("description" in value) || value["description"] === undefined) return false;
-    if (!("lastTaskStatus" in value) || value["lastTaskStatus"] === undefined) return false;
+    if (
+        (!("lastTaskStatus" in (value as Record<string, any>)) &&
+            !("last_task_status" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastTaskStatus"] === undefined &&
+            (value as Record<string, any>)["last_task_status"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -127,7 +157,12 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         actorName: json["actor_name"],
         relObjAppLabel: json["rel_obj_app_label"],
         relObjModel: json["rel_obj_model"],
-        relObjId: json["rel_obj_id"] == null ? undefined : json["rel_obj_id"],
+        relObjId:
+            json["rel_obj_id"] === undefined
+                ? undefined
+                : json["rel_obj_id"] === null
+                  ? null
+                  : json["rel_obj_id"],
         crontab: json["crontab"],
         paused: json["paused"] == null ? undefined : json["paused"],
         nextRun: new Date(json["next_run"]),
@@ -146,12 +181,12 @@ export function ScheduleToJSONTyped(
         | "id"
         | "identifier"
         | "uid"
-        | "actor_name"
-        | "rel_obj_app_label"
-        | "rel_obj_model"
-        | "next_run"
+        | "actorName"
+        | "relObjAppLabel"
+        | "relObjModel"
+        | "nextRun"
         | "description"
-        | "last_task_status"
+        | "lastTaskStatus"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

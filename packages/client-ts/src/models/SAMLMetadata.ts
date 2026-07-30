@@ -50,7 +50,12 @@ export function SAMLMetadataFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         metadata: json["metadata"],
-        downloadUrl: json["download_url"] == null ? undefined : json["download_url"],
+        downloadUrl:
+            json["download_url"] === undefined
+                ? undefined
+                : json["download_url"] === null
+                  ? null
+                  : json["download_url"],
     };
 }
 

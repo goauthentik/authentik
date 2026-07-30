@@ -68,7 +68,13 @@ export function instanceOfExpiringBaseGrantModel(value: object): value is Expiri
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     if (!("user" in value) || value["user"] === undefined) return false;
-    if (!("isExpired" in value) || value["isExpired"] === undefined) return false;
+    if (
+        (!("isExpired" in (value as Record<string, any>)) &&
+            !("is_expired" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isExpired"] === undefined &&
+            (value as Record<string, any>)["is_expired"] === undefined)
+    )
+        return false;
     if (!("scope" in value) || value["scope"] === undefined) return false;
     return true;
 }
@@ -89,7 +95,12 @@ export function ExpiringBaseGrantModelFromJSONTyped(
         provider: ProviderFromJSON(json["provider"]),
         user: UserFromJSON(json["user"]),
         isExpired: json["is_expired"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         scope: json["scope"],
     };
 }
@@ -99,7 +110,7 @@ export function ExpiringBaseGrantModelToJSON(json: any): ExpiringBaseGrantModel 
 }
 
 export function ExpiringBaseGrantModelToJSONTyped(
-    value?: Omit<ExpiringBaseGrantModel, "pk" | "is_expired"> | null,
+    value?: Omit<ExpiringBaseGrantModel, "pk" | "isExpired"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

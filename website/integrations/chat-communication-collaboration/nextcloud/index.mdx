@@ -211,6 +211,9 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://nextcloud.company/apps/user_saml/saml/acs`.
         - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
+        - Set the **SLS URL** to `https://nextcloud.company/apps/user_saml/saml/sls`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
         - If you created SAML property mappings for Nextcloud, add them to **Property mappings**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.

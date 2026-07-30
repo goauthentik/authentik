@@ -91,8 +91,20 @@ export interface CaptchaStageRequest {
  */
 export function instanceOfCaptchaStageRequest(value: object): value is CaptchaStageRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("publicKey" in value) || value["publicKey"] === undefined) return false;
-    if (!("privateKey" in value) || value["privateKey"] === undefined) return false;
+    if (
+        (!("publicKey" in (value as Record<string, any>)) &&
+            !("public_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["publicKey"] === undefined &&
+            (value as Record<string, any>)["public_key"] === undefined)
+    )
+        return false;
+    if (
+        (!("privateKey" in (value as Record<string, any>)) &&
+            !("private_key" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["privateKey"] === undefined &&
+            (value as Record<string, any>)["private_key"] === undefined)
+    )
+        return false;
     return true;
 }
 

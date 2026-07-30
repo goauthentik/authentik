@@ -55,7 +55,13 @@ export interface PartialGroup {
  */
 export function instanceOfPartialGroup(value: object): value is PartialGroup {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("numPk" in value) || value["numPk"] === undefined) return false;
+    if (
+        (!("numPk" in (value as Record<string, any>)) &&
+            !("num_pk" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["numPk"] === undefined &&
+            (value as Record<string, any>)["num_pk"] === undefined)
+    )
+        return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     return true;
 }
@@ -82,7 +88,7 @@ export function PartialGroupToJSON(json: any): PartialGroup {
 }
 
 export function PartialGroupToJSONTyped(
-    value?: Omit<PartialGroup, "pk" | "num_pk"> | null,
+    value?: Omit<PartialGroup, "pk" | "numPk"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

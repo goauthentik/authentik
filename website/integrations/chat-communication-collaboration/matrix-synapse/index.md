@@ -40,6 +40,7 @@ To support the integration of Matrix Synapse with authentik, you need to create 
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://matrix.company/_synapse/client/oidc/callback`.
         - Select any available RSA-based **Signing Key**. Matrix Synapse does not support ECC keys for authentik.
         - Leave **Encryption Key** empty.
+        - Under **Advanced protocol settings**, set **Logout URI** to `https://matrix.company/_synapse/client/oidc/backchannel_logout` and **Logout Method** to `Back-channel`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -59,6 +60,7 @@ oidc_providers:
     - idp_id: authentik
       idp_name: authentik
       discover: true
+      backchannel_logout_enabled: true
       issuer: "https://authentik.company/application/o/<application_slug>/"
       client_id: "<Client ID from authentik>"
       client_secret: "<Client Secret from authentik>"
