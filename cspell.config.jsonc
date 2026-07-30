@@ -206,21 +206,22 @@
         "\\w+l?ifying\\b",
         // PatternFly's grey label modifier is spelled the British way upstream.
         "pf-m-grey",
-        // External tool/path names that are spelled the British way upstream.
-        "lit-analyse",
-        "analyse-phase",
-        "SpellCheckerIgnoreInDocSetting",
-        "EncodedURI",
-        "Urls",
-        "href",
+        // Other terms we needed
+        "AKQL",
         "Base64",
+        "Email",
+        "EncodedURI",
+        "FOUC",  // Flash Of Unstyled Content
+        "HashStrings",
         "PublicKey",
         "RsaCert",
+        "SpellCheckerIgnoreInDocSetting",
         "SshRsa",
         "UnicodeRef",
-        "Email",
-        "HashStrings",
-        "AKQL"
+        "Urls",
+        "analyse-phase",  // UK Spelling
+        "href",
+        "lit-analyse" // UK Spelling
     ],
     "languageSettings": [
         {
@@ -334,6 +335,7 @@
         "*.stories.{ts,tsx}", // Storybook stories
         "*.min.{js,css}", // Minified JS and CSS files
         "*.min.{js,css}.map", // Source maps for minified files
+        "./web/src/styles/global/vendor/patternfly-fa-icons.css", // Tokens in comments
         //#region Python
         "pyproject.toml",
         "unittest.xml", // Pytest output
@@ -371,5 +373,5 @@
     "features": {
         "weighted-suggestions": true
     },
-    "failFast": true
+    "failFast": false
 }

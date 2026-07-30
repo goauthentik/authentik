@@ -95,7 +95,12 @@ export function FleetConnectorRequestFromJSONTyped(
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         url: json["url"],
         token: json["token"],
-        headersMapping: json["headers_mapping"] == null ? undefined : json["headers_mapping"],
+        headersMapping:
+            json["headers_mapping"] === undefined
+                ? undefined
+                : json["headers_mapping"] === null
+                  ? null
+                  : json["headers_mapping"],
         mapUsers: json["map_users"] == null ? undefined : json["map_users"],
         mapTeamsAccessGroup:
             json["map_teams_access_group"] == null ? undefined : json["map_teams_access_group"],

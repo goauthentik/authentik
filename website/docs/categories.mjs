@@ -6,7 +6,7 @@ export default [
     ["enterprise", "Enterprise"],
     ["install-config", "Installation and Configuration"],
     ["add-secure-apps", "Add and Secure Applications"],
-    ["customize", "Customize your instance"],
+    ["customize", "Customize your Instance"],
     ["users-sources", "Manage Users and Sources"],
     ["sys-mgmt", "System Management"],
     ["endpoint-devices", "Endpoint Devices (Early Preview)"],

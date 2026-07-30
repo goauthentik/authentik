@@ -76,10 +76,33 @@ export interface AuthenticatorValidationChallenge {
 export function instanceOfAuthenticatorValidationChallenge(
     value: object,
 ): value is AuthenticatorValidationChallenge {
-    if (!("pendingUser" in value) || value["pendingUser"] === undefined) return false;
-    if (!("pendingUserAvatar" in value) || value["pendingUserAvatar"] === undefined) return false;
-    if (!("deviceChallenges" in value) || value["deviceChallenges"] === undefined) return false;
-    if (!("configurationStages" in value) || value["configurationStages"] === undefined)
+    if (
+        (!("pendingUser" in (value as Record<string, any>)) &&
+            !("pending_user" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUser"] === undefined &&
+            (value as Record<string, any>)["pending_user"] === undefined)
+    )
+        return false;
+    if (
+        (!("pendingUserAvatar" in (value as Record<string, any>)) &&
+            !("pending_user_avatar" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["pendingUserAvatar"] === undefined &&
+            (value as Record<string, any>)["pending_user_avatar"] === undefined)
+    )
+        return false;
+    if (
+        (!("deviceChallenges" in (value as Record<string, any>)) &&
+            !("device_challenges" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["deviceChallenges"] === undefined &&
+            (value as Record<string, any>)["device_challenges"] === undefined)
+    )
+        return false;
+    if (
+        (!("configurationStages" in (value as Record<string, any>)) &&
+            !("configuration_stages" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["configurationStages"] === undefined &&
+            (value as Record<string, any>)["configuration_stages"] === undefined)
+    )
         return false;
     return true;
 }

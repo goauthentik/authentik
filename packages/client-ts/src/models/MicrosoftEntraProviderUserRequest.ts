@@ -44,7 +44,13 @@ export interface MicrosoftEntraProviderUserRequest {
 export function instanceOfMicrosoftEntraProviderUserRequest(
     value: object,
 ): value is MicrosoftEntraProviderUserRequest {
-    if (!("microsoftId" in value) || value["microsoftId"] === undefined) return false;
+    if (
+        (!("microsoftId" in (value as Record<string, any>)) &&
+            !("microsoft_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["microsoftId"] === undefined &&
+            (value as Record<string, any>)["microsoft_id"] === undefined)
+    )
+        return false;
     if (!("user" in value) || value["user"] === undefined) return false;
     if (!("provider" in value) || value["provider"] === undefined) return false;
     return true;
