@@ -133,11 +133,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 seen_items += 1
             if seen_items >= expected_items:
                 break
-<<<<<<< HEAD
-            res = self._request("GET", f"/Users?startIndex={seen_items+1}")
-=======
             res = self.lower_case_keys(self._request("GET", f"/Users?startIndex={seen_items + 1}"))
->>>>>>> f2c460ac2 (providers/scim: ignore key casing in SCIM responses (#24441))
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)
