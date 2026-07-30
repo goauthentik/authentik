@@ -130,7 +130,6 @@ test("buildLLMSOutputs emits dev-server files from source routes without Docusau
         title: "authentik Documentation",
         description: "Unified auth.",
         routesPaths: [],
-        includeDrafts: true,
         options: {
             sections: [{ path: ".", routeBasePath: "/" }],
             groupBy: "topic",
@@ -140,5 +139,5 @@ test("buildLLMSOutputs emits dev-server files from source routes without Docusau
 
     assert.ok(outputs.has("index.md"), "root markdown is served from /index.md");
     assert.ok(outputs.has("topic-a/page-one.md"), "source path route gets a markdown payload");
-    assert.ok(outputs.has("releases/2026.8.md"), "draft markdown is served during development");
+    assert.ok(!outputs.has("releases/2026.8.md"), "draft markdown is excluded during development");
 });

@@ -74,16 +74,10 @@ test("parseDocFile derives title from first heading when frontmatter has none", 
     assert.equal(info.description, "Heading-derived page body.");
 });
 
-test("parseDocFile returns null for draft files", () => {
+test("parseDocFile excludes draft and unlisted files", () => {
     const PARSE = resolve(__dirname, "__fixtures__", "parse");
     assert.equal(parseDocFile(resolve(PARSE, "draft.md"), PARSE), null);
-});
-
-test("parseDocFile includes draft files when requested", () => {
-    const PARSE = resolve(__dirname, "__fixtures__", "parse");
-    const info = parseDocFile(resolve(PARSE, "draft.md"), PARSE, { includeDrafts: true });
-    assert.ok(info, "draft file parses to a record");
-    assert.equal(info.title, "Should Not Appear");
+    assert.equal(parseDocFile(resolve(PARSE, "unlisted.md"), PARSE), null);
 });
 
 test("parseDocFile cleans a blockquote-citation intro (strips > and -- attribution)", () => {

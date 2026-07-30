@@ -67,8 +67,7 @@ export function resolveSiteUrl(options, siteConfig) {
  * Build every output file's contents, keyed by build-relative path.
  *
  * @param {{ siteDir: string, outDir: string, siteUrl: string, title: string,
- *   description: string, routesPaths: string[], includeDrafts?: boolean,
- *   options: LLMSPluginOptions }} ctx
+ *   description: string, routesPaths: string[], options: LLMSPluginOptions }} ctx
  * @returns {Promise<Map<string, string>>}
  */
 export async function buildLLMSOutputs(ctx) {
@@ -85,7 +84,7 @@ export async function buildLLMSOutputs(ctx) {
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
         for (const file of collectDocFiles(absDir, options.ignoreFiles)) {
-            const parsed = parseDocFile(file, absDir, { includeDrafts: ctx.includeDrafts });
+            const parsed = parseDocFile(file, absDir);
             if (!parsed) continue;
 
             const route = ctx.routesPaths.length
@@ -187,7 +186,6 @@ function akLLMSPlugin(loadContext, options) {
                 title: options.title ?? loadContext.siteConfig.title,
                 description: options.description ?? loadContext.siteConfig.tagline ?? "",
                 routesPaths: [],
-                includeDrafts: process.env.NODE_ENV !== "production",
                 options,
             });
 

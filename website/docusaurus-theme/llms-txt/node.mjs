@@ -176,14 +176,13 @@ function humanizeSlug(slug) {
  *
  * @param {string} filePath Absolute file path.
  * @param {string} baseDir Absolute scan root.
- * @param {{ includeDrafts?: boolean }} [options]
  * @returns {LLMSDocInfo | null}
  */
-export function parseDocFile(filePath, baseDir, options = {}) {
+export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true && !options.includeDrafts) {
+    if (frontMatter.draft === true || frontMatter.unlisted === true) {
         return null;
     }
 
