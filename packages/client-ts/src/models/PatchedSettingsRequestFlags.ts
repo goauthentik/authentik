@@ -19,6 +19,12 @@
  */
 export interface PatchedSettingsRequestFlags {
     /**
+     * When enabled, allow any user to create agent accounts.
+     * @type {boolean}
+     * @memberof PatchedSettingsRequestFlags
+     */
+    enterpriseAgentAllowAny: boolean;
+    /**
      * Applications with no policies bound can be accessed by any user.
      * @type {boolean}
      * @memberof PatchedSettingsRequestFlags
@@ -51,6 +57,13 @@ export interface PatchedSettingsRequestFlags {
 export function instanceOfPatchedSettingsRequestFlags(
     value: object,
 ): value is PatchedSettingsRequestFlags {
+    if (
+        (!("enterpriseAgentAllowAny" in (value as Record<string, any>)) &&
+            !("enterprise_agent_allow_any" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["enterpriseAgentAllowAny"] === undefined &&
+            (value as Record<string, any>)["enterprise_agent_allow_any"] === undefined)
+    )
+        return false;
     if (
         (!("coreDefaultAppAccess" in (value as Record<string, any>)) &&
             !("core_default_app_access" in (value as Record<string, any>))) ||
@@ -94,6 +107,7 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         return json;
     }
     return {
+        enterpriseAgentAllowAny: json["enterprise_agent_allow_any"],
         coreDefaultAppAccess: json["core_default_app_access"],
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
@@ -114,6 +128,7 @@ export function PatchedSettingsRequestFlagsToJSONTyped(
     }
 
     return {
+        enterprise_agent_allow_any: value["enterpriseAgentAllowAny"],
         core_default_app_access: value["coreDefaultAppAccess"],
         enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
         flows_continuous_login: value["flowsContinuousLogin"],

@@ -744,6 +744,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_agents.agent"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_agents.agent_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_agents.agent"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_agents.agent"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_endpoints_connectors_fleet.fleetconnector"
                         },
                         "id": {
@@ -5621,6 +5661,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_agents.add_agent",
+                            "authentik_agents.change_agent",
+                            "authentik_agents.delete_agent",
+                            "authentik_agents.view_agent",
                             "authentik_blueprints.add_blueprintinstance",
                             "authentik_blueprints.change_blueprintinstance",
                             "authentik_blueprints.delete_blueprintinstance",
@@ -7010,6 +7054,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_agents.add_agent",
+                            "authentik_agents.change_agent",
+                            "authentik_agents.delete_agent",
+                            "authentik_agents.view_agent",
                             "authentik_blueprints.add_blueprintinstance",
                             "authentik_blueprints.change_blueprintinstance",
                             "authentik_blueprints.delete_blueprintinstance",
@@ -8379,6 +8427,87 @@
                             "change_endpointstage",
                             "delete_endpointstage",
                             "view_endpointstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_agents.agent": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "title": "Username",
+                    "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "User's display name."
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "title": "Active",
+                    "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
+                },
+                "last_login": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Last login"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254,
+                    "title": "Email address"
+                },
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Attributes"
+                },
+                "expiring": {
+                    "type": "boolean",
+                    "title": "Expiring"
+                },
+                "expires": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "format": "date-time",
+                    "title": "Expires"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_agents.agent_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_agent",
+                            "change_agent",
+                            "delete_agent",
+                            "view_agent"
                         ]
                     },
                     "user": {
@@ -10971,6 +11100,7 @@
                         "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
+                        "authentik.enterprise.agents",
                         "authentik.enterprise.audit",
                         "authentik.enterprise.endpoints.connectors.agent",
                         "authentik.enterprise.endpoints.connectors.fleet",
@@ -11109,6 +11239,7 @@
                         "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
+                        "authentik_agents.agent",
                         "authentik_endpoints_connectors_fleet.fleetconnector",
                         "authentik_endpoints_connectors_google_chrome.googlechromeconnector",
                         "authentik_lifecycle.lifecyclerule",
@@ -13395,6 +13526,10 @@
                     "items": {
                         "type": "string",
                         "enum": [
+                            "authentik_agents.add_agent",
+                            "authentik_agents.change_agent",
+                            "authentik_agents.delete_agent",
+                            "authentik_agents.view_agent",
                             "authentik_blueprints.add_blueprintinstance",
                             "authentik_blueprints.change_blueprintinstance",
                             "authentik_blueprints.delete_blueprintinstance",
