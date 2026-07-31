@@ -1,0 +1,9 @@
+.ak-file-search-input__actions {
+    display: inline-flex;
+    gap: var(--pf-global--spacer--xs);
+    margin-inline-start: var(--pf-global--spacer--sm);
+}
+
+.ak-file-search-input__separator {
+    color: var(--pf-global--Color--200);
+}

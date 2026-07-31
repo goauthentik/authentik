@@ -1,8 +1,10 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
+import HostStyles from "./ak-file-search-input.css";
+
 import { aki } from "#common/api/client";
-import { docLink } from "#common/global";
+import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
@@ -27,6 +29,8 @@ const renderValue = (item?: FileList | null) => item?.name;
  */
 @customElement("ak-file-search-input")
 export class AKFileSearchInput extends AKElement {
+    public static hostStyles = [HostStyles];
+
     // Render into the lightDOM
     protected createRenderRoot() {
         return this;
@@ -119,16 +123,25 @@ export class AKFileSearchInput extends AKElement {
                     : msg("Choose an existing file, or enter a URL or Font Awesome icon.", {
                           id: "file-picker.value.description",
                       })}
-                <a target="_blank" rel="noopener noreferrer" href="#/files">
-                    ${msg("Upload a file.", { id: "file-picker.upload-link.label" })}
-                </a>
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href=${docLink("/customize/file-picker/")}
-                >
-                    ${msg("See documentation for supported values.")}
-                </a>
+                <span class="ak-file-search-input__actions">
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${`${globalAK().api.base}if/admin/#/files`}
+                    >
+                        ${msg("Upload file", { id: "file-picker.upload-link.label" })}
+                    </a>
+                    <span class="ak-file-search-input__separator" aria-hidden="true">·</span>
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href=${docLink("/customize/file-picker/")}
+                    >
+                        ${msg("Supported values", {
+                            id: "file-picker.documentation-link.label",
+                        })}
+                    </a>
+                </span>
             </p>
         </ak-form-element-horizontal>`;
     }
