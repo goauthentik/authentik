@@ -293,13 +293,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             >
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="flags.enterpriseAgentAllowAny"
-                        ?checked=${settings?.flags.enterpriseAgentAllowAny ?? false}
-                        label=${msg("Allow users to create agent accounts")}
-                        help=${msg("When enabled, allow any user to create agent accounts.")}
-                    >
-                    </ak-switch-input>
-                    <ak-switch-input
                         name="flags.flowsRefreshOthers"
                         ?checked=${settings?.flags.flowsRefreshOthers ?? false}
                         label=${msg("Refresh other flow tabs upon authentication")}

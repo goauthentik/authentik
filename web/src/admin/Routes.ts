@@ -103,10 +103,6 @@ export const ROUTES: Route[] = [
         await import("#admin/groups/GroupListPage");
         return html`<ak-group-list></ak-group-list>`;
     }),
-    new Route(new RegExp("^/identity/agents$"), async () => {
-        await import("#admin/agents/AgentListPage");
-        return html`<ak-agent-list></ak-agent-list>`;
-    }),
     new Route(new RegExp(`^/identity/groups/(?<uuid>${UUID_REGEX})$`), async (args) => {
         await import("#admin/groups/GroupViewPage");
         return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
