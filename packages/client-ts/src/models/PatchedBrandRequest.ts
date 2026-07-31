@@ -61,7 +61,7 @@ export interface PatchedBrandRequest {
      */
     brandingDefaultFlowBackground?: string;
     /**
-     * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+     * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
      * @type {string}
      * @memberof PatchedBrandRequest
      */

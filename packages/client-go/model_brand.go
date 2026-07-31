@@ -30,7 +30,7 @@ type Brand struct {
 	BrandingFavicon               *string `json:"branding_favicon,omitempty"`
 	BrandingCustomCss             *string `json:"branding_custom_css,omitempty"`
 	BrandingDefaultFlowBackground *string `json:"branding_default_flow_background,omitempty"`
-	// URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+	// URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
 	BrandingMapTiles   *string        `json:"branding_map_tiles,omitempty"`
 	FlowAuthentication NullableString `json:"flow_authentication,omitempty"`
 	FlowUserSwitch     NullableString `json:"flow_user_switch,omitempty"`

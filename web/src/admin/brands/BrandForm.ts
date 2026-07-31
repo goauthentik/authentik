@@ -187,7 +187,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                         autocomplete="off"
                         spellcheck="false"
                         help=${msg(
-                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server.",
+                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.",
                             { id: "brand.map-tiles.description" },
                         )}
                     ></ak-text-input>
