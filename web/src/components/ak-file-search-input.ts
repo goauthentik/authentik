@@ -2,14 +2,13 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
-import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
 
 import { AKLabel } from "#components/ak-label";
 
-import { AdminApi, UsageEnum } from "@goauthentik/api";
+import { AdminApi, FileList, UsageEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
@@ -17,16 +16,8 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-interface FileItem {
-    name: string;
-    url: string;
-    mime_type: string;
-    size: number;
-    usage: string;
-}
-
-const renderElement = (item: FileItem) => item.name;
-const renderValue = (item?: FileItem | null) => item?.name;
+const renderElement = (item: FileList) => item.name;
+const renderValue = (item?: FileList | null) => item?.name;
 
 /**
  * File Search Input Component
@@ -65,60 +56,34 @@ export class AKFileSearchInput extends AKElement {
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
-    #selected = (item: FileItem) => {
+    #selected = (item: FileList) => {
         return this.value === item.name;
     };
 
-    public override firstUpdated() {
-        // If we have a value but it's not in the fetched results (like fa:// or custom URL),
-        // the search-select won't show it. We need to add it to the initial fetch.
-        if (this.value) {
-            // Search-select will call #fetch and then try to select using #selected
-            // And then if the value isn't found in results, creatable mode will handle it
-        }
+    #changeListener(event: CustomEvent<{ value: FileList | null }>) {
+        this.value = event.detail.value?.name ?? "";
     }
 
-    async #fetch(query?: string): Promise<FileItem[]> {
-        const api = aki(AdminApi);
-        return api
-            .adminFileList({
-                usage: this.usage as UsageEnum,
-                ...(query ? { search: query } : {}),
-            })
-            .then((response) => {
-                // Cast necessary: API returns File objects but we only use name, url, mime_type, size, and usage properties
-                const fileResponse = response as unknown as FileItem[];
+    async #fetch(query?: string): Promise<FileList[]> {
+        const results = await aki(AdminApi).adminFileList({
+            usage: this.usage,
+            ...(query ? { search: query.toLocaleLowerCase() } : {}),
+        });
 
-                if (!fileResponse || !Array.isArray(fileResponse)) {
-                    console.error("Invalid response format from files API", fileResponse);
-                    return [];
-                }
+        // Custom URLs and Font Awesome icons are valid values, but are not returned by the files
+        // API. Include the current value on the initial load so the control can select it.
+        if (!query && this.value && !results.some((item) => item.name === this.value)) {
+            return [
+                {
+                    name: this.value,
+                    url: this.value,
+                    mimeType: "",
+                },
+                ...results,
+            ];
+        }
 
-                let results = fileResponse;
-
-                // Only add synthetic item on initial load (no query), not during search.
-                // This prevents stale values from appearing in search results.
-                // The synthetic item is needed for fa:// URLs or custom URLs that aren't in the API.
-                if (!query && this.value && !results.find((item) => item.name === this.value)) {
-                    results = [
-                        {
-                            name: this.value,
-                            url: this.value,
-                            mime_type: "",
-                            size: 0,
-                            usage: this.usage,
-                        },
-                        ...results,
-                    ];
-                }
-
-                return results;
-            })
-            .catch(async (error) => {
-                const parsedError = await parseAPIResponseError(error);
-                console.error(msg("Failed to fetch files"), pluckErrorDetail(parsedError));
-                return [];
-            });
+        return results;
     }
 
     render() {
@@ -140,16 +105,23 @@ export class AKFileSearchInput extends AKElement {
                 .renderElement=${renderElement}
                 .value=${renderValue}
                 .selected=${this.#selected}
+                placeholder=${msg("Select a file or enter a value...", {
+                    id: "file-picker.value.placeholder",
+                })}
                 ?blankable=${this.blankable}
                 creatable
+                @ak-change=${this.#changeListener}
             >
             </ak-search-select>
             <p class="pf-c-form__helper-text">
                 ${this.help
                     ? this.help
-                    : msg(
-                          "You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.",
-                      )}
+                    : msg("Choose an existing file, or enter a URL or Font Awesome icon.", {
+                          id: "file-picker.value.description",
+                      })}
+                <a target="_blank" rel="noopener noreferrer" href="#/files">
+                    ${msg("Upload a file.", { id: "file-picker.upload-link.label" })}
+                </a>
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
