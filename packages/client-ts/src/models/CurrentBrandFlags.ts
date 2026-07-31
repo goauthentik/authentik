@@ -31,12 +31,6 @@ export interface CurrentBrandFlags {
      * @deprecated
      */
     flowsRefreshOthers: boolean;
-    /**
-     * When enabled, allow any user to create agent accounts.
-     * @type {boolean}
-     * @memberof CurrentBrandFlags
-     */
-    enterpriseAgentAllowAny?: boolean;
 }
 
 /**
@@ -74,10 +68,6 @@ export function CurrentBrandFlagsFromJSONTyped(
     return {
         flowsContinuousLogin: json["flows_continuous_login"],
         flowsRefreshOthers: json["flows_refresh_others"],
-        enterpriseAgentAllowAny:
-            json["enterprise_agent_allow_any"] == null
-                ? undefined
-                : json["enterprise_agent_allow_any"],
     };
 }
 
@@ -96,6 +86,5 @@ export function CurrentBrandFlagsToJSONTyped(
     return {
         flows_continuous_login: value["flowsContinuousLogin"],
         flows_refresh_others: value["flowsRefreshOthers"],
-        enterprise_agent_allow_any: value["enterpriseAgentAllowAny"],
     };
 }

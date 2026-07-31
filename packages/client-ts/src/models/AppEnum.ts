@@ -80,7 +80,6 @@ export const AppEnum = {
     AuthentikTasksSchedules: "authentik.tasks.schedules",
     AuthentikBrands: "authentik.brands",
     AuthentikBlueprints: "authentik.blueprints",
-    AuthentikEnterpriseAgents: "authentik.enterprise.agents",
     AuthentikEnterpriseAudit: "authentik.enterprise.audit",
     AuthentikEnterpriseEndpointsConnectorsAgent: "authentik.enterprise.endpoints.connectors.agent",
     AuthentikEnterpriseEndpointsConnectorsFleet: "authentik.enterprise.endpoints.connectors.fleet",

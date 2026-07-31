@@ -1654,11 +1654,13 @@ class Actor(ExpiringModel, User):
 
     @staticmethod
     def actor_for(user: User, policy_behavior: ActorPolicyInheritance, **kwargs):
-        agent = Actor.objects.create(
+        actor = Actor.objects.create(
             username=f"{generate_id()}",
-            owner=user,
+            parent=user,
+            policy_behavior=policy_behavior,
             type=UserTypes.SERVICE_ACCOUNT,
+            **kwargs,
         )
-        agent.set_unusable_password()
-        agent.save()
-        return agent
+        actor.set_unusable_password()
+        actor.save()
+        return actor

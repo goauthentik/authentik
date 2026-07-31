@@ -170,16 +170,6 @@ class UserInterface extends WithLicenseSummary(
                         .items=${[
                             { label: msg("Applications"), link: "/library" },
                             { label: msg("Discover"), link: "/requests" },
-                            ...(this.brand?.flags.enterpriseAgentAllowAny
-                                ? [
-                                      {
-                                          label: msg("Agents", {
-                                              id: "agent.verbose-name-plural.label",
-                                          }),
-                                          link: "/agents",
-                                      },
-                                  ]
-                                : []),
                         ]}
                     ></ak-nav-tabs>
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>

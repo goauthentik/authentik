@@ -158,7 +158,6 @@ export const ModelEnum = {
     AuthentikTasksSchedulesSchedule: "authentik_tasks_schedules.schedule",
     AuthentikBrandsBrand: "authentik_brands.brand",
     AuthentikBlueprintsBlueprintinstance: "authentik_blueprints.blueprintinstance",
-    AuthentikAgentsAgent: "authentik_agents.agent",
     AuthentikEndpointsConnectorsFleetFleetconnector:
         "authentik_endpoints_connectors_fleet.fleetconnector",
     AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector:
