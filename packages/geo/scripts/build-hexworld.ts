@@ -15,12 +15,18 @@ import {
     capLocalities,
     computeDetailZone,
     hexFeature,
+    HEXWORLD_ATTRIBUTION,
     landCells,
     MAX_BAND_ZOOM,
     placeFeature,
 } from "@goauthentik/geo/hexworld";
 
 import type { Feature } from "geojson";
+
+/** Baked into every archive's metadata, next to the attribution string. */
+const HEXWORLD_DESCRIPTION =
+    "H3 hex-grid basemap for authentik's events map. Land, country and region " +
+    "geometry derived from Natural Earth; place labels from a Protomaps planet build.";
 
 // Pinned Natural Earth release. Bump deliberately — every archive on the wire
 // should be reproducible from a specific vector-data commit.
@@ -163,10 +169,20 @@ export function buildPlan({ outDir, localities }: BuildPlanOptions): string[][] 
             .filter(keep)
             .map((s) => `${outDir}/${s.label}.pmtiles`);
 
+        // Name/description/attribution are set explicitly because tile-join
+        // otherwise inherits them from the first input file — which means the
+        // absolute path of a scratch directory on whoever's machine ran the
+        // build, baked into an archive we ship to every install.
         plan.push([
             "tile-join",
             "--force",
             "--no-tile-size-limit",
+            "--name",
+            `authentik hexworld basemap (${cut})`,
+            "--description",
+            HEXWORLD_DESCRIPTION,
+            "--attribution",
+            HEXWORLD_ATTRIBUTION,
             "-o",
             `${outDir}/hexworld-${cut}.pmtiles`,
             ...hexPieces,
