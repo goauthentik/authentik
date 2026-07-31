@@ -363,9 +363,14 @@ pub(crate) async fn start(_cli: Cli, tasks: &mut Tasks) -> Result<Arc<Server>> {
         }
 
         info!("starting embedded outpost");
-        server.proxy_outpost.store(Some(
-            outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None).await?,
-        ));
+        let proxy_outpost = tokio::select! {
+            res = outpost::start::<ProxyOutpost>(outpost::proxy::Cli::default(), tasks, None) => res?,
+            () = arbiter.shutdown() => {
+                warn!("we were told to shutdown before starting the embedded outpost");
+                return Ok(server);
+            },
+        };
+        server.proxy_outpost.store(Some(proxy_outpost));
     }
 
     Ok(server)
