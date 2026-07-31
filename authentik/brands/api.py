@@ -121,6 +121,7 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
                     required.append(_flag.key)
         return build_object_type(props, required=required)
 
+
 class CurrentBrandSerializer(PassiveSerializer):
     """Partial brand information for styling"""
 
