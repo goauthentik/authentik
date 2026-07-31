@@ -79,6 +79,7 @@ export class RequestRuleForm extends ModelForm<RequestRule, string> {
                 label=${msg("Minimum reviewers")}
                 min=${1}
                 name="minReviewers"
+                required
                 value="${this.instance?.minReviewers ?? 1}"
                 help=${msg(
                     "Number of reviewers that must approve the request before it is granted.",
@@ -89,9 +90,9 @@ export class RequestRuleForm extends ModelForm<RequestRule, string> {
                 ?checked=${this.instance?.minReviewersIsPerGroup ?? false}
                 label=${msg("Minimum reviewers is per-group")}
                 .help=${msg(
-                    html`If checked, fulfilling the request will require at least that many
-                        reviewers from <em>each</em> of the reviewer groups bound to this rule. When
-                        disabled, the value is a total across all reviewer groups.`,
+                    html`When enabled, fulfilling the request requires at least that many reviewers
+                        from <em>each</em> of the reviewer groups bound to this rule. When disabled,
+                        the value is a total across all reviewer groups.`,
                 )}
             >
             </ak-switch-input>

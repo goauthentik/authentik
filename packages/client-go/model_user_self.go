@@ -27,11 +27,13 @@ type UserSelf struct {
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive    bool             `json:"is_active"`
-	IsSuperuser bool             `json:"is_superuser"`
-	Groups      []UserSelfGroups `json:"groups"`
-	Roles       []UserSelfRoles  `json:"roles"`
-	Email       *string          `json:"email,omitempty"`
+	IsActive    bool `json:"is_active"`
+	IsSuperuser bool `json:"is_superuser"`
+	// Return whether this user owns the current browser session.
+	IsCurrent bool             `json:"is_current"`
+	Groups    []UserSelfGroups `json:"groups"`
+	Roles     []UserSelfRoles  `json:"roles"`
+	Email     *string          `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
 	Avatar string `json:"avatar"`
 	Uid    string `json:"uid"`
@@ -49,13 +51,14 @@ type _UserSelf UserSelf
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSelf(pk int32, username string, name string, isActive bool, isSuperuser bool, groups []UserSelfGroups, roles []UserSelfRoles, avatar string, uid string, settings map[string]interface{}, systemPermissions []string) *UserSelf {
+func NewUserSelf(pk int32, username string, name string, isActive bool, isSuperuser bool, isCurrent bool, groups []UserSelfGroups, roles []UserSelfRoles, avatar string, uid string, settings map[string]interface{}, systemPermissions []string) *UserSelf {
 	this := UserSelf{}
 	this.Pk = pk
 	this.Username = username
 	this.Name = name
 	this.IsActive = isActive
 	this.IsSuperuser = isSuperuser
+	this.IsCurrent = isCurrent
 	this.Groups = groups
 	this.Roles = roles
 	this.Avatar = avatar
@@ -191,6 +194,30 @@ func (o *UserSelf) GetIsSuperuserOk() (*bool, bool) {
 // SetIsSuperuser sets field value
 func (o *UserSelf) SetIsSuperuser(v bool) {
 	o.IsSuperuser = v
+}
+
+// GetIsCurrent returns the IsCurrent field value
+func (o *UserSelf) GetIsCurrent() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.IsCurrent
+}
+
+// GetIsCurrentOk returns a tuple with the IsCurrent field value
+// and a boolean to check if the value has been set.
+func (o *UserSelf) GetIsCurrentOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.IsCurrent, true
+}
+
+// SetIsCurrent sets field value
+func (o *UserSelf) SetIsCurrent(v bool) {
+	o.IsCurrent = v
 }
 
 // GetGroups returns the Groups field value
@@ -416,6 +443,7 @@ func (o UserSelf) ToMap() (map[string]interface{}, error) {
 	toSerialize["name"] = o.Name
 	toSerialize["is_active"] = o.IsActive
 	toSerialize["is_superuser"] = o.IsSuperuser
+	toSerialize["is_current"] = o.IsCurrent
 	toSerialize["groups"] = o.Groups
 	toSerialize["roles"] = o.Roles
 	if !IsNil(o.Email) {
@@ -446,6 +474,7 @@ func (o *UserSelf) UnmarshalJSON(data []byte) (err error) {
 		"name",
 		"is_active",
 		"is_superuser",
+		"is_current",
 		"groups",
 		"roles",
 		"avatar",
@@ -486,6 +515,7 @@ func (o *UserSelf) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "is_active")
 		delete(additionalProperties, "is_superuser")
+		delete(additionalProperties, "is_current")
 		delete(additionalProperties, "groups")
 		delete(additionalProperties, "roles")
 		delete(additionalProperties, "email")
