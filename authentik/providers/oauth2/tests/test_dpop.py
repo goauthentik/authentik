@@ -16,11 +16,7 @@ from django.core.cache import cache
 from django.test import TestCase
 from jwt import encode as jwt_encode
 
-from authentik.providers.oauth2.dpop import (
-    DPoPError,
-    DPoPValidator,
-    jwk_thumbprint,
-)
+from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator, jwk_thumbprint
 from authentik.providers.oauth2.utils import pkce_s256_challenge
 
 
@@ -37,7 +33,7 @@ class DPoPProofBuilder:
         self.y = base64.urlsafe_b64encode(nums.y.to_bytes(32, "big")).rstrip(b"=").decode()
         self.jwk = {"kty": "EC", "crv": "P-256", "x": self.x, "y": self.y}
 
-    def build(  # noqa: PLR0913
+    def build(  # noqa: PLR0913, PLR0917
         self,
         htm: str = "POST",
         htu: str = "https://server.example.com/token",
