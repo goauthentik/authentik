@@ -239,6 +239,7 @@ jobs:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
       - name: Run test in Docker
         env:
+          COMPOSE_PROJECT_NAME: authentik-release-test
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
           AUTHENTIK_TAG: "${{ needs.check-inputs.outputs.version }}"
         run: ./scripts/test_docker.sh
