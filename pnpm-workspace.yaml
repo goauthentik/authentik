@@ -14,9 +14,9 @@ packages:
 catalog:
   "@eslint/js": "^9.39.5"
   "@playwright/test": "^1.62.1"
-  "@typescript-eslint/eslint-plugin": "^8.64.0"
+  "@typescript-eslint/eslint-plugin": "^8.65.0"
   "@typescript-eslint/parser": "^8.65.0"
-  "@typescript-eslint/utils": "^8.64.0"
+  "@typescript-eslint/utils": "^8.65.0"
   "@types/node": "^26.1.2"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
