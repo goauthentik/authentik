@@ -79,21 +79,6 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def _actor_parent(user: User) -> User | None:
-    """Return the parent an actor identity acts on behalf of, or None.
-
-    Detected via the core `Actor` multi-table-inheritance reverse accessor (`user.actor`), gated
-    on the service-account type so ordinary users pay no query. `parent` may itself be None (an
-    actor acting purely by itself), in which case there is no one to attribute the action to.
-    """
-    if getattr(user, "type", None) != UserTypes.SERVICE_ACCOUNT:
-        return None
-    # `hasattr` swallows the reverse-accessor's DoesNotExist for non-actor users.
-    if not hasattr(user, "actor"):
-        return None
-    return user.actor.parent
-
-
 def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     """Convert user object to dictionary"""
     if isinstance(user, AnonymousUser):
@@ -108,12 +93,12 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
-    # Accountability: actions performed by an actor are recorded on behalf of its parent, so the
+    # Actions performed by an actor are recorded on behalf of its parent, so the
     # audit log always ties the activity back to a responsible human.
-    parent = _actor_parent(user)
-    if parent is not None:
+    if getattr(user, "type", None) == UserTypes.SERVICE_ACCOUNT and hasattr(user, "actor"):
         user_data["is_agent"] = True
-        user_data["on_behalf_of"] = get_user(parent)
+        # FIXME: This will need to be adjusted for OAuth OBO
+        user_data["on_behalf_of"] = get_user(user.actor.parent)
     return user_data
 
 
