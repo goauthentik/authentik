@@ -29,17 +29,25 @@ const sourceTargetModule: LocaleModule = {
  * @remarks
  * The `import` statements **must** reference a locale module path,
  * as this is how ESBuild identifies which files to include in the build.
+ *
+ * The entries below are derived from `locales.yaml`. To add or promote a
+ * language, edit that file and run `make gen-locales`.
  */
 export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleModule>> = {
     [SourceLanguageTag]: () => Promise.resolve(sourceTargetModule),
     [PseudoLanguageTag]: () => import("#locales/en-XA"),
+    // <generated:locale-loaders>
     "ar": () => import("#locales/ar"),
     "bg-BG": () => import("#locales/bg-BG"),
+    "bn-BD": () => import("#locales/bn-BD"),
     "cs-CZ": () => import("#locales/cs-CZ"),
+    "cy-GB": () => import("#locales/cy-GB"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
     "fi-FI": () => import("#locales/fi-FI"),
     "fr-FR": () => import("#locales/fr-FR"),
+    "hr-HR": () => import("#locales/hr-HR"),
+    "hu-HU": () => import("#locales/hu-HU"),
     "it-IT": () => import("#locales/it-IT"),
     "ja-JP": () => import("#locales/ja-JP"),
     "ko-KR": () => import("#locales/ko-KR"),
@@ -47,8 +55,11 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "nl-NL": () => import("#locales/nl-NL"),
     "pl-PL": () => import("#locales/pl-PL"),
     "pt-BR": () => import("#locales/pt-BR"),
+    "pt-PT": () => import("#locales/pt-PT"),
     "ru-RU": () => import("#locales/ru-RU"),
+    "sk-SK": () => import("#locales/sk-SK"),
     "tr-TR": () => import("#locales/tr-TR"),
     "zh-Hans": () => import("#locales/zh-Hans"),
     "zh-Hant": () => import("#locales/zh-Hant"),
+    // </generated:locale-loaders>
 };
