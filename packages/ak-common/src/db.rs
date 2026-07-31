@@ -18,12 +18,10 @@ static DB: OnceLock<PgPool> = OnceLock::new();
 
 async fn get_connect_opts() -> Result<PgConnectOptions> {
     let config = config::get();
+    let mut application_name = format!("authentik-{}@{}", Mode::get(), authentik_full_version());
+    application_name.truncate(63);
     let mut opts = PgConnectOptions::new()
-        .application_name(&format!(
-            "authentik-{}@{}",
-            Mode::get(),
-            authentik_full_version()
-        ))
+        .application_name(&application_name)
         .host(&config.postgresql.host)
         .port(config.postgresql.port)
         .username(&config.postgresql.user)
@@ -84,8 +82,9 @@ pub async fn init(tasks: &mut Tasks) -> Result<()> {
         .test_before_acquire(config.postgresql.conn_health_checks)
         .after_connect(|conn, _meta| {
             Box::pin(async move {
-                let application_name =
+                let mut application_name =
                     format!("authentik-{}@{}", Mode::get(), authentik_full_version());
+                application_name.truncate(63);
                 let default_schema = &config::get().postgresql.default_schema;
                 let query = format!(
                     "SET application_name = '{application_name}'; SET search_path = \
