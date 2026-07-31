@@ -419,6 +419,73 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: agents_agents_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: agents_agents_partial_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAgentRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
     delete:
       operationId: agents_agents_destroy
       description: |-
@@ -35604,6 +35671,11 @@ components:
           description: Identifier of the agent's API token, so its key can be retrieved/copied
             later.
           readOnly: true
+        applications:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
       - parent
@@ -35797,6 +35869,11 @@ components:
           type: string
           format: date-time
           nullable: true
+        applications:
+          type: array
+          items:
+            type: string
+            format: uuid
     AgentCreated:
       type: object
       description: Response returned once when an agent is created, carrying the one-time
@@ -35873,6 +35950,54 @@ components:
       - enclave_key_id
       - user_auth
       - user_secure_enclave_key
+    AgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        applications:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - name
+      - username
     AgentTokenResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -49902,6 +50027,51 @@ components:
           type: array
           items:
             type: integer
+    PatchedAgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        applications:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedAppleIndependentSecureEnclaveRequest:
       type: object
       properties:

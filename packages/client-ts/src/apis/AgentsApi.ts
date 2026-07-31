@@ -15,7 +15,9 @@
 import { type Agent, AgentFromJSON } from "../models/Agent";
 import { type AgentCreated, AgentCreatedFromJSON } from "../models/AgentCreated";
 import { type AgentCreateRequest, AgentCreateRequestToJSON } from "../models/AgentCreateRequest";
+import { type AgentRequest, AgentRequestToJSON } from "../models/AgentRequest";
 import { type PaginatedAgentList, PaginatedAgentListFromJSON } from "../models/PaginatedAgentList";
+import { type PatchedAgentRequest, PatchedAgentRequestToJSON } from "../models/PatchedAgentRequest";
 import * as runtime from "../runtime";
 
 export interface AgentsAgentsCreateRequest {
@@ -33,8 +35,18 @@ export interface AgentsAgentsListRequest {
     search?: string;
 }
 
+export interface AgentsAgentsPartialUpdateRequest {
+    id: number;
+    patchedAgentRequest?: PatchedAgentRequest;
+}
+
 export interface AgentsAgentsRetrieveRequest {
     id: number;
+}
+
+export interface AgentsAgentsUpdateRequest {
+    id: number;
+    agentRequest: AgentRequest;
 }
 
 /**
@@ -231,6 +243,70 @@ export class AgentsApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for agentsAgentsPartialUpdate without sending the request
+     */
+    async agentsAgentsPartialUpdateRequestOpts(
+        requestParameters: AgentsAgentsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling agentsAgentsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/agents/agents/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedAgentRequestToJSON(requestParameters["patchedAgentRequest"]),
+        };
+    }
+
+    /**
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     */
+    async agentsAgentsPartialUpdateRaw(
+        requestParameters: AgentsAgentsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Agent>> {
+        const requestOptions = await this.agentsAgentsPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AgentFromJSON(jsonValue));
+    }
+
+    /**
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     */
+    async agentsAgentsPartialUpdate(
+        requestParameters: AgentsAgentsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Agent> {
+        const response = await this.agentsAgentsPartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for agentsAgentsRetrieve without sending the request
      */
     async agentsAgentsRetrieveRequestOpts(
@@ -288,6 +364,77 @@ export class AgentsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Agent> {
         const response = await this.agentsAgentsRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for agentsAgentsUpdate without sending the request
+     */
+    async agentsAgentsUpdateRequestOpts(
+        requestParameters: AgentsAgentsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling agentsAgentsUpdate().',
+            );
+        }
+
+        if (requestParameters["agentRequest"] == null) {
+            throw new runtime.RequiredError(
+                "agentRequest",
+                'Required parameter "agentRequest" was null or undefined when calling agentsAgentsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/agents/agents/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AgentRequestToJSON(requestParameters["agentRequest"]),
+        };
+    }
+
+    /**
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     */
+    async agentsAgentsUpdateRaw(
+        requestParameters: AgentsAgentsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Agent>> {
+        const requestOptions = await this.agentsAgentsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AgentFromJSON(jsonValue));
+    }
+
+    /**
+     * Admin-provisioned delegate identities. An admin creates a Agent for a given parent user, then grants it access the same way as any other User -- ordinary PolicyBindings pointed at whatever it needs.
+     */
+    async agentsAgentsUpdate(
+        requestParameters: AgentsAgentsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Agent> {
+        const response = await this.agentsAgentsUpdateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 }

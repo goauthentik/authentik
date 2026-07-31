@@ -11,7 +11,9 @@ USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
 class Agent(ExpiringModel, User):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="agents")
-    primary_app = models.ForeignKey(Application, on_delete=models.CASCADE, null=True, default=None)
+    # Least-privilege allow-list: the agent may act on exactly these applications, and never
+    # more than its owner can. An empty list means the agent can reach nothing.
+    applications = models.ManyToManyField(Application, blank=True, related_name="+")
 
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Agent")

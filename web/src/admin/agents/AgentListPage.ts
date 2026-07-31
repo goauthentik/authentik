@@ -39,6 +39,7 @@ export class AgentListPage extends TablePage<Agent> {
     protected override columns: TableColumn[] = [
         [msg("Name"), "username"],
         [msg("Parent")],
+        [msg("Applications", { id: "agent.column.applications" })],
         [msg("Expires"), "expires"],
         [msg("Actions"), null, msg("Row Actions")],
     ];
@@ -68,6 +69,7 @@ export class AgentListPage extends TablePage<Agent> {
                 <div>${item.parent.username}</div>
                 <small>${item.parent.name}</small>
             </a>`,
+            html`${item.applications?.length ?? 0}`,
             item.expiring && item.expires ? Timestamp(item.expires) : msg("Never"),
             html`<ak-forms-delete-bulk
                 object-label=${msg("Agent")}

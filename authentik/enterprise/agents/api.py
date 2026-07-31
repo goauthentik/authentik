@@ -2,7 +2,12 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
-from rest_framework.mixins import DestroyModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (
+    DestroyModelMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+)
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -11,7 +16,7 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.api.validation import validate
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Token, TokenIntents, User, default_token_duration
+from authentik.core.models import Application, Token, TokenIntents, User, default_token_duration
 from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -21,6 +26,11 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
     parent = PartialUserSerializer(source="owner", read_only=True)
     token_identifier = SerializerMethodField()
+    # The least-privilege allow-list: the agent may act on exactly these applications (and
+    # never more than its owner can). Writable so the scope can be managed after creation.
+    applications = PrimaryKeyRelatedField(
+        many=True, queryset=Application.objects.all(), required=False
+    )
 
     def get_token_identifier(self, agent: Agent) -> str | None:
         """Identifier of the agent's API token, so its key can be retrieved/copied later."""
@@ -35,6 +45,7 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
             "expires",
             "parent",
             "token_identifier",
+            "applications",
         ]
 
 
@@ -45,7 +56,13 @@ class AgentCreatedSerializer(PassiveSerializer):
     token = CharField(read_only=True)
 
 
-class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
+class AgentViewSet(
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    ListModelMixin,
+    GenericViewSet,
+):
     """Admin-provisioned delegate identities. An admin creates a Agent for a given
     parent user, then grants it access the same way as any other User -- ordinary
     PolicyBindings pointed at whatever it needs."""
@@ -61,6 +78,9 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
+        applications = PrimaryKeyRelatedField(
+            many=True, queryset=Application.objects.all(), required=False, default=list
+        )
 
     @extend_schema(request=AgentCreateSerializer, responses={201: AgentCreatedSerializer})
     @validate(AgentCreateSerializer)
@@ -91,6 +111,8 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
             expiring=expiring,
             expires=expires,
         )
+        # Scope the agent to its allow-listed applications (empty = no access).
+        agent.applications.set(body.validated_data.get("applications", []))
         # Issue an API token so a harness can authenticate as the agent (Bearer auth).
         token = Token.objects.create(
             identifier=agent.username,
@@ -100,7 +122,11 @@ class AgentViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, Generi
             expires=default_token_duration(),
         )
         parent.assign_perms_to_managed_role(
-            ["authentik_agents.view_agent", "authentik_agents.delete_agent"],
+            [
+                "authentik_agents.view_agent",
+                "authentik_agents.change_agent",
+                "authentik_agents.delete_agent",
+            ],
             agent,
         )
         # Grant the owner access to the token key so it stays retrievable after creation.

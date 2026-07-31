@@ -12,134 +12,90 @@
  * Do not edit the class manually.
  */
 
-import type { PartialUser } from "./PartialUser";
-import { PartialUserFromJSON } from "./PartialUser";
-
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
  * @export
- * @interface Agent
+ * @interface PatchedAgentRequest
  */
-export interface Agent {
-    /**
-     *
-     * @type {number}
-     * @memberof Agent
-     */
-    readonly pk: number;
+export interface PatchedAgentRequest {
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
      * @type {string}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
-    username: string;
+    username?: string;
     /**
      * User's display name.
      * @type {string}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
-    name: string;
+    name?: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
      * @type {boolean}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     isActive?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     lastLogin?: Date | null;
     /**
      *
      * @type {string}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     email?: string;
     /**
      *
      * @type {{ [key: string]: any; }}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof Agent
-     */
-    readonly uid: string;
-    /**
-     *
-     * @type {string}
-     * @memberof Agent
-     */
-    readonly uuid: string;
-    /**
-     *
      * @type {boolean}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     expiring?: boolean;
     /**
      *
      * @type {Date}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof Agent
-     */
-    readonly parent: PartialUser;
-    /**
-     * Identifier of the agent's API token, so its key can be retrieved/copied later.
-     * @type {string}
-     * @memberof Agent
-     */
-    readonly tokenIdentifier: string | null;
-    /**
-     *
      * @type {Array<string>}
-     * @memberof Agent
+     * @memberof PatchedAgentRequest
      */
     applications?: Array<string>;
 }
 
 /**
- * Check if a given object implements the Agent interface.
+ * Check if a given object implements the PatchedAgentRequest interface.
  */
-export function instanceOfAgent(value: object): value is Agent {
-    if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("username" in value) || value["username"] === undefined) return false;
-    if (!("name" in value) || value["name"] === undefined) return false;
-    if (!("uid" in value) || value["uid"] === undefined) return false;
-    if (!("uuid" in value) || value["uuid"] === undefined) return false;
-    if (!("parent" in value) || value["parent"] === undefined) return false;
-    if (
-        (!("tokenIdentifier" in (value as Record<string, any>)) &&
-            !("token_identifier" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["tokenIdentifier"] === undefined &&
-            (value as Record<string, any>)["token_identifier"] === undefined)
-    )
-        return false;
+export function instanceOfPatchedAgentRequest(value: object): value is PatchedAgentRequest {
     return true;
 }
 
-export function AgentFromJSON(json: any): Agent {
-    return AgentFromJSONTyped(json, false);
+export function PatchedAgentRequestFromJSON(json: any): PatchedAgentRequest {
+    return PatchedAgentRequestFromJSONTyped(json, false);
 }
 
-export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Agent {
+export function PatchedAgentRequestFromJSONTyped(
+    json: any,
+    ignoreDiscriminator: boolean,
+): PatchedAgentRequest {
     if (json == null) {
         return json;
     }
     return {
-        pk: json["pk"],
-        username: json["username"],
-        name: json["name"],
+        username: json["username"] == null ? undefined : json["username"],
+        name: json["name"] == null ? undefined : json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
         lastLogin:
             json["last_login"] === undefined
@@ -149,8 +105,6 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                   : new Date(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
-        uid: json["uid"],
-        uuid: json["uuid"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
         expires:
             json["expires"] === undefined
@@ -158,18 +112,16 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                 : json["expires"] === null
                   ? null
                   : new Date(json["expires"]),
-        parent: PartialUserFromJSON(json["parent"]),
-        tokenIdentifier: json["token_identifier"],
         applications: json["applications"] == null ? undefined : json["applications"],
     };
 }
 
-export function AgentToJSON(json: any): Agent {
-    return AgentToJSONTyped(json, false);
+export function PatchedAgentRequestToJSON(json: any): PatchedAgentRequest {
+    return PatchedAgentRequestToJSONTyped(json, false);
 }
 
-export function AgentToJSONTyped(
-    value?: Omit<Agent, "pk" | "uid" | "uuid" | "parent" | "tokenIdentifier"> | null,
+export function PatchedAgentRequestToJSONTyped(
+    value?: PatchedAgentRequest | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {

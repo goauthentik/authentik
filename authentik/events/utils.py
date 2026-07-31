@@ -23,7 +23,7 @@ from guardian.conf import settings
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
-from authentik.core.models import User
+from authentik.core.models import User, UserTypes
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.policies.types import PolicyRequest
@@ -79,6 +79,22 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
+def _agent_owner(user: User) -> User | None:
+    """Return the owner of an agent identity, or None if `user` is not an agent.
+
+    Detected via the agents app's multi-table-inheritance reverse accessor (`user.agent`) so
+    this core module does not import the enterprise agents feature. Gated on the service-account
+    type so ordinary users pay no query.
+    """
+    if getattr(user, "type", None) != UserTypes.SERVICE_ACCOUNT:
+        return None
+    # `hasattr` swallows both the reverse-accessor's DoesNotExist and a missing accessor
+    # (agents app not installed), so no enterprise import is needed here.
+    if not hasattr(user, "agent"):
+        return None
+    return user.agent.owner
+
+
 def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     """Convert user object to dictionary"""
     if isinstance(user, AnonymousUser):
@@ -93,6 +109,12 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
+    # Accountability: actions performed by an agent are recorded on behalf of its owner, so the
+    # audit log always ties an agent's activity back to a responsible human.
+    owner = _agent_owner(user)
+    if owner is not None:
+        user_data["is_agent"] = True
+        user_data["on_behalf_of"] = get_user(owner)
     return user_data
 
 

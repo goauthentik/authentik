@@ -1,5 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
+import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-hidden-text-input";
@@ -7,6 +8,7 @@ import "#components/ak-hidden-text-input";
 import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
+import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -17,6 +19,7 @@ import {
     AgentCreated,
     AgentCreateRequest,
     AgentsApi,
+    Application,
     CoreApi,
     CoreUsersListRequest,
     User,
@@ -26,6 +29,21 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+const applicationPair = (app: Application): DualSelectPair => [
+    app.pk,
+    html`<div class="selection-main">${app.name}</div>
+        <div class="selection-desc">${app.slug}</div>`,
+    app.name,
+];
+
+const applicationProvider: DataProvider = async (page, search = "") => {
+    const apps = await aki(CoreApi).coreApplicationsList({ page, search, ordering: "name" });
+    return {
+        pagination: apps.pagination,
+        options: apps.results.map(applicationPair),
+    };
+};
 
 @customElement("ak-agent-form")
 export class AgentForm extends Form<AgentCreateRequest> {
@@ -98,6 +116,28 @@ export class AgentForm extends Form<AgentCreateRequest> {
                 value=""
                 help=${msg("Optional display name. Defaults to the parent user's name.")}
             ></ak-text-input>
+
+            <ak-form-element-horizontal
+                label=${msg("Applications", { id: "agent.applications.label" })}
+                name="applications"
+            >
+                <ak-dual-select-provider
+                    .provider=${applicationProvider}
+                    .selected=${[]}
+                    available-label=${msg("Available applications", {
+                        id: "agent.applications.available",
+                    })}
+                    selected-label=${msg("Selected applications", {
+                        id: "agent.applications.selected",
+                    })}
+                ></ak-dual-select-provider>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The agent can act only on these applications, and never on more than its owner can access.",
+                        { id: "agent.applications.description-admin" },
+                    )}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-switch-input
                 name="expiring"

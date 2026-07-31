@@ -1,7 +1,7 @@
 """authentik policy engine"""
 
 from collections import defaultdict
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from copy import copy
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
@@ -22,6 +22,25 @@ from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 CURRENT_PROCESS = current_process()
+
+# Authoritative global policy checks, evaluated for every (user, PolicyBindingModel) in addition
+# to that object's own PolicyBindings. A check returns a PolicyResult to *override* the binding
+# verdict for that pair (it can both grant and deny), or None to abstain. Populated by other apps
+# at ready() time (e.g. enterprise agents restricting agents to their allow-listed applications)
+# so this module stays agnostic of those features.
+GlobalPolicyCheck = Callable[[User, PolicyBindingModel, HttpRequest | None], PolicyResult | None]
+GLOBAL_POLICY_CHECKS: list[GlobalPolicyCheck] = []
+
+
+def apply_global_checks(
+    user: User, pbm: PolicyBindingModel, request: HttpRequest | None
+) -> PolicyResult | None:
+    """Return the first non-None result from a registered global check, or None if all abstain."""
+    for check in GLOBAL_POLICY_CHECKS:
+        result = check(user, pbm, request)
+        if result is not None:
+            return result
+    return None
 
 
 class PolicyProcessInfo:
@@ -268,6 +287,11 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
+        override = apply_global_checks(
+            self.request.user, self.__pbm, getattr(self.request, "http_request", None)
+        )
+        if override is not None:
+            return override
         all_results = list(self.__dynamic_results)
         if self.__static_result is not None:
             all_results.append(self.__static_result)
@@ -397,7 +421,19 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[User]:
         """Get the subset of the user queryset that passes"""
-        return self.__result
+        if not GLOBAL_POLICY_CHECKS or self.__result is None:
+            return self.__result
+        # Let authoritative global checks override the per-user verdict for this pbm.
+        passing_pks = set(self.__result.values_list("pk", flat=True))
+        for user in self.__users:
+            override = apply_global_checks(user, self.__pbm, self.__http_request)
+            if override is None:
+                continue
+            if override.passing:
+                passing_pks.add(user.pk)
+            else:
+                passing_pks.discard(user.pk)
+        return self.__users.filter(pk__in=passing_pks)
 
     def _filter_static(
         self, base: QuerySet[User], bindings: list[PolicyBinding], mode: PolicyEngineMode
@@ -598,4 +634,16 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[T]:
         """Get the subset of the object queryset that the user passes"""
-        return self.__result
+        if not GLOBAL_POLICY_CHECKS or self.__result is None:
+            return self.__result
+        # Let authoritative global checks override the verdict per object for this user.
+        passing_pks = set(self.__result.values_list("pk", flat=True))
+        for obj in self.__objs:
+            override = apply_global_checks(self.__user, obj, self.__http_request)
+            if override is None:
+                continue
+            if override.passing:
+                passing_pks.add(obj.pk)
+            else:
+                passing_pks.discard(obj.pk)
+        return self.__objs.filter(pk__in=passing_pks)

@@ -42,6 +42,12 @@ export interface AgentCreateRequest {
      * @memberof AgentCreateRequest
      */
     expires?: Date | null;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof AgentCreateRequest
+     */
+    applications?: Array<string>;
 }
 
 /**
@@ -72,6 +78,7 @@ export function AgentCreateRequestFromJSONTyped(
                 : json["expires"] === null
                   ? null
                   : new Date(json["expires"]),
+        applications: json["applications"] == null ? undefined : json["applications"],
     };
 }
 
@@ -92,5 +99,6 @@ export function AgentCreateRequestToJSONTyped(
         label: value["label"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        applications: value["applications"],
     };
 }

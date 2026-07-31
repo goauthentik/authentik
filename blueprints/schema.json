@@ -7436,6 +7436,14 @@
                     ],
                     "format": "date-time",
                     "title": "Expires"
+                },
+                "applications": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Applications"
                 }
             },
             "required": []
