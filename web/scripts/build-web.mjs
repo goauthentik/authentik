@@ -121,10 +121,14 @@ const BASE_ESBUILD_OPTIONS = {
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    // The geo package lives at the repo's top-level packages/ and is symlinked
-    // into web/packages/. Without this, esbuild walks to the realpath when
-    // resolving its imports and fails to locate hoisted runtime deps like
-    // `lit` and `maplibre-gl` that only exist in web/node_modules.
+    // Keep singletons single. Packages linked in from the repo's top-level
+    // packages/ (geo, client-ts, …) are symlinked into web/packages/ but keep
+    // their own node_modules under pnpm's isolated linker. Resolving them by
+    // realpath makes esbuild reach *those* copies of shared runtimes, so a
+    // bundle ends up with two Lit instances — web/node_modules/lit-html plus
+    // a second from .pnpm/ — and two ReactiveElement class hierarchies with
+    // it. Resolving through the symlink path keeps everything on
+    // web/node_modules, which the hoisted linker guarantees is flat.
     preserveSymlinks: true,
 };
 
