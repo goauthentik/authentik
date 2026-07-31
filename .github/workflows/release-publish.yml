@@ -45,10 +45,10 @@ jobs:
     needs:
       - metadata
     steps:
-      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
-      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
+      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"

@@ -77,12 +77,6 @@ export interface PatchedAuthenticatorWebAuthnStageRequest {
      */
     deviceTypeRestrictions?: Array<string>;
     /**
-     * When enabled, a given device can only be registered once.
-     * @type {boolean}
-     * @memberof PatchedAuthenticatorWebAuthnStageRequest
-     */
-    preventDuplicateDevices?: boolean;
-    /**
      *
      * @type {number}
      * @memberof PatchedAuthenticatorWebAuthnStageRequest
@@ -141,10 +135,6 @@ export function PatchedAuthenticatorWebAuthnStageRequestFromJSONTyped(
                 : (json["hints"] as Array<any>).map(WebAuthnHintEnumFromJSON),
         deviceTypeRestrictions:
             json["device_type_restrictions"] == null ? undefined : json["device_type_restrictions"],
-        preventDuplicateDevices:
-            json["prevent_duplicate_devices"] == null
-                ? undefined
-                : json["prevent_duplicate_devices"],
         maxAttempts: json["max_attempts"] == null ? undefined : json["max_attempts"],
     };
 }
@@ -177,7 +167,6 @@ export function PatchedAuthenticatorWebAuthnStageRequestToJSONTyped(
                 ? undefined
                 : (value["hints"] as Array<any>).map(WebAuthnHintEnumToJSON),
         device_type_restrictions: value["deviceTypeRestrictions"],
-        prevent_duplicate_devices: value["preventDuplicateDevices"],
         max_attempts: value["maxAttempts"],
     };
 }

@@ -3,11 +3,11 @@ import { type AppGroupEntry, ViewMode } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
 
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import { ApplicationRoute } from "#elements/router/builders";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
 
 import { Application } from "@goauthentik/api";
