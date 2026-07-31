@@ -1,0 +1,65 @@
+:host {
+    display: block;
+    height: 100%;
+    width: 100%;
+    --ak-c-map--BackgroundImage: radial-gradient(#827297, #0e0c10);
+}
+
+:host([theme="dark"]) {
+    --ak-c-map--BackgroundImage: radial-gradient(#827297, #0e0c10);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 400ms ease;
+}
+
+#map.ready {
+    opacity: 1;
+}
+
+#map :is(.maplibregl-canvas, canvas) {
+    background-color: var(--ak-c-map--BackgroundImage);
+    outline: none;
+}
+
+.ak-map-bin-popup {
+    display: grid;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+}
+
+.ak-map-bin-popup .kind {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.ak-map-bin-popup .dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    flex: none;
+}
+
+#map .maplibregl-popup {
+    pointer-events: none;
+}
+
+#map .maplibregl-popup-content {
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+:host([theme="dark"]) #map .maplibregl-popup-content {
+    background: #1b1e21;
+    color: #c5ced6;
+}
+
+:host([theme="dark"]) #map .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+    border-top-color: #1b1e21;
+}

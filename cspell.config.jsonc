@@ -211,7 +211,7 @@
         "Base64",
         "Email",
         "EncodedURI",
-        "FOUC",  // Flash Of Unstyled Content
+        "FOUC", // Flash Of Unstyled Content
         "HashStrings",
         "PublicKey",
         "RsaCert",
@@ -219,7 +219,7 @@
         "SshRsa",
         "UnicodeRef",
         "Urls",
-        "analyse-phase",  // UK Spelling
+        "analyse-phase", // UK Spelling
         "href",
         "lit-analyse" // UK Spelling
     ],
@@ -310,7 +310,7 @@
         "dist", // Distributed build output
         "coverage/**", // Coverage output
         ".env", // Environment files
-        "package-lock.json", // NPM package lock
+        "*.tsbuildinfo", // TypeScript build info
         "schema.yml", // OpenAPI schema
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
