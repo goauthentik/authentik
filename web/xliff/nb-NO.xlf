@@ -10661,14 +10661,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Authorizations (1 month)</source>
   <target>Autorisasjoner (1 måned)</target>
 </trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-  <target>Forhindre duplikate enheter</target>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
-  <target>Når aktivert, kan enhver unik autentisator bare registreres én gang.</target>
-</trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
   <target>Blueprint importert vellykket.</target>
