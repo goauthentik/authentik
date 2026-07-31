@@ -147,13 +147,6 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
     response
 }
 
-/// Compression applied to static responses.
-///
-/// Ranged responses must reach the client untouched: re-encoding the selected
-/// bytes drops `Content-Length` and breaks HTTP byte serving. tower-http skips
-/// any response carrying `Content-Range`, so 206s pass through as-is — which is
-/// what lets byte-serving clients seek within a bundled archive (the events
-/// map reads its basemap out of a `PMTiles` file this way).
 fn compression_layer() -> CompressionLayer<SizeAbove> {
     CompressionLayer::new().compress_when(SizeAbove::new(32))
 }
@@ -263,13 +256,21 @@ pub(crate) fn build_router() -> Router {
 #[cfg(test)]
 mod tests {
     use axum::{
+        Router,
         body::Body,
-        http::header::{ACCEPT_ENCODING, CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, RANGE},
+        extract::Request,
+        http::{
+            StatusCode,
+            header::{ACCEPT_ENCODING, CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, RANGE},
+        },
     };
     use http_body_util::BodyExt as _;
+    use tempfile::{TempDir, tempdir};
+    use tokio::fs;
     use tower::ServiceExt as _;
+    use tower_http::services::fs::ServeDir;
 
-    use super::*;
+    use super::compression_layer;
 
     /// Enough bytes to clear the `SizeAbove` threshold, and compressible enough
     /// that gzip is a visible win.
@@ -277,7 +278,7 @@ mod tests {
 
     /// Mirrors how [`build_router`] serves `/static/dist/`: a `ServeDir` under
     /// the shared compression layer.
-    fn router(dir: &tempfile::TempDir) -> Router {
+    fn router(dir: &TempDir) -> Router {
         Router::new()
             .nest_service(
                 "/static/dist/",
@@ -286,15 +287,17 @@ mod tests {
             .layer(compression_layer())
     }
 
-    fn fixture() -> tempfile::TempDir {
-        let dir = tempfile::tempdir().expect("failed to create temp dir");
-        std::fs::write(dir.path().join("basemap.bin"), BODY).expect("failed to write fixture");
+    async fn fixture() -> TempDir {
+        let dir = tempdir().expect("failed to create temp dir");
+        fs::write(dir.path().join("basemap.bin"), BODY)
+            .await
+            .expect("failed to write fixture");
         dir
     }
 
     #[tokio::test]
     async fn ranged_request_is_not_compressed() {
-        let dir = fixture();
+        let dir = fixture().await;
         let response = router(&dir)
             .oneshot(
                 Request::builder()
@@ -330,7 +333,7 @@ mod tests {
 
     #[tokio::test]
     async fn full_request_is_still_compressed() {
-        let dir = fixture();
+        let dir = fixture().await;
         let response = router(&dir)
             .oneshot(
                 Request::builder()
