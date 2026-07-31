@@ -1,0 +1,19 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
+        "erasableSyntaxOnly": true,
+        "emitDeclarationOnly": false,
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": false,
+        "composite": false,
+        "incremental": false,
+        "checkJs": false,
+        "allowJs": false,
+        "rootDir": ".."
+    },
+    "include": ["./**/*.ts"],
+    "exclude": ["./**/out/**", "./**/node_modules/**"]
+}
