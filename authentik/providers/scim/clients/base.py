@@ -1,6 +1,6 @@
 """SCIM Client"""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from django.core.cache import cache
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
@@ -87,6 +87,10 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         if response.status_code == HTTP_NO_CONTENT:
             return {}
         return response.json()
+
+    def lower_case_keys(self, raw: dict[str, Any]) -> dict[str, Any]:
+        """Lowercase all keys in the dict to ignore casing"""
+        return {k.lower(): v for k, v in raw.items()}
 
     def get_service_provider_config(self):
         """Get Service provider config"""
