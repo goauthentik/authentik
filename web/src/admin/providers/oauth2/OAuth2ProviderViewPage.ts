@@ -47,7 +47,7 @@ import { match, P } from "ts-pattern";
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -117,6 +117,11 @@ export class OAuth2ProviderViewPage extends AKElement {
         PFForm,
         PFFormControl,
         PFBanner,
+        css`
+            .pf-c-card__body {
+                padding-top: var(--pf-c-card--first-child--PaddingTop);
+            }
+        `,
     ];
 
     constructor() {
