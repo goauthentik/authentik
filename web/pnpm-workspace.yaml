@@ -5,19 +5,20 @@ packages:
     # it cannot represent in this lockfile. Link it as an external local package
     # instead (see web + sfe package.json).
     - "!packages/client-ts"
-    # Dependabot resolves the `link:../packages/prettier-config` dev dependency
-    # (see web/package.json) by materializing the target — and its own linked
+    # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
+    # materializing their targets — and `prettier-config`'s own linked
     # `tsconfig` — under web/packages/ when it regenerates this workspace's
     # lockfile. Without these exclusions the `packages/*` glob then swallows
     # them as workspace importers, committing phantom entries that every local
     # `pnpm install` prunes right back out.
+    - "!packages/geo"
     - "!packages/prettier-config"
     - "!packages/tsconfig"
 
 # pnpm's default isolated linker exposes packages strictly — only declared
 # dependencies are visible. The web bundle relies on a handful of phantom
 # deps that were hoisted by npm at the root of `node_modules` (lit-html
-# internals, ol, mdast-util-to-string, etc.). Until each is added as an
+# internals, mdast-util-to-string, etc.). Until each is added as an
 # explicit dependency, fall back to the flat hoisted layout that mirrors
 # npm's behavior.
 nodeLinker: hoisted

@@ -5,6 +5,8 @@ import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { eventUuidSearch } from "#admin/events/eventSearch";
+
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
@@ -81,8 +83,8 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 <ak-events-map
                     class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
                     .events=${this.data}
-                    @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
-                        this.search = `event_uuid = "${ev.detail.eventId}"`;
+                    @select-events=${(ev: CustomEvent<{ eventIds: string[] }>) => {
+                        this.search = eventUuidSearch(ev.detail.eventIds);
                         this.page = 1;
                         this.fetch();
                     }}
