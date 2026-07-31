@@ -215,6 +215,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             raise PolicyEngineException(f"{pbm} is not instance of PolicyBindingModel")
         if not user:
             raise PolicyEngineException("User must be set")
+        user = effective_policy_user(user)
         self.__pbm = pbm
         self.request = PolicyRequest(user)
         self.request.obj = pbm
@@ -298,14 +299,6 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        # A MIRROR actor is evaluated as the identity it mirrors.
-        effective = effective_policy_user(self.request.user)
-        if effective.pk != self.request.user.pk:
-            return (
-                PolicyEngine(self.__pbm, effective, getattr(self.request, "http_request", None))
-                .build()
-                .result
-            )
         all_results = list(self.__dynamic_results)
         if self.__static_result is not None:
             all_results.append(self.__static_result)
@@ -349,7 +342,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
 
             if not bindings:
                 self.__result = self.__users if self.empty_result else self.__users.none()
-                return self
+                return self._finalize()
 
             dynamic_bindings = [binding for binding in bindings if binding.policy_id is not None]
             static_bindings = [
@@ -364,7 +357,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                     self.__result = self.__users if self.empty_result else self.__users.none()
                 else:
                     self.__result = self._filter_static(self.__users, static_bindings, self.mode)
-                return self
+                return self._finalize()
 
             # Slow path: real Policy objects can't be translated to SQL and need
             # per-user evaluation. Pre-compute the static verdict ONCE via SQL (reused
@@ -400,7 +393,29 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 if self._combine_results(self.mode, self.empty_result, all_results).passing:
                     passing_pks.append(user.pk)
             self.__result = self.__users.filter(pk__in=passing_pks)
-            return self
+            return self._finalize()
+
+    def _finalize(self) -> FilterPolicyEngine:
+        """Apply MIRROR-actor overrides to self.__result, then return self.
+
+        A queryset engine has no single user to substitute in the constructor, and its fast
+        SQL static path can't special-case per-user, so MIRROR resolution happens here instead:
+        once, after build(), rather than in `result` (which would otherwise re-run the whole
+        static+dynamic evaluation as a throwaway nested engine on every access).
+        """
+        passing_pks = set(self.__result.values_list("pk", flat=True))
+        for user in self.__users:
+            if getattr(user, "type", None) not in _ACTOR_USER_TYPES:
+                continue
+            effective = effective_policy_user(user)
+            if effective.pk == user.pk:
+                continue
+            if PolicyEngine(self.__pbm, effective, self.__http_request).build().passing:
+                passing_pks.add(user.pk)
+            else:
+                passing_pks.discard(user.pk)
+        self.__result = self.__users.filter(pk__in=passing_pks)
+        return self
 
     def _prefetch_cache(
         self, candidates: list[User], dynamic_bindings: list[PolicyBinding]
@@ -435,22 +450,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[User]:
         """Get the subset of the user queryset that passes"""
-        if self.__result is None:
-            return self.__result
-        # A MIRROR actor passes iff the identity it mirrors passes. Only service accounts can be
-        # actors, so human users are skipped without a query.
-        passing_pks = set(self.__result.values_list("pk", flat=True))
-        for user in self.__users:
-            if getattr(user, "type", None) not in _ACTOR_USER_TYPES:
-                continue
-            effective = effective_policy_user(user)
-            if effective.pk == user.pk:
-                continue
-            if PolicyEngine(self.__pbm, effective, self.__http_request).build().passing:
-                passing_pks.add(user.pk)
-            else:
-                passing_pks.discard(user.pk)
-        return self.__users.filter(pk__in=passing_pks)
+        return self.__result
 
     def _filter_static(
         self, base: QuerySet[User], bindings: list[PolicyBinding], mode: PolicyEngineMode
@@ -494,7 +494,7 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         self.empty_result = True
         self.use_cache = True
         self.__objs = objs
-        self.__user = user
+        self.__user = effective_policy_user(user)
         self.__http_request = request
         self.__result: QuerySet[T] | None = None
 
@@ -651,10 +651,4 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[T]:
         """Get the subset of the object queryset that the user passes"""
-        if self.__result is None:
-            return self.__result
-        # A MIRROR actor sees exactly what the identity it mirrors sees.
-        effective = effective_policy_user(self.__user)
-        if effective.pk != self.__user.pk:
-            return ListPolicyEngine(self.__objs, effective, self.__http_request).build().result
         return self.__result
