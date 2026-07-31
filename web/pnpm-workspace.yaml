@@ -1,19 +1,19 @@
 packages:
-    - "packages/*"
-    # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
-    # a workspace member makes pnpm treat an out-of-root path as an importer, which
-    # it cannot represent in this lockfile. Link it as an external local package
-    # instead (see web + sfe package.json).
-    - "!packages/client-ts"
-    # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
-    # materializing their targets — and `prettier-config`'s own linked
-    # `tsconfig` — under web/packages/ when it regenerates this workspace's
-    # lockfile. Without these exclusions the `packages/*` glob then swallows
-    # them as workspace importers, committing phantom entries that every local
-    # `pnpm install` prunes right back out.
-    - "!packages/geo"
-    - "!packages/prettier-config"
-    - "!packages/tsconfig"
+  - "packages/*"
+  # client-ts is a symlink to the repo-root packages/client-ts; consuming it as
+  # a workspace member makes pnpm treat an out-of-root path as an importer, which
+  # it cannot represent in this lockfile. Link it as an external local package
+  # instead (see web + sfe package.json).
+  - "!packages/client-ts"
+  # Dependabot resolves the `link:` dev dependencies (see web/package.json) by
+  # materializing their targets — and `prettier-config`'s own linked
+  # `tsconfig` — under web/packages/ when it regenerates this workspace's
+  # lockfile. Without these exclusions the `packages/*` glob then swallows
+  # them as workspace importers, committing phantom entries that every local
+  # `pnpm install` prunes right back out.
+  - "!packages/geo"
+  - "!packages/prettier-config"
+  - "!packages/tsconfig"
 
 # pnpm's default isolated linker exposes packages strictly — only declared
 # dependencies are visible. The web bundle relies on a handful of phantom
@@ -27,34 +27,50 @@ nodeLinker: hoisted
 # these via `catalog:`, and overrides pin transitive deps to the same versions.
 # `scripts/node/lint-catalogs.ts` keeps them in sync with the other workspace roots.
 catalog:
-    "@eslint/js": "^9.39.5"
-    "@typescript-eslint/eslint-plugin": "^8.64.0"
-    "@typescript-eslint/parser": "^8.64.0"
-    "@typescript-eslint/utils": "^8.64.0"
-    "@types/node": "^26.1.1"
-    esbuild: "^0.28.1"
-    eslint: "^9.39.5"
-    prettier: "3.8.3"
-    prettier-plugin-packagejson: "^3.0.2"
-    typescript: "^6.0.3"
-    typescript-eslint: "^8.64.0"
+  "@eslint/js": "^9.39.5"
+  # Playwright is pinned exactly, not by range: `playwright install` downloads a
+  # ~95 MB browser build keyed to the exact version, so any drift between this
+  # workspace and the repo root means CI downloads two. `@playwright/test` ships
+  # in the same lockstep release and must match. `@vitest/browser-playwright`
+  # drives whichever playwright it finds, so it belongs to the same set.
+  #
+  # Held at 1.61.1: 1.62.0 cannot resolve a bare package name in a tsconfig
+  # `extends` (web/tsconfig.json extends "@goauthentik/tsconfig"), so loading
+  # web's playwright.config.js fails outright and the e2e suite never runs.
+  # Verify `pnpm --dir web exec playwright test --list` before bumping.
+  "@playwright/test": "1.61.1"
+  "@typescript-eslint/eslint-plugin": "^8.64.0"
+  "@typescript-eslint/parser": "^8.64.0"
+  "@typescript-eslint/utils": "^8.64.0"
+  "@types/node": "^26.1.1"
+  "@vitest/browser": "^4.1.10"
+  "@vitest/browser-playwright": "^4.1.10"
+  esbuild: "^0.28.1"
+  eslint: "^9.39.5"
+  playwright: "1.61.1"
+  prettier: "3.8.3"
+  prettier-plugin-packagejson: "^3.0.2"
+  typescript: "^6.0.3"
+  typescript-eslint: "^8.64.0"
+  vite: "^8.1.4"
+  vitest: "^4.1.10"
 
 overrides:
-    "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
-    "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
-    "@goauthentik/eslint-config>typescript": "catalog:"
-    "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
-    "@goauthentik/prettier-config>typescript": "catalog:"
-    "@mrmarble/djangoql-completion>lex": "workspace:*"
-    "@mrmarble/djangoql-completion>lodash": "^4.18.1"
-    "@typescript-eslint/eslint-plugin>typescript": "catalog:"
-    "@typescript-eslint/parser>typescript": "catalog:"
-    "@typescript-eslint/typescript-estree>typescript": "catalog:"
-    "@typescript-eslint/utils>typescript": "catalog:"
-    "format-imports>eslint": "catalog:"
-    "node-fetch-commonjs>node-domexception": "workspace:*"
-    "rapidoc>@apitools/openapi-parser": "0.0.37"
-    "typescript-eslint>typescript": "catalog:"
+  "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
+  "@goauthentik/esbuild-plugin-live-reload>typescript": "catalog:"
+  "@goauthentik/eslint-config>typescript": "catalog:"
+  "@goauthentik/prettier-config>prettier-plugin-packagejson": "catalog:"
+  "@goauthentik/prettier-config>typescript": "catalog:"
+  "@mrmarble/djangoql-completion>lex": "workspace:*"
+  "@mrmarble/djangoql-completion>lodash": "^4.18.1"
+  "@typescript-eslint/eslint-plugin>typescript": "catalog:"
+  "@typescript-eslint/parser>typescript": "catalog:"
+  "@typescript-eslint/typescript-estree>typescript": "catalog:"
+  "@typescript-eslint/utils>typescript": "catalog:"
+  "format-imports>eslint": "catalog:"
+  "node-fetch-commonjs>node-domexception": "workspace:*"
+  "rapidoc>@apitools/openapi-parser": "0.0.37"
+  "typescript-eslint>typescript": "catalog:"
 
 # Allow-list of dependencies whose install/postinstall scripts may run.
 # Everything else is blocked, replacing the prior `ignore-scripts=true` +
@@ -62,22 +78,22 @@ overrides:
 # is audited at review time — adding a package here grants it arbitrary code
 # execution at install.
 onlyBuiltDependencies:
-    - chromedriver
-    - esbuild
-    - tree-sitter
-    - tree-sitter-json
-    - "@tree-sitter-grammars/tree-sitter-yaml"
+  - chromedriver
+  - esbuild
+  - tree-sitter
+  - tree-sitter-json
+  - "@tree-sitter-grammars/tree-sitter-yaml"
 
 # Explicit approval map for pnpm 11+. `true` = allowed (mirror
 # onlyBuiltDependencies); `false` = explicitly declined to silence the
 # "pending approval" prompt without running the install script.
 allowBuilds:
-    "@scarf/scarf": false
-    "@swc/core": false
-    "@tree-sitter-grammars/tree-sitter-yaml": true
-    chromedriver: true
-    core-js: false
-    core-js-pure: false
-    esbuild: true
-    tree-sitter: true
-    tree-sitter-json: true
+  "@scarf/scarf": false
+  "@swc/core": false
+  "@tree-sitter-grammars/tree-sitter-yaml": true
+  chromedriver: true
+  core-js: false
+  core-js-pure: false
+  esbuild: true
+  tree-sitter: true
+  tree-sitter-json: true

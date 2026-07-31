@@ -11,13 +11,15 @@
     },
     "scripts": {
         "build": "tsc -p .",
-        "hexworld:build": "npm run build && node scripts/build-hexworld.ts",
+        "hexworld:build": "node scripts/build-hexworld.ts",
         "lint": "eslint --fix .",
+        "lint:types": "tsc -p . --noEmit && tsc -p scripts && tsc -p test",
         "lint-check": "eslint --max-warnings 0 .",
         "prepare": "pnpm run build",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
-        "test": "npm run build && node --test 'test/**/*.test.mjs'",
+        "test": "vitest run",
+        "test:watch": "vitest",
         "tiles:pull-hexworld": "node scripts/pull-hexworld.ts",
         "watch": "tsc -p . --watch"
     },
@@ -73,10 +75,15 @@
         "@mapbox/vector-tile": "^2.0.3",
         "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
+        "@vitest/browser": "catalog:",
+        "@vitest/browser-playwright": "catalog:",
         "eslint": "catalog:",
         "pbf": "^4.0.1",
+        "playwright": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "lit": "^3.3.3",
@@ -101,31 +108,5 @@
             "onFail": "warn"
         }
     },
-    "prettier": "@goauthentik/prettier-config",
-    "publishConfig": {
-        "access": "public",
-        "exports": {
-            "./package.json": "./package.json",
-            ".": {
-                "types": "./src/index.ts",
-                "import": "./out/index.js"
-            },
-            "./hexworld": {
-                "types": "./src/hexworld/index.ts",
-                "import": "./out/hexworld/index.js"
-            },
-            "./shared": {
-                "types": "./src/shared/index.ts",
-                "import": "./out/shared/index.js"
-            },
-            "./style": {
-                "types": "./src/style.ts",
-                "import": "./out/style.js"
-            },
-            "./components/ak-map": {
-                "types": "./src/components/ak-map.ts",
-                "import": "./out/components/ak-map.js"
-            }
-        }
-    }
+    "prettier": "@goauthentik/prettier-config"
 }
