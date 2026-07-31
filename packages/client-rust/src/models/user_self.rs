@@ -27,6 +27,9 @@ pub struct UserSelf {
     pub is_active: bool,
     #[serde(rename = "is_superuser")]
     pub is_superuser: bool,
+    /// Return whether this user owns the current browser session.
+    #[serde(rename = "is_current")]
+    pub is_current: bool,
     #[serde(rename = "groups")]
     pub groups: Vec<models::UserSelfGroups>,
     #[serde(rename = "roles")]
@@ -56,6 +59,7 @@ impl UserSelf {
         name: String,
         is_active: bool,
         is_superuser: bool,
+        is_current: bool,
         groups: Vec<models::UserSelfGroups>,
         roles: Vec<models::UserSelfRoles>,
         avatar: String,
@@ -69,6 +73,7 @@ impl UserSelf {
             name,
             is_active,
             is_superuser,
+            is_current,
             groups,
             roles,
             email: None,

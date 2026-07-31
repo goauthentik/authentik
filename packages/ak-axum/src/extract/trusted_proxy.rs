@@ -87,7 +87,7 @@ mod test {
 
     #[test]
     fn ipv4_mapped_ipv6_matches_ipv4_cidr() {
-        config::init().unwrap();
+        config::init().expect("config");
         // IPv4-mapped IPv6 address within the IPv4 CIDR matches.
         let ip: IpAddr = "::ffff:10.2.0.229".parse().expect("valid IP");
         assert!(ip_addr_trusted(&ip).is_some());

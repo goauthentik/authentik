@@ -5435,6 +5435,11 @@
                     "format": "uuid",
                     "title": "Flow authentication"
                 },
+                "flow_user_switch": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow user switch"
+                },
                 "flow_invalidation": {
                     "type": "string",
                     "format": "uuid",
@@ -16282,11 +16287,6 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
-                },
-                "prevent_duplicate_devices": {
-                    "type": "boolean",
-                    "title": "Prevent duplicate devices",
-                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",

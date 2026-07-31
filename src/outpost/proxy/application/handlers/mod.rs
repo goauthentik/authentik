@@ -262,7 +262,7 @@ pub(super) async fn handle_auth_callback(
         let access_token = backchannel::exchange_code(
             &app.api_config.client,
             &app.endpoint.token_url,
-            app.token_host.as_deref(),
+            app.token_host.as_ref(),
             &code,
             &redirect_uri,
             client_id,
