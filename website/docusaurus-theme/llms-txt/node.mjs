@@ -182,7 +182,7 @@ export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true) {
+    if (frontMatter.draft) {
         return null;
     }
 
@@ -281,33 +281,6 @@ export function groupLabel(group, opts) {
 }
 
 /**
- * Resolve a site-relative path to its rendered route URL.
- *
- * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
- * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
- * @returns {string | undefined}
- */
-export function resolveDocumentUrl(relPathNoExt, routesPaths) {
-    if (!routesPaths || routesPaths.length === 0) return undefined;
-
-    // The root index page has the bare path "index" (no leading "/index" to
-    // strip), so it never suffix-matches a route. Map it to the site root.
-    if (relPathNoExt === "" || relPathNoExt === "index") {
-        return routesPaths.includes("/") ? "/" : undefined;
-    }
-
-    const tails = new Set([relPathNoExt]);
-    tails.add(collapseMatchingTrailingSegment(relPathNoExt));
-    tails.add(removeNumberedPrefixes(relPathNoExt));
-
-    for (const tail of tails) {
-        const match = findMatchingRoute(routesPaths, tail);
-        if (match) return match;
-    }
-    return undefined;
-}
-
-/**
  * @param {string} routeBasePath
  * @returns {string}
  */
@@ -361,4 +334,43 @@ export function resolveDocumentUrlFromSource(doc, routeBasePath) {
     }
 
     return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.path}`);
+}
+
+/**
+ * Resolve a document to its rendered route URL.
+ *
+ * Prefer the route declared by the document's source metadata, including a
+ * frontmatter slug override. Fall back to matching the source path for routes
+ * transformed by Docusaurus conventions such as numbered prefixes.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
+ * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
+ * @returns {string | undefined}
+ */
+export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {
+    if (!routesPaths || routesPaths.length === 0) return undefined;
+
+    const sourceRoute = resolveDocumentUrlFromSource(doc, routeBasePath);
+    const normalizedSourceRoute = trimTrailingSlashes(sourceRoute.toLowerCase());
+    const exactRoute = routesPaths.find(
+        (route) => trimTrailingSlashes(route.toLowerCase()) === normalizedSourceRoute,
+    );
+    if (exactRoute) return exactRoute;
+
+    // The root index page has the bare path "index" (no leading "/index" to
+    // strip), so it never suffix-matches a route. Map it to the site root.
+    if (doc.path === "" || doc.path === "index") {
+        return routesPaths.includes("/") ? "/" : undefined;
+    }
+
+    const tails = new Set([doc.path]);
+    tails.add(collapseMatchingTrailingSegment(doc.path));
+    tails.add(removeNumberedPrefixes(doc.path));
+
+    for (const tail of tails) {
+        const match = findMatchingRoute(routesPaths, tail);
+        if (match) return match;
+    }
+    return undefined;
 }
