@@ -27,6 +27,7 @@ CLDR
 Cloudflare
 DOTADIW
 Docsmg
+DTCG
 GDTC
 GHES
 GHSA
@@ -69,6 +70,7 @@ TOTP
 Transifex
 Unenrollment
 Unmigrate
+USWDS
 Wasabi
 Wsfed
 Xen
@@ -98,9 +100,13 @@ falsey
 frie
 gcsp
 geoip
+geojson
+geojsonl
 glpi
 gosaml
 grecaptcha
+hasc
+hexworld
 guac
 guacd
 gunicorn
@@ -121,6 +127,10 @@ mcomplete
 mermaidjs
 microsoft
 mmdb
+lngs
+lons
+maplibre
+maplibregl
 noopener
 noreferrer
 ocsp
@@ -130,7 +140,9 @@ ouia
 ouid
 peap
 pkce
+pmtiles
 plex
+protomaps
 postgresstore
 proxyv
 psso
@@ -155,6 +167,7 @@ stringly
 sysd
 tdialector
 templatize
+tippecanoe
 tgcsp
 tguacd
 tgunicorn

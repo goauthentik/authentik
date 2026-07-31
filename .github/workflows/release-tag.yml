@@ -223,6 +223,7 @@ jobs:
     name: Pre-release test
     runs-on: ubuntu-latest
     needs:
+      - check-inputs
       - bump-version
       - build-container
     steps:
@@ -239,6 +240,7 @@ jobs:
           ref: "${{ needs.bump-version.outputs.release-commit }}"
       - name: Run test in Docker
         env:
+          COMPOSE_PROJECT_NAME: authentik-release-test
           AUTHENTIK_IMAGE: authentik.invalid/goauthentik/server
           AUTHENTIK_TAG: "${{ needs.check-inputs.outputs.version }}"
         run: ./scripts/test_docker.sh
@@ -273,7 +275,6 @@ jobs:
           # ID from https://api.github.com/users/authentik-automation[bot]
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
-          git pull
           git tag "version/${{ needs.check-inputs.outputs.version }}" "${{ needs.bump-version.outputs.release-commit }}" -m "version/${{ needs.check-inputs.outputs.version }}"
           git push --tags
       - name: Create metadata file
