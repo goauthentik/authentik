@@ -42,7 +42,7 @@ The authentik Agent requires an OAuth application/provider pair to handle authen
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
+            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes.
     - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/bindings-overview/index.md) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
