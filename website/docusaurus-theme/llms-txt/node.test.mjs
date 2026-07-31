@@ -37,6 +37,7 @@ test("collectDocFiles finds md and mdx, excludes partials", () => {
     const rels = files.map((f) => f.slice(normalizePath(FIXTURE).length + 1)).sort();
     assert.deepEqual(rels, [
         "index.mdx",
+        "releases/2026/v2026.5.md",
         "topic-a/index.mdx",
         "topic-a/page-one.md",
         "topic-b/page-two.mdx",
@@ -111,22 +112,36 @@ test("parseDocFile strips inline links/emphasis and keeps the first sentence", (
 const ROUTES = ["/", "/topic-a/", "/topic-a/page-one/", "/topic-b/page-two/"];
 
 test("resolveDocumentUrl matches a route by suffix", () => {
-    assert.equal(resolveDocumentUrl("topic-a/page-one", ROUTES), "/topic-a/page-one/");
+    assert.equal(
+        resolveDocumentUrl(testDoc("topic-a/page-one"), "/", ROUTES),
+        "/topic-a/page-one/",
+    );
 });
 
 test("resolveDocumentUrl strips numbered prefixes", () => {
-    assert.equal(resolveDocumentUrl("topic-a/01-page-one", ROUTES), "/topic-a/page-one/");
+    assert.equal(
+        resolveDocumentUrl(testDoc("topic-a/01-page-one"), "/", ROUTES),
+        "/topic-a/page-one/",
+    );
+});
+
+test("resolveDocumentUrl honors frontmatter slug overrides", () => {
+    const routes = [...ROUTES, "/releases/2026.5/"];
+    assert.equal(
+        resolveDocumentUrl(testDoc("releases/2026/v2026.5", "/releases/2026.5"), "/", routes),
+        "/releases/2026.5/",
+    );
 });
 
 test("resolveDocumentUrl returns undefined when no route matches", () => {
-    assert.equal(resolveDocumentUrl("missing/page", ROUTES), undefined);
+    assert.equal(resolveDocumentUrl(testDoc("missing/page"), "/", ROUTES), undefined);
 });
 
 test("resolveDocumentUrl maps the root index page to /", () => {
     // The site's index.mdx has no trailing "/index" to strip, so its path is the
     // bare "index" — it must still resolve to the site root route.
-    assert.equal(resolveDocumentUrl("index", ROUTES), "/");
-    assert.equal(resolveDocumentUrl("", ROUTES), "/");
+    assert.equal(resolveDocumentUrl(testDoc("index"), "/", ROUTES), "/");
+    assert.equal(resolveDocumentUrl(testDoc(""), "/", ROUTES), "/");
 });
 
 test("resolveDocumentUrlFromSource maps routeBasePath and index pages", () => {
