@@ -52,7 +52,7 @@ To support the integration of Audiobookshelf with authentik, you need to create 
 2. Navigate to **Settings** > **Authentication** and enable **OpenID Connect Authentication**.
 3. Configure the following settings:
     - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
-    - Click **Auto-populate** to load the provider endpoints and supported signing algorithm from authentik.
+    - Click **Auto-populate**. Audiobookshelf fills the required **Authorize URL**, **Token URL**, **Userinfo URL**, **JWKS URL**, and **Signing Algorithm** fields from authentik's OIDC discovery document. It also fills the optional **Logout URL** field.
     - **Client ID**: enter the **Client ID** from authentik.
     - **Client Secret**: enter the **Client Secret** from authentik.
 4. Click **Save** and restart Audiobookshelf.
