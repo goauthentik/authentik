@@ -7,6 +7,7 @@ import { aki } from "#common/api/client";
 import { docLink, globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { paramURL } from "#elements/router/RouterOutlet";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -127,7 +128,7 @@ export class AKFileSearchInput extends AKElement {
                     class="pf-c-button pf-m-control"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href=${`${globalAK().api.base}if/admin/#/files`}
+                    href=${`${globalAK().api.base}if/admin/${paramURL("/files", { upload: true })}`}
                     aria-label=${uploadLabel}
                     title=${uploadLabel}
                 >

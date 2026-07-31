@@ -1,4 +1,3 @@
-import "#admin/files/FileUploadForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -10,14 +9,17 @@ import { createPaginatedResponse } from "#common/api/responses";
 import { docLink } from "#common/global";
 
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { FileUploadForm } from "#admin/files/FileUploadForm";
+
 import { AdminApi, CapabilitiesEnum, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, nothing, PropertyValues, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export interface FileItem {
@@ -41,6 +43,19 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileItem>) {
 
     @property({ type: String, useDefault: true })
     public order: FileListOrderKey = "name";
+
+    public override firstUpdated(changed: PropertyValues<this>): void {
+        super.firstUpdated(changed);
+
+        if (!getURLParam("upload", false) || !this.can(CapabilitiesEnum.CanSaveMedia)) {
+            return;
+        }
+
+        const uploadForm = new FileUploadForm();
+        uploadForm.headline = msg("Upload File");
+        uploadForm.submitLabel = msg("Upload");
+        uploadForm.showModal().then(() => this.fetch());
+    }
 
     async apiEndpoint(): Promise<PaginatedResponse<FileItem>> {
         const api = aki(AdminApi);
