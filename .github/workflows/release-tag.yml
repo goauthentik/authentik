@@ -125,7 +125,7 @@ jobs:
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
       image-build-args: |
         VERSION=${{ needs.check-inputs.outputs.version }}
-  build-binaries:
+  build-go-binaries:
     needs:
       - bump-version
     timeout-minutes: 120
@@ -137,7 +137,6 @@ jobs:
       fail-fast: false
       matrix:
         type:
-          - proxy
           - ldap
           - radius
         goos: [linux, darwin]
@@ -171,6 +170,55 @@ jobs:
           if-no-files-found: error
           retention-days: 2
           include-hidden-files: true
+  build-rust-binaries:
+    needs:
+      - bump-version
+    timeout-minutes: 120
+    permissions:
+      # Needed for checkout
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+        target:
+          - triple: x86_64-unknown-linux-gnu
+            runs-on: ubuntu-latest
+          - triple: aarch64-unknown-linux-gnu
+            runs-on: ubuntu-24.04-arm
+          - triple: x86_64-apple-darwin
+            runs-on: macos-15-intel
+          - triple: aarch64-apple-darwin
+            runs-on: macos-latest
+    runs-on: "${{ matrix.target.runs-on }}"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          ref: "${{ needs.bump-version.outputs.release-commit }}"
+      - name: Setup rust
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1
+        with:
+          rustflags: ""
+          target: "${{ matrix.target.triple }}"
+      - name: Setup go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+          cache: false
+      - name: Build outpost
+        run: |
+          set -x
+          mkdir -p build/binaries/
+          cargo build --package authentik --no-default-features --features "${{ matrix.type }}" --locked --release --target "${{ matrix.target.triple }}"
+          cp "./target/${{ matrix.target.triple }}/release/authentik" "build/binaries/authentik-outpost-${{ matrix.type }}-${{ matrix.target.triple }}"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
+        with:
+          name: "binaries-build-${{ matrix.type }}-${{ matrix.target.triple }}"
+          path: build/
+          if-no-files-found: error
+          retention-days: 2
+          include-hidden-files: true
   test:
     name: Pre-release test
     runs-on: ubuntu-latest
@@ -200,7 +248,8 @@ jobs:
       - check-inputs
       - bump-version
       - build-container
-      - build-binaries
+      - build-go-binaries
+      - build-rust-binaries
       - test
     runs-on: ubuntu-latest
     steps:

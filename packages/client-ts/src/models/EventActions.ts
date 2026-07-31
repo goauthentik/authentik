@@ -21,6 +21,7 @@ export const EventActions = {
     LoginFailed: "login_failed",
     Logout: "logout",
     UserWrite: "user_write",
+    UserOffboarded: "user_offboarded",
     SuspiciousRequest: "suspicious_request",
     PasswordSet: "password_set",
     SecretView: "secret_view",
@@ -49,6 +50,10 @@ export const EventActions = {
     ReviewOverdue: "review_overdue",
     ReviewAttested: "review_attested",
     ReviewCompleted: "review_completed",
+    AccessRequestCreated: "access_request_created",
+    AccessRequestApproved: "access_request_approved",
+    AccessRequestDenied: "access_request_denied",
+    AccessRequestRevoked: "access_request_revoked",
     Custom: "custom_",
     UnknownDefaultOpenApi: "11184809",
 } as const;

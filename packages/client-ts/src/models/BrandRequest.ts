@@ -71,6 +71,12 @@ export interface BrandRequest {
      * @type {string}
      * @memberof BrandRequest
      */
+    flowUserSwitch?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof BrandRequest
+     */
     flowInvalidation?: string | null;
     /**
      *
@@ -102,6 +108,12 @@ export interface BrandRequest {
      * @memberof BrandRequest
      */
     flowLockdown?: string | null;
+    /**
+     *
+     * @type {string}
+     * @memberof BrandRequest
+     */
+    flowRequest?: string | null;
     /**
      * When set, external users will be redirected to this application after authenticating.
      * @type {string}
@@ -162,6 +174,12 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["flow_authentication"] === null
                   ? null
                   : json["flow_authentication"],
+        flowUserSwitch:
+            json["flow_user_switch"] === undefined
+                ? undefined
+                : json["flow_user_switch"] === null
+                  ? null
+                  : json["flow_user_switch"],
         flowInvalidation:
             json["flow_invalidation"] === undefined
                 ? undefined
@@ -198,6 +216,12 @@ export function BrandRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["flow_lockdown"] === null
                   ? null
                   : json["flow_lockdown"],
+        flowRequest:
+            json["flow_request"] === undefined
+                ? undefined
+                : json["flow_request"] === null
+                  ? null
+                  : json["flow_request"],
         defaultApplication:
             json["default_application"] === undefined
                 ? undefined
@@ -237,12 +261,14 @@ export function BrandRequestToJSONTyped(
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
         flow_authentication: value["flowAuthentication"],
+        flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
+        flow_request: value["flowRequest"],
         default_application: value["defaultApplication"],
         web_certificate: value["webCertificate"],
         client_certificates: value["clientCertificates"],
