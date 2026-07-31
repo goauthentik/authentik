@@ -312,11 +312,20 @@ mod tests {
 
         assert_eq!(response.status(), StatusCode::PARTIAL_CONTENT);
         assert_eq!(
-            response.headers().get(CONTENT_RANGE).unwrap(),
+            response
+                .headers()
+                .get(CONTENT_RANGE)
+                .expect("missing Content-Range"),
             "bytes 0-15/4096"
         );
         // A compressed 206 would describe the encoded length, not the range.
-        assert_eq!(response.headers().get(CONTENT_LENGTH).unwrap(), "16");
+        assert_eq!(
+            response
+                .headers()
+                .get(CONTENT_LENGTH)
+                .expect("missing Content-Length"),
+            "16"
+        );
         assert!(
             response.headers().get(CONTENT_ENCODING).is_none(),
             "ranged response must not be re-encoded"
@@ -346,6 +355,12 @@ mod tests {
             .expect("request failed");
 
         assert_eq!(response.status(), StatusCode::OK);
-        assert_eq!(response.headers().get(CONTENT_ENCODING).unwrap(), "gzip");
+        assert_eq!(
+            response
+                .headers()
+                .get(CONTENT_ENCODING)
+                .expect("missing Content-Encoding"),
+            "gzip"
+        );
     }
 }
