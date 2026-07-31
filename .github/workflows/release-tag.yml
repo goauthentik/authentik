@@ -148,13 +148,6 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: "go.mod"
-      - uses: ./.github/actions/setup-node
-        with:
-          working-directory: web
-      - name: Build web
-        working-directory: web/
-        run: |
-          npm run build-proxy
       - name: Build outpost
         run: |
           set -x
