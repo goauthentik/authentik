@@ -15,3 +15,55 @@ git:
       source_file: locale/en/LC_MESSAGES/django.po
       # path expression to translation files, must contain <lang> placeholder
       translation_files_expression: "locale/<lang>/LC_MESSAGES/django.po"
+
+settings:
+  # Maps Transifex's own language codes onto authentik's canonical BCP-47 tags,
+  # so translations land on paths lit-localize actually reads. The mapping is
+  # global, so the PO filter above receives hyphenated directory names that
+  # Django cannot resolve; `make locales-normalize` renames them.
+  #
+  # Derived from locales.yaml — run `make gen-locales`, do not edit by hand.
+  language_mapping:
+    # <generated:language-mapping>
+    ar_AA: ar
+    bg_BG: bg-BG
+    bn_BD: bn-BD
+    ca_ES: ca-ES
+    cs_CZ: cs-CZ
+    cy_GB: cy-GB
+    da_DK: da-DK
+    de_DE: de-DE
+    el_GR: el-GR
+    en: en
+    es_ES: es-ES
+    eu_ES: eu-ES
+    fa_IR: fa-IR
+    fi_FI: fi-FI
+    fr_FR: fr-FR
+    gl_ES: gl-ES
+    hr_HR: hr-HR
+    hu_HU: hu-HU
+    it_IT: it-IT
+    ja_JP: ja-JP
+    ka_GE: ka-GE
+    ko_KR: ko-KR
+    lt_LT: lt-LT
+    lv_LV: lv-LV
+    ms_MY: ms-MY
+    nl_NL: nl-NL
+    no_NO: nb-NO
+    pl_PL: pl-PL
+    pt_BR: pt-BR
+    pt_PT: pt-PT
+    ro_RO: ro-RO
+    ru_RU: ru-RU
+    sk_SK: sk-SK
+    sl_SI: sl-SI
+    sv_SE: sv-SE
+    th_TH: th-TH
+    tr_TR: tr-TR
+    uk_UA: uk-UA
+    vi_VN: vi-VN
+    zh-Hans: zh-Hans
+    zh-Hant: zh-Hant
+    # </generated:language-mapping>

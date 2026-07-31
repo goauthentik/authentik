@@ -107,6 +107,16 @@ endif
 migrate: ## Run the Authentik Django server's migrations
 	$(UV) run python -m lifecycle.migrate
 
+gen-locales:  ## Regenerate everything derived from the locale registry (locales.yaml)
+	$(UV) run python scripts/generate_locales.py
+
+locales-normalize:  ## Move locale files onto the canonical paths in locales.yaml
+	$(UV) run python scripts/normalize_locales.py
+
+locales-check:  ## Report locale files that are misplaced or out of sync with locales.yaml
+	$(UV) run python scripts/normalize_locales.py --check
+	$(UV) run python scripts/generate_locales.py --check
+
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn: node-install
@@ -365,6 +375,10 @@ ci-lint-clippy: ci--meta-debug
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-locales: ci--meta-debug
+	$(UV) run python scripts/normalize_locales.py --check
+	$(UV) run python scripts/generate_locales.py --check
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik

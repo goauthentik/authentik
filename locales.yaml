@@ -1,0 +1,236 @@
+# Canonical locale registry for authentik.
+#
+# This file is the source of truth for every language authentik knows about.
+# Transifex cannot widen the set: CI rejects any locale file whose path does not
+# correspond to a row here.
+#
+# Fields
+#   tag        BCP-47 identity. Names web/xliff/<tag>.xlf and, when shipped, the
+#              lit-localize targetLocale.
+#   django     Directory under locale/. Must equal Django's to_locale(tag), which
+#              a test enforces. null for frontend-only locales.
+#   transifex  The language code Transifex uses upstream. Generates the global
+#              settings.language_mapping in .github/transifex.yml, which is what
+#              makes Transifex write canonical filenames. null when the locale is
+#              not translated upstream.
+#   ship       Whether the tag is emitted into web/lit-localize.json targetLocales.
+#              A false row is known but not built: its files pass CI, no locale
+#              module is generated, and users never see it in the picker.
+#
+# Do not hand-edit web/lit-localize.json, web/src/common/ui/locale/definitions.ts,
+# or the language_mapping block in .github/transifex.yml. Edit this file and run
+# `make gen-locales`.
+#
+# Adding a language: add the row, run `make gen-locales`, commit the result.
+# Promoting one: flip ship to true and regenerate.
+
+locales:
+  - tag: ar
+    django: ar
+    transifex: ar_AA # upstream uses a private-use region; the plain tag is canonical
+    ship: true
+
+  - tag: bg-BG
+    django: bg_BG
+    transifex: bg_BG
+    ship: true
+
+  - tag: bn-BD
+    django: bn_BD
+    transifex: bn_BD
+    ship: true
+
+  - tag: ca-ES
+    django: ca_ES
+    transifex: ca_ES
+    ship: false
+
+  - tag: cs-CZ
+    django: cs_CZ
+    transifex: cs_CZ
+    ship: true
+
+  - tag: cy-GB
+    django: cy_GB
+    transifex: cy_GB
+    ship: true
+
+  - tag: da-DK
+    django: da_DK
+    transifex: da_DK
+    ship: false
+
+  - tag: de-DE
+    django: de_DE
+    transifex: de_DE
+    ship: true
+
+  - tag: el-GR
+    django: el_GR
+    transifex: el_GR
+    ship: false
+
+  - tag: en
+    django: en
+    transifex: en # source language
+    ship: true
+
+  - tag: en-XA
+    django: null # pseudo-locale: no backend catalog
+    transifex: null # generated locally, never translated upstream
+    ship: true
+
+  - tag: es-ES
+    django: es_ES
+    transifex: es_ES
+    ship: true
+
+  - tag: eu-ES
+    django: eu_ES
+    transifex: eu_ES
+    ship: false
+
+  - tag: fa-IR
+    django: fa_IR
+    transifex: fa_IR
+    ship: false
+
+  - tag: fi-FI
+    django: fi_FI
+    transifex: fi_FI
+    ship: true
+
+  - tag: fr-FR
+    django: fr_FR
+    transifex: fr_FR
+    ship: true
+
+  - tag: gl-ES
+    django: gl_ES
+    transifex: gl_ES
+    ship: false
+
+  - tag: hr-HR
+    django: hr_HR
+    transifex: hr_HR
+    ship: true
+
+  - tag: hu-HU
+    django: hu_HU
+    transifex: hu_HU
+    ship: true
+
+  - tag: it-IT
+    django: it_IT
+    transifex: it_IT
+    ship: true
+
+  - tag: ja-JP
+    django: ja_JP
+    transifex: ja_JP
+    ship: true
+
+  - tag: ka-GE
+    django: ka_GE
+    transifex: ka_GE
+    ship: false
+
+  - tag: ko-KR
+    django: ko_KR
+    transifex: ko_KR
+    ship: true
+
+  - tag: lt-LT
+    django: lt_LT
+    transifex: lt_LT
+    ship: false
+
+  - tag: lv-LV
+    django: lv_LV
+    transifex: lv_LV
+    ship: false
+
+  - tag: ms-MY
+    django: ms_MY
+    transifex: ms_MY
+    ship: false
+
+  - tag: nb-NO
+    django: nb_NO
+    transifex: no_NO # upstream tracks this as Norwegian; the content is Bokmal
+    ship: true
+
+  - tag: nl-NL
+    django: nl_NL
+    transifex: nl_NL
+    ship: true
+
+  - tag: pl-PL
+    django: pl_PL
+    transifex: pl_PL
+    ship: true
+
+  - tag: pt-BR
+    django: pt_BR
+    transifex: pt_BR
+    ship: true
+
+  - tag: pt-PT
+    django: pt_PT
+    transifex: pt_PT
+    ship: true
+
+  - tag: ro-RO
+    django: ro_RO
+    transifex: ro_RO
+    ship: false
+
+  - tag: ru-RU
+    django: ru_RU
+    transifex: ru_RU
+    ship: true
+
+  - tag: sk-SK
+    django: sk_SK
+    transifex: sk_SK
+    ship: true
+
+  - tag: sl-SI
+    django: sl_SI
+    transifex: sl_SI
+    ship: false
+
+  - tag: sv-SE
+    django: sv_SE
+    transifex: sv_SE
+    ship: false
+
+  - tag: th-TH
+    django: th_TH
+    transifex: th_TH
+    ship: false
+
+  - tag: tr-TR
+    django: tr_TR
+    transifex: tr_TR
+    ship: true
+
+  - tag: uk-UA
+    django: uk_UA
+    transifex: uk_UA
+    ship: false
+
+  - tag: vi-VN
+    django: vi_VN
+    transifex: vi_VN
+    ship: false
+
+  - tag: zh-Hans
+    django: zh_Hans
+    transifex: zh-Hans # upstream is hyphenated for the Chinese scripts
+    ship: true
+
+  - tag: zh-Hant
+    django: zh_Hant
+    transifex: zh-Hant
+    ship: true

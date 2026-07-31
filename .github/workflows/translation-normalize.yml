@@ -1,0 +1,61 @@
+---
+name: Translation - Normalize locale paths
+
+# Transifex's language_mapping is global, so the PO filter writes hyphenated
+# directory names that Django cannot resolve. This moves them onto canonical
+# paths and pushes the fix back to the pull request, so a translation PR is
+# correct before a human looks at it.
+#
+# `ci-lint-locales` in ci-main.yml verifies the result. If Transifex force-pushes
+# over this commit on a later sync, that check fails the PR rather than letting a
+# bad merge through.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - version-*
+    paths:
+      - "locale/**"
+      - "web/xliff/**"
+      - "locales.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    # A fork's branch cannot be pushed to. The lint job still gates those.
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    steps:
+      - id: generate_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v2
+        with:
+          client-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIV_KEY }}
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          # An app token, unlike GITHUB_TOKEN, retriggers checks on push.
+          token: ${{ steps.generate_token.outputs.token }}
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: Normalize locale paths
+        id: normalize
+        run: |
+          uv run python scripts/normalize_locales.py
+          uv run python scripts/generate_locales.py
+      - name: Recompile catalogs
+        run: uv run ak compilemessages
+      - name: Commit
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Locale files were already canonical."
+            exit 0
+          fi
+          git config user.name "authentik-automation[bot]"
+          git config user.email "135050075+authentik-automation[bot]@users.noreply.github.com"
+          git add locale web/xliff .github/transifex.yml web/lit-localize.json web/src
+          git commit --signoff -m "core, web: normalize locale paths"
+          git push
