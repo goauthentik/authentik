@@ -45,9 +45,7 @@ def cleanse_item(key: str, value: Any) -> Any:
     if isinstance(value, dict):
         return cleanse_dict(value)
     if isinstance(value, list | tuple | set):
-        for idx, item in enumerate(value):
-            value[idx] = cleanse_item(key, item)
-        return value
+        return type(value)(cleanse_item(key, item) for item in value)
     try:
         if not SafeExceptionReporterFilter.hidden_settings.search(key):
             return value

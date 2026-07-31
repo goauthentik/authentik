@@ -30,7 +30,7 @@ import { AKLabel } from "#components/ak-label";
 import {
     ClientTypeEnum,
     FlowDesignationEnum,
-    GrantTypesEnum,
+    GrantTypeEnum,
     IssuerModeEnum,
     MatchingModeEnum,
     OAuth2Provider,
@@ -134,25 +134,25 @@ const redirectUriHelpMessages: string[] = [
 ];
 
 const grantTypes = [
-    [GrantTypesEnum.AuthorizationCode, msg("Authorization Code")],
-    [GrantTypesEnum.Implicit, msg("Implicit")],
-    [GrantTypesEnum.Hybrid, msg("Hybrid")],
-    [GrantTypesEnum.RefreshToken, msg("Refresh token")],
-    [GrantTypesEnum.ClientCredentials, msg("Client credentials")],
-    [GrantTypesEnum.Password, msg("Password")],
-    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
-    [GrantTypesEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
+    [GrantTypeEnum.AuthorizationCode, msg("Authorization Code")],
+    [GrantTypeEnum.Implicit, msg("Implicit")],
+    [GrantTypeEnum.Hybrid, msg("Hybrid")],
+    [GrantTypeEnum.RefreshToken, msg("Refresh token")],
+    [GrantTypeEnum.ClientCredentials, msg("Client credentials")],
+    [GrantTypeEnum.Password, msg("Password")],
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode, msg("Device-code")],
+    [GrantTypeEnum.UrnIetfParamsOauthGrantTypeTokenExchange, msg("Token exchange")],
 ];
 
 const defaultGrantTypes = [
     // TODO: Clean up defaults after 2026
-    GrantTypesEnum.AuthorizationCode,
-    GrantTypesEnum.Implicit,
-    GrantTypesEnum.Hybrid,
-    GrantTypesEnum.RefreshToken,
-    GrantTypesEnum.ClientCredentials,
-    GrantTypesEnum.Password,
-    GrantTypesEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
+    GrantTypeEnum.AuthorizationCode,
+    GrantTypeEnum.Implicit,
+    GrantTypeEnum.Hybrid,
+    GrantTypeEnum.RefreshToken,
+    GrantTypeEnum.ClientCredentials,
+    GrantTypeEnum.Password,
+    GrantTypeEnum.UrnIetfParamsOauthGrantTypeDeviceCode,
 ];
 
 type ShowClientSecret = (show: boolean) => void;

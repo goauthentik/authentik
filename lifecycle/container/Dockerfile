@@ -46,46 +46,6 @@ COPY ./website /work/website/
 RUN pnpm run build && \
     pnpm run build:sfe
 
-# Stage: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:c048f885615f96feb36c94ec97648dd8cb752e0a5158cf9affcb95d326a0214d AS go-builder
-
-ARG TARGETOS
-ARG TARGETARCH
-ARG TARGETVARIANT
-
-ARG GOOS=$TARGETOS
-ARG GOARCH=$TARGETARCH
-
-WORKDIR /go/src/goauthentik.io
-
-RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
-    dpkg --add-architecture arm64 && \
-    dpkg --add-architecture amd64 && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu crossbuild-essential-amd64 gcc-x86-64-linux-gnu
-
-RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=cache,target=/go/pkg/mod \
-    go mod download
-
-COPY ./cmd /go/src/goauthentik.io/cmd
-COPY ./authentik/lib /go/src/goauthentik.io/authentik/lib
-COPY ./web/static.go /go/src/goauthentik.io/web/static.go
-COPY --from=node-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
-COPY --from=node-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
-COPY ./internal /go/src/goauthentik.io/internal
-COPY ./go.mod /go/src/goauthentik.io/go.mod
-COPY ./go.sum /go/src/goauthentik.io/go.sum
-COPY ./packages/client-go /go/src/goauthentik.io/packages/client-go
-
-RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
-    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    if [ "$TARGETARCH" = "arm64" ] && [ "$(uname -m)" != "aarch64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    if [ "$TARGETARCH" = "amd64" ] && [ "$(uname -m)" != "x86_64" ]; then export CC=x86_64-linux-gnu-gcc; fi && \
-    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
-    go build -o /go/authentik-server ./cmd/server
-
 # Stage: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v8.0.0@sha256:51e70dd6f16cd3e4d845ac02d09940b10772a75b9d741427d235a78570923c1d AS geoip
 
@@ -119,12 +79,10 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     rustc --version && \
     cargo --version
 
-RUN cat /root/.rustup/settings.toml
-
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:c9329b5962a858a55c8de7f35dd86d6f2046148a6cf03a8d92a215641dbdf6db AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.6-slim-trixie-fips@sha256:8f74e4ea555886059f01da6244878417b38623bc53e0ad5a2add6ab0787b70af AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -160,6 +118,10 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     cmake clang golang
 # See https://github.com/aws/aws-lc-rs/issues/569
 ENV AWS_LC_FIPS_SYS_CC=clang
+
+COPY --from=node-builder /work/web/robots.txt /build/web/robots.txt
+COPY --from=node-builder /work/web/security.txt /build/web/security.txt
+COPY --from=node-builder /work/web/dist/standalone/loading/startup.html /build/web/dist/standalone/loading/startup.html
 
 RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     --mount=type=bind,target=Cargo.toml,src=Cargo.toml \
@@ -270,7 +232,6 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=rust-builder /bin/authentik /bin/authentik
-COPY --from=go-builder /go/authentik-server /bin/authentik-server
 COPY ./packages/ /ak-root/packages
 RUN  ln -s /ak-root/packages /packages
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
@@ -283,7 +244,8 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    GOFIPS=1
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 

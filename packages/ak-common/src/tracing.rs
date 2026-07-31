@@ -4,10 +4,32 @@ use tracing_error::ErrorLayer;
 use tracing_subscriber::{
     filter::EnvFilter,
     fmt::{self, time::LocalTime},
+    layer::Layer as _,
     prelude::*,
+    reload,
 };
 
 use crate::config;
+
+pub fn make_filter_layer(log_level: &str) -> Result<EnvFilter> {
+    let mut filter_layer = EnvFilter::builder()
+        .with_default_directive(log_level.parse()?)
+        .parse(log_level)?;
+    for (k, v) in &config::get().log.rust_log {
+        filter_layer = filter_layer.add_directive(format!("{k}={v}").parse()?);
+    }
+    Ok(filter_layer)
+}
+
+/// Handle for changing the log level of the installed subscriber.
+pub struct LogFilterHandle(Box<dyn Fn(EnvFilter) -> Result<()> + Send + Sync>);
+
+impl LogFilterHandle {
+    /// Replace the current log filter with one built from `log_level`.
+    pub fn set_log_level(&self, log_level: &str) -> Result<()> {
+        (self.0)(make_filter_layer(log_level)?)
+    }
+}
 
 /// Install a tracing subscriber for watching tracing events.
 ///
@@ -16,18 +38,13 @@ use crate::config;
 ///
 /// This method depends on the [`config`] and [`sentry`] being initialized. For logging before that
 /// happens, see [`install_crude`].
-pub fn install() -> Result<()> {
+pub fn install() -> Result<LogFilterHandle> {
     let config = config::get();
 
     let time_format =
         format_description!("[year]-[month]-[day]T[hour]:[minute]:[second].[subsecond digits:6]");
 
-    let mut filter_layer = EnvFilter::builder()
-        .with_default_directive(config.log_level.parse()?)
-        .parse(&config.log_level)?;
-    for (k, v) in &config.log.rust_log {
-        filter_layer = filter_layer.add_directive(format!("{k}={v}").parse()?);
-    }
+    let (filter_layer, reload_handle) = reload::Layer::new(make_filter_layer(&config.log_level)?);
 
     let console_layer = config.listen.debug_tokio.map(|listen| {
         console_subscriber::ConsoleLayer::builder()
@@ -64,7 +81,10 @@ pub fn install() -> Result<()> {
             .init();
     }
 
-    Ok(())
+    Ok(LogFilterHandle(Box::new(move |filter| {
+        reload_handle.reload(filter)?;
+        Ok(())
+    })))
 }
 
 /// Install a very basic tracing subscriber until a fully-featured one can be installed.
@@ -191,11 +211,8 @@ pub mod sentry {
             environment: config.environment,
             send_pii: config.send_pii,
             #[expect(
-                clippy::cast_possible_truncation,
-                reason = "This is fine, we'll never get big values here."
-            )]
-            #[expect(
                 clippy::as_conversions,
+                clippy::cast_possible_truncation,
                 reason = "This is fine, we'll never get big values here."
             )]
             sample_rate: config.traces_sample_rate as f32,

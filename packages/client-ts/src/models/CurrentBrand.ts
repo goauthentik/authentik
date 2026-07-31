@@ -92,6 +92,12 @@ export interface CurrentBrand {
      * @type {string}
      * @memberof CurrentBrand
      */
+    flowUserSwitch?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof CurrentBrand
+     */
     flowInvalidation?: string;
     /**
      *
@@ -123,6 +129,12 @@ export interface CurrentBrand {
      * @memberof CurrentBrand
      */
     flowLockdown?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof CurrentBrand
+     */
+    flowRequest?: string;
     /**
      *
      * @type {string}
@@ -235,6 +247,7 @@ export function CurrentBrandFromJSONTyped(json: any, ignoreDiscriminator: boolea
         uiTheme: UiThemeEnumFromJSON(json["ui_theme"]),
         flowAuthentication:
             json["flow_authentication"] == null ? undefined : json["flow_authentication"],
+        flowUserSwitch: json["flow_user_switch"] == null ? undefined : json["flow_user_switch"],
         flowInvalidation: json["flow_invalidation"] == null ? undefined : json["flow_invalidation"],
         flowRecovery: json["flow_recovery"] == null ? undefined : json["flow_recovery"],
         flowUnenrollment: json["flow_unenrollment"] == null ? undefined : json["flow_unenrollment"],
@@ -242,6 +255,7 @@ export function CurrentBrandFromJSONTyped(json: any, ignoreDiscriminator: boolea
             json["flow_user_settings"] == null ? undefined : json["flow_user_settings"],
         flowDeviceCode: json["flow_device_code"] == null ? undefined : json["flow_device_code"],
         flowLockdown: json["flow_lockdown"] == null ? undefined : json["flow_lockdown"],
+        flowRequest: json["flow_request"] == null ? undefined : json["flow_request"],
         defaultLocale: json["default_locale"],
         flags: CurrentBrandFlagsFromJSON(json["flags"]),
     };
@@ -273,12 +287,14 @@ export function CurrentBrandToJSONTyped(
         branding_favicon: value["brandingFavicon"],
         branding_custom_css: value["brandingCustomCss"],
         flow_authentication: value["flowAuthentication"],
+        flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
         flow_recovery: value["flowRecovery"],
         flow_unenrollment: value["flowUnenrollment"],
         flow_user_settings: value["flowUserSettings"],
         flow_device_code: value["flowDeviceCode"],
         flow_lockdown: value["flowLockdown"],
+        flow_request: value["flowRequest"],
         flags: CurrentBrandFlagsToJSON(value["flags"]),
     };
 }

@@ -40,6 +40,8 @@ SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 SCOPE_OFFLINE_ACCESS = "offline_access"
 SCOPE_BOUND_KEY = "bound_key"
+SCOPE_AUTHENTIK_API = "goauthentik.io/api"
+SCOPE_AUTHENTIK_DCR = "goauthentik.io/oidc/dcr"
 
 UI_LOCALES = "ui_locales"
 
@@ -49,8 +51,6 @@ PKCE_METHOD_S256 = "S256"
 
 TOKEN_TYPE = "Bearer"  # nosec
 JWT_TYPE_DPOP_ID_TOKEN = "dpop+id_token"
-
-SCOPE_AUTHENTIK_API = "goauthentik.io/api"
 
 # URI schemes that are forbidden for redirect URIs
 FORBIDDEN_URI_SCHEMES = {"javascript", "data", "vbscript"}

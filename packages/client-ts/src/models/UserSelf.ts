@@ -56,6 +56,12 @@ export interface UserSelf {
      */
     readonly isSuperuser: boolean;
     /**
+     * Return whether this user owns the current browser session.
+     * @type {boolean}
+     * @memberof UserSelf
+     */
+    readonly isCurrent: boolean;
+    /**
      *
      * @type {Array<UserSelfGroups>}
      * @memberof UserSelf
@@ -126,6 +132,13 @@ export function instanceOfUserSelf(value: object): value is UserSelf {
             (value as Record<string, any>)["is_superuser"] === undefined)
     )
         return false;
+    if (
+        (!("isCurrent" in (value as Record<string, any>)) &&
+            !("is_current" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["isCurrent"] === undefined &&
+            (value as Record<string, any>)["is_current"] === undefined)
+    )
+        return false;
     if (!("groups" in value) || value["groups"] === undefined) return false;
     if (!("roles" in value) || value["roles"] === undefined) return false;
     if (!("avatar" in value) || value["avatar"] === undefined) return false;
@@ -155,6 +168,7 @@ export function UserSelfFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         name: json["name"],
         isActive: json["is_active"],
         isSuperuser: json["is_superuser"],
+        isCurrent: json["is_current"],
         groups: (json["groups"] as Array<any>).map(UserSelfGroupsFromJSON),
         roles: (json["roles"] as Array<any>).map(UserSelfRolesFromJSON),
         email: json["email"] == null ? undefined : json["email"],
@@ -176,6 +190,7 @@ export function UserSelfToJSONTyped(
         | "pk"
         | "isActive"
         | "isSuperuser"
+        | "isCurrent"
         | "groups"
         | "roles"
         | "avatar"
