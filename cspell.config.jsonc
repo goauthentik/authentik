@@ -211,7 +211,7 @@
         "Base64",
         "Email",
         "EncodedURI",
-        "FOUC",  // Flash Of Unstyled Content
+        "FOUC", // Flash Of Unstyled Content
         "HashStrings",
         "PublicKey",
         "RsaCert",
@@ -219,9 +219,9 @@
         "SshRsa",
         "UnicodeRef",
         "Urls",
-        "analyse-phase",  // And this is spelled the UK way, why?
+        "analyse-phase", // UK Spelling
         "href",
-        "lit-analyse" // And this is spelled the UK way, why?
+        "lit-analyse" // UK Spelling
     ],
     "languageSettings": [
         {
@@ -310,7 +310,7 @@
         "dist", // Distributed build output
         "coverage/**", // Coverage output
         ".env", // Environment files
-        "package-lock.json", // NPM package lock
+        "*.tsbuildinfo", // TypeScript build info
         "schema.yml", // OpenAPI schema
         "./blueprints/schema.json", // Generated blueprint schema
         "custom-elements.json", // TypeScript custom element definitions
@@ -335,6 +335,7 @@
         "*.stories.{ts,tsx}", // Storybook stories
         "*.min.{js,css}", // Minified JS and CSS files
         "*.min.{js,css}.map", // Source maps for minified files
+        "./web/src/styles/global/vendor/patternfly-fa-icons.css", // Tokens in comments
         //#region Python
         "pyproject.toml",
         "unittest.xml", // Pytest output
@@ -372,5 +373,5 @@
     "features": {
         "weighted-suggestions": true
     },
-    "failFast": true
+    "failFast": false
 }

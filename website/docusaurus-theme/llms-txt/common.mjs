@@ -40,6 +40,7 @@
  * @property {string} url Absolute URL of the rendered page.
  * @property {string} description
  * @property {string} content Cleaned Markdown body.
+ * @property {string} [slug] Docusaurus frontmatter slug override.
  * @property {string} [group] Topic dir or category slug for grouping.
  * @property {string} [groupLabel] Display label for the group (defaults to group).
  */
@@ -48,10 +49,29 @@ export const LLMS_TXT_FILENAME = "llms.txt";
 export const LLMS_FULL_FILENAME = "llms-full.txt";
 
 /**
+ * Trim trailing slashes.
+ *
+ * Scans the string instead of using a `/\/+$/` regex, which needs
+ * polynomial backtracking time on strings of repeated slashes.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+export function trimTrailingSlashes(value) {
+    let end = value.length;
+
+    while (end > 0 && value[end - 1] === "/") {
+        end -= 1;
+    }
+
+    return value.slice(0, end);
+}
+
+/**
  * Validate and apply defaults to plugin options.
  *
  * @param {Partial<LLMSPluginOptions>} options
- * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy">> & LLMSPluginOptions}
+ * @returns {Required<Pick<LLMSPluginOptions, "sections" | "ignoreFiles" | "crossLinks" | "groupBy" | "overviewPages">> & LLMSPluginOptions}
  */
 export function normalizeOptions(options) {
     if (!options || !Array.isArray(options.sections) || options.sections.length === 0) {

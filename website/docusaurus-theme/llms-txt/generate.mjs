@@ -4,12 +4,14 @@
  * @import { LLMSDocInfo, LLMSCrossLink } from "./common.mjs"
  */
 
+import { trimTrailingSlashes } from "./common.mjs";
+
 /**
  * @param {string} url
  * @returns {string}
  */
 export function applyMdExtension(url) {
-    const stripped = url.replace(/\/+$/, "");
+    const stripped = trimTrailingSlashes(url);
     if (stripped.endsWith(".md")) return stripped;
     // A root URL (no path segment) has no page slug to suffix; the homepage's
     // markdown payload is /index.md, not "<origin>.md".
@@ -145,7 +147,7 @@ export function generateFullText(docs, opts) {
  * @returns {string}
  */
 export function renderPagePayload(doc) {
-    const desc = doc.description ? `\n> ${doc.description.replace(/\s+/g, " ").trim()}\n` : "";
+    const desc = doc.description ? `\n> ${oneLine(doc.description)}\n` : "";
     return `# ${doc.title}\n${desc}\n${doc.content.trim()}\n`;
 }
 

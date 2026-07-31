@@ -5,3 +5,5 @@ Yubikey
 Yubikeys
 mycorp
 mocksaml
+VSCHAR
+pbms

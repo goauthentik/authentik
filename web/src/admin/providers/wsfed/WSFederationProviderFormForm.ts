@@ -32,6 +32,7 @@ import {
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
+    SamlVersionEnum,
     ValidationError,
     WSFederationProvider,
 } from "@goauthentik/api";
@@ -39,6 +40,16 @@ import {
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+const samlVersionAndLabel = [
+    [
+        SamlVersionEnum._11,
+        msg("SAML 1.1 (required by Microsoft Entra ID / ADFS)", {
+            id: "wsfed.saml-version.option.saml11",
+        }),
+    ],
+    [SamlVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
+];
 
 const samlNameIDPolicyAndLabel = [
     [SAMLNameIDPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent, msg("Persistent")],
@@ -284,6 +295,33 @@ export function renderForm({
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure the default NameID Policy used by IDP-initiated logins and when an incoming assertion doesn't specify a NameID Policy (also applies when using a custom NameID Mapping).",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
+
+                <ak-form-element-horizontal
+                    label=${msg("SAML assertion version", {
+                        id: "wsfed.saml-version.label",
+                    })}
+                    required
+                    name="samlVersion"
+                >
+                    <select class="pf-c-form-control">
+                        ${samlVersionAndLabel.map(
+                            ([version, label]) => html`
+                                <option
+                                    value=${version}
+                                    ?selected=${provider?.samlVersion === version}
+                                >
+                                    ${label}
+                                </option>
+                            `,
+                        )}
+                    </select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.",
+                            { id: "wsfed.saml-version.description" },
                         )}
                     </p>
                 </ak-form-element-horizontal>

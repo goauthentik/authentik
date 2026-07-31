@@ -1,3 +1,4 @@
+import "#elements/banner/BaseURLBanner";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
@@ -272,6 +273,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
+                    <ak-base-url-banner></ak-base-url-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 

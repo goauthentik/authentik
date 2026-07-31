@@ -64,7 +64,7 @@ To support the integration of Absorb LMS with authentik, create one application/
 ### Configure Absorb LMS SSO
 
 1.  Log in to the Absorb LMS Admin Experience as a system administrator.
-2.  Navigate to **Client Settings** and open the **SSO** card.
+2.  Click the account icon in the top right, navigate to **Client Settings**, and open the **SSO configuration** card.
 3.  Click **Add SSO Configuration** and set the following values:
     - **Name**: `authentik`
     - **Method**: `OpenID Connect`
@@ -98,6 +98,9 @@ To support the integration of Absorb LMS with authentik, create one application/
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - **ACS URL**: `https://company.myabsorb.com/api/rest/v2/authentication/saml`
         - **Audience**: `https://company.myabsorb.com`
+        - **SLS URL**: `https://company.myabsorb.com/api/rest/v2/authentication/samlLogout`
+        - **SLS Binding**: `Post`
+        - **Logout Method**: `Front-channel (Iframe)`
         - Under **Advanced protocol settings**:
             - Select an available **Signing Certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
@@ -107,11 +110,13 @@ To support the integration of Absorb LMS with authentik, create one application/
 ### Configure Absorb LMS SSO
 
 1.  Log in to the Absorb LMS Admin Experience as a system administrator.
-2.  Navigate to **Client Settings** and open the **SSO** card.
+2.  Click the account icon in the top right, navigate to **Client Settings**, and open the **SSO configuration** card.
 3.  Click **Add SSO Configuration** and set the following values:
     - **Name**: `authentik`
     - **Method**: `SAML`
-    - **Mode**: select `Identity Provider Initiated` or `Service Provider Initiated`.
+    - **Mode**: select one of the following options:
+        - `Identity Provider Initiated`: users log in to Absorb LMS from authentik.
+        - `Service Provider Initiated`: users attempting to log in to Absorb LMS are directed to authentik for authentication.
 4.  Continue to the configuration step and set the following values:
     - **Key**: paste the authentik SAML signing certificate without the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines.
     - **ID Property**: `Username`
@@ -119,7 +124,10 @@ To support the integration of Absorb LMS with authentik, create one application/
     - **Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
 5.  Continue to the access step and select the **Assigned Routes** that should use this SSO configuration.
 6.  Enable **Automatically Redirect** if users should be sent directly to authentik when they open an assigned route.
-7.  Click **Save**.
+7.  Enable the **Single Logout** toggle, and then set the following values:
+    - **External Single Logout Url**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Wait for IdP Response** _(optional)_: enable this setting so that Absorb LMS waits for authentik to confirm the logout before ending the session.
+8.  Click **Save**.
 
 </TabItem>
 </Tabs>
@@ -137,7 +145,7 @@ The **OAuth (Interactive)** authentication mode for SCIM providers requires an a
 #### Enable SCIM in Absorb LMS
 
 1. Log in to the Absorb LMS Admin Experience as a system administrator.
-2. Navigate to **Client Settings** and open the **SSO** card.
+2. Click the account icon in the top right, navigate to **Client Settings**, and open the **SSO configuration** card.
 3. Under **SCIM Settings**, click **Manage**.
 4. Note the **SCIM OAuth Client ID** and **SCIM OAuth Client Secret** values.
 5. Select a **Default Department** for provisioned users.
@@ -222,7 +230,7 @@ The **OAuth (Interactive)** authentication mode for SCIM providers requires an a
 3. Click **Create**.
 4. Open the SCIM provider.
 5. On the **Overview** tab, click **(Re-)authenticate**.
-6. Log in to Absorb LMS as an administrator and approve the connection.
+6. You should be redirected to Absorb LMS for authentication. Log in as an Absorb LMS administrator and approve the connection.
 7. Return to the SCIM provider and confirm that **OAuth Status** shows `Authenticated`.
 
 #### Add the SCIM provider to the application

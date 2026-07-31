@@ -1,4 +1,3 @@
-// docusaurus-theme/llms-txt/plugin.mjs
 /* eslint-disable no-console */
 /**
  * @file Docusaurus llms.txt plugin (postBuild).
@@ -10,7 +9,12 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { LLMS_FULL_FILENAME, LLMS_TXT_FILENAME, normalizeOptions } from "./common.mjs";
+import {
+    LLMS_FULL_FILENAME,
+    LLMS_TXT_FILENAME,
+    normalizeOptions,
+    trimTrailingSlashes,
+} from "./common.mjs";
 import {
     applyMdExtension,
     generateFullText,
@@ -25,11 +29,17 @@ import {
     groupLabel,
     parseDocFile,
     resolveDocumentUrl,
+    resolveDocumentUrlFromSource,
 } from "./node.mjs";
 
 const PLUGIN_NAME = "ak-llms-txt-plugin";
 
 export { assignGroup, groupLabel };
+
+/**
+ * @typedef {object} LLMSPluginContent
+ * @property {string} devOutputDir
+ */
 
 /**
  * Resolve the base URL for generated links. In a Netlify deploy preview or
@@ -67,6 +77,9 @@ export async function buildLLMSOutputs(ctx) {
     const docs = [];
     let skippedNoRoute = 0;
     let mdxFallbacks = 0;
+    const countMdxFallback = () => {
+        mdxFallbacks += 1;
+    };
 
     for (const section of options.sections) {
         const absDir = path.resolve(ctx.siteDir, section.path);
@@ -74,10 +87,12 @@ export async function buildLLMSOutputs(ctx) {
             const parsed = parseDocFile(file, absDir);
             if (!parsed) continue;
 
-            const route = resolveDocumentUrl(parsed.path, ctx.routesPaths);
+            const route = ctx.routesPaths.length
+                ? resolveDocumentUrl(parsed, section.routeBasePath, ctx.routesPaths)
+                : resolveDocumentUrlFromSource(parsed, section.routeBasePath);
             if (!route) {
-                // Expected for source files Docusaurus does not route (e.g.
-                // historical release notes). Counted and summarized, not warned per-page.
+                // Expected for source files Docusaurus does not route. Counted
+                // and summarized, not warned per-page.
                 skippedNoRoute++;
                 continue;
             }
@@ -85,14 +100,14 @@ export async function buildLLMSOutputs(ctx) {
             parsed.url = new URL(route, ctx.siteUrl).toString();
             parsed.group = assignGroup(parsed, options);
             parsed.groupLabel = groupLabel(parsed.group, options);
-            parsed.content = await cleanMdxToMarkdown(parsed.content, file, () => mdxFallbacks++);
+            parsed.content = await cleanMdxToMarkdown(parsed.content, file, countMdxFallback);
             docs.push(parsed);
         }
     }
 
     if (skippedNoRoute || mdxFallbacks) {
         console.log(
-            `${PLUGIN_NAME}: indexed ${docs.length} pages ` +
+            `🚀 ${PLUGIN_NAME}: indexed ${docs.length} pages ` +
                 `(${skippedNoRoute} skipped — no route; ${mdxFallbacks} used the regex fallback)`,
         );
     }
@@ -130,7 +145,7 @@ export async function buildLLMSOutputs(ctx) {
 
     for (const doc of docs) {
         // applyMdExtension(url) gives the absolute .md URL; derive the build path.
-        const rel = applyMdExtension(doc.url).slice(ctx.siteUrl.replace(/\/+$/, "").length + 1);
+        const rel = applyMdExtension(doc.url).slice(trimTrailingSlashes(ctx.siteUrl).length + 1);
         outputs.set(rel, renderPagePayload(doc));
     }
 
@@ -138,13 +153,69 @@ export async function buildLLMSOutputs(ctx) {
 }
 
 /**
- * @param {LoadContext} _loadContext
- * @param {LLMSPluginOptions} options
- * @returns {Plugin}
+ * @param {string} outDir
+ * @param {Map<string, string>} outputs
+ * @returns {Promise<void>}
  */
-function akLLMSPlugin(_loadContext, options) {
+async function writeLLMSOutputs(outDir, outputs) {
+    await Promise.all(
+        [...outputs.entries()].map(async ([rel, contents]) => {
+            const dest = path.join(outDir, rel);
+            await fs.mkdir(path.dirname(dest), { recursive: true });
+            await fs.writeFile(dest, contents, "utf-8");
+        }),
+    );
+}
+
+/**
+ * @param {LoadContext} loadContext
+ * @param {LLMSPluginOptions} options
+ * @returns {Plugin<LLMSPluginContent>}
+ */
+function akLLMSPlugin(loadContext, options) {
+    const devOutputDir = path.join(loadContext.generatedFilesDir, PLUGIN_NAME);
+
     return {
         name: PLUGIN_NAME,
+
+        async loadContent() {
+            const outputs = await buildLLMSOutputs({
+                siteDir: loadContext.siteDir,
+                outDir: devOutputDir,
+                siteUrl: resolveSiteUrl(options, loadContext.siteConfig),
+                title: options.title ?? loadContext.siteConfig.title,
+                description: options.description ?? loadContext.siteConfig.tagline ?? "",
+                routesPaths: [],
+                options,
+            });
+
+            await fs.rm(devOutputDir, { recursive: true, force: true });
+            await writeLLMSOutputs(devOutputDir, outputs);
+
+            return {
+                devOutputDir,
+            };
+        },
+
+        configureWebpack(_config, isServer, _utils, content) {
+            if (isServer || !content?.devOutputDir) {
+                return undefined;
+            }
+
+            /** @type {any} */
+            const devServerConfig = {
+                devServer: {
+                    static: [
+                        {
+                            directory: content.devOutputDir,
+                            publicPath: loadContext.baseUrl,
+                        },
+                    ],
+                },
+            };
+
+            return devServerConfig;
+        },
 
         /**
          * @param {Props} props
@@ -162,13 +233,7 @@ function akLLMSPlugin(_loadContext, options) {
                 options,
             });
 
-            await Promise.all(
-                [...outputs.entries()].map(async ([rel, contents]) => {
-                    const dest = path.join(props.outDir, rel);
-                    await fs.mkdir(path.dirname(dest), { recursive: true });
-                    await fs.writeFile(dest, contents, "utf-8");
-                }),
-            );
+            await writeLLMSOutputs(props.outDir, outputs);
 
             console.log(`✅ ${PLUGIN_NAME} wrote ${outputs.size} files`);
         },
