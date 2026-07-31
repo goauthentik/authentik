@@ -18,6 +18,9 @@ import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
+
 const renderElement = (item: FileList) => item.name;
 const renderValue = (item?: FileList | null) => item?.name;
 
@@ -29,7 +32,7 @@ const renderValue = (item?: FileList | null) => item?.name;
  */
 @customElement("ak-file-search-input")
 export class AKFileSearchInput extends AKElement {
-    public static hostStyles = [HostStyles];
+    public static hostStyles = [PFButton, PFInputGroup, HostStyles];
 
     // Render into the lightDOM
     protected createRenderRoot() {
@@ -91,6 +94,8 @@ export class AKFileSearchInput extends AKElement {
     }
 
     render() {
+        const uploadLabel = msg("Upload file", { id: "file-picker.upload-link.label" });
+
         return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
             ${AKLabel(
                 {
@@ -102,46 +107,49 @@ export class AKFileSearchInput extends AKElement {
                 this.label,
             )}
 
-            <ak-search-select
-                style="width: 100%;"
-                .fieldID=${this.fieldID}
-                .fetchObjects=${this.#fetch.bind(this)}
-                .renderElement=${renderElement}
-                .value=${renderValue}
-                .selected=${this.#selected}
-                placeholder=${msg("Select a file or enter a value...", {
-                    id: "file-picker.value.placeholder",
-                })}
-                ?blankable=${this.blankable}
-                creatable
-                @ak-change=${this.#changeListener}
-            >
-            </ak-search-select>
+            <div class="pf-c-input-group">
+                <ak-search-select
+                    class="ak-file-search-input__select"
+                    .fieldID=${this.fieldID}
+                    .fetchObjects=${this.#fetch.bind(this)}
+                    .renderElement=${renderElement}
+                    .value=${renderValue}
+                    .selected=${this.#selected}
+                    placeholder=${msg("Select a file or enter a value...", {
+                        id: "file-picker.value.placeholder",
+                    })}
+                    ?blankable=${this.blankable}
+                    creatable
+                    @ak-change=${this.#changeListener}
+                >
+                </ak-search-select>
+                <a
+                    class="pf-c-button pf-m-control"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=${`${globalAK().api.base}if/admin/#/files`}
+                    aria-label=${uploadLabel}
+                    title=${uploadLabel}
+                >
+                    <i class="fas fa-upload" aria-hidden="true"></i>
+                </a>
+            </div>
             <p class="pf-c-form__helper-text">
                 ${this.help
                     ? this.help
                     : msg("Choose an existing file, or enter a URL or Font Awesome icon.", {
                           id: "file-picker.value.description",
                       })}
-                <span class="ak-file-search-input__actions">
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href=${`${globalAK().api.base}if/admin/#/files`}
-                    >
-                        ${msg("Upload file", { id: "file-picker.upload-link.label" })}
-                    </a>
-                    <span class="ak-file-search-input__separator" aria-hidden="true">·</span>
-                    <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href=${docLink("/customize/file-picker/")}
-                    >
-                        ${msg("Supported values", {
-                            id: "file-picker.documentation-link.label",
-                        })}
-                    </a>
-                </span>
+                <a
+                    class="ak-file-search-input__documentation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href=${docLink("/customize/file-picker/")}
+                >
+                    ${msg("Supported values", {
+                        id: "file-picker.documentation-link.label",
+                    })}
+                </a>
             </p>
         </ak-form-element-horizontal>`;
     }

@@ -1,9 +1,8 @@
-.ak-file-search-input__actions {
-    display: inline-flex;
-    gap: var(--pf-global--spacer--xs);
-    margin-inline-start: var(--pf-global--spacer--sm);
+.ak-file-search-input__select {
+    flex: 1;
+    min-width: 0;
 }
 
-.ak-file-search-input__separator {
-    color: var(--pf-global--Color--200);
+.ak-file-search-input__documentation {
+    margin-inline-start: var(--pf-global--spacer--sm);
 }
