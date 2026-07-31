@@ -51,6 +51,24 @@ class TestBrands(APITestCase):
             },
         )
 
+    def test_current_brand_authenticated_flags(self):
+        """Authenticated-visibility flags are only exposed to authenticated requests"""
+
+        class _AuthedFlag(Flag[bool], key="brands_test_authed_flag"):
+            default = True
+            visibility = "authenticated"
+
+        create_test_brand()
+
+        # Anonymous requests only see public flags
+        anon = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        self.assertNotIn("brands_test_authed_flag", anon["flags"])
+
+        # Authenticated requests additionally see authenticated flags
+        self.client.force_login(create_test_admin_user())
+        authed = loads(self.client.get(reverse("authentik_api:brand-current")).content.decode())
+        self.assertTrue(authed["flags"]["brands_test_authed_flag"])
+
     def test_brand_subdomain(self):
         """Test Current brand API"""
         Brand.objects.create(domain="bar.baz", branding_title="custom")
