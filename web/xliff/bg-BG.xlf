@@ -10659,14 +10659,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Authorizations (1 month)</source>
   <target>Оторизации (1 месец)</target>
 </trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-  <target>Предотврати дублиращи устройства</target>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
-  <target>Когато е активирано, всеки уникален автентикатор може да бъде регистриран само веднъж.</target>
-</trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
   <target>Blueprint е успешно импортиран.</target>
