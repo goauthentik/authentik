@@ -162,7 +162,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_scheme_case_insensitive() {
+    async fn scheme_case_insensitive() {
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-proto", "HTTPS")
