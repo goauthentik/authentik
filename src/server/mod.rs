@@ -133,7 +133,7 @@ impl Server {
     }
 
     async fn fast_shutdown(&self) -> Result<()> {
-        info!("gracefully shutting down server");
+        info!("immediately shutting down server");
         self.shutdown(Signal::SIGINT).await
     }
 
