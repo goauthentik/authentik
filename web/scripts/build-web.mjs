@@ -5,6 +5,7 @@
 import "@goauthentik/core/environment/load/node";
 
 import * as fs from "node:fs/promises";
+import { findPackageJSON } from "node:module";
 import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.mjs";
@@ -121,15 +122,26 @@ const BASE_ESBUILD_OPTIONS = {
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    // Keep singletons single. Packages linked in from the repo's top-level
-    // packages/ (geo, client-ts, …) are symlinked into web/packages/ but keep
-    // their own node_modules under pnpm's isolated linker. Resolving them by
-    // realpath makes esbuild reach *those* copies of shared runtimes, so a
-    // bundle ends up with two Lit instances — web/node_modules/lit-html plus
-    // a second from .pnpm/ — and two ReactiveElement class hierarchies with
-    // it. Resolving through the symlink path keeps everything on
-    // web/node_modules, which the hoisted linker guarantees is flat.
-    preserveSymlinks: true,
+    // Keep the Lit runtime a singleton. Packages linked in from the repo's
+    // top-level packages/ (geo, client-ts, …) keep their own node_modules
+    // under pnpm's isolated linker, so resolving by realpath would pull a
+    // second copy of these out of .pnpm alongside web's — two ReactiveElement
+    // class hierarchies in one bundle. Pin them to web's flat copies instead
+    // of freezing resolution wholesale with `preserveSymlinks`, which also
+    // cuts linked packages off from their own transitive dependencies.
+    alias: Object.fromEntries(
+        ["lit", "lit-html", "lit-element", "@lit/reactive-element"].map((name) => {
+            const packageJSONFilePath = findPackageJSON(name, import.meta.url);
+
+            if (!packageJSONFilePath) {
+                throw new Error(`Could not find package.json for ${name}`);
+            }
+
+            const packageJSONDir = path.dirname(packageJSONFilePath);
+
+            return [name, packageJSONDir];
+        }),
+    ),
 };
 
 /**
