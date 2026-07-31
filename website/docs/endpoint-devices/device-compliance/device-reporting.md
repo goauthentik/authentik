@@ -34,7 +34,7 @@ This feature is still in development and will be announced soon.
 
 ## Example facts
 
-For an example of the facts provided for a Linux device, see [here](./facts-linux.json).
+See [example facts from a Linux device](./facts-linux.json).
 
 ## Endpoint devices in event logs
 

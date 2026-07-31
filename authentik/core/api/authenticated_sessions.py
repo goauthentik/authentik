@@ -6,7 +6,7 @@ from drf_spectacular.utils import (
     extend_schema,
     inline_serializer,
 )
-from rest_framework import mixins, serializers
+from rest_framework import mixins, serializers, status
 from rest_framework.decorators import action
 from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
@@ -24,8 +24,10 @@ from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import AuthenticatedSession
+from authentik.core.signals import admin_authenticated_session_deleted
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
+from authentik.lib.utils.db import chunked_queryset
 from authentik.rbac.decorators import permission_required
 
 
@@ -152,6 +154,16 @@ class AuthenticatedSessionViewSet(
     def bulk_delete(self, request: Request, *, query: BulkDeleteSessionSerializer) -> Response:
         """Bulk revoke all sessions for multiple users"""
         user_pks = query.validated_data.get("user_pks", [])
-        deleted_count, _ = AuthenticatedSession.objects.filter(user_id__in=user_pks).delete()
+        count = 0
+        for session in chunked_queryset(AuthenticatedSession.objects.filter(user_id__in=user_pks)):
+            admin_authenticated_session_deleted.send(self, session=session, request=request)
+            session.delete()
+            count += 1
 
-        return Response({"deleted": deleted_count}, status=200)
+        return Response({"deleted": count}, status=200)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        admin_authenticated_session_deleted.send(self, instance=instance, request=request)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

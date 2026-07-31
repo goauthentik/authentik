@@ -30,17 +30,21 @@ See the [pricing page](https://goauthentik.io/pricing/) for current plan details
 - [External OAuth and SAML sources](../add-secure-apps/flows-stages/stages/source/index.md) embed an external identity provider in a flow for migration or additional verification. For example, dynamically redirect users to authenticate against Entra ID or GWS before continuing with a flow.
 - The [Shared Signals Framework provider](../add-secure-apps/providers/ssf/index.md) sends security events to subscribed applications, including Apple Business Manager.
 - [OAuth authentication for SCIM](../add-secure-apps/providers/scim/index.md#oauth-token) uses short-lived OAuth tokens instead of a static token for SCIM provisioning.
+- The [WS-Federation provider](../add-secure-apps/providers/wsfed/index.md) connects applications that use WS-Federation to authentik for single sign-on.
 
 ### Authentication and network access
 
 - [Password history compliance](../customize/policies/types/password-uniqueness.md) prevents users from reusing previous passwords.
 - [Client certificate authentication](../add-secure-apps/flows-stages/stages/mtls/index.md) authenticates or enrolls users with client certificates from devices, smart cards, PIV cards, or hardware tokens.
 - [RADIUS EAP-TLS](../add-secure-apps/providers/radius/index.mdx#eap) authenticates network clients with EAP-TLS and client certificates.
+- [Account Lockdown](../security/account-lockdown.md) immediately secures a compromised account by disabling it, revoking its tokens, ending its sessions, and recording the action in the audit log.
 
 ### Audit and reporting
 
 - [Enhanced audit logging](../sys-mgmt/events/logging-events.mdx#enhanced-audit-logging) records detailed object changes and shows before-and-after values for compliance review.
+- [Event maps and charts](../sys-mgmt/events/logging-events.mdx#viewing-events-in-maps-and-charts) visualize recent events by location, type, and volume.
 - [CSV data exports](../sys-mgmt/data-exports.md) export user and event data for analysis, reporting, or backup.
+- [Object Lifecycle Management](../sys-mgmt/object-lifecycle-management.md) schedules periodic reviews of applications, groups, and roles, assigns reviewers, and tracks overdue reviews. This feature is in preview.
 
 ### Device security
 

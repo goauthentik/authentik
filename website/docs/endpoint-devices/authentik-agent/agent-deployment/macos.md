@@ -8,8 +8,8 @@ authentik_version: "2025.12.0"
 ## What it can do
 
 - Retrieve host information and report it to authentik for [device compliance](../../device-compliance/index.mdx).
-- Connect to Linux hosts through [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
-- Authenticate to CLI applications through [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
+- Connect to Linux hosts with authentik credentials through [SSH authentication](../../authentik-agent/device-authentication/ssh-authentication.mdx).
+- Authenticate to CLI applications with authentik credentials through [CLI application authentication](../../authentik-agent/device-authentication/cli-app-authentication/index.mdx).
 
 ## Prerequisites
 

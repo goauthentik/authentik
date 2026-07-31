@@ -4,190 +4,199 @@ sidebar_label: Amazon Web Services (Classic IAM)
 support_level: authentik
 ---
 
-import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
 
 ## What is AWS?
 
 > AWS, or Amazon Web Services, is a comprehensive cloud computing platform. It provides a wide array of on-demand IT services like computing power, storage, and databases, allowing businesses to build and run applications, and manage infrastructure through the internet.
 >
-> -- https://aws.amazon.com/what-is-aws
+> -- https://aws.amazon.com
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `<aws_account_ID>` is your AWS account ID (e.g., `123456789012`).
-- `<provider_name>` is the name you will set for the SAML provider in AWS (e.g., `authentik`).
+
+You need an AWS account with permissions to create IAM identity providers, IAM roles, and IAM policies.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Configuration methods
-
-AWS Classic IAM can be integrated with authentik via SAML or OIDC. Below are the steps to configure each method.
-
-:::info SCIM Provisioning Limitation
-SCIM Provisioning is only supported in conjunction with [IAM Identity Center](../aws/index.mdx), not Classic IAM.
+:::info IAM Identity Center
+Classic IAM SAML federation is best suited for legacy or single-account AWS console access. For centralized workforce access, multi-account access, or SCIM provisioning, use [Amazon Web Services (IAM Identity Center)](../aws/index.mdx).
 :::
 
-<Tabs
-  defaultValue="iam-saml"
-  values={[
-    { label: "Classic IAM (SAML)", value: "iam-saml" },
-    { label: "Classic IAM (OIDC)", value: "iam-oidc" },
-  ]}>
-  <TabItem value="iam-saml">
+:::info OIDC federation
+AWS Classic IAM also supports OIDC identity providers for web identity federation and temporary AWS credentials. OIDC does not provide direct sign-in to the AWS Management Console, so this guide uses SAML for console SSO.
+:::
 
 ## authentik configuration
 
-<RedirectURI20265Note />
+<SAMLProvider20265Warning />
 
-To support the integration of AWS with authentik via the Classic IAM method, you need to create two property mappings, an application/provider pair, and application entitlements for the AWS roles that users can assume.
+To support the integration of AWS Classic IAM with authentik, you need to create SAML property mappings, an application/provider pair, and application entitlements for the AWS IAM roles that users can assume.
 
 ### Create property mappings
 
+Before creating the AWS role mapping, note your AWS account ID and choose the name that you will use for the SAML provider in AWS, such as `authentik`.
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings**, click **Create**, select **SAML Provider Property Mappings**, and click **Next**.
-3. Configure the first mapping for the user's _role assignment_:
-    - **Name**: provide a descriptive name (e.g., `AWS Role Mapping`)
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** and click **Next**.
+4. Configure the role mapping for application entitlement-based role assignment:
+    - **Name**: provide a descriptive name, such as `AWS Role`.
     - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/Role`
-    - **Friendly Name**: Leave blank
-    - **Expression**: Choose one of these options:
+    - **Friendly Name**: leave blank.
+    - **Expression**:
 
-        **For a static single role:**
+    ```python
+    ACCOUNT_ID = "<aws_account_id>"
+    PROVIDER_NAME = "<provider_name>"
 
-        ```python
-        return "arn:aws:iam::<aws_account_ID>:role/authentik-admin,arn:aws:iam::<aws_account_ID>:saml-provider/<provider_name>"
-        ```
-
-        **For role assignment based on application entitlements** (recommended):
-
-        ```python
-        ACCOUNT_ID = "<aws_account_ID>"
-        PROVIDER_NAME = "<provider_name>"
-        roles = [
-            entitlement.name
-            for entitlement in request.user.app_entitlements(provider.application)
-        ]
-
-        return [
-            f"arn:aws:iam::{ACCOUNT_ID}:role/{r},arn:aws:iam::{ACCOUNT_ID}:saml-provider/{PROVIDER_NAME}"
-            for r in roles
-        ]
-        ```
-
-        :::tip
-        With the entitlement-based approach, create application entitlements with names like `AWS:authentik-admin` and `AWS:authentik-read-only`, then bind the appropriate users or groups to those entitlements. Create these entitlements after you create the application, as described later in this guide. Users receive the corresponding AWS roles when they access the AWS application.
-        :::
-
-        **For multiple static roles:**
-
-        ```python
-        return [
-            "arn:aws:iam::<aws_account_ID>:role/authentik-admin,arn:aws:iam::<aws_account_ID>:saml-provider/<provider_name>",
-            "arn:aws:iam::<aws_account_ID>:role/authentik-read-only,arn:aws:iam::<aws_account_ID>:saml-provider/<provider_name>",
-        ]
-        ```
-
-4. Click **Finish** to save. Then, repeat the process to create a mapping for the user's _session name_:
-    - **Name**: provide a descriptive name (e.g., `AWS Role Session Name`)
-    - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
-    - **Friendly Name**: Leave blank
-    - **Expression**: `return user.username`
-
-    :::info
-    This mapping determines how the user will be identified in AWS audit logs and the AWS console. The username will appear in the format `<role_name>/<username>` in AWS.
-    :::
+    return [
+        (
+            f"arn:aws:iam::{ACCOUNT_ID}:role/{entitlement.name},"
+            f"arn:aws:iam::{ACCOUNT_ID}:saml-provider/{PROVIDER_NAME}"
+        )
+        for entitlement in request.user.app_entitlements(provider.application)
+    ]
+    ```
 
 5. Click **Finish**.
+6. Create another **SAML Provider Property Mapping** for the AWS role session name:
+    - **Name**: provide a descriptive name, such as `AWS Role Session Name`.
+    - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
+    - **Friendly Name**: leave blank.
+    - **Expression**:
 
-### Create an application and provider in authentik
+    ```python
+    session_name = regex_replace(user.username, r"[^a-zA-Z0-9+=,.@-]", "-")[:64]
+    return session_name if len(session_name) >= 2 else "ak-user"
+    ```
 
-<SAMLProvider20265Warning />
+7. Click **Finish**.
+
+This role mapping returns one role/provider ARN pair for each AWS role entitlement assigned to the user. If a user receives one role, AWS opens that role directly. If a user receives multiple roles, AWS prompts them to select which role to assume.
+
+If you do not want to use application entitlements for role assignment, return one or more static role and provider ARN pairs from the role mapping instead. For a single static role, use this expression:
+
+```python
+return (
+    "arn:aws:iam::<aws_account_id>:role/authentik-admin,"
+    "arn:aws:iam::<aws_account_id>:saml-provider/<provider_name>"
+)
+```
+
+For multiple static roles, use this expression:
+
+```python
+return [
+    (
+        "arn:aws:iam::<aws_account_id>:role/authentik-admin,"
+        "arn:aws:iam::<aws_account_id>:saml-provider/<provider_name>"
+    ),
+    (
+        "arn:aws:iam::<aws_account_id>:role/authentik-read-only,"
+        "arn:aws:iam::<aws_account_id>:saml-provider/<provider_name>"
+    ),
+]
+```
+
+The role session name mapping determines how the user is identified in AWS audit logs and in the AWS console. AWS displays the assumed role session in the format `<role_name>/<session_name>`.
+
+### Configure session duration _(optional)_
+
+AWS supports the `SessionDuration` SAML attribute for AWS Management Console sessions. To set the requested session duration from authentik, create another **SAML Provider Property Mapping**:
+
+- **Name**: provide a descriptive name, such as `AWS Session Duration`.
+- **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/SessionDuration`
+- **Friendly Name**: leave blank.
+- **Expression**: return the requested duration in seconds, such as `return "3600"`.
+
+The value must be between 900 and 43200 seconds and cannot exceed the maximum session duration configured on the IAM role.
+
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g. `AWS`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-        - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
-        - Set the **Audience** to `urn:amazon:webservices`
-        - Under **Advanced protocol settings**, select an available **Signing Certificate**, ensure both **Signing Assertions** and **Signing Responses** are enabled, then add, under **Property Mappings**, both property mappings you created in the previous section.
-        - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://signin.aws.amazon.com/saml`
+        - **Audience**: `urn:amazon:webservices`
+        - Under **Advanced protocol settings**, select an available **Signing Certificate**.
+        - Under **Advanced protocol settings**, enable **Sign responses** and keep **Sign assertions** enabled.
+        - Under **Advanced protocol settings** > **Property mappings**, add the AWS role mapping, AWS role session name mapping, and optional AWS session duration mapping that you created.
+        - Under **Advanced protocol settings**, set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-:::info NameID Format
-AWS Classic IAM uses the email-formatted NameID. The default authentik SAML email mapping is automatically included and does not need to be added manually.
-:::
+AWS Classic IAM accepts an email-formatted NameID. The default authentik SAML email mapping provides that value.
 
 ### Create application entitlements for AWS roles
 
-Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the AWS IAM roles this application should expose.
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the AWS IAM roles that this application should expose.
 
-1. Open the AWS application that you just created in the authentik Admin interface.
+1. Open the AWS application that you created in the authentik Admin interface.
 2. Click the **Application entitlements** tab.
 3. Create one entitlement for each AWS IAM role that users should be able to assume, such as `authentik-admin` or `authentik-read-only`.
 4. Bind the appropriate users or groups to each entitlement.
 
-:::tip
-For this integration, the entitlement name should match the AWS IAM role name exactly. This keeps AWS-specific authorization scoped to the AWS application instead of relying on global group names such as `AWS:authentik-admin`.
+:::info Entitlement role names
+For this integration, each entitlement name must exactly match the corresponding AWS IAM role name. This keeps AWS-specific authorization scoped to the AWS application instead of relying on global group names.
 :::
 
-### Download metadata file
+### Download the metadata file
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the newly created AWS provider.
-3. Under **Related objects** > **Metadata**, click **Download**. This metadata file will be required in the next section.
+2. Navigate to **Applications** > **Providers** and click the AWS provider that you created.
+3. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
 
 ## AWS configuration
 
-### Create a SAML identity provider in AWS
+### Create a SAML identity provider
 
-1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
+1. Log in to the AWS Management Console as an administrator.
 2. Navigate to **IAM** > **Identity providers**.
-3. Then, click **Add provider** and configure the following:
-    - **Provider type**: Select `SAML`
-    - **Provider name**: Enter a name (e.g., `authentik`). This must match the `<provider_name>` placeholder used in your property mappings.
-    - **Metadata document**: Click **Choose file** and upload the metadata file you downloaded from authentik.
+3. Click **Add provider** and configure the following settings:
+    - **Provider type**: select **SAML**.
+    - **Provider name**: enter the provider name that you used in the authentik role mapping.
+    - **Metadata document**: upload the metadata file that you downloaded from authentik.
 4. Click **Add provider**.
-
-You will be redirected to the **Identity providers** home page.
 
 ### Create IAM roles for SAML federation
 
-For each role that users can assume via SAML (for example, `authentik-admin` or `authentik-read-only`), you need to create a corresponding IAM role in AWS. The role names must match the entitlement names that you created in authentik.
+Create one IAM role for each application entitlement that you created in authentik.
 
-1. Still in the IAM console, navigate to **Access management** > **Roles**.
+1. In the IAM console, navigate to **Access management** > **Roles**.
 2. Click **Create role**.
-3. Under **Trusted entity type**, click **SAML 2.0 federation**.
-4. Under **SAML 2.0–based provider**, select the provider you created (e.g., `authentik`).
-5. Under **Access to be allowed**, select depending on your needs:
-    - **Allow programmatic and AWS Management Console access**
-    - **Allow programmatic access only**
-6. Under **Sign-in endpoint type**, choose based on your needs:
-    - **Regional endpoint**: Region-specific sign-in URLs.
-    - **Non-Regional endpoint**: Non-Regional sign-in URLs.
+3. Under **Trusted entity type**, select **SAML 2.0 federation**.
+4. Under **SAML 2.0-based provider**, select the SAML provider that you created.
+5. Under **Access to be allowed**, select the access mode that matches how users should use the role:
+    - **Allow programmatic and AWS Management Console access**: users can access the AWS Management Console and use temporary credentials.
+    - **Allow programmatic access only**: users can use temporary credentials, but not console SSO.
+6. Under **Sign-in endpoint type**, select the endpoint type for your environment:
+    - **Regional endpoint**: AWS uses a region-specific sign-in URL.
+    - **Non-Regional endpoint**: AWS uses the global sign-in URL.
 7. Click **Next**.
-8. Select one or more policies that define the permissions for this role (e.g., `AdministratorAccess`, `ReadOnlyAccess`, or custom policies).
+8. Select the permissions policies that define access for this role.
 9. Click **Next**.
-10. Set the **Role name** to match the entitlement name in authentik (e.g., `authentik-admin`). This name must exactly match the entitlement name.
+10. Set **Role name** to the matching entitlement name in authentik, such as `authentik-admin`.
 11. Optionally add a description and tags.
 12. Click **Create role**.
 
-### Update the role's trust policy
+Repeat these steps for each AWS role that users should be able to assume.
 
-AWS automatically creates a trust policy for SAML federation, but it includes a unique session-specific ACS URL that needs to be updated to the generic signin URL.
+### Verify the role trust policy
 
-1. Navigate back to **IAM** > **Roles** and click on the role you just created.
+For each IAM role, confirm that the trust policy allows SAML federation from the authentik SAML provider.
+
+1. Navigate to **IAM** > **Roles** and click the role that you created.
 2. Go to the **Trust relationships** tab and click **Edit trust policy**.
-3. You will see a policy similar to this:
+3. AWS can create a trust policy with a session-specific ACS URL similar to this:
 
     ```json
     {
@@ -195,13 +204,13 @@ AWS automatically creates a trust policy for SAML federation, but it includes a 
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": "sts:AssumeRoleWithSAML",
                 "Principal": {
-                    "Federated": "arn:aws:iam::123456789012:saml-provider/authentik"
+                    "Federated": "arn:aws:iam::<aws_account_id>:saml-provider/<provider_name>"
                 },
+                "Action": "sts:AssumeRoleWithSAML",
                 "Condition": {
                     "StringEquals": {
-                        "SAML:aud": ["https://signin.aws.amazon.com/saml/acs/AAAAAA"]
+                        "SAML:aud": "https://signin.aws.amazon.com/saml/acs/AAAAAA"
                     }
                 }
             }
@@ -209,7 +218,7 @@ AWS automatically creates a trust policy for SAML federation, but it includes a 
     }
     ```
 
-4. Update the `SAML:aud` value from the session-specific URL to the generic signin URL:
+4. Update `SAML:aud` to the generic AWS SAML sign-in URL:
 
     ```json
     {
@@ -217,10 +226,10 @@ AWS automatically creates a trust policy for SAML federation, but it includes a 
         "Statement": [
             {
                 "Effect": "Allow",
-                "Action": "sts:AssumeRoleWithSAML",
                 "Principal": {
-                    "Federated": "arn:aws:iam::123456789012:saml-provider/authentik"
+                    "Federated": "arn:aws:iam::<aws_account_id>:saml-provider/<provider_name>"
                 },
+                "Action": "sts:AssumeRoleWithSAML",
                 "Condition": {
                     "StringEquals": {
                         "SAML:aud": "https://signin.aws.amazon.com/saml"
@@ -231,74 +240,36 @@ AWS automatically creates a trust policy for SAML federation, but it includes a 
     }
     ```
 
-    :::info
-    The key change is replacing `https://signin.aws.amazon.com/saml/acs/AAAAAA` with `https://signin.aws.amazon.com/saml`. This allows any user authenticated through authentik to assume this role, regardless of their session.
-    :::
-
 5. Click **Update policy**.
 
-Repeat the role creation process for each role that you want to make available to your users.
+### Configure OIDC federation _(optional)_
 
-### Test the integration
+Use this path only for AWS IAM web identity federation, such as CI/CD pipelines, automation, or workloads that exchange OIDC tokens for temporary AWS credentials. It does not configure AWS Management Console SSO.
 
-1. Log in to authentik and visit the Application Dashboard.
-2. Click on the AWS application.
-3. You should be redirected to AWS and logged in. Check the top-right corner of the AWS console to verify your identity is displayed in the format `<role_name>/<username>` (e.g., `authentik-admin/dominic`).
-
-</TabItem>
-
-  <TabItem value="iam-oidc">
-
-## Prerequisites
-
-- An AWS account with permissions to create IAM roles and identity providers
-
-:::info AWS OIDC limitations
-AWS does not support direct OIDC login for the AWS Management Console.
-
-OIDC in AWS is mainly used for federated access to AWS resources and programmatic access, such as:
-
-    - Machine-to-machine authentication (CI/CD pipelines, automated scripts, etc.)
-    - Web applications requesting temporary AWS credentials via OIDC tokens
-    - Service account integrations in Kubernetes clusters (like EKS OIDC provider)
-
-:::
-
-## authentik configuration
-
-To support the integration of AWS with authentik using OIDC, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-    - **Application**: provide a descriptive name (e.g., `AWS-OIDC`), an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
+1. In authentik, create an application/provider pair with **OAuth2/OpenID Connect** as the provider type.
+    - **Application**: provide a descriptive name, note the application **Slug**, and configure an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **slug** values because they will be required later.
-        - Add a **Redirect URI** of type `Strict` `Authorization` that matches the AWS resource that you want to access via OIDC.
-        - Select any available signing key.
-        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+        - Note the **Client ID**.
+        - Select an available signing key.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'` if your role trust policies use entitlement claims.
+2. In the AWS Management Console, navigate to **IAM** > **Identity providers**.
+3. Click **Add provider** and configure the following settings:
+    - **Provider type**: select **OpenID Connect**.
+    - **Provider URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Audience**: enter the **Client ID** from authentik.
+4. Click **Add provider**.
+5. Open the identity provider that you created and click **Assign role** to create or select the IAM role that trusts this provider.
 
-3. Click **Submit** to save the new application and provider.
+## Configuration verification
 
-## AWS configuration
-
-1. Log in to the AWS Management Console as an administrator that has permissions to create IAM roles and identity providers.
-2. Open the [IAM Console](https://console.aws.amazon.com/iam/) and in the left sidebar under **Access Management**, click **Identity providers**.
-3. Click **Add provider** and configure the following fields:
-    - **Provider type**: `OpenID Connect`
-    - **Provider URL**: `https://authentik.company/application/o/<application-slug>/`
-    - **Audience**: set to the Client ID from authentik
-4. Click **Add provider**
-5. On the **Identity providers** page, click on the name of the provider that you just added.
-6. Click **Assign role** and either create a new role or select an existing role. This will determine the AWS permissions of any user authenticated via OIDC.
-
-</TabItem>
-</Tabs>
+To confirm that authentik is properly configured with AWS Classic IAM, open the AWS application from the authentik User interface. If your user has access to more than one AWS role, AWS prompts you to choose a role. After you select a role, the AWS Management Console opens and shows your assumed role session in the account menu in the format `<role_name>/<session_name>`.
 
 ## Resources
 
 - [AWS Docs - Create a SAML identity provider in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml.html)
+- [AWS Docs - Create a role for SAML 2.0 federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_saml.html)
 - [AWS Docs - Create an OpenID Connect (OIDC) identity provider in IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html)
+- [AWS Docs - Create a role for OpenID Connect federation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html)
+- [AWS Docs - Configure SAML assertions for the authentication response](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml_assertions.html)
+- [AWS Docs - Enabling SAML 2.0 federated principals to access the AWS Management Console](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_enable-console-saml.html)
+- [AWS Docs - Troubleshoot SAML federation with IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_saml.html)

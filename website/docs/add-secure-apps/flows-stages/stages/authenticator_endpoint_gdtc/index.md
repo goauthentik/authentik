@@ -10,7 +10,7 @@ This stage is deprecated in favor of the [Google Chrome connector](../../../../e
 
 The Google Chrome Device Trust Authenticator Stage verifies a Chrome browser by using the Chrome Verified Access API.
 
-## Overview
+## About the Google Chrome Device Trust authenticator stage
 
 This stage validates Chrome Enterprise Device Trust signals from the user's browser. Unlike other authenticator setup stages, it does not enroll a reusable MFA device for later validation through the [Authenticator Validation stage](../authenticator_validate/index.md).
 

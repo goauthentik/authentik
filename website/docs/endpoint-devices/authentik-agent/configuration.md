@@ -42,7 +42,7 @@ The authentik Agent requires an OAuth application/provider pair to handle authen
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
+            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes.
     - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/bindings-overview/index.md) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
@@ -56,7 +56,7 @@ The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.
 3. Select **Agent Connector** as the agent type and click **Next**.
 4. Configure the following required settings:
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
-    - **Refresh interval**: Select how often the agent updates its configuration.
+    - **Refresh interval**: select how often the agent updates its configuration.
     - **Enabled**: toggle to enable the connector.
     - Under **Authentication settings**:
         - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.

@@ -76,7 +76,7 @@
 /core/certificates                                          /sys-mgmt/certificates/ 301!
 /core/settings                                              /sys-mgmt/settings/ 301!
 /install-config/geoip                                       /sys-mgmt/ops/geoip 301!
-/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3 301!
+/install-config/storage-s3                                  /sys-mgmt/ops/storage-s3/ 301!
 /events/*                                                   /sys-mgmt/events/:splat 301!
 #endregion
 

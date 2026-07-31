@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from django.apps import apps
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
@@ -22,7 +23,9 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
+from authentik.providers.oauth2.dpop import DPOP_SUPPORTED_ALGS
 from authentik.providers.oauth2.models import (
+    OAuth2DynamicClientRegistration,
     OAuth2Provider,
     ResponseMode,
     ResponseTypes,
@@ -117,10 +120,22 @@ class ProviderInfoView(View):
             "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
+            "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
         }
         if provider.encryption_key:
             config["id_token_encryption_alg_values_supported"] = ["RSA-OAEP-256"]
             config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
+        try:
+            _ = provider.dcr_configuration
+            if apps.get_app_config("authentik_enterprise").enabled():
+                config["registration_endpoint"] = self.request.build_absolute_uri(
+                    reverse(
+                        "authentik_enterprise_providers_oauth2:dynamic-client-registration",
+                        kwargs={"application_slug": provider.application.slug},
+                    )
+                )
+        except OAuth2DynamicClientRegistration.DoesNotExist:
+            pass
         return config
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
