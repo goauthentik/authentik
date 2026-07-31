@@ -1,0 +1,99 @@
+---
+title: Integrate with Docker Platforms
+sidebar_label: Docker Platforms
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What are Docker platforms?
+
+> Docker provides services and applications for sharing container images, building and running containers, and running AI coding agents in isolated environments.
+>
+> -- https://www.docker.com/
+
+This guide configures authentik as a SAML identity provider for Docker platforms through Docker SSO. Users can access **Docker Hub, Docker Desktop, and Docker Sandboxes** with the same Docker authentication and organization membership.
+
+## Preparation
+
+The following placeholder is used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+Docker SSO requires a Docker Business subscription and an organization owner account. Each user must have an email address in authentik that matches their Docker account email address and belongs to a verified domain. Domain verification is a Docker-side prerequisite and is outside the scope of this guide.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+### Start the SAML connection in Docker
+
+1. Log in to [Docker Home](https://app.docker.com/) as an organization owner and select your organization. If the organization belongs to a company, select the company instead.
+2. Navigate to **Identity & auth** > **SSO and SCIM** and click **Create Connection**.
+3. Enter a descriptive connection name and select **SAML 2.0**.
+4. Copy the **Entity ID** and **ACS URL** values. Keep the setup page open because you will return to it after configuring authentik.
+
+## authentik configuration
+
+To support the integration of Docker platforms with authentik, create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+        - Under **UI Settings**, set **Launch URL** to `https://hub.docker.com/`.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name or accept the auto-provided name, select the authorization flow to use for this provider, and configure the following settings:
+        - **ACS URL**: enter the **ACS URL** from Docker.
+        - **Audience**: enter the **Entity ID** from Docker.
+        - Set **Service Provider Binding** to **Post**.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Set **Default NameID Policy** to **Email address**.
+    - **Configure Bindings** _(optional)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage which users can access Docker platforms from their **Application Dashboard** page.
+3. Click **Submit** to save the application and provider.
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. The certificate is required to complete the Docker SSO connection.
+
+## Docker SSO configuration
+
+### Complete the SAML connection
+
+1. Return to the Docker SSO setup page that you kept open.
+2. Enter the following identity provider values:
+    - **SAML Sign-in URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **x509 Certificate**: paste the complete contents of the signing certificate that you downloaded from authentik.
+3. Select the verified email domain.
+4. Select a default Docker team if your organization requires one.
+5. Review the settings and click **Create connection**.
+
+Docker uses just-in-time (JIT) provisioning to add assigned users to the organization when they first sign in through SSO.
+
+### Enforce SSO _(optional)_
+
+Test SSO with an organization owner account before enabling enforcement. Ensure that Docker CLI users and CI/CD pipelines use personal access tokens or organization access tokens because password-based CLI authentication is unavailable after SSO is enforced.
+
+1. In a private or incognito browser window, open Docker Hub and sign in with an email address from the verified domain. Confirm that Docker redirects you to authentik and then back to Docker Hub.
+2. In Docker Home, select your organization or company.
+3. Navigate to **Identity & auth** > **SSO and SCIM**.
+4. Open the **Action** menu for the SSO connection and select **Enable enforcement**.
+5. Follow the on-screen instructions and click **Turn on enforcement**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Docker platforms, open the integration from the authentik Application Dashboard and sign in with an email address from the verified domain. You should be redirected to authentik and then returned to Docker Hub.
+
+## Resources
+
+- [Docker Docs - Set up single sign-on](https://docs.docker.com/enterprise/security/single-sign-on/connect/)
+- [Docker Docs - Single sign-on overview](https://docs.docker.com/enterprise/security/single-sign-on/)
+- [Docker Docs - Provision users](https://docs.docker.com/enterprise/security/provisioning/)
+- [Docker Docs - Get started with Docker Sandboxes](https://docs.docker.com/ai/sandboxes/get-started/)
+- [Docker Docs - Docker Sandboxes sign-in enforcement](https://docs.docker.com/ai/sandboxes/governance/sign-in-enforcement/)

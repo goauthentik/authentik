@@ -12,6 +12,7 @@ from authentik.core.models import Application, Group, User, UserTypes
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.lib.sync.outgoing.exceptions import TransientSyncException
+from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
 from authentik.tasks.models import Task
@@ -539,6 +540,35 @@ class SCIMUserTests(TestCase):
         self.assertEqual(mock.call_count, 2)
         self.assertEqual(mock.request_history[0].method, "GET")
         self.assertEqual(mock.request_history[1].method, "POST")
+
+    @Mocker()
+    def test_user_diff_nested_attribute(self, mock: Mocker):
+        """Test nested attribute changes are detected without mutating cached data"""
+        mock.get("https://localhost/ServiceProviderConfig", json={})
+        connection = SCIMProviderUser(
+            attributes={
+                "urn:ietf:params:scim:schemas:extension:example:2.0:User": {
+                    "birthDate": "1990-01-31"
+                }
+            }
+        )
+
+        self.assertTrue(
+            SCIMUserClient(self.provider).diff(
+                {
+                    "urn:ietf:params:scim:schemas:extension:example:2.0:User": {
+                        "birthDate": "1991-02-01"
+                    }
+                },
+                connection,
+            )
+        )
+        self.assertEqual(
+            connection.attributes["urn:ietf:params:scim:schemas:extension:example:2.0:User"][
+                "birthDate"
+            ],
+            "1990-01-31",
+        )
 
     @Mocker()
     def test_discover(self, mock: Mocker):

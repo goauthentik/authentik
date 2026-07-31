@@ -10,7 +10,12 @@ from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
-from authentik.lib.config import CONFIG, django_db_config
+from authentik.lib.config import (
+    CONFIG,
+    DIRECT_DB_ALIAS,
+    django_db_config,
+    postgresql_direct_db_enabled,
+)
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -38,6 +43,10 @@ CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
+USER_SWITCHING_COOKIE_NAME = "authentik_user_switching"
+USER_SWITCHING_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.user_switching_age", "days=365")
+).total_seconds()
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
@@ -164,7 +173,12 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@goauthentik.io",
     },
-    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
+    "AUTHENTICATION_WHITELIST": [
+        "authentik.endpoints.connectors.agent.auth.AgentAuth",
+        "authentik.endpoints.connectors.agent.auth.AgentEnrollmentAuth",
+        "authentik.endpoints.connectors.agent.auth.DeviceAuthFedAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
+    ],
     "LICENSE": {
         "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
@@ -181,6 +195,12 @@ SPECTACULAR_SETTINGS = {
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
+        "OffboardingActionEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingAction"
+        ),
+        "OffboardingStatusEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingStatus"
+        ),
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
@@ -195,6 +215,9 @@ SPECTACULAR_SETTINGS = {
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
         "TransportModeEnum": "authentik.events.models.TransportMode",
+        "RequestStatus": "authentik.enterprise.requests.models.RequestStatus",
+        "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
+        "GrantTypeEnum": "authentik.providers.oauth2.models.GrantType",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
@@ -338,9 +361,13 @@ DATABASE_ROUTERS = (
 # We don't use HStore
 POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
 
+# When a direct endpoint is configured (postgresql.direct.*), route the
+# Channels Postgres layer through it — its LISTEN connection can't tolerate
+# a transaction pooler swapping the backend.
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
+        "CONFIG": ({"using": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}),
     },
 }
 
@@ -398,6 +425,11 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
+    # Route the broker's LISTEN connection and advisory-lock connection through
+    # the direct endpoint when configured. ORM queries continue via db_alias=default.
+    "broker_kwargs": (
+        {"direct_db_alias": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}
+    ),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),

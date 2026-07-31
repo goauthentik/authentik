@@ -182,7 +182,7 @@ export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true) {
+    if (frontMatter.draft) {
         return null;
     }
 
@@ -197,6 +197,7 @@ export function parseDocFile(filePath, baseDir) {
         url: "",
         description: extractDescription(frontMatter, content),
         content,
+        slug: typeof frontMatter.slug === "string" ? frontMatter.slug : undefined,
     };
 }
 
@@ -280,24 +281,92 @@ export function groupLabel(group, opts) {
 }
 
 /**
- * Resolve a site-relative path to its rendered route URL.
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+function normalizeRouteBasePath(routeBasePath) {
+    if (!routeBasePath || routeBasePath === "/") {
+        return "/";
+    }
+
+    let start = 0;
+    let end = routeBasePath.length;
+    while (start < end && routeBasePath[start] === "/") {
+        start++;
+    }
+    while (end > start && routeBasePath[end - 1] === "/") {
+        end--;
+    }
+
+    return `/${routeBasePath.slice(start, end)}/`;
+}
+
+/**
+ * @param {string} routePath
+ * @returns {string}
+ */
+function normalizeRoutePath(routePath) {
+    const normalized = `/${routePath.replace(/^\/+/, "")}`.replace(/\/{2,}/g, "/");
+    if (normalized === "/") {
+        return normalized;
+    }
+    return normalized.endsWith("/") ? normalized : `${normalized}/`;
+}
+
+/**
+ * Resolve a route from source metadata when Docusaurus' final route list is not
+ * available, such as during the dev server's content loading phase.
  *
- * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+export function resolveDocumentUrlFromSource(doc, routeBasePath) {
+    if (doc.slug) {
+        if (doc.slug.startsWith("/")) {
+            return normalizeRoutePath(doc.slug);
+        }
+        return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.slug}`);
+    }
+
+    if (doc.path === "" || doc.path === "index") {
+        return normalizeRouteBasePath(routeBasePath);
+    }
+
+    return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.path}`);
+}
+
+/**
+ * Resolve a document to its rendered route URL.
+ *
+ * Prefer the route declared by the document's source metadata, including a
+ * frontmatter slug override. Fall back to matching the source path for routes
+ * transformed by Docusaurus conventions such as numbered prefixes.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
  * @returns {string | undefined}
  */
-export function resolveDocumentUrl(relPathNoExt, routesPaths) {
+export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {
     if (!routesPaths || routesPaths.length === 0) return undefined;
+
+    const sourceRoute = resolveDocumentUrlFromSource(doc, routeBasePath);
+    const normalizedSourceRoute = trimTrailingSlashes(sourceRoute.toLowerCase());
+    const exactRoute = routesPaths.find(
+        (route) => trimTrailingSlashes(route.toLowerCase()) === normalizedSourceRoute,
+    );
+    if (exactRoute) return exactRoute;
 
     // The root index page has the bare path "index" (no leading "/index" to
     // strip), so it never suffix-matches a route. Map it to the site root.
-    if (relPathNoExt === "" || relPathNoExt === "index") {
+    if (doc.path === "" || doc.path === "index") {
         return routesPaths.includes("/") ? "/" : undefined;
     }
 
-    const tails = new Set([relPathNoExt]);
-    tails.add(collapseMatchingTrailingSegment(relPathNoExt));
-    tails.add(removeNumberedPrefixes(relPathNoExt));
+    const tails = new Set([doc.path]);
+    tails.add(collapseMatchingTrailingSegment(doc.path));
+    tails.add(removeNumberedPrefixes(doc.path));
 
     for (const tail of tails) {
         const match = findMatchingRoute(routesPaths, tail);

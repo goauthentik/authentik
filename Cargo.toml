@@ -21,11 +21,17 @@ publish = false
 [workspace.dependencies]
 arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
+askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.17.1", features = ["fips"] }
+aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
-clap = { version = "= 4.6.1", features = ["derive", "env"] }
-client-ip = { version = "0.2.1", features = ["forwarded-header"] }
+axum-extra = { version = "= 0.12.6", default-features = false, features = [
+  "cookie-signed",
+  "cookie-key-expansion",
+] }
+base64 = "= 0.23.0"
+clap = { version = "= 4.6.4", features = ["derive", "env"] }
+client-ip = { version = "0.2.1" }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
 colored = "= 3.1.1"
@@ -37,21 +43,45 @@ console-subscriber = "= 0.5.0"
 dotenvy = "= 0.15.7"
 durstr = "= 0.5.1"
 eyre = "= 0.6.12"
-forwarded-header-value = "= 0.1.1"
-futures = "= 0.3.32"
-glob = "= 0.3.3"
+futures = "= 0.3.33"
+glob = "= 0.3.4"
+http-body-util = "= 0.1.4"
+hyper = { version = "= 1.11.0", features = ["client", "http1", "http2"] }
+hyper-rustls = { version = "= 0.27.9", default-features = false, features = [
+  "aws-lc-rs",
+  "http1",
+  "http2",
+  "native-tokio",
+  "tls12",
+] }
 hyper-unix-socket = "= 0.6.1"
-hyper-util = "= 0.1.20"
+hyper-util = { version = "= 0.1.20", features = [
+  "client-legacy",
+  "http1",
+  "http2",
+  "tokio",
+] }
 ipnet = { version = "= 2.12.0", features = ["serde"] }
-json-subscriber = "= 0.2.8"
+json-subscriber = "= 0.3.0"
+jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
+moka = { version = "= 0.12.15", default-features = false, features = [
+  "future",
+] }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
+pem = "= 3.0.6"
+percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
-regex = "= 1.12.4"
+rand = "= 0.10.2"
+rcgen = { version = "= 0.14.8", default-features = false, features = [
+  "aws_lc_rs",
+  "fips",
+] }
+regex = "= 1.13.1"
 reqwest = { version = "= 0.13.4", features = [
   "form",
   "json",
@@ -67,8 +97,8 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.42", features = ["fips"] }
-sentry = { version = "= 0.48.4", default-features = false, features = [
+rustls = { version = "= 0.23.43", features = ["fips"] }
+sentry = { version = "= 0.48.5", default-features = false, features = [
   "backtrace",
   "contexts",
   "debug-images",
@@ -78,9 +108,9 @@ sentry = { version = "= 0.48.4", default-features = false, features = [
   "tower",
   "tracing",
 ] }
-serde = { version = "= 1.0.228", features = ["derive"] }
-serde_json = "= 1.0.150"
-serde_repr = "= 0.1.20"
+serde = { version = "= 1.0.229", features = ["derive"] }
+serde_json = "= 1.0.151"
+serde_repr = "= 0.1.21"
 serde_with = { version = "= 3.21.0", default-features = false, features = [
   "base64",
 ] }
@@ -96,14 +126,22 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
-thiserror = "= 2.0.18"
-time = { version = "= 0.3.53", features = ["macros"] }
-tokio = { version = "= 1.52.3", features = ["full", "tracing"] }
+thiserror = "= 2.0.19"
+time = { version = "= 0.3.54", features = ["macros"] }
+tokio = { version = "= 1.53.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
-tokio-util = { version = "= 0.7.18", features = ["full"] }
+tokio-tungstenite = { version = "= 0.30.0", features = [
+  "rustls-tls-webpki-roots",
+  "url",
+] }
+tokio-util = { version = "= 0.7.19", features = ["full"] }
 tower = "= 0.5.3"
-tower-http = { version = "= 0.7.0", features = ["timeout"] }
+tower-http = { version = "= 0.7.0", features = [
+  "compression-full",
+  "fs",
+  "timeout",
+] }
 tracing = "= 0.1.44"
 tracing-error = "= 0.2.1"
 tracing-subscriber = { version = "= 0.3.23", features = [
@@ -113,8 +151,7 @@ tracing-subscriber = { version = "= 0.3.23", features = [
   "tracing-log",
 ] }
 url = "= 2.5.8"
-uuid = { version = "= 1.23.4", features = ["serde", "v4"] }
-which = "= 8.0.4"
+uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 
 ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
 ak-client = { package = "authentik-client", version = "2026.8.0-rc1", path = "./packages/client-rust" }
@@ -237,14 +274,9 @@ verbose_file_reads = "warn"
 [profile.dev.package.backtrace]
 opt-level = 3
 
-[profile.dev]
-panic = "abort"
-
 [profile.release]
 debug = 2
 lto = "fat"
-# Because of the async runtime, we want to die straightaway if we panic.
-panic = "abort"
 strip = true
 
 [package]
@@ -260,32 +292,76 @@ publish.workspace = true
 
 [features]
 default = ["core", "proxy"]
-core = ["ak-common/core", "dep:pyo3", "dep:sqlx"]
-proxy = ["ak-common/proxy"]
+core = ["proxy", "ak-common/core", "dep:pyo3", "dep:sqlx"]
+proxy = [
+  "ak-common/proxy",
+  "dep:ak-client",
+  "dep:jsonwebtoken",
+  "dep:axum-extra",
+  "dep:aws-lc-rs",
+  "dep:reqwest-middleware",
+  "dep:moka",
+  "dep:base64",
+  "dep:regex",
+  "dep:hyper",
+  "dep:hyper-rustls",
+  "dep:thiserror",
+  "dep:askama",
+]
 
 [build-dependencies]
 pyo3-build-config.workspace = true
 
 [dependencies]
 ak-axum.workspace = true
+ak-client = { workspace = true, optional = true }
 ak-common.workspace = true
 arc-swap.workspace = true
 argh.workspace = true
+askama = { workspace = true, optional = true }
+aws-lc-rs = { workspace = true, optional = true }
+base64 = { workspace = true, optional = true }
+axum-extra = { workspace = true, optional = true }
+axum-server.workspace = true
 axum.workspace = true
 color-eyre.workspace = true
 eyre.workspace = true
+futures.workspace = true
+http-body-util.workspace = true
+hyper = { workspace = true, optional = true }
+hyper-rustls = { workspace = true, optional = true }
 hyper-unix-socket.workspace = true
 hyper-util.workspace = true
-metrics.workspace = true
+jsonwebtoken = { workspace = true, optional = true }
 metrics-exporter-prometheus.workspace = true
+metrics.workspace = true
+moka = { workspace = true, optional = true }
 nix.workspace = true
+pem.workspace = true
+percent-encoding.workspace = true
 pyo3 = { workspace = true, optional = true }
+rand.workspace = true
+regex = { workspace = true, optional = true }
+reqwest-middleware = { workspace = true, optional = true }
 reqwest.workspace = true
+rustls.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_repr.workspace = true
 sqlx = { workspace = true, optional = true }
+thiserror = { workspace = true, optional = true }
+time.workspace = true
+tokio-retry2.workspace = true
+tokio-tungstenite.workspace = true
 tokio.workspace = true
+tower-http.workspace = true
+tower.workspace = true
 tracing.workspace = true
+url.workspace = true
 uuid.workspace = true
-which.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
 
 [lints]
 workspace = true

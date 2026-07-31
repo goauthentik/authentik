@@ -52,7 +52,13 @@ export interface BlueprintFile {
  */
 export function instanceOfBlueprintFile(value: object): value is BlueprintFile {
     if (!("path" in value) || value["path"] === undefined) return false;
-    if (!("lastM" in value) || value["lastM"] === undefined) return false;
+    if (
+        (!("lastM" in (value as Record<string, any>)) &&
+            !("last_m" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastM"] === undefined &&
+            (value as Record<string, any>)["last_m"] === undefined)
+    )
+        return false;
     if (!("hash" in value) || value["hash"] === undefined) return false;
     if (!("meta" in value) || value["meta"] === undefined) return false;
     return true;

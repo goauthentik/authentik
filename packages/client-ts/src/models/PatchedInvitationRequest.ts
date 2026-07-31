@@ -72,10 +72,15 @@ export function PatchedInvitationRequestFromJSONTyped(
     }
     return {
         name: json["name"] == null ? undefined : json["name"],
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        expires:
+            json["expires"] === undefined
+                ? undefined
+                : json["expires"] === null
+                  ? null
+                  : new Date(json["expires"]),
         fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
         singleUse: json["single_use"] == null ? undefined : json["single_use"],
-        flow: json["flow"] == null ? undefined : json["flow"],
+        flow: json["flow"] === undefined ? undefined : json["flow"] === null ? null : json["flow"],
     };
 }
 

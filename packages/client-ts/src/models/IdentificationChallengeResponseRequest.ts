@@ -74,10 +74,30 @@ export function IdentificationChallengeResponseRequestFromJSONTyped(
     }
     return {
         component: json["component"] == null ? undefined : json["component"],
-        uidField: json["uid_field"] == null ? undefined : json["uid_field"],
-        password: json["password"] == null ? undefined : json["password"],
-        captchaToken: json["captcha_token"] == null ? undefined : json["captcha_token"],
-        passkey: json["passkey"] == null ? undefined : json["passkey"],
+        uidField:
+            json["uid_field"] === undefined
+                ? undefined
+                : json["uid_field"] === null
+                  ? null
+                  : json["uid_field"],
+        password:
+            json["password"] === undefined
+                ? undefined
+                : json["password"] === null
+                  ? null
+                  : json["password"],
+        captchaToken:
+            json["captcha_token"] === undefined
+                ? undefined
+                : json["captcha_token"] === null
+                  ? null
+                  : json["captcha_token"],
+        passkey:
+            json["passkey"] === undefined
+                ? undefined
+                : json["passkey"] === null
+                  ? null
+                  : json["passkey"],
     };
 }
 

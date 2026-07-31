@@ -62,12 +62,36 @@ export interface AgentPSSODeviceRegistrationResponse {
 export function instanceOfAgentPSSODeviceRegistrationResponse(
     value: object,
 ): value is AgentPSSODeviceRegistrationResponse {
-    if (!("clientId" in value) || value["clientId"] === undefined) return false;
+    if (
+        (!("clientId" in (value as Record<string, any>)) &&
+            !("client_id" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientId"] === undefined &&
+            (value as Record<string, any>)["client_id"] === undefined)
+    )
+        return false;
     if (!("issuer" in value) || value["issuer"] === undefined) return false;
-    if (!("tokenEndpoint" in value) || value["tokenEndpoint"] === undefined) return false;
-    if (!("jwksEndpoint" in value) || value["jwksEndpoint"] === undefined) return false;
+    if (
+        (!("tokenEndpoint" in (value as Record<string, any>)) &&
+            !("token_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["tokenEndpoint"] === undefined &&
+            (value as Record<string, any>)["token_endpoint"] === undefined)
+    )
+        return false;
+    if (
+        (!("jwksEndpoint" in (value as Record<string, any>)) &&
+            !("jwks_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["jwksEndpoint"] === undefined &&
+            (value as Record<string, any>)["jwks_endpoint"] === undefined)
+    )
+        return false;
     if (!("audience" in value) || value["audience"] === undefined) return false;
-    if (!("nonceEndpoint" in value) || value["nonceEndpoint"] === undefined) return false;
+    if (
+        (!("nonceEndpoint" in (value as Record<string, any>)) &&
+            !("nonce_endpoint" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["nonceEndpoint"] === undefined &&
+            (value as Record<string, any>)["nonce_endpoint"] === undefined)
+    )
+        return false;
     return true;
 }
 

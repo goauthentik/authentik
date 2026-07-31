@@ -18,6 +18,7 @@ export * from "./ProvidersApi";
 export * from "./RacApi";
 export * from "./RbacApi";
 export * from "./ReportsApi";
+export * from "./RequestsApi";
 export * from "./RootApi";
 export * from "./SchemaApi";
 export * from "./SourcesApi";
