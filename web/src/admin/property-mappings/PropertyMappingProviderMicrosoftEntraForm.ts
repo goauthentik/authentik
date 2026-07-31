@@ -11,23 +11,21 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-microsoft-entra-form")
 export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappingForm<MicrosoftEntraProviderMapping> {
-    loadInstance(pk: string): Promise<MicrosoftEntraProviderMapping> {
-        return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: MicrosoftEntraProviderMapping): Promise<MicrosoftEntraProviderMapping> {
-        if (this.instance) {
-            return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraUpdate({
-                pmUuid: this.instance.pk,
-                microsoftEntraProviderMappingRequest: data,
-            });
-        }
-        return aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraCreate({
-            microsoftEntraProviderMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraRetrieve({
+                pmUuid: pk,
+            }),
+        create: (microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraCreate({
+                microsoftEntraProviderMappingRequest,
+            }),
+        update: (pk: string, microsoftEntraProviderMappingRequest: MicrosoftEntraProviderMapping) =>
+            aki(PropertymappingsApi).propertymappingsProviderMicrosoftEntraUpdate({
+                pmUuid: pk,
+                microsoftEntraProviderMappingRequest,
+            }),
+    };
 }
 
 declare global {

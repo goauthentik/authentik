@@ -218,6 +218,7 @@ class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
     schemas: tuple[str] = ("urn:ietf:params:scim:api:messages:2.0:PatchOp",)
+    Operations: list[PatchOperation]
 
 
 class PatchOperation(BasePatchOperation):

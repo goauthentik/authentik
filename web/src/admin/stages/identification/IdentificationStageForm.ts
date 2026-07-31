@@ -42,24 +42,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         `,
     ];
 
-    loadInstance(pk: string): Promise<IdentificationStage> {
-        return aki(StagesApi).stagesIdentificationRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: IdentificationStage): Promise<IdentificationStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesIdentificationUpdate({
-                stageUuid: this.instance.pk || "",
-                identificationStageRequest: data,
-            });
-        }
-
-        return aki(StagesApi).stagesIdentificationCreate({
-            identificationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesIdentificationRetrieve({ stageUuid }),
+        create: (identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationCreate({ identificationStageRequest }),
+        update: (stageUuid: string, identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationUpdate({ stageUuid, identificationStageRequest }),
+    };
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (

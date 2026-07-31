@@ -1,5 +1,7 @@
 ---
 title: WS-Federation Provider
+sidebar_position: 13
+sidebar_label: "WS-Federation Provider"
 ---
 
 The WS-Federation provider is used to integrate with applications and service providers that use [WS-Federation protocol](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-adfsod/204de335-ea34-4f9b-ae73-8b7d4c8152d1). WS-Federation is an XML-based identity federation protocol that uses token exchange for federated Single Sign-On (SSO) and IdP authentication, specifically for Windows applications such as SharePoint.

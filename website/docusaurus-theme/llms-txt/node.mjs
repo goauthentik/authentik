@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * @file Pure node-side logic for the llms.txt plugin: discovery, parsing, URLs.
  *
@@ -7,6 +6,8 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+
+import { trimTrailingSlashes } from "./common.mjs";
 
 import { parseFileContentFrontMatter } from "@docusaurus/utils/lib/markdownUtils.js";
 import FastGlob from "fast-glob";
@@ -67,33 +68,6 @@ function extractTitle(frontMatter, body, relPathNoExt) {
 }
 
 /**
- * Extract a short description: frontmatter, else the first usable prose
- * paragraph. Headings, MDX imports/exports, admonitions, JSX/HTML, CVE reporter
- * attributions, and bullet lists (prerequisites/feature enumerations) are
- * skipped so the description is a clean sentence, not a flattened block.
- *
- * @param {Record<string, any>} frontMatter
- * @param {string} body
- * @returns {string}
- */
-function extractDescription(frontMatter, body) {
-    if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
-        return cleanDescriptionText(frontMatter.description);
-    }
-    for (const para of body.split("\n\n")) {
-        const trimmed = para.trim();
-        if (!trimmed) continue;
-        if (trimmed.startsWith("#")) continue; // headings
-        if (/^(import\s|export\s)/.test(trimmed)) continue; // MDX imports/exports
-        if (/^(:::|<)/.test(trimmed)) continue; // admonitions, JSX, HTML comments
-        if (/^_*\s*reported by\b/i.test(trimmed)) continue; // CVE reporter attribution
-        if (isListBlock(trimmed)) continue; // prerequisite/feature bullet lists
-        return firstSentence(cleanDescriptionText(trimmed));
-    }
-    return "";
-}
-
-/**
  * Normalize a description for use in an index line: strip blockquote markers,
  * `-- <source>` attribution lines, list bullets, and inline Markdown (links,
  * emphasis, code, images) down to their text, then collapse to a single line.
@@ -147,6 +121,33 @@ function isListBlock(block) {
 }
 
 /**
+ * Extract a short description: frontmatter, else the first usable prose
+ * paragraph. Headings, MDX imports/exports, admonitions, JSX/HTML, CVE reporter
+ * attributions, and bullet lists (prerequisites/feature enumerations) are
+ * skipped so the description is a clean sentence, not a flattened block.
+ *
+ * @param {Record<string, any>} frontMatter
+ * @param {string} body
+ * @returns {string}
+ */
+function extractDescription(frontMatter, body) {
+    if (typeof frontMatter.description === "string" && frontMatter.description.trim()) {
+        return cleanDescriptionText(frontMatter.description);
+    }
+    for (const para of body.split("\n\n")) {
+        const trimmed = para.trim();
+        if (!trimmed) continue;
+        if (trimmed.startsWith("#")) continue; // headings
+        if (/^(import\s|export\s)/.test(trimmed)) continue; // MDX imports/exports
+        if (/^(:::|<)/.test(trimmed)) continue; // admonitions, JSX, HTML comments
+        if (/^_*\s*reported by\b/i.test(trimmed)) continue; // CVE reporter attribution
+        if (isListBlock(trimmed)) continue; // prerequisite/feature bullet lists
+        return firstSentence(cleanDescriptionText(trimmed));
+    }
+    return "";
+}
+
+/**
  * Title-case a slug for display (e.g. "endpoint-devices" -> "Endpoint Devices").
  * A configured label (see {@link groupLabel}) overrides this for slugs whose
  * words need real expansion (e.g. "sys-mgmt" -> "System Management").
@@ -161,7 +162,7 @@ function isListBlock(block) {
 function humanizeSlug(slug) {
     return slug
         .normalize("NFKD")
-        .replace(/[̀-ͯ]/g, "") // strip combining diacritics
+        .replace(/[\u0300-\u036f]/g, "") // strip combining diacritics
         .replace(/[^a-zA-Z0-9]+/g, " ") // any separator run -> word boundary
         .trim()
         .split(/\s+/)
@@ -181,7 +182,7 @@ export function parseDocFile(filePath, baseDir) {
     const raw = readFileSync(filePath, "utf-8");
     const { frontMatter, content } = parseFileContentFrontMatter(raw);
 
-    if (frontMatter.draft === true) {
+    if (frontMatter.draft) {
         return null;
     }
 
@@ -196,6 +197,7 @@ export function parseDocFile(filePath, baseDir) {
         url: "",
         description: extractDescription(frontMatter, content),
         content,
+        slug: typeof frontMatter.slug === "string" ? frontMatter.slug : undefined,
     };
 }
 
@@ -205,11 +207,11 @@ export function parseDocFile(filePath, baseDir) {
  * @returns {string | undefined}
  */
 function findMatchingRoute(routesPaths, tail) {
-    const normalized = tail.toLowerCase().replace(/\/+$/, "");
+    const normalized = trimTrailingSlashes(tail.toLowerCase());
     if (!normalized) return undefined;
 
     const matches = routesPaths.filter((route) => {
-        const r = route.toLowerCase().replace(/\/+$/, "");
+        const r = trimTrailingSlashes(route.toLowerCase());
         return r === `/${normalized}` || r.endsWith(`/${normalized}`);
     });
 
@@ -279,24 +281,92 @@ export function groupLabel(group, opts) {
 }
 
 /**
- * Resolve a site-relative path to its rendered route URL.
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+function normalizeRouteBasePath(routeBasePath) {
+    if (!routeBasePath || routeBasePath === "/") {
+        return "/";
+    }
+
+    let start = 0;
+    let end = routeBasePath.length;
+    while (start < end && routeBasePath[start] === "/") {
+        start++;
+    }
+    while (end > start && routeBasePath[end - 1] === "/") {
+        end--;
+    }
+
+    return `/${routeBasePath.slice(start, end)}/`;
+}
+
+/**
+ * @param {string} routePath
+ * @returns {string}
+ */
+function normalizeRoutePath(routePath) {
+    const normalized = `/${routePath.replace(/^\/+/, "")}`.replace(/\/{2,}/g, "/");
+    if (normalized === "/") {
+        return normalized;
+    }
+    return normalized.endsWith("/") ? normalized : `${normalized}/`;
+}
+
+/**
+ * Resolve a route from source metadata when Docusaurus' final route list is not
+ * available, such as during the dev server's content loading phase.
  *
- * @param {string} relPathNoExt Site-relative path, POSIX, no extension.
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
+ * @returns {string}
+ */
+export function resolveDocumentUrlFromSource(doc, routeBasePath) {
+    if (doc.slug) {
+        if (doc.slug.startsWith("/")) {
+            return normalizeRoutePath(doc.slug);
+        }
+        return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.slug}`);
+    }
+
+    if (doc.path === "" || doc.path === "index") {
+        return normalizeRouteBasePath(routeBasePath);
+    }
+
+    return normalizeRoutePath(`${normalizeRouteBasePath(routeBasePath)}${doc.path}`);
+}
+
+/**
+ * Resolve a document to its rendered route URL.
+ *
+ * Prefer the route declared by the document's source metadata, including a
+ * frontmatter slug override. Fall back to matching the source path for routes
+ * transformed by Docusaurus conventions such as numbered prefixes.
+ *
+ * @param {LLMSDocInfo} doc
+ * @param {string} routeBasePath
  * @param {string[]} routesPaths Resolved routes from Docusaurus postBuild props.
  * @returns {string | undefined}
  */
-export function resolveDocumentUrl(relPathNoExt, routesPaths) {
+export function resolveDocumentUrl(doc, routeBasePath, routesPaths) {
     if (!routesPaths || routesPaths.length === 0) return undefined;
+
+    const sourceRoute = resolveDocumentUrlFromSource(doc, routeBasePath);
+    const normalizedSourceRoute = trimTrailingSlashes(sourceRoute.toLowerCase());
+    const exactRoute = routesPaths.find(
+        (route) => trimTrailingSlashes(route.toLowerCase()) === normalizedSourceRoute,
+    );
+    if (exactRoute) return exactRoute;
 
     // The root index page has the bare path "index" (no leading "/index" to
     // strip), so it never suffix-matches a route. Map it to the site root.
-    if (relPathNoExt === "" || relPathNoExt === "index") {
+    if (doc.path === "" || doc.path === "index") {
         return routesPaths.includes("/") ? "/" : undefined;
     }
 
-    const tails = new Set([relPathNoExt]);
-    tails.add(collapseMatchingTrailingSegment(relPathNoExt));
-    tails.add(removeNumberedPrefixes(relPathNoExt));
+    const tails = new Set([doc.path]);
+    tails.add(collapseMatchingTrailingSegment(doc.path));
+    tails.add(removeNumberedPrefixes(doc.path));
 
     for (const tail of tails) {
         const match = findMatchingRoute(routesPaths, tail);

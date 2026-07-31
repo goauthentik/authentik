@@ -1,5 +1,7 @@
 ---
 title: Provider property mappings
+sidebar_position: 1
+sidebar_label: "Property Mappings"
 ---
 
 Property mappings allow you to pass information to external applications. For example, pass the current user's groups as a SAML parameter.

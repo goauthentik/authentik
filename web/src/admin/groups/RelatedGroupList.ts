@@ -25,6 +25,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {
     public static override verboseName = msg("Group");
     public static override submitVerb = msg("Add");
+    public static override submittingVerb = msg("Adding");
     public static override createLabel = msg("Add");
 
     @property({ attribute: false })

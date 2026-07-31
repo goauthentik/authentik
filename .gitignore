@@ -14,8 +14,7 @@ media
 # Node
 
 node_modules
-corepack.tgz
-.corepack
+tsconfig.tsbuildinfo
 
 .cspellcache
 cspell-report.*

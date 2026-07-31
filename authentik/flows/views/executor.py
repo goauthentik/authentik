@@ -154,7 +154,15 @@ class FlowExecutorView(APIView):
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 
+    def initialize_request(self, request, *args, **kwargs):
+        # Stubbed out `initialize_request` since we call the correct method early on
+        # in `dispatch`, and super().dispatch would call it again
+        return self.request or request
+
     def dispatch(self, request: HttpRequest, flow_slug: str) -> HttpResponse:
+        self.request = super().initialize_request(request)
+        self.initial(self.request)
+
         with start_span(op="authentik.flow.executor.dispatch", name=self.flow.slug) as span:
             span.set_data("authentik Flow", self.flow.slug)
             get_params = QueryDict(request.GET.get(QS_QUERY, ""))

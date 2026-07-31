@@ -20,23 +20,13 @@ import { customElement } from "lit/decorators.js";
  */
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPProvider>) {
-    async loadInstance(pk: number): Promise<LDAPProvider> {
-        return aki(ProvidersApi).providersLdapRetrieve({
-            id: pk,
-        });
-    }
-
-    async send(data: LDAPProvider): Promise<LDAPProvider> {
-        if (this.instance) {
-            return aki(ProvidersApi).providersLdapUpdate({
-                id: this.instance.pk,
-                lDAPProviderRequest: data,
-            });
-        }
-        return aki(ProvidersApi).providersLdapCreate({
-            lDAPProviderRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (id: number) => aki(ProvidersApi).providersLdapRetrieve({ id }),
+        create: (lDAPProviderRequest: LDAPProvider) =>
+            aki(ProvidersApi).providersLdapCreate({ lDAPProviderRequest }),
+        update: (id: number, lDAPProviderRequest: LDAPProvider) =>
+            aki(ProvidersApi).providersLdapUpdate({ id, lDAPProviderRequest }),
+    };
 
     renderForm() {
         return renderForm({ provider: this.instance, brand: this.brand });

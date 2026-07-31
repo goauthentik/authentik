@@ -31,23 +31,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
-    loadInstance(pk: string): Promise<UserWriteStage> {
-        return aki(StagesApi).stagesUserWriteRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserWriteStage): Promise<UserWriteStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesUserWriteUpdate({
-                stageUuid: this.instance.pk || "",
-                userWriteStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesUserWriteCreate({
-            userWriteStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserWriteRetrieve({ stageUuid }),
+        create: (userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteCreate({ userWriteStageRequest }),
+        update: (stageUuid: string, userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteUpdate({ stageUuid, userWriteStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <div>

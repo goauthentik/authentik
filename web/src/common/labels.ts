@@ -33,6 +33,7 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.LoginFailed]: () => msg("Failed login"),
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
+    [EventActions.UserOffboarded]: () => msg("User was offboarded"),
     [EventActions.SuspiciousRequest]: () => msg("Suspicious request"),
     [EventActions.PasswordSet]: () => msg("Password set"),
     [EventActions.SecretView]: () => msg("Secret was viewed"),
@@ -63,6 +64,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.ReviewOverdue]: () => msg("Review overdue"),
     [EventActions.ReviewAttested]: () => msg("Review attested"),
     [EventActions.ReviewCompleted]: () => msg("Review completed"),
+    [EventActions.AccessRequestCreated]: () => msg("Access request created"),
+    [EventActions.AccessRequestApproved]: () => msg("Access request approved"),
+    [EventActions.AccessRequestDenied]: () => msg("Access request denied"),
+    [EventActions.AccessRequestRevoked]: () => msg("Access request revoked"),
     [EventActions.UnknownDefaultOpenApi]: () => msg("Unknown action"),
     [EventActions.Custom]: () => msg("Custom action"),
 };

@@ -44,7 +44,7 @@ class TestLogoutRequest(TestCase):
         self.provider.save()
         self.source = SAMLSource.objects.create(
             slug="provider",
-            issuer="authentik",
+            issuer_override="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=cert,
         )

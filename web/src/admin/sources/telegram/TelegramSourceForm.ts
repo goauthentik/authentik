@@ -29,27 +29,15 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-telegram-form")
 export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
-    async loadInstance(pk: string): Promise<TelegramSource> {
-        const source = await aki(SourcesApi).sourcesTelegramRetrieve({
-            slug: pk,
-        });
-        return source;
-    }
-
-    async send(data: TelegramSource): Promise<TelegramSource> {
-        let source: TelegramSource;
-        if (this.instance?.pk) {
-            source = await aki(SourcesApi).sourcesTelegramPartialUpdate({
-                slug: this.instance.slug,
-                patchedTelegramSourceRequest: data,
-            });
-        } else {
-            source = await aki(SourcesApi).sourcesTelegramCreate({
-                telegramSourceRequest: data as unknown as TelegramSourceRequest,
-            });
-        }
-        return source;
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesTelegramRetrieve({ slug }),
+        create: (telegramSource: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramCreate({
+                telegramSourceRequest: telegramSource as unknown as TelegramSourceRequest,
+            }),
+        update: (slug: string, patchedTelegramSourceRequest: TelegramSource) =>
+            aki(SourcesApi).sourcesTelegramPartialUpdate({ slug, patchedTelegramSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input

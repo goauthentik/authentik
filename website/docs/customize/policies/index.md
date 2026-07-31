@@ -4,6 +4,7 @@ tags:
     - policy
     - security
     - access-control
+sidebar_position: 1
 ---
 
 Policies are reusable checks in authentik. They let you control whether a user can access an application, whether a stage in a flow should run, whether a source can be used, or whether data entered in a prompt stage is valid.

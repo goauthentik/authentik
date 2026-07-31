@@ -131,6 +131,11 @@ export function createLLMSPlugin(options) {
 }
 
 /**
+ * Footer copyright line shared by every site.
+ */
+export const FOOTER_COPYRIGHT = `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`;
+
+/**
  * @param {Partial<Config>} overrides
  * @returns {Partial<Config>}
  */
@@ -147,7 +152,7 @@ export function extendConfig(overrides) {
 
         themeConfig: /** @type {Partial<UserThemeConfig>} */ ({
             footer: {
-                copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
+                copyright: FOOTER_COPYRIGHT,
             },
         }),
     };
