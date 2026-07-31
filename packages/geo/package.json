@@ -1,0 +1,131 @@
+{
+    "name": "@goauthentik/geo",
+    "version": "1.0.0",
+    "description": "MapLibre-based map component and Protomaps tooling for authentik",
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/geo"
+    },
+    "scripts": {
+        "build": "tsc -p .",
+        "hexworld:build": "npm run build && node scripts/build-hexworld.ts",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prepare": "pnpm run build",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "test": "npm run build && node --test 'test/**/*.test.mjs'",
+        "tiles:pull-hexworld": "node scripts/pull-hexworld.ts",
+        "watch": "tsc -p . --watch"
+    },
+    "main": "./src/index.ts",
+    "type": "module",
+    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./src/index.ts",
+            "node": "./src/index.ts",
+            "bundler": "./src/index.ts",
+            "default": "./out/index.js"
+        },
+        "./hexworld": {
+            "types": "./src/hexworld/index.ts",
+            "node": "./src/hexworld/index.ts",
+            "bundler": "./src/hexworld/index.ts",
+            "default": "./out/hexworld/index.js"
+        },
+        "./shared": {
+            "types": "./src/shared/index.ts",
+            "node": "./src/shared/index.ts",
+            "bundler": "./src/shared/index.ts",
+            "default": "./out/shared/index.js"
+        },
+        "./style": {
+            "types": "./src/style.ts",
+            "node": "./src/style.ts",
+            "bundler": "./src/style.ts",
+            "default": "./out/style.js"
+        },
+        "./components/ak-map": {
+            "types": "./src/components/ak-map.ts",
+            "node": "./src/components/ak-map.ts",
+            "bundler": "./src/components/ak-map.ts",
+            "default": "./out/components/ak-map.js"
+        }
+    },
+    "dependencies": {
+        "@goauthentik/api": "link:../client-ts",
+        "@protomaps/basemaps": "^5.7.2",
+        "h3-js": "^4.5.0",
+        "lit": "^3.3.3",
+        "maplibre-gl": "^5.24.0",
+        "pmtiles": "^4.4.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@mapbox/vector-tile": "^2.0.3",
+        "@types/geojson": "^7946.0.16",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "pbf": "^4.0.1",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
+    },
+    "peerDependencies": {
+        "lit": "^3.3.3",
+        "maplibre-gl": "^5.24.0"
+    },
+    "files": [
+        "out/**/*",
+        "src/**/*"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "warn"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "warn"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public",
+        "exports": {
+            "./package.json": "./package.json",
+            ".": {
+                "types": "./src/index.ts",
+                "import": "./out/index.js"
+            },
+            "./hexworld": {
+                "types": "./src/hexworld/index.ts",
+                "import": "./out/hexworld/index.js"
+            },
+            "./shared": {
+                "types": "./src/shared/index.ts",
+                "import": "./out/shared/index.js"
+            },
+            "./style": {
+                "types": "./src/style.ts",
+                "import": "./out/style.js"
+            },
+            "./components/ak-map": {
+                "types": "./src/components/ak-map.ts",
+                "import": "./out/components/ak-map.js"
+            }
+        }
+    }
+}

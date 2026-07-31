@@ -61,6 +61,12 @@ export interface PatchedBrandRequest {
      */
     brandingDefaultFlowBackground?: string;
     /**
+     * URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+     * @type {string}
+     * @memberof PatchedBrandRequest
+     */
+    brandingMapTiles?: string;
+    /**
      *
      * @type {string}
      * @memberof PatchedBrandRequest
@@ -170,6 +176,8 @@ export function PatchedBrandRequestFromJSONTyped(
             json["branding_default_flow_background"] == null
                 ? undefined
                 : json["branding_default_flow_background"],
+        brandingMapTiles:
+            json["branding_map_tiles"] == null ? undefined : json["branding_map_tiles"],
         flowAuthentication:
             json["flow_authentication"] === undefined
                 ? undefined
@@ -262,6 +270,7 @@ export function PatchedBrandRequestToJSONTyped(
         branding_favicon: value["brandingFavicon"],
         branding_custom_css: value["brandingCustomCss"],
         branding_default_flow_background: value["brandingDefaultFlowBackground"],
+        branding_map_tiles: value["brandingMapTiles"],
         flow_authentication: value["flowAuthentication"],
         flow_user_switch: value["flowUserSwitch"],
         flow_invalidation: value["flowInvalidation"],
