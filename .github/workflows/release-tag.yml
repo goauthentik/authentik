@@ -223,6 +223,7 @@ jobs:
     name: Pre-release test
     runs-on: ubuntu-latest
     needs:
+      - check-inputs
       - bump-version
       - build-container
     steps:
