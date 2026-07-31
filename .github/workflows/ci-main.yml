@@ -353,7 +353,7 @@ jobs:
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package.json', 'web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web

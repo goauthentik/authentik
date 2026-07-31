@@ -1,6 +1,6 @@
 ---
-title: Integrate with Microsoft 365
-sidebar_label: Microsoft 365
+title: Integrate with Microsoft 365 via SAML
+sidebar_label: Microsoft 365 (SAML)
 support_level: community
 toc_max_heading_level: 5
 ---
@@ -26,7 +26,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Microsoft 365 with authentik, you need to:
+To support the integration of Microsoft 365 with authentik via SAML, you need to:
 
 1. Create a property mapping for users' immutable identifier in authentik.
 2. Create a property mapping for the `IDPEmail` claim in authentik.
@@ -93,7 +93,12 @@ Microsoft Entra ID also expects an `IDPEmail` attribute in the SAML assertion. T
 
 ### 3. Property mapping for MFA
 
-If MFA is configured in Microsoft 365, then you also need to create a property mapping for `AuthnContextClassRef`; otherwise the user might be prompted for credentials twice.
+If MFA is configured in Microsoft 365, you also need to create a property mapping for `AuthnContextClassRef` to ensure Entra ID recognizes that MFA was already performed. Without this mapping, users may be prompted to authenticate twice or register an MFA device in Entra ID.
+
+Whether Entra ID accepts the federated MFA claim depends on your tenant's security configuration:
+
+- If **Security defaults** are enabled, Entra ID will ignore federated MFA claims and require users to register an Entra ID MFA device regardless. You must disable Security defaults for federated MFA to work.
+- If you're using **Conditional Access policies**, ensure they're configured to trust external MFA. Otherwise, users will still be prompted to set up an Entra ID MFA device even when authenticating through the federated identity provider.
 
 #### Create a property mapping in authentik for `AuthnContextClassRef`
 
