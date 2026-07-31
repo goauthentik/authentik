@@ -16,11 +16,11 @@
 </trans-unit>
 <trans-unit id="zh-Hans">
   <source>Chinese (Simplified)</source>
-  <target>Cinese</target>
+  <target>Cinese (Semplificato)</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
   <source>Chinese (Traditional)</source>
-  <target>Cinese</target>
+  <target>Cinese (Tradizionale)</target>
 </trans-unit>
 <!-- #endregion -->
 
@@ -8617,75 +8617,99 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s574ed5d3a52d45c8">
   <source>Outpost Name</source>
+  <target>Nome outpost</target>
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+  <target>Configurazione outpost</target>
 </trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
+  <target>Elimina permesso oggetto</target>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
+  <target>Permessi globali e dell&apos;oggetto</target>
 </trans-unit>
 <trans-unit id="sc8f73affccb6ae4d">
   <source>Global permission</source>
+  <target>Permesso globale</target>
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
+  <target>Permesso dell&apos;oggetto</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>Permessi su questo oggetto</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>Permessi assegnati a questo ruolo che interessano specifiche istanze dell&apos;oggetto.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
+  <target>Genitori</target>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Gruppi disponibili</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Gruppi selezionati</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
+  <target>Un gruppo eredita ricorsivamente ogni ruolo dai suoi antenati.</target>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Utente aggiornato.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>Utente creato e aggiunto al gruppo <x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s31dc80daa773a5dc">
   <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>Utente creato e aggiunto al ruolo <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Utente creato.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
+  <target><x id="0" equiv-text="${this.config.filename}"/> scaricato con successo!</target>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
+  <target>Mostra configurazione MDM</target>
 </trans-unit>
 <trans-unit id="sb4f4c6c72acfa253">
   <source>Hide MDM configuration</source>
+  <target>Nascondi configurazione MDM</target>
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>È l&apos;utente principale</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
+  <target>Principale</target>
 </trans-unit>
 <trans-unit id="sc67ff7b2278e81e4">
   <source>Remove User(s)</source>
+  <target>Rimuovi utente/i</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
+  <target>Sei sicuro di voler rimuovere gli utenti selezionati da <x id="0" equiv-text="${targetLabel}"/>?</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
+  <target>Sei sicuro di voler rimuovere gli utenti selezionati?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
@@ -8722,96 +8746,127 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
+  <target>Esportazioni dati</target>
 </trans-unit>
 <trans-unit id="s1d1d961d6f3550e5">
   <source>Manage past data exports.</source>
+  <target>Gestisci le esportazioni dati passate.</target>
 </trans-unit>
 <trans-unit id="s8cddef7d8dac7f87">
   <source>Data type</source>
+  <target>Tipo di dati</target>
 </trans-unit>
 <trans-unit id="s3783e647280eb968">
   <source>Requested by</source>
+  <target>Richiesto da</target>
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>Data di creazione</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>Completato</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
+  <target>Azioni riga</target>
 </trans-unit>
 <trans-unit id="s97aa774d38013957">
   <source>Data export(s)</source>
+  <target>Esportazione/i dati</target>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
+  <target>Parametri di query</target>
 </trans-unit>
 <trans-unit id="s145aca905bbc68a4">
   <source>SAML metadata XML file to import provider settings from.</source>
+  <target>File XML dei metadati SAML da cui importare le impostazioni del provider.</target>
 </trans-unit>
 <trans-unit id="s0d748f6fb237da48">
   <source>Configure SAML Provider from Metadata</source>
+  <target>Configura provider SAML dai metadati</target>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
+  <target>Le sincronizzazioni in uscita non verranno attivate.</target>
 </trans-unit>
 <trans-unit id="s967b3abf2608649a">
   <source>Immediate</source>
+  <target>Immediata</target>
 </trans-unit>
 <trans-unit id="sba0b0ee7c8b8f04a">
   <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+  <target>Le sincronizzazioni in uscita verranno attivate immediatamente per ogni oggetto aggiornato. Questo può creare molte attività in background e pertanto non è raccomandato</target>
 </trans-unit>
 <trans-unit id="sd3dfc2a1c3647e77">
   <source>Deferred until end</source>
+  <target>Differita alla fine</target>
 </trans-unit>
 <trans-unit id="secd492de6e1ae305">
   <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+  <target>Le sincronizzazioni in uscita verranno attivate al termine della sincronizzazione della sorgente.</target>
 </trans-unit>
 <trans-unit id="s0c476074a4fc4d95">
   <source>Outgoing sync trigger mode</source>
+  <target>Modalità di attivazione sincronizzazione in uscita</target>
 </trans-unit>
 <trans-unit id="s4bb6f209647072f4">
   <source>Successfully connected source</source>
+  <target>Sorgente connessa con successo</target>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <target>Impossibile connettere la sorgente: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></target>
 </trans-unit>
 <trans-unit id="sed44880a52f72a08">
   <source>Passkey settings</source>
+  <target>Impostazioni passkey</target>
 </trans-unit>
 <trans-unit id="sf65cb435d6ca1d01">
   <source>WebAuthn Authenticator Validation Stage</source>
+  <target>Fase di convalida autenticatore WebAuthn</target>
 </trans-unit>
 <trans-unit id="s05a4cbce470ede73">
   <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+  <target>Se impostato, consente agli utenti di autenticarsi tramite passkey direttamente dal menu a discesa di compilazione automatica del browser senza dover prima inserire un nome utente.</target>
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
   <source>Pagination: default page size</source>
+  <target>Paginazione: dimensione pagina predefinita</target>
 </trans-unit>
 <trans-unit id="s05d8a93b0de05ad4">
   <source>Default page size for API requests not specifying a page size.</source>
+  <target>Dimensione pagina predefinita per le richieste API che non ne specificano una.</target>
 </trans-unit>
 <trans-unit id="s41dac4f4d7caffa7">
   <source>Pagination: maximum page size</source>
+  <target>Paginazione: dimensione pagina massima</target>
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
+  <target>Dimensione pagina massima per le richieste API.</target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
+  <target>Connessione locale</target>
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
+  <target>Richiede socket Docker/Integrazione Kubernetes.</target>
 </trans-unit>
 <trans-unit id="s5f6ad947b4824e40">
   <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+  <target>Successivamente, scarica la configurazione per distribuire l&apos;Agente authentik tramite MDM</target>
 </trans-unit>
 <trans-unit id="s523337424b694d5c">
   <source>Device Access Group</source>
+  <target>Gruppo di accesso dispositivi</target>
 </trans-unit>
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
+  <target>Seleziona un gruppo di accesso dispositivi a cui essere aggiunto al momento della registrazione.</target>
 </trans-unit>
 <trans-unit id="h30bbf18fbf87fa57">
   <source>To create a data export, navigate to
@@ -9256,551 +9311,733 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="totp.secret.clipboard.description">
   <source>Paste this secret into your authenticator app to set up a time-based one-time password.</source>
+  <target>Incolla questo segreto nella tua app di autenticazione per configurare una password monouso basata sul tempo.</target>
 </trans-unit>
 <trans-unit id="s2157b29f47940266">
   <source>Type a unique identifier for this token...</source>
+  <target>Digita un identificatore univoco per questo token...</target>
 </trans-unit>
 <trans-unit id="s0950c703759a8746">
   <source>Type a description for this token...</source>
+  <target>Digita una descrizione per questo token...</target>
 </trans-unit>
 <trans-unit id="sd02d96c6930f31db">
   <source>Create App Password</source>
+  <target>Crea password applicazione</target>
 </trans-unit>
 <trans-unit id="scf325f1039d7c82f">
   <source>New App Password</source>
+  <target>Nuova password applicazione</target>
 </trans-unit>
 <trans-unit id="saa02cc40143c291e">
   <source>Sidebar left (frame background)</source>
+  <target>Barra laterale sinistra (sfondo del frame)</target>
 </trans-unit>
 <trans-unit id="s7606cffc63e1b0a1">
   <source>Sidebar right (frame background)</source>
+  <target>Barra laterale destra (sfondo del frame)</target>
 </trans-unit>
 <trans-unit id="s92e22f9319fdb85d">
   <source>Configuration warning</source>
+  <target>Avviso di configurazione</target>
 </trans-unit>
 <trans-unit id="s304ca1e922bd3278">
   <source>Lifecycle Rules</source>
+  <target>Regole del ciclo di vita</target>
 </trans-unit>
 <trans-unit id="scd223a9aac742fcf">
   <source>Lifecycle</source>
+  <target>Ciclo di vita</target>
 </trans-unit>
 <trans-unit id="sa9ebf2b039449d6c">
   <source>Object Lifecycle Management is in preview.</source>
+  <target>La gestione del ciclo di vita degli oggetti è in anteprima.</target>
 </trans-unit>
 <trans-unit id="s2b858c5186f8f2fd">
   <source>Select a group...</source>
+  <target>Seleziona un gruppo...</target>
 </trans-unit>
 <trans-unit id="s5e0fb3d421bb57cc">
   <source>Select a role...</source>
+  <target>Seleziona un ruolo...</target>
 </trans-unit>
 <trans-unit id="s8e5d1a84bd559a27">
   <source>Select an object...</source>
+  <target>Seleziona un oggetto...</target>
 </trans-unit>
 <trans-unit id="s69e44328a5b45aa2">
   <source>Rule Name</source>
+  <target>Nome della regola</target>
 </trans-unit>
 <trans-unit id="se319064a2f20deba">
   <source>Type a name for this lifecycle rule...</source>
+  <target>Digita un nome per questa regola del ciclo di vita...</target>
 </trans-unit>
 <trans-unit id="sb46d3613edb66558">
   <source>Interval</source>
+  <target>Intervallo</target>
 </trans-unit>
 <trans-unit id="s19feda58eae87c66">
   <source>The interval between opening new reviews for matching objects.</source>
+  <target>L&apos;intervallo tra l&apos;apertura di nuove revisioni per gli oggetti corrispondenti.</target>
 </trans-unit>
 <trans-unit id="s760c656016171d08">
   <source>Grace period</source>
+  <target>Periodo di tolleranza</target>
 </trans-unit>
 <trans-unit id="s48a53c24fbbc8444">
   <source>The duration of time before an open review is considered overdue.</source>
+  <target>Il tempo prima che una revisione aperta sia considerata in ritardo.</target>
 </trans-unit>
 <trans-unit id="s1b5d2f91633b74d6">
   <source>Reviewer groups</source>
+  <target>Gruppi di revisori</target>
 </trans-unit>
 <trans-unit id="s693370c05900a1c6">
   <source>Number of users from the selected reviewer groups that must approve the review.</source>
+  <target>Numero di utenti dei gruppi di revisori selezionati che devono approvare la revisione.</target>
 </trans-unit>
 <trans-unit id="s74906f78877111cb">
   <source>Reviewers</source>
+  <target>Revisori</target>
 </trans-unit>
 <trans-unit id="sb42871a38d8b61ee">
   <source>Object type</source>
+  <target>Tipo di oggetto</target>
 </trans-unit>
 <trans-unit id="sd530d226f68ec351">
   <source>When set, the rule will apply to the selected individual object. Otherwise, the rule applies to all objects of the selected type.</source>
+  <target>Se impostata, la regola si applica all&apos;oggetto selezionato. Altrimenti si applica a tutti gli oggetti del tipo selezionato.</target>
 </trans-unit>
 <trans-unit id="sea85769d2d8f3ea8">
   <source>Available Users</source>
+  <target>Utenti disponibili</target>
 </trans-unit>
 <trans-unit id="s6251a3b1bbd7b124">
   <source>Selected Users</source>
+  <target>Utenti selezionati</target>
 </trans-unit>
 <trans-unit id="s3899116cda378dcb">
   <source>A review will require approval from each of the users selected here in addition to group members as per above settings.</source>
+  <target>Una revisione richiederà l&apos;approvazione di ciascun utente selezionato qui, oltre ai membri dei gruppi indicati sopra.</target>
 </trans-unit>
 <trans-unit id="s56511df6b44ad5cc">
   <source>Notification transports</source>
+  <target>Canali di notifica</target>
 </trans-unit>
 <trans-unit id="s6273aa020677fe75">
   <source>Select which transports should be used to notify the user.</source>
+  <target>Seleziona quali canali utilizzare per notificare l&apos;utente.</target>
 </trans-unit>
 <trans-unit id="s78e31a199ca08cd9">
   <source>Object Lifecycle Rules</source>
+  <target>Regole del ciclo di vita degli oggetti</target>
 </trans-unit>
 <trans-unit id="s24cc4e5aa6446401">
   <source>Schedule periodic reviews for objects in authentik.</source>
+  <target>Pianifica revisioni periodiche per gli oggetti in authentik.</target>
 </trans-unit>
 <trans-unit id="s468f705986fff045">
   <source>Lifecycle rule(s)</source>
+  <target>Regola(e) del ciclo di vita</target>
 </trans-unit>
 <trans-unit id="s9279704dfc98cdf9">
   <source>No reviews yet.</source>
+  <target>Nessuna revisione disponibile.</target>
 </trans-unit>
 <trans-unit id="s08400d94769ba771">
   <source>Reviewed on</source>
+  <target>Revisionato il</target>
 </trans-unit>
 <trans-unit id="sb89da38bc0c0b3fa">
   <source>Reviewer</source>
+  <target>Revisore</target>
 </trans-unit>
 <trans-unit id="s6686fcc6d2c8f0bd">
   <source>Note</source>
+  <target>Nota</target>
 </trans-unit>
 <trans-unit id="s5754eb43287dd6e5">
   <source>No review iteration found for this object.</source>
+  <target>Nessuna iterazione di revisione trovata per questo oggetto.</target>
 </trans-unit>
 <trans-unit id="s68ea8ed25680242f">
   <source>At least <x id="0" equiv-text="${minReviewers}"/> user from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Almeno <x id="0" equiv-text="${minReviewers}"/> utente da questo gruppo: <x id="1" equiv-text="${groupList}"/>.</target>
 </trans-unit>
 <trans-unit id="sd9e03fcf99724085">
   <source>At least <x id="0" equiv-text="${minReviewers}"/> user from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Almeno <x id="0" equiv-text="${minReviewers}"/> utente da questi gruppi: <x id="1" equiv-text="${groupList}"/>.</target>
 </trans-unit>
 <trans-unit id="sbbaa87f8826a0756">
   <source>At least <x id="0" equiv-text="${minReviewers}"/> users from this group: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Almeno <x id="0" equiv-text="${minReviewers}"/> utenti da questo gruppo: <x id="1" equiv-text="${groupList}"/>.</target>
 </trans-unit>
 <trans-unit id="s79ef398b6e3e2c44">
   <source>At least <x id="0" equiv-text="${minReviewers}"/> users from these groups: <x id="1" equiv-text="${groupList}"/>.</source>
+  <target>Almeno <x id="0" equiv-text="${minReviewers}"/> utenti da questi gruppi: <x id="1" equiv-text="${groupList}"/>.</target>
 </trans-unit>
 <trans-unit id="s33d20c1a2e0bf773">
   <source>Review opened on</source>
+  <target>Revisione aperta il</target>
 </trans-unit>
 <trans-unit id="s5e053bb69bf930b7">
   <source>Grace period till</source>
+  <target>Periodo di tolleranza fino al</target>
 </trans-unit>
 <trans-unit id="s310b639f39d731b0">
   <source>Next review date</source>
+  <target>Prossima data di revisione</target>
 </trans-unit>
 <trans-unit id="s3daaf5e7f16e2c52">
   <source>Latest review for this object</source>
+  <target>Ultima revisione per questo oggetto</target>
 </trans-unit>
 <trans-unit id="s3be348f8aeeb6a64">
   <source>Review state</source>
+  <target>Stato della revisione</target>
 </trans-unit>
 <trans-unit id="s30c9ff051aa083b0">
   <source>Required reviewers</source>
+  <target>Revisori richiesti</target>
 </trans-unit>
 <trans-unit id="s7f3437809d931336">
   <source>Reviews</source>
+  <target>Revisioni</target>
 </trans-unit>
 <trans-unit id="sc33f0df01dc32300">
   <source>Review Notes</source>
+  <target>Note della revisione</target>
 </trans-unit>
 <trans-unit id="s86316abdd9054708">
   <source>Type optional notes to include in this review...</source>
+  <target>Digita note opzionali da includere in questa revisione...</target>
 </trans-unit>
 <trans-unit id="s2430fb91fa928ae0">
   <source>Open Reviews</source>
+  <target>Revisioni aperte</target>
 </trans-unit>
 <trans-unit id="s35d1f3a355ed1084">
   <source>See all currently open reviews.</source>
+  <target>Visualizza tutte le revisioni attualmente aperte.</target>
 </trans-unit>
 <trans-unit id="s71230441c759c9b1">
   <source>Only show reviews where I am a reviewer</source>
+  <target>Mostra solo le revisioni in cui sono revisore</target>
 </trans-unit>
 <trans-unit id="sce6a3502c71baa60">
   <source>Opened</source>
+  <target>Aperta</target>
 </trans-unit>
 <trans-unit id="sea8d30456c79058a">
   <source>Grace period ends</source>
+  <target>Periodo di tolleranza termina</target>
 </trans-unit>
 <trans-unit id="se6203ef69ff63548">
   <source>Pending review</source>
+  <target>Revisione in sospeso</target>
 </trans-unit>
 <trans-unit id="sb89d8d8bc0c08e98">
   <source>Reviewed</source>
+  <target>Revisionata</target>
 </trans-unit>
 <trans-unit id="sc68080ce046320cb">
   <source>Overdue</source>
+  <target>In ritardo</target>
 </trans-unit>
 <trans-unit id="sa30c4d3b566b6b1a">
   <source>Canceled</source>
+  <target>Annullata</target>
 </trans-unit>
 <trans-unit id="s804ab712b1add3d3">
   <source>An unknown error occurred while submitting the form.</source>
+  <target>Si è verificato un errore sconosciuto durante l&apos;invio del modulo.</target>
 </trans-unit>
 <trans-unit id="s78adb00480380ad9">
   <source>Sign logout response</source>
+  <target>Firma la risposta di logout</target>
 </trans-unit>
 <trans-unit id="s7faa5610b9493a92">
   <source>When enabled, SAML logout responses will be signed.</source>
+  <target>Quando abilitato, le risposte di logout SAML verranno firmate.</target>
 </trans-unit>
 <trans-unit id="saa088a2d0f90d5a9">
   <source>Posting logout response to SAML provider: <x id="0" equiv-text="${providerName}"/></source>
+  <target>Invio della risposta di logout al provider SAML: <x id="0" equiv-text="${providerName}"/></target>
 </trans-unit>
 <trans-unit id="h903c2b1c21bb9fc7">
   <source>If checked, approving a review will require at least that many users from
                         <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the selected groups. When disabled, the value is a total
                         across all groups.</source>
+  <target>Se selezionato, l&apos;approvazione di una revisione richiederà almeno quel numero di utenti da
+                        <x id="0" equiv-text="&lt;em&gt;"/>ciascuno<x id="1" equiv-text="&lt;/em&gt;"/> dei gruppi selezionati. Se disabilitato, il valore è     totale attraverso tutti i gruppi.</target>
 </trans-unit>
 <trans-unit id="s776d93092ad9ce90">
   <source>Review initiated</source>
+  <target>Revisione avviata</target>
 </trans-unit>
 <trans-unit id="sad46bcad1a343b51">
   <source>Review overdue</source>
+  <target>Revisione in ritardo</target>
 </trans-unit>
 <trans-unit id="s59d168d966cecbaf">
   <source>Review attested</source>
+  <target>Revisione attestata</target>
 </trans-unit>
 <trans-unit id="s5158b7f014cecefc">
   <source>Review completed</source>
+  <target>Revisione completata</target>
 </trans-unit>
 <trans-unit id="s9a2a2fda9cfa1ddc">
   <source>Copy Link</source>
+  <target>Copia link</target>
 </trans-unit>
 <trans-unit id="s57adf424d57c8a0f">
   <source>Send</source>
+  <target>Invia</target>
 </trans-unit>
 <trans-unit id="s28128d03244fa1ca">
   <source>Send Invitation via Email</source>
+  <target>Invia invito via email</target>
 </trans-unit>
 <trans-unit id="s1ed9fed1a5e85d63">
   <source>Send via Email</source>
+  <target>Invia via email</target>
 </trans-unit>
 <trans-unit id="safcbc1ba006eba57">
   <source>Please enter at least one email address</source>
+  <target>Inserisci almeno un indirizzo email</target>
 </trans-unit>
 <trans-unit id="s0f957a7b0725a6dd">
   <source>Invitation emails queued for sending to <x id="0" equiv-text="${addresses.length}"/> recipient(s). Check the System Tasks for more information.</source>
+  <target>Email di invito messe in coda per <x id="0" equiv-text="${addresses.length}"/> destinatari. Controlla le Attività di Sistema per maggiori informazioni.</target>
 </trans-unit>
 <trans-unit id="s27c34847aec88ec6">
   <source>Failed to queue invitation emails: <x id="0" equiv-text="${error}"/></source>
+  <target>Impossibile mettere in coda le email di invito: <x id="0" equiv-text="${error}"/></target>
 </trans-unit>
 <trans-unit id="s8b97ea84af17c029">
   <source>Never</source>
+  <target>Mai</target>
 </trans-unit>
 <trans-unit id="s6e0b6a18cc59fd56">
   <source>No flow set</source>
+  <target>Nessun flusso impostato</target>
 </trans-unit>
 <trans-unit id="sac428aa7c586a35a">
   <source>One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.</source>
+  <target>Un indirizzo email per riga, oppure separati da virgola/punto e virgola. Ogni destinatario riceverà un&apos;email separata con un link di invito.</target>
 </trans-unit>
 <trans-unit id="s090f2d07b5a6aee3">
   <source>CC</source>
+  <target>CC</target>
 </trans-unit>
 <trans-unit id="s7f39ec207409ff19">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will receive the full list of other addresses in this list.</source>
+  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell&apos;invito. I destinatari vedranno l&apos;intero elenco degli altri indirizzi.</target>
 </trans-unit>
 <trans-unit id="s15db6d19b09a16c3">
   <source>BCC</source>
+  <target>BCC</target>
 </trans-unit>
 <trans-unit id="sf4021c7b40b6f54e">
   <source>A comma-separated list of addresses to receive copies of the invitation. Recipients will not receive the addresses of other recipients.</source>
+  <target>Un elenco di indirizzi separati da virgola che riceveranno copie dell&apos;invito. I destinatari non vedranno gli indirizzi degli altri.</target>
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
+  <target>Seleziona il template email da utilizzare per inviare gli inviti.</target>
 </trans-unit>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
+  <target>Footer del sito</target>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+  <target>Inserisci l&apos;indirizzo email o il nome utente associato al tuo account.</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
+  <target>Stai per essere reindirizzato al seguente URL.</target>
 </trans-unit>
 <trans-unit id="sd5d2b94a1ccba1a9">
   <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
+  <target>Accedi per continuare a <x id="0" equiv-text="${prelude}"/>.</target>
 </trans-unit>
 <trans-unit id="s2ffabdbe85465503">
   <source>Continuous Login</source>
+  <target>Accesso continuo</target>
 </trans-unit>
 <trans-unit id="s4677fce6df625313">
   <source>Successfully updated Google Chrome connector.</source>
+  <target>Connettore Google Chrome aggiornato con successo.</target>
 </trans-unit>
 <trans-unit id="s0192d4ea977c63ea">
   <source>Successfully created Google Chrome connector.</source>
+  <target>Connettore Google Chrome creato con successo.</target>
 </trans-unit>
 <trans-unit id="s3a0fd9fb78a811d7">
   <source>Google settings</source>
+  <target>Impostazioni Google</target>
 </trans-unit>
 <trans-unit id="s6f67870f6f799d64">
   <source>Webhook Certificate Authority</source>
+  <target>Autorità di certificazione Webhook</target>
 </trans-unit>
 <trans-unit id="se9be959bed7985e2">
   <source>Keypair used to validate the certificate of the webhook endpoint. When not configured, the standard CA bundle is used.</source>
+  <target>Coppia di chiavi utilizzata per convalidare il certificato dell&apos;endpoint webhook. Se non configurata, viene utilizzato il bundle CA standard.</target>
 </trans-unit>
 <trans-unit id="s5b6d39d39a26028b">
   <source>Security key (e.g. YubiKey)</source>
+  <target>Chiave di sicurezza (es. YubiKey)</target>
 </trans-unit>
 <trans-unit id="s78928f6dae3d3de6">
   <source>Client device (e.g. Touch ID, Windows Hello)</source>
+  <target>Dispositivo client (es. Touch ID, Windows Hello)</target>
 </trans-unit>
 <trans-unit id="s72e4f5f795106bee">
   <source>Hybrid (e.g. QR code, phone)</source>
+  <target>Ibrido (es. codice QR, telefono)</target>
 </trans-unit>
 <trans-unit id="sf3c49b8e683a2869">
   <source>WebAuthn Hints</source>
+  <target>Suggerimenti WebAuthn</target>
 </trans-unit>
 <trans-unit id="s5fc675da5f02f4c6">
   <source>Available Hints</source>
+  <target>Suggerimenti disponibili</target>
 </trans-unit>
 <trans-unit id="sca3b9ac876bfd642">
   <source>Selected Hints</source>
+  <target>Suggerimenti selezionati</target>
 </trans-unit>
 <trans-unit id="se29f57b668fb7a1b">
   <source>Optional hints to guide the browser in prioritizing the preferred authenticator type. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito. L&apos;ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
 </trans-unit>
 <trans-unit id="sb67b82120563c611">
   <source>Hints</source>
+  <target>Suggerimenti</target>
 </trans-unit>
 <trans-unit id="sa422ad938ad8da19">
   <source>Optional hints to guide the browser in prioritizing the preferred authenticator type during registration. Order matters - the first hint has highest priority. These are advisory and may be ignored by browsers.</source>
+  <target>Suggerimenti opzionali per guidare il browser nella priorità del tipo di autenticatore preferito durante la registrazione. L&apos;ordine è importante: il primo suggerimento ha la priorità più alta. Sono indicativi e possono essere ignorati dai browser.</target>
 </trans-unit>
 <trans-unit id="sdbd03c084031f5c1">
   <source>Filtering</source>
+  <target>Filtraggio</target>
 </trans-unit>
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
+  <target>Consulta la documentazione per le regole dei percorsi e i nomi sensibili al tema.</target>
 </trans-unit>
 <trans-unit id="s7e9afe092ef50353">
   <source>See documentation for supported values.</source>
+  <target>Consulta la documentazione per i valori supportati.</target>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
+  <target>Nessuna asserzione restituita dall&apos;autenticatore</target>
 </trans-unit>
 <trans-unit id="s77e1bdd20d7457b3">
   <source>Authentication was cancelled or timed out</source>
+  <target>L&apos;autenticazione è stata annullata o è scaduta</target>
 </trans-unit>
 <trans-unit id="sbc8f730711f5a0a1">
   <source>Registration was cancelled or timed out. Please try again.</source>
+  <target>La registrazione è stata annullata o è scaduta. Riprova.</target>
 </trans-unit>
 <trans-unit id="s881c608e3be28a20">
   <source>An error occurred while creating the credential. Please try again.</source>
+  <target>Si è verificato un errore durante la creazione della credenziale. Riprova.</target>
 </trans-unit>
 <trans-unit id="sc0cb70cfd086d048">
   <source>Server validation of credential failed</source>
+  <target>Convalida della credenziale sul server non riuscita</target>
 </trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
+  <target>Dopo un&apos;autenticazione riuscita, riavvia l&apos;autenticazione nelle altre schede aperte.</target>
 </trans-unit>
 <trans-unit id="sb5db04b10b00f6fd">
   <source>About authentik</source>
+  <target>Informazioni su authentik</target>
 </trans-unit>
 <trans-unit id="sb02534c5edb664cc">
   <source>Create a new application...</source>
+  <target>Crea una nuova applicazione...</target>
 </trans-unit>
 <trans-unit id="s292c8dcdd327ec74">
   <source>Username or email address...</source>
+  <target>Nome utente o indirizzo email...</target>
 </trans-unit>
 <trans-unit id="sa16713eb1eae6a97">
   <source>Type an optional publisher name...</source>
+  <target>Digita un nome facoltativo per il publisher...</target>
 </trans-unit>
 <trans-unit id="s1c030a6ae5c6f468">
   <source>Type an optional description...</source>
+  <target>Digita una descrizione facoltativa...</target>
 </trans-unit>
 <trans-unit id="s0cb0cee97f520223">
   <source>New Application</source>
+  <target>Nuova applicazione</target>
 </trans-unit>
 <trans-unit id="s41d4dd186ab1e7bc">
   <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
+  <target>Apre la procedura guidata per una nuova applicazione, che ti accompagnerà nella creazione di una nuova applicazione con un provider esistente.</target>
 </trans-unit>
 <trans-unit id="sf9c86f02a5609e71">
   <source>Opens the new application form, which will guide you through creating a new application with an existing provider.</source>
+  <target>Apre il modulo per una nuova applicazione, che ti accompagnerà nella creazione di una nuova applicazione con un provider esistente.</target>
 </trans-unit>
 <trans-unit id="s7f1579146577efc4">
   <source>Clear Cache</source>
+  <target>Cancella cache</target>
 </trans-unit>
 <trans-unit id="sea15e8e7527354c0">
   <source>Search for a provider...</source>
+  <target>Cerca un provider...</target>
 </trans-unit>
 <trans-unit id="sdfe21d69a2da53f4">
   <source>e.g. my-application</source>
+  <target>es. my-application</target>
 </trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
+  <target>Seleziona gruppi</target>
 </trans-unit>
 <trans-unit id="seb21141e9ea652e1">
   <source>New Group User</source>
+  <target>Nuovo utente di gruppo</target>
 </trans-unit>
 <trans-unit id="s5e57c4018429afd2">
   <source>New Role User</source>
+  <target>Nuovo utente di ruolo</target>
 </trans-unit>
 <trans-unit id="s16b0129acc7b8890">
   <source>Add Existing User</source>
+  <target>Aggiungi utente esistente</target>
 </trans-unit>
 <trans-unit id="s28d2576a2c70d761">
   <source>Add New User</source>
+  <target>Aggiungi nuovo utente</target>
 </trans-unit>
 <trans-unit id="s8f0c6a3cf392a085">
   <source>New Group User...</source>
+  <target>Nuovo utente di gruppo...</target>
 </trans-unit>
 <trans-unit id="s1119e082608d3500">
   <source>New Role User...</source>
+  <target>Nuovo utente di ruolo...</target>
 </trans-unit>
 <trans-unit id="s5d2f015311362871">
   <source>New Service Account...</source>
+  <target>Nuovo account di servizio...</target>
 </trans-unit>
 <trans-unit id="s001ec7d4c24a3bdb">
   <source>Start Export</source>
+  <target>Avvia esportazione</target>
 </trans-unit>
 <trans-unit id="sb6f2cee2b9e63d7c">
   <source>Assign Additional Roles</source>
+  <target>Assegna ruoli aggiuntivi</target>
 </trans-unit>
 <trans-unit id="sf071697e794cca20">
   <source>Role Name</source>
+  <target>Nome del ruolo</target>
 </trans-unit>
 <trans-unit id="s84f375c5cd7a9d00">
   <source>Type a name for this role...</source>
+  <target>Digita un nome per questo ruolo...</target>
 </trans-unit>
 <trans-unit id="s7ed2bed74a846fd0">
   <source>This name will be used to identify the role within authentik.</source>
+  <target>Questo nome verrà utilizzato per identificare il ruolo all&apos;interno di authentik.</target>
 </trans-unit>
 <trans-unit id="s99059109387c0163">
   <source>Service Account</source>
+  <target>Account di servizio</target>
 </trans-unit>
 <trans-unit id="s807682aafab5ce30">
   <source>Service Accounts</source>
+  <target>Account di servizio</target>
 </trans-unit>
 <trans-unit id="sd518c86e47fc6f89">
   <source>Impersonate User</source>
+  <target>Impersona utente</target>
 </trans-unit>
 <trans-unit id="s05fc6161cadbe078">
   <source>Impersonate <x id="0" equiv-text="${displayName}"/></source>
+  <target>Impersona <x id="0" equiv-text="${displayName}"/></target>
 </trans-unit>
 <trans-unit id="s7db9a3a41143c7e4">
   <source>Set Password</source>
+  <target>Imposta password</target>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
   <source>User "<x id="0" equiv-text="${query}"/>"</source>
+  <target>Utente &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="s220bcce27242e1e9">
   <source>search</source>
+  <target>cerca</target>
 </trans-unit>
 <trans-unit id="saad72478f030a91a">
   <source>find</source>
+  <target>trova</target>
 </trans-unit>
 <trans-unit id="s1809b50e79923494">
   <source>Search the docs for "<x id="0" equiv-text="${query}"/>"</source>
+  <target>Cerca nella documentazione &quot;<x id="0" equiv-text="${query}"/>&quot;</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.view-docs">
   <source>New Tab</source>
+  <target>Nuova scheda</target>
 </trans-unit>
 <trans-unit id="s4b305030ec421c71">
   <source>Command palette</source>
+  <target>Tavolozza dei comandi</target>
 </trans-unit>
 <trans-unit id="s2fd7fd218bbb7504">
   <source>No commands</source>
+  <target>Nessun comando</target>
 </trans-unit>
 <trans-unit id="command-palette.no-matching-commands">
   <source>No matching commands.</source>
+  <target>Nessun comando corrispondente.</target>
 </trans-unit>
 <trans-unit id="command-palette.no-commands">
   <source>No commands are currently available.</source>
+  <target>Nessun comando è attualmente disponibile.</target>
 </trans-unit>
 <trans-unit id="s2304324999452371">
   <source>Fetching users...</source>
+  <target>Recupero utenti...</target>
 </trans-unit>
 <trans-unit id="sd1362bc0288193e9">
   <source>No matching users</source>
+  <target>Nessun utente corrispondente</target>
 </trans-unit>
 <trans-unit id="command-palette.no-matching-users">
   <source>No matching users.</source>
+  <target>Nessun utente corrispondente.</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.jump-to">
   <source>Jump to</source>
+  <target>Vai a</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.search-for">
   <source>Search for</source>
+  <target>Cerca</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.open">
   <source>Open</source>
+  <target>Apri</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.view">
   <source>View</source>
+  <target>Visualizza</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.new-tab">
   <source>New Tab</source>
+  <target>Nuova scheda</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.peek">
   <source>Peek</source>
+  <target>Anteprima</target>
 </trans-unit>
 <trans-unit id="s233f78792e4de7ba">
   <source>Integrations</source>
+  <target>Integrazioni</target>
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>Documentazione</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
+  <target>Note di rilascio</target>
 </trans-unit>
 <trans-unit id="command-palette.suffix.new-in">
   <source>New in <x id="0" equiv-text="${import.meta.env.AK_VERSION}"/></source>
+  <target>Novità in <x id="0" equiv-text="${import.meta.env.AK_VERSION}"/></target>
 </trans-unit>
 <trans-unit id="sc55abaab70a70bfc">
   <source>authentik</source>
+  <target>authentik</target>
 </trans-unit>
 <trans-unit id="command-palette.about-authentik">
   <source>About authentik</source>
+  <target>Informazioni su authentik</target>
 </trans-unit>
 <trans-unit id="s62278f512692e037">
   <source>Session</source>
+  <target>Sessione</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.navigate">
   <source>Navigate to</source>
+  <target>Vai a</target>
 </trans-unit>
 <trans-unit id="sf866305516492af0">
   <source>Interface</source>
+  <target>Interfaccia</target>
 </trans-unit>
 <trans-unit id="command-palette.label.api-requests-drawer">
   <source>API requests drawer</source>
+  <target>Pannello richieste API</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.toggle">
   <source>Toggle</source>
+  <target>Attiva/disattiva</target>
 </trans-unit>
 <trans-unit id="command-palette.label.notifications-drawer">
   <source>Notifications drawer</source>
+  <target>Pannello notifiche</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.reloads-page">
   <source>Reloads page</source>
+  <target>Ricarica pagina</target>
 </trans-unit>
 <trans-unit id="s35ed5cf95b0c7262">
   <source>authentik information</source>
+  <target>Informazioni su authentik</target>
 </trans-unit>
 <trans-unit id="s55402a876309f95b">
   <source>Landmark: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></source>
+  <target>Punto di riferimento: <x id="0" equiv-text="${capitalCase(this.pageIdentifier)}"/></target>
 </trans-unit>
 <trans-unit id="command-palette.switch-to-tab">
   <source>Switch to tab</source>
+  <target>Passa alla scheda</target>
 </trans-unit>
 <trans-unit id="s031945e67717bf79">
   <source>Save Changes</source>
+  <target>Salva modifiche</target>
 </trans-unit>
 <trans-unit id="s934c5d00f93dda66">
   <source>Resend Email</source>
+  <target>Reinvia email</target>
 </trans-unit>
 <trans-unit id="command-palette-trigger-label">
   <source>Open Command Palette</source>
+  <target>Apri tavolozza dei comandi</target>
   <note from="lit-localize">Label for the button that opens the command palette</note>
 </trans-unit>
 <trans-unit id="command-palette-placeholder">
   <source>Type a command...</source>
+  <target>Digita un comando...</target>
   <note from="lit-localize">Label for the command palette input</note>
 </trans-unit>
 <trans-unit id="command-palette-placeholder-extended">
   <source>What are you looking for?</source>
+  <target>Cosa stai cercando</target>
   <note from="lit-localize">Placeholder for the command palette input</note>
 </trans-unit>
 <trans-unit id="command-palette-placeholder-user-search">
   <source>Type a username or email address...</source>
+  <target>Digita un nome utente o un indirizzo email...</target>
   <note from="lit-localize">Placeholder for the user search command in the admin interface</note>
 </trans-unit>
 <trans-unit id="model-form.headline">
@@ -9809,58 +10046,84 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="command-palette-trigger-tooltip">
   <source>Open Command Palette</source>
+  <target>Apri tavolozza dei comandi</target>
   <note from="lit-localize">Tooltip for the button that opens the command palette</note>
 </trans-unit>
 <trans-unit id="sca1fb5dc2d7901fc">
   <source>Configure WS-Federation Provider</source>
+  <target>Configura provider WS-Federation</target>
 </trans-unit>
 <trans-unit id="s5cfb19cfce5f69b1">
   <source>Outpost</source>
+  <target>Outpost</target>
 </trans-unit>
 <trans-unit id="s67910ccb738e5fa5">
   <source>No instances running.</source>
+  <target>Nessuna istanza in esecuzione.</target>
 </trans-unit>
 <trans-unit id="s06763f4bb18a1897">
   <source>New Outpost</source>
+  <target>Nuovo Outpost</target>
 </trans-unit>
 <trans-unit id="s80ec46e704f8c452">
   <source>No providers configured.</source>
+  <target>Nessun provider configurato.</target>
 </trans-unit>
 <trans-unit id="s3397d8bb9edb5637">
   <source>Outpost Info</source>
+  <target>Informazioni Outpost</target>
 </trans-unit>
 <trans-unit id="sbaf0a7c417e388af">
   <source>Health</source>
+  <target>Stato</target>
 </trans-unit>
 <trans-unit id="sa721e91eca44711f">
   <source>Configured providers</source>
+  <target>Provider configurati</target>
 </trans-unit>
 <trans-unit id="s5f751a332b377ca3">
   <source>Detailed health (data is cached so may be out of date)</source>
+  <target>Stato dettagliato (i dati sono in cache e potrebbero non essere aggiornati)</target>
 </trans-unit>
 <trans-unit id="s253a70947aa0a82c">
   <source>Webex</source>
+  <target>Webex</target>
 </trans-unit>
 <trans-unit id="sc574714bff5b18ea">
   <source>Altered behavior for usage with Cisco Webex.</source>
+  <target>Comportamento modificato per l&apos;uso con Cisco Webex.</target>
 </trans-unit>
 <trans-unit id="s2293b71fd35fee2a">
   <source>Statistics</source>
+  <target>Statistiche</target>
 </trans-unit>
 <trans-unit id="s7d2825bd304dbc49">
   <source>Authorizations (24 hours)</source>
+  <target>Autorizzazioni (24 ore)</target>
 </trans-unit>
 <trans-unit id="s5b91d2ea77a5ba86">
   <source>Authorizations (7 days)</source>
+  <target>Autorizzazioni (7 giorni)</target>
 </trans-unit>
 <trans-unit id="s03b42cb6a95eddfb">
   <source>Authorizations (1 month)</source>
+  <target>Autorizzazioni (1 mese)</target>
+</trans-unit>
+<trans-unit id="s767b102301dd9d7b">
+  <source>Prevent duplicate devices</source>
+  <target>Impedisci dispositivi duplicati</target>
+</trans-unit>
+<trans-unit id="s477c7aa824db217c">
+  <source>When enabled, any unique authenticator can only be registered once.</source>
+  <target>Quando abilitato, ogni autenticatore univoco può essere registrato una sola volta.</target>
 </trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
+  <target>Blueprint importato con successo.</target>
 </trans-unit>
 <trans-unit id="s8e2a8ba956a87d80">
   <source>File upload</source>
+  <target>Caricamento file</target>
 </trans-unit>
 <trans-unit id="s82ad1b952d1637ec">
   <source>Warning: Blueprint files may contain objects such as users, policies and expression.</source>
@@ -10251,6 +10514,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>Autorizzazioni oggetto ruolo</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10260,6 +10524,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>Aggiorna</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10701,6 +10966,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Se abilitata, la notifica verrà inviata all&apos;utente che ha attivato l&apos;evento, oltre a tutti gli utenti del gruppo sopra indicato. L&apos;utente dell&apos;evento sarà sempre il primo a inviare una notifica solo all&apos;utente dell&apos;evento che ha abilitato &quot;Invia una volta&quot; nel trasporto delle notifiche.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11266,9 +11532,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Utilizzo degli utenti interni</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Utilizzo dell&apos;utente esterno</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11464,6 +11732,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Invia</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>

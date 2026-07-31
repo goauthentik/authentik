@@ -16,11 +16,11 @@
 </trans-unit>
 <trans-unit id="zh-Hans">
   <source>Chinese (Simplified)</source>
-  <target>Chinês</target>
+  <target>Chinês (Simplificado)</target>
 </trans-unit>
 <trans-unit id="zh-Hant">
   <source>Chinese (Traditional)</source>
-  <target>Chinês</target>
+  <target>Chinês (Tradicional)</target>
 </trans-unit>
 <!-- #endregion -->
 
@@ -37,6 +37,7 @@
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
   <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <target><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</target>
   <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
@@ -103,7 +104,7 @@
 </trans-unit>
 <trans-unit id="s310d8757ce319673">
   <source>Logins</source>
-  <target>Logins</target>
+  <target>Acessos</target>
 </trans-unit>
 <trans-unit id="s3e99ea082ca5ade9">
   <source>Failed to fetch</source>
@@ -119,7 +120,7 @@
 </trans-unit>
 <trans-unit id="s35f47dbd321aaf15">
   <source>FIPS compliance: passing</source>
-  <target>Conformidade FIPS: passando</target>
+  <target>Conformidade FIPS: aprovado</target>
 </trans-unit>
 <trans-unit id="sc94578030c702562">
   <source>Unverified</source>
@@ -259,7 +260,7 @@
 </trans-unit>
 <trans-unit id="sd3a853f63f45dcb0">
   <source>Passing</source>
-  <target>Passagem</target>
+  <target>Aprovado</target>
 </trans-unit>
 <trans-unit id="sbdeedc1c60306b35">
   <source>Messages</source>
@@ -529,7 +530,7 @@
 </trans-unit>
 <trans-unit id="sffa721bb6aa3128d">
   <source>Search...</source>
-  <target>Procurar...</target>
+  <target>Pesquisar...</target>
 </trans-unit>
 <trans-unit id="s5d929ff1619ac0c9">
   <source>Search</source>
@@ -585,7 +586,7 @@
 </trans-unit>
 <trans-unit id="s76ef34813bff563f">
   <source>Last refreshed</source>
-  <target>Lista atualizada</target>
+  <target>Última atualização</target>
 </trans-unit>
 <trans-unit id="s59c9e8f57e3a0075">
   <source><x id="0" equiv-text="${this.label}"/> table</source>
@@ -646,7 +647,7 @@
 </trans-unit>
 <trans-unit id="s113c05ef9996ca4b">
   <source>Embedded outpost is not configured correctly.</source>
-  <target>Outpost integrado não está contigurado corretamente.</target>
+  <target>Outpost integrado não está configurado corretamente.</target>
 </trans-unit>
 <trans-unit id="seb5ba88f21937c98">
   <source>Check outposts.</source>
@@ -663,7 +664,7 @@
 </trans-unit>
 <trans-unit id="sae486938be80729c">
   <source>Everything is ok.</source>
-  <target>Está tudo correto.</target>
+  <target>Tudo certo.</target>
 </trans-unit>
 <trans-unit id="sf4122b220926be97">
   <source>Version</source>
@@ -971,7 +972,7 @@
 </trans-unit>
 <trans-unit id="s5baec8151f4a4433">
   <source>Cancel action</source>
-  <target>Açao de cancelamento</target>
+  <target>Ação de cancelamento</target>
 </trans-unit>
 <trans-unit id="sbcdf61483337948a">
   <source>Successfully updated schedule.</source>
@@ -1087,7 +1088,7 @@
 </trans-unit>
 <trans-unit id="s556a7cc7c0c9f032">
   <source>Pre-processing</source>
-  <target>Pré processamento</target>
+  <target>Pré-processamento</target>
 </trans-unit>
 <trans-unit id="s85994a70cd39166c">
   <source>Running</source>
@@ -1095,7 +1096,7 @@
 </trans-unit>
 <trans-unit id="sb37a630168e1e0e5">
   <source>Post-processing</source>
-  <target>Pós processamento</target>
+  <target>Pós-processamento</target>
 </trans-unit>
 <trans-unit id="sbe9a51f29a4a2c5b">
   <source>Successful</source>
@@ -1267,12 +1268,15 @@
 </trans-unit>
 <trans-unit id="s0268ce9f2abb84de">
   <source>Configure the Application</source>
+  <target>Configurar a Aplicação</target>
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>Digite o nome da aplicação...</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>Nome da Aplicação</target>
 </trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
@@ -1308,6 +1312,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1419,6 +1424,7 @@
 </trans-unit>
 <trans-unit id="s498d08fb8f63727f">
   <source>UNNAMED</source>
+  <target>SEM NOME</target>
 </trans-unit>
 <trans-unit id="s74b47e964bb82e5f">
   <source>Wizard content</source>
@@ -1494,8 +1500,7 @@
 </trans-unit>
 <trans-unit id="sb4e50ca3cffdbc10">
   <source>Sidebar left</source>
-  <target>Sidebad
- à esquerda</target>
+  <target>Sidebar à esquerda</target>
 </trans-unit>
 <trans-unit id="s745a55f9abf9f2e5">
   <source>Sidebar right</source>
@@ -1612,6 +1617,7 @@
 </trans-unit>
 <trans-unit id="s96dc816b1d1c3be0">
   <source>Type a provider name...</source>
+  <target>Digite o nome do provedor...</target>
 </trans-unit>
 <trans-unit id="scef3f4ad80abbd22">
   <source>Configure how the outpost authenticates requests.</source>
@@ -1872,9 +1878,11 @@
 </trans-unit>
 <trans-unit id="sbdab4eb1812adc78">
   <source>Key used to encrypt the tokens. Only enable this if the application using this provider supports JWE tokens.</source>
+  <target>Chave usada para criptografar os tokens. Habilite isso apenas se a aplicação que usa este provedor suportar JWE</target>
 </trans-unit>
 <trans-unit id="s998fea0fa7bb4188">
   <source>authentik only supports RSA-OAEP-256 for encryption.</source>
+  <target>O authentik suporta apenas RSA-OAEP-256 para criptografia.</target>
 </trans-unit>
 <trans-unit id="s9f23ed1799b4d49a">
   <source>Configure what data should be used as unique User Identifier. For most cases, the default should be fine.</source>
@@ -1995,6 +2003,7 @@
 </trans-unit>
 <trans-unit id="sd144a9315e8f87c1">
   <source>http(s)://...</source>
+  <target>http(s)://...</target>
 </trans-unit>
 <trans-unit id="sf05e384059a0a7c1">
   <source>Upstream host that the requests are forwarded to.</source>
@@ -2046,6 +2055,7 @@
 </trans-unit>
 <trans-unit id="sf8633bb541bfb123">
   <source>domain.tld</source>
+  <target>dominio.tld</target>
 </trans-unit>
 <trans-unit id="s211b75e868072162">
   <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
@@ -2492,18 +2502,23 @@
 </trans-unit>
 <trans-unit id="s25afe36fa73d2e5b">
   <source>Sync settings</source>
+  <target>Configurações de sincronização</target>
 </trans-unit>
 <trans-unit id="s2c859e13e182be6b">
   <source>Page size</source>
+  <target>Tamanho da página</target>
 </trans-unit>
 <trans-unit id="sb984354bb46c8bed">
   <source>Controls the number of objects synced in a single task.</source>
+  <target>Controla o número de objetos sincronizados em uma única tarefa.</target>
 </trans-unit>
 <trans-unit id="sc24408fbc7ff26b5">
   <source>Page timeout</source>
+  <target>Tempo limite da página</target>
 </trans-unit>
 <trans-unit id="s7faa17601278029a">
   <source>Timeout for synchronization of a single page.</source>
+  <target>Tempo limite para sincronização de uma única página.</target>
 </trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
@@ -3706,7 +3721,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sa412f34efd88e962">
   <source>Streams</source>
-  <target>Streams</target>
+  <target>Fluxos</target>
 </trans-unit>
 <trans-unit id="s6ba50bb0842ba1e2">
   <source>Applications</source>
@@ -3818,6 +3833,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="application.outpost.missing.warning">
   <source>Warning: Application is not used by any Outpost.</source>
+  <target>Aviso: A aplicação não está sendo usada por nenhum Outpost.</target>
 </trans-unit>
 <trans-unit id="sb6cbd4f92ebaf5d8">
   <source>Related</source>
@@ -3841,7 +3857,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sed02f831e653deb3">
   <source>Logins over the last week (per 8 hours)</source>
-  <target>Logins na última semana (por 8 horas)</target>
+  <target>Acessos na última semana (por 8 horas)</target>
 </trans-unit>
 <trans-unit id="sc6479479c936939f">
   <source>Application entitlements</source>
@@ -3865,15 +3881,19 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s2b8e875dc18e2690">
   <source>Device name...</source>
+  <target>Nome do dispositivo...</target>
 </trans-unit>
 <trans-unit id="s81f57ffc163f9f82">
   <source>Device name</source>
+  <target>Nome do dispositivo</target>
 </trans-unit>
 <trans-unit id="s0ae9fd7db25fa3e0">
   <source>Device Group</source>
+  <target>Grupo de Dispositivos</target>
 </trans-unit>
 <trans-unit id="s335acddfb181e9ad">
   <source>Connector setup</source>
+  <target>Configuração do conector</target>
 </trans-unit>
 <trans-unit id="s3687049d1af562c4">
   <source>Copy</source>
@@ -3881,60 +3901,79 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sd1dc37bdc04758eb">
   <source>Download the latest package from here:</source>
+  <target>Baixe o pacote mais recente aqui:</target>
 </trans-unit>
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
+  <target>Depois, selecione o token de inscrição que deseja usar:</target>
 </trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
+  <target>macOS</target>
 </trans-unit>
 <trans-unit id="s7845e3b545ffe6bd">
   <source>Linux</source>
+  <target>Linux</target>
 </trans-unit>
 <trans-unit id="s50ad561b4139dc06">
   <source>Configured connector does not support setup.</source>
+  <target>O conector configurado não suporta configuração.</target>
 </trans-unit>
 <trans-unit id="s3624e780118ae113">
   <source>No connectors configured. Navigate to connectors in the sidebar and create a connector.</source>
+  <target>Nenhum conector configurado. Navegue até conectores na barra lateral e crie um conector.</target>
 </trans-unit>
 <trans-unit id="s8f26d4f086cc1323">
   <source>Unix</source>
+  <target>Unix</target>
 </trans-unit>
 <trans-unit id="s16125219b0c92b52">
   <source>BSD</source>
+  <target>BSD</target>
 </trans-unit>
 <trans-unit id="sefe707c1bfb1d3cc">
   <source>Android</source>
+  <target>Android</target>
 </trans-unit>
 <trans-unit id="s2c0fca192c3375e6">
   <source>iOS</source>
+  <target>iOS</target>
 </trans-unit>
 <trans-unit id="scfe39d24bc958960">
   <source>Devices</source>
+  <target>Dispositivos</target>
 </trans-unit>
 <trans-unit id="s091d3507b5b2f9d7">
   <source>OS</source>
+  <target>SO</target>
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
+  <target>Dispositivos de endpoint estão em pré-visualização.</target>
 </trans-unit>
 <trans-unit id="s672b3d1982f585fa">
   <source>Total devices</source>
+  <target>Total de dispositivos</target>
 </trans-unit>
 <trans-unit id="sf3a81f931deb9f96">
   <source>Total count of devices across all groups</source>
+  <target>Contagem total de dispositivos em todos os grupos</target>
 </trans-unit>
 <trans-unit id="sd4566519aa4dbd8e">
   <source>Unreachable devices</source>
+  <target>Dispositivos inalcançáveis</target>
 </trans-unit>
 <trans-unit id="sf1580fcb88cbcfd8">
   <source>Devices that authentik hasn't received information about in 24h.</source>
+  <target>Dispositivos sobre os quais o authentik não recebeu informações em 24h.</target>
 </trans-unit>
 <trans-unit id="s303ef08d87cd21fd">
   <source>Outdated agents</source>
+  <target>Agentes desatualizados</target>
 </trans-unit>
 <trans-unit id="s0a5821461d41f627">
   <source>Devices running an outdated version of an agent</source>
+  <target>Dispositivos executando uma versão desatualizada de um agente</target>
 </trans-unit>
 <trans-unit id="sabb56f74492e7e96">
   <source>Update Device</source>
@@ -3942,15 +3981,19 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sf655f75d8e14d5fe">
   <source>Endpoint Device(s)</source>
+  <target>Dispositivo(s) de Endpoint</target>
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
+  <target>Dispositivo <x id="0" equiv-text="${this.device?.name}"/></target>
 </trans-unit>
 <trans-unit id="s6d4cc88f2426efaf">
   <source>Loading device...</source>
+  <target>Carregando dispositivo...</target>
 </trans-unit>
 <trans-unit id="s2addf9fd0d89ba11">
   <source>Device details</source>
+  <target>Detalhes do dispositivo</target>
 </trans-unit>
 <trans-unit id="s1e176e35c828318c">
   <source>Hostname</source>
@@ -3958,45 +4001,58 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s974564539ea1cafa">
   <source>Serial number</source>
+  <target>Número de série</target>
 </trans-unit>
 <trans-unit id="s361c13a7f20ea559">
   <source>Operating system</source>
+  <target>Sistema operacional</target>
 </trans-unit>
 <trans-unit id="se990a968b7dfcfd8">
   <source>Firewall enabled</source>
+  <target>Firewall habilitado</target>
 </trans-unit>
 <trans-unit id="sc5e304b166165519">
   <source>Hardware</source>
+  <target>Hardware</target>
 </trans-unit>
 <trans-unit id="scb320e45978d3390">
   <source>Manufacturer</source>
+  <target>Fabricante</target>
 </trans-unit>
 <trans-unit id="s0b453a19aa0f85a9">
   <source>CPU</source>
+  <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
   <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
+  <target>Memória</target>
 </trans-unit>
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
+  <target>Criptografia de disco</target>
 </trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
+  <target>Usuários / Grupos</target>
 </trans-unit>
 <trans-unit id="sfdd447bcde2c13ba">
   <source>Processes</source>
+  <target>Processos</target>
 </trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
+  <target>Nome do conector</target>
 </trans-unit>
 <trans-unit id="s44200a04fda1fa29">
   <source>Flow used for users to authorize.</source>
+  <target>Fluxo usado para os usuários autorizarem.</target>
 </trans-unit>
 <trans-unit id="s1d3f07bfba32fc84">
   <source>Certificate used for signing device compliance challenges.</source>
+  <target>Certificado usado para assinar desafios de conformidade de dispositivos.</target>
 </trans-unit>
 <trans-unit id="sb85ffe141d7c229d">
   <source>Session duration</source>
@@ -4004,33 +4060,43 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s5567310faa112bc6">
   <source>Configure how long an authenticated session is valid for.</source>
+  <target>Configure por quanto tempo uma sessão autenticada é válida.</target>
 </trans-unit>
 <trans-unit id="sa3b5c0d4b4fd12ff">
   <source>Terminate authenticated sessions on token expiry</source>
+  <target>Encerrar sessões autenticadas quando o token expirar</target>
 </trans-unit>
 <trans-unit id="sf4372a571ffb02cd">
   <source>Refresh interval</source>
+  <target>Intervalo de atualização</target>
 </trans-unit>
 <trans-unit id="s3f009bda38b93134">
   <source>Interval how frequently the agent tries to update its config.</source>
+  <target>Intervalo de frequência com que o agente tenta atualizar sua configuração.</target>
 </trans-unit>
 <trans-unit id="seb040746311faa64">
   <source>Unix settings</source>
+  <target>Configurações Unix</target>
 </trans-unit>
 <trans-unit id="s5758d1421a791cc6">
   <source>NSS User ID offset</source>
+  <target>Offset do ID de usuário NSS</target>
 </trans-unit>
 <trans-unit id="sfb33118d419cd3c0">
   <source>NSS Group ID offset</source>
+  <target>Offset do ID de grupo NSS</target>
 </trans-unit>
 <trans-unit id="sffc7bf978a049970">
   <source>Connectors are required to create devices. Depending on connector type, agents either directly talk to them or they talk to and external API to create devices.</source>
+  <target>Conectores são necessários para criar dispositivos. Dependendo do tipo de conector, os agentes conversam diretamente</target>
 </trans-unit>
 <trans-unit id="s80b0feb2a6b98ef9">
   <source>Connectors</source>
+  <target>Conectores</target>
 </trans-unit>
 <trans-unit id="s06b8c7e7fb99c1d8">
   <source>Connector(s)</source>
+  <target>Conector(es)</target>
 </trans-unit>
 <trans-unit id="s476ffc07e6d66f18">
   <source>Successfully updated token.</source>
@@ -4046,6 +4112,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s47be0f8c26355135">
   <source>Token name</source>
+  <target>Nome do token</target>
 </trans-unit>
 <trans-unit id="s1b14062c44e5ef45">
   <source>Expiring</source>
@@ -4061,6 +4128,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="se85e2f1923fd96ac">
   <source>Enrollment Token(s)</source>
+  <target>Token(s) de Inscrição</target>
 </trans-unit>
 <trans-unit id="scc3487e74c5a3e89">
   <source>Copy token</source>
@@ -4068,15 +4136,19 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sfbf16ea8fef96f6d">
   <source>Enrollment Tokens</source>
+  <target>Tokens de Inscrição</target>
 </trans-unit>
 <trans-unit id="s3a38fceae14534dd">
   <source>Device access groups</source>
+  <target>Grupos de acesso a dispositivos</target>
 </trans-unit>
 <trans-unit id="sbe0fb540e9dee187">
   <source>Create groups of devices to manage access.</source>
+  <target>Crie grupos de dispositivos para gerenciar o acesso.</target>
 </trans-unit>
 <trans-unit id="s7924cdccf3592aa8">
   <source>Device Group(s)</source>
+  <target>Grupo(s) de Dispositivos</target>
 </trans-unit>
 <trans-unit id="s24875d5475e82526">
   <source>Successfully updated source.</source>
@@ -4120,9 +4192,11 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s8bf373b1a2bfefed">
   <source>Promoted</source>
+  <target>Promovido</target>
 </trans-unit>
 <trans-unit id="s4a600d70e4348810">
   <source>When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.</source>
+  <target>Quando habilitado, esta fonte será exibida como um botão de destaque na página de login, em vez de um botão pequeno</target>
 </trans-unit>
 <trans-unit id="s39d6971531a270b6">
   <source>Update internal password on login</source>
@@ -4150,7 +4224,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s9c2eae548d3c1c30">
   <source>Realm</source>
-  <target>Realm</target>
+  <target>Domínio</target>
 </trans-unit>
 <trans-unit id="s6b032212997e2491">
   <source>Kerberos 5 configuration</source>
@@ -4202,7 +4276,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sc59ec59c3d5e74dc">
   <source>Sync keytab</source>
-  <target>Sync keytab</target>
+  <target>Sincronizar keytab</target>
 </trans-unit>
 <trans-unit id="scd42997958453f05">
   <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
@@ -4418,7 +4492,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s139200afa0695967">
   <source>Plain</source>
-  <target>Plain</target>
+  <target>Simples</target>
 </trans-unit>
 <trans-unit id="s7a316723c6bb33eb">
   <source>S256</source>
@@ -5085,7 +5159,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="s79fc990a2b58f27f">
   <source>Brands</source>
-  <target>Brands</target>
+  <target>Marcas</target>
 </trans-unit>
 <trans-unit id="s164be9a7537b99f6">
   <source>Configure visual settings and defaults for different domains.</source>
@@ -5101,7 +5175,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="s02774bc46a167346">
   <source>Brand(s)</source>
-  <target>Brand(s)</target>
+  <target>Marca(s)</target>
 </trans-unit>
 <trans-unit id="s8cb7bb82e96d5d77">
   <source>Policies</source>
@@ -5317,7 +5391,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="s03fd2c252ad7972a">
   <source>Email recovery link</source>
-  <target>Link de recuperação de email</target>
+  <target>Enviar link de recuperação por email</target>
 </trans-unit>
 <trans-unit id="sac6c67e92bd30229">
   <source>Assign Additional Users</source>
@@ -5502,6 +5576,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="source-settings-list-item-label">
   <source>"<x id="0" equiv-text="${source.title}"/>" source</source>
+  <target>&amp;quot;<x id="0" equiv-text="${source.title}"/>&amp;quot; fonte</target>
 </trans-unit>
 <trans-unit id="s7968dbed9b106c29">
   <source>No services available.</source>
@@ -5509,6 +5584,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="s20b2b040b332bb55">
   <source>Source Settings</source>
+  <target>Configurações da Fonte</target>
 </trans-unit>
 <trans-unit id="sf05c700a1250824e">
   <source>Confirmed</source>
@@ -5536,7 +5612,7 @@ Você só pode usar políticas aqui, pois o acesso é verificado antes de o usu�
 </trans-unit>
 <trans-unit id="sd1f44f1a8bc20e67">
   <source>Email</source>
-  <target>Email</target>
+  <target>E-mail</target>
 </trans-unit>
 <trans-unit id="sfb95ad8c25db95ba">
   <source>Last password change</source>
@@ -6588,6 +6664,7 @@ retorne uma lista para fornecer várias opções padrão.</target>
 </trans-unit>
 <trans-unit id="s69bc087c166b4177">
   <source>Flow used by an authenticated user to configure their password. If empty, user will not be able to change their password.</source>
+  <target>Fluxo usado por um usuário autenticado para configurar sua senha. Se vazio, o usuário não poderá configurar sua senha.</target>
 </trans-unit>
 <trans-unit id="s77994108c886b965">
   <source>Failed attempts before cancel</source>
@@ -7158,7 +7235,7 @@ retorne uma lista para fornecer várias opções padrão.</target>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
-  <target>Brand</target>
+  <target>Marca</target>
 </trans-unit>
 <trans-unit id="s3b3c333481944862">
   <source>Show details</source>
@@ -7543,6 +7620,7 @@ As vinculações a grupos/usuários são verificadas em relação ao usuário do
 </trans-unit>
 <trans-unit id="sef50d248448e0df1">
   <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
+  <target>Sim (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</target>
 </trans-unit>
 <trans-unit id="s33aa05f435c29753">
   <source>Update Certificate-Key Pair</source>
@@ -7995,6 +8073,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s0393ac07cf8a3097">
   <source>Endpoint Devices</source>
+  <target>Dispositivos de Endpoint</target>
 </trans-unit>
 <trans-unit id="s4f1ad6b48a5df506">
   <source>Logs</source>
@@ -8285,6 +8364,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s05a941e4b4bfca9f">
   <source>Additional actions</source>
+  <target>Ações adicionais</target>
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
@@ -8300,6 +8380,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s53dddf1733e26c98">
   <source>Login sources</source>
+  <target>Fontes de login</target>
 </trans-unit>
 <trans-unit id="s85366fac18679f28">
   <source>Forgot password?</source>
@@ -8327,11 +8408,11 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sc091f75b942ec081">
   <source>QR-Code to setup a time-based one-time password</source>
-  <target>QR-Code para configurar uma senha de uso único baseada em tempo</target>
+  <target>QR-Code para configurar um código de verificação</target>
 </trans-unit>
 <trans-unit id="s6db67c7681b8be6e">
   <source>Copy time-based one-time password configuration</source>
-  <target>Copiar configuração de senha de uso único baseada em tempo</target>
+  <target>Copiar configuração de código de verificação</target>
 </trans-unit>
 <trans-unit id="s43e859bf711e3599">
   <source>Copy TOTP Config</source>
@@ -8343,7 +8424,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sa5562e0115ffbccd">
   <source>Time-based one-time password</source>
-  <target>Senha de uso único baseada em tempo</target>
+  <target>Código de verificação</target>
 </trans-unit>
 <trans-unit id="s40f44c0d88807fd5">
   <source>TOTP Code</source>
@@ -8355,7 +8436,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s168d0c138b63286d">
   <source>Type your time-based one-time password code.</source>
-  <target>Digite seu código de senha de uso único baseada em tempo.</target>
+  <target>Digite seu código de verificação.</target>
 </trans-unit>
 <trans-unit id="sc2ec367e3108fe65">
   <source>Duo activation QR code</source>
@@ -8615,12 +8696,15 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
+  <target>Por favor, aguarde enquanto o conteúdo está carregando</target>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
+  <target>aplicação</target>
 </trans-unit>
 <trans-unit id="s33b2f30214a2e99d">
   <source>Actions for "<x id="0" equiv-text="${applicationName}"/>"</source>
+  <target>Ações para &amp;quot;<x id="0" equiv-text="${applicationName}"/>&amp;quot;</target>
 </trans-unit>
 <trans-unit id="sfa660d9e563c346f">
   <source>Edit application...</source>
@@ -8640,6 +8724,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s45915ee0293ce5d4">
   <source>Ungrouped</source>
+  <target>Sem grupo</target>
 </trans-unit>
 <trans-unit id="s65b433c52c2ad8eb">
   <source>Search for an application by name...</source>
@@ -8651,9 +8736,11 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s91cfe4fac0957ee7">
   <source>Application list</source>
+  <target>Lista de aplicações</target>
 </trans-unit>
 <trans-unit id="sf609e15e71559cd2">
   <source>Failed to fetch applications.</source>
+  <target>Falha ao buscar aplicações.</target>
 </trans-unit>
 <trans-unit id="s06c92148da82be0d">
   <source>Change your password</source>
@@ -8726,419 +8813,558 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s6cd96061d397f7b5">
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
+  <target>Via <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
 <trans-unit id="s0b7ddc0168e79ea2">
   <source>Failed to fetch files</source>
+  <target>Falha ao buscar arquivos</target>
 </trans-unit>
 <trans-unit id="sdc4f1cfd587212b4">
   <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
+  <target>Você também pode inserir uma URL (https://...), ícone Font Awesome (fa://fa-icon-name) ou fazer upload de um novo arquivo.</target>
 </trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
+  <target>Selecione dos arquivos enviados ou digite um ícone Font Awesome (fa://fa-icon-name) ou URL.</target>
 </trans-unit>
 <trans-unit id="s87616130c08b117c">
   <source>This type is deprecated.</source>
+  <target>Este tipo está obsoleto.</target>
 </trans-unit>
 <trans-unit id="s40f4c2223ce87751">
   <source>No connectors configured. Navigate to Connectors in the sidebar and first create a connector.</source>
+  <target>Nenhum conector configurado. Navegue até Conectores na barra lateral e primeiro crie um conector.</target>
 </trans-unit>
 <trans-unit id="s70c2cd89201ecca9">
   <source>Home directory</source>
+  <target>Diretório home</target>
 </trans-unit>
 <trans-unit id="sb171d638b8af660d">
   <source>Successfully updated agent connector.</source>
+  <target>Conector de agente atualizado com sucesso.</target>
 </trans-unit>
 <trans-unit id="s81c9554908463f94">
   <source>Successfully created agent connector.</source>
+  <target>Conector de agente criado com sucesso.</target>
 </trans-unit>
 <trans-unit id="s306dd51d3be07bc7">
   <source>Device compliance settings</source>
+  <target>Configurações de conformidade de dispositivos</target>
 </trans-unit>
 <trans-unit id="sc2966702517b7af5">
   <source>Challenge certificate</source>
+  <target>Certificado de desafio</target>
 </trans-unit>
 <trans-unit id="s051588c63fedab5f">
   <source>Challenge idle timeout</source>
+  <target>Tempo limite de inatividade do desafio</target>
 </trans-unit>
 <trans-unit id="s4c70d7629e29ac2d">
   <source>Duration the flow executor will wait before continuing without a response.</source>
+  <target>Duração que o executor de fluxo aguardará antes de continuar sem uma resposta.</target>
 </trans-unit>
 <trans-unit id="se3c7fb54006d9e98">
   <source>Trigger check-in on device</source>
+  <target>Acionar check-in no dispositivo</target>
 </trans-unit>
 <trans-unit id="se0a747f4db08e87f">
   <source>Configure how devices connect with authentik and ingest external device data.</source>
+  <target>Configure como os dispositivos se conectam ao authentik e ingerem dados externos de dispositivos.</target>
 </trans-unit>
 <trans-unit id="s114f2b310ef163ff">
   <source>Stage which associates the currently used device with the current session.</source>
+  <target>Estágio que associa o dispositivo usado atualmente com a sessão atual.</target>
 </trans-unit>
 <trans-unit id="s8290d08ab5a49ed0">
   <source>Connector</source>
+  <target>Conector</target>
 </trans-unit>
 <trans-unit id="s5e8eefcbbeffd4d5">
   <source>Device optional</source>
+  <target>Dispositivo opcional</target>
 </trans-unit>
 <trans-unit id="s51b09bba5dcc19b0">
   <source>If no device was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Se nenhum dispositivo foi fornecido, este estágio terá sucesso e continuará para o próximo estágio.</target>
 </trans-unit>
 <trans-unit id="s5f58e358343a5514">
   <source>Device required</source>
+  <target>Dispositivo obrigatório</target>
 </trans-unit>
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
+  <target>Se nenhum dispositivo foi fornecido, este estágio interromperá a execução do fluxo.</target>
 </trans-unit>
 <trans-unit id="s3a3d5b2575cd32ea">
   <source>File uploaded successfully</source>
+  <target>Arquivo enviado com sucesso</target>
 </trans-unit>
 <trans-unit id="sd3775ef947e0de32">
   <source>File Name</source>
+  <target>Nome do Arquivo</target>
 </trans-unit>
 <trans-unit id="s1afc99a84a890514">
   <source>Type an optional custom file name...</source>
+  <target>Digite um nome de arquivo personalizado opcional...</target>
 </trans-unit>
 <trans-unit id="sb40e2763045466ea">
   <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
+  <target>Opcionalmente renomeie o arquivo (sem extensão). Deixe vazio para manter o nome original.</target>
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Arquivos</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
+  <target>Gerenciar arquivos enviados.</target>
 </trans-unit>
 <trans-unit id="saad01178f02a6a23">
   <source>file</source>
+  <target>arquivo</target>
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>arquivos</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
+  <target>Enviar</target>
 </trans-unit>
 <trans-unit id="sa32e9d0a108ee802">
   <source>Upload File</source>
+  <target>Enviar Arquivo</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
+  <target>Falha ao validar dispositivo.</target>
 </trans-unit>
 <trans-unit id="se99d25eb70c767ef">
   <source>Verifying your device...</source>
+  <target>Verificando seu dispositivo...</target>
 </trans-unit>
 <trans-unit id="s5c85e53f1d3747d0">
   <source>Service Provider Config cache timeout</source>
+  <target>Tempo de cache da configuração do provedor de serviço</target>
 </trans-unit>
 <trans-unit id="s5fca9f7853a54584">
   <source>Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable caching.</source>
+  <target>Duração do cache para respostas ServiceProviderConfig. Defina minutes=0 para desabilitar</target>
 </trans-unit>
 <trans-unit id="s89a2859207d766fe">
   <source>JWTs signed by the selected providers can be used to authenticate to devices.</source>
+  <target>JWTs assinados pelos provedores selecionados podem ser usados para autenticação</target>
 </trans-unit>
 <trans-unit id="s988e1dfd2b962e4f">
   <source>Score Configuration</source>
+  <target>Configuração de Pontuação</target>
 </trans-unit>
 <trans-unit id="s83d396fed4b71e29">
   <source>This CAPTCHA provider does not support scoring. Score thresholds will be ignored.</source>
+  <target>Este provedor de CAPTCHA não suporta pontuação. Os limites de pontuação serão ignorados</target>
 </trans-unit>
 <trans-unit id="s5b29d7a77c92758e">
   <source>Score Minimum Threshold</source>
+  <target>Limite Mínimo de Pontuação</target>
 </trans-unit>
 <trans-unit id="sfb4f2529b0b36889">
   <source>Minimum required score to allow continuing. Lower scores indicate more suspicious behavior.</source>
+  <target>Pontuação mínima necessária para continuar. Pontuações mais baixas indicam mais probabilidade de bot</target>
 </trans-unit>
 <trans-unit id="sf578722c6d349838">
   <source>Score Maximum Threshold</source>
+  <target>Limite Máximo de Pontuação</target>
 </trans-unit>
 <trans-unit id="s66fe9ce730db1f7b">
   <source>Maximum allowed score to allow continuing. Set to -1 to disable upper bound checking.</source>
+  <target>Pontuação máxima permitida para continuar. Defina como -1 para desabilitar limite superior</target>
 </trans-unit>
 <trans-unit id="s1f412e69817ebb7f">
   <source>Error on Invalid Score</source>
+  <target>Erro em Pontuação Inválida</target>
 </trans-unit>
 <trans-unit id="sbfc0f211f5f7c96f">
   <source>When enabled and the score is outside the threshold, the user will not be able to continue. When disabled, the user can continue and the score can be used in policies.</source>
+  <target>Quando habilitado e a pontuação está fora do limite, o usuário não poderá continuar</target>
 </trans-unit>
 <trans-unit id="s74982e57a1d8896c">
   <source>Advanced Settings</source>
+  <target>Configurações Avançadas</target>
 </trans-unit>
 <trans-unit id="s27bfe23deaaf0c2f">
   <source>JavaScript URL</source>
+  <target>URL do JavaScript</target>
 </trans-unit>
 <trans-unit id="s22f10cb634a6d1e5">
   <source>URL to fetch the CAPTCHA JavaScript library from. Automatically set based on provider selection but can be customized.</source>
+  <target>URL para buscar a biblioteca JavaScript do CAPTCHA. Definido automaticamente com base no provedor</target>
 </trans-unit>
 <trans-unit id="s83c66d5a3edc1b03">
   <source>API Verification URL</source>
+  <target>URL de Verificação da API</target>
 </trans-unit>
 <trans-unit id="s47028bbf2c2cce0c">
   <source>URL used to validate CAPTCHA response on the backend. Automatically set based on provider selection but can be customized.</source>
+  <target>URL usada para validar a resposta do CAPTCHA no backend. Definida automaticamente</target>
 </trans-unit>
 <trans-unit id="s7fed8c29d9963f53">
   <source>This stage checks the user's current session against a CAPTCHA service to prevent automated abuse.</source>
+  <target>Este estágio verifica a sessão atual do usuário contra um serviço de CAPTCHA</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
   <source>CAPTCHA Provider</source>
+  <target>Provedor de CAPTCHA</target>
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
+  <target>Ative esta opção se o CAPTCHA exigir interação do usuário (clicar em caixa de seleção, resolver desafios, etc.). Necessário para reCAPTCHA v2, modo interativo do hCaptcha e Cloudflare Turnstile.</target>
 </trans-unit>
 <trans-unit id="s8d94e51441d0ce0c">
   <source>Flow Examples</source>
+  <target>Exemplos de Fluxo</target>
 </trans-unit>
 <trans-unit id="s49ae82ba527f8e01">
   <source>Type an outpost name...</source>
+  <target>Digite um nome de outpost...</target>
 </trans-unit>
 <trans-unit id="s574ed5d3a52d45c8">
   <source>Outpost Name</source>
+  <target>Nome do Outpost</target>
 </trans-unit>
 <trans-unit id="sc47f8ab6162bb2bb">
   <source>Outpost configuration</source>
+  <target>Configuração do Outpost</target>
 </trans-unit>
 <trans-unit id="s11a2ac9f2bd811d8">
   <source>Delete Object Permission</source>
+  <target>Excluir Permissão de Objeto</target>
 </trans-unit>
 <trans-unit id="s78aa910bcb26034d">
   <source>Global and object permission</source>
+  <target>Permissão global e de objeto</target>
 </trans-unit>
 <trans-unit id="sc8f73affccb6ae4d">
   <source>Global permission</source>
+  <target>Permissão global</target>
 </trans-unit>
 <trans-unit id="scf9ebad133d2d561">
   <source>Object permission</source>
+  <target>Permissão de objeto</target>
 </trans-unit>
 <trans-unit id="sa84d68ec57e21b0f">
   <source>Permissions on this object</source>
+  <target>Permissões neste objeto</target>
 </trans-unit>
 <trans-unit id="s4d83e4891c19ff14">
   <source>Permissions assigned to this role affecting specific object instances.</source>
+  <target>Permissões atribuídas a esta função que afetam instâncias de objetos específicos.</target>
 </trans-unit>
 <trans-unit id="s3e07daaacb10f38a">
   <source>Parents</source>
+  <target>Pais</target>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Grupos Disponíveis</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Grupos Selecionados</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
+  <target>Um grupo herda recursivamente todas as funções de seus ancestrais.</target>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Usuário atualizado.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>Usuário criado e adicionado ao grupo <x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s31dc80daa773a5dc">
   <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>Usuário criado e adicionado à função <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Usuário criado.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
 </trans-unit>
 <trans-unit id="s2b6c1190a54a0932">
   <source>Show MDM configuration</source>
+  <target>Mostrar configuração MDM</target>
 </trans-unit>
 <trans-unit id="sb4f4c6c72acfa253">
   <source>Hide MDM configuration</source>
+  <target>Ocultar configuração MDM</target>
 </trans-unit>
 <trans-unit id="s4a7ec7687e560e6a">
   <source>Is Primary user</source>
+  <target>É usuário primário</target>
 </trans-unit>
 <trans-unit id="se14ede3bc78d9599">
   <source>Primary</source>
+  <target>Primário</target>
 </trans-unit>
 <trans-unit id="sc67ff7b2278e81e4">
   <source>Remove User(s)</source>
+  <target>Remover Usuário(s)</target>
 </trans-unit>
 <trans-unit id="s76e10cbcb80c3a64">
   <source>Are you sure you want to remove the selected users from <x id="0" equiv-text="${targetLabel}"/>?</source>
+  <target>Tem certeza de que deseja remover os usuários selecionados de <x id="0" equiv-text="${targetLabel}"/>?</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
+  <target>Tem certeza de que deseja remover os usuários selecionados?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
+  <target>Este usuário será adicionado à função &amp;quot;<x id="0" equiv-text="${this.targetRole.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="sed582fb69fd1eed8">
   <source>Successfully added user to role(s).</source>
+  <target>Usuário adicionado às funções com sucesso.</target>
 </trans-unit>
 <trans-unit id="s78daaa3ef4325cac">
   <source>Roles to add</source>
+  <target>Funções a adicionar</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
+  <target>Adicionar função</target>
 </trans-unit>
 <trans-unit id="sd8b8f59ad30971f7">
   <source>Remove from Role(s)</source>
+  <target>Remover das Funções</target>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>Tem certeza de que deseja remover o usuário <x id="0" equiv-text="${this.targetUser?.username}"/> das seguintes funções?</target>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>Adicionar à função existente</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>Adicionar nova função</target>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
+  <target>Atualizar outras abas de fluxo após autenticação</target>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+  <target>Quando habilitado, outras abas de fluxo em uma sessão serão atualizadas após uma autenticação bem-sucedida.</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
+  <target>Exportação de dados pronta</target>
 </trans-unit>
 <trans-unit id="sd0fcaa6952729a9a">
   <source>Data Exports</source>
+  <target>Exportações de Dados</target>
 </trans-unit>
 <trans-unit id="s1d1d961d6f3550e5">
   <source>Manage past data exports.</source>
+  <target>Gerenciar exportações de dados anteriores.</target>
 </trans-unit>
 <trans-unit id="s8cddef7d8dac7f87">
   <source>Data type</source>
+  <target>Tipo de dados</target>
 </trans-unit>
 <trans-unit id="s3783e647280eb968">
   <source>Requested by</source>
+  <target>Solicitado por</target>
 </trans-unit>
 <trans-unit id="s2d119c0d85bde088">
   <source>Creation date</source>
+  <target>Data de criação</target>
 </trans-unit>
 <trans-unit id="s5033dab8c17f05f2">
   <source>Completed</source>
+  <target>Concluído</target>
 </trans-unit>
 <trans-unit id="s21c76a0f6cae7920">
   <source>Row actions</source>
+  <target>Ações da linha</target>
 </trans-unit>
 <trans-unit id="s97aa774d38013957">
   <source>Data export(s)</source>
+  <target>Exportação(ões) de dados</target>
 </trans-unit>
 <trans-unit id="s694b2e2c53d2d85d">
   <source>Query parameters</source>
+  <target>Parâmetros de consulta</target>
 </trans-unit>
 <trans-unit id="s145aca905bbc68a4">
   <source>SAML metadata XML file to import provider settings from.</source>
+  <target>Arquivo XML de metadados SAML para importar configurações do provedor.</target>
 </trans-unit>
 <trans-unit id="s0d748f6fb237da48">
   <source>Configure SAML Provider from Metadata</source>
+  <target>Configurar Provedor SAML a partir de Metadados</target>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
+  <target>Sincronizações de saída não serão acionadas.</target>
 </trans-unit>
 <trans-unit id="s967b3abf2608649a">
   <source>Immediate</source>
+  <target>Imediato</target>
 </trans-unit>
 <trans-unit id="sba0b0ee7c8b8f04a">
   <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+  <target>Sincronizações de saída serão acionadas imediatamente para cada objeto que for atualizado. Isso pode criar muitas requisições</target>
 </trans-unit>
 <trans-unit id="sd3dfc2a1c3647e77">
   <source>Deferred until end</source>
+  <target>Adiado até o final</target>
 </trans-unit>
 <trans-unit id="secd492de6e1ae305">
   <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+  <target>Sincronizações de saída serão acionadas ao final da sincronização da fonte.</target>
 </trans-unit>
 <trans-unit id="s0c476074a4fc4d95">
   <source>Outgoing sync trigger mode</source>
+  <target>Modo de acionamento de sincronização de saída</target>
 </trans-unit>
 <trans-unit id="s4bb6f209647072f4">
   <source>Successfully connected source</source>
+  <target>Fonte conectada com sucesso</target>
 </trans-unit>
 <trans-unit id="sf3ad0b5ebe730780">
   <source>Failed to connect source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+  <target>Falha ao conectar fonte: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></target>
 </trans-unit>
 <trans-unit id="sed44880a52f72a08">
   <source>Passkey settings</source>
+  <target>Configurações de passkey</target>
 </trans-unit>
 <trans-unit id="sf65cb435d6ca1d01">
   <source>WebAuthn Authenticator Validation Stage</source>
+  <target>Estágio de Validação de Autenticador WebAuthn</target>
 </trans-unit>
 <trans-unit id="s05a4cbce470ede73">
   <source>When set, allows users to authenticate using passkeys directly from the browser's autofill dropdown without entering a username first.</source>
+  <target>Quando definido, permite que os usuários se autentiquem usando passkeys diretamente do menu suspenso de preenchimento automático do navegador</target>
 </trans-unit>
 <trans-unit id="s51610dc462a5a034">
   <source>Pagination: default page size</source>
+  <target>Paginação: tamanho de página padrão</target>
 </trans-unit>
 <trans-unit id="s05d8a93b0de05ad4">
   <source>Default page size for API requests not specifying a page size.</source>
+  <target>Tamanho de página padrão para requisições de API que não especificam um tamanho de página.</target>
 </trans-unit>
 <trans-unit id="s41dac4f4d7caffa7">
   <source>Pagination: maximum page size</source>
+  <target>Paginação: tamanho máximo de página</target>
 </trans-unit>
 <trans-unit id="s567c5a6e42cc5036">
   <source>Maximum page size for API requests.</source>
+  <target>Tamanho máximo de página para requisições de API.</target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
+  <target>Conexão local</target>
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
+  <target>Requer socket Docker/Integração Kubernetes.</target>
 </trans-unit>
 <trans-unit id="s5f6ad947b4824e40">
   <source>Next, download the configuration to deploy the authentik Agent via MDM</source>
+  <target>Em seguida, baixe a configuração para implantar o Agente authentik via MDM</target>
 </trans-unit>
 <trans-unit id="s523337424b694d5c">
   <source>Device Access Group</source>
+  <target>Grupo de Acesso a Dispositivos</target>
 </trans-unit>
 <trans-unit id="s7642bf28cf8f476c">
   <source>Select a device access group to be added to upon enrollment.</source>
+  <target>Selecione um grupo de acesso a dispositivos para ser adicionado após a inscrição.</target>
 </trans-unit>
 <trans-unit id="h30bbf18fbf87fa57">
   <source>To create a data export, navigate to
                             <x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Directory &gt; Users<x id="1" equiv-text="&lt;/a&gt;"/> or to
                             <x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/>Events &gt; Logs<x id="3" equiv-text="&lt;/a&gt;"/>.</source>
+  <target>Para criar uma exportação de dados, navegue até 
+<x id="0" equiv-text="&lt;a href=&quot;#/identity/users&quot;&gt;"/>Diretório &amp;gt; Usuários <x id="1" equiv-text="&lt;/a&gt;"/> ou até 
+<x id="2" equiv-text="&lt;a href=&quot;#/events/log&quot;&gt;"/> Eventos &amp;gt; Logs <x id="3" equiv-text="&lt;/a&gt;"/>.</target>
 </trans-unit>
 <trans-unit id="s54af3ec70642782c">
   <source>Choose the object permissions that you want the selected role to have on this object. These object permissions are in addition to any global permissions already within the role.</source>
+  <target>Escolha as permissões de objeto que você deseja que a função selecionada tenha sobre este objeto. Essas permissões de objeto</target>
 </trans-unit>
 <trans-unit id="sbcd108b66363075c">
   <source>Device access group</source>
+  <target>Grupo de acesso a dispositivos</target>
 </trans-unit>
 <trans-unit id="s325acae04cdcac57">
   <source>Primary disk size</source>
+  <target>Tamanho do disco primário</target>
 </trans-unit>
 <trans-unit id="sb4a957846c89fca1">
   <source>Primary disk usage</source>
+  <target>Uso do disco primário</target>
 </trans-unit>
 <trans-unit id="s7b68229d885a34d3">
   <source>The start for user ID numbers, this number is added to the user ID to make sure that the numbers aren't too low for POSIX users. Default is 2000 to prevent collisions with local users.</source>
+  <target>O valor inicial para números de ID de usuário. Este número é adicionado ao ID do usuário para garantir que os números não sejam muito baixos para usuários POSIX. O padrão é 2000 para evitar colisões com usuários locais.</target>
 </trans-unit>
 <trans-unit id="s284f44964466ef38">
   <source>The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.</source>
+  <target>O valor inicial para números de ID de grupo. Este número é adicionado a um número gerado do ID do grupo para garantir que os números não sejam muito baixos para grupos POSIX. O padrão é 4000 para evitar colisões com grupos locais.</target>
 </trans-unit>
 <trans-unit id="s01f8cd92a0204da2">
   <source>Data exports are not available as storage for reports is not configured.</source>
+  <target>As exportações de dados não estão disponíveis pois o armazenamento para relatórios não está configurado.</target>
 </trans-unit>
 <trans-unit id="s7afef158aada7389">
   <source><x id="0" equiv-text="${this.brand.brandingTitle}"/> will collect all objects with the specified parameters:</source>
+  <target><x id="0" equiv-text="${this.brand.brandingTitle}"/> coletará todos os objetos com os parâmetros especificados:</target>
 </trans-unit>
 <trans-unit id="sa8d2689c8fdfea22">
   <source>Successfully requested data export</source>
+  <target>Exportação de dados solicitada com sucesso</target>
 </trans-unit>
 <trans-unit id="s7e2ef0e26e7f5e6f">
   <source>Failed to export data</source>
+  <target>Falha ao exportar dados</target>
 </trans-unit>
 <trans-unit id="sd69873a0783f8e39">
   <source>Export data</source>
+  <target>Exportar dados</target>
 </trans-unit>
 <trans-unit id="en-XA">
   <source>English (Pseudo-Accents)</source>
+  <target>Inglês (Pseudo-Acentos)</target>
 </trans-unit>
 <trans-unit id="sbb99d4ec27fbb263">
   <source>Finished</source>
+  <target>Finalizado</target>
 </trans-unit>
 <trans-unit id="s3ec4da71c1a62754">
   <source>Queued</source>
+  <target>Enfileirado</target>
 </trans-unit>
 <trans-unit id="sd32298bb7d36024d">
   <source>Configured file backend does not support file management.</source>
+  <target>O backend de arquivo configurado não suporta gerenciamento de arquivos.</target>
 </trans-unit>
 <trans-unit id="s4f1e04b9b4cb96ae">
   <source>Please ensure the data folder is mounted or S3 storage is configured.</source>
+  <target>Por favor, certifique-se de que a pasta de dados esteja montada ou o armazenamento S3 esteja configurado.</target>
 </trans-unit>
 <trans-unit id="s3a46b5964b3ecfac">
   <source>View details...</source>
+  <target>Ver detalhes...</target>
 </trans-unit>
 <trans-unit id="s6cbf6cd401ea3336">
   <source>Type a connector name...</source>
@@ -9473,6 +9699,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sdf2794b96386c868">
   <source>Copy time-based one-time password secret</source>
+  <target>Copiar segredo do código de verificação</target>
 </trans-unit>
 <trans-unit id="sc78d16417878afd0">
   <source>Copy Secret</source>
@@ -9491,6 +9718,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s1bb47213a314465b">
   <source>Create link</source>
+  <target>Criar link</target>
 </trans-unit>
 <trans-unit id="s68be8f284274370a">
   <source>Recovery link</source>
@@ -9521,12 +9749,14 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="totp.config.clipboard.description">
   <source>Paste this URL into your authenticator app to set up a time-based one-time password.</source>
+  <target>Cole este URL no seu aplicativo autenticador para configurar um código de verificação.</target>
 </trans-unit>
 <trans-unit id="totp.secret">
   <source>TOTP Secret</source>
 </trans-unit>
 <trans-unit id="totp.secret.clipboard.description">
   <source>Paste this secret into your authenticator app to set up a time-based one-time password.</source>
+  <target>Cole este segredo no seu aplicativo autenticador para configurar um código de verificação.</target>
 </trans-unit>
 <trans-unit id="s2157b29f47940266">
   <source>Type a unique identifier for this token...</source>
@@ -9536,9 +9766,11 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sd02d96c6930f31db">
   <source>Create App Password</source>
+  <target>Criar Senha do Aplicativo</target>
 </trans-unit>
 <trans-unit id="scf325f1039d7c82f">
   <source>New App Password</source>
+  <target>Nova Senha do Aplicativo</target>
 </trans-unit>
 <trans-unit id="saa02cc40143c291e">
   <source>Sidebar left (frame background)</source>
@@ -9781,6 +10013,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
+  <target>Footer do site</target>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
@@ -10009,6 +10242,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>Documentação</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
@@ -10522,6 +10756,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>Permissões de Objeto da Função</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10531,6 +10766,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>Atualizar</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10972,6 +11208,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Quando ativado, a notificação será enviada ao usuário que acionou o evento, além de quaisquer usuários no grupo acima. O usuário do evento será sempre o primeiro usuário; para enviar uma notificação apenas ao usuário do evento, ative &apos;Enviar uma vez&apos; no transporte de notificação.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11017,6 +11254,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s334ebfb3605630b0">
   <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
+  <target>Revogar todos os tokens do usuário (API, senha de aplicativo, recuperação e verificação).</target>
 </trans-unit>
 <trans-unit id="sdd3dfdd51bfbcd21">
   <source>Self-service completion</source>
@@ -11537,9 +11775,11 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Uso de usuário interno</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Uso de usuário externo</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11735,6 +11975,7 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Enviar</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>

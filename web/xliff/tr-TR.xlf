@@ -10013,6 +10013,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>Güncelleme</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -11019,9 +11020,11 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Dahili kullanıcı kullanımı</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Dış kullanıcı kullanımı</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11217,6 +11220,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Gönder</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>

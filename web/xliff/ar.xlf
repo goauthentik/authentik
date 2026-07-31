@@ -12477,9 +12477,11 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Internal user usage</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>External user usage</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>

@@ -10016,6 +10016,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>ドキュメント</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
@@ -10529,6 +10530,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>ロールオブジェクト権限</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10538,6 +10540,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>更新</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10979,6 +10982,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>有効になると、イベントをトリガーしたユーザーと上記のグループ内のユーザーに通知が送信されます。イベントユーザーは常に最初のユーザーになります。イベントユーザーにのみ通知を送信するには、通知トランスポートで「1
+          回だけ送信」を有効にします。</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11544,9 +11549,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>内部ユーザー使用量</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>外部ユーザー使用量</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11742,6 +11749,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>送信</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>

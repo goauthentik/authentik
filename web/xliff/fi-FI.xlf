@@ -27,7 +27,7 @@
 <!-- #region Locale selector  -->
 <trans-unit id="locale-auto-detect-option">
   <source>Auto-detect</source>
-  <target>Tunnista automaattisesti</target>
+  <target>Havaitse automaattisesti</target>
   <note from="lit-localize">Label for the auto-detect locale option in language selection dropdown</note>
 </trans-unit>
 <trans-unit id="language-selector-label">
@@ -37,6 +37,7 @@
 </trans-unit>
 <trans-unit id="locale-option-localized-label">
   <source><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</source>
+  <target><x id="0" equiv-text="${relativeDisplayName}"/> (<x id="1" equiv-text="${localizedDisplayName}"/>)</target>
   <note from="lit-localize">Locale option label showing the localized language name along with the native language name in parentheses.</note>
 </trans-unit>
 <!-- #endregion -->
@@ -1271,9 +1272,11 @@
 </trans-unit>
 <trans-unit id="s07b0bf005510fe29">
   <source>Type an application name...</source>
+  <target>Kirjoita sovelluksen nimi...</target>
 </trans-unit>
 <trans-unit id="s972540f502b0f4dc">
   <source>Application Name</source>
+  <target>Sovelluksen nimi</target>
 </trans-unit>
 <trans-unit id="s91f70424f5d5d23e">
   <source>Slug</source>
@@ -1309,6 +1312,7 @@
 </trans-unit>
 <trans-unit id="s71e967b36e080e3c">
   <source>https://...</source>
+  <target>https://...</target>
 </trans-unit>
 <trans-unit id="s992f8d1a776e763c">
   <source>If left empty, authentik will try to extract the launch URL based on the selected provider.</source>
@@ -1999,6 +2003,7 @@
 </trans-unit>
 <trans-unit id="sd144a9315e8f87c1">
   <source>http(s)://...</source>
+  <target>http(s)://...</target>
 </trans-unit>
 <trans-unit id="sf05e384059a0a7c1">
   <source>Upstream host that the requests are forwarded to.</source>
@@ -3868,12 +3873,15 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s2b8e875dc18e2690">
   <source>Device name...</source>
+  <target>Laitteen nimi...</target>
 </trans-unit>
 <trans-unit id="s81f57ffc163f9f82">
   <source>Device name</source>
+  <target>Laitteen nimi</target>
 </trans-unit>
 <trans-unit id="s0ae9fd7db25fa3e0">
   <source>Device Group</source>
+  <target>Laiteryhmä</target>
 </trans-unit>
 <trans-unit id="s335acddfb181e9ad">
   <source>Connector setup</source>
@@ -3884,15 +3892,18 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sd1dc37bdc04758eb">
   <source>Download the latest package from here:</source>
+  <target>Lataa uusin paketti täältä:</target>
 </trans-unit>
 <trans-unit id="sf96a86df0756bc7b">
   <source>Afterwards, select the enrollment token you want to use:</source>
 </trans-unit>
 <trans-unit id="s12f523a52b843ea2">
   <source>macOS</source>
+  <target>macOS</target>
 </trans-unit>
 <trans-unit id="s7845e3b545ffe6bd">
   <source>Linux</source>
+  <target>Linux</target>
 </trans-unit>
 <trans-unit id="s50ad561b4139dc06">
   <source>Configured connector does not support setup.</source>
@@ -3902,21 +3913,27 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s8f26d4f086cc1323">
   <source>Unix</source>
+  <target>Unix</target>
 </trans-unit>
 <trans-unit id="s16125219b0c92b52">
   <source>BSD</source>
+  <target>BSD</target>
 </trans-unit>
 <trans-unit id="sefe707c1bfb1d3cc">
   <source>Android</source>
+  <target>Android</target>
 </trans-unit>
 <trans-unit id="s2c0fca192c3375e6">
   <source>iOS</source>
+  <target>iOS</target>
 </trans-unit>
 <trans-unit id="scfe39d24bc958960">
   <source>Devices</source>
+  <target>Laitteet</target>
 </trans-unit>
 <trans-unit id="s091d3507b5b2f9d7">
   <source>OS</source>
+  <target>Käyttöjärjestelmä</target>
 </trans-unit>
 <trans-unit id="s150cf10289852e4a">
   <source>Endpoint Devices are in preview.</source>
@@ -3948,12 +3965,15 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sd667856c73082c35">
   <source>Device <x id="0" equiv-text="${this.device?.name}"/></source>
+  <target>Laite <x id="0" equiv-text="${this.device?.name}"/></target>
 </trans-unit>
 <trans-unit id="s6d4cc88f2426efaf">
   <source>Loading device...</source>
+  <target>Ladataan laitetta...</target>
 </trans-unit>
 <trans-unit id="s2addf9fd0d89ba11">
   <source>Device details</source>
+  <target>Laitteen tiedot</target>
 </trans-unit>
 <trans-unit id="s1e176e35c828318c">
   <source>Hostname</source>
@@ -3961,36 +3981,46 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s974564539ea1cafa">
   <source>Serial number</source>
+  <target>Sarjanumero</target>
 </trans-unit>
 <trans-unit id="s361c13a7f20ea559">
   <source>Operating system</source>
+  <target>Käyttöjärjestelmä</target>
 </trans-unit>
 <trans-unit id="se990a968b7dfcfd8">
   <source>Firewall enabled</source>
+  <target>Palomuuri käytössä</target>
 </trans-unit>
 <trans-unit id="sc5e304b166165519">
   <source>Hardware</source>
+  <target>Laitteisto</target>
 </trans-unit>
 <trans-unit id="scb320e45978d3390">
   <source>Manufacturer</source>
+  <target>Valmistaja</target>
 </trans-unit>
 <trans-unit id="s0b453a19aa0f85a9">
   <source>CPU</source>
+  <target>Suoritin</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
   <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
+  <target>Muisti</target>
 </trans-unit>
 <trans-unit id="s94a50f1495fb5ccd">
   <source>Disk encryption</source>
+  <target>Levyn salaus</target>
 </trans-unit>
 <trans-unit id="s416211a967a6db4e">
   <source>Users / Groups</source>
+  <target>Käyttäjät/ryhmät</target>
 </trans-unit>
 <trans-unit id="sfdd447bcde2c13ba">
   <source>Processes</source>
+  <target>Prosessit</target>
 </trans-unit>
 <trans-unit id="s4a7ce90bfc6ce013">
   <source>Connector name</source>
@@ -4013,12 +4043,14 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="sf4372a571ffb02cd">
   <source>Refresh interval</source>
+  <target>Päivitysväli</target>
 </trans-unit>
 <trans-unit id="s3f009bda38b93134">
   <source>Interval how frequently the agent tries to update its config.</source>
 </trans-unit>
 <trans-unit id="seb040746311faa64">
   <source>Unix settings</source>
+  <target>Unix-asetukset</target>
 </trans-unit>
 <trans-unit id="s5758d1421a791cc6">
   <source>NSS User ID offset</source>
@@ -4080,6 +4112,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s7924cdccf3592aa8">
   <source>Device Group(s)</source>
+  <target>Laiteryhmä(t)</target>
 </trans-unit>
 <trans-unit id="s24875d5475e82526">
   <source>Successfully updated source.</source>
@@ -5515,6 +5548,7 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 </trans-unit>
 <trans-unit id="s20b2b040b332bb55">
   <source>Source Settings</source>
+  <target>Lähteen asetukset</target>
 </trans-unit>
 <trans-unit id="sf05c700a1250824e">
   <source>Confirmed</source>
@@ -7556,6 +7590,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sef50d248448e0df1">
   <source>Yes (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</source>
+  <target>Kyllä (<x id="0" equiv-text="${item.keyType?.toUpperCase()}"/>)</target>
 </trans-unit>
 <trans-unit id="s33aa05f435c29753">
   <source>Update Certificate-Key Pair</source>
@@ -8314,6 +8349,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s53dddf1733e26c98">
   <source>Login sources</source>
+  <target>Kirjautumislähteet</target>
 </trans-unit>
 <trans-unit id="s85366fac18679f28">
   <source>Forgot password?</source>
@@ -8525,7 +8561,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sac88482c48453fc8">
   <source>You've logged out of <x id="0" equiv-text="${challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
-  <target>Olet kirjautunut ulos palvelusta <x id="0" equiv-text="${this.challenge.applicationName}"/>. Voit palata yleisnäkymään käynnistääksesi jonkun toisen sovelluksen, tai voit kirjautu ulos authentik-tililtäsi.</target>
+  <target>Olet kirjautunut ulos palvelusta <x id="0" equiv-text="${challenge.applicationName}"/>. Voit palata yleisnäkymään käynnistääksesi toisen sovelluksen, tai voit kirjautua ulos authentik-tililtäsi.</target>
 </trans-unit>
 <trans-unit id="s3108167b562674e2">
   <source>Go back to overview</source>
@@ -8629,6 +8665,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sa00a53efc9c70de5">
   <source>Please wait while the content is loading</source>
+  <target>Odota kun sisältöä ladataan</target>
 </trans-unit>
 <trans-unit id="s7ea73e0b3b45e385">
   <source>application</source>
@@ -8747,6 +8784,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s0b7ddc0168e79ea2">
   <source>Failed to fetch files</source>
+  <target>Tiedostojen haku ei onnistunut</target>
 </trans-unit>
 <trans-unit id="sdc4f1cfd587212b4">
   <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
@@ -8810,6 +8848,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sd3775ef947e0de32">
   <source>File Name</source>
+  <target>Tiedostonimi</target>
 </trans-unit>
 <trans-unit id="s1afc99a84a890514">
   <source>Type an optional custom file name...</source>
@@ -8819,15 +8858,18 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
+  <target>Tiedostot</target>
 </trans-unit>
 <trans-unit id="s42d82601762f5321">
   <source>Manage uploaded files.</source>
 </trans-unit>
 <trans-unit id="saad01178f02a6a23">
   <source>file</source>
+  <target>tiedosto</target>
 </trans-unit>
 <trans-unit id="s69f800801812a5f0">
   <source>files</source>
+  <target>tiedostoa</target>
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
@@ -8894,6 +8936,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s9b8e5c6f87ca887e">
   <source>CAPTCHA Provider</source>
+  <target>CAPTCHA-palveluntarjoaja</target>
 </trans-unit>
 <trans-unit id="sab1ddd059633b9aa">
   <source>Enable this if the CAPTCHA requires user interaction (clicking checkbox, solving puzzles, etc.). Required for reCAPTCHA v2, hCaptcha interactive mode, and Cloudflare Turnstile.</source>
@@ -8933,24 +8976,30 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s74636eae90c1a208">
   <source>Available Groups</source>
+  <target>Saatavilla olevat ryhmät</target>
 </trans-unit>
 <trans-unit id="s66d795717763ca54">
   <source>Selected Groups</source>
+  <target>Valitut ryhmät</target>
 </trans-unit>
 <trans-unit id="sab46a062a503d9bb">
   <source>A group recursively inherits every role from its ancestors.</source>
 </trans-unit>
 <trans-unit id="sb75f1413fcfbd4bd">
   <source>User updated.</source>
+  <target>Käyttäjä päivitetty.</target>
 </trans-unit>
 <trans-unit id="s13625030f6501a5f">
   <source>User created and added to group <x id="0" equiv-text="${this.targetGroup.name}"/></source>
+  <target>Käyttäjä luotu ja lisätty ryhmään <x id="0" equiv-text="${this.targetGroup.name}"/></target>
 </trans-unit>
 <trans-unit id="s31dc80daa773a5dc">
   <source>User created and added to role <x id="0" equiv-text="${this.targetRole.name}"/></source>
+  <target>Käyttäjä luotu ja lisätty rooliin <x id="0" equiv-text="${this.targetRole.name}"/></target>
 </trans-unit>
 <trans-unit id="sd1d84a93a9a8dd44">
   <source>User created.</source>
+  <target>Käyttäjä luotu.</target>
 </trans-unit>
 <trans-unit id="sc5f2f9b4dce504d6">
   <source>Successfully downloaded <x id="0" equiv-text="${this.config.filename}"/>!</source>
@@ -8975,6 +9024,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s85835da8c3bd6198">
   <source>Are you sure you want to remove the selected users?</source>
+  <target>Haluatko varmasti poistaa valitut käyttäjät?</target>
 </trans-unit>
 <trans-unit id="s86f283ed16448157">
   <source>This user will be added to the role "<x id="0" equiv-text="${this.targetRole.name}"/>".</source>
@@ -8987,18 +9037,22 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sca5f586369a597a4">
   <source>Add role</source>
+  <target>Lisää rooli</target>
 </trans-unit>
 <trans-unit id="sd8b8f59ad30971f7">
   <source>Remove from Role(s)</source>
 </trans-unit>
 <trans-unit id="s5fcb76c89d17698c">
   <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following roles?</source>
+  <target>Haluatko varmasti poistaa käyttäjän <x id="0" equiv-text="${this.targetUser?.username}"/> seuraavista rooleista?</target>
 </trans-unit>
 <trans-unit id="s1d6a69c054342126">
   <source>Add to existing role</source>
+  <target>Lisää olemassa olevaan rooliin</target>
 </trans-unit>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
+  <target>Lisää uusi rooli</target>
 </trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
@@ -9041,6 +9095,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s0d748f6fb237da48">
   <source>Configure SAML Provider from Metadata</source>
+  <target>Määritä SAML-palveluntarjoaja metatiedoista</target>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
@@ -9089,6 +9144,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s9864bd5cd7bb4bd0">
   <source>Local connection</source>
+  <target>Paikallinen yhteys</target>
 </trans-unit>
 <trans-unit id="s4a3f19ff6e510c37">
   <source>Requires Docker socket/Kubernetes Integration.</source>
@@ -9802,6 +9858,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sf910cca0f06bbc31">
   <source>Enter the email address or username associated with your account.</source>
+  <target>Syötä käyttäjätilisi sähköpostiosoite tai käyttäjänimi</target>
 </trans-unit>
 <trans-unit id="s6e858c4c4c3b6b76">
   <source>You're about to be redirected to the following URL.</source>
@@ -10027,6 +10084,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s74cb3d66f6a668e1">
   <source>Documentation</source>
+  <target>Dokumentaatio</target>
 </trans-unit>
 <trans-unit id="sdf1d745af5aa858f">
   <source>Release notes</source>
@@ -10540,6 +10598,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>Roolin olio-käyttöoikeudet</target>
 </trans-unit>
 <trans-unit id="se84477a0cb9d8781">
   <source>Object Permission</source>
@@ -10549,6 +10608,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="s8b0432eecbd8b034">
   <source>Update</source>
+  <target>Päivitä</target>
 </trans-unit>
 <trans-unit id="sa6f726a43ec55a63">
   <source>Search for a role...</source>
@@ -10990,6 +11050,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sd30f00ff2135589c">
   <source>When enabled, notification will be sent to the user that triggered the event in addition to any users in the group above. The event user will always be the first user, to send a notification only to the event user enabled 'Send once' in the notification transport.</source>
+  <target>Kun tämä on käytössä, notifikaatio lähetetään sille käyttäjälle, joka laukaisi tapahtuman, niiden käyttäjien lisäksi, jotka ovat yllä olevan ryhmän jäseniä. Tapahtuman käyttäjä on aina ensimmäinen käyttäjä. Lähettääksesi notifikaation vain tapahtuman käyttäjälle, valitse &apos;Lähetä kerran&apos; notifikaation väylän asetuksissa.</target>
 </trans-unit>
 <trans-unit id="s1c0267488c33401b">
   <source>Minimum reviewers</source>
@@ -11555,9 +11616,11 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Sisäisten käyttäjien käyttö</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Ulkoisten käyttäjien käyttö</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
@@ -11753,6 +11816,7 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>Lähetä</target>
 </trans-unit>
 <trans-unit id="sd348917df892e7a5">
   <source>Requester</source>

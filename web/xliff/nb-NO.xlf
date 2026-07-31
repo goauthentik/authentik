@@ -12433,9 +12433,11 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
+  <target>Intern brukerbruk</target>
 </trans-unit>
 <trans-unit id="sae72e1569d34fb02">
   <source>External user usage</source>
+  <target>Ekstern brukerbruk</target>
 </trans-unit>
 <trans-unit id="s3bca5a165739e8c9">
   <source>Allow application access with no policies</source>
