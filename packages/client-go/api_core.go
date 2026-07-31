@@ -41,8 +41,10 @@ type ApiCoreBrandsListRequest struct {
 	flowInvalidation              *string
 	flowLockdown                  *string
 	flowRecovery                  *string
+	flowRequest                   *string
 	flowUnenrollment              *string
 	flowUserSettings              *string
+	flowUserSwitch                *string
 	ordering                      *string
 	page                          *int32
 	pageSize                      *int32
@@ -115,6 +117,11 @@ func (r ApiCoreBrandsListRequest) FlowRecovery(flowRecovery string) ApiCoreBrand
 	return r
 }
 
+func (r ApiCoreBrandsListRequest) FlowRequest(flowRequest string) ApiCoreBrandsListRequest {
+	r.flowRequest = &flowRequest
+	return r
+}
+
 func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiCoreBrandsListRequest {
 	r.flowUnenrollment = &flowUnenrollment
 	return r
@@ -122,6 +129,11 @@ func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiC
 
 func (r ApiCoreBrandsListRequest) FlowUserSettings(flowUserSettings string) ApiCoreBrandsListRequest {
 	r.flowUserSettings = &flowUserSettings
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowUserSwitch(flowUserSwitch string) ApiCoreBrandsListRequest {
+	r.flowUserSwitch = &flowUserSwitch
 	return r
 }
 
@@ -242,11 +254,17 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	if r.flowRecovery != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_recovery", r.flowRecovery, "form", "")
 	}
+	if r.flowRequest != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_request", r.flowRequest, "form", "")
+	}
 	if r.flowUnenrollment != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_unenrollment", r.flowUnenrollment, "form", "")
 	}
 	if r.flowUserSettings != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_settings", r.flowUserSettings, "form", "")
+	}
+	if r.flowUserSwitch != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_switch", r.flowUserSwitch, "form", "")
 	}
 	if r.ordering != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "ordering", r.ordering, "form", "")

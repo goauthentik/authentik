@@ -787,6 +787,12 @@ Configure how long unauthenticated sessions last for. Does not impact how long a
 
 Defaults to `days=1`.
 
+### `AUTHENTIK_SESSIONS__USER_SWITCHING_AGE`:ak-version[2026.8]
+
+Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.md) lasts. This setting does not change the validity of the grouped sessions.
+
+Defaults to `days=365`.
+
 ### `AUTHENTIK_WEB__WORKERS`
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
