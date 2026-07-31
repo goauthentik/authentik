@@ -107,7 +107,6 @@ The following metadata can be used used:
 | `grant_types`                | OAuth2 grant types the client intends to use. If omitted, `authorization_code` is used                      |
 | `response_types`             | OIDC response types the client intends to use, when applicable                                              |
 | `token_endpoint_auth_method` | Method used by the client to authenticate at the token endpoint. If omitted, `client_secret_basic` is used. |
-| `scope`                      | Space-delimited scopes requested by the client                                                              |
 
 authentik may apply defaults, reject unsupported values, or restrict the request according to the DCR configuration and the parent provider's capabilities.
 
