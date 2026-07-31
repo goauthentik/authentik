@@ -1,16 +1,14 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
-
-import { borderEdges } from "../out/hexworld/borders.js";
+import { borderEdges } from "../src/hexworld/borders.ts";
 
 import { gridDisk, latLngToCell } from "h3-js";
+import { expect, test } from "vitest";
 
 test("cells inside the same country produce no border edges", () => {
     const berlin = latLngToCell(52.52, 13.405, 4);
     const cells = gridDisk(berlin, 1);
     const country = new Map(cells.map((c) => [c, "DE"]));
     const edges = borderEdges({ country });
-    assert.equal(edges.length, 0);
+    expect(edges.length).toBe(0);
 });
 
 test("a cross-country neighbor pair emits exactly one level-0 segment", () => {
@@ -21,13 +19,13 @@ test("a cross-country neighbor pair emits exactly one level-0 segment", () => {
         [neighbor, "PL"],
     ]);
     const edges = borderEdges({ country });
-    assert.equal(edges.length, 1);
+    expect(edges.length).toBe(1);
     const [line] = edges;
-    assert.equal(line.type, "Feature");
-    assert.equal(line.geometry.type, "LineString");
-    assert.equal(line.geometry.coordinates.length, 2);
-    assert.equal(line.properties.level, 0);
-    assert.deepEqual([line.properties.a, line.properties.b].sort(), ["DE", "PL"]);
+    expect(line.type).toBe("Feature");
+    expect(line.geometry.type).toBe("LineString");
+    expect(line.geometry.coordinates.length).toBe(2);
+    expect(line.properties.level).toBe(0);
+    expect([line.properties.a, line.properties.b].sort()).toStrictEqual(["DE", "PL"]);
 });
 
 test("cross-region neighbors within the same country emit level-1 segments", () => {
@@ -42,10 +40,10 @@ test("cross-region neighbors within the same country emit level-1 segments", () 
         [neighbor, "US-NE"],
     ]);
     const edges = borderEdges({ country, region });
-    assert.equal(edges.length, 1);
+    expect(edges.length).toBe(1);
     const [line] = edges;
-    assert.equal(line.properties.level, 1);
-    assert.deepEqual([line.properties.a, line.properties.b].sort(), ["US-CO", "US-NE"]);
+    expect(line.properties.level).toBe(1);
+    expect([line.properties.a, line.properties.b].sort()).toStrictEqual(["US-CO", "US-NE"]);
 });
 
 test("country borders take precedence over region borders when both differ", () => {
@@ -61,9 +59,9 @@ test("country borders take precedence over region borders when both differ", () 
         [neighbor, "PL-14"],
     ]);
     const edges = borderEdges({ country, region });
-    assert.equal(edges.length, 1);
-    assert.equal(edges[0].properties.level, 0);
-    assert.deepEqual([edges[0].properties.a, edges[0].properties.b].sort(), ["DE", "PL"]);
+    expect(edges.length).toBe(1);
+    expect(edges[0].properties.level).toBe(0);
+    expect([edges[0].properties.a, edges[0].properties.b].sort()).toStrictEqual(["DE", "PL"]);
 });
 
 test("borderEdges dedupes reciprocal neighbor pairs at either level", () => {
@@ -80,7 +78,7 @@ test("borderEdges dedupes reciprocal neighbor pairs at either level", () => {
     for (const feature of edges) {
         const { a, b } = feature.properties;
         const key = [a, b].sort().join(":");
-        assert.ok(!seen.has(key), `edge ${key} emitted twice`);
+        expect(!seen.has(key), `edge ${key} emitted twice`).toBeTruthy();
         seen.add(key);
     }
 });
@@ -90,7 +88,7 @@ test("neighbors with unassigned country skip border emission", () => {
     const country = new Map([[berlin, "DE"]]);
     // No entries for surrounding cells — treated as ocean.
     const edges = borderEdges({ country });
-    assert.equal(edges.length, 0);
+    expect(edges.length).toBe(0);
 });
 
 test("region borders skip cells missing a region code even when country matches", () => {
@@ -103,7 +101,7 @@ test("region borders skip cells missing a region code even when country matches"
     // Only one cell has a region code — the other should not trigger a border.
     const region = new Map([[denver, "US-CO"]]);
     const edges = borderEdges({ country, region });
-    assert.equal(edges.length, 0);
+    expect(edges.length).toBe(0);
 });
 
 test("coastal edges emit at level 0 for land cells whose neighbors are not land", () => {
@@ -114,12 +112,12 @@ test("coastal edges emit at level 0 for land cells whose neighbors are not land"
     const land = new Set([island]);
     const country = new Map([[island, "XX"]]);
     const edges = borderEdges({ country, land });
-    assert.equal(edges.length, 6);
+    expect(edges.length).toBe(6);
     for (const feature of edges) {
-        assert.equal(feature.properties.level, 0);
+        expect(feature.properties.level).toBe(0);
         // One side is the land country code, the other is the empty ocean
         // marker — order depends on which cell id sorts first.
-        assert.deepEqual([feature.properties.a, feature.properties.b].sort(), ["", "XX"]);
+        expect([feature.properties.a, feature.properties.b].sort()).toStrictEqual(["", "XX"]);
     }
 });
 
@@ -137,16 +135,16 @@ test("coastal edges dedupe against country-vs-country borders", () => {
     const edges = borderEdges({ country, land });
     // Each cell has 6 neighbors; one is the other land cell, five are ocean.
     // Total = 1 country border + 10 coastal = 11.
-    assert.equal(edges.length, 11);
+    expect(edges.length).toBe(11);
     const seen = new Set();
     for (const feature of edges) {
         const key = JSON.stringify(feature.geometry.coordinates);
-        assert.ok(!seen.has(key), "duplicate geometry emitted");
+        expect(!seen.has(key), "duplicate geometry emitted").toBeTruthy();
         seen.add(key);
     }
     const countryBorders = edges.filter((e) => e.properties.a !== "" && e.properties.b !== "");
-    assert.equal(countryBorders.length, 1);
-    assert.deepEqual([countryBorders[0].properties.a, countryBorders[0].properties.b].sort(), [
+    expect(countryBorders.length).toBe(1);
+    expect([countryBorders[0].properties.a, countryBorders[0].properties.b].sort()).toStrictEqual([
         "AA",
         "BB",
     ]);
@@ -160,10 +158,10 @@ test("land cells outside every country still get coastal edges", () => {
     const land = new Set([island]);
     const country = new Map();
     const edges = borderEdges({ country, land });
-    assert.equal(edges.length, 6);
+    expect(edges.length).toBe(6);
     for (const feature of edges) {
-        assert.equal(feature.properties.level, 0);
-        assert.equal(feature.properties.a, "");
-        assert.equal(feature.properties.b, "");
+        expect(feature.properties.level).toBe(0);
+        expect(feature.properties.a).toBe("");
+        expect(feature.properties.b).toBe("");
     }
 });

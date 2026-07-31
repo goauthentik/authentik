@@ -9,3 +9,7 @@
 /out/
 /node_modules/
 *.tsbuildinfo
+
+# Vitest browser-mode failure artifacts.
+/test/browser/__screenshots__/
+/.vitest-attachments/

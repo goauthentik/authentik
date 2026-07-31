@@ -35,8 +35,8 @@ export interface BinSelectDetail {
 
 const DEFAULT_FIT_PADDING = 64;
 const MAX_FIT_ZOOM = 4.5;
-// Initial view when no markers dictate one: central Europe, close enough that
-// the globe fills the panel rather than floating in it.
+// Initial view when no markers dictate one: the contiguous US, close enough
+// that the globe fills the panel rather than floating in it.
 const DEFAULT_CENTER: [number, number] = [-95.7129, 37.0902];
 const DEFAULT_ZOOM = 2;
 // Extruded event columns are invisible from straight overhead.
@@ -136,6 +136,17 @@ export class AKMap extends LitElement {
         this.mapContainer = this.ownerDocument.createElement("div");
         this.mapContainer.id = "map";
         this.mapContainer.part.add("map");
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+
+        // Re-parenting a custom element disconnects and reconnects it, and
+        // disconnectedCallback tore the map down. firstUpdated() only ever
+        // runs once, so without this the element comes back permanently blank.
+        if (this.hasUpdated) {
+            this.loadMap();
+        }
     }
 
     public override disconnectedCallback(): void {
@@ -427,7 +438,12 @@ export class AKMap extends LitElement {
      * cannot interpolate it; drive a scale factor through the expression by
      * hand instead.
      */
-    protected animateColumns(from: number, to: number, duration: number, onDone?: () => void): void {
+    protected animateColumns(
+        from: number,
+        to: number,
+        duration: number,
+        onDone?: () => void,
+    ): void {
         cancelAnimationFrame(this.#columnGrowthFrameID);
 
         const start = performance.now();
@@ -525,8 +541,8 @@ export class AKMap extends LitElement {
         // setStyle() while the current style is still parsing wedges MapLibre
         // (5.24) into a permanently empty style — this bites both the initial
         // load (a theme context resolving right after construction) and rapid
-        // theme flips. Defer until the style settles; #styleSpec() reads the
-        // live properties, so the latest requested theme always wins.
+        // theme flips. Defer until the style settles; createStyleSpec() reads
+        // the live properties, so the latest requested theme always wins.
         if (!this.map.isStyleLoaded()) {
             if (!this.styleSwapQueued) {
                 this.styleSwapQueued = true;

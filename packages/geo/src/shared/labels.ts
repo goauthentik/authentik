@@ -1,4 +1,4 @@
-import type { Feature } from "geojson";
+import type { Feature, Point } from "geojson";
 import { latLngToCell } from "h3-js";
 
 export const LabelKinds = new Set(["country", "region", "locality"] as const);
@@ -113,7 +113,14 @@ export function capLocalities(places: PlaceLabel[], cap: number): PlaceLabel[] {
     return [...keep, ...localities];
 }
 
-export interface TippecanoeFeature extends Feature {
+export interface PlaceFeatureProperties {
+    "kind": LabelKind;
+    "name": string;
+    "name:en": string;
+    "population": number;
+}
+
+export interface TippecanoeFeature extends Feature<Point, PlaceFeatureProperties> {
     tippecanoe: {
         minzoom: number;
     };

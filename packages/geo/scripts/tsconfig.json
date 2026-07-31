@@ -12,6 +12,9 @@
         "incremental": false,
         "checkJs": false,
         "allowJs": false,
+        // The generator imports the runtime modules (bands, labels, style), so
+        // its program pulls in browser code that reaches for `window`.
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "rootDir": ".."
     },
     "include": ["./**/*.ts"],

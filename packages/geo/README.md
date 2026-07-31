@@ -7,27 +7,45 @@ The package ships a Lit `<ak-map>` element wrapping [MapLibre GL](https://maplib
 - `buildBasemapStyle(options)` — conventional [Protomaps](https://protomaps.com/) vector basemap loaded from a `pmtiles://` archive or an XYZ template. Used when a brand configures a tile URL under **System > Brands > Map tiles**.
 - `buildHexworldStyle(options)` — the zero-config default. Renders land as an H3 hexagonal grid with country and region borders drawn along hex edges plus country / region / locality labels, from a small bundled PMTiles archive. Enters when `pmtiles-url` on `<ak-map>` is empty.
 
-`<ak-map>` also aggregates its `markers` prop into cells and paints them via MapLibre feature-state, so event counts light up hexes without any per-marker DOM overhead.
+`<ak-map>` also aggregates its `markers` prop into H3 cells and feeds them to a
+single GeoJSON source, drawn as a `fill-extrusion` layer — one wedge per event
+action per cell, so counts read as columns without any per-marker DOM overhead.
+
+## Tests
+
+```bash
+pnpm run test         # Vitest: node project + a Chromium browser project
+pnpm run lint:types   # tsc over src, scripts and test
+```
+
+The node project covers the geometry, binning, border and style-spec modules —
+all pure functions, imported straight from `src/` (no build step). The browser
+project drives a real `<ak-map>` with a real MapLibre instance under Playwright,
+and needs `pnpm exec playwright install chromium` once.
 
 ## Zoom bands
 
-The hexworld archive baked at build time uses three H3 resolutions. Measured
-via h3's `getHexagonEdgeLengthAvg` and `getHexagonAreaAvg` — cell "width"
-here means vertex-to-opposite-vertex, roughly 2× the edge:
+The hexworld archive baked at build time uses three H3 resolutions (`HEX_BANDS`
+in `src/hexworld/bands.ts`). Measured via h3's `getHexagonEdgeLengthAvg` and
+`getHexagonAreaAvg` — cell "width" here means vertex-to-opposite-vertex,
+roughly 2× the edge:
 
 | Zoom range | H3 resolution | Edge length | Cell width | Cell area   |
 | ---------- | ------------- | ----------- | ---------- | ----------- |
-| z0–z3      | 3             | ~69 km      | ~138 km    | ~12,393 km² |
-| z4–z6      | 4             | ~26 km      | ~52 km     | ~1,770 km²  |
-| z7–z8      | 5             | ~10 km      | ~20 km     | ~253 km²    |
+| z0–z2      | 3             | ~69 km      | ~138 km    | ~12,393 km² |
+| z3–z6      | 4             | ~26 km      | ~52 km     | ~1,770 km²  |
+| z7         | 5             | ~10 km      | ~20 km     | ~253 km²    |
 
-MapLibre overzooms past z8. The bands are baked into every published archive — changing `HEX_BANDS` invalidates existing tiles.
+z7 is the archive's `maxzoom`; MapLibre overzooms beyond it, and `bandForZoom`
+clamps to the res-5 band so events keep binning at that resolution. The bands
+are baked into every published archive — changing `HEX_BANDS` invalidates
+existing tiles.
 
 ## The shipped archive
 
 `tiles/hexworld.pmtiles` is committed to the repo. The current file is the
-res 3 + 4 cut (`hexworld-r4`, ~8.8 MB) — smaller than the res-5 cut and still
-sharper than GeoIP-derived event locations warrant.
+`detail` cut (~22 MiB): a full res-3/res-4 grid worldwide, plus a res-5 overlay
+restricted to the populated-area detail zone (see `src/hexworld/detail-zone.ts`).
 
 `tiles/fonts/` ships the Latin Noto Sans glyph ranges (Regular + Medium, 0-255
 and 256-511) alongside the archive, under SIL Open Font License 1.1 (see
@@ -40,7 +58,7 @@ loudly instead of silently shipping a broken map.
 
 ## Regenerating the archive
 
-The generator lives at `scripts/hexworld/build.mjs`. It needs:
+The generator lives at `scripts/build-hexworld.ts`. It needs:
 
 - Node ≥ 24 and this workspace installed (`pnpm install`).
 - [tippecanoe](https://github.com/felt/tippecanoe) and [go-pmtiles](https://github.com/protomaps/go-pmtiles) on `PATH`.
@@ -48,12 +66,12 @@ The generator lives at `scripts/hexworld/build.mjs`. It needs:
 
 ```bash
 # Preview the shell pipeline without running it:
-node scripts/hexworld/build.mjs --dry-run --out tiles
+pnpm run hexworld:build -- --dry-run --out tiles
 
 # Full run — emits both size cuts:
-node scripts/hexworld/build.mjs --dump ./planet-z8.pmtiles --out tiles
-# tiles/hexworld-r4.pmtiles  ← res 3 + 4  (smaller, coarser detail)
-# tiles/hexworld-r5.pmtiles  ← res 3 + 4 + 5  (larger, finer detail)
+pnpm run hexworld:build -- --dump ./planet-z8.pmtiles --out tiles
+# tiles/hexworld-detail.pmtiles  ← res 3 + 4 + zoned res 5  (shipped)
+# tiles/hexworld-plain.pmtiles   ← res 3 + 4 only  (smaller, coarser)
 ```
 
 Inputs the generator downloads on first run are pinned to specific releases so a re-run a year from now produces the same tiles:
@@ -66,7 +84,7 @@ The generator walks land, country, and region data into H3 cells, extracts label
 To ship a regenerated archive, copy the chosen cut over the committed one:
 
 ```bash
-AUTHENTIK_HEXWORLD_SOURCE=/path/to/hexworld-r4.pmtiles \
+AUTHENTIK_HEXWORLD_SOURCE=/path/to/hexworld-detail.pmtiles \
   pnpm run tiles:pull-hexworld
 git add tiles/hexworld.pmtiles && git commit
 ```

@@ -1,11 +1,10 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
+import { assignCountries, buildCountryIndex } from "../src/hexworld/countries.ts";
 
-import { assignCountries, buildCountryIndex } from "../out/hexworld/countries.js";
-
+import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import { latLngToCell } from "h3-js";
+import { expect, test } from "vitest";
 
-const rectangle = (lngMin, latMin, lngMax, latMax) => [
+const rectangle = (lngMin: number, latMin: number, lngMax: number, latMax: number) => [
     [lngMin, latMin],
     [lngMax, latMin],
     [lngMax, latMax],
@@ -13,7 +12,7 @@ const rectangle = (lngMin, latMin, lngMax, latMax) => [
     [lngMin, latMin],
 ];
 
-const countryFC = () => ({
+const countryFC = (): FeatureCollection<Polygon | MultiPolygon> => ({
     type: "FeatureCollection",
     features: [
         {
@@ -47,11 +46,11 @@ test("assignCountries labels cells whose center lies in a country", () => {
         latLngToCell(0, 100, 4), // north pole, off any country
     ]);
     const assigned = assignCountries(cells, index);
-    assert.equal(assigned.get(latLngToCell(0, -5, 4)), "AA");
-    assert.equal(assigned.get(latLngToCell(0, 5, 4)), "BB");
-    assert.equal(assigned.get(latLngToCell(25, 25, 4)), "CC");
-    assert.equal(assigned.get(latLngToCell(45, 45, 4)), "CC");
-    assert.equal(assigned.has(latLngToCell(0, 100, 4)), false);
+    expect(assigned.get(latLngToCell(0, -5, 4))).toBe("AA");
+    expect(assigned.get(latLngToCell(0, 5, 4))).toBe("BB");
+    expect(assigned.get(latLngToCell(25, 25, 4))).toBe("CC");
+    expect(assigned.get(latLngToCell(45, 45, 4))).toBe("CC");
+    expect(assigned.has(latLngToCell(0, 100, 4))).toBe(false);
 });
 
 test("assignCountries respects the bbox prefilter (skips far-away polygons)", () => {
@@ -59,7 +58,7 @@ test("assignCountries respects the bbox prefilter (skips far-away polygons)", ()
     // Cell far from every rectangle; should return no entry, not throw.
     const cell = latLngToCell(-80, 170, 4);
     const assigned = assignCountries(new Set([cell]), index);
-    assert.equal(assigned.has(cell), false);
+    expect(assigned.has(cell)).toBe(false);
 });
 
 test("buildCountryIndex prefers ISO_A2, falls back to iso_a2 or ADM0_A3", () => {
@@ -81,6 +80,6 @@ test("buildCountryIndex prefers ISO_A2, falls back to iso_a2 or ADM0_A3", () => 
     const cellA = latLngToCell(0, 0, 4);
     const cellB = latLngToCell(10, 10, 4);
     const assigned = assignCountries(new Set([cellA, cellB]), index);
-    assert.equal(assigned.get(cellA), "XX");
-    assert.equal(assigned.get(cellB), "YYY");
+    expect(assigned.get(cellA)).toBe("XX");
+    expect(assigned.get(cellB)).toBe("YYY");
 });
