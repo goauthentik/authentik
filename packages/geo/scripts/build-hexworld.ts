@@ -4,8 +4,11 @@ import { existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
 
-import { extractLabels } from "./extract-labels.ts";
-
+// The archive's zoom bands and attribution are the contract with the runtime
+// that renders it, so they are owned by the element and imported here rather
+// than redeclared. Both modules are import-free for this reason.
+import { HEXWORLD_ATTRIBUTION } from "../../../web/src/elements/maps/attribution.ts";
+import { MAX_BAND_ZOOM } from "../../../web/src/elements/maps/bands.ts";
 import {
     assignCountries,
     assignRegions,
@@ -15,11 +18,10 @@ import {
     capLocalities,
     computeDetailZone,
     hexFeature,
-    HEXWORLD_ATTRIBUTION,
     landCells,
-    MAX_BAND_ZOOM,
     placeFeature,
-} from "@goauthentik/geo/hexworld";
+} from "../src/index.ts";
+import { extractLabels } from "./extract-labels.ts";
 
 import type { Feature } from "geojson";
 

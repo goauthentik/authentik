@@ -1,7 +1,7 @@
 {
     "name": "@goauthentik/geo",
     "version": "1.0.0",
-    "description": "MapLibre-based map component and Protomaps tooling for authentik",
+    "description": "Hexworld basemap archive generator for authentik",
     "license": "MIT",
     "private": true,
     "repository": {
@@ -10,61 +10,19 @@
         "directory": "packages/geo"
     },
     "scripts": {
-        "build": "tsc -p .",
         "hexworld:build": "node scripts/build-hexworld.ts",
         "lint": "eslint --fix .",
         "lint:types": "tsc -p . --noEmit && tsc -p scripts && tsc -p test",
         "lint-check": "eslint --max-warnings 0 .",
-        "prepare": "pnpm run build",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "test": "vitest run",
         "test:watch": "vitest",
-        "tiles:pull-hexworld": "node scripts/pull-hexworld.ts",
-        "watch": "tsc -p . --watch"
+        "tiles:pull-hexworld": "node scripts/pull-hexworld.ts"
     },
-    "main": "./src/index.ts",
     "type": "module",
-    "types": "./out/index.d.ts",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "types": "./src/index.ts",
-            "node": "./src/index.ts",
-            "bundler": "./src/index.ts",
-            "default": "./out/index.js"
-        },
-        "./hexworld": {
-            "types": "./src/hexworld/index.ts",
-            "node": "./src/hexworld/index.ts",
-            "bundler": "./src/hexworld/index.ts",
-            "default": "./out/hexworld/index.js"
-        },
-        "./shared": {
-            "types": "./src/shared/index.ts",
-            "node": "./src/shared/index.ts",
-            "bundler": "./src/shared/index.ts",
-            "default": "./out/shared/index.js"
-        },
-        "./style": {
-            "types": "./src/style.ts",
-            "node": "./src/style.ts",
-            "bundler": "./src/style.ts",
-            "default": "./out/style.js"
-        },
-        "./components/ak-map": {
-            "types": "./src/components/ak-map.ts",
-            "node": "./src/components/ak-map.ts",
-            "bundler": "./src/components/ak-map.ts",
-            "default": "./out/components/ak-map.js"
-        }
-    },
     "dependencies": {
-        "@goauthentik/api": "link:../client-ts",
-        "@protomaps/basemaps": "^5.7.2",
         "h3-js": "^4.5.0",
-        "lit": "^3.3.3",
-        "maplibre-gl": "^5.24.0",
         "pmtiles": "^4.4.1"
     },
     "devDependencies": {
@@ -75,24 +33,13 @@
         "@mapbox/vector-tile": "^2.0.3",
         "@types/geojson": "^7946.0.16",
         "@types/node": "catalog:",
-        "@vitest/browser": "catalog:",
-        "@vitest/browser-playwright": "catalog:",
         "eslint": "catalog:",
         "pbf": "^4.0.1",
-        "playwright": "catalog:",
         "typescript": "catalog:",
         "typescript-eslint": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:"
     },
-    "peerDependencies": {
-        "lit": "^3.3.3",
-        "maplibre-gl": "^5.24.0"
-    },
-    "files": [
-        "out/**/*",
-        "src/**/*"
-    ],
     "engines": {
         "node": ">=24"
     },

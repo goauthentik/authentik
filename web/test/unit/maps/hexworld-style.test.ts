@@ -1,11 +1,12 @@
+import { layerById, layoutOf, paintOf, required } from "./helpers.js";
+
+import type { BasemapTheme } from "#elements/maps/basemap-style";
 import {
     bandFadeOpacity,
     buildHexworldStyle,
     HEXWORLD_ATTRIBUTION,
     wedgeColors,
-} from "../src/hexworld/style.ts";
-import type { BasemapTheme } from "../src/style.ts";
-import { layerById, layoutOf, paintOf, required } from "./helpers.ts";
+} from "#elements/maps/hexworld-style";
 
 import type { ExpressionSpecification, VectorSourceSpecification } from "maplibre-gl";
 import { expect, test } from "vitest";

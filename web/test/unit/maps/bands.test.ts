@@ -1,4 +1,4 @@
-import { bandForZoom, HEX_BANDS } from "../src/hexworld/bands.ts";
+import { bandForZoom, HEX_BANDS } from "#elements/maps/bands";
 
 import { expect, test } from "vitest";
 

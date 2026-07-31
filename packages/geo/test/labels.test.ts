@@ -1,4 +1,4 @@
-import { capLocalities, dedupePlaces, normalizePlace, placeFeature } from "../src/shared/labels.ts";
+import { capLocalities, dedupePlaces, normalizePlace, placeFeature } from "../src/labels.ts";
 import { required } from "./helpers.ts";
 
 import { expect, test } from "vitest";

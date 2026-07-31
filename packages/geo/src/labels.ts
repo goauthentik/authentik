@@ -1,14 +1,15 @@
+// The archive's label contract lives with the runtime that renders it; the
+// generator follows rather than defines it. See the note in that file.
+import {
+    LABEL_MIN_ZOOM,
+    type LabelKind,
+    LabelKinds,
+} from "../../../web/src/elements/maps/labels.ts";
+
 import type { Feature, Point } from "geojson";
 import { latLngToCell } from "h3-js";
 
-export const LabelKinds = new Set(["country", "region", "locality"] as const);
-export type LabelKind = typeof LabelKinds extends Set<infer K> ? K : never;
-
-export const LABEL_MIN_ZOOM: Record<LabelKind, number> = {
-    country: 0,
-    region: 3,
-    locality: 6,
-};
+export { LABEL_MIN_ZOOM, type LabelKind, LabelKinds };
 
 /**
  * Population thresholds mapping a country to the zoom where its label first
@@ -28,12 +29,6 @@ function countryMinZoom(population: number): number {
     }
     return 3;
 }
-
-export const LABEL_TEXT_SIZE: Record<LabelKind, number> = {
-    country: 16,
-    region: 13,
-    locality: 11,
-};
 
 export interface PlaceLabel {
     kind: LabelKind;

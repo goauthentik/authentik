@@ -21,7 +21,9 @@
         // lines earlier. Carrying `| undefined` through that reads as noise and
         // buries the assertion under non-null operators.
         "noUncheckedIndexedAccess": false,
-        "rootDir": ".."
+        // The generator reads the archive contract (bands, labels,
+        // attribution) from web, so the program spans both packages.
+        "rootDir": "../../.."
     },
     // `../src/types.d.ts` declares the `*.css` text imports `ak-map` relies on;
     // it lives outside this directory, so name it explicitly.

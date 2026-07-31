@@ -15,7 +15,9 @@
         // The generator imports the runtime modules (bands, labels, style), so
         // its program pulls in browser code that reaches for `window`.
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "rootDir": ".."
+        // The generator reads the archive contract (bands, labels,
+        // attribution) from web, so the program spans both packages.
+        "rootDir": "../../.."
     },
     "include": ["./**/*.ts"],
     "exclude": ["./**/out/**", "./**/node_modules/**"]

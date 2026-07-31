@@ -1,6 +1,6 @@
 import { type FileHandle, open } from "node:fs/promises";
 
-import { dedupePlaces, normalizePlace, type PlaceLabel } from "@goauthentik/geo/shared";
+import { dedupePlaces, normalizePlace, type PlaceLabel } from "../src/labels.ts";
 
 import { VectorTile } from "@mapbox/vector-tile";
 import Pbf from "pbf";

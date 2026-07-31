@@ -1,4 +1,4 @@
-import { hexFeature, landCells } from "../src/hexworld/land.ts";
+import { hexFeature, landCells } from "../src/land.ts";
 import { required } from "./helpers.ts";
 
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";

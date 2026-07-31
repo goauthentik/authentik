@@ -1,4 +1,4 @@
-import { bandForZoom } from "./bands.ts";
+import { bandForZoom } from "./bands.js";
 
 import { cellToBoundary, cellToLatLng, getHexagonEdgeLengthAvg, latLngToCell, UNITS } from "h3-js";
 

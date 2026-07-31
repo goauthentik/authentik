@@ -1,4 +1,4 @@
-import { assignCountries, buildCountryIndex } from "../src/hexworld/countries.ts";
+import { assignCountries, buildCountryIndex } from "../src/countries.ts";
 
 import type { FeatureCollection, MultiPolygon, Polygon } from "geojson";
 import { latLngToCell } from "h3-js";

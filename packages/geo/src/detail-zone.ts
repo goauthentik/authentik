@@ -1,4 +1,4 @@
-import type { PlaceLabel } from "@goauthentik/geo/shared";
+import type { PlaceLabel } from "./labels.ts";
 
 import { cellToChildren, cellToParent, gridDisk, latLngToCell } from "h3-js";
 

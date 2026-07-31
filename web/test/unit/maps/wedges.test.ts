@@ -1,10 +1,6 @@
-import {
-    binAtLocation,
-    binEvents,
-    buildEventFeatures,
-    pointsInCell,
-} from "../src/hexworld/wedges.ts";
-import { required } from "./helpers.ts";
+import { required } from "./helpers.js";
+
+import { binAtLocation, binEvents, buildEventFeatures, pointsInCell } from "#elements/maps/wedges";
 
 import { cellToBoundary, getHexagonEdgeLengthAvg, UNITS } from "h3-js";
 import { expect, test } from "vitest";

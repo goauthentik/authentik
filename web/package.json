@@ -102,7 +102,6 @@
         "@goauthentik/core": "workspace:*",
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.3",
         "@goauthentik/eslint-config": "^2.0.3",
-        "@goauthentik/geo": "link:../packages/geo",
         "@goauthentik/prettier-config": "^3.5.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.2.0",

@@ -1,27 +1,38 @@
 # @goauthentik/geo
 
-Map component and basemap tooling for authentik's events overview.
+Generator for the hexworld basemap archive that authentik's events map renders.
 
-The package ships a Lit `<ak-map>` element wrapping [MapLibre GL](https://maplibre.org/) and two style builders that back it:
+This package is build-time machinery only — nothing here ships to the browser.
+It turns Natural Earth vector data and a Protomaps planet dump into
+`tiles/hexworld.pmtiles`, the archive `web` copies into its bundle. The map
+element itself, and the styles that read this archive, live in
+`web/src/elements/maps/`.
 
-- `buildBasemapStyle(options)` — conventional [Protomaps](https://protomaps.com/) vector basemap loaded from a `pmtiles://` archive or an XYZ template. Used when a brand configures a tile URL under **System > Brands > Map tiles**.
-- `buildHexworldStyle(options)` — the zero-config default. Renders land as an H3 hexagonal grid with country and region borders drawn along hex edges plus country / region / locality labels, from a small bundled PMTiles archive. Enters when `pmtiles-url` on `<ak-map>` is empty.
+## The contract with the runtime
 
-`<ak-map>` also aggregates its `markers` prop into H3 cells and feeds them to a
-single GeoJSON source, drawn as a `fill-extrusion` layer — one wedge per event
-action per cell, so counts read as columns without any per-marker DOM overhead.
+Three things must agree between the archive and the element that draws it, so
+the element owns them and this package imports them rather than redeclaring:
+
+| What                         | Owned by                               |
+| ---------------------------- | -------------------------------------- |
+| Zoom → H3 resolution bands   | `web/src/elements/maps/bands.ts`       |
+| Label kinds and reveal zooms | `web/src/elements/maps/labels.ts`      |
+| Attribution string           | `web/src/elements/maps/attribution.ts` |
+
+All three are import-free for this reason — pulling them from the style module
+would drag MapLibre into a Node build script. The dependency runs one way only:
+tooling reads the app's contract, never the reverse.
 
 ## Tests
 
 ```bash
-pnpm run test         # Vitest: node project + a Chromium browser project
+pnpm run test         # Vitest, node only
 pnpm run lint:types   # tsc over src, scripts and test
 ```
 
-The node project covers the geometry, binning, border and style-spec modules —
-all pure functions, imported straight from `src/` (no build step). The browser
-project drives a real `<ak-map>` with a real MapLibre instance under Playwright,
-and needs `pnpm exec playwright install chromium` once.
+Covers the land-fill, border, country-assignment, detail-zone and label
+normalization math. The element's own tests live with the element, under
+`web/test/unit/maps/` and `web/test/component/`.
 
 ## Zoom bands
 
@@ -91,4 +102,6 @@ git add tiles/hexworld.pmtiles && git commit
 
 ## Runtime override
 
-Non-empty `pmtiles-url` on `<ak-map>` (usually set via the brand config) selects `buildBasemapStyle` and skips hexworld entirely; the two paths do not interact.
+A brand can point the events map at its own tile server (**System > Brands >
+Map tiles**), which bypasses this archive entirely — see
+`web/src/elements/maps/basemap-style.ts`.

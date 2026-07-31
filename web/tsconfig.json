@@ -10,11 +10,6 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
-        // @goauthentik/geo is consumed as TypeScript source (its `bundler`
-        // export condition points at src/), and its relative imports carry
-        // explicit .ts extensions. Checking those files under this config
-        // needs the same allowance geo's own tsconfig grants itself.
-        "allowImportingTsExtensions": true,
         "experimentalDecorators": true,
         // See https://lit.dev/docs/components/properties/
         "useDefineForClassFields": false,
@@ -83,7 +78,6 @@
         // Remove when we upgrade past that.
         "scripts/pseudolocalize.mjs",
         "scripts/build-locales.mjs",
-        "packages/geo/scripts/**/*",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"

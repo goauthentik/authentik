@@ -11,7 +11,6 @@ packages:
   # lockfile. Without these exclusions the `packages/*` glob then swallows
   # them as workspace importers, committing phantom entries that every local
   # `pnpm install` prunes right back out.
-  - "!packages/geo"
   - "!packages/prettier-config"
   - "!packages/tsconfig"
 

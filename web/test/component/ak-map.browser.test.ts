@@ -1,8 +1,8 @@
 // Side-effect import: the module registers <ak-map>. Kept separate from the
 // type import so it cannot be elided as type-only.
-import "../../src/components/ak-map.ts";
+import "#elements/maps/ak-map";
 
-import type { AKMap } from "../../src/components/ak-map.ts";
+import type { AKMap } from "#elements/maps/ak-map";
 
 import { afterEach, expect, test } from "vitest";
 

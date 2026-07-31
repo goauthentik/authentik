@@ -1,15 +1,15 @@
-import "@goauthentik/geo/components/ak-map";
+import "#elements/maps/ak-map";
 
 import { EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import type { BinSelectDetail, MapMarker } from "#elements/maps/ak-map";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { PaginatedResponse } from "#elements/table/Table";
 
 import { formatEventAction } from "#admin/events/labels";
 
 import { Event } from "@goauthentik/api";
-import type { BinSelectDetail, MapMarker } from "@goauthentik/geo";
 
 import { css, CSSResult, html, type TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";

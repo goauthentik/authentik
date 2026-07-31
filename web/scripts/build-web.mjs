@@ -5,7 +5,6 @@
 import "@goauthentik/core/environment/load/node";
 
 import * as fs from "node:fs/promises";
-import { findPackageJSON } from "node:module";
 import * as path from "node:path";
 
 import { copyAssets } from "./build-assets.mjs";
@@ -122,26 +121,6 @@ const BASE_ESBUILD_OPTIONS = {
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    // Keep the Lit runtime a singleton. Packages linked in from the repo's
-    // top-level packages/ (geo, client-ts, …) keep their own node_modules
-    // under pnpm's isolated linker, so resolving by realpath would pull a
-    // second copy of these out of .pnpm alongside web's — two ReactiveElement
-    // class hierarchies in one bundle. Pin them to web's flat copies instead
-    // of freezing resolution wholesale with `preserveSymlinks`, which also
-    // cuts linked packages off from their own transitive dependencies.
-    alias: Object.fromEntries(
-        ["lit", "lit-html", "lit-element", "@lit/reactive-element"].map((name) => {
-            const packageJSONFilePath = findPackageJSON(name, import.meta.url);
-
-            if (!packageJSONFilePath) {
-                throw new Error(`Could not find package.json for ${name}`);
-            }
-
-            const packageJSONDir = path.dirname(packageJSONFilePath);
-
-            return [name, packageJSONDir];
-        }),
-    ),
 };
 
 /**

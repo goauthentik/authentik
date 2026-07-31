@@ -1,9 +1,10 @@
-import type { EventActionsRecord } from "../shared/events.ts";
-import { LABEL_MIN_ZOOM, LABEL_TEXT_SIZE, LabelKinds } from "../shared/labels.ts";
-import { type BasemapTheme, buildSky } from "../style.ts";
-import { HEX_BANDS, MAX_BAND_ZOOM } from "./bands.ts";
+import { HEXWORLD_ATTRIBUTION } from "./attribution.js";
+import { HEX_BANDS, MAX_BAND_ZOOM } from "./bands.js";
+import { type BasemapTheme, buildSky } from "./basemap-style.js";
+import type { EventActionsRecord } from "./events.js";
+import { LABEL_MIN_ZOOM, LABEL_TEXT_SIZE, LabelKinds } from "./labels.js";
 
-import { EventActions } from "@goauthentik/api/src/models/EventActions.ts";
+import { EventActions } from "@goauthentik/api";
 
 import type {
     BackgroundLayerSpecification,
@@ -13,11 +14,6 @@ import type {
     StyleSpecification,
     SymbolLayerSpecification,
 } from "maplibre-gl";
-
-// Plain text by design: the airgap test forbids external URLs in the style,
-// and an in-app link target makes no sense here. The docs page carries the
-// osm.org/copyright link; ODbL text attribution suffices on the map itself.
-export const HEXWORLD_ATTRIBUTION = "© OpenStreetMap (labels) · Natural Earth";
 
 export interface HexworldStyleOptions {
     archiveURL: string;
@@ -257,3 +253,5 @@ export function buildHexworldStyle(options: HexworldStyleOptions): StyleSpecific
         layers: [background, hexFill, hexOutline, regionBorders, borders, ...labelLayers],
     };
 }
+
+export { HEXWORLD_ATTRIBUTION };

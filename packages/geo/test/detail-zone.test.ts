@@ -1,9 +1,5 @@
-import {
-    computeDetailZone,
-    detailCellsForRes5,
-    isDetailCell,
-} from "../src/hexworld/detail-zone.ts";
-import type { PlaceLabel } from "../src/shared/labels.ts";
+import { computeDetailZone, detailCellsForRes5, isDetailCell } from "../src/detail-zone.ts";
+import type { PlaceLabel } from "../src/labels.ts";
 
 import { cellToChildren, latLngToCell } from "h3-js";
 import { expect, test } from "vitest";

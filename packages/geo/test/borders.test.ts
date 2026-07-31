@@ -1,4 +1,4 @@
-import { borderEdges } from "../src/hexworld/borders.ts";
+import { borderEdges } from "../src/borders.ts";
 
 import { gridDisk, latLngToCell } from "h3-js";
 import { expect, test } from "vitest";

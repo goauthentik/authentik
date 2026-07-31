@@ -1,13 +1,9 @@
-import { buildHexworldStyle, wedgeColors } from "../hexworld/style.ts";
-import {
-    binAtLocation,
-    buildEventFeatures,
-    type EventFeatureCollection,
-} from "../hexworld/wedges.ts";
-import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "../style.ts";
 import Styles from "./ak-map.css";
+import { type BasemapTheme, buildBasemapStyle, type FlavorName } from "./basemap-style.js";
+import { buildHexworldStyle, wedgeColors } from "./hexworld-style.js";
+import { binAtLocation, buildEventFeatures, type EventFeatureCollection } from "./wedges.js";
 
-import { EventActions } from "@goauthentik/api/src/models/EventActions.ts";
+import { EventActions } from "@goauthentik/api";
 
 import { cellToLatLng } from "h3-js";
 import maplibregl, { type LngLatBoundsLike, type Map as MapLibreMap } from "maplibre-gl";

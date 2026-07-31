@@ -1,4 +1,4 @@
-import { cellPolygon } from "../src/hexworld/cells.ts";
+import { cellPolygon } from "../src/cells.ts";
 
 import { latLngToCell } from "h3-js";
 import { expect, test } from "vitest";
