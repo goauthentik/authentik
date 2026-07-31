@@ -404,6 +404,31 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                         </form>
                     </div>
+                    ${this.dcrConfig !== null
+                        ? html`<ak-divider></ak-divider>
+                              <div class="pf-c-card__body">
+                                  <form class="pf-c-form">
+                                      <div class="pf-c-form__group">
+                                          <label
+                                              class="pf-c-form__label"
+                                              for="${IDGenerator.elementID("registration")}"
+                                          >
+                                              <span class="pf-c-form__label-text"
+                                                  >${msg("Dynamic Client Registration URL")}</span
+                                              >
+                                          </label>
+                                          <input
+                                              id="${IDGenerator.elementID("registration")}"
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${this.providerUrls?.dcrRegistration ||
+                                              msg("-")}"
+                                          />
+                                      </div>
+                                  </form>
+                              </div>`
+                        : nothing}
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
