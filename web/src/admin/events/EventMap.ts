@@ -1,12 +1,12 @@
 import "@goauthentik/geo/components/ak-map";
 
-import { formatEventAction } from "#admin/events/labels";
-
 import { EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { PaginatedResponse } from "#elements/table/Table";
+
+import { formatEventAction } from "#admin/events/labels";
 
 import { Event } from "@goauthentik/api";
 import type { BinSelectDetail, MapMarker } from "@goauthentik/geo";

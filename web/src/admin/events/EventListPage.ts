@@ -5,8 +5,6 @@ import "#components/ak-event-info";
 import "#elements/Tabs";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { eventUuidSearch } from "#admin/events/eventSearch";
-
 import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
@@ -16,6 +14,7 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { eventUuidSearch } from "#admin/events/eventSearch";
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/api";
