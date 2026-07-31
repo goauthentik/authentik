@@ -43,7 +43,7 @@ class AgentTests(APITestCase):
         self.assertEqual(res.status_code, 201, res.content)
         body = res.json()
 
-        agent = Agent.objects.get(owner=user)
+        agent = Agent.objects.get(parent=user)
         self.assertEqual(agent.name, "my-agent")
         # Agents are machine identities, not login users
         self.assertEqual(agent.type, UserTypes.SERVICE_ACCOUNT)
@@ -86,7 +86,7 @@ class AgentTests(APITestCase):
             data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        agent = Agent.objects.get(owner=user)
+        agent = Agent.objects.get(parent=user)
         self.assertTrue(agent.expiring)
         self.assertIsNotNone(agent.expires)
         # The forced expiry is bounded (near the token duration), not the caller's 2099
@@ -105,7 +105,7 @@ class AgentTests(APITestCase):
             data={"expiring": False, "expires": "2099-01-01T00:00:00Z"},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        agent = Agent.objects.get(owner=admin)
+        agent = Agent.objects.get(parent=admin)
         self.assertTrue(agent.expiring)
         self.assertIsNotNone(agent.expires)
         self.assertLess(agent.expires.year, 2099)
@@ -123,7 +123,7 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk},
         )
         self.assertEqual(res.status_code, 403)
-        self.assertFalse(Agent.objects.filter(owner=other_user).exists())
+        self.assertFalse(Agent.objects.filter(parent=other_user).exists())
 
     @patch_flag(AllowAnyAgentCreate, True)
     def test_admin_creates_for_other_with_self_service_enabled(self):
@@ -139,7 +139,7 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        agent = Agent.objects.filter(owner=other_user).first()
+        agent = Agent.objects.filter(parent=other_user).first()
         self.assertIsNotNone(agent)
         # Admins still get a token issued for the provisioned agent
         self.assertTrue(res.json()["token"])
@@ -157,7 +157,7 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk, "label": "support-bot"},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        agent = Agent.objects.get(owner=other_user)
+        agent = Agent.objects.get(parent=other_user)
         self.assertTrue(agent.username.startswith("agent-"))
         self.assertEqual(agent.name, "support-bot")
 
@@ -173,7 +173,7 @@ class AgentTests(APITestCase):
             data={"parent": other_user.pk},
         )
         self.assertEqual(res.status_code, 201, res.content)
-        agent = Agent.objects.get(owner=other_user)
+        agent = Agent.objects.get(parent=other_user)
         self.assertFalse(agent.expiring)
         self.assertIsNone(agent.expires)
 
@@ -214,11 +214,12 @@ class AgentTests(APITestCase):
         self.assertEqual(res.status_code, 204, res.content)
         self.assertFalse(Agent.objects.filter(pk=agent.pk).exists())
 
-    def test_deleting_parent_cascades_to_agent(self):
-        """Deleting the parent user deletes their agents along with it"""
+    def test_deleting_parent_orphans_agent(self):
+        """Deleting the parent user does not delete the agent; its parent is cleared
+        (Actor.parent is on_delete=SET_DEFAULT), so the agent survives as parentless"""
         user = create_test_user()
         agent = Agent.create_for_user(user)
-        agent_pk = agent.pk
 
         user.delete()
-        self.assertFalse(Agent.objects.filter(pk=agent_pk).exists())
+        agent.refresh_from_db()
+        self.assertIsNone(agent.parent)

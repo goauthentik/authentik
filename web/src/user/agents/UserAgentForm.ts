@@ -1,48 +1,19 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-text-input";
-import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
-import { DataProvider, DualSelectPair } from "#elements/ak-dual-select/types";
 import { Form } from "#elements/forms/Form";
 import { ModalForm } from "#elements/forms/ModalForm";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    AgentCreated,
-    AgentCreateRequest,
-    AgentsApi,
-    Application,
-    CoreApi,
-} from "@goauthentik/api";
+import { AgentCreated, AgentCreateRequest, AgentsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-const applicationPair = (app: Application): DualSelectPair => [
-    app.pk,
-    html`<div class="selection-main">${app.name}</div>
-        <div class="selection-desc">${app.slug}</div>`,
-    app.name,
-];
-
-// coreApplicationsList is already scoped to the applications the requesting user can access,
-// so a self-service user can only scope their agent to apps they themselves can reach.
-const applicationProvider: DataProvider = async (page, search = "") => {
-    const apps = await aki(CoreApi).coreApplicationsList({
-        page,
-        search,
-        ordering: "name",
-    });
-    return {
-        pagination: apps.pagination,
-        options: apps.results.map(applicationPair),
-    };
-};
 
 @customElement("ak-user-agent-form")
 export class UserAgentForm extends Form<AgentCreateRequest> {
@@ -91,27 +62,12 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
                     id: "agent.label.description",
                 })}
             ></ak-text-input>
-            <ak-form-element-horizontal
-                label=${msg("Applications", { id: "agent.applications.label" })}
-                name="applications"
-            >
-                <ak-dual-select-provider
-                    .provider=${applicationProvider}
-                    .selected=${[]}
-                    available-label=${msg("Available applications", {
-                        id: "agent.applications.available",
-                    })}
-                    selected-label=${msg("Selected applications", {
-                        id: "agent.applications.selected",
-                    })}
-                ></ak-dual-select-provider>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "The agent can act only on these applications, and never on more than you can access yourself.",
-                        { id: "agent.applications.description" },
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "This agent mirrors your access: it can act on exactly the applications you can, and never more.",
+                    { id: "agent.mirror.description" },
+                )}
+            </p>`;
     }
 
     protected renderResponseForm(): SlottedTemplateResult {

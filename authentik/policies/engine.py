@@ -1,7 +1,7 @@
 """authentik policy engine"""
 
 from collections import defaultdict
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from copy import copy
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
@@ -13,7 +13,7 @@ from django.utils.timezone import now
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import Group, User
+from authentik.core.models import Actor, ActorPolicyInheritance, Group, User, UserTypes
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
@@ -23,24 +23,35 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 
 CURRENT_PROCESS = current_process()
 
-# Authoritative global policy checks, evaluated for every (user, PolicyBindingModel) in addition
-# to that object's own PolicyBindings. A check returns a PolicyResult to *override* the binding
-# verdict for that pair (it can both grant and deny), or None to abstain. Populated by other apps
-# at ready() time (e.g. enterprise agents restricting agents to their allow-listed applications)
-# so this module stays agnostic of those features.
-GlobalPolicyCheck = Callable[[User, PolicyBindingModel, HttpRequest | None], PolicyResult | None]
-GLOBAL_POLICY_CHECKS: list[GlobalPolicyCheck] = []
+# Actors are always service accounts, so a cheap type check keeps the hot policy path free of an
+# extra query for ordinary (human) users.
+_ACTOR_USER_TYPES = frozenset({UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT})
 
 
-def apply_global_checks(
-    user: User, pbm: PolicyBindingModel, request: HttpRequest | None
-) -> PolicyResult | None:
-    """Return the first non-None result from a registered global check, or None if all abstain."""
-    for check in GLOBAL_POLICY_CHECKS:
-        result = check(user, pbm, request)
-        if result is not None:
-            return result
+def _mirror_parent(user: User) -> User | None:
+    """Return the parent a MIRROR actor mirrors its policy from, or None.
+
+    An actor with ``policy_behavior == MIRROR`` is evaluated as its parent: it passes a policy
+    exactly when the parent does. Detection resolves the multi-table-inheritance child, memoized
+    on the user instance.
+    """
+    if getattr(user, "type", None) not in _ACTOR_USER_TYPES:
+        return None
+    if "_actor" not in user.__dict__:
+        user.__dict__["_actor"] = Actor.objects.filter(pk=user.pk).first()
+    actor: Actor | None = user.__dict__["_actor"]
+    if actor and actor.policy_behavior == ActorPolicyInheritance.MIRROR and actor.parent_id:
+        return actor.parent
     return None
+
+
+def effective_policy_user(user: User) -> User:
+    """Follow MIRROR actors up to the identity whose policy result they mirror."""
+    seen = {user.pk}
+    while (parent := _mirror_parent(user)) is not None and parent.pk not in seen:
+        seen.add(parent.pk)
+        user = parent
+    return user
 
 
 class PolicyProcessInfo:
@@ -287,11 +298,14 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        override = apply_global_checks(
-            self.request.user, self.__pbm, getattr(self.request, "http_request", None)
-        )
-        if override is not None:
-            return override
+        # A MIRROR actor is evaluated as the identity it mirrors.
+        effective = effective_policy_user(self.request.user)
+        if effective.pk != self.request.user.pk:
+            return (
+                PolicyEngine(self.__pbm, effective, getattr(self.request, "http_request", None))
+                .build()
+                .result
+            )
         all_results = list(self.__dynamic_results)
         if self.__static_result is not None:
             all_results.append(self.__static_result)
@@ -421,15 +435,18 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[User]:
         """Get the subset of the user queryset that passes"""
-        if not GLOBAL_POLICY_CHECKS or self.__result is None:
+        if self.__result is None:
             return self.__result
-        # Let authoritative global checks override the per-user verdict for this pbm.
+        # A MIRROR actor passes iff the identity it mirrors passes. Only service accounts can be
+        # actors, so human users are skipped without a query.
         passing_pks = set(self.__result.values_list("pk", flat=True))
         for user in self.__users:
-            override = apply_global_checks(user, self.__pbm, self.__http_request)
-            if override is None:
+            if getattr(user, "type", None) not in _ACTOR_USER_TYPES:
                 continue
-            if override.passing:
+            effective = effective_policy_user(user)
+            if effective.pk == user.pk:
+                continue
+            if PolicyEngine(self.__pbm, effective, self.__http_request).build().passing:
                 passing_pks.add(user.pk)
             else:
                 passing_pks.discard(user.pk)
@@ -634,16 +651,10 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     @property
     def result(self) -> QuerySet[T]:
         """Get the subset of the object queryset that the user passes"""
-        if not GLOBAL_POLICY_CHECKS or self.__result is None:
+        if self.__result is None:
             return self.__result
-        # Let authoritative global checks override the verdict per object for this user.
-        passing_pks = set(self.__result.values_list("pk", flat=True))
-        for obj in self.__objs:
-            override = apply_global_checks(self.__user, obj, self.__http_request)
-            if override is None:
-                continue
-            if override.passing:
-                passing_pks.add(obj.pk)
-            else:
-                passing_pks.discard(obj.pk)
-        return self.__objs.filter(pk__in=passing_pks)
+        # A MIRROR actor sees exactly what the identity it mirrors sees.
+        effective = effective_policy_user(self.__user)
+        if effective.pk != self.__user.pk:
+            return ListPolicyEngine(self.__objs, effective, self.__http_request).build().result
+        return self.__result

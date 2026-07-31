@@ -35700,21 +35700,21 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          readOnly: true
         token_identifier:
           type: string
           nullable: true
           description: Identifier of the agent's API token, so its key can be retrieved/copied
             later.
           readOnly: true
-        applications:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
       - name
       - parent
       - pk
+      - policy_behavior
       - token_identifier
       - uid
       - username
@@ -35904,11 +35904,10 @@ components:
           type: string
           format: date-time
           nullable: true
-        applications:
-          type: array
-          items:
-            type: string
-            format: uuid
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
     AgentCreated:
       type: object
       description: Response returned once when an agent is created, carrying the one-time
@@ -36025,11 +36024,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        applications:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
       - name
       - username
@@ -45312,6 +45306,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_core.objectattribute
+      - authentik_core.actor
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
@@ -50106,11 +50101,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        applications:
-          type: array
-          items:
-            type: string
-            format: uuid
     PatchedAppleIndependentSecureEnclaveRequest:
       type: object
       properties:
@@ -54561,6 +54551,12 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
     PolicyBinding:
       type: object
       description: PolicyBinding Serializer

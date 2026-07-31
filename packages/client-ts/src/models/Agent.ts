@@ -14,6 +14,8 @@
 
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
+import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
+import { PolicyBehaviorEnumFromJSON } from "./PolicyBehaviorEnum";
 
 /**
  * Mixin to validate that a valid enterprise license
@@ -95,17 +97,17 @@ export interface Agent {
      */
     readonly parent: PartialUser;
     /**
+     *
+     * @type {PolicyBehaviorEnum}
+     * @memberof Agent
+     */
+    readonly policyBehavior: PolicyBehaviorEnum;
+    /**
      * Identifier of the agent's API token, so its key can be retrieved/copied later.
      * @type {string}
      * @memberof Agent
      */
     readonly tokenIdentifier: string | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof Agent
-     */
-    applications?: Array<string>;
 }
 
 /**
@@ -118,6 +120,13 @@ export function instanceOfAgent(value: object): value is Agent {
     if (!("uid" in value) || value["uid"] === undefined) return false;
     if (!("uuid" in value) || value["uuid"] === undefined) return false;
     if (!("parent" in value) || value["parent"] === undefined) return false;
+    if (
+        (!("policyBehavior" in (value as Record<string, any>)) &&
+            !("policy_behavior" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["policyBehavior"] === undefined &&
+            (value as Record<string, any>)["policy_behavior"] === undefined)
+    )
+        return false;
     if (
         (!("tokenIdentifier" in (value as Record<string, any>)) &&
             !("token_identifier" in (value as Record<string, any>))) ||
@@ -159,8 +168,8 @@ export function AgentFromJSONTyped(json: any, ignoreDiscriminator: boolean): Age
                   ? null
                   : new Date(json["expires"]),
         parent: PartialUserFromJSON(json["parent"]),
+        policyBehavior: PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
         tokenIdentifier: json["token_identifier"],
-        applications: json["applications"] == null ? undefined : json["applications"],
     };
 }
 
@@ -169,7 +178,10 @@ export function AgentToJSON(json: any): Agent {
 }
 
 export function AgentToJSONTyped(
-    value?: Omit<Agent, "pk" | "uid" | "uuid" | "parent" | "tokenIdentifier"> | null,
+    value?: Omit<
+        Agent,
+        "pk" | "uid" | "uuid" | "parent" | "policyBehavior" | "tokenIdentifier"
+    > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -186,6 +198,5 @@ export function AgentToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        applications: value["applications"],
     };
 }

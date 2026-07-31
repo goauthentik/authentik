@@ -79,20 +79,19 @@ def model_to_dict(model: Model) -> dict[str, Any]:
     }
 
 
-def _agent_owner(user: User) -> User | None:
-    """Return the owner of an agent identity, or None if `user` is not an agent.
+def _actor_parent(user: User) -> User | None:
+    """Return the parent an actor identity acts on behalf of, or None.
 
-    Detected via the agents app's multi-table-inheritance reverse accessor (`user.agent`) so
-    this core module does not import the enterprise agents feature. Gated on the service-account
-    type so ordinary users pay no query.
+    Detected via the core `Actor` multi-table-inheritance reverse accessor (`user.actor`), gated
+    on the service-account type so ordinary users pay no query. `parent` may itself be None (an
+    actor acting purely by itself), in which case there is no one to attribute the action to.
     """
     if getattr(user, "type", None) != UserTypes.SERVICE_ACCOUNT:
         return None
-    # `hasattr` swallows both the reverse-accessor's DoesNotExist and a missing accessor
-    # (agents app not installed), so no enterprise import is needed here.
-    if not hasattr(user, "agent"):
+    # `hasattr` swallows the reverse-accessor's DoesNotExist for non-actor users.
+    if not hasattr(user, "actor"):
         return None
-    return user.agent.owner
+    return user.actor.parent
 
 
 def get_user(user: User | AnonymousUser) -> dict[str, Any]:
@@ -109,12 +108,12 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
-    # Accountability: actions performed by an agent are recorded on behalf of its owner, so the
-    # audit log always ties an agent's activity back to a responsible human.
-    owner = _agent_owner(user)
-    if owner is not None:
+    # Accountability: actions performed by an actor are recorded on behalf of its parent, so the
+    # audit log always ties the activity back to a responsible human.
+    parent = _actor_parent(user)
+    if parent is not None:
         user_data["is_agent"] = True
-        user_data["on_behalf_of"] = get_user(owner)
+        user_data["on_behalf_of"] = get_user(parent)
     return user_data
 
 

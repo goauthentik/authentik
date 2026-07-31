@@ -1,6 +1,7 @@
 from django.test import TestCase
+from rest_framework.exceptions import ValidationError
 
-from authentik.core.models import Application
+from authentik.core.models import ActorPolicyInheritance, Application
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.agents.models import Agent
 from authentik.lib.generators import generate_id
@@ -8,66 +9,89 @@ from authentik.policies.engine import ListPolicyEngine, PolicyEngine
 from authentik.policies.models import PolicyBinding
 
 
-class AgentScopeTests(TestCase):
-    """The agent application allow-list grants + caps access, bounded by the owner."""
+class AgentMirrorTests(TestCase):
+    """A MIRROR agent is evaluated as its parent: it passes a policy iff the parent does."""
 
     def _app(self) -> Application:
-        # No bindings -> open to everyone by default (AppAccessWithoutBindings).
         return Application.objects.create(name=generate_id(), slug=generate_id())
 
     def _passes(self, app: Application, user) -> bool:
         return PolicyEngine(app, user).build().passing
 
-    def test_unscoped_agent_denied(self):
-        """An agent with an empty allow-list reaches nothing, even open apps."""
-        owner = create_test_user()
-        app = self._app()
-        self.assertTrue(self._passes(app, owner))  # owner can access the open app
-        agent = Agent.create_for_user(owner)
-        self.assertFalse(self._passes(app, agent))
+    def _restrict_to(self, app: Application, user) -> None:
+        # A user binding makes the app pass only for that user.
+        PolicyBinding.objects.create(target=app, user=user, order=0)
 
-    def test_scoped_agent_allowed(self):
-        """An allow-listed app is granted to the agent without any per-agent binding."""
-        owner = create_test_user()
-        app = self._app()
-        agent = Agent.create_for_user(owner)
-        agent.applications.add(app)
-        self.assertTrue(self._passes(app, agent))
+    def test_mirror_matches_parent(self):
+        parent = create_test_user()
+        other = create_test_user()
+        allowed, denied = self._app(), self._app()
+        self._restrict_to(allowed, parent)
+        self._restrict_to(denied, other)
 
-    def test_agent_denied_off_list(self):
-        owner = create_test_user()
-        app1, app2 = self._app(), self._app()
-        agent = Agent.create_for_user(owner)
-        agent.applications.add(app1)
-        self.assertTrue(self._passes(app1, agent))
-        self.assertFalse(self._passes(app2, agent))
+        agent = Agent.create_for_user(parent)
+        self.assertEqual(agent.policy_behavior, ActorPolicyInheritance.MIRROR)
 
-    def test_owner_cap(self):
-        """An agent can never exceed its owner, even if the app is on its allow-list."""
-        owner = create_test_user()
+        # The agent mirrors its parent exactly.
+        self.assertTrue(self._passes(allowed, parent))
+        self.assertTrue(self._passes(allowed, agent))
+        self.assertFalse(self._passes(denied, parent))
+        self.assertFalse(self._passes(denied, agent))
+
+    def test_mirror_tracks_parent_live(self):
+        parent = create_test_user()
         other = create_test_user()
         app = self._app()
-        # Restrict the app to `other` -> the owner cannot access it.
-        PolicyBinding.objects.create(target=app, user=other, order=0)
-        self.assertFalse(self._passes(app, owner))
+        self._restrict_to(app, other)  # parent excluded
 
-        agent = Agent.create_for_user(owner)
-        agent.applications.add(app)
-        # Scoped, but the owner is denied -> the agent is denied too.
+        agent = Agent.create_for_user(parent)
         self.assertFalse(self._passes(app, agent))
 
-        # Grant the owner access -> the agent (re-fetched, fresh per-request memo) is allowed.
-        PolicyBinding.objects.create(target=app, user=owner, order=1)
-        self.assertTrue(self._passes(app, owner))
-        agent = Agent.objects.get(pk=agent.pk)
+        # Grant the parent access -> the agent gains it live.
+        self._restrict_to(app, parent)
         self.assertTrue(self._passes(app, agent))
 
-    def test_app_list_filtered_to_scope(self):
-        """The application list only returns an agent's in-scope, owner-permitted apps."""
-        owner = create_test_user()
+    def test_none_agent_is_independent(self):
+        parent = create_test_user()
+        other = create_test_user()
+        agent = Agent.create_for_user(parent, policy_behavior=ActorPolicyInheritance.NONE)
+
+        # An open app (no bindings) passes for the independent agent by default...
+        self.assertTrue(self._passes(self._app(), agent))
+        # ...but a restricted app it has no binding on is denied, regardless of the parent.
+        restricted = self._app()
+        self._restrict_to(restricted, other)
+        self.assertFalse(self._passes(restricted, agent))
+
+    def test_copy_snapshots_parent(self):
+        parent = create_test_user()
+        app = self._app()
+        self._restrict_to(app, parent)  # a binding referencing the parent as a user
+
+        agent = Agent.create_for_user(parent, policy_behavior=ActorPolicyInheritance.COPY)
+        # The agent holds its own copy of the parent's binding -> it passes.
+        self.assertTrue(self._passes(app, agent))
+
+        # The snapshot is independent: revoking the parent's access does not affect the agent.
+        PolicyBinding.objects.filter(user=parent, target=app).delete()
+        self.assertFalse(self._passes(app, parent))
+        self.assertTrue(self._passes(app, agent))
+
+    def test_policy_behavior_is_immutable(self):
+        """policy_behavior may only be chosen at creation."""
+        agent = Agent.create_for_user(create_test_user())
+        agent = Agent.objects.get(pk=agent.pk)  # fresh load snapshots the original value
+        agent.policy_behavior = ActorPolicyInheritance.NONE
+        with self.assertRaises(ValidationError):
+            agent.save()
+
+    def test_app_list_mirrors_parent(self):
+        parent = create_test_user()
+        other = create_test_user()
         in_scope, off_scope = self._app(), self._app()
-        agent = Agent.create_for_user(owner)
-        agent.applications.add(in_scope)
+        self._restrict_to(in_scope, parent)
+        self._restrict_to(off_scope, other)
+        agent = Agent.create_for_user(parent)
 
         engine = ListPolicyEngine(Application.objects.all(), agent)
         allowed = {app.pk for app in engine.build().result}

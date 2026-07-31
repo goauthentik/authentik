@@ -1,7 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    SerializerMethodField,
+)
 from rest_framework.mixins import (
     DestroyModelMixin,
     ListModelMixin,
@@ -16,7 +22,13 @@ from rest_framework.viewsets import GenericViewSet
 from authentik.api.validation import validate
 from authentik.core.api.groups import PartialUserSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Application, Token, TokenIntents, User, default_token_duration
+from authentik.core.models import (
+    ActorPolicyInheritance,
+    Token,
+    TokenIntents,
+    User,
+    default_token_duration,
+)
 from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin
@@ -24,13 +36,10 @@ from authentik.enterprise.api import EnterpriseRequiredMixin
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
 
-    parent = PartialUserSerializer(source="owner", read_only=True)
+    parent = PartialUserSerializer(read_only=True)
+    # Chosen at creation only; immutable afterwards.
+    policy_behavior = ChoiceField(choices=ActorPolicyInheritance.choices, read_only=True)
     token_identifier = SerializerMethodField()
-    # The least-privilege allow-list: the agent may act on exactly these applications (and
-    # never more than its owner can). Writable so the scope can be managed after creation.
-    applications = PrimaryKeyRelatedField(
-        many=True, queryset=Application.objects.all(), required=False
-    )
 
     def get_token_identifier(self, agent: Agent) -> str | None:
         """Identifier of the agent's API token, so its key can be retrieved/copied later."""
@@ -44,8 +53,8 @@ class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
             "expiring",
             "expires",
             "parent",
+            "policy_behavior",
             "token_identifier",
-            "applications",
         ]
 
 
@@ -69,7 +78,7 @@ class AgentViewSet(
 
     queryset = Agent.objects.all()
     serializer_class = AgentSerializer
-    owner_field = "owner"
+    owner_field = "parent"
     rbac_allow_create_without_perm = True
 
     class AgentCreateSerializer(PassiveSerializer):
@@ -78,8 +87,10 @@ class AgentViewSet(
         label = CharField(required=False, allow_blank=True)
         expiring = BooleanField(required=False, default=False)
         expires = DateTimeField(required=False, allow_null=True, default=None)
-        applications = PrimaryKeyRelatedField(
-            many=True, queryset=Application.objects.all(), required=False, default=list
+        policy_behavior = ChoiceField(
+            choices=ActorPolicyInheritance.choices,
+            default=ActorPolicyInheritance.MIRROR,
+            required=False,
         )
 
     @extend_schema(request=AgentCreateSerializer, responses={201: AgentCreatedSerializer})
@@ -97,22 +108,23 @@ class AgentViewSet(
             raise PermissionDenied(_("Self-service agent creation is not enabled."))
 
         if self_service:
-            # Self-service agents always expire with the tenant default; the caller cannot
-            # opt out (even a superuser creating an agent for themselves).
+            # Self-service agents always expire with the tenant default and MIRROR their owner,
+            # so they can never exceed the access of the user creating them.
             expiring = True
             expires = default_token_duration()
+            policy_behavior = ActorPolicyInheritance.MIRROR
         else:
-            # Provisioning for another user may set a custom/standing expiry.
+            # Provisioning for another user may set a custom/standing expiry and policy behavior.
             expiring = body.validated_data["expiring"]
             expires = body.validated_data["expires"]
+            policy_behavior = body.validated_data["policy_behavior"]
         agent = Agent.create_for_user(
             user=parent,
             name=body.validated_data.get("label", ""),
             expiring=expiring,
             expires=expires,
+            policy_behavior=policy_behavior,
         )
-        # Scope the agent to its allow-listed applications (empty = no access).
-        agent.applications.set(body.validated_data.get("applications", []))
         # Issue an API token so a harness can authenticate as the agent (Bearer auth).
         token = Token.objects.create(
             identifier=agent.username,

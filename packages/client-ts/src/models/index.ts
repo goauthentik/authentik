@@ -692,6 +692,7 @@ export * from "./PlexSourcePropertyMappingRequest";
 export * from "./PlexSourceRequest";
 export * from "./PlexTokenRedeemRequest";
 export * from "./Policy";
+export * from "./PolicyBehaviorEnum";
 export * from "./PolicyBinding";
 export * from "./PolicyBindingRequest";
 export * from "./PolicyEngineMode";

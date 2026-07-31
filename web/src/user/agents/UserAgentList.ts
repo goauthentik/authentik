@@ -37,7 +37,6 @@ export class UserAgentList extends Table<Agent> {
 
     protected columns: TableColumn[] = [
         [msg("Name", { id: "agent.column.name" }), "username"],
-        [msg("Applications", { id: "agent.column.applications" }), null],
         [msg("Expires", { id: "agent.column.expires" }), "expires"],
         [msg("Actions", { id: "agent.column.actions" }), null, msg("Row Actions")],
     ];
@@ -98,7 +97,6 @@ export class UserAgentList extends Table<Agent> {
         return [
             html`<div>${item.name || item.username}</div>
                 <small class="pf-m-monospace">${item.username}</small>`,
-            html`${item.applications?.length ?? 0}`,
             item.expiring && item.expires
                 ? html`<pf-tooltip position="top" .content=${item.expires.toLocaleString()}>
                       ${formatElapsedTime(item.expires)}

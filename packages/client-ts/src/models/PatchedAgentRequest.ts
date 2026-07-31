@@ -67,12 +67,6 @@ export interface PatchedAgentRequest {
      * @memberof PatchedAgentRequest
      */
     expires?: Date | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof PatchedAgentRequest
-     */
-    applications?: Array<string>;
 }
 
 /**
@@ -112,7 +106,6 @@ export function PatchedAgentRequestFromJSONTyped(
                 : json["expires"] === null
                   ? null
                   : new Date(json["expires"]),
-        applications: json["applications"] == null ? undefined : json["applications"],
     };
 }
 
@@ -138,6 +131,5 @@ export function PatchedAgentRequestToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        applications: value["applications"],
     };
 }

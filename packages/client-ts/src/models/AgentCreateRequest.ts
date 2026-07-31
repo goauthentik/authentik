@@ -12,6 +12,9 @@
  * Do not edit the class manually.
  */
 
+import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
+import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBehaviorEnum";
+
 /**
  * Base serializer class which doesn't implement create/update methods
  * @export
@@ -44,10 +47,10 @@ export interface AgentCreateRequest {
     expires?: Date | null;
     /**
      *
-     * @type {Array<string>}
+     * @type {PolicyBehaviorEnum}
      * @memberof AgentCreateRequest
      */
-    applications?: Array<string>;
+    policyBehavior?: PolicyBehaviorEnum;
 }
 
 /**
@@ -78,7 +81,10 @@ export function AgentCreateRequestFromJSONTyped(
                 : json["expires"] === null
                   ? null
                   : new Date(json["expires"]),
-        applications: json["applications"] == null ? undefined : json["applications"],
+        policyBehavior:
+            json["policy_behavior"] == null
+                ? undefined
+                : PolicyBehaviorEnumFromJSON(json["policy_behavior"]),
     };
 }
 
@@ -99,6 +105,6 @@ export function AgentCreateRequestToJSONTyped(
         label: value["label"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        applications: value["applications"],
+        policy_behavior: PolicyBehaviorEnumToJSON(value["policyBehavior"]),
     };
 }

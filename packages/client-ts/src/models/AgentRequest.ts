@@ -67,12 +67,6 @@ export interface AgentRequest {
      * @memberof AgentRequest
      */
     expires?: Date | null;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof AgentRequest
-     */
-    applications?: Array<string>;
 }
 
 /**
@@ -111,7 +105,6 @@ export function AgentRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["expires"] === null
                   ? null
                   : new Date(json["expires"]),
-        applications: json["applications"] == null ? undefined : json["applications"],
     };
 }
 
@@ -137,6 +130,5 @@ export function AgentRequestToJSONTyped(
         attributes: value["attributes"],
         expiring: value["expiring"],
         expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
-        applications: value["applications"],
     };
 }
