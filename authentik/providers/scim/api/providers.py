@@ -16,7 +16,7 @@ from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
     {
         "type": "string",
         "enum": SCIMCompatibilityMode.values,
-        "x-enum-varnames": SCIMCompatibilityMode.labels,
+        "x-enum-varnames": [str(label) for label in SCIMCompatibilityMode.labels],
     },
     component_name="CompatibilityModeEnum",
 )
