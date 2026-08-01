@@ -1,5 +1,6 @@
 """User client"""
 
+from copy import deepcopy
 from typing import Any
 
 from django.db import transaction
@@ -96,8 +97,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         """Check if a user is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
         return dumps(local_updated) != dumps(local_known)
 
