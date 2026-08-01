@@ -115,6 +115,12 @@ export class PlexLoginInit extends BaseStage<
     // Handle the browser coming back from app.plex.tv with a pin this
     // session started.
     private async completeReturn(pin: number): Promise<void> {
+        // Getting here at all proves the return path works, so the
+        // automatic-redirect budget has done its job and starts over. It only
+        // exists to stop a return path that never comes back from looping, and
+        // a counter that survived until the next sign-in would cap a fresh
+        // attempt that has not redirected yet.
+        removeSessionItem(PLEX_ATTEMPT_KEY);
         let token: string | undefined;
         try {
             // A single immediate status check instead of a poll: Plex only
@@ -136,7 +142,6 @@ export class PlexLoginInit extends BaseStage<
                 },
                 slug: this.challenge?.slug || "",
             });
-            removeSessionItem(PLEX_ATTEMPT_KEY);
             window.location.assign(redirectChallenge.to);
         } catch (error: unknown) {
             await showAPIErrorMessage(error);
@@ -153,16 +158,18 @@ export class PlexLoginInit extends BaseStage<
         // application that started it.
         const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
         const authUrl = PlexAPIClient.authUrl(this.clientId, authInfo.pin.code, returnUrl);
-        const stored = writeSessionItem(PLEX_PIN_KEY, authInfo.pin.id.toString());
+        if (!writeSessionItem(PLEX_PIN_KEY, authInfo.pin.id.toString())) {
+            // Nothing recognizes the return leg without the stored pin, so the
+            // trip to Plex could only come back to a page that starts another
+            // one. Say so rather than sending the user out with no way home.
+            this.errorMessage = msg(
+                "Sign-in with Plex needs session storage, which this browser is blocking.",
+            );
+            return;
+        }
         writeSessionItem(PLEX_ATTEMPT_KEY, (readAttempt() + 1).toString());
         if (manual) {
             window.location.assign(authUrl);
-            return;
-        }
-        if (!stored) {
-            // Without storage the return leg cannot be recognized, and an
-            // automatic redirect would loop; leave the manual button as the
-            // way in.
             return;
         }
         // replace, not assign: keeps the pre-redirect flow URL out of history,
