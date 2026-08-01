@@ -33,7 +33,7 @@ import {
 
 import YAML from "yaml";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -184,43 +184,27 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                     label=${msg("Compatibility Mode")}
                     .value=${provider.compatibilityMode}
                     required
-                    .options=${[
-                        {
-                            label: msg("Default"),
-                            value: CompatibilityModeEnum.Default,
-                            default: true,
-                            description: html`${msg("Default behavior.")}`,
-                        },
-                        {
-                            label: msg("AWS"),
-                            value: CompatibilityModeEnum.Aws,
-                            description: html`${msg(
-                                "Altered behavior for usage with Amazon Web Services.",
-                            )}`,
-                        },
-                        {
-                            label: msg("Slack"),
-                            value: CompatibilityModeEnum.Slack,
-                            description: html`${msg("Altered behavior for usage with Slack.")}`,
-                        },
-                        {
-                            label: msg("Salesforce"),
-                            value: CompatibilityModeEnum.Sfdc,
-                            description: html`${msg("Altered behavior for usage with Salesforce.")}`,
-                        },
-                        {
-                            label: msg("Webex"),
-                            value: CompatibilityModeEnum.Webex,
-                            description: html`${msg("Altered behavior for usage with Cisco Webex.")}`,
-                        },
-                        {
-                            label: msg("vCenter"),
-                            value: CompatibilityModeEnum.Vcenter,
-                            description: html`${msg(
-                                "Altered behavior for usage with VMware vCenter.",
-                            )}`,
-                        },
-                    ]}
+                    .options=${Object.entries(CompatibilityModeEnum)
+                        .filter(
+                            ([, value]) => value !== CompatibilityModeEnum.UnknownDefaultOpenApi,
+                        )
+                        .map(([label, value]) => {
+                            const isDefault = value === CompatibilityModeEnum.Default;
+                            return {
+                                label: isDefault
+                                    ? msg("Default", {
+                                          id: "providers.scim.compatibility-mode.default.label",
+                                      })
+                                    : label,
+                                value,
+                                default: isDefault,
+                                description: isDefault
+                                    ? undefined
+                                    : html`${msg(str`Altered behavior for ${label}.`, {
+                                          id: "providers.scim.compatibility-mode.description",
+                                      })}`,
+                            };
+                        })}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}

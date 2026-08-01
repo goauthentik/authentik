@@ -38104,6 +38104,7 @@ components:
       - public
       type: string
     CompatibilityModeEnum:
+      type: string
       enum:
       - default
       - aws
@@ -38112,7 +38113,14 @@ components:
       - gitlab
       - webex
       - vcenter
-      type: string
+      x-enum-varnames:
+      - Default
+      - AWS
+      - Slack
+      - Salesforce
+      - GitLab
+      - Webex
+      - vCenter
     Config:
       type: object
       description: Serialize authentik Config into DRF Object

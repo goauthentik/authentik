@@ -1,14 +1,27 @@
 """SCIM Provider API Views"""
 
-from rest_framework.fields import SerializerMethodField
+from drf_spectacular.utils import extend_schema_field
+from rest_framework.fields import ChoiceField, SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 from authentik.lib.utils.reflection import ConditionalInheritance
-from authentik.providers.scim.models import SCIMProvider
+from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
+
+
+@extend_schema_field(
+    {
+        "type": "string",
+        "enum": SCIMCompatibilityMode.values,
+        "x-enum-varnames": SCIMCompatibilityMode.labels,
+    },
+    component_name="CompatibilityModeEnum",
+)
+class SCIMCompatibilityModeField(ChoiceField):
+    """SCIM compatibility mode with generated display names."""
 
 
 class SCIMProviderSerializer(
@@ -21,6 +34,12 @@ class SCIMProviderSerializer(
     auth_oauth_token_expires = SerializerMethodField()
     auth_oauth_url_callback = SerializerMethodField()
     auth_oauth_url_start = SerializerMethodField()
+    compatibility_mode = SCIMCompatibilityModeField(
+        choices=SCIMCompatibilityMode.choices,
+        required=False,
+        label=SCIMProvider._meta.get_field("compatibility_mode").verbose_name,
+        help_text=SCIMProvider._meta.get_field("compatibility_mode").help_text,
+    )
 
     class Meta:
         model = SCIMProvider
