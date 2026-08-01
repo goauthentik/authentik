@@ -81,6 +81,32 @@ func (a *Application) SessionName() string {
 	return a.sessionName
 }
 
+// discardSession erases a session that could not be loaded from the store and
+// tells the client to drop its session cookie.
+//
+// It deliberately works on a copy of the session. gorilla's registry memoises
+// the *sessions.Session per request, so every a.sessions.Get() within a single
+// request hands back the same object — Options included. Setting
+// Options.MaxAge = -1 on the shared object makes every later Save() in that
+// request take the store's "MaxAge <= 0" branch and erase the session instead
+// of persisting it. That is how signing out and logging back in used to fail:
+// checkAuth expired the cookie of the session that sign-out had already
+// deleted, and createState then "saved" a new session that was never written,
+// leaving the state JWT pointing at a session ID the callback could not find
+// ("mismatched session ID ... should=").
+func (a *Application) discardSession(rw http.ResponseWriter, r *http.Request, s *sessions.Session) {
+	if rw == nil {
+		return
+	}
+	expired := *s
+	opts := *s.Options
+	opts.MaxAge = -1
+	expired.Options = &opts
+	if err := a.sessions.Save(r, rw, &expired); err != nil {
+		a.log.WithError(err).Warning("failed to delete stale session cookie")
+	}
+}
+
 func (a *Application) getAllCodecs() []securecookie.Codec {
 	apps := a.srv.Apps()
 	cs := []securecookie.Codec{}

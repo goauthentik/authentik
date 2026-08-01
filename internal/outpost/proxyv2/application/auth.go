@@ -55,12 +55,7 @@ func (a *Application) getClaimsFromSession(rw http.ResponseWriter, r *http.Reque
 	if err != nil {
 		// err == user has no session/session is not valid
 		// Delete the stale session cookie if it exists
-		if rw != nil {
-			s.Options.MaxAge = -1
-			if saveErr := s.Save(r, rw); saveErr != nil {
-				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
-			}
-		}
+		a.discardSession(rw, r, s)
 		return nil
 	}
 	claims, ok := s.Values[constants.SessionClaims]
