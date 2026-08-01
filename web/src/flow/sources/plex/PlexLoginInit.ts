@@ -25,94 +25,188 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
-// State for the round trip to app.plex.tv rides in the flow URL itself (via
-// Plex's forwardUrl) rather than in web storage: Safari partitions storage in
-// private browsing, so a stored pin would not survive the cross-origin hop.
-const PLEX_PIN_PARAM = "plex_pin";
-const PLEX_ATTEMPT_PARAM = "plex_attempt";
-// After this many automatic round trips without a token, stop redirecting so a
-// broken return path cannot loop, and leave the manual button as the way in.
+// State for the round trip to app.plex.tv lives in sessionStorage rather than
+// in the flow URL used as Plex's forwardUrl. Storage binds the pin to the
+// browser session that started the round trip: a pin id carried in the URL
+// could be forged, letting an attacker authorize a pin with their own Plex
+// account and hand the resulting link to a victim (login CSRF).
+const PLEX_PIN_KEY = "authentik-plex-pin";
+const PLEX_ATTEMPT_KEY = "authentik-plex-attempt";
+// After this many automatic redirects without a completed sign-in, stop
+// redirecting so a broken return path cannot loop, and leave the manual
+// button as the way in.
 const MAX_REDIRECT_ATTEMPTS = 2;
-// How long the return leg waits for plex.tv to report the pin as authorized.
-const RETURN_POLL_TIMEOUT = 20 * 1000;
+
+// sessionStorage access can throw outright in some embedded and lockdown
+// contexts; treat that the same as the value being absent.
+function readSessionItem(key: string): string | null {
+    try {
+        return window.sessionStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function writeSessionItem(key: string, value: string): boolean {
+    try {
+        window.sessionStorage.setItem(key, value);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function removeSessionItem(key: string): void {
+    try {
+        window.sessionStorage.removeItem(key);
+    } catch {
+        // Nothing to clean up if storage is unavailable.
+    }
+}
+
+function readAttempt(): number {
+    return parseInt(readSessionItem(PLEX_ATTEMPT_KEY) ?? "", 10) || 0;
+}
 
 @customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest
 > {
+    // Set when a sign-in attempt has failed; switches the card from the
+    // waiting spinner to an actionable retry state.
     @state()
-    authUrl?: string;
+    errorMessage?: string;
+
+    // Set when the automatic-redirect cap has been reached and the component
+    // is deliberately not navigating on its own.
+    @state()
+    capped = false;
 
     static styles: CSSResult[] = [PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
 
-    async firstUpdated(): Promise<void> {
-        const clientId = this.challenge?.clientId || "";
-        const currentParams = new URLSearchParams(window.location.search);
-        const returnedPin = parseInt(currentParams.get(PLEX_PIN_PARAM) || "", 10);
-        const attempt = parseInt(currentParams.get(PLEX_ATTEMPT_PARAM) || "", 10) || 0;
+    get clientId(): string {
+        return this.challenge?.clientId || "";
+    }
 
-        // Return leg: Plex sent the browser back here through forwardUrl.
+    async firstUpdated(): Promise<void> {
+        const returnedPin = parseInt(readSessionItem(PLEX_PIN_KEY) ?? "", 10);
+
+        // Return leg: Plex sent the browser back here through forwardUrl, and
+        // the pin this session left with is waiting in sessionStorage.
         if (!Number.isNaN(returnedPin)) {
-            let token: string | undefined;
-            try {
-                token = await PlexAPIClient.pinPoll(clientId, returnedPin, RETURN_POLL_TIMEOUT);
-            } catch {
-                // The pin expired or was never authorized: fall through and
-                // mint a fresh one, bounded by the attempt counter.
-            }
-            if (token) {
-                try {
-                    const redirectChallenge = await aki(SourcesApi).sourcesPlexRedeemTokenCreate({
-                        plexTokenRedeemRequest: {
-                            plexToken: token,
-                        },
-                        slug: this.challenge?.slug || "",
-                    });
-                    window.location.assign(redirectChallenge.to);
-                    return;
-                } catch (error: unknown) {
-                    await showAPIErrorMessage(error);
-                    return;
-                }
-            }
+            removeSessionItem(PLEX_PIN_KEY);
+            await this.completeReturn(returnedPin);
+            return;
         }
 
-        const authInfo = await PlexAPIClient.getPin(clientId);
+        if (readAttempt() >= MAX_REDIRECT_ATTEMPTS) {
+            this.capped = true;
+            return;
+        }
+        try {
+            await this.redirectToPlex(false);
+        } catch (error: unknown) {
+            await showAPIErrorMessage(error);
+            this.errorMessage = msg("Could not start sign-in with Plex.");
+        }
+    }
+
+    // Handle the browser coming back from app.plex.tv with a pin this
+    // session started.
+    private async completeReturn(pin: number): Promise<void> {
+        let token: string | undefined;
+        try {
+            // A single immediate status check instead of a poll: Plex only
+            // follows forwardUrl once the pin is authorized, so by the time
+            // the browser is back the token is either already there or the
+            // user backed out without finishing.
+            token = await PlexAPIClient.pinStatus(this.clientId, pin);
+        } catch {
+            token = undefined;
+        }
+        if (!token) {
+            this.errorMessage = msg("Sign-in with Plex was cancelled or timed out.");
+            return;
+        }
+        try {
+            const redirectChallenge = await aki(SourcesApi).sourcesPlexRedeemTokenCreate({
+                plexTokenRedeemRequest: {
+                    plexToken: token,
+                },
+                slug: this.challenge?.slug || "",
+            });
+            removeSessionItem(PLEX_ATTEMPT_KEY);
+            window.location.assign(redirectChallenge.to);
+        } catch (error: unknown) {
+            await showAPIErrorMessage(error);
+            this.errorMessage = msg("Plex sign-in succeeded, but completing the login failed.");
+        }
+    }
+
+    // Mint a fresh pin, persist it for the return leg, and send the browser
+    // to app.plex.tv.
+    private async redirectToPlex(manual: boolean): Promise<void> {
+        const authInfo = await PlexAPIClient.getPin(this.clientId);
         // The return URL keeps the flow's whole query string: dropping `next`
         // would complete the flow but lose the final hop back to the
         // application that started it.
-        const returnParams = new URLSearchParams(window.location.search);
-        returnParams.set(PLEX_PIN_PARAM, authInfo.pin.id.toString());
-        returnParams.set(PLEX_ATTEMPT_PARAM, (attempt + 1).toString());
-        const returnUrl = `${window.location.origin}${window.location.pathname}?${returnParams.toString()}`;
-        this.authUrl = PlexAPIClient.authUrl(clientId, authInfo.pin.code, returnUrl);
-        if (attempt >= MAX_REDIRECT_ATTEMPTS) {
+        const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}`;
+        const authUrl = PlexAPIClient.authUrl(this.clientId, authInfo.pin.code, returnUrl);
+        const stored = writeSessionItem(PLEX_PIN_KEY, authInfo.pin.id.toString());
+        writeSessionItem(PLEX_ATTEMPT_KEY, (readAttempt() + 1).toString());
+        if (manual) {
+            window.location.assign(authUrl);
+            return;
+        }
+        if (!stored) {
+            // Without storage the return leg cannot be recognized, and an
+            // automatic redirect would loop; leave the manual button as the
+            // way in.
             return;
         }
         // replace, not assign: keeps the pre-redirect flow URL out of history,
         // so the Back button on plex.tv does not land on a page that would
         // immediately redirect there again.
-        window.location.replace(this.authUrl);
+        window.location.replace(authUrl);
     }
 
+    private onContinue = (): void => {
+        this.errorMessage = undefined;
+        this.capped = false;
+        this.redirectToPlex(true).catch(async (error: unknown) => {
+            await showAPIErrorMessage(error);
+            this.errorMessage = msg("Could not start sign-in with Plex.");
+        });
+    };
+
     render(): TemplateResult {
+        let heading = msg("Waiting for authentication...");
+        let hint = msg("If you are not redirected to Plex, click the button below.");
+        if (this.errorMessage) {
+            heading = this.errorMessage;
+            hint = msg("Click the button below to start over with a new sign-in attempt.");
+        } else if (this.capped) {
+            heading = msg("Not redirecting to Plex automatically.");
+            hint = msg(
+                "Sign-in did not complete after multiple redirects. Click the button below to continue to Plex.",
+            );
+        }
+        const loading = !this.errorMessage && !this.capped;
         return html`<ak-flow-card .challenge=${this.challenge}>
             <span slot="title">${msg("Authenticating with Plex...")}</span>
             <form class="pf-c-form">
-                <ak-empty-state loading
-                    ><span>${msg("Waiting for authentication...")}></span>
-                </ak-empty-state>
+                ${loading
+                    ? html`<ak-empty-state loading><span>${heading}</span></ak-empty-state>`
+                    : html`<ak-empty-state icon="fa-times"
+                          ><span>${heading}</span></ak-empty-state
+                      >`}
                 <ak-divider></ak-divider>
-                <p>${msg("If you are not redirected to Plex, click the button below.")}</p>
+                <p>${hint}</p>
                 <button
                     class="pf-c-button pf-m-block pf-m-primary"
                     type="button"
-                    @click=${() => {
-                        if (this.authUrl) {
-                            window.location.assign(this.authUrl);
-                        }
-                    }}
+                    @click=${this.onContinue}
                 >
                     ${msg("Continue to Plex")}
                 </button>
