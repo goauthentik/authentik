@@ -29,14 +29,16 @@ jobs:
     name: Check inputs validity
     runs-on: ubuntu-latest
     steps:
-      - id: check
+      - name: Validate release version input
+        id: check
         env:
           VERSION: "${{ inputs.version }}"
         run: |
           echo "${VERSION}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "major-version=${VERSION}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
-      - id: changelog-url
+      - name: Resolve changelog URL
+        id: changelog-url
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
             changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
