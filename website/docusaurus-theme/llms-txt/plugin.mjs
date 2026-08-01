@@ -88,11 +88,11 @@ export async function buildLLMSOutputs(ctx) {
             if (!parsed) continue;
 
             const route = ctx.routesPaths.length
-                ? resolveDocumentUrl(parsed.path, ctx.routesPaths)
+                ? resolveDocumentUrl(parsed, section.routeBasePath, ctx.routesPaths)
                 : resolveDocumentUrlFromSource(parsed, section.routeBasePath);
             if (!route) {
-                // Expected for source files Docusaurus does not route (e.g.
-                // historical release notes). Counted and summarized, not warned per-page.
+                // Expected for source files Docusaurus does not route. Counted
+                // and summarized, not warned per-page.
                 skippedNoRoute++;
                 continue;
             }

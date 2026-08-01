@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2026.8.0-rc1"
+version = "2026.11.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.14.*"
@@ -101,7 +101,7 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
-  "ruff==0.15.22",
+  "ruff==0.16.0",
   "selenium==4.46.0",
   "types-channels==4.3.0.20260518",
   "types-docker==7.2.0.20260722",
