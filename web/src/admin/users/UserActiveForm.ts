@@ -1,15 +1,13 @@
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/FormGroup";
 
 import { aki } from "#common/api/client";
-import { formatDisambiguatedUserDisplayName } from "#common/users";
+import { docLink } from "#common/global";
 
 import { modalInvoker } from "#elements/dialogs";
-import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
-import { WithLocale } from "#elements/mixins/locale";
+import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, UsedBy, User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 import { str } from "@lit/localize";
 import { msg } from "@lit/localize/init/install";
@@ -20,7 +18,7 @@ import { customElement } from "lit/decorators.js";
  * A form for activating/deactivating a user.
  */
 @customElement("ak-user-activation-toggle-form")
-export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<User>) {
+export class UserActivationToggleForm extends ModelForm<User> {
     public static override verboseName = msg("User");
     public static override verboseNamePlural = msg("Users");
 
@@ -41,23 +39,17 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
     }
 
     public override formatSubmitLabel(): string {
-        return super.formatSubmitLabel(
-            this.instance?.isActive ? msg("Deactivate") : msg("Activate"),
-        );
+        const verb = this.instance?.isActive ? msg("Deactivate") : msg("Activate");
+
+        return msg(str`${verb} ${this.verboseName}`, {
+            id: "form.submit.verb-entity",
+        });
     }
 
     public override formatSubmittingLabel(): string {
         return super.formatSubmittingLabel(
             this.instance?.isActive ? msg("Deactivating...") : msg("Activating..."),
         );
-    }
-
-    protected override formatDisplayName(): string {
-        if (!this.instance) {
-            return msg("Unknown user");
-        }
-
-        return formatDisambiguatedUserDisplayName(this.instance, this.activeLanguageTag);
     }
 
     protected override formatHeadline(): string {
@@ -68,13 +60,26 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
     }
 
-    public override usedBy = (): Promise<UsedBy[]> => {
-        if (!this.instance) {
-            return Promise.resolve([]);
-        }
+    protected override renderForm(): SlottedTemplateResult {
+        const description = this.instance?.isActive
+            ? msg("Deactivation blocks the user from authenticating.", {
+                  id: "user.activation.deactivate.description",
+              })
+            : msg("Activation allows the user to authenticate again.", {
+                  id: "user.activation.activate.description",
+              });
 
-        return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
-    };
+        return html`<p>
+            ${description}
+            <a
+                href=${docLink("/users-sources/user/user_basic_operations/#deactivate-a-user")}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                ${msg("Learn more", { id: "user.activation.docs.label" })}
+            </a>
+        </p>`;
+    }
 }
 
 declare global {
