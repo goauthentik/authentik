@@ -31,17 +31,10 @@ export async function popupCenterScreen(
     const top = (screen.height - h) / 4,
         left = (screen.width - w) / 2;
 
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const popup = window.open(
-                url,
-                title,
-                `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
-            );
-
-            resolve(popup);
-        });
-    });
+    // window.open must run synchronously in the caller's task: opened from
+    // inside a setTimeout it has no transient user activation and is popup
+    // blocked by current browsers.
+    return window.open(url, title, `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`);
 }
 
 export class PlexAPIClient {
@@ -49,6 +42,18 @@ export class PlexAPIClient {
 
     constructor(token: string) {
         this.token = token;
+    }
+
+    // The #? form is the one app.plex.tv documents; forwardUrl is only known to
+    // work with it, not with the older #!? form.
+    static authUrl(clientIdentifier: string, code: string, forwardUrl?: string): string {
+        let url = `https://app.plex.tv/auth#?clientID=${encodeURIComponent(clientIdentifier)}&code=${encodeURIComponent(code)}`;
+
+        if (forwardUrl) {
+            url += `&forwardUrl=${encodeURIComponent(forwardUrl)}&context[device][product]=authentik`;
+        }
+
+        return url;
     }
 
     static async getPin(
@@ -67,7 +72,7 @@ export class PlexAPIClient {
         const pin: PlexPinResponse = await pinResponse.json();
 
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
+            authUrl: PlexAPIClient.authUrl(clientIdentifier, pin.code),
             pin,
         };
     }
@@ -93,7 +98,9 @@ export class PlexAPIClient {
         return pin.authToken;
     }
 
-    static async pinPoll(clientIdentifier: string, id: number): Promise<string> {
+    static async pinPoll(clientIdentifier: string, id: number, timeout?: number): Promise<string> {
+        const deadline = timeout ? Date.now() + timeout : undefined;
+
         const executePoll = async (
             resolve: (authToken: string) => void,
             reject: (e: Error) => void,
@@ -103,6 +110,10 @@ export class PlexAPIClient {
 
                 if (response) {
                     resolve(response);
+                } else if (deadline !== undefined && Date.now() >= deadline) {
+                    reject(
+                        new SentryIgnoredError("Plex pin was not authorized before the timeout"),
+                    );
                 } else {
                     setTimeout(executePoll, 500, resolve, reject);
                 }
