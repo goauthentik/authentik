@@ -14,7 +14,11 @@ tags:
 authentik_version: "2025.12.0"
 ---
 
+<<<<<<< HEAD
 Endpoint Devices registered with authentik via a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check-in](#device-check-in) with authentik and report their [device facts](#device-facts).
+=======
+Endpoint devices registered with authentik through a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check in](#device-check-in) with authentik and report their [device facts](#device-facts).
+>>>>>>> 4ecd287de (website/docs: cleanup 07-12: polish endpoint device guidance (#23968))
 
 These facts are shown on the [Devices](../manage-devices.mdx) page and are also accessible to policies and can be used to make policy decisions. See [Device Compliance Policy](./device-compliance-policy.md) for more details.
 
