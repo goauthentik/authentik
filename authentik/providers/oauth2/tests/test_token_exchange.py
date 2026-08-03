@@ -17,9 +17,17 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
+    TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
     TOKEN_TYPE_URI_JWT,
 )
-from authentik.core.models import Actor, ActorPolicyInheritance, Application, User
+from authentik.core.models import (
+    Actor,
+    ActorPolicyInheritance,
+    Application,
+    Token,
+    TokenIntents,
+    User,
+)
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
@@ -143,7 +151,7 @@ class TestTokenExchange(OAuthTestCase):
 
     def test_actor_token_unsupported_type_rejected(self):
         """test that an actor_token of an unsupported type is refused rather than
-        silently ignored -- only TOKEN_TYPE_URI_ACCESS_TOKEN actors are supported"""
+        silently ignored"""
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             {
@@ -154,7 +162,7 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": self.subject_token,
-                "actor_token_type": TOKEN_TYPE_URI_JWT,
+                "actor_token_type": "urn:ietf:params:oauth:token-type:saml2",
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -376,28 +384,46 @@ class TestTokenExchange(OAuthTestCase):
         )
 
     def _create_actor(
-        self, parent: User, policy_behavior: ActorPolicyInheritance = ActorPolicyInheritance.NONE
+        self,
+        parent: User | None,
+        policy_behavior: ActorPolicyInheritance = ActorPolicyInheritance.NONE,
     ) -> Actor:
-        """Construct an Actor controlled by `parent`, via the model's own factory"""
+        """Construct an Actor controlled by `parent` (or ownerless if `None`), via the
+        model's own factory"""
         return Actor.actor_for(parent, policy_behavior)
 
-    def _actor_token(self, actor: Actor) -> str:
-        """Issue an access token for `actor`, usable as an actor_token"""
-        token = generate_id()
+    def _actor_token_jwt(self, actor: Actor) -> str:
+        """Issue an access token for `actor` from the federated provider, usable as a
+        JWT actor_token"""
+        token = self.other_provider.encode(
+            {
+                "sub": "actor",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
         AccessToken.objects.create(
-            provider=self.provider,
+            provider=self.other_provider,
             token=token,
             user=actor,
             auth_time=now(),
         )
         return token
 
+    def _actor_token_builtin(self, actor: Actor) -> str:
+        """Issue an authentik built-in API token for `actor`, usable as an actor_token"""
+        token = Token.objects.create(
+            identifier=generate_id(),
+            user=actor,
+            intent=TokenIntents.INTENT_API,
+        )
+        return token.key
+
     def test_actor_token_successful_delegation(self):
         """test RFC 8693 §4.1 delegation: subject_token identifies the human, actor_token
         identifies an Actor the human controls -- the issued token's `sub` stays the
         human (unchanged), and `act` records the actor"""
         actor = self._create_actor(self.user)
-        actor_token = self._actor_token(actor)
+        actor_token = self._actor_token_jwt(actor)
 
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -409,7 +435,7 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": actor_token,
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
             },
         )
         self.assertEqual(response.status_code, 200, response.content)
@@ -425,11 +451,11 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(access_token.user_id, self.user.pk)
         self.assertEqual(access_token.actor_id, actor.pk)
 
-    def test_actor_token_rejects_unowned_actor(self):
-        """test that a human cannot use as actor one they don't control"""
-        other_user = create_test_user()
-        someone_elses_actor = self._create_actor(other_user)
-        actor_token = self._actor_token(someone_elses_actor)
+    def test_actor_token_builtin_successful_delegation(self):
+        """test RFC 8693 §4.1 delegation via an authentik built-in Token, for an actor
+        that has an owner"""
+        actor = self._create_actor(self.user)
+        actor_token = self._actor_token_builtin(actor)
 
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -441,7 +467,88 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": actor_token,
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token_type": TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+
+        jwt = self._decode(body["access_token"])
+        self.assertIn("act", jwt)
+        self.assertEqual(jwt["act"]["sub"], actor.uid)
+
+        access_token = AccessToken.objects.get(token=body["access_token"])
+        self.assertEqual(access_token.actor_id, actor.pk)
+
+    def test_actor_token_unowned_jwt_allowed(self):
+        """test that an actor with no owner can be delegated to via a JWT actor_token"""
+        actor = self._create_actor(None)
+        actor_token = self._actor_token_jwt(actor)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = loads(response.content.decode())
+
+        jwt = self._decode(body["access_token"])
+        self.assertIn("act", jwt)
+        self.assertEqual(jwt["act"]["sub"], actor.uid)
+
+        access_token = AccessToken.objects.get(token=body["access_token"])
+        self.assertEqual(access_token.actor_id, actor.pk)
+
+    def test_actor_token_unowned_builtin_rejected(self):
+        """test that an actor with no owner cannot be delegated to via a built-in Token
+        actor_token -- only JWTs are supported for ownerless actors"""
+        actor = self._create_actor(None)
+        actor_token = self._actor_token_builtin(actor)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+        self.assertFalse(AccessToken.objects.filter(actor=actor).exists())
+
+    def test_actor_token_rejects_unowned_actor(self):
+        """test that a human cannot use as actor one they don't control"""
+        other_user = create_test_user()
+        someone_elses_actor = self._create_actor(other_user)
+        actor_token = self._actor_token_jwt(someone_elses_actor)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": actor_token,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -453,9 +560,14 @@ class TestTokenExchange(OAuthTestCase):
         """test that an access token belonging to an ordinary (non-Actor) user is
         not accepted as an actor -- only Actors may be delegated to"""
         other_user = create_test_user()
-        actor_token = generate_id()
+        actor_token = self.other_provider.encode(
+            {
+                "sub": "not-an-actor",
+                "exp": datetime.now() + timedelta(hours=2),
+            }
+        )
         AccessToken.objects.create(
-            provider=self.provider,
+            provider=self.other_provider,
             token=actor_token,
             user=other_user,
             auth_time=now(),
@@ -471,7 +583,7 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": actor_token,
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -490,12 +602,33 @@ class TestTokenExchange(OAuthTestCase):
                 "subject_token": self.subject_token,
                 "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
                 "actor_token": "not-a-real-token",
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token_type": TOKEN_TYPE_URI_JWT,
             },
         )
         self.assertEqual(response.status_code, 400)
         body = loads(response.content.decode())
         self.assertEqual(body["error"], "invalid_grant")
+
+    def test_actor_token_rejects_unknown_builtin_token(self):
+        """test a built-in actor_token value that doesn't match any real Token"""
+        actor = self._create_actor(self.user)
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+                "actor_token": "not-a-real-token",
+                "actor_token_type": TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+        self.assertFalse(AccessToken.objects.filter(actor=actor).exists())
 
     def test_actor_token_absent_is_unaffected(self):
         """test that plain token exchange (no actor_token) is completely unaffected --
