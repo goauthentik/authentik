@@ -108,6 +108,21 @@ export default createDocusaurusConfig(
             },
         }),
 
+        headTags: [
+            {
+                tagName: "script",
+                attributes: {
+                    type: "application/ld+json",
+                },
+                innerHTML: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "WebSite",
+                    "name": "authentik Integrations",
+                    "url": "https://integrations.goauthentik.io",
+                }),
+            },
+        ],
+
         //#endregion
     }),
 );
