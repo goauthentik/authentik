@@ -25,6 +25,8 @@ You can apply either action with the following options:
 
 Both options are enabled by default. Leave them enabled to prevent existing sessions or credentials from retaining access after the offboarding runs.
 
+To notify users by email when an offboarding deactivates their account, enable the `default-notify-user-account-offboarding` [user security notification rule](./events/user-security-notifications.md). The email tells the user that their account has expired.
+
 ## Schedule a user offboarding
 
 You cannot schedule an offboarding for your own account or for an internal service account. Each user can have only one pending offboarding.

@@ -20,6 +20,8 @@
           {% endif %}
         {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
           {% trans "Your account has been locked" %}
+        {% elif event_action == "user_offboarded" and event_context.offboarding_action == "deactivate" %}
+          {% trans "Your account has expired" %}
         {% else %}
           {% trans "Security notification" %}
         {% endif %}
@@ -65,6 +67,11 @@
                 yourself, no further action is needed. To regain access to your account, please
                 contact your administrator or security team.
               {% endblocktrans %}
+            {% elif event_action == "user_offboarded" and event_context.offboarding_action == "deactivate" %}
+              {% blocktrans %}
+                Your account has expired and can no longer be used to sign in. If you have
+                questions or believe this is a mistake, please contact your administrator.
+              {% endblocktrans %}
             {% else %}
               {{ body }}
             {% endif %}
@@ -84,14 +91,18 @@
 {% endblock %}
 
 {% block sub_content %}
-  <tr>
-    <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
-      {% blocktrans %}
-        If you did not perform this action, your account may be at risk. Please review your account
-        security and contact your administrator immediately.
-      {% endblocktrans %}
-    </td>
-  </tr>
+  {# An offboarding is never performed by the user themselves, so the did-you-do-this
+     footer does not apply; the body already points them to their administrator. #}
+  {% if event_action != "user_offboarded" %}
+    <tr>
+      <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+        {% blocktrans %}
+          If you did not perform this action, your account may be at risk. Please review your account
+          security and contact your administrator immediately.
+        {% endblocktrans %}
+      </td>
+    </tr>
+  {% endif %}
   {% if source %}
     <tr>
       <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">

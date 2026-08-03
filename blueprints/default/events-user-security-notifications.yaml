@@ -122,6 +122,32 @@ entries:
     policy: !KeyOf default-match-account-lockdown
     target: !KeyOf default-notify-user-account-lockdown
 
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: default-match-account-offboarded
+  attrs:
+    action: user_offboarded
+    # Only deactivations are matched: a deleted account has no user left to
+    # deliver an email to
+    query: 'context.offboarding_action = "deactivate"'
+  identifiers:
+    name: default-match-account-offboarded
+- model: authentik_events.notificationrule
+  id: default-notify-user-account-offboarding
+  state: created
+  identifiers:
+    name: default-notify-user-account-offboarding
+  attrs:
+    enabled: false
+    severity: notice
+    destination_event_subject: true
+    transports:
+      - !KeyOf default-security-email-transport
+- model: authentik_policies.policybinding
+  identifiers:
+    order: 0
+    policy: !KeyOf default-match-account-offboarded
+    target: !KeyOf default-notify-user-account-offboarding
+
 - model: authentik_events.notificationtransport
   id: default-welcome-email-transport
   attrs:

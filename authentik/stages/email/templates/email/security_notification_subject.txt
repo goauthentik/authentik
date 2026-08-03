@@ -13,6 +13,8 @@
 {% endif %}
 {% elif event_action == "user_write" and event_context.action_id == "account_lockdown" %}
 {% trans "your account has been locked" %}
+{% elif event_action == "user_offboarded" and event_context.offboarding_action == "deactivate" %}
+{% trans "your account has expired" %}
 {% else %}
 {% trans "security notification" %}
 {% endif %}

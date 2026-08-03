@@ -387,6 +387,21 @@ class TestEvents(TestCase):
         self.assertFalse(Event.objects.filter(pk=about_user.pk).exists())
         self.assertTrue(Event.objects.filter(pk=unrelated.pk).exists())
 
+    def test_gdpr_cleanup_spares_deletion_audit(self):
+        """GDPR cleanup must not erase the event that records the user's deletion via offboarding:
+        it is the only remaining trace that (and when) the account was removed."""
+        admin = create_test_admin_user()
+        user = create_test_user()
+        offboarded = Event.new(EventAction.USER_OFFBOARDED, subject=user).set_user(admin)
+        offboarded.save()
+        about_user = Event.new(EventAction.USER_CREATED, subject=user).set_user(admin)
+        about_user.save()
+
+        gdpr_cleanup(user.pk)
+
+        self.assertTrue(Event.objects.filter(pk=offboarded.pk).exists())
+        self.assertFalse(Event.objects.filter(pk=about_user.pk).exists())
+
     def test_gdpr_cleanup_dispatched(self):
         """Deleting a user with gdpr_compliance should dispatch cleanup for that user"""
         user = create_test_user()

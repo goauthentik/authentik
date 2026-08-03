@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import (
     Event,
+    EventAction,
     Notification,
     NotificationRule,
     NotificationTransport,
@@ -126,7 +127,10 @@ def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigg
 @actor(description=_("Cleanup events for GDPR compliance."))
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
-    events = Event.objects.filter(Q(user__pk=user_pk) | Q(context__subject__pk=user_pk))
+    events = Event.objects.filter(
+        Q(user__pk=user_pk)
+        | (Q(context__subject__pk=user_pk) & ~Q(action=EventAction.USER_OFFBOARDED))
+    )
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
     for event in chunked_queryset(events):
         event.delete()

@@ -197,6 +197,12 @@ A user is written to during a flow execution.
 
 </details>
 
+### `user_offboarded`:ak-version[2026.8] {#user_offboarded}
+
+A user account was deactivated or deleted by a scheduled [user offboarding](../user-offboarding.md). The event is attributed to the administrator who scheduled the offboarding.
+
+The event context contains the action that was applied (`offboarding_action` — `deactivate` or `delete`), whether the user's sessions and tokens were revoked (`revoke_sessions`, `revoke_tokens`), and the offboarded user as the event's `subject` (an object with the user's `pk`, `username`, and `email`). This event is exempt from the [GDPR event cleanup](../settings.md#gdpr-compliance): when a deleted user's events are erased, the event that records the deletion itself is retained.
+
 ### `suspicious_request`
 
 A suspicious request has been received (for example, a revoked token was used).

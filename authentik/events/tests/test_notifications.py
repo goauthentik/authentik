@@ -219,6 +219,7 @@ class TestUserSecurityNotificationRules(APITestCase):
         "default-notify-user-mfa-device-change",
         "default-notify-user-impossible-travel",
         "default-notify-user-account-lockdown",
+        "default-notify-user-account-offboarding",
         "default-notify-user-welcome",
     ]
 

@@ -2,15 +2,19 @@ import time
 from datetime import timedelta
 from threading import Event as ThreadEvent
 from threading import Thread
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from django.apps import apps
+from django.core import mail
+from django.core.mail.backends.locmem import EmailBackend
 from django.db import connection
 from django.test import TransactionTestCase
 from django.urls import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.models import BlueprintInstance
+from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import (
     AuthenticatedSession,
     Session,
@@ -33,7 +37,7 @@ from authentik.enterprise.lifecycle.offboarding.tasks import (
     execute_offboarding,
 )
 from authentik.enterprise.tests import enterprise_test
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, NotificationRule
 from authentik.lib.generators import generate_id
 
 
@@ -104,6 +108,22 @@ class TestOffboardingService(APITestCase):
         self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
         self.assertFalse(Token.objects.filter(user=self.user).exists())
 
+    def test_deactivate_event_carries_subject(self):
+        """A deactivation event names the offboarded user as its subject, so
+        notification rules can route an email to them."""
+        offboard_user(self.user, OffboardingAction.DEACTIVATE)
+        event = Event.objects.filter(action=EventAction.USER_OFFBOARDED).latest("created")
+        self.assertEqual(event.context["subject"]["pk"], self.user.pk)
+        self.assertEqual(event.context["subject"]["username"], self.user.username)
+
+    def test_delete_event_carries_subject(self):
+        """A deletion event names the deleted user as its subject, like every other
+        offboarding event."""
+        pk = self.user.pk
+        offboard_user(self.user, OffboardingAction.DELETE)
+        event = Event.objects.filter(action=EventAction.USER_OFFBOARDED).latest("created")
+        self.assertEqual(event.context["subject"]["pk"], pk)
+
 
 class TestOffboardingSweeper(APITestCase):
     @classmethod
@@ -154,7 +174,7 @@ class TestOffboardingSweeper(APITestCase):
         event = Event.objects.filter(action=EventAction.USER_OFFBOARDED).latest("created")
         self.assertEqual(event.user.get("pk"), admin.pk)
         self.assertNotEqual(event.user.get("pk"), self.user.pk)
-        self.assertEqual(event.context.get("user_pk"), self.user.pk)
+        self.assertEqual(event.context["subject"]["pk"], self.user.pk)
 
     def test_failed_execution_is_atomic_and_retryable(self):
         """A mid-way failure rolls back every change and leaves the row retryable."""
@@ -229,6 +249,57 @@ class TestOffboardingSweeper(APITestCase):
         self.user.refresh_from_db()
         self.assertEqual(offboarding.status, OffboardingStatus.PENDING)
         self.assertTrue(self.user.is_active)
+
+
+class TestOffboardingNotificationEmail(APITestCase):
+    """End-to-end: an executed offboarding delivers the account-expired email to
+    the offboarded user via the default notification blueprint."""
+
+    BLUEPRINT = "default/events-user-security-notifications.yaml"
+
+    def setUp(self):
+        content = BlueprintInstance(path=self.BLUEPRINT).retrieve()
+        self.assertTrue(Importer.from_string(content).apply())
+        NotificationRule.objects.filter(name="default-notify-user-account-offboarding").update(
+            enabled=True
+        )
+        self.admin = create_test_admin_user()
+        self.user = create_test_user()
+
+    def email_backend(self):
+        return patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        )
+
+    def offboard(self, action: OffboardingAction):
+        offboarding = UserOffboarding.objects.create(
+            user=self.user,
+            scheduled_at=now() - timedelta(minutes=1),
+            action=action,
+            created_by=self.admin,
+        )
+        with self.email_backend():
+            execute_offboarding(str(offboarding.pk))
+
+    def test_deactivate_emails_offboarded_user(self):
+        """Deactivating a user through a scheduled offboarding must email that user"""
+        self.offboard(OffboardingAction.DEACTIVATE)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.is_active)
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertIn(self.user.email, message.to[0])
+        self.assertEqual(message.subject, "authentik Notification: your account has expired")
+        self.assertIn("expired and can no longer be used to sign in", message.body)
+        # The generic did-you-do-this footer does not apply to an offboarding.
+        self.assertNotIn("If you did not perform this action", message.body)
+
+    def test_delete_does_not_email(self):
+        """Deleting a user must not attempt to email them"""
+        self.offboard(OffboardingAction.DELETE)
+        self.assertFalse(User.objects.filter(pk=self.user.pk).exists())
+        self.assertEqual(len(mail.outbox), 0)
 
 
 class TestOffboardingConcurrency(TransactionTestCase):
