@@ -24,10 +24,10 @@ jobs:
           echo "tag-name=$tag_name" >> "$GITHUB_OUTPUT"
           gh release download "$tag_name" --pattern metadata.json
           gh attestation verify metadata.json --owner goauthentik
-          echo "version=$(jq -r '.version')" >> "$GITHUB_OUTPUT"
-          echo "version-family=$(jq -r '.version_family')" >> "$GITHUB_OUTPUT"
-          echo "release-reason=$(jq -r '.release_reason')" >> "$GITHUB_OUTPUT"
-          echo "changelog-url=$(jq -r '.changelog_url')" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.version' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "version-family=$(jq -r '.version_family' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "release-reason=$(jq -r '.release_reason' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "changelog-url=$(jq -r '.changelog_url' < metadata.json)" >> "$GITHUB_OUTPUT"
   publish-containers:
     runs-on: ubuntu-latest
     permissions:
@@ -38,6 +38,7 @@ jobs:
       id-token: write
       attestations: write
     strategy:
+      fail-fast: false
       matrix:
         name:
           - server
