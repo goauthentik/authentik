@@ -27,7 +27,7 @@ If you already have an enrollment token, skip to the [next section](#install-the
     - **Device group _(optional)_**: Select a device access group to add the device to after enrollment.
     - **Expiring _(optional)_**: Set whether the enrollment token expires.
 5. Click **Create**.
-6. _(Optional)_ Click the **Copy** icon in the **Actions** column. You need this value to [enable device compliance](#enable-device-compliance).
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column. You need this value to [join the device to an authentik domain](#join-the-device-to-an-authentik-domain).
 
 ## Install the authentik Agent on macOS
 
@@ -50,9 +50,9 @@ The Agent requires a serial number be presented by macOS. Some hypervisors don't
 
     You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Enable device compliance
+## Join the device to an authentik domain
 
-To enable [device compliance features](../../device-compliance/index.mdx), you must join the device to an authentik domain.
+Joining the device to an authentik domain is what enrolls it with your authentik deployment and issues it a device token. This step is required for [device compliance features](../../device-compliance/index.mdx) and for every other feature that authenticates as the device, including Platform SSO.
 
 1. Open a Terminal session and run the following command:
 
