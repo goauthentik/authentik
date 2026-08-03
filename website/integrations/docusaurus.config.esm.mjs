@@ -108,6 +108,8 @@ export default createDocusaurusConfig(
             },
         }),
 
+        // TODO: This can be removed after https://github.com/goauthentik/authentik/pull/24687
+        // is merged and the docusuaurs config dependency has been bumped
         headTags: [
             {
                 tagName: "script",
