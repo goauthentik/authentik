@@ -100,8 +100,9 @@ export function generateCVESidebar(args) {
 
 //#region Configuration
 
-export default createDocusaurusConfig(
-    extendConfig({
+export default /** @type {import("@docusaurus/types").Config} */ (
+    createDocusaurusConfig(
+        extendConfig({
         future: {
             faster: true,
         },
@@ -205,4 +206,5 @@ export default createDocusaurusConfig(
 
         //#endregion
     }),
+    )
 );

@@ -30,8 +30,9 @@ const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirecto
 
 //#region Configuration
 
-export default createDocusaurusConfig(
-    extendConfig({
+export default /** @type {import("@docusaurus/types").Config} */ (
+    createDocusaurusConfig(
+        extendConfig({
         future: {
             faster: true,
         },
@@ -108,23 +109,7 @@ export default createDocusaurusConfig(
             },
         }),
 
-        // TODO: This can be removed after https://github.com/goauthentik/authentik/pull/24687
-        // is merged and the docusuaurs config dependency has been bumped
-        headTags: [
-            {
-                tagName: "script",
-                attributes: {
-                    type: "application/ld+json",
-                },
-                innerHTML: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": "authentik",
-                    "url": "https://integrations.goauthentik.io",
-                }),
-            },
-        ],
-
         //#endregion
     }),
+    )
 );
