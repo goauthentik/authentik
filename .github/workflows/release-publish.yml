@@ -13,6 +13,8 @@ jobs:
       version: "${{ steps.metadata.outputs.version }}"
       major-version: "${{ steps.metadata.outputs.major-version }}"
       release-reason: "${{ steps.metadata.outputs.release-reason }}"
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - id: metadata
@@ -45,6 +47,8 @@ jobs:
           - rac
     needs:
       - metadata
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
@@ -123,6 +127,7 @@ jobs:
       - publish-containers
     env:
       AWS_REGION: eu-central-1
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
