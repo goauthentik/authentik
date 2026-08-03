@@ -1655,7 +1655,7 @@ class Actor(ExpiringModel, User):
     @staticmethod
     def actor_for(user: User, policy_behavior: ActorPolicyInheritance, **kwargs):
         actor = Actor.objects.create(
-            username=f"{generate_id()}",
+            username=f"{username.}-{generate_id()}",
             parent=user,
             policy_behavior=policy_behavior,
             type=UserTypes.SERVICE_ACCOUNT,
