@@ -12,7 +12,7 @@ Device compliance policies are currently in development and inaccessible. Howeve
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#enable-device-compliance-ssh-server-authentication-and-local-device-login), [Windows](../../authentik-agent/agent-deployment/windows/#enable-device-compliance-and-local-device-login), [macOS](../../authentik-agent/agent-deployment/macos/#enable-device-compliance)).
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#join-the-device-to-an-authentik-domain), [Windows](../../authentik-agent/agent-deployment/windows/#join-the-device-to-an-authentik-domain), [macOS](../../authentik-agent/agent-deployment/macos/#join-the-device-to-an-authentik-domain)).
 
 ## Accessing device facts within a flow
 
