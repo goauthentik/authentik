@@ -28,7 +28,7 @@ CURRENT_PROCESS = current_process()
 _ACTOR_USER_TYPES = frozenset({UserTypes.SERVICE_ACCOUNT, UserTypes.INTERNAL_SERVICE_ACCOUNT})
 
 
-def _mirror_parent(user: User) -> User | None:
+def _get_mirror_parent(user: User) -> User | None:
     """Return the parent a MIRROR actor mirrors its policy from, or None.
 
     An actor with ``policy_behavior == MIRROR`` is evaluated as its parent: it passes a policy
@@ -48,7 +48,7 @@ def _mirror_parent(user: User) -> User | None:
 def effective_policy_user(user: User) -> User:
     """Follow MIRROR actors up to the identity whose policy result they mirror."""
     seen = {user.pk}
-    while (parent := _mirror_parent(user)) is not None and parent.pk not in seen:
+    while (parent := _get_mirror_parent(user)) is not None and parent.pk not in seen:
         seen.add(parent.pk)
         user = parent
     return user
