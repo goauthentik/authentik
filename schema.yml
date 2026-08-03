@@ -45972,8 +45972,13 @@ components:
         jwks:
           type: string
           readOnly: true
+        dcr_registration:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - authorize
+      - dcr_registration
       - issuer
       - jwks
       - logout
