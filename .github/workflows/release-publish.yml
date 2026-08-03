@@ -70,9 +70,17 @@ jobs:
           regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
           regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+          if [ "${{ needs.metadata.outputs.release-reason }}" != "prerelease" ]; then
+            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+          fi
+      # we need to re-login for the attestation to go through
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
         with:
           subject-name: "ghcr.io/goauthentik/${{ matrix.name }}"
