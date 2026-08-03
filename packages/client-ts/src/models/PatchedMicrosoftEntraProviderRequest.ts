@@ -91,6 +91,12 @@ export interface PatchedMicrosoftEntraProviderRequest {
      */
     syncPageSize?: number;
     /**
+     * When enabled, authentik will attempt to discover existing resources in the remote system.
+     * @type {boolean}
+     * @memberof PatchedMicrosoftEntraProviderRequest
+     */
+    discoveryEnabled?: boolean;
+    /**
      * Timeout for synchronization of a single page
      * @type {string}
      * @memberof PatchedMicrosoftEntraProviderRequest
@@ -153,6 +159,7 @@ export function PatchedMicrosoftEntraProviderRequestFromJSONTyped(
                 ? undefined
                 : OutgoingSyncDeleteActionFromJSON(json["group_delete_action"]),
         syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
+        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
     };
@@ -184,6 +191,7 @@ export function PatchedMicrosoftEntraProviderRequestToJSONTyped(
         user_delete_action: OutgoingSyncDeleteActionToJSON(value["userDeleteAction"]),
         group_delete_action: OutgoingSyncDeleteActionToJSON(value["groupDeleteAction"]),
         sync_page_size: value["syncPageSize"],
+        discovery_enabled: value["discoveryEnabled"],
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
     };
