@@ -36,7 +36,7 @@ You can configure authentik to redirect external users to a default application 
 
 ### Default flows
 
-You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. You can optionally configure these default flows ([learn more about each default flow](../../add-secure-apps/flows-stages/flow/examples/default_flows.md)):
+You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. You can optionally configure these default flows ([learn more about each default flow](../../add-secure-apps/flows-stages/flow/default-flows.md)):
 
 - **Authentication** flow: the flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.
 - **User switch flow**: the authentication flow used when [switching between users](../../users-sources/user/user-switching.md) signed in on the same browser. If left empty, user switching is disabled. To reuse the default authentication flow for switching, select it here explicitly.

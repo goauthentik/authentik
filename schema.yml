@@ -45013,6 +45013,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_core.objectattribute
+      - authentik_core.actor
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
