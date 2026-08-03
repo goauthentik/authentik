@@ -146,7 +146,7 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -156,7 +156,13 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
+<<<<<<< HEAD
         run_id: [1, 2, 3, 4, 5]
+=======
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    env:
+      AUTHENTIK_MIGRATIONS__DANGEROUSLY_ALLOW_MULTIPLE_MAJOR_VERSION_UPGRADES: "true"
+>>>>>>> e9c840735 (ci: split test job into 10 (#24591))
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -219,7 +225,7 @@ jobs:
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -227,7 +233,7 @@ jobs:
         with:
           flags: unit-migrate
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -237,7 +243,7 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -248,7 +254,7 @@ jobs:
         env:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
