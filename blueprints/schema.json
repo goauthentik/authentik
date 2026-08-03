@@ -7904,6 +7904,11 @@
                     "type": "boolean",
                     "title": "Dry run",
                     "description": "When enabled, provider will not modify or create objects in the remote system."
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 }
             },
             "required": []
@@ -8059,6 +8064,11 @@
                     "maximum": 2147483647,
                     "title": "Sync page size",
                     "description": "Controls the number of objects synced in a single task"
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 },
                 "sync_page_timeout": {
                     "type": "string",
@@ -12247,6 +12257,11 @@
                     "minLength": 1,
                     "title": "Sync page timeout",
                     "description": "Timeout for synchronization of a single page"
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 },
                 "group_filters": {
                     "type": "array",
