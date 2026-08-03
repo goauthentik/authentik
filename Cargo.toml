@@ -240,7 +240,6 @@ opt-level = 3
 panic = "abort"
 
 [profile.release]
-debug = 2
 lto = "fat"
 # Because of the async runtime, we want to die straightaway if we panic.
 panic = "abort"
