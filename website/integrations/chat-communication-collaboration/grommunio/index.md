@@ -6,7 +6,6 @@ support_level: community
 
 import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-<!-- spellchecker:ignore gromox -->
 
 ## What is grommunio?
 

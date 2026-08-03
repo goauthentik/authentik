@@ -4,7 +4,6 @@ sidebar_label: Cascade layers
 description: How authentik's web UI orders its CSS with @layer, and where each kind of rule belongs.
 ---
 
-<!-- cspell:words unlayered -->
 
 authentik's document CSS is ordered with [cascade layers](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@layer). Layers make the ordering explicit, so a rule's precedence comes from the layer it is assigned to rather than from where it happens to be imported or how specific its selector is.
 

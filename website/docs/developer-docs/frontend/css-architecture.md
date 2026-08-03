@@ -4,7 +4,6 @@ sidebar_label: CSS architecture
 description: How authentik's runtime CSS and design tokens fit together across the theme package, the document cascade, and Lit components.
 ---
 
-<!-- cspell:words DTCG Styleframe -->
 
 authentik's UI is a customized PatternFly 4 system wrapped in Lit web components. Treat PatternFly as a compatibility layer, not the public API to build on: the stable surface is the `--ak-*` token set.
 
