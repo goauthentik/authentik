@@ -37,6 +37,7 @@ class Capabilities(models.TextChoices):
     CAN_IMPERSONATE = "can_impersonate"
     CAN_DEBUG = "can_debug"
     IS_ENTERPRISE = "is_enterprise"
+    CAN_REQUEST = "can_request"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):

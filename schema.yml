@@ -37750,6 +37750,7 @@ components:
       - can_impersonate
       - can_debug
       - is_enterprise
+      - can_request
       type: string
     CaptchaChallenge:
       type: object
