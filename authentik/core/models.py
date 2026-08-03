@@ -1653,12 +1653,15 @@ class Actor(ExpiringModel, User):
             binding.save()
 
     @staticmethod
-    def actor_for(user: User, policy_behavior: ActorPolicyInheritance, **kwargs):
-        agent = Actor.objects.create(
-            username=f"{generate_id()}",
-            owner=user,
+    def actor_for(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
+        prefix = f"{user.username}" if user else "global"
+        actor = Actor.objects.create(
+            username=f"{prefix}-{generate_id()}",
+            parent=user,
+            policy_behavior=policy_behavior,
             type=UserTypes.SERVICE_ACCOUNT,
+            **kwargs,
         )
-        agent.set_unusable_password()
-        agent.save()
-        return agent
+        actor.set_unusable_password()
+        actor.save()
+        return actor

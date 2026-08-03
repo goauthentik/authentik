@@ -5430,6 +5430,11 @@
                     "minLength": 1,
                     "title": "Branding default flow background"
                 },
+                "branding_map_tiles": {
+                    "type": "string",
+                    "title": "Branding map tiles",
+                    "description": "URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it."
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
@@ -8943,6 +8948,11 @@
                     "type": "boolean",
                     "title": "Dry run",
                     "description": "When enabled, provider will not modify or create objects in the remote system."
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 }
             },
             "required": []
@@ -9098,6 +9108,11 @@
                     "maximum": 2147483647,
                     "title": "Sync page size",
                     "description": "Controls the number of objects synced in a single task"
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 },
                 "sync_page_timeout": {
                     "type": "string",
@@ -13287,6 +13302,11 @@
                     "minLength": 1,
                     "title": "Sync page timeout",
                     "description": "Timeout for synchronization of a single page"
+                },
+                "discovery_enabled": {
+                    "type": "boolean",
+                    "title": "Discovery enabled",
+                    "description": "When enabled, authentik will attempt to discover existing resources in the remote system."
                 },
                 "group_filters": {
                     "type": "array",
