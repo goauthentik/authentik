@@ -58,6 +58,18 @@ class Brand(SerializerModel):
     branding_default_flow_background = FileField(
         default="/static/dist/assets/images/flow_background.jpg",
     )
+    branding_map_tiles = models.TextField(
+        default="",
+        blank=True,
+        help_text=_(
+            "URL template for the vector tile source used by the events map. "
+            "Supports XYZ templates with {z}, {x} and {y} placeholders, or "
+            "pmtiles:// archive URLs. When empty, the frontend uses the "
+            "bundled hexworld basemap. This value is part of the brand "
+            "information served to unauthenticated clients; do not embed API "
+            "keys or other credentials in it."
+        ),
+    )
 
     flow_authentication = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="brand_authentication"

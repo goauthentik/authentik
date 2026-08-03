@@ -14,6 +14,7 @@ media
 # Node
 
 node_modules
+tsconfig.tsbuildinfo
 
 .cspellcache
 cspell-report.*
