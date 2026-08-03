@@ -140,6 +140,7 @@ jobs:
   sentry-release:
     needs:
       - publish-containers
+      - metadata
     runs-on: ubuntu-latest
     steps:
       - name: Get static files from docker image
