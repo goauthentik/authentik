@@ -72,7 +72,7 @@ This is a global setting. All flow pages that are rendered by the [Flow Executor
 
 ### GDPR compliance
 
-When enabled, all the events caused by a user will be deleted upon the user's deletion. Defaults to `true`.
+When enabled, upon a user's deletion, all events created by that user are deleted, along with events in which they are the affected user (for example, a password change performed for them by an administrator). The [`user_offboarded`](./events/event-actions.md#user_offboarded) event that records the user's deletion is retained, so that the deletion itself remains audited. Defaults to `true`.
 
 ### Impersonation
 

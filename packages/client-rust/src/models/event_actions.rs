@@ -17,8 +17,12 @@ pub enum EventActions {
     Login,
     #[serde(rename = "login_failed")]
     LoginFailed,
+    #[serde(rename = "login_blocked")]
+    LoginBlocked,
     #[serde(rename = "logout")]
     Logout,
+    #[serde(rename = "user_created")]
+    UserCreated,
     #[serde(rename = "user_write")]
     UserWrite,
     #[serde(rename = "user_offboarded")]
@@ -27,6 +31,10 @@ pub enum EventActions {
     SuspiciousRequest,
     #[serde(rename = "password_set")]
     PasswordSet,
+    #[serde(rename = "mfa_device_created")]
+    MfaDeviceCreated,
+    #[serde(rename = "mfa_device_deleted")]
+    MfaDeviceDeleted,
     #[serde(rename = "secret_view")]
     SecretView,
     #[serde(rename = "secret_rotate")]
@@ -96,11 +104,15 @@ impl std::fmt::Display for EventActions {
         match self {
             Self::Login => write!(f, "login"),
             Self::LoginFailed => write!(f, "login_failed"),
+            Self::LoginBlocked => write!(f, "login_blocked"),
             Self::Logout => write!(f, "logout"),
+            Self::UserCreated => write!(f, "user_created"),
             Self::UserWrite => write!(f, "user_write"),
             Self::UserOffboarded => write!(f, "user_offboarded"),
             Self::SuspiciousRequest => write!(f, "suspicious_request"),
             Self::PasswordSet => write!(f, "password_set"),
+            Self::MfaDeviceCreated => write!(f, "mfa_device_created"),
+            Self::MfaDeviceDeleted => write!(f, "mfa_device_deleted"),
             Self::SecretView => write!(f, "secret_view"),
             Self::SecretRotate => write!(f, "secret_rotate"),
             Self::InvitationUsed => write!(f, "invitation_used"),

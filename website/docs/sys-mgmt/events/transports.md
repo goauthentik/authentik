@@ -24,6 +24,17 @@ Select this transport to send event notifications to an email address. By defaul
 
 To edit the email address used by the transport, update the global email configuration from your installation method.
 
+Use **Email Template** to select the template that renders the email body. In addition to the default event notification template, the built-in **Security Notification** and **Account Welcome** templates (used by the default [user security notification rules](./user-security-notifications.md)) are available, as well as any [custom templates](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates).
+
+#### Email subject:ak-version[2026.8] {#email-subject}
+
+The subject of a notification email is determined as follows:
+
+1. If a subject template named after the body template exists — the body template's name with `.html` replaced by `_subject.txt`, for example `email/security_notification_subject.txt` for `email/security_notification.html` — it is rendered with the same context as the body and used as the subject. Custom templates can ship their own subject template next to the body template.
+2. Otherwise, a generic subject derived from the notification is used.
+
+The value of **Email Subject Prefix** is prepended to the subject.
+
 ### Webhook (generic)
 
 This transport sends a POST request to the configured URL. The default body includes the notification body, severity, notification recipient, and triggering event user.

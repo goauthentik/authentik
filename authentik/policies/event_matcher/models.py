@@ -107,7 +107,6 @@ class EventMatcherPolicy(Policy):
             def get_fields(self, model):
                 return EventViewSet().get_ql_fields()
 
-        print(Event.objects.filter(pk=event.pk))
         qs = apply_search(Event.objects.filter(pk=event.pk), self.query, InlineSchema)
         return PolicyResult(qs.exists(), "Query matched.")
 

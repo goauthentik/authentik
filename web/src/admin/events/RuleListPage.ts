@@ -85,9 +85,18 @@ export class RuleListPage extends TablePage<NotificationRule> {
     }
 
     protected override row(item: NotificationRule): SlottedTemplateResult[] {
-        const enabled = !!item.destinationGroupObj || item.destinationEventUser;
+        const hasRecipients =
+            !!item.destinationGroupObj || item.destinationEventUser || item.destinationEventSubject;
         return [
-            html`<ak-status-label ?good=${enabled}></ak-status-label>`,
+            item.enabled
+                ? html`<ak-status-label
+                      ?good=${hasRecipients}
+                      type="warning"
+                      bad-label=${msg("No recipients", {
+                          id: "notification-rule.status.no-recipients",
+                      })}
+                  ></ak-status-label>`
+                : html`<ak-status-label .good=${false}></ak-status-label>`,
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
             html`${item.destinationGroupObj

@@ -7,7 +7,11 @@ sidebar_label: Expression Policies
 
 ## Send a welcome email to newly created users
 
-This expression policy sends a welcome email to a user when their account is created through an enrollment flow, the Admin interface, the API, or a source sync. Instead of creating an administrator notification, it uses [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) to email the new user directly.
+:::info
+authentik ships with a built-in welcome email as part of the default [user security notifications](./user-security-notifications.md): enable the `default-notify-user-welcome` notification rule to use it. Use the pattern below when you need more control than the built-in rule offers — for example, different content per user type, additional conditions, or a fully custom message.
+:::
+
+This expression policy sends a welcome email to a user when their account is created through an enrollment flow, the Admin interface, the API, or a blueprint. Instead of creating an administrator notification, it uses [`ak_send_email`](../../customize/policies/types/expression/reference.mdx) to email the new user directly. The policy matches the [`user_created`](./event-actions.md#user_created) event:ak-version[2026.8] and uses its context fields to skip service accounts and accounts that are bulk-imported by a source sync.
 
 ### Prerequisites
 
@@ -29,20 +33,24 @@ if not event:
     ak_logger.info("no event")
     return False
 
-if event.action != "model_created":
+if event.action != "user_created":
     ak_logger.info("event action does not match")
     return False
 
-model = event.context.get("model", {})
-model_app = model.get("app")
-model_name = model.get("model_name")
-
-if model_app != "authentik_core" or model_name != "user":
-    ak_logger.info("model does not match")
+# Only email regular accounts, not service accounts.
+if event.context.get("user_type") not in ("internal", "external"):
+    ak_logger.info("user type does not match")
     return False
 
-user_pk = model.get("pk")
-user = User.objects.filter(pk=user_pk).first()
+# Only email accounts that were deliberately created for someone — via the
+# Admin interface, the API, an enrollment flow, or a blueprint. Skip accounts
+# bulk-imported by a source sync.
+if event.context.get("origin") not in ("http", "blueprint"):
+    ak_logger.info("origin does not match")
+    return False
+
+subject = event.context.get("subject") or {}
+user = User.objects.filter(pk=subject.get("pk")).first()
 
 if not user:
     ak_logger.info("user not found")
@@ -72,7 +80,7 @@ The policy only runs when it is bound to a notification rule that triggers on th
 1. Navigate to **Events** > **Notification Rules**.
 2. Click **New Notification Rule**.
 3. Give the rule a name, such as `welcome-email`.
-4. Leave **Send notification to event user** disabled, leave **Destination group** empty, and do not select a notification transport.
+4. Leave **Send notification to event user** and **Send notification to affected user** disabled, leave **Destination group** empty, and do not select a notification transport.
 5. Click **Create Notification Rule**.
 6. In the list of notification rules, click the arrow next to the new rule to expand the rule details.
 7. Click **Create or bind...**. Under **Bind Existing...**, select **Bind an existing policy**.
@@ -80,7 +88,7 @@ The policy only runs when it is bound to a notification rule that triggers on th
 
 This pattern does not require a destination group or transport on the rule. As noted in [Notification Rules](./notifications.md#3-create-a-notification-rule-and-bind-it-to-the-policy), bound policies are executed even when no destination is selected. Because this policy returns `False`, authentik does not create a notification object. The email is sent entirely by the `ak_send_email` call inside the policy.
 
-Matching on `model_created` ensures that the email is only sent when the account is first created. Other changes to the user, such as a password reset, are recorded as `model_updated` and do not trigger this policy.
+The `user_created` event is only created when the account is first created, so later changes to the user do not re-trigger the policy. The event's `origin` context field records how the account was created, which the policy above uses to skip accounts imported by a source sync.
 
 To send a richer, branded message instead of plain text, replace the `body` argument with a `template` argument pointing to a [custom email template](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and pass any values the template needs through the `context` argument. See the [`ak_send_email` reference](../../customize/policies/types/expression/reference.mdx) for all available parameters.
 

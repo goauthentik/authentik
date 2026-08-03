@@ -35,7 +35,6 @@ def offboard_user(
     scheduling admin via `initiator`) — never to the offboarded user.
     """
     username = user.username
-    user_pk = user.pk
 
     revoke_user_access(user, sessions=revoke_sessions, tokens=revoke_tokens)
 
@@ -46,7 +45,7 @@ def offboard_user(
         offboarding_action=action,
         revoke_sessions=revoke_sessions,
         revoke_tokens=revoke_tokens,
-        user_pk=user_pk,
+        subject=user,
     )
     if request is not None:
         event.from_http(request, user=initiator)

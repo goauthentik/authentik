@@ -40361,11 +40361,15 @@ components:
       enum:
       - login
       - login_failed
+      - login_blocked
       - logout
+      - user_created
       - user_write
       - user_offboarded
       - suspicious_request
       - password_set
+      - mfa_device_created
+      - mfa_device_deleted
       - secret_view
       - secret_rotate
       - invitation_used
@@ -45398,6 +45402,9 @@ components:
           title: Pbm uuid
         name:
           type: string
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
@@ -45424,9 +45431,13 @@ components:
           nullable: true
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
       required:
       - destination_group_obj
       - name
@@ -45438,6 +45449,9 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
@@ -45459,9 +45473,13 @@ components:
             and shown to. If left empty, Notification won't ben sent.
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
       required:
       - name
     NotificationTransport:
@@ -51641,6 +51659,9 @@ components:
         name:
           type: string
           minLength: 1
+        enabled:
+          type: boolean
+          description: When disabled, this rule will not create any notifications.
         transports:
           type: array
           items:
@@ -51662,9 +51683,13 @@ components:
             and shown to. If left empty, Notification won't ben sent.
         destination_event_user:
           type: boolean
-          description: When enabled, notification will be sent to user the user that
-            triggered the event.When destination_group is configured, notification
-            is sent to both.
+          description: When enabled, notification will be sent to the user that triggered
+            the event.When destination_group is configured, notification is sent to
+            both.
+        destination_event_subject:
+          type: boolean
+          description: When enabled, notification will be sent to the user affected
+            by the event.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer

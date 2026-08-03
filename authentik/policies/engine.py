@@ -171,6 +171,13 @@ class _PolicyEngineBase:
         result = PolicyResult(passing)
         result.source_results = all_results
         result.messages = tuple(y for x in all_results for y in x.messages)
+        if not passing:
+            result.reasons = frozenset(
+                reason
+                for x in all_results
+                if not x.passing
+                for reason in getattr(x, "reasons", frozenset())
+            )
         return result
 
 

@@ -1,0 +1,3 @@
+{% load i18n %}{% autoescape off %}
+{% trans "Welcome to authentik" %}
+{% endautoescape %}

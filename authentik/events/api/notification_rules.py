@@ -20,11 +20,13 @@ class NotificationRuleSerializer(ModelSerializer):
         fields = [
             "pk",
             "name",
+            "enabled",
             "transports",
             "severity",
             "destination_group",
             "destination_group_obj",
             "destination_event_user",
+            "destination_event_subject",
         ]
 
 
