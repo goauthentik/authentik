@@ -117,7 +117,7 @@ export default createDocusaurusConfig(
                 innerHTML: JSON.stringify({
                     "@context": "https://schema.org",
                     "@type": "WebSite",
-                    "name": "authentik Integrations",
+                    "name": "authentik",
                     "url": "https://integrations.goauthentik.io",
                 }),
             },
