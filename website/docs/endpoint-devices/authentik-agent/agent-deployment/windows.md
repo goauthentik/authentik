@@ -46,7 +46,11 @@ If you already have an enrollment token, skip to the [next section](#install-the
     - **Device group _(optional)_**: select a device access group for the device to be added to after completing enrollment
     - **Expiring _(optional)_**: set whether or not the enrollment token will expire
 5. Click **Create**.
+<<<<<<< HEAD
 6. _(Optional)_ Click the **Copy** icon in the **Actions** column to copy the enrollment token. This value will be required if [enabling a device for device compliance](#enable-device-compliance-and-local-device-login).
+=======
+6. _(Optional)_ Click the **Copy** icon in the **Actions** column. You need this value to [join the device to an authentik domain](#join-the-device-to-an-authentik-domain).
+>>>>>>> 0ecbe0f06 (website/docs: document API scope and domain join required by the authentik Agent (#24599))
 
 ## Install the authentik Agent on Windows
 
@@ -64,9 +68,9 @@ It's recommended to deploy the Agent via [MDM or automation tools](./automated.m
 
     You should see a response that starts with: `authentik CLI v<version_number>`
 
-## Enable device compliance and local device login
+## Join the device to an authentik domain
 
-To enable [device compliance features](../../device-compliance/index.mdx), you must join the device to an authentik domain.
+Joining the device to an authentik domain is what enrolls it with your authentik deployment and issues it a device token. This step is required for [device compliance features](../../device-compliance/index.mdx) and for local device login.
 
 1. Open a Terminal session as Administrator and run the following command:
 
