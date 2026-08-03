@@ -109,9 +109,15 @@ class SourceFlowManager:
         self.user_properties = self.mapper.build_object_properties(
             object_type=User, request=request, user=None, **self.user_info
         )
+        # Build the group property mapping manager once and reuse it for every group.
+        # Letting build_object_properties() create it per group re-evaluates the mapping
+        # queryset (including select_subclasses()) and recompiles every expression for
+        # each group, which makes group sync scale poorly for users with many groups.
+        groups_manager = self.mapper.get_manager(Group, ["group_id", *self.user_info.keys()])
         self.groups_properties = {
             group_id: self.mapper.build_object_properties(
                 object_type=Group,
+                manager=groups_manager,
                 request=request,
                 user=None,
                 group_id=group_id,
