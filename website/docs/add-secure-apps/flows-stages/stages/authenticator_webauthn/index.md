@@ -19,7 +19,6 @@ Enrolled authenticators can later be used with the [Authenticator Validation sta
 - **User verification**: require, prefer, or discourage built-in user verification during registration.
 - **Resident key requirement**: control whether the authenticator should create a discoverable credential.
 - **Authenticator attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
-- **Prevent duplicate devices**: reject registration of the same authenticator more than once.
 - **Hints**: browser hints that influence which authenticator is preferred during enrollment.
 - **Device type restrictions**: limit enrollment to specific WebAuthn device types.
 - **Maximum attempts**: maximum number of failed registration attempts before the stage denies access. A value of `0` disables the limit.
@@ -76,9 +75,9 @@ For backward compatibility with older browsers that do not support hints, authen
 - Only **Client device** hints: `platform`
 - If both client-device and cross-platform hints are selected, no value is inferred
 
-### Duplicate and restricted devices
+### Duplicate devices
 
-**Prevent duplicate devices** can only be enforced when the authenticator exposes a unique attestation certificate.
+The **Prevent duplicate devices** option was removed in 2026.8. It compared attestation certificates, which manufacturers share across entire production batches, so it rejected legitimate enrollments of a second security key. No configuration replaces it, and no action is needed when upgrading.
 
 ### Device type restrictions
 

@@ -33,6 +33,8 @@ const sourceTargetModule: LocaleModule = {
 export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleModule>> = {
     [SourceLanguageTag]: () => Promise.resolve(sourceTargetModule),
     [PseudoLanguageTag]: () => import("#locales/en-XA"),
+    "ar": () => import("#locales/ar"),
+    "bg-BG": () => import("#locales/bg-BG"),
     "cs-CZ": () => import("#locales/cs-CZ"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
@@ -41,6 +43,7 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     "it-IT": () => import("#locales/it-IT"),
     "ja-JP": () => import("#locales/ja-JP"),
     "ko-KR": () => import("#locales/ko-KR"),
+    "nb-NO": () => import("#locales/nb-NO"),
     "nl-NL": () => import("#locales/nl-NL"),
     "pl-PL": () => import("#locales/pl-PL"),
     "pt-BR": () => import("#locales/pt-BR"),

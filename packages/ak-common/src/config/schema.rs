@@ -1,10 +1,11 @@
-use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize};
+use std::{collections::HashMap, net::SocketAddr, num::NonZeroUsize, path::PathBuf};
 
 use ipnet::IpNet;
 use serde::{Deserialize, Deserializer, Serialize, de::Error as _};
 
-pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 4] = [
+pub(super) const KEYS_TO_PARSE_AS_LIST: [&str; 5] = [
     "listen.http",
+    "listen.https",
     "listen.metrics",
     "listen.trusted_proxy_cidrs",
     "log.http_headers",
@@ -145,8 +146,13 @@ pub struct Config {
 
     pub worker: WorkerConfig,
 
+    pub storage: StorageConfig,
+
+    pub outposts: OutpostConfig,
+
     // Outpost specific fields
     pub host: Option<String>,
+    pub host_browser: Option<String>,
     pub token: Option<String>,
     #[serde(default, deserialize_with = "deserialize_optional_str_or_bool")]
     pub insecure: Option<bool>,
@@ -177,8 +183,9 @@ pub struct PostgreSQLConfig {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListenConfig {
     pub http: Vec<SocketAddr>,
+    pub https: Vec<SocketAddr>,
     pub metrics: Vec<SocketAddr>,
-    pub debug_tokio: SocketAddr,
+    pub debug_tokio: Option<SocketAddr>,
     pub trusted_proxy_cidrs: Vec<IpNet>,
 }
 
@@ -224,4 +231,33 @@ pub struct WebConfig {
 pub struct WorkerConfig {
     #[serde(deserialize_with = "deserialize_str_or_num")]
     pub processes: NonZeroUsize,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageConfig {
+    pub backend: String,
+    pub file: StorageFileConfig,
+    pub media: Option<StorageOverrideConfig>,
+    pub reports: Option<StorageOverrideConfig>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StorageFileConfig {
+    pub path: PathBuf,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageOverrideConfig {
+    pub backend: Option<String>,
+    pub file: Option<StorageFileOverrideConfig>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct StorageFileOverrideConfig {
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct OutpostConfig {
+    pub disable_embedded_outpost: bool,
 }

@@ -70,14 +70,6 @@
   <source>Stop impersonation</source>
   <target>停止模拟身份</target>
 </trans-unit>
-<trans-unit id="s6abff64e7ff7fde9">
-  <source>Avatar image</source>
-  <target>头像图片</target>
-</trans-unit>
-<trans-unit id="s7cfe12cd14df9950">
-  <source>Sign out</source>
-  <target>注销</target>
-</trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
   <target>管理员</target>
@@ -439,7 +431,7 @@
 </trans-unit>
 <trans-unit id="sa266303caf1bd27f">
   <source>Email sent</source>
-  <target>已发送电子邮件</target>
+  <target>邮件已发送</target>
 </trans-unit>
 <trans-unit id="s6c410fedda2a575f">
   <source>Update available</source>
@@ -1354,12 +1346,15 @@
 </trans-unit>
 <trans-unit id="s030ac0829bb50a49">
   <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
+  <target>政策 <x id="0" equiv-text="${item.policyObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="s2a64d2dca3da9b0e">
   <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
+  <target>组 <x id="0" equiv-text="${item.groupObj?.name}"/></target>
 </trans-unit>
 <trans-unit id="se5dc026819a32ff8">
   <source>User <x id="0" equiv-text="${item.userObj?.name || item.userObj?.username}"/></source>
+  <target>用户 <x id="0" equiv-text="${item.userObj?.name || item.userObj?.username}"/></target>
 </trans-unit>
 <trans-unit id="sc387b20e6d629087">
   <source>Configure Policy/User/Group Bindings</source>
@@ -1791,6 +1786,7 @@
 </trans-unit>
 <trans-unit id="s37018999e29f65b3">
   <source>URI to send logout notifications to when users log out. Required for OpenID Connect Logout functionality.</source>
+  <target>当用户注销时发送注销通知的URI。OpenID Connect注销功能需要此项。</target>
 </trans-unit>
 <trans-unit id="s2dcb6d1fd145b834">
   <source>Logout Method</source>
@@ -1798,6 +1794,7 @@
 </trans-unit>
 <trans-unit id="s2e527acc2a73da87">
   <source>The logout method determines how the logout URI is called — back-channel (server-to-server) or front-channel (browser iframe).</source>
+  <target>注销方法决定了注销 URI 的调用方式——后通道（服务器到服务器）或前通道（浏览器 iframe）。</target>
 </trans-unit>
 <trans-unit id="s55787f4dfcdce52b">
   <source>Signing Key</source>
@@ -2196,6 +2193,7 @@
 </trans-unit>
 <trans-unit id="s885ea9abccda30d8">
   <source>Front-channel (Native)</source>
+  <target> 前端通道（原生）</target>
 </trans-unit>
 <trans-unit id="s34cd8ae3ee828045">
   <source>Back-channel (POST)</source>
@@ -3149,10 +3147,6 @@
   <source>Last login</source>
   <target>上次登录</target>
 </trans-unit>
-<trans-unit id="s85a91d843c3eb4ad">
-  <source>Show inactive users</source>
-  <target>显示不活跃的用户</target>
-</trans-unit>
 <trans-unit id="s93d69514c94ad635">
   <source>Select users</source>
   <target>选择用户</target>
@@ -3184,10 +3178,6 @@
 <trans-unit id="sbf8a7af4eafa87f8">
   <source>Whether users added to this group will have superuser privileges.</source>
   <target>指定添加到该组的用户是否具有超级用户权限。</target>
-</trans-unit>
-<trans-unit id="s25bacc19d98b444e">
-  <source>Parent Group</source>
-  <target>父组</target>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
@@ -3574,7 +3564,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s9fd0516c9193c73e">
   <source>Type an optional email address...</source>
-  <target>输入邮箱地址...（可选）</target>
+  <target>输入可选的电子邮件地址...</target>
 </trans-unit>
 <trans-unit id="s4c5000e84bc2189a">
   <source>Whether this user is active and allowed to authenticate. Setting this to inactive can be used to temporarily disable a user without deleting their account.</source>
@@ -4188,6 +4178,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s8bf373b1a2bfefed">
   <source>Promoted</source>
+  <target>推广</target>
 </trans-unit>
 <trans-unit id="s4a600d70e4348810">
   <source>When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.</source>
@@ -4932,10 +4923,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source>Property Mapping(s)</source>
   <target>属性映射</target>
 </trans-unit>
-<trans-unit id="sc39fb3ff3753d5ab">
-  <source>Hide managed mappings</source>
-  <target>隐藏管理映射</target>
-</trans-unit>
 <trans-unit id="s7468e87263dfff7e">
   <source>Identifier</source>
   <target>标识符</target>
@@ -5375,6 +5362,7 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s547b687213f48489">
   <source>Update <x id="0" equiv-text="${formatUserDisplayName(user)}"/>'s password</source>
+  <target>更新<x id="0" equiv-text="${formatUserDisplayName(user)}"/>的密码</target>
 </trans-unit>
 <trans-unit id="sce8d867ca5f35304">
   <source>Set password</source>
@@ -5455,10 +5443,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sd65f96914ccbeb76">
   <source>User Search</source>
   <target>搜索用户</target>
-</trans-unit>
-<trans-unit id="s7c6c86d9a97ed706">
-  <source>Show deactivated users</source>
-  <target>显示未激活的用户</target>
 </trans-unit>
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
@@ -7441,6 +7425,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1da3499258024860">
   <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${item.buildHash.substring(0, 8)}"/>)</source>
+  <target><x id="0" equiv-text="${versionString}"/>(构建<x id="1" equiv-text="${item.buildHash.substring(0, 8)}"/>)</target>
 </trans-unit>
 <trans-unit id="s001fd928369d4ddc">
   <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
@@ -7961,10 +7946,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Overall license status</source>
   <target>总体许可证状态</target>
 </trans-unit>
-<trans-unit id="s087d6f07b52b30ec">
-  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
-  <target><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</target>
-</trans-unit>
 <trans-unit id="s2e109263b73c12d5">
   <source>Licenses</source>
   <target>许可证</target>
@@ -8363,6 +8344,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="seb6ab868740e4e36">
   <source>Continue with <x id="0" equiv-text="${name}"/></source>
+  <target>继续<x id="0" equiv-text="${name}"/></target>
 </trans-unit>
 <trans-unit id="sc4eedb434536bdb4">
   <source>Need an account?</source>
@@ -9169,15 +9151,13 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Add new role</source>
   <target>添加新角色</target>
 </trans-unit>
-<trans-unit id="s3b4ad8abf4f08c35">
-  <source>Hide managed roles</source>
-  <target>隐藏管理角色</target>
-</trans-unit>
 <trans-unit id="s8aa73079812f56b2">
   <source>Refresh other flow tabs upon authentication</source>
+  <target>认证后刷新其他流程标签页</target>
 </trans-unit>
 <trans-unit id="s696386b762cd516c">
   <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
+  <target>启用后，会话中的其他流程标签将在成功认证后刷新。</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
@@ -9229,6 +9209,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb541f02499d73b4e">
   <source>Outgoing syncs will not be triggered.</source>
+  <target>不会触发出站同步。</target>
 </trans-unit>
 <trans-unit id="s967b3abf2608649a">
   <source>Immediate</source>
@@ -9236,6 +9217,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sba0b0ee7c8b8f04a">
   <source>Outgoing syncs will be triggered immediately for each object that is updated. This can create many background tasks and is therefore not recommended</source>
+  <target>对于每个更新的对象，将立即触发传出同步。这可能会创建许多后台任务，因此不推荐使用</target>
 </trans-unit>
 <trans-unit id="sd3dfc2a1c3647e77">
   <source>Deferred until end</source>
@@ -9243,9 +9225,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="secd492de6e1ae305">
   <source>Outgoing syncs will be triggered at the end of the source synchronization.</source>
+  <target>出站同步将在源同步结束时触发。</target>
 </trans-unit>
 <trans-unit id="s0c476074a4fc4d95">
   <source>Outgoing sync trigger mode</source>
+  <target>出站同步触发模式</target>
 </trans-unit>
 <trans-unit id="s4bb6f209647072f4">
   <source>Successfully connected source</source>
@@ -9595,9 +9579,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6173e24ed3ba956e">
   <source>Successfully updated Fleet connector.</source>
+  <target>成功更新了Fleet连接器。</target>
 </trans-unit>
 <trans-unit id="sc9b84fdc2119ed1f">
   <source>Successfully created Fleet connector.</source>
+  <target>成功创建了Fleet连接器。</target>
 </trans-unit>
 <trans-unit id="sc8a067f02f4cf520">
   <source>Fleet settings</source>
@@ -9613,9 +9599,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0770384b6d1e7075">
   <source>When enabled, users detected by Fleet will be mapped in authentik, granting them access to the device.</source>
+  <target>启用后，Fleet检测到的用户将在authentik中映射，从而获得设备访问权限。</target>
 </trans-unit>
 <trans-unit id="s140417fe6bad13ab">
   <source>Map teams to device access group</source>
+  <target>将团队映射到设备访问组</target>
 </trans-unit>
 <trans-unit id="sa8383f7f7ff1a62e">
   <source>When enabled, Fleet teams will be mapped to Device access groups. Missing device access groups are automatically created. Devices assigned to a different group are not re-assigned</source>
@@ -9631,6 +9619,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5f404525692ee652">
   <source>You can select from popular providers with preset configurations or choose a custom setup to specify your own endpoints and keys.</source>
+  <target>您可以从预设配置的流行提供商中选择，或选择自定义设置来指定您自己的端点和密钥。</target>
 </trans-unit>
 <trans-unit id="sb275cc802634f93d">
   <source>Paste your CAPTCHA public key...</source>
@@ -9644,12 +9633,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s896c7fc0f9277a74">
   <source>Stage Name</source>
+  <target>阶段名称</target>
 </trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
+  <target>输入阶段名称....</target>
 </trans-unit>
 <trans-unit id="sdd8bef43fcac336d">
   <source>The unique name used internally to identify the stage.</source>
+  <target>用于内部标识阶段的唯一名称。</target>
 </trans-unit>
 <trans-unit id="captcha.providers.recaptcha-v2">
   <source>Google reCAPTCHA v2</source>
@@ -9688,6 +9680,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3fdf499bd9e14a92">
   <source>Type an email address...</source>
+  <target>输入电子邮件地址...</target>
 </trans-unit>
 <trans-unit id="captcha.public-key.description">
   <source>The public key is used by authentik to render the CAPTCHA widget.</source>
@@ -9718,9 +9711,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3a482e34c3713e41">
   <source><x id="0" equiv-text="${selectedTotal}"/> item selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> 项已选择。</target>
 </trans-unit>
 <trans-unit id="s726a7342e18dc660">
   <source><x id="0" equiv-text="${selectedTotal}"/> items selected.</source>
+  <target><x id="0" equiv-text="${selectedTotal}"/> 项已选择。</target>
 </trans-unit>
 <trans-unit id="s403a360d48a11d5f">
   <source><x id="0" equiv-text="${selectedCount}"/> item marked to remove.</source>
@@ -9761,6 +9756,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s254696510e45f3bb">
   <source>No custom attributes defined.</source>
+  <target>未定义自定义属性。</target>
 </trans-unit>
 <trans-unit id="sb94beab52540d2b7">
   <source>The CAPTCHA challenge failed to load.</source>
@@ -9797,6 +9793,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e318e4a2934eef9">
   <source>Successfully queued email.</source>
+  <target>邮件已成功加入队列。</target>
 </trans-unit>
 <trans-unit id="s9121335709cfac7a">
   <source>Token duration</source>
@@ -9810,12 +9807,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="clipboard.write.success.generic">
   <source>Copied to clipboard.</source>
+  <target>已复制到剪贴板。</target>
 </trans-unit>
 <trans-unit id="clipboard.write.failure.description">
   <source>Clipboard not available. Please copy the value manually.</source>
+  <target>剪贴板不可用。请手动复制值。</target>
 </trans-unit>
 <trans-unit id="se7385f882e2b8b7d">
   <source>An unknown error occurred while retrieving the token.</source>
+  <target>在尝试获取令牌时发生了未知错误。</target>
 </trans-unit>
 <trans-unit id="totp.config">
   <source>TOTP Config</source>
@@ -9831,6 +9831,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2157b29f47940266">
   <source>Type a unique identifier for this token...</source>
+  <target>为此令牌输入唯一标识符…</target>
 </trans-unit>
 <trans-unit id="s0950c703759a8746">
   <source>Type a description for this token...</source>
@@ -9855,21 +9856,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s304ca1e922bd3278">
   <source>Lifecycle Rules</source>
+  <target>生命周期规则</target>
 </trans-unit>
 <trans-unit id="scd223a9aac742fcf">
   <source>Lifecycle</source>
+  <target>生命周期</target>
 </trans-unit>
 <trans-unit id="sa9ebf2b039449d6c">
   <source>Object Lifecycle Management is in preview.</source>
+  <target>对象生命周期管理处于预览阶段。</target>
 </trans-unit>
 <trans-unit id="s2b858c5186f8f2fd">
   <source>Select a group...</source>
+  <target>选择一个组...</target>
 </trans-unit>
 <trans-unit id="s5e0fb3d421bb57cc">
   <source>Select a role...</source>
+  <target>选择一个角色...</target>
 </trans-unit>
 <trans-unit id="s8e5d1a84bd559a27">
   <source>Select an object...</source>
+  <target>选择一个对象。</target>
 </trans-unit>
 <trans-unit id="s69e44328a5b45aa2">
   <source>Rule Name</source>
@@ -9877,6 +9884,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se319064a2f20deba">
   <source>Type a name for this lifecycle rule...</source>
+  <target>为此生命周期规则输入一个名称…</target>
 </trans-unit>
 <trans-unit id="sb46d3613edb66558">
   <source>Interval</source>
@@ -9926,12 +9934,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s78e31a199ca08cd9">
   <source>Object Lifecycle Rules</source>
+  <target>对象生命周期规则</target>
 </trans-unit>
 <trans-unit id="s24cc4e5aa6446401">
   <source>Schedule periodic reviews for objects in authentik.</source>
 </trans-unit>
 <trans-unit id="s468f705986fff045">
   <source>Lifecycle rule(s)</source>
+  <target>生命周期规则</target>
 </trans-unit>
 <trans-unit id="s9279704dfc98cdf9">
   <source>No reviews yet.</source>
@@ -9983,9 +9993,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f3437809d931336">
   <source>Reviews</source>
+  <target>评价</target>
 </trans-unit>
 <trans-unit id="sc33f0df01dc32300">
   <source>Review Notes</source>
+  <target>审阅笔记</target>
 </trans-unit>
 <trans-unit id="s86316abdd9054708">
   <source>Type optional notes to include in this review...</source>
@@ -10001,15 +10013,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sce6a3502c71baa60">
   <source>Opened</source>
+  <target>已开启</target>
 </trans-unit>
 <trans-unit id="sea8d30456c79058a">
   <source>Grace period ends</source>
+  <target>宽限期结束</target>
 </trans-unit>
 <trans-unit id="se6203ef69ff63548">
   <source>Pending review</source>
+  <target>待审核</target>
 </trans-unit>
 <trans-unit id="sb89d8d8bc0c08e98">
   <source>Reviewed</source>
+  <target>已审核</target>
 </trans-unit>
 <trans-unit id="sc68080ce046320cb">
   <source>Overdue</source>
@@ -10017,6 +10033,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa30c4d3b566b6b1a">
   <source>Canceled</source>
+  <target>已取消</target>
 </trans-unit>
 <trans-unit id="s804ab712b1add3d3">
   <source>An unknown error occurred while submitting the form.</source>
@@ -10038,6 +10055,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s776d93092ad9ce90">
   <source>Review initiated</source>
+  <target>审核已启动</target>
 </trans-unit>
 <trans-unit id="sad46bcad1a343b51">
   <source>Review overdue</source>
@@ -10067,12 +10085,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="safcbc1ba006eba57">
   <source>Please enter at least one email address</source>
+  <target>请输入至少一个电子邮件地址</target>
 </trans-unit>
 <trans-unit id="s0f957a7b0725a6dd">
   <source>Invitation emails queued for sending to <x id="0" equiv-text="${addresses.length}"/> recipient(s). Check the System Tasks for more information.</source>
+  <target>邀请邮件已排队等待发送给收件人<x id="0" equiv-text="${addresses.length}"/>。请查看系统任务以获取更多信息。</target>
 </trans-unit>
 <trans-unit id="s27c34847aec88ec6">
   <source>Failed to queue invitation emails: <x id="0" equiv-text="${error}"/></source>
+  <target>无法将邀请邮件加入队列：<x id="0" equiv-text="${error}"/></target>
 </trans-unit>
 <trans-unit id="s8b97ea84af17c029">
   <source>Never</source>
@@ -10080,9 +10101,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6e0b6a18cc59fd56">
   <source>No flow set</source>
+  <target>未设置流程</target>
 </trans-unit>
 <trans-unit id="sac428aa7c586a35a">
   <source>One email address per line, or comma/semicolon separated. Each recipient will receive a separate email with an invitation link.</source>
+  <target>每行一个电子邮件地址，或用逗号/分号分隔。每个收件人将收到一封带有邀请链接的独立电子邮件。</target>
 </trans-unit>
 <trans-unit id="s090f2d07b5a6aee3">
   <source>CC</source>
@@ -10098,6 +10121,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7c37f1acb9f97ea3">
   <source>Select the email template to use for sending invitations.</source>
+  <target>选择用于发送邀请的电子邮件模板。</target>
 </trans-unit>
 <trans-unit id="sdd2ea73c24b40d5d">
   <source>Site footer</source>
@@ -10114,9 +10138,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd5d2b94a1ccba1a9">
   <source>Log in to continue to <x id="0" equiv-text="${prelude}"/>.</source>
+  <target>登录以继续访问<x id="0" equiv-text="${prelude}"/></target>
 </trans-unit>
 <trans-unit id="s2ffabdbe85465503">
   <source>Continuous Login</source>
+  <target>持续登录</target>
 </trans-unit>
 <trans-unit id="s4677fce6df625313">
   <source>Successfully updated Google Chrome connector.</source>
@@ -10184,32 +10210,32 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc0cb70cfd086d048">
   <source>Server validation of credential failed</source>
 </trans-unit>
-<trans-unit id="s1197b841263ebbcf">
-  <source>Require policies for application access</source>
-</trans-unit>
-<trans-unit id="s16d1cddf9cbccdbd">
-  <source>Configure if applications without any policy/group/user bindings should be accessible to any user.</source>
-</trans-unit>
 <trans-unit id="s80490368baf07290">
   <source>Upon successful authentication, re-start authentication in other open tabs.</source>
 </trans-unit>
 <trans-unit id="sb5db04b10b00f6fd">
   <source>About authentik</source>
+  <target>关于 authentik</target>
 </trans-unit>
 <trans-unit id="sb02534c5edb664cc">
   <source>Create a new application...</source>
+  <target>创建一个新应用程序…</target>
 </trans-unit>
 <trans-unit id="s292c8dcdd327ec74">
   <source>Username or email address...</source>
+  <target>用户名或电子邮件地址...</target>
 </trans-unit>
 <trans-unit id="sa16713eb1eae6a97">
   <source>Type an optional publisher name...</source>
+  <target>输入可选的发布者名称…</target>
 </trans-unit>
 <trans-unit id="s1c030a6ae5c6f468">
   <source>Type an optional description...</source>
+  <target>输入可选的描述…</target>
 </trans-unit>
 <trans-unit id="s0cb0cee97f520223">
   <source>New Application</source>
+  <target>新应用程序</target>
 </trans-unit>
 <trans-unit id="s41d4dd186ab1e7bc">
   <source>Opens the new application wizard, which will guide you through creating a new application with an existing provider.</source>
@@ -10219,12 +10245,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f1579146577efc4">
   <source>Clear Cache</source>
+  <target>清除缓存</target>
 </trans-unit>
 <trans-unit id="sea15e8e7527354c0">
   <source>Search for a provider...</source>
+  <target>搜索提供程序...</target>
 </trans-unit>
 <trans-unit id="sdfe21d69a2da53f4">
   <source>e.g. my-application</source>
+  <target>例如：我的应用程序</target>
 </trans-unit>
 <trans-unit id="sfafe0cba4a679e37">
   <source>Select Groups</source>
@@ -10237,9 +10266,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s16b0129acc7b8890">
   <source>Add Existing User</source>
+  <target>添加已有用户</target>
 </trans-unit>
 <trans-unit id="s28d2576a2c70d761">
   <source>Add New User</source>
+  <target>新建用户</target>
 </trans-unit>
 <trans-unit id="s8f0c6a3cf392a085">
   <source>New Group User...</source>
@@ -10258,18 +10289,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf071697e794cca20">
   <source>Role Name</source>
+  <target>角色名称</target>
 </trans-unit>
 <trans-unit id="s84f375c5cd7a9d00">
   <source>Type a name for this role...</source>
+  <target>输入角色名称</target>
 </trans-unit>
 <trans-unit id="s7ed2bed74a846fd0">
   <source>This name will be used to identify the role within authentik.</source>
+  <target>这个名称将用于在authentik内标识此角色。</target>
 </trans-unit>
 <trans-unit id="s99059109387c0163">
   <source>Service Account</source>
+  <target>服务账户</target>
 </trans-unit>
 <trans-unit id="s807682aafab5ce30">
   <source>Service Accounts</source>
+  <target>服务账户</target>
 </trans-unit>
 <trans-unit id="sd518c86e47fc6f89">
   <source>Impersonate User</source>
@@ -10279,6 +10315,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7db9a3a41143c7e4">
   <source>Set Password</source>
+  <target>设置密码</target>
 </trans-unit>
 <trans-unit id="sd29ddaadcc30d22c">
   <source>User "<x id="0" equiv-text="${query}"/>"</source>
@@ -10318,6 +10355,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="command-palette.prefix.jump-to">
   <source>Jump to</source>
+  <target>跳转到</target>
 </trans-unit>
 <trans-unit id="command-palette.prefix.search-for">
   <source>Search for</source>
@@ -10388,6 +10426,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s934c5d00f93dda66">
   <source>Resend Email</source>
+  <target>重发邮件</target>
 </trans-unit>
 <trans-unit id="command-palette-trigger-label">
   <source>Open Command Palette</source>
@@ -10403,6 +10442,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="command-palette-placeholder-user-search">
   <source>Type a username or email address...</source>
+  <target>输入用户名或电子邮件地址...</target>
   <note from="lit-localize">Placeholder for the user search command in the admin interface</note>
 </trans-unit>
 <trans-unit id="model-form.headline">
@@ -10418,9 +10458,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5cfb19cfce5f69b1">
   <source>Outpost</source>
+  <target>前哨</target>
 </trans-unit>
 <trans-unit id="s67910ccb738e5fa5">
   <source>No instances running.</source>
+  <target>没有正在运行的实例。</target>
 </trans-unit>
 <trans-unit id="s06763f4bb18a1897">
   <source>New Outpost</source>
@@ -10457,12 +10499,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s03b42cb6a95eddfb">
   <source>Authorizations (1 month)</source>
-</trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
 </trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
@@ -10514,6 +10550,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s399592d27c549c96">
   <source>Valid redirect URIs after a successful authorization or invalidation flow. Also specify any origins here for Implicit flows. Use the type dropdown to designate URIs for authorization or post-logout redirection.</source>
+  <target>成功授权或失效流程后的有效重定向URI。同时在此处为隐式流指定任何来源。使用类型下拉菜单为授权或注销后重定向指定URI。</target>
 </trans-unit>
 <trans-unit id="s272aa39ee16e3fe7">
   <source>If no explicit authorization redirect URIs are specified, the first successfully used authorization redirect URI will be saved.</source>
@@ -10967,6 +11004,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1dcda4e80fd2fc17">
   <source>Select email stage...</source>
+  <target>选择邮箱阶段...</target>
 </trans-unit>
 <trans-unit id="clipboard.progress.message.entity">
   <source>Copying <x id="0" equiv-text="${entityLabel}"/>...</source>
@@ -11132,30 +11170,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sca7f18bb58977958">
   <source>Bind an existing policy</source>
+  <target>绑定一个已有策略</target>
 </trans-unit>
 <trans-unit id="sad707c5789636382">
   <source>Bind an existing policy.</source>
+  <target>绑定一个已有策略。</target>
 </trans-unit>
 <trans-unit id="s2b9ad6a5bc47ea5d">
   <source>Create or bind...</source>
+  <target>创建或绑定…</target>
 </trans-unit>
 <trans-unit id="s0bc6ba00a01970db">
   <source>Select the type of stage you want to create.</source>
+  <target>选择你想要创建的阶段类型。</target>
 </trans-unit>
 <trans-unit id="s17740986a2eb4322">
   <source>Existing Stage</source>
+  <target>已有的阶段</target>
 </trans-unit>
 <trans-unit id="saf2e473d40ad27c5">
   <source>Bind an existing stage to this flow.</source>
+  <target>绑定已有阶段到此流程。</target>
 </trans-unit>
 <trans-unit id="s2483be7a0f8aa9aa">
   <source>Deactivating...</source>
+  <target>停用中…</target>
 </trans-unit>
 <trans-unit id="s29c097ef085ee657">
   <source>Activating...</source>
+  <target>激活中…</target>
 </trans-unit>
 <trans-unit id="s88e4a2cee2cad378">
   <source>Unknown user</source>
+  <target>未知用户</target>
 </trans-unit>
 <trans-unit id="form.headline.deactivation">
   <source>Review <x id="0" equiv-text="${this.verboseName}"/> Deactivation</source>
@@ -11165,9 +11212,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa2ddb53b55f7432b">
   <source>Objects</source>
+  <target>对象</target>
 </trans-unit>
 <trans-unit id="s35fc18677970b01f">
   <source>Related object</source>
+  <target>相关对象</target>
 </trans-unit>
 <trans-unit id="used-by.consequence.cascade-many">
   <source>Connection will be deleted</source>
@@ -11207,28 +11256,35 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scdb4a00d50beb88a">
   <source>Consequence</source>
+  <target>后果</target>
 </trans-unit>
 <trans-unit id="form-group.default-label">
   <source>Details</source>
+  <target>详细信息</target>
 </trans-unit>
 <trans-unit id="used-by.consequence.cascade">
   <source><x id="0" equiv-text="${relationName}"/> will be deleted</source>
+  <target><x id="0" equiv-text="${relationName}"/>项将被删除</target>
   <note from="lit-localize">Consequence of deletion, when the related object will also be deleted. The name of the related object will be included, in the format 'Related object will be deleted'.</note>
 </trans-unit>
 <trans-unit id="user.display.unknownUser">
   <source>Unknown user</source>
+  <target>未知用户</target>
   <note from="lit-localize">Placeholder for an unknown user, in the format 'Unknown user'.</note>
 </trans-unit>
 <trans-unit id="usedBy.count.other">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with <x id="1" equiv-text="${usedByList.length}"/> objects.</source>
+  <target><x id="0" equiv-text="${verboseName}"/>与<x id="1" equiv-text="${usedByList.length}"/>个对象关联。</target>
   <note from="lit-localize">Plural: N objects use this entity.</note>
 </trans-unit>
 <trans-unit id="usedBy.count.one">
   <source><x id="0" equiv-text="${verboseName}"/> is associated with one object.</source>
+  <target><x id="0" equiv-text="${verboseName}"/>与1个对象关联。</target>
   <note from="lit-localize">Singular: exactly one object uses this entity.</note>
 </trans-unit>
 <trans-unit id="table.empty">
   <source>No <x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/> found.</source>
+  <target>未找到<x id="0" equiv-text="${verboseNamePlural.toLocaleLowerCase(this.activeLanguageTag)}"/>。</target>
   <note from="lit-localize">The message to show when a table has no content. The placeholder {0} is replaced with the pluralized name of the type of entity being shown in the table.</note>
 </trans-unit>
 <trans-unit id="user.display.nameInParens">
@@ -11241,31 +11297,40 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="usedBy.count.zero">
   <source><x id="0" equiv-text="${verboseName}"/> is not associated with any objects.</source>
+  <target><x id="0" equiv-text="${verboseName}"/>未与任何对象关联。</target>
   <note from="lit-localize">Zero: no objects use this entity.</note>
 </trans-unit>
 <trans-unit id="s78a13f8f08d3a317">
   <source>Authorization Code</source>
+  <target>授权码</target>
 </trans-unit>
 <trans-unit id="s9765a1c7821ec626">
   <source>Implicit</source>
+  <target>隐式</target>
 </trans-unit>
 <trans-unit id="s6032372e5812d743">
   <source>Hybrid</source>
+  <target>混合</target>
 </trans-unit>
 <trans-unit id="s4c21579d264ff019">
   <source>Refresh token</source>
+  <target>刷新令牌</target>
 </trans-unit>
 <trans-unit id="sec04243bf971ba5c">
   <source>Client credentials</source>
+  <target>客户端凭据</target>
 </trans-unit>
 <trans-unit id="sf6625f1c093feb17">
   <source>Device-code</source>
+  <target>设备代码</target>
 </trans-unit>
 <trans-unit id="sccb6f4a3d1fb9434">
   <source>Grant Types</source>
+  <target>授权类型</target>
 </trans-unit>
 <trans-unit id="s89c63fb4a8cb6d2b">
   <source>Grant types this provider may use.</source>
+  <target>此提供者可能使用的授权类型。</target>
 </trans-unit>
 <trans-unit id="s86a9472dc09ecf48">
   <source>vCenter</source>
@@ -11281,15 +11346,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa3a27a128ad87f31">
   <source>Passwords</source>
+  <target>密码</target>
 </trans-unit>
 <trans-unit id="s16d13ea527d7fe6b">
   <source>Setting</source>
+  <target>设置</target>
 </trans-unit>
 <trans-unit id="sfef81bb4077a56fd">
   <source>Type a new password...</source>
+  <target>输入新密码...</target>
 </trans-unit>
 <trans-unit id="sf9ec917e3e986bc1">
   <source>When enabled, your username will be remembered on this device for future logins.</source>
+  <target>启用后，此设备将记住您的用户名，以便将来登录。</target>
 </trans-unit>
 <trans-unit id="form.submitting.no-entity">
   <source><x id="0" equiv-text="${submittingVerb}"/>...</source>
@@ -11328,6 +11397,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sea74bf2b70c27113">
   <source>Rule</source>
+  <target>规则</target>
 </trans-unit>
 <trans-unit id="s5ba577d0cda2bad2">
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
@@ -11337,6 +11407,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
+  <target>停用用户</target>
 </trans-unit>
 <trans-unit id="s2abd586c2258eae4">
   <source>Deactivate the user account (set is_active to False).</source>
@@ -11349,12 +11420,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb144fbff5de59af3">
   <source>Delete sessions</source>
+  <target>删除会话</target>
 </trans-unit>
 <trans-unit id="s20fb386bfce5e225">
   <source>Delete all active sessions for the user.</source>
+  <target>删除此用户的全部活跃会话</target>
 </trans-unit>
 <trans-unit id="s6216c07f360073f7">
   <source>Revoke tokens</source>
+  <target>撤销令牌</target>
 </trans-unit>
 <trans-unit id="s334ebfb3605630b0">
   <source>Revoke all tokens for the user (API, app password, recovery, verification).</source>
@@ -11385,6 +11459,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1c23a9eed1a415df">
   <source>Warning: You are about to delete user <x id="0" equiv-text="${shouldShowWarning.username}"/>, but you are currently logged in as this user. Proceed at your own risk.</source>
+  <target>警告：您即将删除用户<x id="0" equiv-text="${shouldShowWarning.username}"/> ，但您当前以此用户身份登录。风险自负。</target>
 </trans-unit>
 <trans-unit id="s11064f3323dac957">
   <source>Account Lockdown</source>
@@ -11406,18 +11481,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdcd1a9744efdbd7e">
   <source>Choose Policy Type</source>
+  <target>选择策略类型</target>
 </trans-unit>
 <trans-unit id="saa5ed8446baaba70">
   <source>Negate Result</source>
 </trans-unit>
 <trans-unit id="s5387aa645962312a">
   <source>Failure Result</source>
+  <target>失败结果</target>
 </trans-unit>
 <trans-unit id="sea62de98f2e25e03">
   <source>Device Classes</source>
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
+  <target>用户字段</target>
 </trans-unit>
 <trans-unit id="s02b73793e5b4e1ba">
   <source>This flag is deprecated.</source>
@@ -11442,6 +11520,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="scc869d556216d748">
   <source>Invitation Details</source>
+  <target>邀请详情</target>
 </trans-unit>
 <trans-unit id="sf3b89a70e20af6c8">
   <source>Blueprint validation failed</source>
@@ -11457,6 +11536,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1358130ac327120">
   <source>If enabled, the stage will jump to the next stage when no invitation is given. If disabled, the flow will be cancelled without a valid invitation.</source>
+  <target>如果启用，则当没有发出邀请时，此阶段将跳转到下一阶段。如果禁用，则当没有有效邀请时，此流程将被取消。</target>
 </trans-unit>
 <trans-unit id="s00febd85a4889bb1">
   <source>Redirect the user to a static URL or another flow, optionally with all gathered context.</source>
@@ -11750,12 +11830,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7445550f2bfb2f2f">
   <source>No notes.</source>
 </trans-unit>
-<trans-unit id="s4891ccdb173626ba">
-  <source>Internal user usage (<x id="0" equiv-text="${currentInternalUsers}"/>/<x id="1" equiv-text="${licensedInternalUsers}"/>)</source>
-</trans-unit>
-<trans-unit id="scad748da438c56d4">
-  <source>External user usage (<x id="0" equiv-text="${currentExternalUsers}"/>/<x id="1" equiv-text="${licensedExternalUsers}"/>)</source>
-</trans-unit>
 <trans-unit id="s0502740c80377fe0">
   <source>Enrollment Flows</source>
 </trans-unit>
@@ -11809,6 +11883,644 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s19ccfb86a879e6b9">
   <source>Also known as Entity ID. Defaults to the Metadata URL.</source>
+</trans-unit>
+<trans-unit id="sedf57cb30482d9da">
+  <source>Object Attribute</source>
+</trans-unit>
+<trans-unit id="sdafc8d30aa57da2b">
+  <source>Object Attributes</source>
+</trans-unit>
+<trans-unit id="s894c49aaafdba91f">
+  <source>Successfully updated attribute.</source>
+</trans-unit>
+<trans-unit id="s845c2967bcd46316">
+  <source>Successfully created attribute.</source>
+</trans-unit>
+<trans-unit id="s908b5be2d8f0db21">
+  <source>Type a human-readable name...</source>
+</trans-unit>
+<trans-unit id="s7d311363234d73fb">
+  <source>Human-readable name of this attribute.</source>
+</trans-unit>
+<trans-unit id="s5d78a1c414da5e44">
+  <source>Unique identifier per object type, which is used as a key in the attributes field.</source>
+</trans-unit>
+<trans-unit id="s657dc9ce441c7700">
+  <source>Type an optional group identifier...</source>
+</trans-unit>
+<trans-unit id="s43c8d24ef6f60d2d">
+  <source>Optional grouping for this attribute in forms.</source>
+</trans-unit>
+<trans-unit id="sb06ff586521714ae">
+  <source>When checked, attribute will be shown in forms for the selected object type.</source>
+</trans-unit>
+<trans-unit id="s2492f5fb1b05b45e">
+  <source>Text</source>
+</trans-unit>
+<trans-unit id="s0b946f226c5700df">
+  <source>Boolean</source>
+</trans-unit>
+<trans-unit id="sd61653ebe961b17a">
+  <source>Validation</source>
+</trans-unit>
+<trans-unit id="s0e777c63f8b66f42">
+  <source>Attribute is required</source>
+</trans-unit>
+<trans-unit id="sf045a55e8aaa66c1">
+  <source>Value of the attribute cannot be empty.</source>
+</trans-unit>
+<trans-unit id="s10a69c9ec42f1344">
+  <source>Attribute is unique</source>
+</trans-unit>
+<trans-unit id="s5e545b0cdccce0f7">
+  <source>Value of the attribute must be unique across all instances of the selected object type.</source>
+</trans-unit>
+<trans-unit id="sd20d8f54ac490098">
+  <source>RegEx</source>
+</trans-unit>
+<trans-unit id="s801c8da3397d5e8a">
+  <source>Enter an optional Regular Expression for validation...</source>
+</trans-unit>
+<trans-unit id="s279bfeba4a09f52b">
+  <source>Optional RegEx to validate any value against. Uses the Python RegEx engine.</source>
+</trans-unit>
+<trans-unit id="s0b9470a6fac5a80b">
+  <source>Object attributes</source>
+</trans-unit>
+<trans-unit id="s25fb1e88492eba62">
+  <source>Object Attribute(s)</source>
+</trans-unit>
+<trans-unit id="sc8d9d9b824e7e8e9">
+  <source>New Attribute</source>
+</trans-unit>
+<trans-unit id="s8d0c9855df034712">
+  <source>User Count Exceeded</source>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+  <target>内部用户用量</target>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+  <target>外部用户用量</target>
+</trans-unit>
+<trans-unit id="s3bca5a165739e8c9">
+  <source>Allow application access with no policies</source>
+</trans-unit>
+<trans-unit id="s36ecc1d57c02c225">
+  <source>Applications with no policies bound can be accessed by any user..</source>
+</trans-unit>
+<trans-unit id="s98a962f4514c9628">
+  <source>Expiring today</source>
+</trans-unit>
+<trans-unit id="se10a40e85fe55d76">
+  <source>Expiring in <x id="0" equiv-text="${formatDistanceStrict(new Date(), valid, { unit: &quot;day&quot; })}"/></source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml11">
+  <source>SAML 1.1 (required by Microsoft Entra ID / ADFS)</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.option.saml20">
+  <source>SAML 2.0</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.label">
+  <source>SAML assertion version</source>
+</trans-unit>
+<trans-unit id="wsfed.saml-version.description">
+  <source>Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.</source>
+</trans-unit>
+<trans-unit id="settings.base-url.label">
+  <source>Base URL</source>
+</trans-unit>
+<trans-unit id="settings.base-url.description">
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).</source>
+</trans-unit>
+<trans-unit id="sb83f872f267d8506">
+  <source>Sync Group Hierarchy</source>
+</trans-unit>
+<trans-unit id="s9589dc36c516341a">
+  <source>Sync group hierarchy from LDAP directories.</source>
+</trans-unit>
+<trans-unit id="s9e8574c0abf42187">
+  <source>Additional Parent Group</source>
+</trans-unit>
+<trans-unit id="banner.dismiss.aria-label">
+  <source>Dismiss banner</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.action">
+  <source>Configure it in the system settings</source>
+</trans-unit>
+<trans-unit id="settings.base-url.banner.label">
+  <source>The base URL has not been configured.</source>
+</trans-unit>
+<trans-unit id="sf993bb199fefbe04">
+  <source>All</source>
+</trans-unit>
+<trans-unit id="sfa1b95e8d5f908ef">
+  <source>Search for an offboarding by username...</source>
+</trans-unit>
+<trans-unit id="s666e836aa05114ac">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="s56d1d0a4e7bf5ae5">
+  <source>Scheduled deactivation or deletion of users, and their outcomes.</source>
+</trans-unit>
+<trans-unit id="s4677a21818ee3277">
+  <source>Only show pending offboardings</source>
+</trans-unit>
+<trans-unit id="s39689ea96631ed97">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="scae52d94b155a605">
+  <source>Scheduled by</source>
+</trans-unit>
+<trans-unit id="s116de51b09153006">
+  <source>Offboarding(s)</source>
+</trans-unit>
+<trans-unit id="see8b386a20d5d43a">
+  <source>canceled</source>
+</trans-unit>
+<trans-unit id="sdaf25bddf0323e13">
+  <source>Cancel Offboardings</source>
+</trans-unit>
+<trans-unit id="s3dfc819b4986e252">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="s78636b92c1a3909c">
+  <source>Pending</source>
+</trans-unit>
+<trans-unit id="s39ad5f4fbea4fb3f">
+  <source>Offboardings</source>
+</trans-unit>
+<trans-unit id="sfcfc3964931c0d94">
+  <source>Hide managed</source>
+</trans-unit>
+<trans-unit id="s3ac26c004d6ba636">
+  <source>Managed</source>
+</trans-unit>
+<trans-unit id="common.boolean.yes">
+  <source>Yes</source>
+</trans-unit>
+<trans-unit id="common.boolean.no">
+  <source>No</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.success">
+  <source>Successfully cancelled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.error">
+  <source>Failed to cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.confirm.label">
+  <source>Cancel offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.header">
+  <source>Cancel scheduled offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.description">
+  <source>The following scheduled offboarding will be cancelled:</source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.tooltip">
+  <source>Offboarding scheduled for <x id="0" equiv-text="${offboarding.scheduledAt.toLocaleString()}"/></source>
+</trans-unit>
+<trans-unit id="offboarding.cancel.trigger.label">
+  <source>Cancel Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.submit.label">
+  <source>Schedule</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.header">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.trigger.label">
+  <source>Schedule Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name">
+  <source>User Offboarding</source>
+</trans-unit>
+<trans-unit id="offboarding.form.verbose-name-plural">
+  <source>User Offboardings</source>
+</trans-unit>
+<trans-unit id="offboarding.schedule.success">
+  <source>Successfully scheduled offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.action.label">
+  <source>Action</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.label">
+  <source>Deactivate</source>
+</trans-unit>
+<trans-unit id="offboarding.action.deactivate.description">
+  <source>Lock the user out of authentik without removing their account.</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.label">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="offboarding.action.delete.description">
+  <source>Permanently delete the user's account.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.label">
+  <source>Scheduled for</source>
+</trans-unit>
+<trans-unit id="offboarding.field.scheduled-for.description">
+  <source>The offboarding runs on the next scheduled check after this time (within a few minutes).</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.label">
+  <source>Revoke sessions</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-sessions.description">
+  <source>Revoke all of the user's sessions when offboarding.</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.label">
+  <source>Revoke tokens</source>
+</trans-unit>
+<trans-unit id="offboarding.field.revoke-tokens.description">
+  <source>Revoke all of the user's tokens when offboarding.</source>
+</trans-unit>
+<trans-unit id="sbe3eca5340d724c3">
+  <source>User was offboarded</source>
+</trans-unit>
+<trans-unit id="s7a677507399dca59">
+  <source>Request rules</source>
+</trans-unit>
+<trans-unit id="s2072c9a69b14fee2">
+  <source>Configure rules which grant users the ability to request access to this app.</source>
+</trans-unit>
+<trans-unit id="s1fc34f990dd8e442">
+  <source>Request flow</source>
+</trans-unit>
+<trans-unit id="s3926945b8747fe55">
+  <source>Select a request flow...</source>
+</trans-unit>
+<trans-unit id="sf0e0d71b74a9e77f">
+  <source>Default flow used by users requesting access.</source>
+</trans-unit>
+<trans-unit id="sa6e1274964f6a4b4">
+  <source>Fulfill request</source>
+</trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+  <target>提交</target>
+</trans-unit>
+<trans-unit id="sd348917df892e7a5">
+  <source>Requester</source>
+</trans-unit>
+<trans-unit id="s7e09dc48031bb282">
+  <source>Fulfiller</source>
+</trans-unit>
+<trans-unit id="sfecdd5e13f68c9ba">
+  <source>Approved</source>
+</trans-unit>
+<trans-unit id="s93390561e1afc0b6">
+  <source>Denied</source>
+</trans-unit>
+<trans-unit id="sac8256732f2ee1e5">
+  <source>Data</source>
+</trans-unit>
+<trans-unit id="sfa9d8c928d994bf5">
+  <source>Revoked</source>
+</trans-unit>
+<trans-unit id="s5105f7e2595f69cf">
+  <source>Access Requests</source>
+</trans-unit>
+<trans-unit id="scbf29ce484222325">
+  <source></source>
+</trans-unit>
+<trans-unit id="sf7eeef8b4d6e602d">
+  <source>Apps</source>
+</trans-unit>
+<trans-unit id="s2fe7939fcead9e47">
+  <source>Requester Data</source>
+</trans-unit>
+<trans-unit id="s116f756708f81fc1">
+  <source>Targets</source>
+</trans-unit>
+<trans-unit id="sd85e6d7c4f752f89">
+  <source>Fulfill</source>
+</trans-unit>
+<trans-unit id="s570f91a499d87fa4">
+  <source>Successfully revoked grant</source>
+</trans-unit>
+<trans-unit id="sb64a788e51aa5737">
+  <source>Failed to revoke grant</source>
+</trans-unit>
+<trans-unit id="s0e871352ba4b17d3">
+  <source>Revoke</source>
+</trans-unit>
+<trans-unit id="s6e05f32519eb6551">
+  <source>Revoke grant</source>
+</trans-unit>
+<trans-unit id="s312cccc7c299a685">
+  <source>Are you sure you want to revoke this grant? Access will be removed immediately.</source>
+</trans-unit>
+<trans-unit id="sf4cfca0c6dcd5cc8">
+  <source>Entitlement(s)</source>
+</trans-unit>
+<trans-unit id="s98b0bb374889b323">
+  <source>Request rule binding(s)</source>
+</trans-unit>
+<trans-unit id="sd700d2a7e8fe68e7">
+  <source>Bind existing rule</source>
+</trans-unit>
+<trans-unit id="s84d52a11b0a6dbd2">
+  <source>These bindings control which users/groups can request access to this object.</source>
+</trans-unit>
+<trans-unit id="s3c7ee40c88248316">
+  <source>No request rules bound.</source>
+</trans-unit>
+<trans-unit id="sb9c80985c2d1542c">
+  <source>No request rules are currently bound to this object.</source>
+</trans-unit>
+<trans-unit id="s8709be0a895e659b">
+  <source>Request rule actions</source>
+</trans-unit>
+<trans-unit id="s377403d8bfe91b11">
+  <source>Request Rule Binding</source>
+</trans-unit>
+<trans-unit id="s233deb4e19198786">
+  <source>Request Rule Bindings</source>
+</trans-unit>
+<trans-unit id="sc3564115b1095d47">
+  <source>Pending expiry</source>
+</trans-unit>
+<trans-unit id="s6aed0f4539da522a">
+  <source>How long a request against this binding stays pending before it automatically lapses if not approved or denied.</source>
+</trans-unit>
+<trans-unit id="sc44b28e93e47e9a5">
+  <source>Maximum granted expiry</source>
+</trans-unit>
+<trans-unit id="s2d0e00ac0ae213d9">
+  <source>The maximum duration a grant approved against this binding can last. Requesters may ask for less, but never more.</source>
+</trans-unit>
+<trans-unit id="sf896f79b1a8d4630">
+  <source>Additional entitlements</source>
+</trans-unit>
+<trans-unit id="s79f726678209b6a4">
+  <source>Available entitlements</source>
+</trans-unit>
+<trans-unit id="s79bcc347f11b5328">
+  <source>Granted entitlements</source>
+</trans-unit>
+<trans-unit id="s6c360d11fb96de23">
+  <source>Application entitlements granted alongside access to this object when a request is approved.</source>
+</trans-unit>
+<trans-unit id="sc1d364a9eb95428f">
+  <source>Everyone who can approve</source>
+</trans-unit>
+<trans-unit id="s1d7c1b9c4e4df721">
+  <source>Only individually-selected reviewers</source>
+</trans-unit>
+<trans-unit id="se75f92adbb736d2e">
+  <source>A random subset (of size “minimum reviewers”) of everyone who can approve</source>
+</trans-unit>
+<trans-unit id="sa8b63f3fcf8c7990">
+  <source>Request Rule</source>
+</trans-unit>
+<trans-unit id="s3a275c6dabb31cb9">
+  <source>Request Rules</source>
+</trans-unit>
+<trans-unit id="s847bbdf12f129557">
+  <source>Type a name for this request rule...</source>
+</trans-unit>
+<trans-unit id="s7adc3ba259e3407b">
+  <source>Number of reviewers that must approve the request before it is granted.</source>
+</trans-unit>
+<trans-unit id="s9129035195f5d21c">
+  <source>Notify</source>
+</trans-unit>
+<trans-unit id="saedaac3c39d38950">
+  <source>Who to notify when a request is created against this rule.</source>
+</trans-unit>
+<trans-unit id="sa12ce38de4a60975">
+  <source>Optional flow to use when a user requests access to a target bound to this rule.</source>
+</trans-unit>
+<trans-unit id="sec1b7428fb52aa12">
+  <source>Select which transports should be used to notify reviewers. If none are selected, the notification will only be shown in the authentik UI.</source>
+</trans-unit>
+<trans-unit id="seeff588bc60db034">
+  <source>Search for a request rule by name...</source>
+</trans-unit>
+<trans-unit id="s26f4259720f742fa">
+  <source>Define who can approve access requests for the objects these rules are bound to.</source>
+</trans-unit>
+<trans-unit id="s5b612c6c619807b0">
+  <source>Bound to</source>
+</trans-unit>
+<trans-unit id="s0a6c5f79e64745b8">
+  <source>Request rule(s)</source>
+</trans-unit>
+<trans-unit id="s569fd8461083ddc0">
+  <source><x id="0" equiv-text="${item.targets.length}"/> object(s)</source>
+</trans-unit>
+<trans-unit id="s2479a752090884e8">
+  <source>These bindings control which users/groups can approve requests.</source>
+</trans-unit>
+<trans-unit id="s3ab67886838d8ce6">
+  <source>Access request created</source>
+</trans-unit>
+<trans-unit id="s623bd29021bd66ed">
+  <source>Access request approved</source>
+</trans-unit>
+<trans-unit id="sb369884c94dd6c09">
+  <source>Access request denied</source>
+</trans-unit>
+<trans-unit id="sec37b60630a51c4c">
+  <source>Access request revoked</source>
+</trans-unit>
+<trans-unit id="se1d45bc0235e1e95">
+  <source>Show all schedules</source>
+</trans-unit>
+<trans-unit id="s70019e824a0ddf65">
+  <source>Show all tasks</source>
+</trans-unit>
+<trans-unit id="s31bf1464d6e1e996">
+  <source>Standalone</source>
+</trans-unit>
+<trans-unit id="s10e05123a5ebc6d9">
+  <source>Include successful tasks</source>
+</trans-unit>
+<trans-unit id="s2d6a5f1d98d0738e">
+  <source>Discover</source>
+</trans-unit>
+<trans-unit id="s6b3ade1f5b1361a6">
+  <source>Requests to review: </source>
+</trans-unit>
+<trans-unit id="sfccc1509c1ccb5af">
+  <source>Access requests</source>
+</trans-unit>
+<trans-unit id="s99fa943a22c13e67">
+  <source>Browse</source>
+</trans-unit>
+<trans-unit id="s7ad2216da77cf1c7">
+  <source>My Requests</source>
+</trans-unit>
+<trans-unit id="sc54fa983c3064e46">
+  <source>For My Review</source>
+</trans-unit>
+<trans-unit id="sc9caf0426eadbec7">
+  <source>Nothing available to request.</source>
+</trans-unit>
+<trans-unit id="sa18bee42f167d8a5">
+  <source>There's currently nothing you're eligible to request access to.</source>
+</trans-unit>
+<trans-unit id="se7e7bc73ad0cf1a9">
+  <source>Requestable applications</source>
+</trans-unit>
+<trans-unit id="sd3489b7df892f8a3">
+  <source>Requested</source>
+</trans-unit>
+<trans-unit id="s1c0f85facbc5e032">
+  <source>Successfully cancelled request</source>
+</trans-unit>
+<trans-unit id="sace831616cf735f4">
+  <source>Failed to cancel request</source>
+</trans-unit>
+<trans-unit id="sdc8e4cc65cb74f16">
+  <source>Cancel request</source>
+</trans-unit>
+<trans-unit id="s69882ac7b03b16d4">
+  <source>Are you sure you want to cancel this pending request?</source>
+</trans-unit>
+<trans-unit id="sccd6f7d0d94e8b9c">
+  <source>No requests yet.</source>
+</trans-unit>
+<trans-unit id="s87e7dd8fdbee7446">
+  <source>Requests you've made for access will show up here.</source>
+</trans-unit>
+<trans-unit id="s8a9b9b19ed901231">
+  <source>Nothing to review.</source>
+</trans-unit>
+<trans-unit id="sa4c37312c86d7ceb">
+  <source>Requests waiting on your approval will show up here.</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.search-placeholder">
+  <source>Search for an entitlement...</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.empty-state">
+  <source>No entitlements found for this application.</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.header">
+  <source>Select entitlement</source>
+</trans-unit>
+<trans-unit id="requests.browse.entitlement-modal.column.entitlement">
+  <source>Entitlement</source>
+</trans-unit>
+<trans-unit id="s02af005e476ed332">
+  <source>Requestor notes</source>
+</trans-unit>
+<trans-unit id="h91e3f27bdaf2308c">
+  <source>When enabled, fulfilling the request requires at least that many reviewers
+                        from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When disabled,
+                        the value is a total across all reviewer groups.</source>
+</trans-unit>
+<trans-unit id="s2359768b2b1758f1">
+  <source>Unknown Grant type</source>
+</trans-unit>
+<trans-unit id="s22c7fdd77bf0e826">
+  <source>Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s3ceb0c74bfc02e24">
+  <source>Successfully updated Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="sb0f2f6351f4feb26">
+  <source>Successfully enabled Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="s293ab004e5f8471b">
+  <source>Default application group</source>
+</trans-unit>
+<trans-unit id="sb9447a484a8e36db">
+  <source>Group assigned to automatically created applications.</source>
+</trans-unit>
+<trans-unit id="sb3932671e3f5c1f8">
+  <source>Override authorization flow</source>
+</trans-unit>
+<trans-unit id="sd00e1714556429bc">
+  <source>Authorization flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s37a7c8fd3eb8c9dd">
+  <source>Override invalidation flow</source>
+</trans-unit>
+<trans-unit id="s6ceeb9457b7428bb">
+  <source>Invalidation flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="sa4ad8a8c594e1355">
+  <source>Override property mappings</source>
+</trans-unit>
+<trans-unit id="s476bf94eb185f36c">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s9c21e17fba762b70">
+  <source>Access token validity</source>
+</trans-unit>
+<trans-unit id="sfac8408c13382097">
+  <source>Maximum access token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sec80d3ef86fdb459">
+  <source>Refresh token validity</source>
+</trans-unit>
+<trans-unit id="scf699415de52233e">
+  <source>Maximum refresh token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sdf7ebf88f98e5728">
+  <source>Allowed grant types</source>
+</trans-unit>
+<trans-unit id="s35ec166b7499880b">
+  <source>If none are selected, all grant types are allowed.</source>
+</trans-unit>
+<trans-unit id="s752c7742ccf74988">
+  <source>Dynamic Client Registration is not enabled.</source>
+</trans-unit>
+<trans-unit id="s8057d48d01ca8a97">
+  <source>Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).</source>
+</trans-unit>
+<trans-unit id="s617985af530d2fb3">
+  <source>Enable Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s8f47c8a79b1a4062">
+  <source>Dynamic application policies</source>
+</trans-unit>
+<trans-unit id="safbe8177d10f3a25">
+  <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.label">
+  <source>User switch flow</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.placeholder">
+  <source>Select a user switch flow...</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.description">
+  <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.label">
+  <source>Switch user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.add-user.label">
+  <source>Add another user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.sign-out-current.label">
+  <source>Sign out current user</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.label">
+  <source>Map tiles</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.description">
+  <source>Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login.label">
+  <source>Login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login-failed.label">
+  <source>Failed login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.logout.label">
+  <source>Logout</source>
+</trans-unit>
+<trans-unit id="events.map.kind.authorize-application.label">
+  <source>Authorize Application</source>
+</trans-unit>
+<trans-unit id="events.map.kind.other.label">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="s0ef37c2c3c5770e4">
+  <source>Adding</source>
 </trans-unit>
 </body>
 </file>
