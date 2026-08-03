@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc1
+API version: 2026.11.0-rc1
 Contact: hello@goauthentik.io
 */
 
@@ -44,6 +44,7 @@ type ApiCoreBrandsListRequest struct {
 	flowRequest                   *string
 	flowUnenrollment              *string
 	flowUserSettings              *string
+	flowUserSwitch                *string
 	ordering                      *string
 	page                          *int32
 	pageSize                      *int32
@@ -128,6 +129,11 @@ func (r ApiCoreBrandsListRequest) FlowUnenrollment(flowUnenrollment string) ApiC
 
 func (r ApiCoreBrandsListRequest) FlowUserSettings(flowUserSettings string) ApiCoreBrandsListRequest {
 	r.flowUserSettings = &flowUserSettings
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) FlowUserSwitch(flowUserSwitch string) ApiCoreBrandsListRequest {
+	r.flowUserSwitch = &flowUserSwitch
 	return r
 }
 
@@ -256,6 +262,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.flowUserSettings != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_settings", r.flowUserSettings, "form", "")
+	}
+	if r.flowUserSwitch != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "flow_user_switch", r.flowUserSwitch, "form", "")
 	}
 	if r.ordering != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "ordering", r.ordering, "form", "")

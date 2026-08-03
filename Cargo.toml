@@ -8,7 +8,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "2026.8.0-rc1"
+version = "2026.11.0-rc1"
 authors = ["authentik Team <hello@goauthentik.io>"]
 description = "Making authentication simple."
 edition = "2024"
@@ -29,7 +29,7 @@ axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
   "cookie-key-expansion",
 ] }
-base64 = "= 0.22.1"
+base64 = "= 0.23.0"
 clap = { version = "= 4.6.4", features = ["derive", "env"] }
 client-ip = { version = "0.2.1" }
 chrono = { version = "0.4.45", features = ["serde"] }
@@ -46,7 +46,7 @@ eyre = "= 0.6.12"
 futures = "= 0.3.33"
 glob = "= 0.3.4"
 http-body-util = "= 0.1.4"
-hyper = { version = "= 1.10.1", features = ["client", "http1", "http2"] }
+hyper = { version = "= 1.11.0", features = ["client", "http1", "http2"] }
 hyper-rustls = { version = "= 0.27.9", default-features = false, features = [
   "aws-lc-rs",
   "http1",
@@ -77,7 +77,7 @@ pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
 pyo3-build-config = "= 0.29.0"
 rand = "= 0.10.2"
-rcgen = { version = "= 0.14.7", default-features = false, features = [
+rcgen = { version = "= 0.14.8", default-features = false, features = [
   "aws_lc_rs",
   "fips",
 ] }
@@ -97,7 +97,7 @@ reqwest-middleware = { version = "= 0.5.2", features = [
   "query",
   "rustls",
 ] }
-rustls = { version = "= 0.23.42", features = ["fips"] }
+rustls = { version = "= 0.23.43", features = ["fips"] }
 sentry = { version = "= 0.48.5", default-features = false, features = [
   "backtrace",
   "contexts",
@@ -131,7 +131,7 @@ time = { version = "= 0.3.54", features = ["macros"] }
 tokio = { version = "= 1.53.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
 tokio-rustls = "= 0.26.4"
-tokio-tungstenite = { version = "= 0.29.0", features = [
+tokio-tungstenite = { version = "= 0.30.0", features = [
   "rustls-tls-webpki-roots",
   "url",
 ] }
@@ -140,6 +140,7 @@ tower = "= 0.5.3"
 tower-http = { version = "= 0.7.0", features = [
   "compression-full",
   "fs",
+  "limit",
   "timeout",
 ] }
 tracing = "= 0.1.44"
@@ -153,9 +154,9 @@ tracing-subscriber = { version = "= 0.3.23", features = [
 url = "= 2.5.8"
 uuid = { version = "= 1.24.0", features = ["serde", "v4"] }
 
-ak-axum = { package = "authentik-axum", version = "2026.8.0-rc1", path = "./packages/ak-axum" }
-ak-client = { package = "authentik-client", version = "2026.8.0-rc1", path = "./packages/client-rust" }
-ak-common = { package = "authentik-common", version = "2026.8.0-rc1", path = "./packages/ak-common", default-features = false }
+ak-axum = { package = "authentik-axum", version = "2026.11.0-rc1", path = "./packages/ak-axum" }
+ak-client = { package = "authentik-client", version = "2026.11.0-rc1", path = "./packages/client-rust" }
+ak-common = { package = "authentik-common", version = "2026.11.0-rc1", path = "./packages/ak-common", default-features = false }
 
 [workspace.lints.rust]
 ambiguous_negative_literals = "warn"
@@ -275,7 +276,6 @@ verbose_file_reads = "warn"
 opt-level = 3
 
 [profile.release]
-debug = 2
 lto = "fat"
 strip = true
 
@@ -351,6 +351,7 @@ serde_repr.workspace = true
 sqlx = { workspace = true, optional = true }
 thiserror = { workspace = true, optional = true }
 time.workspace = true
+tokio-retry2.workspace = true
 tokio-tungstenite.workspace = true
 tokio.workspace = true
 tower-http.workspace = true

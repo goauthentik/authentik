@@ -65,14 +65,6 @@
   <source>Stop impersonation</source>
   <target>Taklitçiliği durdurun</target>
 </trans-unit>
-<trans-unit id="s6abff64e7ff7fde9">
-  <source>Avatar image</source>
-  <target>Avatar resmi</target>
-</trans-unit>
-<trans-unit id="s7cfe12cd14df9950">
-  <source>Sign out</source>
-  <target>Oturumu kapat</target>
-</trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
   <target>Yönetici</target>
@@ -9617,12 +9609,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s03b42cb6a95eddfb">
   <source>Authorizations (1 month)</source>
 </trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
-</trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
 </trans-unit>
@@ -11065,7 +11051,7 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Base URL</source>
 </trans-unit>
 <trans-unit id="settings.base-url.description">
-  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company</source>
+  <source>Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).</source>
 </trans-unit>
 <trans-unit id="sb83f872f267d8506">
   <source>Sync Group Hierarchy</source>
@@ -11355,11 +11341,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s7adc3ba259e3407b">
   <source>Number of reviewers that must approve the request before it is granted.</source>
 </trans-unit>
-<trans-unit id="h0e12915b0a4f35ea">
-  <source>If checked, fulfilling the request will require at least that many
-                        reviewers from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When
-                        disabled, the value is a total across all reviewer groups.</source>
-</trans-unit>
 <trans-unit id="s9129035195f5d21c">
   <source>Notify</source>
 </trans-unit>
@@ -11479,6 +11460,125 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="requests.browse.entitlement-modal.column.entitlement">
   <source>Entitlement</source>
+</trans-unit>
+<trans-unit id="s02af005e476ed332">
+  <source>Requestor notes</source>
+</trans-unit>
+<trans-unit id="h91e3f27bdaf2308c">
+  <source>When enabled, fulfilling the request requires at least that many reviewers
+                        from <x id="0" equiv-text="&lt;em&gt;"/>each<x id="1" equiv-text="&lt;/em&gt;"/> of the reviewer groups bound to this rule. When disabled,
+                        the value is a total across all reviewer groups.</source>
+</trans-unit>
+<trans-unit id="s2359768b2b1758f1">
+  <source>Unknown Grant type</source>
+</trans-unit>
+<trans-unit id="s22c7fdd77bf0e826">
+  <source>Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s3ceb0c74bfc02e24">
+  <source>Successfully updated Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="sb0f2f6351f4feb26">
+  <source>Successfully enabled Dynamic Client Registration.</source>
+</trans-unit>
+<trans-unit id="s293ab004e5f8471b">
+  <source>Default application group</source>
+</trans-unit>
+<trans-unit id="sb9447a484a8e36db">
+  <source>Group assigned to automatically created applications.</source>
+</trans-unit>
+<trans-unit id="sb3932671e3f5c1f8">
+  <source>Override authorization flow</source>
+</trans-unit>
+<trans-unit id="sd00e1714556429bc">
+  <source>Authorization flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s37a7c8fd3eb8c9dd">
+  <source>Override invalidation flow</source>
+</trans-unit>
+<trans-unit id="s6ceeb9457b7428bb">
+  <source>Invalidation flow applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="sa4ad8a8c594e1355">
+  <source>Override property mappings</source>
+</trans-unit>
+<trans-unit id="s476bf94eb185f36c">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
+</trans-unit>
+<trans-unit id="s9c21e17fba762b70">
+  <source>Access token validity</source>
+</trans-unit>
+<trans-unit id="sfac8408c13382097">
+  <source>Maximum access token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sec80d3ef86fdb459">
+  <source>Refresh token validity</source>
+</trans-unit>
+<trans-unit id="scf699415de52233e">
+  <source>Maximum refresh token validity for registered clients.</source>
+</trans-unit>
+<trans-unit id="sdf7ebf88f98e5728">
+  <source>Allowed grant types</source>
+</trans-unit>
+<trans-unit id="s35ec166b7499880b">
+  <source>If none are selected, all grant types are allowed.</source>
+</trans-unit>
+<trans-unit id="s752c7742ccf74988">
+  <source>Dynamic Client Registration is not enabled.</source>
+</trans-unit>
+<trans-unit id="s8057d48d01ca8a97">
+  <source>Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).</source>
+</trans-unit>
+<trans-unit id="s617985af530d2fb3">
+  <source>Enable Dynamic Client Registration</source>
+</trans-unit>
+<trans-unit id="s8f47c8a79b1a4062">
+  <source>Dynamic application policies</source>
+</trans-unit>
+<trans-unit id="safbe8177d10f3a25">
+  <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.label">
+  <source>User switch flow</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.placeholder">
+  <source>Select a user switch flow...</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.description">
+  <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.label">
+  <source>Switch user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.add-user.label">
+  <source>Add another user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.sign-out-current.label">
+  <source>Sign out current user</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.label">
+  <source>Map tiles</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.description">
+  <source>Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login.label">
+  <source>Login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login-failed.label">
+  <source>Failed login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.logout.label">
+  <source>Logout</source>
+</trans-unit>
+<trans-unit id="events.map.kind.authorize-application.label">
+  <source>Authorize Application</source>
+</trans-unit>
+<trans-unit id="events.map.kind.other.label">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="s0ef37c2c3c5770e4">
+  <source>Adding</source>
 </trans-unit>
 </body>
 </file>

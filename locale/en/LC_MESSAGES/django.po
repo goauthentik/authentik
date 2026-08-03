@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-29 00:25+0000\n"
+"POT-Creation-Date: 2026-08-03 00:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -170,6 +170,16 @@ msgid ""
 msgstr ""
 
 #: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ "
+"templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
+msgstr ""
+
+#: authentik/brands/models.py
 msgid ""
 "When set, external users will be redirected to this application after "
 "authenticating."
@@ -281,6 +291,10 @@ msgid "Can't modify internal service account users"
 msgstr ""
 
 #: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
 msgstr ""
 
@@ -314,10 +328,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Email stage not found."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "This field is required."
 msgstr ""
 
 #: authentik/core/apps.py
@@ -603,6 +613,14 @@ msgid "Sessions"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr ""
 
@@ -700,6 +718,14 @@ msgstr ""
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
 msgstr ""
 
 #: authentik/crypto/api.py
@@ -2758,6 +2784,82 @@ msgstr ""
 msgid "OAuth2 Refresh Tokens"
 msgstr ""
 
+#: authentik/providers/oauth2/models.py
+msgid "Provider"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Default application group"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Group to assign to automatically created applications."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override authorization flow"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization flow applied to dynamically registered clients."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override invalidation flow"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override property mappings"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope mappings applied to dynamically registered clients."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Access token validity"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum access token validity for registered clients (Format: hours=1;"
+"minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Refresh token validity"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum refresh token validity for registered clients (Format: hours=1;"
+"minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Allowed grant types"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "If empty, all grant types are allowed."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registration"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registrations"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mapping"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mappings"
+msgstr ""
+
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
 msgstr ""
@@ -4442,10 +4544,6 @@ msgid "No (allowed) MFA authenticator configured."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
-msgid "When enabled, a given device can only be registered once."
-msgstr ""
-
-#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr ""
 
@@ -5156,6 +5254,10 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
+msgstr ""
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
 msgstr ""
 
 #: authentik/stages/user_logout/models.py
