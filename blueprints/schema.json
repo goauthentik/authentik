@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2026.8.0-rc1 Blueprint schema",
+    "title": "authentik 2026.11.0-rc1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -5390,10 +5390,20 @@
                     "minLength": 1,
                     "title": "Branding default flow background"
                 },
+                "branding_map_tiles": {
+                    "type": "string",
+                    "title": "Branding map tiles",
+                    "description": "URL template for the vector tile source used by the events map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it."
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
                     "title": "Flow authentication"
+                },
+                "flow_user_switch": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Flow user switch"
                 },
                 "flow_invalidation": {
                     "type": "string",
@@ -16143,11 +16153,6 @@
                         "format": "uuid"
                     },
                     "title": "Device type restrictions"
-                },
-                "prevent_duplicate_devices": {
-                    "type": "boolean",
-                    "title": "Prevent duplicate devices",
-                    "description": "When enabled, a given device can only be registered once."
                 },
                 "max_attempts": {
                     "type": "integer",

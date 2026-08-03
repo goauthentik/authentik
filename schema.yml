@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.8.0-rc1
+  version: 2026.11.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -3284,6 +3284,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: flow_user_switch
+        schema:
+          type: string
+          format: uuid
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -5132,6 +5137,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserServiceAccountResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/switch/:
+    post:
+      operationId: core_users_switch_create
+      description: Start browser user switching.
+      parameters:
+      - in: query
+        name: next
+        schema:
+          type: string
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSwitchRequest'
+      security:
+      - authentik: []
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSwitchResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -37282,9 +37317,6 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -37330,9 +37362,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -37540,7 +37569,18 @@ components:
           type: string
         branding_default_flow_background:
           type: string
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -37620,7 +37660,18 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -38627,6 +38678,8 @@ components:
           nullable: true
         branding_custom_css:
           type: string
+        branding_map_tiles:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -38638,6 +38691,8 @@ components:
           readOnly: true
           default: automatic
         flow_authentication:
+          type: string
+        flow_user_switch:
           type: string
         flow_invalidation:
           type: string
@@ -38677,6 +38732,7 @@ components:
       - branding_favicon_themed_urls
       - branding_logo
       - branding_logo_themed_urls
+      - branding_map_tiles
       - branding_title
       - default_locale
       - flags
@@ -45933,8 +45989,13 @@ components:
         jwks:
           type: string
           readOnly: true
+        dcr_registration:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - authorize
+      - dcr_registration
       - issuer
       - jwks
       - logout
@@ -50014,9 +50075,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -50063,7 +50121,18 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -58214,8 +58283,13 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelf'
       required:
       - user
+      - users
     Settings:
       type: object
       description: Settings Serializer
@@ -60694,6 +60768,10 @@ components:
         is_superuser:
           type: boolean
           readOnly: true
+        is_current:
+          type: boolean
+          description: Return whether this user owns the current browser session.
+          readOnly: true
         groups:
           type: array
           items:
@@ -60733,6 +60811,7 @@ components:
       - avatar
       - groups
       - is_active
+      - is_current
       - is_superuser
       - name
       - pk
@@ -60869,6 +60948,30 @@ components:
       required:
       - identifier
       - source
+    UserSwitchActionEnum:
+      enum:
+      - add
+      - switch
+      type: string
+    UserSwitchRequest:
+      type: object
+      description: Request to add or switch users in the current browser.
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/UserSwitchActionEnum'
+          default: switch
+        user_pk:
+          type: integer
+    UserSwitchResponse:
+      type: object
+      description: Redirect returned after planning a user switch.
+      properties:
+        redirect:
+          type: string
+          readOnly: true
+      required:
+      - redirect
     UserTelegramSourceConnection:
       type: object
       description: User source connection
