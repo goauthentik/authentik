@@ -399,21 +399,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         )
 
     def discover(self):
-        res = self.lower_case_keys(self._request("GET", "/Groups"))
-        seen_items = 0
-        expected_items = int(res["totalresults"])
-        while True:
-            for group in res["resources"]:
-                try:
-                    self._discover_group_single(group)
-                except ValidationError:
-                    self.logger.warning(
-                        "failed to discover group", scim_group=group.get("externalId")
-                    )
-                seen_items += 1
-            if seen_items >= expected_items:
-                break
-            res = self.lower_case_keys(self._request("GET", f"/Groups?startIndex={seen_items + 1}"))
+        for group in self.paginate_resources("/Groups"):
+            try:
+                self._discover_group_single(group)
+            except ValidationError:
+                self.logger.warning("failed to discover group", scim_group=group.get("externalId"))
 
     def _discover_group_single(self, group: dict):
         scim_group = SCIMGroupSchema.model_validate(group)

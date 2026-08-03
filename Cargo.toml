@@ -140,6 +140,7 @@ tower = "= 0.5.3"
 tower-http = { version = "= 0.7.0", features = [
   "compression-full",
   "fs",
+  "limit",
   "timeout",
 ] }
 tracing = "= 0.1.44"
@@ -275,7 +276,6 @@ verbose_file_reads = "warn"
 opt-level = 3
 
 [profile.release]
-debug = 2
 lto = "fat"
 strip = true
 

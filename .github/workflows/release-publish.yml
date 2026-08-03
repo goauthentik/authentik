@@ -11,9 +11,12 @@ jobs:
     outputs:
       tag-name: "${{ steps.metadata.outputs.tag-name }}"
       version: "${{ steps.metadata.outputs.version }}"
-      major-version: "${{ steps.metadata.outputs.major-version }}"
+      version-family: "${{ steps.metadata.outputs.version-family }}"
       release-reason: "${{ steps.metadata.outputs.release-reason }}"
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - id: metadata
         name: Compute variables
         run: |
@@ -21,10 +24,10 @@ jobs:
           echo "tag-name=$tag_name" >> "$GITHUB_OUTPUT"
           gh release download "$tag_name" --pattern metadata.json
           gh attestation verify metadata.json --owner goauthentik
-          echo "version=$(jq -r '.version')" >> "$GITHUB_OUTPUT"
-          echo "major-version=$(jq -r '.major_version')" >> "$GITHUB_OUTPUT"
-          echo "release-reason=$(jq -r '.release_reason')" >> "$GITHUB_OUTPUT"
-          echo "changelog-url=$(jq -r '.changelog_url')" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.version' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "version-family=$(jq -r '.version_family' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "release-reason=$(jq -r '.release_reason' < metadata.json)" >> "$GITHUB_OUTPUT"
+          echo "changelog-url=$(jq -r '.changelog_url' < metadata.json)" >> "$GITHUB_OUTPUT"
   publish-containers:
     runs-on: ubuntu-latest
     permissions:
@@ -35,6 +38,7 @@ jobs:
       id-token: write
       attestations: write
     strategy:
+      fail-fast: false
       matrix:
         name:
           - server
@@ -44,7 +48,10 @@ jobs:
           - rac
     needs:
       - metadata
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
@@ -63,10 +70,18 @@ jobs:
           regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
           regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
+          if [ "${{ needs.metadata.outputs.release-reason }}" != "prerelease" ]; then
+            regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+            regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
+          fi
+      # we need to re-login for the attestation to go through
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
         with:
           subject-name: "ghcr.io/goauthentik/${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
@@ -85,14 +100,12 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-        with:
-          ref: "${{ needs.metadata.outputs.tag-name }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c # v4.5.2
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -103,7 +116,7 @@ jobs:
         with:
           tags: |
             ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version }}
-            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.major-version }}
+            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version-family }}
           file: website/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
@@ -123,6 +136,7 @@ jobs:
       - publish-containers
     env:
       AWS_REGION: eu-central-1
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -140,6 +154,7 @@ jobs:
   sentry-release:
     needs:
       - publish-containers
+      - metadata
     runs-on: ubuntu-latest
     steps:
       - name: Get static files from docker image
