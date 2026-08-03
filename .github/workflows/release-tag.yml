@@ -268,7 +268,6 @@ jobs:
           # ID from https://api.github.com/users/authentik-automation[bot]
           git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
           git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
-          git pull
           git tag "version/${{ needs.check-inputs.outputs.version }}" "${{ needs.bump-version.outputs.release-commit }}" -m "version/${{ needs.check-inputs.outputs.version }}"
           git push --tags
       - name: Create metadata file
@@ -284,7 +283,7 @@ jobs:
         with:
           pattern: binaries-build-*
           merge-multiple: true
-      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
         with:
           subject-path: |
             metadata.json
