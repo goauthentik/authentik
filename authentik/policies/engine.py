@@ -317,12 +317,32 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
         self._init_defaults(pbm)
         self.__pbm = pbm
         self.__users = users
+        self.__original_users = users
+        self.__mirror_of: dict = {}
         self.__http_request = request
         self.__result: QuerySet[User] | None = None
 
     def bindings(self) -> QuerySet[PolicyBinding]:
         """Get enabled bindings for the bound PBM"""
         return self._bindings_for(self.__pbm)
+
+    def _substitute_mirror_actors(self):
+        """Swap MIRROR actors in the user set for the identity they mirror, so they are
+        evaluated in the same pass as everyone else (`_finalize` maps the verdict back). Only
+        service accounts can be actors, so the scan is a cheap, targeted query, and parents that
+        are shared across actors are evaluated once.
+        """
+        for actor in self.__original_users.filter(type__in=_ACTOR_USER_TYPES):
+            effective = effective_policy_user(actor)
+            if effective.pk != actor.pk:
+                self.__mirror_of[actor.pk] = effective
+        if not self.__mirror_of:
+            return
+        parent_pks = {parent.pk for parent in self.__mirror_of.values()}
+        self.__users = User.objects.filter(
+            Q(pk__in=self.__original_users.exclude(pk__in=self.__mirror_of.keys()).values("pk"))
+            | Q(pk__in=parent_pks)
+        )
 
     def build(self) -> FilterPolicyEngine:
         """Evaluate bindings against the user queryset"""
@@ -336,6 +356,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
                 obj_pk=str(self.__pbm.pk),
             ).time(),
         ):
+            self._substitute_mirror_actors()
             bindings = list(self.bindings())
             for binding in bindings:
                 self._check_policy_type(binding)
@@ -396,25 +417,21 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
             return self._finalize()
 
     def _finalize(self) -> FilterPolicyEngine:
-        """Apply MIRROR-actor overrides to self.__result, then return self.
+        """Map the effective-user verdicts back onto the original user set.
 
-        A queryset engine has no single user to substitute in the constructor, and its fast
-        SQL static path can't special-case per-user, so MIRROR resolution happens here instead:
-        once, after build(), rather than in `result` (which would otherwise re-run the whole
-        static+dynamic evaluation as a throwaway nested engine on every access).
+        `build()` evaluated the substituted set (parents standing in for their MIRROR actors), so
+        a substituted actor passes iff the identity it mirrors passes. No-op when nothing was
+        substituted -- `self.__result` already refers to the original users.
         """
-        passing_pks = set(self.__result.values_list("pk", flat=True))
-        for user in self.__users:
-            if getattr(user, "type", None) not in _ACTOR_USER_TYPES:
-                continue
-            effective = effective_policy_user(user)
-            if effective.pk == user.pk:
-                continue
-            if PolicyEngine(self.__pbm, effective, self.__http_request).build().passing:
-                passing_pks.add(user.pk)
-            else:
-                passing_pks.discard(user.pk)
-        self.__result = self.__users.filter(pk__in=passing_pks)
+        if not self.__mirror_of:
+            return self
+        passing = set(self.__result.values_list("pk", flat=True))
+        final_pks = {
+            pk
+            for pk in self.__original_users.values_list("pk", flat=True)
+            if (self.__mirror_of[pk].pk if pk in self.__mirror_of else pk) in passing
+        }
+        self.__result = self.__original_users.filter(pk__in=final_pks)
         return self
 
     def _prefetch_cache(
