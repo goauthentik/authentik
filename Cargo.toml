@@ -276,7 +276,6 @@ verbose_file_reads = "warn"
 opt-level = 3
 
 [profile.release]
-debug = 2
 lto = "fat"
 strip = true
 
