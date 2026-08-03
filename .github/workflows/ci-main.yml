@@ -511,7 +511,7 @@ jobs:
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # Docker login is required for attestations
-      - uses: docker/login-action@371161bbe7024a29a25c5e19bfcbc0804fe9ad2c
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
