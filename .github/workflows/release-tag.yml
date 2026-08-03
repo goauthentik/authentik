@@ -36,6 +36,15 @@ jobs:
           echo "${VERSION}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "major-version=${VERSION}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+      - id: check-branch
+        env:
+          BRANCH: "${{ github.ref_name }}"
+          EXPECTED_BRANCH: "version-${{ steps.check.outputs.major-version }}"
+        run: |
+          if [ "${BRANCH}" != "${EXPECTED_BRANCH}" ]; then
+            echo "::error::This workflow must be run on ${EXPECTED_BRANCH}, but was run on ${BRANCH}."
+            exit 1
+          fi
       - id: changelog-url
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
