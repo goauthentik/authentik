@@ -54,7 +54,6 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.core.sources.mapper import SourceMapper
-from authentik.enterprise.license import LicenseKey
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
@@ -716,10 +715,6 @@ class TokenParams:
         if not actor_token:
             LOGGER.warning("Missing actor_token")
             raise TokenExchangeError("invalid_request").with_cause("missing_actor_token")
-
-        if not LicenseKey.cached_summary().status.is_valid:
-            LOGGER.warning("Actor delegation requires a valid enterprise license")
-            raise TokenExchangeError("invalid_grant").with_cause("enterprise_required")
 
         # The actor_token is a previously-issued AccessToken belonging to the Actor
         # itself -- a literal DB match (same as __validate_jwt_from_provider's approach

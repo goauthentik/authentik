@@ -21,7 +21,6 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import Actor, ActorPolicyInheritance, Application, User
 from authentik.core.tests.utils import create_test_cert, create_test_flow, create_test_user
-from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -393,7 +392,6 @@ class TestTokenExchange(OAuthTestCase):
         )
         return token
 
-    @enterprise_test()
     def test_actor_token_successful_delegation(self):
         """test RFC 8693 §4.1 delegation: subject_token identifies the human, actor_token
         identifies an Actor the human controls -- the issued token's `sub` stays the
@@ -427,31 +425,6 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(access_token.user_id, self.user.pk)
         self.assertEqual(access_token.actor_id, actor.pk)
 
-    def test_actor_token_requires_enterprise_license(self):
-        """test that delegation is refused without a valid enterprise license, even
-        with a genuinely owned actor_token"""
-        actor = self._create_actor(self.user)
-        actor_token = self._actor_token(actor)
-
-        response = self.client.post(
-            reverse("authentik_providers_oauth2:token"),
-            {
-                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
-                "scope": SCOPES,
-                "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
-                "subject_token": self.subject_token,
-                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
-                "actor_token": actor_token,
-                "actor_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
-            },
-        )
-        self.assertEqual(response.status_code, 400)
-        body = loads(response.content.decode())
-        self.assertEqual(body["error"], "invalid_grant")
-        self.assertFalse(AccessToken.objects.filter(actor=actor).exists())
-
-    @enterprise_test()
     def test_actor_token_rejects_unowned_actor(self):
         """test that a human cannot use as actor one they don't control"""
         other_user = create_test_user()
@@ -476,7 +449,6 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(body["error"], "invalid_grant")
         self.assertFalse(AccessToken.objects.filter(actor=someone_elses_actor).exists())
 
-    @enterprise_test()
     def test_actor_token_rejects_non_actor(self):
         """test that an access token belonging to an ordinary (non-Actor) user is
         not accepted as an actor -- only Actors may be delegated to"""
@@ -506,7 +478,6 @@ class TestTokenExchange(OAuthTestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["error"], "invalid_grant")
 
-    @enterprise_test()
     def test_actor_token_rejects_unknown_token(self):
         """test an actor_token value that doesn't match any real access token"""
         response = self.client.post(
