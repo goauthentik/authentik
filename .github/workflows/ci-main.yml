@@ -159,7 +159,7 @@ jobs:
         run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     env:
       AUTHENTIK_MIGRATIONS__DANGEROUSLY_ALLOW_MULTIPLE_MAJOR_VERSION_UPGRADES: "true"
-steps:
+    steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           fetch-depth: 0
