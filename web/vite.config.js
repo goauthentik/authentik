@@ -50,11 +50,6 @@ export default defineConfig({
                 },
             },
             {
-                // Projects do not inherit the root plugin list, and elements
-                // import their stylesheets as text for `unsafeCSS`. Without
-                // this the CSS resolves to a Vite style side-effect with no
-                // default export, and importing any AKElement throws.
-                plugins: [inlineCSSPlugin()],
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 

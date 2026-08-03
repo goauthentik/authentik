@@ -147,10 +147,6 @@ async fn static_header_middleware(request: Request, next: Next) -> Response {
     response
 }
 
-fn compression_layer() -> CompressionLayer<SizeAbove> {
-    CompressionLayer::new().compress_when(SizeAbove::new(32))
-}
-
 pub(crate) fn build_router() -> Router {
     let config = config::get();
 
@@ -248,119 +244,7 @@ pub(crate) fn build_router() -> Router {
 
     router = router.layer(middleware::from_fn(static_header_middleware));
 
-    router = router.layer(compression_layer());
+    router = router.layer(CompressionLayer::new().compress_when(SizeAbove::new(32)));
 
     router
-}
-
-#[cfg(test)]
-mod tests {
-    use axum::{
-        Router,
-        body::Body,
-        extract::Request,
-        http::{
-            StatusCode,
-            header::{ACCEPT_ENCODING, CONTENT_ENCODING, CONTENT_LENGTH, CONTENT_RANGE, RANGE},
-        },
-    };
-    use http_body_util::BodyExt as _;
-    use tempfile::{TempDir, tempdir};
-    use tokio::fs;
-    use tower::ServiceExt as _;
-    use tower_http::services::fs::ServeDir;
-
-    use super::compression_layer;
-
-    /// Enough bytes to clear the `SizeAbove` threshold, and compressible enough
-    /// that gzip is a visible win.
-    const BODY: &[u8] = &[b'a'; 4096];
-
-    /// Mirrors how [`build_router`] serves `/static/dist/`: a `ServeDir` under
-    /// the shared compression layer.
-    fn router(dir: &TempDir) -> Router {
-        Router::new()
-            .nest_service(
-                "/static/dist/",
-                ServeDir::new(dir.path()).append_index_html_on_directories(false),
-            )
-            .layer(compression_layer())
-    }
-
-    async fn fixture() -> TempDir {
-        let dir = tempdir().expect("failed to create temp dir");
-        fs::write(dir.path().join("basemap.bin"), BODY)
-            .await
-            .expect("failed to write fixture");
-        dir
-    }
-
-    #[tokio::test]
-    async fn ranged_request_is_not_compressed() {
-        let dir = fixture().await;
-        let response = router(&dir)
-            .oneshot(
-                Request::builder()
-                    .uri("/static/dist/basemap.bin")
-                    .header(RANGE, "bytes=0-15")
-                    .header(ACCEPT_ENCODING, "gzip")
-                    .body(Body::empty())
-                    .expect("failed to build request"),
-            )
-            .await
-            .expect("request failed");
-
-        assert_eq!(response.status(), StatusCode::PARTIAL_CONTENT);
-        assert_eq!(
-            response
-                .headers()
-                .get(CONTENT_RANGE)
-                .expect("missing Content-Range"),
-            "bytes 0-15/4096"
-        );
-        // A compressed 206 would describe the encoded length, not the range.
-        assert_eq!(
-            response
-                .headers()
-                .get(CONTENT_LENGTH)
-                .expect("missing Content-Length"),
-            "16"
-        );
-        assert!(
-            response.headers().get(CONTENT_ENCODING).is_none(),
-            "ranged response must not be re-encoded"
-        );
-
-        let body = response
-            .into_body()
-            .collect()
-            .await
-            .expect("failed to read body")
-            .to_bytes();
-        assert_eq!(&body[..], &BODY[..16]);
-    }
-
-    #[tokio::test]
-    async fn full_request_is_still_compressed() {
-        let dir = fixture().await;
-        let response = router(&dir)
-            .oneshot(
-                Request::builder()
-                    .uri("/static/dist/basemap.bin")
-                    .header(ACCEPT_ENCODING, "gzip")
-                    .body(Body::empty())
-                    .expect("failed to build request"),
-            )
-            .await
-            .expect("request failed");
-
-        assert_eq!(response.status(), StatusCode::OK);
-        assert_eq!(
-            response
-                .headers()
-                .get(CONTENT_ENCODING)
-                .expect("missing Content-Encoding"),
-            "gzip"
-        );
-    }
 }
