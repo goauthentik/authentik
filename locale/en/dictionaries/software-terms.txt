@@ -179,6 +179,7 @@ uisp
 unenrollment
 unhashed
 unmigrate
+unscalable
 unskippable
 unsynchronized
 uperm
