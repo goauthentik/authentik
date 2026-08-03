@@ -88,7 +88,17 @@ ak version
 
 ## Logging
 
-The authentik Agent uses macOS's native logging abilities. To retrieve the logs, open the Console application and then filter for authentik-related processes such as `authentik-agent` or `authentik-sysd`.
+The system agent writes its output to a log file:
+
+```sh
+sudo tail -f /Library/Logs/io.goauthentik/sysd.log
+```
+
+The user agent uses macOS's native logging abilities. To retrieve its logs, open the Console application and filter for the `ak-agent-desktop` process, or run:
+
+```sh
+log show --last 30m --predicate 'process == "ak-agent-desktop"' --info --debug
+```
 
 ## Reporting issues
 
