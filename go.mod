@@ -3,7 +3,7 @@ module goauthentik.io
 go 1.26.0
 
 require (
-	beryju.io/ldap v0.2.1
+	beryju.io/ldap v0.2.2-0.20260803173430-cc4c542a28aa
 	beryju.io/radius-eap v0.1.1
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/coreos/go-oidc/v3 v3.20.0

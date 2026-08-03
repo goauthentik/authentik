@@ -1,5 +1,7 @@
 beryju.io/ldap v0.2.1 h1:rhTAP2CXqrKZy/UycLC/aPSSBMcgJMzooKqk3TwVFxY=
 beryju.io/ldap v0.2.1/go.mod h1:GJSw3pVOON/3+L5att3Eysmj7j0GmjLvA6/WNmPajD4=
+beryju.io/ldap v0.2.2-0.20260803173430-cc4c542a28aa h1:i5X1cLPHCe+4t2XMhqOwV+n4y/tqWnv4mTfF94yJZ4o=
+beryju.io/ldap v0.2.2-0.20260803173430-cc4c542a28aa/go.mod h1:GJSw3pVOON/3+L5att3Eysmj7j0GmjLvA6/WNmPajD4=
 beryju.io/radius-eap v0.1.1 h1:ILIYy2rzaf2M2tvTgwmQDQMn4WwOn/CTmAFzH0oYDPo=
 beryju.io/radius-eap v0.1.1/go.mod h1:qRgYZYxUY8rgGfAYXPevM6WLI/b1h6f264A6aJoBO7w=
 github.com/Azure/go-ntlmssp v0.1.1 h1:l+FM/EEMb0U9QZE7mKNEDw5Mu3mFiaa2GKOoTSsNDPw=
