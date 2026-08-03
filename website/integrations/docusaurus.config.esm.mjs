@@ -108,26 +108,6 @@ export default createDocusaurusConfig(
             },
         }),
 
-<<<<<<< HEAD
-=======
-        // TODO: This can be removed after https://github.com/goauthentik/authentik/pull/24687
-        // is merged and the docusaurus config dependency has been bumped
-        headTags: [
-            {
-                tagName: "script",
-                attributes: {
-                    type: "application/ld+json",
-                },
-                innerHTML: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": "authentik",
-                    "url": "https://integrations.goauthentik.io",
-                }),
-            },
-        ],
-
->>>>>>> 2f80ac720 (ci: release: rename major release to release family (#24691))
         //#endregion
     }),
 );
