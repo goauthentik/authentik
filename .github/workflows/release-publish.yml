@@ -11,7 +11,7 @@ jobs:
     outputs:
       tag-name: "${{ steps.metadata.outputs.tag-name }}"
       version: "${{ steps.metadata.outputs.version }}"
-      major-version: "${{ steps.metadata.outputs.major-version }}"
+      version-family: "${{ steps.metadata.outputs.version-family }}"
       release-reason: "${{ steps.metadata.outputs.release-reason }}"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
           gh release download "$tag_name" --pattern metadata.json
           gh attestation verify metadata.json --owner goauthentik
           echo "version=$(jq -r '.version')" >> "$GITHUB_OUTPUT"
-          echo "major-version=$(jq -r '.major_version')" >> "$GITHUB_OUTPUT"
+          echo "version-family=$(jq -r '.version_family')" >> "$GITHUB_OUTPUT"
           echo "release-reason=$(jq -r '.release_reason')" >> "$GITHUB_OUTPUT"
           echo "changelog-url=$(jq -r '.changelog_url')" >> "$GITHUB_OUTPUT"
   publish-containers:
@@ -69,9 +69,9 @@ jobs:
           regctl image import "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
           echo "digest=$(regctl image digest "ocidir://${{ matrix.name }}:${{ needs.metadata.outputs.version }}")" >> "$GITHUB_OUTPUT"
           regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "ghcr.io/goauthentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
           regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version }}" "${{ matrix.name }}.oci.tar"
-          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.major-version }}" "${{ matrix.name }}.oci.tar"
+          regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
       - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
         with:
           subject-name: "ghcr.io/goauthentik/${{ matrix.name }}"
@@ -107,7 +107,7 @@ jobs:
         with:
           tags: |
             ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version }}
-            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.major-version }}
+            ghcr.io/goauthentik/docs:${{ needs.metadata.outputs.version-family }}
           file: website/Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
