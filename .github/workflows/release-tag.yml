@@ -35,20 +35,20 @@ jobs:
         run: |
           echo "${VERSION}" | grep -E '^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+(-rc[0-9]+)?$'
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "major-version=${VERSION}" | grep -oE "^major-version=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
+          echo "version-family=${VERSION}" | grep -oE "^version-family=[0-9]{4}\.[0-9]{1,2}" >> "$GITHUB_OUTPUT"
       - id: changelog-url
         run: |
           if [ "${{ inputs.release_reason }}" = "feature" ]; then
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}"
           elif [ "${{ inputs.release_reason }}" = "prerelease" ]; then
-            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}"
+            changelog_url="https://next.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}"
           else
-            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.major-version }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"}
+            changelog_url="https://docs.goauthentik.io/docs/releases/${{ steps.check.outputs.version-family }}#fixed-in-$(echo -n "${{ steps.check.outputs.version }}" | sed 's/\.//g')"}
           fi
           echo "changelog-url=${changelog_url}" >> "$GITHUB_OUTPUT"
     outputs:
       version: "${{ steps.check.outputs.version }}"
-      major-version: "${{ steps.check.outputs.major-version }}"
+      version-family: "${{ steps.check.outputs.version-family }}"
       changelog-url: "${{ steps.changelog-url.outputs.changelog-url }}"
   bump-version:
     name: Bump authentik version
@@ -71,7 +71,7 @@ jobs:
           GH_TOKEN: "${{ steps.app-token.outputs.token }}"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
-          ref: "version-${{ needs.check-inputs.outputs.major-version }}"
+          ref: "version-${{ needs.check-inputs.outputs.version-family }}"
           token: "${{ steps.app-token.outputs.token }}"
       - name: Setup authentik env
         uses: ./.github/actions/setup
@@ -276,7 +276,7 @@ jobs:
           git push --tags
       - name: Create metadata file
         run: |
-          echo '{"version": "${{ needs.check-inputs.outputs.version }}", "major_version": "${{ needs.check-inputs.outputs.major-version }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
+          echo '{"version": "${{ needs.check-inputs.outputs.version }}", "version_family": "${{ needs.check-inputs.outputs.version-family }}", "release_reason": "${{ inputs.release_reason }}", "changelog_url": "${{ needs.check-inputs.outputs.changelog-url }}"}' > metadata.json
       - name: Fetch container images
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
