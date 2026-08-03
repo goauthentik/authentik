@@ -33,7 +33,7 @@ If you embed it in the [Identification stage](../identification/index.md), confi
 ### Google reCAPTCHA
 
 :::note Supported versions
-Google reCAPTCHA Enterprise and Google reCAPTCHA v2/v3 are supported.
+Google reCAPTCHA Enterprise, reCAPTCHA v2, and reCAPTCHA v3 are all supported.
 :::
 
 Use the keys from https://www.google.com/recaptcha/admin.
