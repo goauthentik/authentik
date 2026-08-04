@@ -2229,6 +2229,27 @@
   <source>Default</source>
   <target>Domyślny</target>
 </trans-unit>
+<trans-unit id="se7195530fa981896">
+  <source>Default behavior.</source>
+</trans-unit>
+<trans-unit id="sfa5ba219a0991116">
+  <source>AWS</source>
+</trans-unit>
+<trans-unit id="s44e80dc905ab2ecc">
+  <source>Altered behavior for usage with Amazon Web Services.</source>
+</trans-unit>
+<trans-unit id="s2f5e2bcd583fbc27">
+  <source>Slack</source>
+</trans-unit>
+<trans-unit id="s7f40ef46b7f213ea">
+  <source>Altered behavior for usage with Slack.</source>
+</trans-unit>
+<trans-unit id="s2ce58eab7841b342">
+  <source>Salesforce</source>
+</trans-unit>
+<trans-unit id="s7392b5925a4803af">
+  <source>Altered behavior for usage with Salesforce.</source>
+</trans-unit>
 <trans-unit id="s054cb3c0a84eefe5">
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
 </trans-unit>
@@ -6988,6 +7009,14 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>Private key Algorithm</source>
   <target>Algorytm klucza prywatnego</target>
 </trans-unit>
+<trans-unit id="sa03cbf19feebd249">
+  <source>RSA</source>
+  <target>RSA</target>
+</trans-unit>
+<trans-unit id="sfbfccbd3e395c147">
+  <source>ECDSA</source>
+  <target>ECDSA</target>
+</trans-unit>
 <trans-unit id="sebea299e52db4242">
   <source>Algorithm used to generate the private key.</source>
   <target>Algorytm używany do generowania klucza prywatnego.</target>
@@ -8858,6 +8887,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="sc78d16417878afd0">
   <source>Copy Secret</source>
 </trans-unit>
+<trans-unit id="s2df814c26d5c5e56">
+  <source>ED25519</source>
+</trans-unit>
+<trans-unit id="sa31350da8b357fa4">
+  <source>ED448</source>
+</trans-unit>
 <trans-unit id="s088efc814570fa2c">
   <source>Enrollment Token</source>
 </trans-unit>
@@ -9483,6 +9518,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s5f751a332b377ca3">
   <source>Detailed health (data is cached so may be out of date)</source>
+</trans-unit>
+<trans-unit id="s253a70947aa0a82c">
+  <source>Webex</source>
+</trans-unit>
+<trans-unit id="sc574714bff5b18ea">
+  <source>Altered behavior for usage with Cisco Webex.</source>
 </trans-unit>
 <trans-unit id="s2293b71fd35fee2a">
   <source>Statistics</source>
@@ -10295,6 +10336,12 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s89c63fb4a8cb6d2b">
   <source>Grant types this provider may use.</source>
+</trans-unit>
+<trans-unit id="s86a9472dc09ecf48">
+  <source>vCenter</source>
+</trans-unit>
+<trans-unit id="s71724d2ff6637203">
+  <source>Altered behavior for usage with VMware vCenter.</source>
 </trans-unit>
 <trans-unit id="s2ea2e39e4b470249">
   <source>EntityID/Issuer override</source>
@@ -11478,27 +11525,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s2242f5c6b4625d84">
   <source>Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.</source>
-</trans-unit>
-<trans-unit id="providers.scim.compatibility-mode.default.label">
-  <source>Default</source>
-</trans-unit>
-<trans-unit id="providers.scim.compatibility-mode.description">
-  <source>Altered behavior for <x id="0" equiv-text="${label}"/>.</source>
-</trans-unit>
-<trans-unit id="s583559b56228966c">
-  <source>Define who can approve access requests for the objects this rule is bound to.</source>
-</trans-unit>
-<trans-unit id="s15ee5b29a732e82a">
-  <source>New Request Rule</source>
-</trans-unit>
-<trans-unit id="s90eefcc5ed423895">
-  <source>Create a new request rule to bind to this object.</source>
-</trans-unit>
-<trans-unit id="s622e11fa5a62c709">
-  <source>Existing Request Rule</source>
-</trans-unit>
-<trans-unit id="scf0457b46d32a983">
-  <source>Bind an existing request rule to this object.</source>
 </trans-unit>
 </body>
 </file>
