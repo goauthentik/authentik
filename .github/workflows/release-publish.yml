@@ -76,7 +76,7 @@ jobs:
             regctl image import "docker.io/authentik/${{ matrix.name }}:${{ needs.metadata.outputs.version-family }}" "${{ matrix.name }}.oci.tar"
           fi
       # we need to re-login for the attestation to go through
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -154,6 +154,7 @@ jobs:
   sentry-release:
     needs:
       - publish-containers
+      - metadata
     runs-on: ubuntu-latest
     steps:
       - name: Get static files from docker image
