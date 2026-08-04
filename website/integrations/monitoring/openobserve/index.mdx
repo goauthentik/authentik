@@ -22,15 +22,15 @@ The following placeholders are used in this guide:
 - `dex.company` is the FQDN of the Dex installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::info
-Single sign-on is only available in OpenObserve Enterprise, and OpenObserve does not connect to an identity provider directly. It delegates authentication to [Dex](https://dexidp.io/), which in turn authenticates against authentik:
+:::info Dex required
+Single sign-on is only available in OpenObserve Enterprise, and OpenObserve does not connect to an identity provider directly. It delegates authentication to [Dex](https://dexidp.io/), which in turn authenticates with authentik:
 
 `browser` → `OpenObserve` → `Dex` → `authentik`
 
-This means you need to run a Dex instance alongside OpenObserve, and you configure authentik against Dex rather than against OpenObserve.
+This means you need to run a Dex instance alongside OpenObserve, and integrate authentik with Dex rather than with OpenObserve.
 :::
 
-Dex can reach authentik in two ways, and this guide covers both. Choose one:
+Dex can integrate with authentik via either:
 
 - **OpenID Connect**: Dex acts as an OpenID Connect client of authentik. Users are redirected to authentik to sign in, so the full authentik login flow applies, including multi-factor authentication and any policies bound to the application.
 - **LDAP**: Dex binds to an authentik [LDAP provider](/docs/add-secure-apps/providers/ldap/) served by an [LDAP outpost](/docs/add-secure-apps/outposts/). Users type their credentials into Dex's own login form and are never redirected to authentik.
@@ -41,8 +41,6 @@ Prefer OpenID Connect unless something in your environment requires LDAP.
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
-
 <Tabs
   groupId="connector"
   defaultValue="oidc"
@@ -52,11 +50,13 @@ This documentation lists only the settings that you need to change from their de
   ]}>
 <TabItem value="oidc">
 
+## authentik configuration OIDC
+
 <RedirectURI20265Note />
 
 To support the integration of OpenObserve with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -74,9 +74,11 @@ The default scopes are sufficient. Dex reads group membership from the `groups` 
 </TabItem>
 <TabItem value="ldap">
 
+## authentik configuration LDAP
+
 To support the integration of OpenObserve with authentik over LDAP, you need an LDAP application/provider pair, a service account for Dex to bind with, and an LDAP outpost to serve the directory.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
