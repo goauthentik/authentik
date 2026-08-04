@@ -1,5 +1,4 @@
 import "#elements/buttons/SpinnerButton/index";
-import "#elements/forms/FormGroup";
 
 import { aki } from "#common/api/client";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
@@ -9,7 +8,7 @@ import { DestructiveModelForm } from "#elements/forms/DestructiveModelForm";
 import { WithLocale } from "#elements/mixins/locale";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { CoreApi, UsedBy, User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 import { str } from "@lit/localize";
 import { msg } from "@lit/localize/init/install";
@@ -68,16 +67,19 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
             : msg(str`Review ${this.verboseName} Activation`, { id: "form.headline.activation" });
     }
 
-    // Toggling active state deletes nothing (#23778).
-    protected override showConsequences = false;
+    protected override renderForm(): SlottedTemplateResult {
+        const displayName = this.formatDisplayName();
 
-    public override usedBy = (): Promise<UsedBy[]> => {
-        if (!this.instance) {
-            return Promise.resolve([]);
-        }
-
-        return this.coreAPI.coreUsersUsedByList({ id: this.instance.pk });
-    };
+        return html`<p class="pf-c-form__helper-text">
+            ${this.instance?.isActive
+                ? msg(str`Are you sure you want to deactivate ${displayName}?`, {
+                      id: "user.activation.confirm.deactivate",
+                  })
+                : msg(str`Are you sure you want to activate ${displayName}?`, {
+                      id: "user.activation.confirm.activate",
+                  })}
+        </p>`;
+    }
 }
 
 declare global {
