@@ -17,8 +17,8 @@
  * @export
  */
 export const AlgEnum = {
-    Rsa: "rsa",
-    Ecdsa: "ecdsa",
+    RSA: "rsa",
+    ECDSA: "ecdsa",
     Ed25519: "ed25519",
     Ed448: "ed448",
     UnknownDefaultOpenApi: "11184809",

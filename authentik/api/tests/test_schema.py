@@ -21,7 +21,7 @@ from authentik.lib.config import CONFIG
 class TestChoiceFieldEnumExtension(SimpleTestCase):
     """Choice field enum schema tests."""
 
-    def test_generated_enum_choice_field_emits_labels(self):
+    def test_generated_enum_choice_field_emits_varnames(self):
         field = GeneratedEnumChoiceField(
             choices=[
                 ("default", gettext_lazy("Default")),
@@ -39,8 +39,8 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
             )
 
         self.assertEqual(schema["enum"], ["default", "aws", "sfdc", "", None])
-        self.assertEqual(schema["x-enum-labels"], ["Default", "AWS", "Salesforce"])
         self.assertEqual(schema["x-enum-varnames"], ["Default", "AWS", "Salesforce"])
+        self.assertNotIn("x-enum-labels", schema)
 
     def test_plain_choice_field_is_not_targeted(self):
         self.assertIs(ChoiceFieldEnumExtension.target_class, GeneratedEnumChoiceField)
@@ -54,8 +54,20 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
             "response",
         )
 
-        self.assertEqual(schema["x-enum-labels"], ["Foo", "Bar"])
         self.assertNotIn("x-enum-varnames", schema)
+        self.assertNotIn("x-enum-labels", schema)
+
+    def test_acronym_choice_labels_become_enum_names(self):
+        field = GeneratedEnumChoiceField(
+            choices=[("rsa", "RSA"), ("ec", "EC"), ("dsa", "DSA")]
+        )
+
+        schema = ChoiceFieldEnumExtension(field).map_serializer_field(
+            AutoSchema(),
+            "response",
+        )
+
+        self.assertEqual(schema["x-enum-varnames"], ["RSA", "EC", "DSA"])
 
     def test_identical_choice_labels_are_not_repeated(self):
         field = GeneratedEnumChoiceField(choices=[("foo", "foo"), ("bar", "bar")])
@@ -65,8 +77,8 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
             "response",
         )
 
-        self.assertNotIn("x-enum-labels", schema)
         self.assertNotIn("x-enum-varnames", schema)
+        self.assertNotIn("x-enum-labels", schema)
 
     def test_prose_choice_labels_do_not_become_enum_names(self):
         field = GeneratedEnumChoiceField(
@@ -82,11 +94,8 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
             "response",
         )
 
-        self.assertEqual(
-            schema["x-enum-labels"],
-            ["authentik.commands", "6 digits, widely compatible", "OAuth (Silent)"],
-        )
         self.assertNotIn("x-enum-varnames", schema)
+        self.assertNotIn("x-enum-labels", schema)
 
 
 class TestSchemaGeneration(APITestCase):
@@ -105,29 +114,20 @@ class TestSchemaGeneration(APITestCase):
             ["Default", "AWS", "Slack", "Salesforce", "GitLab", "Webex", "vCenter"],
         )
         self.assertEqual(
-            components["CompatibilityModeEnum"]["x-enum-labels"],
-            ["Default", "AWS", "Slack", "Salesforce", "GitLab", "Webex", "vCenter"],
-        )
-        self.assertEqual(
-            components["DigestAlgorithmEnum"]["x-enum-labels"],
+            components["DigestAlgorithmEnum"]["x-enum-varnames"],
             ["SHA1", "SHA256", "SHA384", "SHA512"],
         )
         self.assertEqual(
-            components["SignatureAlgorithmEnum"]["x-enum-labels"],
-            [
-                "RSA-SHA1",
-                "RSA-SHA256",
-                "RSA-SHA384",
-                "RSA-SHA512",
-                "ECDSA-SHA1",
-                "ECDSA-SHA256",
-                "ECDSA-SHA384",
-                "ECDSA-SHA512",
-                "DSA-SHA1",
-            ],
+            components["KeyTypeEnum"]["x-enum-varnames"],
+            ["RSA", "EC", "DSA", "Ed25519", "Ed448"],
         )
+        self.assertNotIn("CertificateKeyPairKeyTypeEnum", components)
+        self.assertNotIn("digest_algorithm", components["SAMLProviderRequest"]["required"])
+        self.assertNotIn("signature_algorithm", components["SAMLProviderRequest"]["required"])
+        self.assertNotIn("x-enum-labels", components["CompatibilityModeEnum"])
+        self.assertNotIn("x-enum-varnames", components["SignatureAlgorithmEnum"])
         self.assertNotIn("x-enum-labels", components["DeniedActionEnum"])
-        self.assertNotIn("x-enum-labels", components["CountryCodeEnum"])
+        self.assertNotIn("x-enum-varnames", components["DeniedActionEnum"])
 
     def test_browser(self):
         """Test API Browser"""

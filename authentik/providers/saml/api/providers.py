@@ -72,11 +72,11 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_sso_init = SerializerMethodField()
     url_slo_post = SerializerMethodField()
     url_slo_redirect = SerializerMethodField()
-    digest_algorithm = GeneratedEnumChoiceField(
-        choices=SAMLProvider._meta.get_field("digest_algorithm").choices,
+    digest_algorithm = GeneratedEnumChoiceField.from_model_field(
+        SAMLProvider._meta.get_field("digest_algorithm"),
     )
-    signature_algorithm = GeneratedEnumChoiceField(
-        choices=SAMLProvider._meta.get_field("signature_algorithm").choices,
+    signature_algorithm = GeneratedEnumChoiceField.from_model_field(
+        SAMLProvider._meta.get_field("signature_algorithm"),
     )
 
     def get_url_download_metadata(self, instance: SAMLProvider) -> str:

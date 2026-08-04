@@ -38,18 +38,14 @@ def enum_var_names(choices: Iterable[tuple[object, object]]) -> list[str] | None
         re.fullmatch(r"(?:[A-Z][A-Za-z0-9]*|v[A-Z][A-Za-z0-9]*)", label) for label in labels
     ):
         return None
-    changes_meaning = any(
-        re.sub(r"[^a-z0-9]", "", value.lower()) != re.sub(r"[^a-z0-9]", "", label.lower())
-        for value, label in choices
-    )
-    if not changes_meaning:
+
+    def inferred_member_name(value: str) -> str:
+        return value[:1].upper() + value[1:] if value else value
+
+    # Skip when labels match the default client names derived from values (foo → Foo).
+    if not any(label != inferred_member_name(value) for value, label in choices):
         return None
     return labels
-
-
-def enum_labels(choices: Iterable[tuple[object, object]]) -> list[str]:
-    """Return display labels for non-empty choice values."""
-    return [str(label) for value, label in choices if value not in ("", None)]
 
 
 class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):

@@ -175,13 +175,13 @@ export interface SAMLProvider {
      * @type {DigestAlgorithmEnum}
      * @memberof SAMLProvider
      */
-    digestAlgorithm: DigestAlgorithmEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
      * @type {SignatureAlgorithmEnum}
      * @memberof SAMLProvider
      */
-    signatureAlgorithm: SignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
      * @type {string}
@@ -388,20 +388,6 @@ export function instanceOfSAMLProvider(value: object): value is SAMLProvider {
     )
         return false;
     if (
-        (!("digestAlgorithm" in (value as Record<string, any>)) &&
-            !("digest_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["digestAlgorithm"] === undefined &&
-            (value as Record<string, any>)["digest_algorithm"] === undefined)
-    )
-        return false;
-    if (
-        (!("signatureAlgorithm" in (value as Record<string, any>)) &&
-            !("signature_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signatureAlgorithm"] === undefined &&
-            (value as Record<string, any>)["signature_algorithm"] === undefined)
-    )
-        return false;
-    if (
         (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
             !("url_download_metadata" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
@@ -523,8 +509,14 @@ export function SAMLProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 : json["authn_context_class_ref_mapping"] === null
                   ? null
                   : json["authn_context_class_ref_mapping"],
-        digestAlgorithm: DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm: SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
+        digestAlgorithm:
+            json["digest_algorithm"] == null
+                ? undefined
+                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
+        signatureAlgorithm:
+            json["signature_algorithm"] == null
+                ? undefined
+                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
         signingKp:
             json["signing_kp"] === undefined
                 ? undefined

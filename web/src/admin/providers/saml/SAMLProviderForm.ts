@@ -77,7 +77,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
             this.hasSigningKp = !!target.selectedKeypair;
-            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.Rsa;
+            this.signingKeyType = target.selectedKeypair?.keyType ?? KeyTypeEnum.RSA;
         };
 
         const setHasSlsUrl = (ev: Event) => {

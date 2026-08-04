@@ -22,11 +22,11 @@ class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
 
     url_issuer = SerializerMethodField()
-    digest_algorithm = GeneratedEnumChoiceField(
-        choices=SAMLSource._meta.get_field("digest_algorithm").choices,
+    digest_algorithm = GeneratedEnumChoiceField.from_model_field(
+        SAMLSource._meta.get_field("digest_algorithm"),
     )
-    signature_algorithm = GeneratedEnumChoiceField(
-        choices=SAMLSource._meta.get_field("signature_algorithm").choices,
+    signature_algorithm = GeneratedEnumChoiceField.from_model_field(
+        SAMLSource._meta.get_field("signature_algorithm"),
     )
 
     def get_url_issuer(self, instance: SAMLSource) -> str:

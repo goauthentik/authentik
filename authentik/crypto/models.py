@@ -53,11 +53,11 @@ def format_cert(raw_pam: str) -> str:
 class KeyType(models.TextChoices):
     """Cryptographic key algorithm types"""
 
-    RSA = "rsa", _("RSA")
-    EC = "ec", _("Elliptic Curve")
-    DSA = "dsa", _("DSA")
-    ED25519 = "ed25519", _("Ed25519")
-    ED448 = "ed448", _("Ed448")
+    RSA = "rsa", "RSA"
+    EC = "ec", "EC"
+    DSA = "dsa", "DSA"
+    ED25519 = "ed25519", "Ed25519"
+    ED448 = "ed448", "Ed448"
 
 
 def fingerprint_sha256(cert: Certificate) -> str:

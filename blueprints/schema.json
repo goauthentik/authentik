@@ -7947,6 +7947,23 @@
                     "type": "string",
                     "title": "Key data",
                     "description": "Optional Private Key. If this is set, you can use this keypair for encryption."
+                },
+                "key_type": {
+                    "type": [
+                        "null",
+                        "string"
+                    ],
+                    "enum": [
+                        null,
+                        "",
+                        "rsa",
+                        "ec",
+                        "dsa",
+                        "ed25519",
+                        "ed448"
+                    ],
+                    "title": "key type",
+                    "description": "Key algorithm type detected from the certificate's public key"
                 }
             },
             "required": []
@@ -9357,7 +9374,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "Digest algorithm"
+                    "title": "digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -9372,7 +9389,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "Signature algorithm"
+                    "title": "signature algorithm"
                 },
                 "signing_kp": {
                     "type": "string",
@@ -13029,7 +13046,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "Digest algorithm"
+                    "title": "digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -13044,7 +13061,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "Signature algorithm"
+                    "title": "signature algorithm"
                 },
                 "signing_kp": {
                     "type": "string",
@@ -15896,7 +15913,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "Digest algorithm"
+                    "title": "digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -15911,7 +15928,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "Signature algorithm"
+                    "title": "signature algorithm"
                 },
                 "temporary_user_delete_after": {
                     "type": "string",

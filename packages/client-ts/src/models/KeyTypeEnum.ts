@@ -17,11 +17,11 @@
  * @export
  */
 export const KeyTypeEnum = {
-    Dsa: "dsa",
-    Ec: "ec",
+    RSA: "rsa",
+    EC: "ec",
+    DSA: "dsa",
     Ed25519: "ed25519",
     Ed448: "ed448",
-    Rsa: "rsa",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type KeyTypeEnum = (typeof KeyTypeEnum)[keyof typeof KeyTypeEnum];

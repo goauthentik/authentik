@@ -77,7 +77,7 @@ export function renderForm({
     hasSigningKp,
     signingKeyType,
 }: WSFederationProviderFormProps) {
-    const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
+    const keyType = signingKeyType ?? KeyTypeEnum.RSA;
     const samlPropertyMappingSearch = async (query?: string) =>
         (
             await aki(PropertymappingsApi).propertymappingsProviderSamlList(

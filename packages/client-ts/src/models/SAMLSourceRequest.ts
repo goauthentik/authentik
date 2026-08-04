@@ -182,13 +182,13 @@ export interface SAMLSourceRequest {
      * @type {DigestAlgorithmEnum}
      * @memberof SAMLSourceRequest
      */
-    digestAlgorithm: DigestAlgorithmEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
      * @type {SignatureAlgorithmEnum}
      * @memberof SAMLSourceRequest
      */
-    signatureAlgorithm: SignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).
      * @type {string}
@@ -233,20 +233,6 @@ export function instanceOfSAMLSourceRequest(value: object): value is SAMLSourceR
             !("sso_url" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["ssoUrl"] === undefined &&
             (value as Record<string, any>)["sso_url"] === undefined)
-    )
-        return false;
-    if (
-        (!("digestAlgorithm" in (value as Record<string, any>)) &&
-            !("digest_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["digestAlgorithm"] === undefined &&
-            (value as Record<string, any>)["digest_algorithm"] === undefined)
-    )
-        return false;
-    if (
-        (!("signatureAlgorithm" in (value as Record<string, any>)) &&
-            !("signature_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signatureAlgorithm"] === undefined &&
-            (value as Record<string, any>)["signature_algorithm"] === undefined)
     )
         return false;
     return true;
@@ -331,8 +317,14 @@ export function SAMLSourceRequestFromJSONTyped(
                 : json["signing_kp"] === null
                   ? null
                   : json["signing_kp"],
-        digestAlgorithm: DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm: SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
+        digestAlgorithm:
+            json["digest_algorithm"] == null
+                ? undefined
+                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
+        signatureAlgorithm:
+            json["signature_algorithm"] == null
+                ? undefined
+                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
         temporaryUserDeleteAfter:
             json["temporary_user_delete_after"] == null
                 ? undefined

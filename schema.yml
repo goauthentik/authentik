@@ -35722,6 +35722,11 @@ components:
       - ed25519
       - ed448
       type: string
+      x-enum-varnames:
+      - RSA
+      - ECDSA
+      - Ed25519
+      - Ed448
     App:
       type: object
       description: Serialize Application info
@@ -37973,8 +37978,7 @@ components:
           readOnly: true
         key_type:
           allOf:
-          - $ref: '#/components/schemas/CertificateKeyPairKeyTypeEnum'
-          readOnly: true
+          - $ref: '#/components/schemas/KeyTypeEnum'
           nullable: true
           description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
@@ -38000,20 +38004,11 @@ components:
       - certificate_download_url
       - fingerprint_sha1
       - fingerprint_sha256
-      - key_type
       - managed
       - name
       - pk
       - private_key_available
       - private_key_download_url
-    CertificateKeyPairKeyTypeEnum:
-      enum:
-      - rsa
-      - ec
-      - dsa
-      - ed25519
-      - ed448
-      type: string
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -38031,6 +38026,11 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+        key_type:
+          allOf:
+          - $ref: '#/components/schemas/KeyTypeEnum'
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
       required:
       - certificate_data
       - name
@@ -38114,14 +38114,6 @@ components:
       - webex
       - vcenter
       type: string
-      x-enum-labels:
-      - Default
-      - AWS
-      - Slack
-      - Salesforce
-      - GitLab
-      - Webex
-      - vCenter
       x-enum-varnames:
       - Default
       - AWS
@@ -39352,11 +39344,6 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#sha384
       - http://www.w3.org/2001/04/xmlenc#sha512
       type: string
-      x-enum-labels:
-      - SHA1
-      - SHA256
-      - SHA384
-      - SHA512
       x-enum-varnames:
       - SHA1
       - SHA256
@@ -43411,13 +43398,19 @@ components:
       - realm
       - slug
     KeyTypeEnum:
-      type: string
       enum:
-      - dsa
+      - rsa
       - ec
+      - dsa
       - ed25519
       - ed448
-      - rsa
+      type: string
+      x-enum-varnames:
+      - RSA
+      - EC
+      - DSA
+      - Ed25519
+      - Ed448
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -50283,6 +50276,11 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
+        key_type:
+          allOf:
+          - $ref: '#/components/schemas/KeyTypeEnum'
+          nullable: true
+          description: Key algorithm type detected from the certificate's public key
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
@@ -52824,9 +52822,13 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -53003,9 +53005,13 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         temporary_user_delete_after:
           type: string
           minLength: 1
@@ -53085,6 +53091,7 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
+          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -53812,9 +53819,13 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -56618,9 +56629,13 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -56719,12 +56734,10 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
-      - digest_algorithm
       - invalidation_flow
       - meta_model_name
       - name
       - pk
-      - signature_algorithm
       - url_download_metadata
       - url_issuer
       - url_slo_post
@@ -56831,9 +56844,13 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -56891,10 +56908,8 @@ components:
       required:
       - acs_url
       - authorization_flow
-      - digest_algorithm
       - invalidation_flow
       - name
-      - signature_algorithm
     SAMLSource:
       type: object
       description: SAMLSource Serializer
@@ -57037,9 +57052,13 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         temporary_user_delete_after:
           type: string
           title: Delete temporary users after
@@ -57060,7 +57079,6 @@ components:
           type: boolean
       required:
       - component
-      - digest_algorithm
       - icon_themed_urls
       - icon_url
       - managed
@@ -57068,7 +57086,6 @@ components:
       - name
       - pk
       - pre_authentication_flow
-      - signature_algorithm
       - slug
       - sso_url
       - url_issuer
@@ -57244,9 +57261,13 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         temporary_user_delete_after:
           type: string
           minLength: 1
@@ -57267,10 +57288,8 @@ components:
         signed_response:
           type: boolean
       required:
-      - digest_algorithm
       - name
       - pre_authentication_flow
-      - signature_algorithm
       - slug
       - sso_url
     SCIMAuthenticationModeEnum:
@@ -57433,6 +57452,7 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
+          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -57564,6 +57584,7 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
+          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -58586,16 +58607,6 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
-      x-enum-labels:
-      - RSA-SHA1
-      - RSA-SHA256
-      - RSA-SHA384
-      - RSA-SHA512
-      - ECDSA-SHA1
-      - ECDSA-SHA256
-      - ECDSA-SHA384
-      - ECDSA-SHA512
-      - DSA-SHA1
     Software:
       type: object
       properties:
@@ -61369,9 +61380,13 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -61412,13 +61427,11 @@ components:
       - assigned_backchannel_application_slug
       - authorization_flow
       - component
-      - digest_algorithm
       - invalidation_flow
       - meta_model_name
       - name
       - pk
       - reply_url
-      - signature_algorithm
       - url_download_metadata
       - url_issuer
       - url_wsfed
@@ -61495,9 +61508,13 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          $ref: '#/components/schemas/DigestAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/DigestAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmlenc#sha256
         signature_algorithm:
-          $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          allOf:
+          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
+          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
         signing_kp:
           type: string
           format: uuid
@@ -61521,11 +61538,9 @@ components:
           $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
       - authorization_flow
-      - digest_algorithm
       - invalidation_flow
       - name
       - reply_url
-      - signature_algorithm
       - wtrealm
     WebAuthnDevice:
       type: object

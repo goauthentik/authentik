@@ -167,13 +167,13 @@ export interface WSFederationProvider {
      * @type {DigestAlgorithmEnum}
      * @memberof WSFederationProvider
      */
-    digestAlgorithm: DigestAlgorithmEnum;
+    digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
      * @type {SignatureAlgorithmEnum}
      * @memberof WSFederationProvider
      */
-    signatureAlgorithm: SignatureAlgorithmEnum;
+    signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
      * @type {string}
@@ -303,20 +303,6 @@ export function instanceOfWSFederationProvider(value: object): value is WSFedera
         return false;
     if (!("wtrealm" in value) || value["wtrealm"] === undefined) return false;
     if (
-        (!("digestAlgorithm" in (value as Record<string, any>)) &&
-            !("digest_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["digestAlgorithm"] === undefined &&
-            (value as Record<string, any>)["digest_algorithm"] === undefined)
-    )
-        return false;
-    if (
-        (!("signatureAlgorithm" in (value as Record<string, any>)) &&
-            !("signature_algorithm" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["signatureAlgorithm"] === undefined &&
-            (value as Record<string, any>)["signature_algorithm"] === undefined)
-    )
-        return false;
-    if (
         (!("urlDownloadMetadata" in (value as Record<string, any>)) &&
             !("url_download_metadata" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["urlDownloadMetadata"] === undefined &&
@@ -401,8 +387,14 @@ export function WSFederationProviderFromJSONTyped(
             json["saml_version"] == null
                 ? undefined
                 : SamlVersionEnumFromJSON(json["saml_version"]),
-        digestAlgorithm: DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
-        signatureAlgorithm: SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
+        digestAlgorithm:
+            json["digest_algorithm"] == null
+                ? undefined
+                : DigestAlgorithmEnumFromJSON(json["digest_algorithm"]),
+        signatureAlgorithm:
+            json["signature_algorithm"] == null
+                ? undefined
+                : SignatureAlgorithmEnumFromJSON(json["signature_algorithm"]),
         signingKp:
             json["signing_kp"] === undefined
                 ? undefined
