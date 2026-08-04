@@ -383,15 +383,6 @@ class TestTokenExchange(OAuthTestCase):
             audience=self.provider.client_id,
         )
 
-    def _create_actor(
-        self,
-        parent: User | None,
-        policy_behavior: ActorPolicyInheritance = ActorPolicyInheritance.NONE,
-    ) -> Actor:
-        """Construct an Actor controlled by `parent` (or ownerless if `None`), via the
-        model's own factory"""
-        return Actor.actor_for(parent, policy_behavior)
-
     def _actor_token_jwt(self, actor: Actor) -> str:
         """Issue an access token for `actor` from the federated provider, usable as a
         JWT actor_token"""
@@ -422,7 +413,7 @@ class TestTokenExchange(OAuthTestCase):
         """test RFC 8693 §4.1 delegation: subject_token identifies the human, actor_token
         identifies an Actor the human controls -- the issued token's `sub` stays the
         human (unchanged), and `act` records the actor"""
-        actor = self._create_actor(self.user)
+        actor = Actor.actor_for(self.user, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_jwt(actor)
 
         response = self.client.post(
@@ -454,7 +445,7 @@ class TestTokenExchange(OAuthTestCase):
     def test_actor_token_builtin_successful_delegation(self):
         """test RFC 8693 §4.1 delegation via an authentik built-in Token, for an actor
         that has an owner"""
-        actor = self._create_actor(self.user)
+        actor = Actor.for_user(self.user, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_builtin(actor)
 
         response = self.client.post(
@@ -482,7 +473,7 @@ class TestTokenExchange(OAuthTestCase):
 
     def test_actor_token_unowned_jwt_allowed(self):
         """test that an actor with no owner can be delegated to via a JWT actor_token"""
-        actor = self._create_actor(None)
+        actor = Actor.for_user(None, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_jwt(actor)
 
         response = self.client.post(
@@ -511,7 +502,7 @@ class TestTokenExchange(OAuthTestCase):
     def test_actor_token_unowned_builtin_rejected(self):
         """test that an actor with no owner cannot be delegated to via a built-in Token
         actor_token -- only JWTs are supported for ownerless actors"""
-        actor = self._create_actor(None)
+        actor = Actor.for_user(None, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_builtin(actor)
 
         response = self.client.post(
@@ -535,7 +526,7 @@ class TestTokenExchange(OAuthTestCase):
     def test_actor_token_rejects_unowned_actor(self):
         """test that a human cannot use as actor one they don't control"""
         other_user = create_test_user()
-        someone_elses_actor = self._create_actor(other_user)
+        someone_elses_actor = Actor.for_user(other_user, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_jwt(someone_elses_actor)
 
         response = self.client.post(
@@ -611,7 +602,7 @@ class TestTokenExchange(OAuthTestCase):
 
     def test_actor_token_rejects_unknown_builtin_token(self):
         """test a built-in actor_token value that doesn't match any real Token"""
-        actor = self._create_actor(self.user)
+        actor = Actor.for_user(self.user, ActorPolicyInheritance.NONE)
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             {
