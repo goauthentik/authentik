@@ -90,7 +90,7 @@ kimai:
                 - { saml: admin.group, kimai: ROLE_ADMIN }
         connection:
             idp:
-                entityId: "https://authentik.company/"
+                entityId: "https://authentik.company/application/saml/<application_slug>/metadata/"
                 singleSignOnService:
                     url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
