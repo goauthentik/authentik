@@ -22,6 +22,7 @@ from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
+    ACTOR_TOKEN_TYPES,
     CLIENT_ASSERTION,
     CLIENT_ASSERTION_TYPE,
     CLIENT_ASSERTION_TYPE_JWT,
@@ -38,6 +39,7 @@ from authentik.common.oauth.constants import (
     TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE,
     TOKEN_TYPE_URI_ACCESS_TOKEN,
+    TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
 )
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
@@ -46,6 +48,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_GENERATED,
     USER_PATH_SYSTEM_PREFIX,
     USERNAME_MAX_LENGTH,
+    Actor,
     Application,
     Token,
     TokenIntents,
@@ -108,6 +111,7 @@ class TokenParams:
     refresh_token: RefreshToken | None = None
     device_code: DeviceToken | None = None
     user: User | None = None
+    actor: User | None = None
 
     code_verifier: str | None = None
     dpop_proof: str | None = None
@@ -508,8 +512,8 @@ class TokenParams:
 
     def __validate_jwt_from_provider(
         self, assertion: str
-    ) -> tuple[dict, OAuth2Provider] | tuple[None, None]:
-        token = provider = _key = None
+    ) -> tuple[dict, OAuth2Provider, User] | tuple[None, None, None]:
+        token = provider = resolved_user = _key = None
         federated_token = AccessToken.objects.filter(
             token=assertion, provider__in=self.provider.jwt_federation_providers.all()
         ).first()
@@ -525,7 +529,7 @@ class TokenParams:
                     },
                 )
                 provider = federated_token.provider
-                self.user = federated_token.user
+                resolved_user = federated_token.user
             except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                 LOGGER.warning(
                     "failed to verify JWT", exc=exc, provider=federated_token.provider.name
@@ -533,7 +537,7 @@ class TokenParams:
 
         if token:
             LOGGER.info("successfully verified JWT with provider", provider=provider.name)
-        return token, provider
+        return token, provider, resolved_user
 
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
@@ -547,11 +551,11 @@ class TokenParams:
             LOGGER.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
-        source = provider = None
+        source = provider = resolved_user = None
 
         token, source = self.__validate_jwt_from_source(assertion)
         if not token:
-            token, provider = self.__validate_jwt_from_provider(assertion)
+            token, provider, resolved_user = self.__validate_jwt_from_provider(assertion)
 
         if not token:
             LOGGER.warning("No token could be verified")
@@ -570,7 +574,9 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        if not provider:
+        if provider:
+            self.user = resolved_user
+        else:
             self.__create_user_from_jwt(token, app, source, request)
 
         method_args = {
@@ -635,11 +641,6 @@ class TokenParams:
 
     def __post_init_token_exchange(self, request: HttpRequest):
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
-        # Delegation is not implemented. An actor token is rejected rather than ignored, so a
-        # client cannot believe it delegated authority while an impersonation token was issued.
-        if request.POST.get("actor_token") or request.POST.get("actor_token_type"):
-            LOGGER.warning("Delegation is not supported")
-            raise TokenExchangeError("invalid_request").with_cause("actor_token_unsupported")
         # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
         # requested target cannot be honored, so the parameters are refused rather than ignored.
         if request.POST.getlist("audience") or request.POST.getlist("resource"):
@@ -662,10 +663,10 @@ class TokenParams:
                 "unsupported_requested_token_type"
             )
 
-        source = provider = None
+        source = provider = resolved_user = None
         token, source = self.__validate_jwt_from_source(subject_token)
         if not token:
-            token, provider = self.__validate_jwt_from_provider(subject_token)
+            token, provider, resolved_user = self.__validate_jwt_from_provider(subject_token)
         if not token:
             # Expiry is enforced by PyJWT during signature verification, so an expired
             # subject token also lands here.
@@ -678,8 +679,12 @@ class TokenParams:
             raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        if not provider:
+        if provider:
+            self.user = resolved_user
+        else:
             self.__create_user_from_jwt(token, app, source, request)
+
+        self.__post_init_token_exchange_actor(request)
 
         method_args = {
             "jwt": token,
@@ -698,6 +703,63 @@ class TokenParams:
                 PLAN_CONTEXT_APPLICATION: app,
             },
         ).from_http(request, user=self.user)
+
+    def __post_init_token_exchange_actor(self, request: HttpRequest):
+        """RFC 8693 §4.1 delegation: validate an optional `actor_token`, identifying who
+        is actually exercising the resulting token (e.g. an Actor acting for the
+        verified subject_token's human).
+
+        Actors without an owner (`parent=None`) may only be used via a JWT actor_token.
+        Actors with an owner may be used via a JWT *or* an authentik built-in Token,
+        but only by the human that owns them (`actor.parent_id == self.user.pk`)."""
+        actor_token = request.POST.get("actor_token", "")
+        actor_token_type = request.POST.get("actor_token_type", "")
+        if not actor_token and not actor_token_type:
+            return
+        if not actor_token or not actor_token_type:
+            LOGGER.warning("Missing actor_token or actor_token_type")
+            raise TokenExchangeError("invalid_request").with_cause("missing_actor_token")
+        if actor_token_type not in ACTOR_TOKEN_TYPES:
+            LOGGER.warning("Unsupported actor token type", token_type=actor_token_type)
+            raise TokenExchangeError("invalid_request").with_cause("unsupported_actor_token_type")
+
+        if actor_token_type == TOKEN_TYPE_URI_AUTHENTIK_TOKEN:
+            # Built-in tokens: only valid for actors with an owner -- same lookup idiom as
+            # TokenAuthentication.auth_user_lookup (authentik/api/authentication.py).
+            # Token.objects excludes expired tokens by default (ExpiringManager).
+            key_token = Token.objects.filter(
+                key=actor_token, intent=TokenIntents.INTENT_API
+            ).first()
+            if not key_token:
+                LOGGER.warning("Actor token not found")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
+            # Actor.objects excludes expired actors by default (ExpiringManager), so an
+            # expired actor_token's user simply won't resolve here.
+            actor = Actor.objects.filter(pk=key_token.user_id).first()
+            if not actor or actor.parent_id != self.user.pk:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+        else:
+            # TOKEN_TYPE_URI_JWT: verified via the same federation-provider trust used
+            # for subject_token.
+            # Only the provider-federation path applies -- Actors are authentik-internal
+            # service accounts, never externally-sourced identities, so the source/JWKS
+            # path (__validate_jwt_from_source) does not apply here.
+            token, _provider, resolved_user = self.__validate_jwt_from_provider(actor_token)
+            if not token:
+                LOGGER.warning("Actor token not found")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
+            actor = Actor.objects.filter(pk=resolved_user.pk).first()
+            if not actor:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+            # Ownerless actors (parent=None) are allowed via JWT with no ownership check;
+            # owned actors must still belong to the verified subject.
+            if actor.parent_id is not None and actor.parent_id != self.user.pk:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+
+        self.actor = actor
 
     def __create_user_from_jwt(
         self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
@@ -1030,6 +1092,7 @@ class TokenView(View):
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.user,
+            actor=self.params.actor,
             expires=access_token_expiry,
             scope=self.params.scope,
             auth_time=now,

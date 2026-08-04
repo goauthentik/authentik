@@ -12444,9 +12444,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa4ad8a8c594e1355">
   <source>Override property mappings</source>
 </trans-unit>
-<trans-unit id="s476bf94eb185f36c">
-  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
-</trans-unit>
 <trans-unit id="s9c21e17fba762b70">
   <source>Access token validity</source>
 </trans-unit>
@@ -12497,6 +12494,51 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="user-switcher.actions.sign-out-current.label">
   <source>Sign out current user</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.label">
+  <source>Map tiles</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.description">
+  <source>Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login.label">
+  <source>Login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login-failed.label">
+  <source>Failed login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.logout.label">
+  <source>Logout</source>
+</trans-unit>
+<trans-unit id="events.map.kind.authorize-application.label">
+  <source>Authorize Application</source>
+</trans-unit>
+<trans-unit id="events.map.kind.other.label">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="s0ef37c2c3c5770e4">
+  <source>Adding</source>
+</trans-unit>
+<trans-unit id="sf1d3d13eaff0f517">
+  <source>Enable automatic discovery of remote resources.</source>
+</trans-unit>
+<trans-unit id="s9d1116ec684cc9dc">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, scope mappings of the parent provider are used.</source>
+</trans-unit>
+<trans-unit id="s5a64cc153009e9fb">
+  <source>Dynamic Client Registration URL</source>
+</trans-unit>
+<trans-unit id="scb836fa821092872">
+  <source>Successfully deleted Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="sf21f2ef85ea4c84b">
+  <source>Failed to delete Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="s36865a6d374ff739">
+  <source>Delete Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="s2242f5c6b4625d84">
+  <source>Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.</source>
 </trans-unit>
 </body>
 </file>

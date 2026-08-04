@@ -1,5 +1,6 @@
 # Integrations
 ADOM
+Apereo
 appflowy
 appsmith
 Ascensio

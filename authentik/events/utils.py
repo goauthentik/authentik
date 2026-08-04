@@ -23,7 +23,7 @@ from guardian.conf import settings
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
-from authentik.core.models import User
+from authentik.core.models import User, UserTypes
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.policies.types import PolicyRequest
@@ -93,6 +93,12 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
+    # Actions performed by an actor are recorded on behalf of its parent, so the
+    # audit log always ties the activity back to a responsible human.
+    if getattr(user, "type", None) == UserTypes.SERVICE_ACCOUNT and hasattr(user, "actor"):
+        user_data["is_agent"] = True
+        # FIXME: This will need to be adjusted for OAuth OBO
+        user_data["on_behalf_of"] = get_user(user.actor.parent)
     return user_data
 
 
