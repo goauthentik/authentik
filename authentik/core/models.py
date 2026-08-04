@@ -1656,7 +1656,7 @@ class Actor(ExpiringModel, User):
     def for_user(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
         prefix = f"{user.username}" if user else "global"
         actor = Actor.objects.create(
-            username=f"{prefix}-{generate_id()}",
+            username=f"{prefix}-{generate_id()}"[:USERNAME_MAX_LENGTH],
             parent=user,
             policy_behavior=policy_behavior,
             type=UserTypes.SERVICE_ACCOUNT,

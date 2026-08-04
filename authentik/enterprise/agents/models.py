@@ -2,6 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
+    USERNAME_MAX_LENGTH,
     Actor,
     ActorPolicyInheritance,
     User,
@@ -31,7 +32,7 @@ class Agent(Actor):
         # and disable password auth. It authenticates through its issued API token. By default
         # it MIRRORs its parent, so it can never exceed the access of the user it acts for.
         agent = cls.objects.create(
-            username=f"agent-{generate_id()}",
+            username=f"{user.username}-agent-{generate_id()}"[:USERNAME_MAX_LENGTH],
             name=name,
             parent=user,
             policy_behavior=policy_behavior,
