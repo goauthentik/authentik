@@ -1,8 +1,8 @@
 ---
-title: Log in with CAS
-sidebar_label: CAS
+title: Log in with Apereo CAS
+sidebar_label: Apereo CAS
 description: "Integrate Apereo CAS as a source in authentik"
-tags: [source, cas]
+tags: [source, cas, Apereo CAS, Apereo]
 ---
 
 This source lets users authenticate with their Apereo CAS credentials by configuring CAS as a federated identity provider with OpenID Connect.
@@ -36,7 +36,7 @@ cas.authn.oidc.jwks.file-system.jwks-file=file:/etc/cas/oidc/keystore.jwks
 cas.authn.oauth.core.user-profile-view-type=FLAT
 ```
 
-:::caution
+:::caution User profile view type
 `cas.authn.oauth.core.user-profile-view-type` defaults to `NESTED`, which wraps every claim in an `attributes` object:
 
 ```json
