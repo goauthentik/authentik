@@ -1,20 +1,20 @@
 import "../EmptyState.js";
 
-import { akEmptyState, type IEmptyState } from "../EmptyState.js";
+import { akEmptyState, EmptyState } from "../EmptyState.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html, nothing, TemplateResult } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-type StoryArgs = IEmptyState & {
+type StoryArgs = EmptyState & {
     headingText?: string | TemplateResult;
     bodyText?: string | TemplateResult;
     primaryButtonText?: string | TemplateResult;
 };
 
 const metadata: Meta<StoryArgs> = {
-    title: "Elements / <ak-empty-state>",
+    title: "Elements / Empty State",
     component: "ak-empty-state",
     tags: ["autodocs"],
     parameters: {
@@ -135,7 +135,7 @@ export const WithAction: Story = {
         icon: "fa-users",
         headingText: "No users yet",
         bodyText: "Get started by creating your first user account.",
-        primaryButtonText: html`<button>Create User</button>`,
+        primaryButtonText: "Create User",
     },
 };
 
@@ -164,6 +164,7 @@ export const LoadingWithDefaultMessage: Story = {
 export const LoadingDefaultWithOverride: Story = {
     ...Template,
     args: {
+        icon: "fa-search",
         defaultLabel: true,
         headingText: html`<span>Have they got a chance? Eh. It would take a miracle.</span>`,
     },
@@ -173,7 +174,7 @@ export const LoadingDefaultWithButton: Story = {
     ...Template,
     args: {
         defaultLabel: true,
-        primaryButtonText: html`<button>Cancel</button>`,
+        primaryButtonText: html`Cancel`,
     },
 };
 
@@ -184,7 +185,7 @@ export const FullHeight: Story = {
         headingText: "No search results",
         bodyText: "Try adjusting your search criteria or browse our categories.",
         fullHeight: true,
-        primaryButtonText: html`<button>Go back</button>`,
+        primaryButtonText: html`Go back`,
     },
 };
 
@@ -194,7 +195,7 @@ export const ProgrammaticUsage: Story = {
         icon: "fa-beer",
         headingText: "Hold My Beer",
         bodyText: "I saw this in a cartoon once. I'm sure I can pull it off.",
-        primaryButtonText: html`<button>Leave The Scene Immediately</button>`,
+        primaryButtonText: "Leave The Scene Immediately",
     },
     render: (args) =>
         akEmptyState(
@@ -213,6 +214,76 @@ export const ProgrammaticUsage: Story = {
                     : undefined,
             },
         ),
+};
+
+export const Sizes: Story = {
+    args: {},
+    render: () =>
+        html` <p>
+                Aside from extra-small and extra-large, the others only change the max-width of the
+                component.
+            </p>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;"
+            >
+                <ak-empty-state icon="fa-folder-open" size="xs">
+                    <span>Extra Small (xs)</span>
+                    <span slot="body">Always Read The Fine Print</span>
+                </ak-empty-state>
+                <ak-empty-state icon="fa-folder-open" size="sm">
+                    <span>Small (sm)</span>
+                    <span slot="body">Let's Get Small</span>
+                </ak-empty-state>
+                <ak-empty-state icon="fa-folder-open" size="md">
+                    <span>Medium (md)</span>
+                    <span slot="body"
+                        >It's called a medium because it is neither rare nor well done</span
+                    >
+                </ak-empty-state>
+                <ak-empty-state icon="fa-folder-open" size="lg">
+                    <span>Large (lg)</span>
+                    <span slot="body">Living Large Is The Best Revenge</span>
+                </ak-empty-state>
+                <ak-empty-state icon="fa-folder-open" size="xl">
+                    <span>Extra Large (xl)</span>
+                    <span slot="body">Be excellent to each other!</span>
+                </ak-empty-state>
+            </div>`,
+};
+
+export const CompactSizes: Story = {
+    args: {},
+    render: () =>
+        html` <p>
+                These mostly reduce vertical gaps by a small amount between different parts of the
+                EmptyState card.
+            </p>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;"
+            >
+                <ak-empty-state compact icon="fa-folder-open" size="xs">
+                    <span>Extra Small (xs)</span>
+                    <span slot="body">Always Read The Fine Print</span>
+                </ak-empty-state>
+                <ak-empty-state compact icon="fa-folder-open" size="sm">
+                    <span>Small (sm)</span>
+                    <span slot="body">Let's Get Small</span>
+                </ak-empty-state>
+                <ak-empty-state compact icon="fa-folder-open" size="md">
+                    <span>Medium (md)</span>
+                    <span slot="body"
+                        >It's called a medium because it is neither rare nor well done</span
+                    >
+                </ak-empty-state>
+                <ak-empty-state compact icon="fa-folder-open" size="lg">
+                    <span>Large (lg)</span>
+                    <span slot="body">Living Large Is The Best Revenge</span>
+                </ak-empty-state>
+                <ak-empty-state compact icon="fa-folder-open" size="xl">
+                    <span>Extra Large (xl)</span>
+                    <span slot="body">Be excellent to each other!</span>
+                </ak-empty-state>
+            </div>`,
 };
 
 export const IconShowcase: Story = {

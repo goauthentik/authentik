@@ -45,3 +45,10 @@
     font-style: italic;
     font-display: fallback;
 }
+
+@font-face {
+    font-family: "pficon";
+    src:
+        url("./pficon.woff2") format("woff2"),
+        url("./pficon.woff") format("woff");
+}
