@@ -413,7 +413,7 @@ class TestTokenExchange(OAuthTestCase):
         """test RFC 8693 §4.1 delegation: subject_token identifies the human, actor_token
         identifies an Actor the human controls -- the issued token's `sub` stays the
         human (unchanged), and `act` records the actor"""
-        actor = Actor.actor_for(self.user, ActorPolicyInheritance.NONE)
+        actor = Actor.for_user(self.user, ActorPolicyInheritance.NONE)
         actor_token = self._actor_token_jwt(actor)
 
         response = self.client.post(
