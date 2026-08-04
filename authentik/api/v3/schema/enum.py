@@ -53,7 +53,7 @@ def enum_labels(choices: Iterable[tuple[object, object]]) -> list[str]:
 
 
 class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):
-    """Emit enum labels/varnames only for opt-in GeneratedEnumChoiceField fields."""
+    """Emit enum varnames only for opt-in GeneratedEnumChoiceField fields."""
 
     target_class = GeneratedEnumChoiceField
     match_subclasses = True
@@ -68,11 +68,7 @@ class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):
         enum_schema = schema.get("items", schema)
         with override(settings.LANGUAGE_CODE):
             choices = list(self.target.choices.items())
-            labels = enum_labels(choices)
             names = enum_var_names(choices)
-        values = [str(value) for value, _ in choices if value not in ("", None)]
-        if labels != values:
-            enum_schema["x-enum-labels"] = labels
         if names:
             enum_schema["x-enum-varnames"] = names
         return schema
@@ -226,14 +222,12 @@ def postprocess_schema_enums(result, generator, **kwargs):  # noqa: PLR0912, PLR
 
             # split property into remaining property and enum component parts
             enum_schema = {
-                k: v
-                for k, v in prop_schema.items()
-                if k in ["type", "enum", "x-enum-labels", "x-enum-varnames"]
+                k: v for k, v in prop_schema.items() if k in ["type", "enum", "x-enum-varnames"]
             }
             prop_schema = {
                 k: v
                 for k, v in prop_schema.items()
-                if k not in ["type", "enum", "x-enum-labels", "x-enum-varnames", "x-spec-enum-id"]
+                if k not in ["type", "enum", "x-enum-varnames", "x-spec-enum-id"]
             }
 
             # separate actual description from name-value tuples

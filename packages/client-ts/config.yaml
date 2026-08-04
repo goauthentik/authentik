@@ -7,7 +7,3 @@ additionalProperties:
     fileContentDataType: Blob
     enumUnknownDefaultCase: true
     useObjectParameters: true
-files:
-    metadata.mustache:
-        templateType: SupportingFiles
-        destinationFilename: src/metadata.ts
