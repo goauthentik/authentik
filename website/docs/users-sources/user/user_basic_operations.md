@@ -1,5 +1,6 @@
 ---
 title: Manage users
+sidebar_position: 3
 ---
 
 Use these procedures to create, modify, deactivate, delete, and recover users.

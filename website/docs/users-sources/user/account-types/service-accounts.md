@@ -1,18 +1,22 @@
 ---
 title: Service accounts
 sidebar_label: Service accounts
+sidebar_position: 3
 ---
 
 Service accounts are specialized user accounts for machine-to-machine authentication and automation. Use them when an external service, script, integration, or protocol client needs to authenticate to authentik without representing a human user.
 
 Common examples include LDAP bind users, automation that calls the authentik API, SCIM or outpost-related integrations, and third-party applications that need a stable credential.
 
+For an overview of all account types, see [Account types](./).
+
 ## Types of service accounts
 
-authentik has two service account types:
+authentik has three service account types:
 
 - **User-created service accounts**: accounts created by administrators for external systems or automation. These accounts appear under **Directory** > **Users** with the `Service account` user type.
 - **Internal service accounts**: accounts created and managed by authentik for internal components, such as outpost communication. These accounts cannot be created manually, converted to another user type, or edited like regular users.
+- **Agent accounts**: accounts that act on behalf of a parent user. See [Agent accounts](./agent-accounts.md)
 
 ## How service accounts work
 
@@ -58,7 +62,7 @@ Service account tokens have the following properties:
 
 - **Expiration**: by default, tokens expire after 360 days but can be configured to be non-expiring.
 - **Custom expiration date**: you can set a specific expiration date when creating the service account.
-- **Revocation**: tokens can be revoked at any time by deleting them or generating new ones. OAuth2 access tokens associated with service accounts can also be introspected or revoked through the OAuth2 provider endpoints when the authenticating provider is the issuing provider or is configured for [cross-provider token introspection and revocation](../add-secure-apps/providers/oauth2/index.mdx#cross-provider-token-introspection-and-revocation).
+- **Revocation**: tokens can be revoked at any time by deleting them or generating new ones. OAuth2 access tokens associated with service accounts can also be introspected or revoked through the OAuth2 provider endpoints when the authenticating provider is the issuing provider or is configured for [cross-provider token introspection and revocation](../../../add-secure-apps/providers/oauth2/index.mdx#cross-provider-token-introspection-and-revocation).
 - **Automatic rotation**: when a token expires, authentik automatically rotates API tokens to maintain security.
 
 ## Manage service account tokens
@@ -110,9 +114,9 @@ You can grant access in the same ways as regular users:
 - Add the service account to a group and grant permissions to that group.
 - Add the service account to a role and grant global or object permissions to that role.
 - Grant object permissions directly to the service account when access should not be shared with other accounts.
-- Use application [bindings](../add-secure-apps/applications/manage_apps.mdx#use-bindings-to-control-access) or policies to restrict which applications the service account can access.
+- Use application [bindings](../../../add-secure-apps/applications/manage_apps.mdx#use-bindings-to-control-access) or policies to restrict which applications the service account can access.
 
-For more information about assigning permissions, see [Manage permissions](../users-sources/access-control/manage_permissions.md).
+For more information about assigning permissions, see [Manage permissions](../../access-control/manage_permissions.md).
 
 ### Example: LDAP search account
 
@@ -124,7 +128,7 @@ LDAP clients often need a bind account that can search the LDAP directory. In th
 4. Add the service account to that role.
 5. On the LDAP provider, assign the role the **Search full LDAP directory** object permission.
 
-For the full LDAP setup, see [Create an LDAP provider](../add-secure-apps/providers/ldap/create-ldap-provider.mdx#create-a-service-account).
+For the full LDAP setup, see [Create an LDAP provider](../../../add-secure-apps/providers/ldap/create-ldap-provider.mdx#create-a-service-account).
 
 ### Example: API automation account
 
