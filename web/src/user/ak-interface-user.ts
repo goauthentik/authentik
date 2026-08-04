@@ -13,6 +13,7 @@ import { WebsocketClient } from "#common/ws/WebSocketClient";
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { ifPresent } from "#elements/utils/attributes";
@@ -31,6 +32,8 @@ import { ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -47,7 +50,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-interface-user")
 class UserInterface extends WithLicenseSummary(
-    WithBrandConfig(WithSession(AuthenticatedInterface)),
+    WithBrandConfig(WithSession(WithCapabilitiesConfig(AuthenticatedInterface))),
 ) {
     public static readonly styles = [
         PFDisplay,
@@ -141,6 +144,19 @@ class UserInterface extends WithLicenseSummary(
 
         const backgroundStyles = this.uiConfig.theme.background;
 
+        const navItems = [{ label: msg("Applications"), link: "/library" }];
+        // Requests are an enterprise feature, can be disabled for the user interface
+        // and are only shown when the admin has configured at least one request rule
+        // We can't easily check if this user actually has something they can request,
+        // that is a semi-expensive request
+        if (
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
+            this.uiConfig.enabledFeatures.requests &&
+            this.can(CapabilitiesEnum.CanRequest)
+        ) {
+            navItems.push({ label: msg("Discover"), link: "/requests" });
+        }
+
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
@@ -165,23 +181,12 @@ class UserInterface extends WithLicenseSummary(
                             })}
                         </a>
                     </div>
-                    <ak-nav-tabs
-                        class="pf-c-page__header-nav"
-                        .items=${[
-                            { label: msg("Applications"), link: "/library" },
-                            { label: msg("Discover"), link: "/requests" },
-                            ...(this.brand?.flags.enterpriseAgentAllowAny
-                                ? [
-                                      {
-                                          label: msg("Agents", {
-                                              id: "agent.verbose-name-plural.label",
-                                          }),
-                                          link: "/agents",
-                                      },
-                                  ]
-                                : []),
-                        ]}
-                    ></ak-nav-tabs>
+                    ${navItems.length > 1
+                        ? html`<ak-nav-tabs
+                              class="pf-c-page__header-nav"
+                              .items=${navItems}
+                          ></ak-nav-tabs>`
+                        : nothing}
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">

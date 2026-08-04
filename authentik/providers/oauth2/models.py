@@ -565,7 +565,7 @@ class BaseGrantModel(models.Model):
         AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
     )
     # RFC 8693 §4.1 delegation: set when this grant was obtained via a token-exchange
-    # request presenting an `actor_token` (e.g. a Persona's own API token) alongside the
+    # request presenting an `actor_token` (e.g. an Actor's own API token) alongside the
     # `subject_token` -- `user` above stays the subject (unchanged), `actor` records who
     # is actually exercising the token, and is mirrored into the issued token's `act` claim.
     actor = models.ForeignKey(

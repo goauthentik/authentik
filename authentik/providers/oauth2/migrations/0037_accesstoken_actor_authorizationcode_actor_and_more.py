@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_oauth2", "0036_oauth2dynamicclientregistration"),
+        ("authentik_providers_oauth2", "0036_dynamicclientregistrationpropertymapping_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

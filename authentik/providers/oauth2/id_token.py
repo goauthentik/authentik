@@ -73,7 +73,7 @@ class IDToken:
     # Confirmation JWK, https://datatracker.ietf.org/doc/html/rfc7800#section-3
     cnf: dict | None = None
     # Authorized Actor, RFC 8693 §4.1 delegation -- present when this token was issued
-    # via token exchange with an `actor_token` (e.g. a Persona acting for `sub`).
+    # via token exchange with an `actor_token` (e.g. an Actor acting for `sub`).
     # https://datatracker.ietf.org/doc/html/rfc8693#section-4.1
     act: dict | None = None
 
@@ -129,7 +129,7 @@ class IDToken:
             id_token.claims = user_info.get_claims(token.provider, token)
 
         # RFC 8693 §4.1 delegation: `sub` above stays the subject (unchanged); `act`
-        # records who is actually exercising the token (e.g. a Persona acting for a
+        # records who is actually exercising the token (e.g. an Actor acting for a
         # human), when the token-exchange request presented an `actor_token`.
         actor = getattr(token, "actor", None)
         if actor:

@@ -30,7 +30,7 @@ axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-key-expansion",
 ] }
 base64 = "= 0.23.0"
-clap = { version = "= 4.6.4", features = ["derive", "env"] }
+clap = { version = "= 4.6.5", features = ["derive", "env"] }
 client-ip = { version = "0.2.1" }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
@@ -140,6 +140,7 @@ tower = "= 0.5.3"
 tower-http = { version = "= 0.7.0", features = [
   "compression-full",
   "fs",
+  "limit",
   "timeout",
 ] }
 tracing = "= 0.1.44"
@@ -275,7 +276,6 @@ verbose_file_reads = "warn"
 opt-level = 3
 
 [profile.release]
-debug = 2
 lto = "fat"
 strip = true
 

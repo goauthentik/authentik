@@ -37892,6 +37892,13 @@ components:
           type: string
         branding_default_flow_background:
           type: string
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
           type: string
           format: uuid
@@ -37976,6 +37983,13 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
           type: string
           format: uuid
@@ -38059,6 +38073,7 @@ components:
       - can_impersonate
       - can_debug
       - is_enterprise
+      - can_request
       type: string
     CaptchaChallenge:
       type: object
@@ -38987,6 +39002,8 @@ components:
           nullable: true
         branding_custom_css:
           type: string
+        branding_map_tiles:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -39042,6 +39059,7 @@ components:
       - branding_favicon_themed_urls
       - branding_logo
       - branding_logo_themed_urls
+      - branding_map_tiles
       - branding_title
       - default_locale
       - flags
@@ -42013,6 +42031,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -42193,6 +42215,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -45066,6 +45092,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
@@ -45240,6 +45270,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           minLength: 1
@@ -46300,8 +46334,13 @@ components:
         jwks:
           type: string
           readOnly: true
+        dcr_registration:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - authorize
+      - dcr_registration
       - issuer
       - jwks
       - logout
@@ -50482,6 +50521,13 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
           type: string
           format: uuid
@@ -51233,6 +51279,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
     PatchedGrantRequestFulfillRequest:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -51944,6 +51994,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           minLength: 1
@@ -53405,6 +53459,10 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
@@ -57749,6 +57807,10 @@ components:
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
@@ -57878,6 +57940,10 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
