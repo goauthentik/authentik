@@ -88,16 +88,18 @@ ak version
 
 ## View logs
 
-The system agent writes its output to a log file:
+Both the system agent and the user agent use macOS's native logging abilities. To retrieve their logs, open the Console application and filter for the process you're interested in, or run one of the following commands.
+
+For the system agent:
 
 ```sh
-sudo tail -f /Library/Logs/io.goauthentik/sysd.log
+log show --predicate 'process == "ak-sysd"'
 ```
 
-The user agent uses macOS's native logging abilities. To retrieve its logs, open the Console application and filter for the `ak-agent-desktop` process, or run:
+For the user agent:
 
 ```sh
-log show --last 30m --predicate 'process == "ak-agent-desktop"' --info --debug
+log show --predicate 'process == "ak-agent-desktop"'
 ```
 
 ## Report issues
