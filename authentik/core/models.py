@@ -1653,7 +1653,7 @@ class Actor(ExpiringModel, User):
             binding.save()
 
     @staticmethod
-    def actor_for(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
+    def for_user(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
         prefix = f"{user.username}" if user else "global"
         actor = Actor.objects.create(
             username=f"{prefix}-{generate_id()}",
