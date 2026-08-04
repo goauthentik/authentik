@@ -65,6 +65,7 @@ SPSSO
 SVGOMG
 SeaweedFS
 Sfdc
+Symfony
 TOTP
 Transifex
 Unenrollment
