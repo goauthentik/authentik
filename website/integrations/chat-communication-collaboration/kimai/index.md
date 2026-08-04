@@ -42,7 +42,7 @@ Kimai imports SAML users during their first login. To assign Kimai roles from au
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
         - Set the **SLS URL** to `https://kimai.company/auth/saml/logout`.
         - Set the **SLS Binding** to `Redirect`.
-        - Set the **Logout Method** to `Front-channel (Native)`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
         - Set the **Audience** to `https://kimai.company/`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**:
@@ -146,7 +146,9 @@ Afterwards, rebuild the Kimai cache or restart the Docker container.
 
 Kimai's SAML logout endpoint is only reachable through the Symfony firewall. By default, Kimai points the firewall's logout path at its own local logout route, so `https://kimai.company/auth/saml/logout` never processes the logout request that authentik sends, and the Kimai session survives.
 
-To let authentik end Kimai sessions, repoint the firewall's logout path at the SAML route by adding the following block to the same `local.yaml` file:
+Kimai also enables `always_remember_me` by default. Even after the logout request is processed correctly, Kimai reissues its `REMEMBERME` cookie during the logout redirect, which signs the user back in on their next request and makes the logout appear to have no effect.
+
+To let authentik end Kimai sessions, add the following block to the same `local.yaml` file. This changes the firewall's logout path to the SAML route and stops Kimai from issuing a persistent login cookie:
 
 ```yaml title="/opt/kimai/config/packages/local.yaml"
 security:
@@ -156,18 +158,27 @@ security:
                 path: /auth/saml/logout
                 target: homepage
                 enable_csrf: false
+            remember_me:
+                secret: "%kernel.secret%"
+                lifetime: 604800
+                path: /
+                always_remember_me: false
 ```
 
-Restart Kimai, then confirm that the setting applied:
+Restart Kimai, then confirm that both settings applied:
 
 ```bash
 php bin/console debug:config security firewalls
 ```
 
-The `logout` section should report `path: /auth/saml/logout`.
+The `logout` section should report `path: /auth/saml/logout`, and the `remember_me` section should report `always_remember_me: false`.
 
 :::info
-This setting also changes where Kimai's own **Log out** button sends users, because both use the firewall's logout path.
+Disabling `always_remember_me` means users are no longer kept signed in to Kimai across browser sessions. If you need persistent logins, keep the setting enabled and accept that authentik cannot fully end a Kimai session.
+:::
+
+:::caution
+Changing the firewall's logout path also changes what Kimai's own **Log out** button does, because both use the same path. Kimai's local logout route no longer has a controller behind it and returns an error when opened directly.
 :::
 
 ## Configuration verification
