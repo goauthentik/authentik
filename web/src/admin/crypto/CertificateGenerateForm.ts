@@ -4,6 +4,7 @@ import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
+import { openAPIEnumOptions } from "#common/api/enums";
 
 import { Form } from "#elements/forms/Form";
 
@@ -63,25 +64,10 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
 
             <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
                 <ak-radio
-                    .options=${[
-                        {
-                            label: msg("RSA"),
-                            value: AlgEnum.Rsa,
-                            default: true,
-                        },
-                        {
-                            label: msg("ECDSA"),
-                            value: AlgEnum.Ecdsa,
-                        },
-                        {
-                            label: msg("ED25519"),
-                            value: AlgEnum.Ed25519,
-                        },
-                        {
-                            label: msg("ED448"),
-                            value: AlgEnum.Ed448,
-                        },
-                    ]}
+                    .options=${openAPIEnumOptions(AlgEnum).map((option) => ({
+                        ...option,
+                        default: option.value === AlgEnum.RSA,
+                    }))}
                 >
                 </ak-radio>
                 <p class="pf-c-form__helper-text">

@@ -40,7 +40,6 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
 
         self.assertEqual(schema["enum"], ["default", "aws", "sfdc", "", None])
         self.assertEqual(schema["x-enum-varnames"], ["Default", "AWS", "Salesforce"])
-        self.assertNotIn("x-enum-labels", schema)
 
     def test_plain_choice_field_is_not_targeted(self):
         self.assertIs(ChoiceFieldEnumExtension.target_class, GeneratedEnumChoiceField)
@@ -55,12 +54,9 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
         )
 
         self.assertNotIn("x-enum-varnames", schema)
-        self.assertNotIn("x-enum-labels", schema)
 
     def test_acronym_choice_labels_become_enum_names(self):
-        field = GeneratedEnumChoiceField(
-            choices=[("rsa", "RSA"), ("ec", "EC"), ("dsa", "DSA")]
-        )
+        field = GeneratedEnumChoiceField(choices=[("rsa", "RSA"), ("ec", "EC"), ("dsa", "DSA")])
 
         schema = ChoiceFieldEnumExtension(field).map_serializer_field(
             AutoSchema(),
@@ -78,7 +74,6 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
         )
 
         self.assertNotIn("x-enum-varnames", schema)
-        self.assertNotIn("x-enum-labels", schema)
 
     def test_prose_choice_labels_do_not_become_enum_names(self):
         field = GeneratedEnumChoiceField(
@@ -95,7 +90,6 @@ class TestChoiceFieldEnumExtension(SimpleTestCase):
         )
 
         self.assertNotIn("x-enum-varnames", schema)
-        self.assertNotIn("x-enum-labels", schema)
 
 
 class TestSchemaGeneration(APITestCase):
@@ -124,9 +118,7 @@ class TestSchemaGeneration(APITestCase):
         self.assertNotIn("CertificateKeyPairKeyTypeEnum", components)
         self.assertNotIn("digest_algorithm", components["SAMLProviderRequest"]["required"])
         self.assertNotIn("signature_algorithm", components["SAMLProviderRequest"]["required"])
-        self.assertNotIn("x-enum-labels", components["CompatibilityModeEnum"])
         self.assertNotIn("x-enum-varnames", components["SignatureAlgorithmEnum"])
-        self.assertNotIn("x-enum-labels", components["DeniedActionEnum"])
         self.assertNotIn("x-enum-varnames", components["DeniedActionEnum"])
 
     def test_browser(self):

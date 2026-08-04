@@ -35,7 +35,7 @@ type CertificateKeyPair struct {
 	// Show if this keypair has a private key configured or not
 	PrivateKeyAvailable bool `json:"private_key_available"`
 	// Key algorithm type detected from the certificate's public key
-	KeyType NullableCertificateKeyPairKeyTypeEnum `json:"key_type"`
+	KeyType NullableKeyTypeEnum `json:"key_type,omitempty"`
 	// Get URL to download certificate
 	CertificateDownloadUrl string `json:"certificate_download_url"`
 	// Get URL to download private key
@@ -51,7 +51,7 @@ type _CertificateKeyPair CertificateKeyPair
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewCertificateKeyPair(pk string, name string, fingerprintSha256 NullableString, fingerprintSha1 NullableString, certExpiry NullableTime, certSubject NullableString, privateKeyAvailable bool, keyType NullableCertificateKeyPairKeyTypeEnum, certificateDownloadUrl string, privateKeyDownloadUrl string, managed NullableString) *CertificateKeyPair {
+func NewCertificateKeyPair(pk string, name string, fingerprintSha256 NullableString, fingerprintSha1 NullableString, certExpiry NullableTime, certSubject NullableString, privateKeyAvailable bool, certificateDownloadUrl string, privateKeyDownloadUrl string, managed NullableString) *CertificateKeyPair {
 	this := CertificateKeyPair{}
 	this.Pk = pk
 	this.Name = name
@@ -60,7 +60,6 @@ func NewCertificateKeyPair(pk string, name string, fingerprintSha256 NullableStr
 	this.CertExpiry = certExpiry
 	this.CertSubject = certSubject
 	this.PrivateKeyAvailable = privateKeyAvailable
-	this.KeyType = keyType
 	this.CertificateDownloadUrl = certificateDownloadUrl
 	this.PrivateKeyDownloadUrl = privateKeyDownloadUrl
 	this.Managed = managed
@@ -251,30 +250,47 @@ func (o *CertificateKeyPair) SetPrivateKeyAvailable(v bool) {
 	o.PrivateKeyAvailable = v
 }
 
-// GetKeyType returns the KeyType field value
-// If the value is explicit nil, the zero value for CertificateKeyPairKeyTypeEnum will be returned
-func (o *CertificateKeyPair) GetKeyType() CertificateKeyPairKeyTypeEnum {
-	if o == nil || o.KeyType.Get() == nil {
-		var ret CertificateKeyPairKeyTypeEnum
+// GetKeyType returns the KeyType field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CertificateKeyPair) GetKeyType() KeyTypeEnum {
+	if o == nil || IsNil(o.KeyType.Get()) {
+		var ret KeyTypeEnum
 		return ret
 	}
-
 	return *o.KeyType.Get()
 }
 
-// GetKeyTypeOk returns a tuple with the KeyType field value
+// GetKeyTypeOk returns a tuple with the KeyType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *CertificateKeyPair) GetKeyTypeOk() (*CertificateKeyPairKeyTypeEnum, bool) {
+func (o *CertificateKeyPair) GetKeyTypeOk() (*KeyTypeEnum, bool) {
 	if o == nil {
 		return nil, false
 	}
 	return o.KeyType.Get(), o.KeyType.IsSet()
 }
 
-// SetKeyType sets field value
-func (o *CertificateKeyPair) SetKeyType(v CertificateKeyPairKeyTypeEnum) {
+// HasKeyType returns a boolean if a field has been set.
+func (o *CertificateKeyPair) HasKeyType() bool {
+	if o != nil && o.KeyType.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetKeyType gets a reference to the given NullableKeyTypeEnum and assigns it to the KeyType field.
+func (o *CertificateKeyPair) SetKeyType(v KeyTypeEnum) {
 	o.KeyType.Set(&v)
+}
+
+// SetKeyTypeNil sets the value for KeyType to be an explicit nil
+func (o *CertificateKeyPair) SetKeyTypeNil() {
+	o.KeyType.Set(nil)
+}
+
+// UnsetKeyType ensures that no value is present for KeyType, not even an explicit nil
+func (o *CertificateKeyPair) UnsetKeyType() {
+	o.KeyType.Unset()
 }
 
 // GetCertificateDownloadUrl returns the CertificateDownloadUrl field value
@@ -368,7 +384,9 @@ func (o CertificateKeyPair) ToMap() (map[string]interface{}, error) {
 	toSerialize["cert_expiry"] = o.CertExpiry.Get()
 	toSerialize["cert_subject"] = o.CertSubject.Get()
 	toSerialize["private_key_available"] = o.PrivateKeyAvailable
-	toSerialize["key_type"] = o.KeyType.Get()
+	if o.KeyType.IsSet() {
+		toSerialize["key_type"] = o.KeyType.Get()
+	}
 	toSerialize["certificate_download_url"] = o.CertificateDownloadUrl
 	toSerialize["private_key_download_url"] = o.PrivateKeyDownloadUrl
 	toSerialize["managed"] = o.Managed.Get()
@@ -392,7 +410,6 @@ func (o *CertificateKeyPair) UnmarshalJSON(data []byte) (err error) {
 		"cert_expiry",
 		"cert_subject",
 		"private_key_available",
-		"key_type",
 		"certificate_download_url",
 		"private_key_download_url",
 		"managed",

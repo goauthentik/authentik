@@ -20,8 +20,8 @@ class GeneratedEnumChoiceField(ChoiceField):
         field_kwargs: dict[str, Any] = {
             "choices": model_field.choices,
             "required": not (model_field.has_default() or model_field.blank or model_field.null),
-            "allow_null": bool(model_field.null),
-            "allow_blank": bool(getattr(model_field, "blank", False)),
+            "allow_null": model_field.null,
+            "allow_blank": model_field.blank,
         }
         if model_field.has_default() and not callable(model_field.default):
             field_kwargs["default"] = model_field.default
