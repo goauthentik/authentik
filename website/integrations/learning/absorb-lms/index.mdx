@@ -121,7 +121,7 @@ To support the integration of Absorb LMS with authentik, create one application/
     - **Key**: paste the authentik SAML signing certificate without the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines.
     - **ID Property**: `Username`
     - **Signature Type**: `SHA256`
-    - **Login URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
+    - **Login URL**: `https://authentik.company/application/saml/<application_slug>/`
 5.  Continue to the access step and select the **Assigned Routes** that should use this SSO configuration.
 6.  Enable **Automatically Redirect** if users should be sent directly to authentik when they open an assigned route.
 7.  Enable the **Single Logout** toggle, and then set the following values:
