@@ -34,7 +34,15 @@ To support the integration of Kimai with authentik, you need to create an applic
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
+<<<<<<< HEAD
         - Set the **Audience** to `https://kimai.company/auth/saml`.
+=======
+        - Set the **SLS URL** to `https://kimai.company/auth/saml/logout`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
+        - Set the **Audience** to `https://kimai.company/`.
+        - Set the **Service Provider Binding** to `Post`.
+>>>>>>> dd23c5438 (website/integrations: Update kimai for slo, urls, and issuer (#24730))
         - Under **Advanced protocol settings**:
             - Select an available **Signing certificate**.
             - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
@@ -90,7 +98,6 @@ kimai:
                 singleSignOnService:
                     url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
-                # the "single logout" feature was not yet tested, if you want to help, please let me know!
                 singleLogoutService:
                     url: "https://authentik.company/application/saml/<application_slug>/"
                     binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
@@ -140,8 +147,61 @@ kimai:
 
 <!-- prettier-ignore-end -->
 
+<<<<<<< HEAD
 Afterwards, either [rebuild the cache](https://www.kimai.org/documentation/cache.html) or restart the docker container.
 
 ## Resources
 
 - [Kimai Docs - SAML](https://www.kimai.org/documentation/saml.html)
+=======
+Afterwards, rebuild the Kimai cache or restart the Docker container.
+
+### Enable single logout _(optional)_
+
+Kimai's SAML logout endpoint is only reachable through the Symfony firewall. By default, Kimai points the firewall's logout path at its own local logout route, so `https://kimai.company/auth/saml/logout` never processes the logout request that authentik sends, and the Kimai session survives.
+
+Kimai also enables `always_remember_me` by default. Even after the logout request is processed correctly, Kimai reissues its `REMEMBERME` cookie during the logout redirect, which signs the user back in on their next request and makes the logout appear to have no effect.
+
+To let authentik end Kimai sessions, add the following block to the same `local.yaml` file. This changes the firewall's logout path to the SAML route and stops Kimai from issuing a persistent login cookie:
+
+```yaml title="/opt/kimai/config/packages/local.yaml"
+security:
+    firewalls:
+        secured_area:
+            logout:
+                path: /auth/saml/logout
+                target: homepage
+                enable_csrf: false
+            remember_me:
+                secret: "%kernel.secret%"
+                lifetime: 604800
+                path: /
+                always_remember_me: false
+```
+
+Restart Kimai, then confirm that both settings applied:
+
+```bash
+php bin/console debug:config security firewalls
+```
+
+The `logout` section should report `path: /auth/saml/logout`, and the `remember_me` section should report `always_remember_me: false`.
+
+:::info
+Disabling `always_remember_me` means users are no longer kept signed in to Kimai across browser sessions. If you need persistent logins, keep the setting enabled and accept that authentik cannot fully end a Kimai session.
+:::
+
+:::caution
+Changing the firewall's logout path also changes what Kimai's own **Log out** button does, because both use the same path. Kimai's local logout route no longer has a controller behind it and returns an error when opened directly.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Kimai, open Kimai, log out, and click **Log in with authentik**. You should be redirected to authentik to log in and then redirected back to Kimai. If you configured single logout, log out of authentik. Your browser passes through the Kimai logout endpoint on the way, and reloading Kimai returns you to its login page.
+
+## Resources
+
+- [Kimai SAML documentation](https://www.kimai.org/documentation/saml.html)
+- [Kimai Authentik SAML documentation](https://www.kimai.org/documentation/saml-authentik.html)
+- [Kimai discussion on configuring the SAML logout path](https://github.com/kimai/kimai/discussions/3206)
+>>>>>>> dd23c5438 (website/integrations: Update kimai for slo, urls, and issuer (#24730))

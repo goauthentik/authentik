@@ -62,6 +62,7 @@ SNPEGO
 SPSSO
 SVGOMG
 Sfdc
+Symfony
 TOTP
 Transifex
 Unenrollment
