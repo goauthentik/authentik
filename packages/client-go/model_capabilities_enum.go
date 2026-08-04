@@ -28,6 +28,7 @@ const (
 	CAPABILITIESENUM_CAN_IMPERSONATE  CapabilitiesEnum = "can_impersonate"
 	CAPABILITIESENUM_CAN_DEBUG        CapabilitiesEnum = "can_debug"
 	CAPABILITIESENUM_IS_ENTERPRISE    CapabilitiesEnum = "is_enterprise"
+	CAPABILITIESENUM_CAN_REQUEST      CapabilitiesEnum = "can_request"
 )
 
 // All allowed values of CapabilitiesEnum enum
@@ -39,6 +40,7 @@ var AllowedCapabilitiesEnumEnumValues = []CapabilitiesEnum{
 	"can_impersonate",
 	"can_debug",
 	"is_enterprise",
+	"can_request",
 }
 
 func (v *CapabilitiesEnum) UnmarshalJSON(src []byte) error {
