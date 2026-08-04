@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2026.8.0-rc1"
+version = "2026.11.0-rc1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.14.*"
@@ -9,7 +9,7 @@ dependencies = [
   "argon2-cffi==25.1.0",
   "cachetools==7.1.6",
   "channels==4.3.2",
-  "cryptography==49.0.0",
+  "cryptography==50.0.0",
   "dacite==1.9.2",
   "deepmerge==2.1.0",
   "defusedxml==0.7.1",
@@ -25,7 +25,7 @@ dependencies = [
   "django-prometheus==2.5.0",
   "django-storages[s3]==1.14.6",
   "django-tenants==3.10.2",
-  "django==5.2.15",
+  "django==5.2.16",
   "djangoql==0.19.1",
   "djangorestframework==3.17.1",
   "docker==7.2.0",
@@ -43,7 +43,7 @@ dependencies = [
   "kubernetes==36.0.3",
   "ldap3==2.9.1",
   "lxml==6.1.1",
-  "msgraph-sdk==1.59.2",
+  "msgraph-sdk==1.60.0",
   "msgspec==0.21.1",
   "opencontainers==0.0.15",
   "packaging==26.2",
@@ -76,23 +76,23 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.261.0",
+  "aws-cdk-lib==2.262.2",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",
   "colorama==0.4.6",
-  "constructs==10.7.1",
+  "constructs==10.7.2",
   "coverage[toml]==7.15.2",
   "daphne==4.2.3",
   "debugpy==1.8.21",
   "django-stubs[compatible-mypy]==6.0.7",
-  "djangorestframework-stubs[compatible-mypy]==3.17.0",
+  "djangorestframework-stubs[compatible-mypy]==3.17.1",
   "drf-jsonschema-serializer==3.0.0",
   "freezegun==1.5.5",
   "importlib-metadata==9.0.0",
   "k5test==0.10.4",
   "lxml-stubs==0.5.1",
-  "mypy==2.1.0",
+  "mypy==2.3.0",
   "pdoc==16.0.0",
   "pytest-django==4.12.0",
   "pytest-flakefinder==1.1.0",
@@ -101,10 +101,10 @@ dev = [
   "pytest-timeout==2.4.0",
   "pytest==9.1.1",
   "requests-mock==1.12.1",
-  "ruff==0.15.22",
+  "ruff==0.16.1",
   "selenium==4.46.0",
   "types-channels==4.3.0.20260518",
-  "types-docker==7.2.0.20260720",
+  "types-docker==7.2.0.20260724",
   "types-jwcrypto==1.5.8.20260720",
   "types-ldap3==2.9.13.20260518",
   "types-requests==2.33.0.20260712",

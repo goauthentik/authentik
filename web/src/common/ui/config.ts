@@ -11,6 +11,8 @@ export const DefaultBrand = {
     brandingFaviconThemedUrls: null,
     brandingTitle: "authentik",
     brandingCustomCss: "",
+    // Empty string selects the bundled hexworld basemap (no tile server needed).
+    brandingMapTiles: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
@@ -46,6 +48,8 @@ export interface UIConfig {
         applicationEdit: boolean;
         // Search bar
         search: boolean;
+        // Requests
+        requests: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
@@ -74,6 +78,7 @@ export const DefaultUIConfig = {
         settings: true,
         applicationEdit: true,
         search: true,
+        requests: true,
     },
     layout: {
         type: LayoutType.row,

@@ -13,6 +13,8 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/Divider";
+import "#admin/policies/BoundPoliciesList";
+import "../../../elements/forms/ConfirmationForm";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -24,6 +26,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import renderDescriptionList from "#components/DescriptionList";
 import { taskCard } from "#components/tasks/taskCard";
 
+import { OAuth2DCRForm } from "#admin/providers/oauth2/OAuth2DCRForm";
 import { OAuth2ProviderFormPage } from "#admin/providers/oauth2/OAuth2ProviderForm";
 
 import {
@@ -31,6 +34,7 @@ import {
     CoreApi,
     CoreUsersListRequest,
     ModelEnum,
+    OAuth2DynamicClientRegistration,
     OAuth2Provider,
     OAuth2ProviderLogoutMethodEnum,
     OAuth2ProviderSetupURLs,
@@ -44,7 +48,7 @@ import { match, P } from "ts-pattern";
 import MDProviderOAuth2 from "~docs/add-secure-apps/providers/oauth2/index.mdx";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing, TemplateResult } from "lit";
+import { css, CSSResult, html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -86,6 +90,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             })
             .then((prov) => {
                 this.provider = prov;
+                this.fetchDCRConfig();
             });
     }
 
@@ -101,6 +106,9 @@ export class OAuth2ProviderViewPage extends AKElement {
     @state()
     previewUser?: User;
 
+    @state()
+    dcrConfig?: OAuth2DynamicClientRegistration | null;
+
     static styles: CSSResult[] = [
         PFButton,
         PFPage,
@@ -111,6 +119,11 @@ export class OAuth2ProviderViewPage extends AKElement {
         PFForm,
         PFFormControl,
         PFBanner,
+        css`
+            .pf-c-card__body {
+                padding-top: var(--pf-c-card--first-child--PaddingTop);
+            }
+        `,
     ];
 
     constructor() {
@@ -128,6 +141,19 @@ export class OAuth2ProviderViewPage extends AKElement {
                 forUser: this.previewUser?.pk,
             })
             .then((preview) => (this.preview = preview));
+    }
+
+    fetchDCRConfig(): void {
+        aki(ProvidersApi)
+            .providersOauth2DcrList({
+                provider: this.provider?.pk,
+            })
+            .then((response) => {
+                this.dcrConfig = response.results[0] ?? null;
+            })
+            .catch(() => {
+                this.dcrConfig = null;
+            });
     }
 
     render(): SlottedTemplateResult {
@@ -165,6 +191,18 @@ export class OAuth2ProviderViewPage extends AKElement {
                     }}
                 >
                     ${this.renderTabPreview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-dcr"
+                    id="page-dcr"
+                    aria-label="${msg("Dynamic Client Registration")}"
+                    @activate=${() => {
+                        this.fetchDCRConfig();
+                    }}
+                >
+                    ${this.renderTabDCR()}
                 </div>
                 <div
                     role="tabpanel"
@@ -373,6 +411,31 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                         </form>
                     </div>
+                    ${this.dcrConfig !== null
+                        ? html`<ak-divider></ak-divider>
+                              <div class="pf-c-card__body">
+                                  <form class="pf-c-form">
+                                      <div class="pf-c-form__group">
+                                          <label
+                                              class="pf-c-form__label"
+                                              for="${IDGenerator.elementID("registration")}"
+                                          >
+                                              <span class="pf-c-form__label-text"
+                                                  >${msg("Dynamic Client Registration URL")}</span
+                                              >
+                                          </label>
+                                          <input
+                                              id="${IDGenerator.elementID("registration")}"
+                                              class="pf-c-form-control"
+                                              readonly
+                                              type="text"
+                                              value="${this.providerUrls?.dcrRegistration ||
+                                              msg("-")}"
+                                          />
+                                      </div>
+                                  </form>
+                              </div>`
+                        : nothing}
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
@@ -461,6 +524,123 @@ export class OAuth2ProviderViewPage extends AKElement {
                         ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
                         : html` <ak-empty-state loading></ak-empty-state> `}
                 </div>
+            </div>
+        </div>`;
+    }
+
+    renderTabDCR(): SlottedTemplateResult {
+        if (this.dcrConfig === undefined) {
+            return html`<ak-empty-state loading></ak-empty-state>`;
+        }
+        if (this.dcrConfig === null) {
+            return html`<div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-empty-state icon="fa-plug">
+                            <span>${msg("Dynamic Client Registration is not enabled.")}</span>
+                            <p slot="body">
+                                ${msg(
+                                    "Allow OAuth2/OIDC clients to register themselves against this provider (RFC 7591).",
+                                )}
+                            </p>
+                            <div slot="primary">
+                                <button
+                                    class="pf-c-button pf-m-primary"
+                                    ${modalInvoker(OAuth2DCRForm, {
+                                        providerID: this.provider?.pk || 0,
+                                    })}
+                                >
+                                    ${msg("Enable Dynamic Client Registration")}
+                                </button>
+                            </div>
+                        </ak-empty-state>
+                    </div>
+                </div>
+            </div>`;
+        }
+        const dcr = this.dcrConfig;
+        return html`<div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-3-col">
+                <div class="pf-c-card__title">${msg("Dynamic Client Registration")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Default application group"),
+                            html`${dcr.defaultApplicationGroup !== ""
+                                ? dcr.defaultApplicationGroup
+                                : "-"}`,
+                        ],
+                        [
+                            msg("Allowed grant types"),
+                            html`${(dcr.allowedGrantTypes || []).length > 0
+                                ? dcr.allowedGrantTypes?.join(", ")
+                                : msg("All")}`,
+                        ],
+                        [
+                            msg("Related actions"),
+                            html`<button
+                                    class="pf-c-button pf-m-primary pf-m-block"
+                                    ${modalInvoker(OAuth2DCRForm, {
+                                        instancePk: dcr.pbmUuid,
+                                    })}
+                                >
+                                    ${msg("Edit")}
+                                </button>
+                                <ak-forms-confirm
+                                    successMessage=${msg(
+                                        "Successfully deleted Dynamic Client Registration configuration",
+                                    )}
+                                    errorMessage=${msg(
+                                        "Failed to delete Dynamic Client Registration configuration",
+                                    )}
+                                    action=${msg("Delete")}
+                                    .onConfirm=${() => {
+                                        return aki(ProvidersApi)
+                                            .providersOauth2DcrDestroy({
+                                                pbmUuid: dcr.pbmUuid,
+                                            })
+                                            .then(() => {
+                                                this.fetchDCRConfig();
+                                            });
+                                    }}
+                                >
+                                    <span slot="header"
+                                        >${msg(
+                                            "Delete Dynamic Client Registration configuration",
+                                        )}</span
+                                    >
+                                    <p slot="body">
+                                        ${msg(
+                                            "Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.",
+                                        )}
+                                    </p>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-danger pf-m-block"
+                                        type="button"
+                                    >
+                                        ${msg("Delete")}
+                                    </button>
+                                    <div slot="modal"></div>
+                                </ak-forms-confirm>`,
+                        ],
+                    ])}
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-9-col">
+                <div class="pf-c-card__title">${msg("Dynamic application policies")}</div>
+                <ak-bound-policies-list
+                    target=${this.dcrConfig.pbmUuid}
+                    .policyEngineMode=${this.dcrConfig.policyEngineMode}
+                >
+                    <span slot="description">
+                        ${msg(
+                            "Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.",
+                        )}
+                    </span>
+                </ak-bound-policies-list>
             </div>
         </div>`;
     }

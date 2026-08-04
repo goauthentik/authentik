@@ -114,7 +114,10 @@ const BASE_ESBUILD_OPTIONS = {
      * @see https://esbuild.github.io/api/#conditions
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */
-    conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
+    conditions: [
+        "bundler",
+        ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
+    ],
     plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",

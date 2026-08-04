@@ -109,6 +109,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             brandingLogo = "",
             brandingFavicon = "",
             brandingCustomCss = "",
+            brandingMapTiles = "",
         } = this.instance ?? DefaultBrand;
 
         const defaultFlowBackground =
@@ -176,6 +177,20 @@ export class BrandForm extends ModelForm<Brand, string> {
                             "Default background used during flow execution. Can be overridden per flow.",
                         )}
                     ></ak-file-search-input>
+
+                    <ak-text-input
+                        name="brandingMapTiles"
+                        input-hint="code"
+                        placeholder="pmtiles://https://tiles.example.com/basemap.pmtiles"
+                        value=${brandingMapTiles}
+                        label=${msg("Map tiles", { id: "brand.map-tiles.label" })}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg(
+                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.",
+                            { id: "brand.map-tiles.description" },
+                        )}
+                    ></ak-text-input>
 
                     <ak-form-element-horizontal name="brandingCustomCss">
                         ${AKLabel(
@@ -252,6 +267,26 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User switch flow", {
+                            id: "brand.form.flow-user-switch.label",
+                        })}
+                        name="flowUserSwitch"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select a user switch flow...", {
+                                id: "brand.form.flow-user-switch.placeholder",
+                            })}
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.flowUserSwitch}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
+                                { id: "brand.form.flow-user-switch.description" },
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -343,6 +378,16 @@ export class BrandForm extends ModelForm<Brand, string> {
                                   )}
                               </ak-alert>`
                             : null}
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
+                        <ak-flow-search
+                            placeholder=${msg("Select a request flow...")}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowRequest}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default flow used by users requesting access.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
