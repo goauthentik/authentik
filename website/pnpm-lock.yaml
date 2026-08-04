@@ -233,8 +233,8 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5
       openapi-to-postmanv2:
-        specifier: ^6.3.1
-        version: 6.3.1
+        specifier: ^6.3.2
+        version: 6.3.2
       postman-code-generators:
         specifier: ^2.1.1
         version: 2.1.1
@@ -3149,8 +3149,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  baseline-browser-mapping@2.11.10:
-    resolution: {integrity: sha512-35JEvJ5/KKlbCHjMCsONI2w6HE88STjVdHk+C7d8LtcFxUjZR1KeLP9izofn2qs0KUxX5r4z73bwH/rd+JHacw==}
+  baseline-browser-mapping@2.11.11:
+    resolution: {integrity: sha512-/yImnXwyTvgMkhgekLHok/Rx5vO6E0BmStWlSqKWMVm2a2ITuZ1Tn+9bgLS+gZRdZmWtd8nxuhHpdmCUOWsTQQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -4244,9 +4244,6 @@ packages:
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
-  fast-uri@3.1.4:
-    resolution: {integrity: sha512-8JnbkQ4juDyvYs4mgFGQqg4yCYtFDtUtmp2QIQq11ZZe5CFQ5wcqm1rqDgAh/QdMySuBnPzMUiJUNZG5N/AiQw==}
-
   fast-uri@3.1.5:
     resolution: {integrity: sha512-gHwA1O9LDIcKunMKhObS/HimwtehO1nPUECKAu5TpKgaO19fcWEl4bliWe1jWxVFvIXztJjjQ4L8XQ1EU9f7Jw==}
 
@@ -4993,10 +4990,6 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
-
-  js-yaml@4.1.0:
-    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
-    hasBin: true
 
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
@@ -5764,8 +5757,8 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openapi-to-postmanv2@6.3.1:
-    resolution: {integrity: sha512-WclrXDtQhdxWn3POP3wbsV1SP7A4zYcptwWHKATWSFjYPmQdZW+1RVKUZ++BrSSI8D8zDmIbeOKf/9YBLVX+5Q==}
+  openapi-to-postmanv2@6.3.2:
+    resolution: {integrity: sha512-5F8l6OIFlBvhpFwq7tqo2LAkY1t0kx34/I8foTVcmglmI3cd4065va/FTKjlJiRa+y80V79sCeCKdLdrXZ3e3g==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -14086,7 +14079,7 @@ snapshots:
   ajv@8.20.0:
     dependencies:
       fast-deep-equal: 3.1.3
-      fast-uri: 3.1.4
+      fast-uri: 3.1.5
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
 
@@ -14253,7 +14246,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.43: {}
 
-  baseline-browser-mapping@2.11.10: {}
+  baseline-browser-mapping@2.11.11: {}
 
   batch@0.6.1: {}
 
@@ -14330,7 +14323,7 @@ snapshots:
 
   browserslist@4.28.7:
     dependencies:
-      baseline-browser-mapping: 2.11.10
+      baseline-browser-mapping: 2.11.11
       caniuse-lite: 1.0.30001806
       electron-to-chromium: 1.5.399
       node-releases: 2.0.51
@@ -15149,7 +15142,7 @@ snapshots:
       json5: 2.2.3
       lodash: 4.18.1
       mustache: 4.2.0
-      openapi-to-postmanv2: 6.3.1
+      openapi-to-postmanv2: 6.3.2
       postman-collection: 5.3.1
       react: 19.2.7
       slugify: 1.6.9
@@ -15630,8 +15623,6 @@ snapshots:
   fast-levenshtein@2.0.6: {}
 
   fast-safe-stringify@2.1.1: {}
-
-  fast-uri@3.1.4: {}
 
   fast-uri@3.1.5: {}
 
@@ -16496,10 +16487,6 @@ snapshots:
   js-levenshtein@1.1.6: {}
 
   js-tokens@4.0.0: {}
-
-  js-yaml@4.1.0:
-    dependencies:
-      argparse: 2.0.1
 
   js-yaml@4.3.0:
     dependencies:
@@ -17653,7 +17640,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-to-postmanv2@6.3.1:
+  openapi-to-postmanv2@6.3.2:
     dependencies:
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
@@ -17661,7 +17648,7 @@ snapshots:
       async: 3.2.6
       commander: 2.20.3
       graphlib: 2.1.8
-      js-yaml: 4.1.0
+      js-yaml: 4.3.0
       json-pointer: 0.6.2
       json-schema-merge-allof: 0.8.1
       lodash: 4.18.1
