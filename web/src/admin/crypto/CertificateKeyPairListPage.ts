@@ -10,7 +10,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { ModalInvokerButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -92,16 +91,16 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = msg("Managed by authentik (Discovered)");
         }
-        let color = PFColor.Green;
+        let color = "green";
         if (item.certExpiry) {
             const now = new Date();
             const inAMonth = new Date();
             inAMonth.setDate(inAMonth.getDate() + 30);
             if (item.certExpiry <= inAMonth) {
-                color = PFColor.Orange;
+                color = "orange";
             }
             if (item.certExpiry <= now) {
-                color = PFColor.Red;
+                color = "red";
             }
         }
         return [

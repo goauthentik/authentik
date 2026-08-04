@@ -8,7 +8,6 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
-import { PFColor } from "#elements/Label";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -91,12 +90,12 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<a href="#/outpost/outposts/${item.pk}"
                 ><div>${item.name}</div>
                 ${(item.config.authentik_host ?? "") === ""
-                    ? html`<ak-label color=${PFColor.Orange} compact>
+                    ? html`<ak-label status="warning" compact>
                           ${msg(
                               "Warning: authentik Domain is not configured, authentication will not work.",
                           )}
                       </ak-label>`
-                    : html`<ak-label color=${PFColor.Green} compact>
+                    : html`<ak-label status="success" compact>
                           ${msg(str`Logging in via ${item.config.authentik_host}.`)}
                       </ak-label>`}</a
             >`,

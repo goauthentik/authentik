@@ -5,7 +5,6 @@ import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
-import { PFColor } from "#elements/Label";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import { SlottedTemplateResult } from "#elements/types";
 import { dateProperty } from "#elements/utils/properties";
@@ -61,13 +60,13 @@ export class OutpostHealthSimpleElement extends AKElement {
         }
 
         if (!this.outpostHealths || this.outpostHealths.length === 0) {
-            return html`<ak-label color=${PFColor.Gray}>${msg("Not available")}</ak-label>`;
+            return html`<ak-label>${msg("Not available")}</ak-label>`;
         }
 
         const outdatedOutposts = this.outpostHealths.filter((h) => h.versionOutdated);
 
         if (outdatedOutposts.length) {
-            return html`<ak-label color=${PFColor.Red}>
+            return html`<ak-label status="danger">
                 ${msg(
                     str`${outdatedOutposts[0].version}, should be ${outdatedOutposts[0].versionShould}`,
                 )}</ak-label
@@ -76,7 +75,7 @@ export class OutpostHealthSimpleElement extends AKElement {
 
         const lastSeen = this.outpostHealths[0].lastSeen;
 
-        return html`<ak-label color=${PFColor.Green}>
+        return html`<ak-label status="success">
             ${msg(
                 str`Last seen: ${formatElapsedTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
             )}</ak-label
