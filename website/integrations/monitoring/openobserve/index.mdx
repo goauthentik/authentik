@@ -23,9 +23,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info Dex required
-Single sign-on is only available in OpenObserve Enterprise, and OpenObserve does not connect to an identity provider directly. It delegates authentication to [Dex](https://dexidp.io/), which in turn authenticates with authentik:
-
-`browser` → `OpenObserve` → `Dex` → `authentik`
+Single sign-on is only available in OpenObserve Enterprise, and OpenObserve does not connect to an identity provider directly. It delegates authentication to [Dex](https://dexidp.io/), which in turn authenticates with authentik. The login path is browser to OpenObserve to Dex to authentik.
 
 This means you need to run a Dex instance alongside OpenObserve, and integrate authentik with Dex rather than with OpenObserve.
 :::
