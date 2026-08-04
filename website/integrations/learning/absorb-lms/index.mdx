@@ -56,7 +56,80 @@ To integrate authentik with Absorb LMS via OIDC, you will need to create an appl
         - Select any available **Signing key**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications in a user's **Application Dashboard**.
 
+<<<<<<< HEAD
 3. Click **Create Application**.
+=======
+### Configure Absorb LMS SSO
+
+1.  Log in to the Absorb LMS Admin Experience as a system administrator.
+2.  Click the account icon in the top right, navigate to **Client Settings**, and open the **SSO configuration** card.
+3.  Click **Add SSO Configuration** and set the following values:
+    - **Name**: `authentik`
+    - **Method**: `OpenID Connect`
+4.  Continue to the configuration step and set the following values:
+    - **OpenID Connect authentication protocol method**: `Client Secret Basic`
+    - **JWT signature type used for the authentication**: `RS256`
+    - **Use Dynamic Keys**: enabled
+    - **Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client Identifier from the Authorization Server**: the **Client ID** from authentik.
+    - **Client Secret from the Authorization Server**: the **Client Secret** from authentik.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Authorization Endpoint URL**: `https://authentik.company/application/o/authorize/`
+    - **Token Endpoint URL**: `https://authentik.company/application/o/token/`
+    - **ID Property**: `Email Address`
+    - **Logout URL** _(optional)_: `https://authentik.company/application/o/<application_slug>/end-session/`
+5.  Continue to the access step and select the **Assigned Routes** that should use this SSO configuration.
+6.  Enable **Automatically Redirect** if users should be sent directly to authentik when they open an assigned route.
+7.  Click **Save**.
+
+</TabItem>
+<TabItem value="saml">
+
+<SAMLProvider20265Warning />
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it is used later as `<application_slug>`.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://company.myabsorb.com/api/rest/v2/authentication/saml`
+        - **Audience**: `https://company.myabsorb.com`
+        - **SLS URL**: `https://company.myabsorb.com/api/rest/v2/authentication/samlLogout`
+        - **SLS Binding**: `Post`
+        - **Logout Method**: `Front-channel (Iframe)`
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Username`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page. If you add a SCIM provider as a backchannel provider later, only users who can view this application are synchronized.
+3. Click **Create Application** to save the new application and provider.
+
+### Configure Absorb LMS SSO
+
+1.  Log in to the Absorb LMS Admin Experience as a system administrator.
+2.  Click the account icon in the top right, navigate to **Client Settings**, and open the **SSO configuration** card.
+3.  Click **Add SSO Configuration** and set the following values:
+    - **Name**: `authentik`
+    - **Method**: `SAML`
+    - **Mode**: select one of the following options:
+        - `Identity Provider Initiated`: users log in to Absorb LMS from authentik.
+        - `Service Provider Initiated`: users attempting to log in to Absorb LMS are directed to authentik for authentication.
+4.  Continue to the configuration step and set the following values:
+    - **Key**: paste the authentik SAML signing certificate without the `BEGIN CERTIFICATE` and `END CERTIFICATE` lines.
+    - **ID Property**: `Username`
+    - **Signature Type**: `SHA256`
+    - **Login URL**: `https://authentik.company/application/saml/<application_slug>/`
+5.  Continue to the access step and select the **Assigned Routes** that should use this SSO configuration.
+6.  Enable **Automatically Redirect** if users should be sent directly to authentik when they open an assigned route.
+7.  Enable the **Single Logout** toggle, and then set the following values:
+    - **External Single Logout Url**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Wait for IdP Response** _(optional)_: enable this setting so that Absorb LMS waits for authentik to confirm the logout before ending the session.
+8.  Click **Save**.
+
+</TabItem>
+</Tabs>
+>>>>>>> 87b7b7374 (website/integrations: Update absorb-lms (#24731))
 
 ## Absorb LMS configuration
 
