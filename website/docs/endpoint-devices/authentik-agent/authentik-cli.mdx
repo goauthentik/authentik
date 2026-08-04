@@ -13,6 +13,16 @@ Use the `-h`/`--help` flag to access help information.
 
 ## authentik-cli commands
 
+### api
+
+Directly interact with the authentik API, authenticated as the active profile's user.
+
+```bash
+ak api <command>
+```
+
+The subcommands are generated from the authentik API schema. Run `ak api --help` to list the ones available in your version.
+
 ### auth
 
 Commands for authenticating with different CLI applications.
@@ -24,7 +34,6 @@ ak auth <command>
 - `aws` - Authenticate to AWS with the authentik profile.
 - `kubectl` - Authenticate to a Kubernetes Cluster with the authentik profile.
 - `raw` - Authenticate to arbitrary API calls.
-- `vault` - Generate a JWT for authenticating to HashiCorp Vault.
 
 ### completion
 
@@ -60,15 +69,15 @@ ak help <command>
 
 Where `<command>` is any authentik CLI command you want help with, for example: `ak help whoami`
 
-### system
+### switch-profile
 
-Commands for interacting with authentik sessions.
+Switch to a different active profile. Can be shortened to `ak s`.
 
 ```bash
-ak system <command>
+ak switch-profile <profile>
 ```
 
-- `status` - Status about the current session.
+Where `<profile>` is the name of a profile reported by `ak config list-profiles`.
 
 ### version
 

@@ -9,6 +9,7 @@ Bitnami
 Budibase
 Chatwoot
 Coolify
+Directus
 Doki
 Doku
 dokuwiki
@@ -33,6 +34,7 @@ Homarr
 Icinga
 Informatique
 Jellyseerr
+Kavita
 Kimai
 Kiota
 Knoc
@@ -66,6 +68,7 @@ Planka
 Plesk
 PostHog
 proftpd
+pveum
 Qube
 Relatedly
 Seerr

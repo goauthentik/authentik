@@ -39,8 +39,18 @@ from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 
 
+class RawPKList(list):
+    """List of raw PKs that can be returned without child object serialization."""
+
+
 class BulkManyRelatedField(ManyRelatedField):
     """ManyRelatedField that validates all PKs in a single query instead of one per PK."""
+
+    def get_attribute(self, instance):
+        prefetched_pk_list = getattr(instance, f"_{self.field_name}_pk_list", None)
+        if prefetched_pk_list is not None:
+            return RawPKList(prefetched_pk_list)
+        return super().get_attribute(instance)
 
     def to_internal_value(self, data):
         if isinstance(data, str) or not hasattr(data, "__iter__"):
@@ -74,6 +84,8 @@ class BulkManyRelatedField(ManyRelatedField):
         return list(pk_map.keys())
 
     def to_representation(self, iterable):
+        if isinstance(iterable, RawPKList):
+            return list(iterable)
         # For non-prefetched querysets, get PKs directly without loading model instances.
         # When prefetched, _result_cache is a list (possibly empty); when not, it's None.
         if hasattr(iterable, "values_list") and getattr(iterable, "_result_cache", None) is None:
@@ -378,11 +390,24 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
                     queryset=User.objects.all().only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS),
                 )
             )
-        # When include_users=false, skip users prefetch entirely.
-        # BulkManyRelatedField.to_representation will use values_list to get PKs
-        # directly without loading User instances into memory.
-
         return base_qs
+
+    def _attach_user_pk_lists(self, groups: list[Group]) -> None:
+        """Batch-load user PKs without materializing User objects."""
+        group_pks = {group.pk for group in groups}
+        if not group_pks:
+            return
+
+        users_by_group = {group_pk: [] for group_pk in group_pks}
+
+        through = User.groups.through
+        for group_pk, user_pk in through.objects.filter(group_id__in=group_pks).values_list(
+            "group_id", "user_id"
+        ):
+            users_by_group[group_pk].append(user_pk)
+
+        for group in groups:
+            group._users_pk_list = users_by_group[group.pk]
 
     @extend_schema(
         parameters=[
@@ -393,7 +418,21 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if self.serializer_class(context={"request": self.request})._should_include_users:
+            return super().list(request, *args, **kwargs)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            groups = list(page)
+            self._attach_user_pk_lists(groups)
+            serializer = self.get_serializer(groups, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        groups = list(queryset)
+        self._attach_user_pk_lists(groups)
+        serializer = self.get_serializer(groups, many=True)
+        return Response(serializer.data)
 
     @extend_schema(
         parameters=[
