@@ -34,7 +34,6 @@ ak auth <command>
 - `aws` - Authenticate to AWS with the authentik profile.
 - `kubectl` - Authenticate to a Kubernetes Cluster with the authentik profile.
 - `raw` - Authenticate to arbitrary API calls.
-- `vault` - Generate a JWT for authenticating to HashiCorp Vault. Available up to authentik Agent 0.43.2; removed in 0.44.0.
 
 ### completion
 
@@ -79,16 +78,6 @@ ak switch-profile <profile>
 ```
 
 Where `<profile>` is the name of a profile reported by `ak config list-profiles`.
-
-### system
-
-Commands for interacting with authentik sessions. Available up to authentik Agent 0.43.2; removed in 0.44.0.
-
-```bash
-ak system <command>
-```
-
-- `status` - Status about the current session.
 
 ### version
 
