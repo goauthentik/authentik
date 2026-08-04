@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.api.fields import GeneratedEnumChoiceField
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.providers.saml.api.providers import SAMLMetadataSerializer
@@ -21,6 +22,12 @@ class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
 
     url_issuer = SerializerMethodField()
+    digest_algorithm = GeneratedEnumChoiceField(
+        choices=SAMLSource._meta.get_field("digest_algorithm").choices,
+    )
+    signature_algorithm = GeneratedEnumChoiceField(
+        choices=SAMLSource._meta.get_field("signature_algorithm").choices,
+    )
 
     def get_url_issuer(self, instance: SAMLSource) -> str:
         """Get the resolved Issuer, falling back to the metadata URL when unset"""

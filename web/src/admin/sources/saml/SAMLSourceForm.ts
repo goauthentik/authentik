@@ -13,10 +13,12 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
+import { openAPIEnumOptions } from "#common/api/enums";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { samlSourceSignatureAlgorithmOptions } from "#admin/providers/saml/SAMLProviderOptions";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
@@ -27,7 +29,6 @@ import {
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
     SAMLSource,
-    SignatureAlgorithmEnum,
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
@@ -378,25 +379,10 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="digestAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "SHA1",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
-                                },
-                                {
-                                    label: "SHA256",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "SHA384",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
-                                },
-                                {
-                                    label: "SHA512",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
-                                },
-                            ]}
+                            .options=${openAPIEnumOptions(DigestAlgorithmEnum).map((option) => ({
+                                ...option,
+                                default: option.value === DigestAlgorithmEnum.SHA256,
+                            }))}
                             .value=${this.instance?.digestAlgorithm}
                         >
                         </ak-radio>
@@ -407,29 +393,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="signatureAlgorithm"
                     >
                         <ak-radio
-                            .options=${[
-                                {
-                                    label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
-                                },
-                                {
-                                    label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
-                                    default: true,
-                                },
-                                {
-                                    label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
-                                },
-                                {
-                                    label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
-                                },
-                                {
-                                    label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
-                                },
-                            ]}
+                            .options=${samlSourceSignatureAlgorithmOptions}
                             .value=${this.instance?.signatureAlgorithm}
                         >
                         </ak-radio>

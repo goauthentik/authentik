@@ -4,11 +4,14 @@ import functools
 import inspect
 import re
 from collections import defaultdict
+from collections.abc import Iterable
 from enum import Enum
 
+from django.conf import settings
 from django.db.models import Choices
-from django.utils.translation import get_language
+from django.utils.translation import get_language, override
 from drf_spectacular.drainage import error, warn
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.hooks import postprocess_schema_enum_id_removal
 from drf_spectacular.plumbing import (
     ResolvedComponent,
@@ -20,7 +23,59 @@ from drf_spectacular.settings import spectacular_settings
 from inflection import camelize
 from structlog.stdlib import get_logger
 
+from authentik.api.fields import GeneratedEnumChoiceField
+
 LOGGER = get_logger()
+
+
+def enum_var_names(choices: Iterable[tuple[object, object]]) -> list[str] | None:
+    """Return concise labels only when they improve generated identifiers."""
+    choices = [(str(value), str(label)) for value, label in choices if value not in ("", None)]
+    labels = [label for _, label in choices]
+    if not labels or len(labels) != len(set(labels)):
+        return None
+    if not all(
+        re.fullmatch(r"(?:[A-Z][A-Za-z0-9]*|v[A-Z][A-Za-z0-9]*)", label) for label in labels
+    ):
+        return None
+    changes_meaning = any(
+        re.sub(r"[^a-z0-9]", "", value.lower()) != re.sub(r"[^a-z0-9]", "", label.lower())
+        for value, label in choices
+    )
+    if not changes_meaning:
+        return None
+    return labels
+
+
+def enum_labels(choices: Iterable[tuple[object, object]]) -> list[str]:
+    """Return display labels for non-empty choice values."""
+    return [str(label) for value, label in choices if value not in ("", None)]
+
+
+class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):
+    """Emit enum labels/varnames only for opt-in GeneratedEnumChoiceField fields."""
+
+    target_class = GeneratedEnumChoiceField
+    match_subclasses = True
+    priority = -1
+
+    def map_serializer_field(self, auto_schema, direction):
+        schema = auto_schema._map_serializer_field(
+            self.target,
+            direction,
+            bypass_extensions=True,
+        )
+        enum_schema = schema.get("items", schema)
+        with override(settings.LANGUAGE_CODE):
+            choices = list(self.target.choices.items())
+            labels = enum_labels(choices)
+            names = enum_var_names(choices)
+        values = [str(value) for value, _ in choices if value not in ("", None)]
+        if labels != values:
+            enum_schema["x-enum-labels"] = labels
+        if names:
+            enum_schema["x-enum-varnames"] = names
+        return schema
 
 
 # See https://github.com/tfranzel/drf-spectacular/blob/master/drf_spectacular/hooks.py
@@ -170,9 +225,15 @@ def postprocess_schema_enums(result, generator, **kwargs):  # noqa: PLR0912, PLR
             enum_name = enum_name_mapping.get(prop_hash) or enum_name_mapping[prop_hash, prop_name]
 
             # split property into remaining property and enum component parts
-            enum_schema = {k: v for k, v in prop_schema.items() if k in ["type", "enum"]}
+            enum_schema = {
+                k: v
+                for k, v in prop_schema.items()
+                if k in ["type", "enum", "x-enum-labels", "x-enum-varnames"]
+            }
             prop_schema = {
-                k: v for k, v in prop_schema.items() if k not in ["type", "enum", "x-spec-enum-id"]
+                k: v
+                for k, v in prop_schema.items()
+                if k not in ["type", "enum", "x-enum-labels", "x-enum-varnames", "x-spec-enum-id"]
             }
 
             # separate actual description from name-value tuples

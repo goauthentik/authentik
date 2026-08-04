@@ -20,6 +20,7 @@ import {
 } from "./SCIMProviderFormHelpers.js";
 
 import { aki } from "#common/api/client";
+import { openAPIEnumOptions } from "#common/api/enums";
 
 import {
     CompatibilityModeEnum,
@@ -184,27 +185,23 @@ export function renderForm({ provider, errors, update }: SCIMProviderFormProps) 
                     label=${msg("Compatibility Mode")}
                     .value=${provider.compatibilityMode}
                     required
-                    .options=${Object.entries(CompatibilityModeEnum)
-                        .filter(
-                            ([, value]) => value !== CompatibilityModeEnum.UnknownDefaultOpenApi,
-                        )
-                        .map(([label, value]) => {
-                            const isDefault = value === CompatibilityModeEnum.Default;
-                            return {
-                                label: isDefault
-                                    ? msg("Default", {
-                                          id: "providers.scim.compatibility-mode.default.label",
-                                      })
-                                    : label,
-                                value,
-                                default: isDefault,
-                                description: isDefault
-                                    ? undefined
-                                    : html`${msg(str`Altered behavior for ${label}.`, {
-                                          id: "providers.scim.compatibility-mode.description",
-                                      })}`,
-                            };
-                        })}
+                    .options=${openAPIEnumOptions(CompatibilityModeEnum).map(({ label, value }) => {
+                        const isDefault = value === CompatibilityModeEnum.Default;
+                        return {
+                            label: isDefault
+                                ? msg("Default", {
+                                      id: "providers.scim.compatibility-mode.default.label",
+                                  })
+                                : label,
+                            value,
+                            default: isDefault,
+                            description: isDefault
+                                ? undefined
+                                : html`${msg(str`Altered behavior for ${label}.`, {
+                                      id: "providers.scim.compatibility-mode.description",
+                                  })}`,
+                        };
+                    })}
                     help=${msg(
                         "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}

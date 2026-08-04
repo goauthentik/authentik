@@ -17,10 +17,10 @@
  * @export
  */
 export const DigestAlgorithmEnum = {
-    HttpWwwW3Org200009Xmldsigsha1: "http://www.w3.org/2000/09/xmldsig#sha1",
-    HttpWwwW3Org200104Xmlencsha256: "http://www.w3.org/2001/04/xmlenc#sha256",
-    HttpWwwW3Org200104XmldsigMoresha384: "http://www.w3.org/2001/04/xmldsig-more#sha384",
-    HttpWwwW3Org200104Xmlencsha512: "http://www.w3.org/2001/04/xmlenc#sha512",
+    SHA1: "http://www.w3.org/2000/09/xmldsig#sha1",
+    SHA256: "http://www.w3.org/2001/04/xmlenc#sha256",
+    SHA384: "http://www.w3.org/2001/04/xmldsig-more#sha384",
+    SHA512: "http://www.w3.org/2001/04/xmlenc#sha512",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type DigestAlgorithmEnum = (typeof DigestAlgorithmEnum)[keyof typeof DigestAlgorithmEnum];
