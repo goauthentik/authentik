@@ -1,3 +1,4 @@
+import "#admin/requests/ak-request-rule-wizard";
 import "#admin/requests/RequestRuleBindingForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -8,10 +9,9 @@ import { aki } from "#common/api/client";
 import { IconEditButton, modalInvoker } from "#elements/dialogs";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
-import { StrictUnsafe } from "#elements/utils/unsafe";
 
+import { AKRequestRuleWizard } from "#admin/requests/ak-request-rule-wizard";
 import { RequestRuleBindingForm } from "#admin/requests/RequestRuleBindingForm";
-import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
 
 import { RequestRuleBinding, RequestsApi } from "@goauthentik/api";
 
@@ -32,8 +32,6 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
     public override clearOnRefresh = true;
     public override expandable = true;
     public override searchEnabled = true;
-
-    protected bindingEditForm = "ak-request-rule-binding-form";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<RequestRuleBinding>> {
         return aki(RequestsApi).requestsRuleBindingsList({
@@ -75,23 +73,14 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
 
     protected renderNewBindingButton(): SlottedTemplateResult {
         return html`<button
-                type="button"
-                class="pf-c-button pf-m-primary"
-                ${RequestRuleForm.asModalInvoker()}
-            >
-                ${msg("Create new rule")}
-            </button>
-            <button
-                type="button"
-                class="pf-c-button pf-m-primary"
-                ${modalInvoker(() => {
-                    return StrictUnsafe<RequestRuleBindingForm>(this.bindingEditForm, {
-                        targetPk: this.target || "",
-                    });
-                })}
-            >
-                ${msg("Bind existing rule")}
-            </button>`;
+            type="button"
+            class="pf-c-button pf-m-primary"
+            ${modalInvoker(AKRequestRuleWizard, {
+                bindingTarget: this.target,
+            })}
+        >
+            ${msg("Create or bind...")}
+        </button>`;
     }
 
     protected override renderExpanded(item: RequestRuleBinding): SlottedTemplateResult {
@@ -111,10 +100,12 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
 
     protected override row(item: RequestRuleBinding): SlottedTemplateResult[] {
         return [
-            html`${item.ruleObj?.name ?? "-"}`,
-            html`<ul class="pf-c-list">
-                ${item.relatedObj.map((obj) => html`<li>${obj.label}</li>`)}
-            </ul>`,
+            html`${item.ruleObj?.name ?? msg("-")}`,
+            html`${item.relatedObj.length > 0
+                ? html`<ul class="pf-c-list">
+                      ${item.relatedObj.map((obj) => html`<li>${obj.label}</li>`)}
+                  </ul>`
+                : html`${msg("-")}`}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RequestRuleBindingForm, item.uuid, null, {
                     targetPk: this.target || "",
