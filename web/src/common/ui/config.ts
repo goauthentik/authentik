@@ -51,7 +51,7 @@ export interface UIConfig {
         // Requests
         requests: boolean;
         // Agents
-        agents: boolean,
+        agents: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
