@@ -33,6 +33,7 @@ const CSSAnchorPositioningSupported = AnchorPositionSupported && AnchorSizeSuppo
 
 export interface ISearchSelectView {
     options: SelectOptions;
+    disabledOptions: string[];
     value?: string;
     open: boolean;
     blankable: boolean;
@@ -115,6 +116,15 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     }
 
     #options!: GroupedOptions;
+
+    /**
+     * The keys of the options that are shown but cannot be chosen. Forwarded to the menu, which
+     * renders them grayed out.
+     *
+     * @prop
+     */
+    @property({ type: Array, attribute: false })
+    public disabledOptions: string[] = [];
 
     /**
      * The current value.  Must be one of the keys in the options group above.
@@ -579,7 +589,9 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
             return;
         }
 
-        const matchesFound = findFlatOptions(this.#flatOptions, value);
+        const matchesFound = findFlatOptions(this.#flatOptions, value).filter(
+            ([key]) => !this.disabledOptions.includes(key),
+        );
         if (matchesFound.length > 0) {
             const newValue = matchesFound[0][0];
             if (newValue === value) {
@@ -730,6 +742,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 id="menu-${this.getAttribute("data-ouia-component-id")}"
                 ${ref(this.#menuRef)}
                 .options=${this.managedOptions}
+                .disabledOptions=${this.disabledOptions}
                 value=${ifDefined(this.value)}
                 @change=${this.#changeListener}
                 @blur=${this.#blurListener}
