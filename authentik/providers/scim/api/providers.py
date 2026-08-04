@@ -69,6 +69,7 @@ class SCIMProviderSerializer(
             "exclude_users_service_account",
             "sync_page_size",
             "sync_page_timeout",
+            "discovery_enabled",
             "group_filters",
             "dry_run",
         ]
