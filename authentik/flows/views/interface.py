@@ -2,11 +2,14 @@
 
 from typing import Any
 
+from django.conf import settings
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
 from authentik.flows.models import Flow
+from authentik.lib.http_cache import anonymous_redirect_cache_control
 
 
 class FlowInterfaceView(InterfaceView):
@@ -41,3 +44,25 @@ class FlowInterfaceView(InterfaceView):
         if self.compat_needs_sfe() or "sfe" in self.request.GET:
             return ["if/flow-sfe.html"]
         return ["if/flow.html"]
+
+    def _can_edge_cache(self, request: HttpRequest) -> bool:
+        """Whether the response is safe to mark as publicly cacheable.
+
+        The body is deterministic per ``(host, flow_slug)`` only when:
+        no session cookie, no SFE-selecting UA (IE, Edge<=18, PKeyAuth — we
+        exclude them rather than ``Vary: User-Agent``), and no ``?sfe`` or
+        ``?inspector`` query variants.
+        """
+        if settings.SESSION_COOKIE_NAME in request.COOKIES:
+            return False
+        if "inspector" in request.GET or "sfe" in request.GET:
+            return False
+        if self.compat_needs_sfe():
+            return False
+        return True
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        response = super().dispatch(request, *args, **kwargs)
+        if self._can_edge_cache(request):
+            response["Cache-Control"] = anonymous_redirect_cache_control()
+        return response

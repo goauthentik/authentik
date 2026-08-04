@@ -93,6 +93,12 @@ class BoundSessionMiddleware(SessionMiddleware):
 
     def recheck_session(self, request: HttpRequest):
         """Check if a session is still valid with a changed IP"""
+        # Skip when no session exists. Otherwise the ``request.session.get(...)``
+        # below marks the empty session as ``accessed=True``, causing Django to
+        # emit ``Vary: Cookie`` on the response and preventing shared caches from
+        # serving the deterministic anonymous redirects (e.g. ``GET /`` -> 302).
+        if request.session.session_key is None:
+            return
         last_ip = request.session.get(Session.Keys.LAST_IP)
         new_ip = ClientIPMiddleware.get_client_ip(request)
         # Check changed IP

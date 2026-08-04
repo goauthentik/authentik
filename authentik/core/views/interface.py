@@ -3,6 +3,7 @@
 from json import dumps
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.http import HttpRequest
 from django.http.response import HttpResponse
@@ -18,7 +19,18 @@ from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import UserTypes
 from authentik.lib.config import CONFIG
+from authentik.lib.http_cache import (
+    ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS,
+    anonymous_redirect_cache_control,
+)
 from authentik.policies.denied import AccessDeniedResponse
+
+# Re-export for backwards compatibility with tests that import from here.
+__all__ = [
+    "ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS",
+    "RootRedirectView",
+    "anonymous_redirect_cache_control",
+]
 
 
 class RootRedirectView(AccessMixin, RedirectView):
@@ -41,11 +53,25 @@ class RootRedirectView(AccessMixin, RedirectView):
                 )
         return None
 
+    def _anonymous_redirect(self, request: HttpRequest) -> HttpResponse:
+        """Return the login redirect for an unauthenticated ``GET /``.
+
+        Cookieless requests get a publicly cacheable response so edge / proxy
+        caches can absorb flood traffic. Requests with a session cookie skip
+        the ``Cache-Control: public`` header because they may have read the
+        session row, producing a ``Vary: Cookie`` response that must not be
+        shared.
+        """
+        response = self.handle_no_permission()
+        if settings.SESSION_COOKIE_NAME not in request.COOKIES:
+            response["Cache-Control"] = anonymous_redirect_cache_control()
+        return response
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not Setup.get():
             return redirect("authentik_core:setup")
         if not request.user.is_authenticated:
-            return self.handle_no_permission()
+            return self._anonymous_redirect(request)
         if redirect_response := RootRedirectView().redirect_to_app(request):
             return redirect_response
         return super().dispatch(request, *args, **kwargs)
