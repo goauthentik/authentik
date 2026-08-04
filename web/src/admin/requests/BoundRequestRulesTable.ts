@@ -11,6 +11,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
 
 import { RequestRuleBindingForm } from "#admin/requests/RequestRuleBindingForm";
+import { RequestRuleForm } from "#admin/requests/RequestRuleForm";
 
 import { RequestRuleBinding, RequestsApi } from "@goauthentik/api";
 
@@ -74,16 +75,23 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
 
     protected renderNewBindingButton(): SlottedTemplateResult {
         return html`<button
-            type="button"
-            class="pf-c-button pf-m-primary"
-            ${modalInvoker(() => {
-                return StrictUnsafe<RequestRuleBindingForm>(this.bindingEditForm, {
-                    targetPk: this.target || "",
-                });
-            })}
-        >
-            ${msg("Bind existing rule")}
-        </button>`;
+                type="button"
+                class="pf-c-button pf-m-primary"
+                ${RequestRuleForm.asModalInvoker()}
+            >
+                ${msg("Create new rule")}
+            </button>
+            <button
+                type="button"
+                class="pf-c-button pf-m-primary"
+                ${modalInvoker(() => {
+                    return StrictUnsafe<RequestRuleBindingForm>(this.bindingEditForm, {
+                        targetPk: this.target || "",
+                    });
+                })}
+            >
+                ${msg("Bind existing rule")}
+            </button>`;
     }
 
     protected override renderExpanded(item: RequestRuleBinding): SlottedTemplateResult {
