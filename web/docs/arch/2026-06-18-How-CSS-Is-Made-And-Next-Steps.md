@@ -35,7 +35,7 @@ The `interface.global.css` file is almost entirely imports:
 3. @patternfly/.../patternfly-themes.css — dark-theme token reassignments
 4. @patternfly/.../patternfly-fa-icons.css, patternfly-pf-icons.css — icon @font-face + classes
 5. @patternfly/.../components/Spinner/spinner.css
-6. #fonts/RedHat/faces.css — RedHat @font-face
+6. @goauthentik/fonts/faces.css — RedHat @font-face
 7. ./base/fonts.css
 8. ./base/variables.css, which in turn loads:
     - colors

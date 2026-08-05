@@ -1,0 +1,11 @@
+# Prettier Ignorefile
+
+## Node
+node_modules
+
+## Static Files
+**/LICENSE
+LICENSE.txt
+
+## Upstream license texts — reproduced verbatim, never reformatted
+licenses
