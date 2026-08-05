@@ -156,6 +156,12 @@ class UserInterface extends WithLicenseSummary(
         ) {
             navItems.push({ label: msg("Discover"), link: "/requests" });
         }
+        if (
+            this.can(CapabilitiesEnum.CanAgentSelfService) &&
+            this.uiConfig.enabledFeatures.agents
+        ) {
+            navItems.push({ label: msg("Agents"), link: "/agents" });
+        }
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">

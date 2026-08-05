@@ -1,0 +1,21 @@
+metadata:
+  name: Default - RBAC - Agent Users
+version: 1
+entries:
+  - model: authentik_rbac.role
+    identifiers:
+      name: authentik Agent-Users
+    id: role
+    attrs:
+      permissions:
+        - authentik_agents.add_agent_self_service
+  - model: authentik_core.group
+    identifiers:
+      name: authentik Agent-Users
+    attrs:
+      roles:
+        - !KeyOf role
+      is_superuser: false
+      attributes:
+        notes: |
+          A group with an auto-generated role that allows its members to create agent users.
