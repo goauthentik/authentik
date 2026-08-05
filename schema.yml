@@ -337,6 +337,183 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/:
+    get:
+      operationId: agents_agents_list
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: parent
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAgentList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: agents_agents_create
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentCreateRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/{id}/:
+    get:
+      operationId: agents_agents_retrieve
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: agents_agents_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: agents_agents_partial_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAgentRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: agents_agents_destroy
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /authenticators/admin/all/:
     get:
       operationId: authenticators_admin_all_list
@@ -35474,6 +35651,78 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    Agent:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          readOnly: true
+        token_identifier:
+          type: string
+          nullable: true
+          description: Identifier of the agent's API token, so its key can be retrieved/copied
+            later.
+          readOnly: true
+      required:
+      - name
+      - parent
+      - pk
+      - policy_behavior
+      - token_identifier
+      - uid
+      - username
+      - uuid
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -35644,6 +35893,40 @@ components:
             type: integer
       required:
       - name
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
+    AgentCreated:
+      type: object
+      description: Response returned once when an agent is created, carrying the one-time
+        API token.
+      properties:
+        agent:
+          allOf:
+          - $ref: '#/components/schemas/Agent'
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - agent
+      - token
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -35705,6 +35988,49 @@ components:
       - enclave_key_id
       - user_auth
       - user_secure_enclave_key
+    AgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - name
+      - username
     AgentTokenResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -35798,6 +36124,7 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
+      - authentik.enterprise.agents
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
@@ -37751,6 +38078,7 @@ components:
       - can_debug
       - is_enterprise
       - can_request
+      - can_agent_self_service
       type: string
     CaptchaChallenge:
       type: object
@@ -45115,6 +45443,7 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_agents.agent
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_lifecycle.lifecyclerule
@@ -46806,6 +47135,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AgentConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedAgentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49758,6 +50102,46 @@ components:
           type: array
           items:
             type: integer
+    PatchedAgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
     PatchedAppleIndependentSecureEnclaveRequest:
       type: object
       properties:
@@ -54223,6 +54607,12 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
     PolicyBinding:
       type: object
       description: PolicyBinding Serializer
