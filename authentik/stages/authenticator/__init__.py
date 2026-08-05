@@ -124,7 +124,7 @@ def user_has_device(user, confirmed=True):
 
 def device_classes():
     """
-    Returns an iterable of all loaded device models.
+    Returns an iterable of all loaded device models usable as a second factor.
     """
     from django.apps import apps
 
@@ -132,5 +132,5 @@ def device_classes():
 
     for config in apps.get_app_configs():
         for model in config.get_models():
-            if issubclass(model, Device):
+            if issubclass(model, Device) and model.is_mfa:
                 yield model
