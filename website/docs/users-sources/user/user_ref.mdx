@@ -12,6 +12,7 @@ The User object has the following properties:
 - `name`: User's display name.
 - `is_staff`: Boolean field defining if user is staff.
 - `is_active`: Boolean field defining if user is active.
+- `composite_status`: Overall state of the user, see [Status](#status). Read-only.
 - `date_joined`: Date user joined/was created. Read-only.
 - `password_change_date`: Date password was last changed. Read-only.
 - `path`: User's path, see [Path](#path)
@@ -23,6 +24,16 @@ The User object has the following properties:
 :::info Clarifying direct vs indirect group membership
 A user is a member of a group (direct member). If that group in turn has a parent group, then the user is an indirect member of that parent group.
 :::
+
+## Status
+
+`composite_status` combines the conditions that stop a user from signing in into a single value, shown in the **Status** column of the user list in the Admin interface. It is derived from the user's other fields rather than stored, so it cannot fall out of step with them.
+
+| Value             | Meaning                                                                                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `active`          | The user can sign in.                                                                                                                                                |
+| `password_locked` | The user's password was locked after too many failed attempts. See [Password lockout](../../add-secure-apps/flows-stages/stages/password/index.md#password-lockout). |
+| `deactivated`     | The user is not active. This takes precedence over a locked password, because a deactivated user cannot sign in regardless.                                          |
 
 ## Examples
 
