@@ -4,10 +4,11 @@ from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.test.testcases import TestCase
+from django.utils.timezone import now
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
-from authentik.core.models import User
+from authentik.core.models import User, UserStatus
 from authentik.core.signals import password_changed, password_hash_changed
 from authentik.events.models import Event
 from authentik.lib.generators import generate_id
@@ -173,3 +174,37 @@ class TestUserSerializerPasswordHash(TestCase):
 
         self.assertTrue(serializer.is_valid(), serializer.errors)
         self.assertNotIn("password_hash", serializer.validated_data)
+
+
+class TestUserStatus(TestCase):
+    """Composite user status tests"""
+
+    def setUp(self):
+        self.user = User.objects.create_user(username=generate_id(), password=generate_id())
+
+    def test_active(self):
+        """Test an ordinary user is active"""
+        self.assertEqual(self.user.composite_status, UserStatus.ACTIVE)
+
+    def test_password_locked(self):
+        """Test a user with a locked password reports as such"""
+        device = PasswordDevice.objects.get(user=self.user)
+        device.locked_at = now()
+        device.save()
+        self.assertEqual(
+            User.objects.get(pk=self.user.pk).composite_status, UserStatus.PASSWORD_LOCKED
+        )
+
+    def test_deactivated_wins(self):
+        """Test deactivation takes precedence over a locked password"""
+        device = PasswordDevice.objects.get(user=self.user)
+        device.locked_at = now()
+        device.save()
+        self.user.is_active = False
+        self.user.save()
+        self.assertEqual(User.objects.get(pk=self.user.pk).composite_status, UserStatus.DEACTIVATED)
+
+    def test_without_password_device(self):
+        """Test a user that never had a password is still active"""
+        user = User.objects.create(username=generate_id())
+        self.assertEqual(user.composite_status, UserStatus.ACTIVE)
