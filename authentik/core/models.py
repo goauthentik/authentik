@@ -1210,11 +1210,15 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         """Handler which is called when this object is expired."""
         from authentik.events.models import Event, EventAction
 
-        if self.intent in [
-            TokenIntents.INTENT_RECOVERY,
-            TokenIntents.INTENT_VERIFICATION,
-            TokenIntents.INTENT_APP_PASSWORD,
-        ]:
+        if (
+            self.intent
+            in [
+                TokenIntents.INTENT_RECOVERY,
+                TokenIntents.INTENT_VERIFICATION,
+                TokenIntents.INTENT_APP_PASSWORD,
+            ]
+            or Actor.objects.filter(pk=self.user_id).exists()
+        ):
             super().expire_action(*args, **kwargs)
             return
 
