@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { DualSelectPair } from "#elements/ak-dual-select/types";
 
@@ -7,7 +7,7 @@ import { Source, SourcesApi } from "@goauthentik/api";
 const sourceToSelect = (source: Source) => [source.pk, source.name, source.name, source];
 
 export async function sourcesProvider(page = 1, search = "") {
-    const sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
+    const sources = await aki(SourcesApi).sourcesAllList({
         ordering: "slug",
         pageSize: 20,
         search: search.trim(),
@@ -26,7 +26,7 @@ export function sourcesSelector(instanceSources: string[] | undefined) {
             sources.filter(([_0, _1, _2, source]: DualSelectPair<Source>) => source !== undefined);
     }
     return async () => {
-        const sourcesApi = new SourcesApi(DEFAULT_CONFIG);
+        const sourcesApi = aki(SourcesApi);
         const sources = await Promise.allSettled(
             instanceSources.map((instanceId) => sourcesApi.sourcesAllList({ pbmUuid: instanceId })),
         );

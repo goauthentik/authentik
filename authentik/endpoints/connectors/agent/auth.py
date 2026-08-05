@@ -1,9 +1,8 @@
 from typing import Any
 
-from django.db.models import Model
+from django.db.models import Model, Q
 from django.http import HttpRequest
 from django.utils.timezone import now
-from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from jwt import PyJWTError, decode, encode
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import PermissionDenied
@@ -101,7 +100,22 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         if not raw_token:
             LOGGER.warning("Missing token")
             return None
-        device = Device.objects.filter(name=request.query_params.get("device")).first()
+        device = (
+            Device.objects.filter(
+                Q(
+                    name=request.query_params.get("device"),
+                )
+                | Q(
+                    **{
+                        "deviceconnection__devicefactsnapshot__"
+                        "data__vendor__goauthentik.io/platform__"
+                        "ssh_host_keys__contains": request.query_params.get("device"),
+                    }
+                )
+            )
+            .distinct()
+            .first()
+        )
         if not device:
             LOGGER.warning("Couldn't find device")
             return None
@@ -131,17 +145,6 @@ class DeviceAuthFedAuthentication(BaseAuthentication):
         except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
             LOGGER.warning("failed to verify JWT", exc=exc, provider=federated_token.provider.name)
             return None
-
-
-class DeviceFederationAuthSchema(OpenApiAuthenticationExtension):
-    """Auth schema"""
-
-    target_class = DeviceAuthFedAuthentication
-    name = "device_federation"
-
-    def get_security_definition(self, auto_schema):
-        """Auth schema"""
-        return {"type": "http", "scheme": "bearer"}
 
 
 def check_device_policies(device: Device, user: User, request: HttpRequest):

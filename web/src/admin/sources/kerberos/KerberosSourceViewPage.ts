@@ -1,4 +1,7 @@
-import "#elements/tasks/ScheduleList";
+/**
+ * @file Display details for a federated Kerberos Identity Source: Overview, Changelog, Permissions
+ */
+
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/kerberos/KerberosSourceConnectivity";
 import "#admin/sources/kerberos/KerberosSourceForm";
@@ -9,13 +12,15 @@ import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncStatusCard";
+import "#components/sync/SyncStatusCard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
+
+import { scheduleCard } from "#components/tasks/scheduleCard";
 
 import { KerberosSource, ModelEnum, SourcesApi } from "@goauthentik/api";
 
@@ -34,11 +39,13 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
+const SOURCE_MODEL = ModelEnum.AuthentikSourcesKerberosKerberossource;
+
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(slug: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesKerberosRetrieve({
                 slug: slug,
             })
@@ -73,7 +80,6 @@ export class KerberosSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikSourcesKerberosKerberossource.split(".");
         return html`<main>
             <ak-tabs>
                 <div
@@ -142,9 +148,7 @@ export class KerberosSourceViewPage extends AKElement {
                         >
                             <ak-sync-status-card
                                 .fetch=${() => {
-                                    return new SourcesApi(
-                                        DEFAULT_CONFIG,
-                                    ).sourcesKerberosSyncStatusRetrieve({
+                                    return aki(SourcesApi).sourcesKerberosSyncStatusRetrieve({
                                         slug: this.source?.slug,
                                     });
                                 }}
@@ -160,15 +164,8 @@ export class KerberosSourceViewPage extends AKElement {
                                 ></ak-source-kerberos-connectivity>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                <p>${msg("Schedules")}</p>
-                            </div>
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.source.pk}"
-                            ></ak-schedule-list>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            ${scheduleCard(SOURCE_MODEL, this.source.pk)}
                         </div>
                         <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                             <div class="pf-c-card__body">

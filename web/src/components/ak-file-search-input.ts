@@ -1,7 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { docLink } from "#common/global";
 
@@ -79,7 +79,7 @@ export class AKFileSearchInput extends AKElement {
     }
 
     async #fetch(query?: string): Promise<FileItem[]> {
-        const api = new AdminApi(DEFAULT_CONFIG);
+        const api = aki(AdminApi);
         return api
             .adminFileList({
                 usage: this.usage as UsageEnum,

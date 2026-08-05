@@ -11,6 +11,7 @@ tags:
 
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
+import InstallScriptsAdmonition from "./_install-scripts-admonition.mdx";
 
 ## Prerequisites
 
@@ -20,7 +21,8 @@ Before you begin, ensure you have the following tools installed. You can run the
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) (Latest stable release)
 - [Rust](https://rust-lang.org/learn/get-started/) (We provide a `rust-toolchain.toml` file for the correct version, and we use the nightly toolchain to run formatting with rustfmt.)
 - [Go](https://go.dev/) (1.26 or later)
-- [Node.js](https://nodejs.org/en) (24 or later)
+- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used across every JavaScript workspace in the repository
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
@@ -65,7 +67,6 @@ libpq \
 pkg-config \
 uv \
 postgresql \
-node@24 \
 golangci-lint \
 krb5 \
 cmake
@@ -112,6 +113,21 @@ We're currently seeking community input on running the full development environm
 
 :::
 
+### Installing Node.js and pnpm
+
+Install Node.js with [nvm](https://github.com/nvm-sh/nvm), one of the version managers recommended on the Node.js download page. It keeps the toolchain scoped to your shell rather than installed system-wide, so switching versions between projects doesn't require reinstalling:
+
+```shell
+nvm install 24
+nvm use 24
+```
+
+Then install pnpm by following the [pnpm installation guide](https://pnpm.io/installation), or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
+
+:::info
+nvm runs on macOS and Linux; on Windows, use [nvm-windows](https://github.com/coreybutler/nvm-windows), a separate project with its own command set.
+:::
+
 ## 4. Set up the backend
 
 :::info
@@ -125,6 +141,8 @@ Install all required JavaScript and Python dependencies and create an isolated P
 ```shell
 make install
 ```
+
+<InstallScriptsAdmonition />
 
 ### Generate development configuration
 
@@ -203,6 +221,12 @@ Copy the generated recovery key and paste it into the URL, after the domain. For
 
 `http://localhost:9000/recovery/use-token/ChFk2nJKJKJKY9OdIc8yv6RCgpGYp5rdndBhR6qHoHoJoWDdlvLuvU/`
 
+:::info
+
+The recovery token is valid for a short time, but anyone can use it to log in as the admin user. Using the recovery token will also disable custom CSS in case you've accidentally locked yourself out of the admin interface with a broken theme.
+
+:::
+
 ## End-to-end (E2E) setup
 
 Start the E2E test services with the following command:
@@ -256,7 +280,7 @@ You can run all these checks at once with:
 make all
 ```
 
-### Submitting your changes
+### Submit your changes
 
 After your code passes all checks, submit a pull request on [GitHub](https://github.com/goauthentik/authentik/pulls). Be sure to:
 

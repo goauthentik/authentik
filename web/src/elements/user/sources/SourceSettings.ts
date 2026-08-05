@@ -4,7 +4,7 @@ import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
 import "#elements/user/sources/SourceSettingsTelegram";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -41,7 +41,7 @@ export class UserSourceSettingsPage extends AKElement {
         this.#abortController?.abort();
         this.#abortController = new AbortController();
 
-        const sourcesAPI = new SourcesApi(DEFAULT_CONFIG);
+        const sourcesAPI = aki(SourcesApi);
 
         const [sourceSettings, connections] = await Promise.all([
             sourcesAPI.sourcesAllUserSettingsList({

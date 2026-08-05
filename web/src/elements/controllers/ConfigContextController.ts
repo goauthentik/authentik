@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
 import { AKConfigMixin, AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
@@ -30,7 +30,7 @@ export class ConfigContextController extends ReactiveContextController<Config> {
     }
 
     protected apiEndpoint(requestInit?: RequestInit) {
-        return new RootApi(DEFAULT_CONFIG).rootConfigRetrieve(requestInit);
+        return aki(RootApi).rootConfigRetrieve(requestInit);
     }
 
     protected doRefresh(authentikConfig: Config) {

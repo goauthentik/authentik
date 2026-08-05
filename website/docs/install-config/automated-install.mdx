@@ -12,12 +12,24 @@ These can't be defined using the file-based syntax (`file://`), so you can't pas
 
 Configure the default password for the `akadmin` user using a pre-hashed Django password value. Only read on the first startup.
 
-This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, hashed-password imports do not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled.
+This stores the hash directly as authentik's local password verifier. Because authentik never sees the raw password, hashed-password imports do not propagate the password to LDAP or Kerberos integrations, even when password writeback is enabled. authentik validates imported hashes before storing them and rejects malformed values.
 
-To generate a hash, run this command before your initial deployment:
+To generate a hash, run this command before your initial deployment and enter the password when prompted:
 
 ```bash
-docker compose run --rm server hash_password 'your-password'
+docker compose run --rm server hash_password
+```
+
+For automation, pass the password in the `PASSWORD` environment variable and pipe it through standard input to prevent exposing the password in your shell history:
+
+```bash
+echo "$PASSWORD" | docker compose run --rm server hash_password
+```
+
+Alternatively, redirect a file that contains the password into the command:
+
+```bash
+docker compose run --rm server hash_password < password.txt
 ```
 
 The generated hash includes a random salt, so running the command multiple times for the same password produces different output. Use the complete output as the value of `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
@@ -57,7 +69,7 @@ Setting both `AUTHENTIK_BOOTSTRAP_PASSWORD` and `AUTHENTIK_BOOTSTRAP_PASSWORD_HA
 
 For post-install automation, hashed passwords can also be set via blueprints with the `password_hash` user attribute, or via the `/api/v3/core/users/<id>/set_password_hash/` API endpoint with the hash provided in the `password` field. The API endpoint requires the `authentik_core.reset_user_password` permission and can target regular users or service accounts.
 
-These paths share the same local-verifier-only behavior as `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
+These paths share the same validation and local-verifier-only behavior as `AUTHENTIK_BOOTSTRAP_PASSWORD_HASH`.
 
 ### `AUTHENTIK_BOOTSTRAP_TOKEN`
 

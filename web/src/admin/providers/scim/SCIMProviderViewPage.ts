@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/scim/SCIMProviderGroupList";
@@ -10,18 +14,18 @@ import "#elements/Tabs";
 import "#elements/ak-mdx/index";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/ModalButton";
-import "#elements/sync/SyncStatusCard";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/sync/SyncStatusCard";
 import "#elements/timestamp/ak-timestamp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
 
 import {
     ModelEnum,
@@ -47,6 +51,8 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersScimScimprovider;
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -79,7 +85,7 @@ export class SCIMProviderViewPage extends AKElement {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersScimRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -94,6 +100,7 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
+
         return html`<main part="main">
             <ak-tabs part="tabs">
                 <div
@@ -202,7 +209,7 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikProvidersScimScimprovider.split(".");
+
         return html` ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
@@ -302,39 +309,19 @@ export class SCIMProviderViewPage extends AKElement {
                         : nothing}
                     <ak-sync-status-card
                         .fetch=${() => {
-                            return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncStatusRetrieve(
-                                {
-                                    id: this.provider?.pk || 0,
-                                },
-                            );
+                            return aki(ProvidersApi).providersScimSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
                         }}
                     >
                         ${this.renderSyncStatusExtra()}
                     </ak-sync-status-card>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Schedules")}</div>
-                        </div>
-                        <ak-schedule-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-schedule-list>
-                    </div>
+                    ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                    <div class="pf-c-card">
-                        <div class="pf-c-card__header">
-                            <div class="pf-c-card__title">${msg("Tasks")}</div>
-                        </div>
-                        <ak-task-list
-                            .relObjAppLabel=${appLabel}
-                            .relObjModel=${modelName}
-                            .relObjId="${this.provider.pk}"
-                        ></ak-task-list>
-                    </div>
+                    ${taskCard(PROVIDER_TYPE, this.provider.pk)}
                 </div>
                 <div
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"

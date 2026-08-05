@@ -5,7 +5,7 @@ import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
 import Styles from "./AuthenticatorValidateStage.css";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -117,7 +117,7 @@ export class AuthenticatorValidateStage
         Styles,
     ];
 
-    #api = new FlowsApi(DEFAULT_CONFIG);
+    #api = aki(FlowsApi);
 
     public flowSlug = "";
 

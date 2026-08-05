@@ -5,7 +5,7 @@ import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -25,7 +25,7 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
-    protected flowsAPI = new FlowsApi(DEFAULT_CONFIG);
+    protected flowsAPI = aki(FlowsApi);
 
     public override expandable = true;
     public override checkbox = true;

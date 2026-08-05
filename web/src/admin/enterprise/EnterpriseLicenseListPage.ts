@@ -8,7 +8,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -77,16 +77,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     protected installID?: string;
 
     async apiEndpoint(): Promise<PaginatedResponse<License>> {
-        this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
-        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve({
+        this.forecast = await aki(EnterpriseApi).enterpriseLicenseForecastRetrieve();
+        this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
             cached: false,
         });
-        this.installID = (
-            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseInstallIdRetrieve()
-        ).installId;
-        return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList(
-            await this.defaultEndpointConfig(),
-        );
+        this.installID = (await aki(EnterpriseApi).enterpriseLicenseInstallIdRetrieve()).installId;
+        return aki(EnterpriseApi).enterpriseLicenseList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -124,12 +120,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 ];
             }}
             .usedBy=${(item: License) => {
-                return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseUsedByList({
+                return aki(EnterpriseApi).enterpriseLicenseUsedByList({
                     licenseUuid: item.licenseUuid,
                 });
             }}
             .delete=${(item: License) => {
-                return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseDestroy({
+                return aki(EnterpriseApi).enterpriseLicenseDestroy({
                     licenseUuid: item.licenseUuid,
                 });
             }}

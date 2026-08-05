@@ -1,13 +1,20 @@
 # Integrations
+ADOM
+Apereo
 appflowy
+appsmith
 Ascensio
 Authy
 Beszel
 Bitnami
 Budibase
+Chatwoot
+Coolify
+Directus
 Doki
 Doku
 dokuwiki
+Dozzle
 Engomo
 Espo
 espocrm
@@ -25,8 +32,10 @@ Gravitee
 grommunio
 HACS
 Homarr
+Icinga
 Informatique
 Jellyseerr
+Kavita
 Kimai
 Kiota
 Knoc
@@ -35,10 +44,15 @@ Komodo
 Kubeconfig
 Mautic
 Mobilizon
+myabsorb
+n8n
+NocoDB
+Nexterm
 Observium
 Ofair
 Ollama
 Omada
+Omnissa
 omniauth
 openwebui
 OPNsense
@@ -47,6 +61,7 @@ Organizr
 Packagify
 Palo
 Papra
+Personio
 PhotoPrism
 pfSense
 phpipam
@@ -54,6 +69,7 @@ Planka
 Plesk
 PostHog
 proftpd
+pveum
 Qube
 Relatedly
 Seerr

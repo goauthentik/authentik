@@ -3,7 +3,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
@@ -17,23 +17,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
-    loadInstance(pk: string): Promise<ExpressionPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
-        if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionUpdate({
-                policyUuid: this.instance.pk || "",
-                expressionPolicyRequest: data,
-            });
-        }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
-            expressionPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesExpressionRetrieve({
+                policyUuid,
+            }),
+        create: (expressionPolicyRequest: ExpressionPolicy) =>
+            aki(PoliciesApi).policiesExpressionCreate({
+                expressionPolicyRequest,
+            }),
+        update: (policyUuid: string, expressionPolicyRequest: ExpressionPolicy) =>
+            aki(PoliciesApi).policiesExpressionUpdate({
+                policyUuid,
+                expressionPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

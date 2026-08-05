@@ -18,7 +18,7 @@ import "#elements/wizard/FormWizardPage";
 import "#elements/wizard/TypeCreateWizardPage";
 import "#elements/wizard/Wizard";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { CreateWizard } from "#elements/wizard/CreateWizard";
 
@@ -29,7 +29,7 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 
 @customElement("ak-property-mapping-wizard")
 export class AKPropertyMappingWizard extends CreateWizard {
-    #api = new PropertymappingsApi(DEFAULT_CONFIG);
+    #api = aki(PropertymappingsApi);
 
     protected override apiEndpoint(requestInit?: RequestInit): Promise<TypeCreate[]> {
         return this.#api.propertymappingsAllTypesList(requestInit);

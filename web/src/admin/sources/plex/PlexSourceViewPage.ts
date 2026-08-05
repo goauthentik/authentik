@@ -7,7 +7,7 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -31,7 +31,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 export class PlexSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesPlexRetrieve({
                 slug: value,
             })

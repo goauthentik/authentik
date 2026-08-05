@@ -4,6 +4,7 @@ tags:
     - policy
     - security
     - access-control
+sidebar_position: 1
 ---
 
 Policies are reusable checks in authentik. They let you control whether a user can access an application, whether a stage in a flow should run, whether a source can be used, or whether data entered in a prompt stage is valid.
@@ -29,15 +30,15 @@ You can also bind a **user** or **group** directly in the same places where you 
 
 Use the built-in policy types when they already match what you need. Reach for an expression policy when the built-in types are too limited.
 
-| Policy type                                           | Use it when                                                                               | Notes                                                                                                               |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| [Event Matcher](./types/event-matcher.md)             | You want to react to specific authentik events, usually for notifications or automations. | Matches event action, app, model, and client IP. See [Notifications](../../sys-mgmt/events/notifications.md).       |
-| [Expression](./types/expression/index.mdx)            | You need custom logic that is not covered by a more specialized policy type.              | Most flexible option. Runs Python and can inspect flow context, prompt data, user data, request metadata, and more. |
-| [GeoIP](./types/geoip.md)                             | You want to allow or deny requests based on country, ASN, or travel patterns.             | Can also check recent login distance and impossible-travel scenarios.                                               |
-| [Password](./types/password.md)                       | You want to validate password complexity, HIBP exposure, or zxcvbn strength.              | Commonly attached to a prompt stage's **Validation Policies**.                                                      |
-| [Password Expiry](./types/password-expiry.md)         | You want to expire passwords after a fixed number of days.                                | Can either deny login or mark the password unusable so the user must update it.                                     |
-| [Password Uniqueness](./types/password-uniqueness.md) | You want to prevent password reuse.                                                       | Enterprise feature.                                                                                                 |
-| [Reputation](./types/reputation.md)                   | You want to react to failed logins or suspicious sign-in activity.                        | Useful for showing CAPTCHA or another challenge only to low-reputation requests.                                    |
+| Policy type                                           | Use it when                                                                               | Notes                                                                                                                         |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [Event Matcher](./types/event-matcher.md)             | You want to react to specific authentik events, usually for notifications or automations. | Matches event action, app, model, client IP, and [AKQL queries](../../sys-mgmt/akql.mdx#use-akql-in-an-event-matcher-policy). |
+| [Expression](./types/expression/index.mdx)            | You need custom logic that is not covered by a more specialized policy type.              | Most flexible option. Runs Python and can inspect flow context, prompt data, user data, request metadata, and more.           |
+| [GeoIP](./types/geoip.md)                             | You want to allow or deny requests based on country, ASN, or travel patterns.             | Can also check recent login distance and impossible-travel scenarios.                                                         |
+| [Password](./types/password.md)                       | You want to validate password complexity, HIBP exposure, or zxcvbn strength.              | Commonly attached to a prompt stage's **Validation Policies**.                                                                |
+| [Password Expiry](./types/password-expiry.md)         | You want to expire passwords after a fixed number of days.                                | Can either deny login or mark the password unusable so the user must update it.                                               |
+| [Password Uniqueness](./types/password-uniqueness.md) | You want to prevent password reuse.                                                       | Enterprise feature.                                                                                                           |
+| [Reputation](./types/reputation.md)                   | You want to react to failed logins or suspicious sign-in activity.                        | Useful for showing CAPTCHA or another challenge only to low-reputation requests.                                              |
 
 ## Deprecated policy types
 

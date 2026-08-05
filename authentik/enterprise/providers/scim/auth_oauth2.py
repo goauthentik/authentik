@@ -68,13 +68,16 @@ class SCIMOAuthAuth:
             return conn
         token = self.retrieve_token(conn)
         access_token = token["access_token"]
+        refresh_token = token.get("refresh_token")
+        if not refresh_token and conn:
+            refresh_token = conn.refresh_token
         expires_in = int(token.get("expires_in", 0))
         token, _ = UserOAuthSourceConnection.objects.update_or_create(
             source=self.provider.auth_oauth,
             user=self.user,
             defaults={
                 "access_token": access_token,
-                "refresh_token": token.get("refresh_token"),
+                "refresh_token": refresh_token,
                 "expires": now() + timedelta(seconds=expires_in),
                 # When using `update_or_create`, `last_updated` is not updated
                 "last_updated": now(),

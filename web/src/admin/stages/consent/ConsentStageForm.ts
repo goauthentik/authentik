@@ -2,7 +2,7 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -16,7 +16,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     loadInstance(pk: string): Promise<ConsentStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesConsentRetrieve({
                 stageUuid: pk,
             })
@@ -31,12 +31,12 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
+            return aki(StagesApi).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
                 consentStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
+        return aki(StagesApi).stagesConsentCreate({
             consentStageRequest: data,
         });
     }

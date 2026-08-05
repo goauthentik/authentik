@@ -8,7 +8,7 @@ import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
 import { asInstanceInvokerByTagName, modalInvoker } from "#elements/dialogs";
@@ -57,6 +57,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];
 
+    @property({ type: Boolean, attribute: "no-wizard" })
+    public noWizard = false;
+
     public override checkbox = true;
     public override clearOnRefresh = true;
 
@@ -69,7 +72,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<T>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsList({
+        return aki(PoliciesApi).policiesBindingsList({
             ...(await this.defaultEndpointConfig()),
             target: this.target || "",
         }) as Promise<PaginatedResponse<T>>;
@@ -158,12 +161,12 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
                     ];
                 }}
                 .usedBy=${(item: PolicyBinding) => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUsedByList({
+                    return aki(PoliciesApi).policiesBindingsUsedByList({
                         policyBindingUuid: item.pk,
                     });
                 }}
                 .delete=${(item: PolicyBinding) => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsDestroy({
+                    return aki(PoliciesApi).policiesBindingsDestroy({
                         policyBindingUuid: item.pk,
                     });
                 }}
@@ -175,7 +178,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected renderNewPolicyButton(): SlottedTemplateResult {
-        if (!this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)) {
+        if (this.noWizard || !this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)) {
             return html`<button
                 type="button"
                 class="pf-c-button pf-m-primary"

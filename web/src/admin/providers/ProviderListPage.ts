@@ -14,7 +14,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName } from "#elements/dialogs";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -51,9 +51,7 @@ export class ProviderListPage extends TablePage<Provider> {
     public searchPlaceholder = msg("Search for provider by name, type or assigned application...");
 
     override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(ProvidersApi).providersAllList(await this.defaultEndpointConfig());
     }
 
     protected override columns: TableColumn[] = [
@@ -70,12 +68,12 @@ export class ProviderListPage extends TablePage<Provider> {
             object-label=${msg("Provider(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Provider) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersAllUsedByList({
+                return aki(ProvidersApi).providersAllUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: Provider) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersAllDestroy({
+                return aki(ProvidersApi).providersAllDestroy({
                     id: item.pk,
                 });
             }}

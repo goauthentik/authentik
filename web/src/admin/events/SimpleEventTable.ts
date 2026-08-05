@@ -1,6 +1,6 @@
 import "#components/ak-event-info";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
@@ -26,7 +26,7 @@ export abstract class SimpleEventTable extends Table<Event> {
     expandable = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
+        return aki(EventsApi).eventsEventsList({
             ...(await this.defaultEndpointConfig()),
             pageSize: this.pageSize,
             ...(await this.apiParameters()),

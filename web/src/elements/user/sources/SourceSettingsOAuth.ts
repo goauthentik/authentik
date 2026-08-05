@@ -1,6 +1,7 @@
 import "#elements/Spinner";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -18,7 +19,7 @@ import { customElement } from "lit/decorators.js";
 @customElement("ak-user-settings-source-oauth")
 export class SourceSettingsOAuth extends BaseUserSettings {
     protected disconnectSource(): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesUserConnectionsOauthDestroy({
                 id: this.connectionPk,
             })

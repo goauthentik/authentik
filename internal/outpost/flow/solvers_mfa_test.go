@@ -46,14 +46,14 @@ func TestFlowExecutor_SetSecrets_TOTP_8(t *testing.T) {
 	assert.Equal(t, strconv.Itoa(totp), fe.Answers[flow.StageAuthenticatorValidate])
 }
 
-func TestFlowExecutor_SetSecrets_TOTP_TooLong(t *testing.T) {
+func TestFlowExecutor_SetSecrets_TOTP_Long(t *testing.T) {
 	fe := flow.NewFlowExecutor(context.TODO(), "", api.NewConfiguration(), logrus.Fields{})
 	pw := testSecret()
 	totp := 1234567890
 	formatted := fmt.Sprintf("%s%s%d", pw, flow.CodePasswordSeparator, totp)
 	fe.SetSecrets(formatted, true)
-	assert.Equal(t, formatted, fe.Answers[flow.StagePassword])
-	assert.Equal(t, "", fe.Answers[flow.StageAuthenticatorValidate])
+	assert.Equal(t, pw, fe.Answers[flow.StagePassword])
+	assert.Equal(t, "1234567890", fe.Answers[flow.StageAuthenticatorValidate])
 }
 
 func TestFlowExecutor_SetSecrets_TOTP_NoCode(t *testing.T) {

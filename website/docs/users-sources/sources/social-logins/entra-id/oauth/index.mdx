@@ -9,7 +9,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate to authentik using their Entra ID credentials by configuring Entra ID as a federated identity provider via OAuth 2.0.
+This source lets users authenticate to authentik with their Entra ID credentials by configuring Entra ID as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -58,7 +58,7 @@ To support the integration of Entra ID with authentik, you need to create an Ent
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Entra ID OAuth Source** as the source type.
-    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
+    - **Create Entra ID OAuth Source**: provide a name, a slug that must match the slug used in the Entra ID `Redirect URI`, and the following required configurations:
         - Under **Protocol Settings**:
             - **Consumer key**: `Application (client) ID` from Entra ID.
             - **Consumer secret**: value of the secret created in Entra ID.

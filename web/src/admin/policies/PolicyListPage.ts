@@ -13,7 +13,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -48,7 +48,7 @@ export class PolicyListPage extends TablePage<Policy> {
     public override order = "name";
 
     async apiEndpoint(): Promise<PaginatedResponse<Policy>> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesAllList(await this.defaultEndpointConfig());
+        return aki(PoliciesApi).policiesAllList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -100,12 +100,12 @@ export class PolicyListPage extends TablePage<Policy> {
             object-label=${msg("Policy / Policies")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllUsedByList({
+                return aki(PoliciesApi).policiesAllUsedByList({
                     policyUuid: item.pk,
                 });
             }}
             .delete=${(item: Policy) => {
-                return new PoliciesApi(DEFAULT_CONFIG).policiesAllDestroy({
+                return aki(PoliciesApi).policiesAllDestroy({
                     policyUuid: item.pk,
                 });
             }}
@@ -136,7 +136,7 @@ export class PolicyListPage extends TablePage<Policy> {
                 errorMessage=${msg("Failed to delete policy cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                    return aki(PoliciesApi).policiesAllCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Policy cache")}</span>

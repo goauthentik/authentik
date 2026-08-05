@@ -1,12 +1,13 @@
-import type { AppGroupEntry } from "./types.js";
+import { LibraryAppRow } from "./LibraryAppRow.js";
+import { type AppGroupEntry, ViewMode } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
 
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import { ApplicationRoute } from "#elements/router/builders";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
 
 import { Application } from "@goauthentik/api";
@@ -30,9 +31,11 @@ export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivEle
     editable?: boolean;
     groupedApps: AppGroupEntry[];
     layout: LayoutType;
+    viewMode?: ViewMode;
     background?: string | null;
     selectedApp?: Application | null;
     targetRef?: RefOrCallback | null;
+    onAppClick?: (app: Application) => Promise<void>;
 }
 
 /**
@@ -42,16 +45,20 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     editable,
     groupedApps,
     layout = LayoutType.row,
+    viewMode = ViewMode.Grid,
     background,
     selectedApp,
     targetRef,
+    onAppClick,
     ...props
 }) => {
     const columnCount = LayoutColumnCount[layout] ?? 1;
+    const isList = viewMode === ViewMode.List;
 
     return html`<div
         role="presentation"
         part="app-list"
+        data-view-mode=${viewMode}
         data-anchor-strategy=${AnchorPositionSupported ? "anchor-position" : "fallback"}
         style="--app-list-column-count: ${columnCount}"
         ${spread(props)}
@@ -61,6 +68,33 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
             ([groupLabel]) => groupLabel,
             ([groupLabel, apps], groupIndex) => {
                 const groupID = kebabCase(groupLabel);
+                const inner = repeat(
+                    apps,
+                    (application) => application.pk,
+                    (application) => {
+                        const selected = selectedApp === application;
+
+                        const editURL = editable
+                            ? ApplicationRoute.EditURL(application.slug)
+                            : null;
+
+                        if (isList) {
+                            return LibraryAppRow({
+                                application,
+                                editURL,
+                                targetRef: selected ? targetRef : null,
+                            });
+                        }
+
+                        return AKLibraryApp({
+                            application,
+                            background,
+                            editURL,
+                            targetRef: selected ? targetRef : null,
+                            onAppClick,
+                        });
+                    },
+                );
 
                 return html`<fieldset
                     class="ak-c-fieldset"
@@ -75,24 +109,11 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                     >
                         <h2 id=${`app-group-${groupID}`}>${groupLabel || msg("Ungrouped")}</h2>
                     </legend>
-                    ${repeat(
-                        apps,
-                        (application) => application.pk,
-                        (application) => {
-                            const selected = selectedApp === application;
-
-                            const editURL = editable
-                                ? ApplicationRoute.EditURL(application.slug)
-                                : null;
-
-                            return AKLibraryApp({
-                                application,
-                                background,
-                                editURL,
-                                targetRef: selected ? targetRef : null,
-                            });
-                        },
-                    )}
+                    ${isList
+                        ? html`<ul part="app-group-rows" class="app-group-rows" role="list">
+                              ${inner}
+                          </ul>`
+                        : inner}
                     <hr part="app-group-separator" aria-hidden="true" />
                 </fieldset>`;
             },

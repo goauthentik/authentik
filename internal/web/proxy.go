@@ -62,6 +62,13 @@ func (ws *WebServer) configureProxy() {
 	}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
+	ws.mainRouter.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
+		if ws.upstreamHealthcheck() {
+			rw.WriteHeader(200)
+		} else {
+			rw.WriteHeader(502)
+		}
+	}))
 	ws.mainRouter.PathPrefix(config.Get().Web.Path).Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if ws.upstreamHealthcheck() {
 			rw.WriteHeader(200)

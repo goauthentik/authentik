@@ -40,7 +40,7 @@ The invitation wizard, available from the **Directory** > **Invitations** page i
     - **Flow slug**: the slug for the flow which is included in the URL.
     - **Invitation stage name**: name of the invitation stage that will be bound to the new flow.
     - **User type**: the user type for users enrolled via this flow.
-    - **Continue flow without invitation**: when enabled, the flow proceeds to the next stage even when no invitation token is supplied. When disabled, the flow is cancelled if a valid invitation is not provided.
+    - **Continue flow without invitation**: when enabled, the flow proceeds to the next stage even when no invitation token is supplied. When disabled, the flow is canceled if a valid invitation is not provided.
 
 ### Step 3. Configure the invitation details
 

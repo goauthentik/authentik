@@ -6,7 +6,7 @@ import "#admin/events/ObjectChangelog";
 import "#admin/events/UserEvents";
 import "#elements/Tabs";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -36,7 +36,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 export class RoleViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set roleId(id: string) {
-        new RbacApi(DEFAULT_CONFIG)
+        aki(RbacApi)
             .rbacRolesRetrieve({
                 uuid: id,
             })

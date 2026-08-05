@@ -74,6 +74,10 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("User syncing is disabled for this Source")
             return -1
         user_count = 0
+
+        ms_ad_syncer = MicrosoftActiveDirectory(self._source, self._task)
+        freeipa_syncer = FreeIPA(self._source, self._task)
+
         for user in page_data:
             saved_user = self.sync_user(user)
             if saved_user != None:

@@ -1,29 +1,30 @@
 import "#elements/EmptyState";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
-import { Diagram } from "#elements/Diagram";
+import { Diagram } from "#elements/Diagram/ak-diagram";
 
 import { FlowsApi } from "@goauthentik/api";
+
+import { observes } from "@patternfly/pfe-core/decorators/observes.js";
 
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-flow-diagram")
 export class FlowDiagram extends Diagram {
-    @property()
-    flowSlug?: string;
+    @property({ type: String, useDefault: true })
+    public flowSlug: string | null = null;
 
-    refreshHandler = (): void => {
-        this.diagram = undefined;
-        new FlowsApi(DEFAULT_CONFIG)
+    @observes("flowSlug")
+    protected refresh(): void {
+        aki(FlowsApi)
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })
             .then((data) => {
                 this.diagram = data.diagram;
-                this.requestUpdate();
             });
-    };
+    }
 }
 
 declare global {

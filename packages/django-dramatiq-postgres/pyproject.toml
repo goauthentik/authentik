@@ -38,7 +38,7 @@ dependencies = [
   "django-pgtrigger >=4,<5",
   "dramatiq >=2,<3",
   "tenacity >=9,<10",
-  "structlog >=25,<26",
+  "structlog >=26,<27",
 ]
 
 [project.urls]

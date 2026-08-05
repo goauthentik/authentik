@@ -20,7 +20,9 @@ This section applies only for Chrome users on macOS and Linux machines. For Wind
 1. Make sure you have the necessary directory created by running: `mkdir -p /etc/opt/chrome/policies/managed/`
 2. Create a new `/etc/opt/chrome/policies/managed/mydomain.json` file with write privileges limited to the system administrator or root, and include the following line: `{ "AuthServerWhitelist": "*.example.com" }`.
 
-**Note**: if using Chromium, use `/etc/chromium/policies/managed/` instead of `/etc/opt/chrome/policies/managed/`.
+:::note Chromium Directory
+If you use Chromium, use `/etc/chromium/policies/managed/` instead of `/etc/opt/chrome/policies/managed/`.
+:::
 
 To automate the deployment of this configuration use a [Group policy](https://support.google.com/chrome/a/answer/187202).
 

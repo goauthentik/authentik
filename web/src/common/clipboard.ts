@@ -2,6 +2,7 @@ import { MessageLevel } from "#common/messages";
 import { isPromiseLike } from "#common/promises";
 
 import { showMessage } from "#elements/messages/MessageContainer";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
 
@@ -47,7 +48,7 @@ export async function doWriteToClipboard(...data: ClipboardItemSource[]): Promis
 export function writeToClipboard(
     data?: ClipboardItemSource | ClipboardItemSource[] | null,
     entityLabel?: string,
-    description?: string,
+    description?: SlottedTemplateResult,
 ): Promise<boolean> {
     if (!data || (Array.isArray(data) && data.length === 0)) {
         console.warn("Cannot write empty data to clipboard");

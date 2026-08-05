@@ -42,6 +42,9 @@ def detect_saml_message_type(saml_request: str, is_post_binding: bool) -> str | 
         else:
             decoded_xml = decode_base64_and_inflate(saml_request)
 
+        if isinstance(decoded_xml, str):
+            decoded_xml = decoded_xml.encode()
+
         root = fromstring(decoded_xml)
         if len(root.xpath("//samlp:AuthnRequest", namespaces=NS_MAP)):
             return SAML_MESSAGE_TYPE_AUTHN_REQUEST

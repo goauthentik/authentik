@@ -2,7 +2,7 @@
 title: Flow Inspector
 ---
 
-The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the flow process and observing the Inspector with each step, and investigate issues.
+The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the flow process and observing the Inspector with each step, and investigate issues. It shows details from the active [flow plan](./planner.md).
 
 As shown in the screenshot below, the Flow Inspector displays to the right, beside the selected flow (in this case, "Change Password"), with [information](#flow-inspector-details) about that specific flow and flow context.
 
@@ -45,13 +45,13 @@ The following information is shown in the Inspector:
 
 #### Next stage
 
-This is the currently planned next stage. If you have stage bindings configured to `Evaluate when flow is planned`, then you see the result here. If, however, you have them configured to re-evaluate (`Evaluate when stage is run`), then this does not show up, because the results vary based on your input.
+This is the currently planned next stage. Stages that are evaluated when they run can still be skipped before they are shown. For more information, see [Planning and stage policies](./planner.md#planning-and-stage-policies).
 
 The name and kind of the stage, as well as the unique ID, are shown.
 
 #### Plan history
 
-Here you can see an overview of which stages have run, which is currently active, and which is planned to come next. Same caveats as above apply.
+Here you can see an overview of which stages have run, which is currently active, and which is planned to come next.
 
 #### Current plan context
 

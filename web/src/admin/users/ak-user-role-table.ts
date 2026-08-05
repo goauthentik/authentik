@@ -1,7 +1,7 @@
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,7 +23,7 @@ export class UserRoleTable extends Table<Role> {
     public override order = "name";
 
     protected async apiEndpoint(): Promise<PaginatedResponse<Role>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+        return aki(RbacApi).rbacRolesList({
             ...(await this.defaultEndpointConfig()),
         });
     }

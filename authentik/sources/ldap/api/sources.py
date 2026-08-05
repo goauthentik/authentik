@@ -105,6 +105,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "lookup_groups_from_user",
             "delete_not_found_objects",
             "sync_outgoing_trigger_mode",
+            "sync_group_hierarchy",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -145,6 +146,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "group_property_mappings",
         "lookup_groups_from_user",
         "delete_not_found_objects",
+        "sync_group_hierarchy",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
@@ -205,7 +207,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
             ),
         }
     )
-    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[])
+    @action(methods=["GET"], detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def debug(self, request: Request, slug: str) -> Response:
         """Get raw LDAP data to debug"""
         source = self.get_object()
