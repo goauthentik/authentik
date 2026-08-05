@@ -244,3 +244,6 @@ source_docs/
 ### Docker ###
 tests/openid_conformance/exports/*.zip
 compose.override.yml
+
+### Agent-generated metadata ###
+**/claude_export_

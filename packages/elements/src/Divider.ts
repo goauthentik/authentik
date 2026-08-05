@@ -1,0 +1,16 @@
+/**
+ * @file Barrel file and default registry ('ak-divider') for the Divider component
+ */
+
+import { akDivider, Divider, type DividerProps } from "./impl/Divider/Divider.js";
+
+export { akDivider, Divider };
+export type { DividerProps };
+
+window.customElements.define("ak-divider", Divider);
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-divider": Divider;
+    }
+}
