@@ -30,30 +30,32 @@ import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-const policyBehaviorOptions: RadioOption<PolicyBehaviorEnum>[] = [
-    {
-        label: msg("Mirror", { id: "agent.policy-behavior.mirror.label" }),
-        value: PolicyBehaviorEnum.Mirror,
-        default: true,
-        description: html`${msg("The agent has exactly the parent user's access, evaluated live.", {
-            id: "agent.policy-behavior.mirror.description",
-        })}`,
-    },
-    {
-        label: msg("Copy", { id: "agent.policy-behavior.copy.label" }),
-        value: PolicyBehaviorEnum.Copy,
-        description: html`${msg("Copy the parent's policy bindings onto the agent.", {
-            id: "agent.policy-behavior.copy.description",
-        })}`,
-    },
-    {
-        label: msg("None", { id: "agent.policy-behavior.none.label" }),
-        value: PolicyBehaviorEnum.None,
-        description: html`${msg("The agent uses only its own policy bindings.", {
-            id: "agent.policy-behavior.none.description",
-        })}`,
-    },
-];
+function createPolicyBehaviorOptions(): RadioOption<PolicyBehaviorEnum>[] {
+    return [
+        {
+            label: msg("Mirror", { id: "agent.policy-behavior.mirror.label" }),
+            value: PolicyBehaviorEnum.Mirror,
+            default: true,
+            description: msg("The agent has exactly the parent user's access, evaluated live.", {
+                id: "agent.policy-behavior.mirror.description",
+            }),
+        },
+        {
+            label: msg("Copy", { id: "agent.policy-behavior.copy.label" }),
+            value: PolicyBehaviorEnum.Copy,
+            description: msg("Copy the parent's policy bindings onto the agent.", {
+                id: "agent.policy-behavior.copy.description",
+            }),
+        },
+        {
+            label: msg("None", { id: "agent.policy-behavior.none.label" }),
+            value: PolicyBehaviorEnum.None,
+            description: msg("The agent uses only its own policy bindings.", {
+                id: "agent.policy-behavior.none.description",
+            }),
+        },
+    ];
+}
 
 @customElement("ak-agent-form")
 export class AgentForm extends Form<AgentCreateRequest> {
@@ -73,20 +75,24 @@ export class AgentForm extends Form<AgentCreateRequest> {
         return msg("Successfully created agent.");
     }
 
-    async send(data: AgentCreateRequest): Promise<AgentCreated> {
+    protected override async send(data: AgentCreateRequest): Promise<AgentCreated> {
         const result = await aki(AgentsApi).agentsAgentsCreate({
             agentCreateRequest: data,
         });
+
         this.result = result;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = false;
         }
+
         return result;
     }
 
     public override reset(): void {
         super.reset();
         this.result = null;
+
         if (this.parentElement instanceof ModalForm) {
             this.parentElement.showSubmitButton = true;
         }
@@ -130,7 +136,7 @@ export class AgentForm extends Form<AgentCreateRequest> {
             <ak-radio-input
                 name="policyBehavior"
                 label=${msg("Policy behavior", { id: "agent.policy-behavior.label" })}
-                .options=${policyBehaviorOptions}
+                .options=${createPolicyBehaviorOptions}
                 help=${msg("How the agent's access relates to its parent user.", {
                     id: "agent.policy-behavior.help",
                 })}
@@ -186,6 +192,7 @@ export class AgentForm extends Form<AgentCreateRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
+
         return super.renderFormWrapper();
     }
 }
