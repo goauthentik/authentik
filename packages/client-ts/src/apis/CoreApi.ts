@@ -610,6 +610,10 @@ export interface CoreUsersSwitchCreateRequest {
     userSwitchRequest?: UserSwitchRequest;
 }
 
+export interface CoreUsersUnlockPasswordCreateRequest {
+    id: number;
+}
+
 export interface CoreUsersUpdateRequest {
     id: number;
     userRequest: UserRequest;
@@ -6172,6 +6176,67 @@ export class CoreApi extends runtime.BaseAPI {
     ): Promise<UserSwitchResponse> {
         const response = await this.coreUsersSwitchCreateRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Creates request options for coreUsersUnlockPasswordCreate without sending the request
+     */
+    async coreUsersUnlockPasswordCreateRequestOpts(
+        requestParameters: CoreUsersUnlockPasswordCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling coreUsersUnlockPasswordCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/core/users/{id}/unlock_password/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Allow a locked password to authenticate again
+     */
+    async coreUsersUnlockPasswordCreateRaw(
+        requestParameters: CoreUsersUnlockPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.coreUsersUnlockPasswordCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Allow a locked password to authenticate again
+     */
+    async coreUsersUnlockPasswordCreate(
+        requestParameters: CoreUsersUnlockPasswordCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.coreUsersUnlockPasswordCreateRaw(requestParameters, initOverrides);
     }
 
     /**
