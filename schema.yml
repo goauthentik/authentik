@@ -5022,6 +5022,29 @@ paths:
           description: Bad request
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/unlock_password/:
+    post:
+      operationId: core_users_unlock_password_create
+      description: Allow a locked password to authenticate again
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - authentik_device_auth: []
+      responses:
+        '204':
+          description: Successfully unlocked password
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/used_by/:
     get:
       operationId: core_users_used_by_list
@@ -40772,6 +40795,8 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - password_locked
+      - password_unlocked
       - secret_view
       - secret_rotate
       - invitation_used
@@ -50067,8 +50092,15 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password,
+            until an administrator unlocks it or the password is changed. Set to 0
+            to never lock. Requires an enterprise license.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50104,8 +50136,15 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password,
+            until an administrator unlocks it or the password is changed. Set to 0
+            to never lock. Requires an enterprise license.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52639,8 +52678,15 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: How many attempts a user has before the flow is canceled. To
-            lock the user out, use a reputation policy and a user_write stage.
+          description: How many attempts a user has before the flow is canceled. This
+            only cancels the flow, it does not lock the user's password.
+        failed_attempts_before_lockout:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: How many consecutive failed attempts lock the user's password,
+            until an administrator unlocks it or the password is changed. Set to 0
+            to never lock. Requires an enterprise license.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
