@@ -1,6 +1,7 @@
 import "#elements/buttons/SpinnerButton/index";
 
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 import { formatDisambiguatedUserDisplayName } from "#common/users";
 
 import { modalInvoker } from "#elements/dialogs";
@@ -22,6 +23,8 @@ import { customElement } from "lit/decorators.js";
 export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<User>) {
     public static override verboseName = msg("User");
     public static override verboseNamePlural = msg("Users");
+
+    public override size = PFSize.Small;
 
     protected coreAPI = aki(CoreApi);
 
@@ -72,10 +75,10 @@ export class UserActivationToggleForm extends WithLocale(DestructiveModelForm<Us
 
         return html`<p class="pf-c-form__helper-text">
             ${this.instance?.isActive
-                ? msg(str`Are you sure you want to deactivate ${displayName}?`, {
+                ? msg(html`Are you sure you want to deactivate <code>${displayName}</code>?`, {
                       id: "user.activation.confirm.deactivate",
                   })
-                : msg(str`Are you sure you want to activate ${displayName}?`, {
+                : msg(html`Are you sure you want to activate <code>${displayName}</code>?`, {
                       id: "user.activation.confirm.activate",
                   })}
         </p>`;
