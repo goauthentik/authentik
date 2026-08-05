@@ -3,19 +3,20 @@ from rest_framework.test import APIClient, APITestCase
 
 from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_user
-from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
-from authentik.tenants.flags import patch_flag
 
 
 class AgentTests(APITestCase):
 
-    def _grant_create_perm(self, user):
+    def _grant_self_service_perm(self, user):
+        user.assign_perms_to_managed_role("authentik_agents.add_agent_self_service")
+
+    def _grant_admin_perm(self, user):
         user.assign_perms_to_managed_role("authentik_agents.add_agent")
 
     def test_create_requires_permission(self):
-        """Without the add_agent permission and with self-service disabled, a user
-        cannot create an agent -- neither for someone else nor for themselves"""
+        """Without any add_agent* permission, a user cannot create an agent --
+        neither for someone else nor for themselves"""
         user = create_test_user()
         other_user = create_test_user()
         self.client.force_login(user)
@@ -29,11 +30,11 @@ class AgentTests(APITestCase):
         res = self.client.post(reverse("authentik_api:agent-list"), data={})
         self.assertEqual(res.status_code, 403)
 
-    @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_create_for_self(self):
         """Self-service creation returns a usable API token, creates a service-account
         machine identity, and the token authenticates as the agent"""
         user = create_test_user()
+        self._grant_self_service_perm(user)
         self.client.force_login(user)
 
         res = self.client.post(
@@ -74,10 +75,10 @@ class AgentTests(APITestCase):
         # Deleting the agent cascades to its token
         self.assertFalse(Token.objects.filter(pk=token.pk).exists())
 
-    @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_always_expires(self):
         """Self-service agents are always expiring; the caller cannot opt out"""
         user = create_test_user()
+        self._grant_self_service_perm(user)
         self.client.force_login(user)
 
         res = self.client.post(
@@ -96,7 +97,7 @@ class AgentTests(APITestCase):
         """A privileged user (add_agent) creating an agent for THEMSELVES is still
         self-service, so it must expire -- ownership decides, not the permission"""
         admin = create_test_user()
-        self._grant_create_perm(admin)
+        self._grant_admin_perm(admin)
         self.client.force_login(admin)
 
         res = self.client.post(
@@ -110,7 +111,6 @@ class AgentTests(APITestCase):
         self.assertIsNotNone(agent.expires)
         self.assertLess(agent.expires.year, 2099)
 
-    @patch_flag(AllowAnyAgentCreate, True)
     def test_self_service_cannot_create_for_other(self):
         """Self-service only lets a user create agents for themselves, never for
         another user"""
@@ -125,12 +125,11 @@ class AgentTests(APITestCase):
         self.assertEqual(res.status_code, 403)
         self.assertFalse(Agent.objects.filter(parent=other_user).exists())
 
-    @patch_flag(AllowAnyAgentCreate, True)
     def test_admin_creates_for_other_with_self_service_enabled(self):
-        """An admin with add_agent can still provision for any parent, regardless of
-        the self-service flag"""
+        """A user with add_agent can provision an agent for another parent, even
+        though that permission is distinct from add_agent_self_service"""
         admin = create_test_user()
-        self._grant_create_perm(admin)
+        self._grant_admin_perm(admin)
         other_user = create_test_user()
         self.client.force_login(admin)
 
@@ -146,9 +145,9 @@ class AgentTests(APITestCase):
         self.assertTrue(Token.objects.filter(user=agent, intent=TokenIntents.INTENT_API).exists())
 
     def test_admin_creates_agent_for_user(self):
-        """An admin with add_agent can create an agent for any user"""
+        """A user with add_agent can create an agent for any user"""
         admin = create_test_user()
-        self._grant_create_perm(admin)
+        self._grant_admin_perm(admin)
         other_user = create_test_user()
         self.client.force_login(admin)
 
@@ -158,13 +157,13 @@ class AgentTests(APITestCase):
         )
         self.assertEqual(res.status_code, 201, res.content)
         agent = Agent.objects.get(parent=other_user)
-        self.assertTrue(agent.username.startswith("agent-"))
+        self.assertIn("-agent-", agent.username)
         self.assertEqual(agent.name, "support-bot")
 
     def test_admin_agent_honors_non_expiring(self):
         """An admin-provisioned agent may be a standing (non-expiring) identity"""
         admin = create_test_user()
-        self._grant_create_perm(admin)
+        self._grant_admin_perm(admin)
         other_user = create_test_user()
         self.client.force_login(admin)
 
@@ -177,11 +176,44 @@ class AgentTests(APITestCase):
         self.assertFalse(agent.expiring)
         self.assertIsNone(agent.expires)
 
+    def test_unprivileged_user_with_self_service_perm_can_create(self):
+        """A user with no other rights, granted only add_agent_self_service via their
+        managed role, can create an agent for themselves through the API"""
+        user = create_test_user()
+        self.assertFalse(user.is_superuser)
+        self.assertFalse(user.has_perm("authentik_agents.add_agent"))
+        self._grant_self_service_perm(user)
+        self.client.force_login(user)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"label": "my-agent"},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(parent=user)
+        self.assertEqual(agent.name, "my-agent")
+        self.assertTrue(res.json()["token"])
+
+    def test_self_service_perm_alone_cannot_create_for_other(self):
+        """add_agent_self_service only grants creating agents for yourself; it must
+        not also grant provisioning agents for another user"""
+        user = create_test_user()
+        self._grant_self_service_perm(user)
+        other_user = create_test_user()
+        self.client.force_login(user)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"parent": other_user.pk},
+        )
+        self.assertEqual(res.status_code, 403)
+        self.assertFalse(Agent.objects.filter(parent=other_user).exists())
+
     def test_list_only_shows_own_agents(self):
         """A user only sees agents they have object-level permission on
         (granted automatically to the parent at creation time)"""
         admin = create_test_user()
-        self._grant_create_perm(admin)
+        self._grant_admin_perm(admin)
         user = create_test_user()
         other_user = create_test_user()
         self.client.force_login(admin)

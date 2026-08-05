@@ -5,7 +5,6 @@ import "#user/agents/UserAgentForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
-import { globalAK } from "#common/global";
 import { formatElapsedTime } from "#common/temporal";
 
 import { IconTokenCopyButton } from "#elements/buttons/IconTokenCopyButton";
@@ -15,7 +14,7 @@ import { SlottedTemplateResult } from "#elements/types";
 import { Agent, AgentsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-user-agent-list")
@@ -45,28 +44,20 @@ export class UserAgentList extends Table<Agent> {
         return item.name || item.username;
     }
 
-    #selfServiceEnabled(): boolean {
-        return Boolean(globalAK().brand.flags.enterpriseAgentAllowAny);
-    }
-
     renderToolbar(): TemplateResult {
         return html`
-            ${this.#selfServiceEnabled()
-                ? html`<ak-forms-modal
-                      keep-open-after-submit
-                      cancelText=${msg("Close", { id: "agent.form.close.label" })}
-                      @ak-modal-hide=${() => this.fetch()}
-                  >
-                      <span slot="submit">${msg("Create", { id: "agent.create.submit" })}</span>
-                      <span slot="header"
-                          >${msg("Create Agent", { id: "agent.create.header" })}</span
-                      >
-                      <ak-user-agent-form slot="form"></ak-user-agent-form>
-                      <button slot="trigger" class="pf-c-button pf-m-primary">
-                          ${msg("Create Agent", { id: "agent.create.trigger" })}
-                      </button>
-                  </ak-forms-modal>`
-                : nothing}
+            <ak-forms-modal
+                keep-open-after-submit
+                cancelText=${msg("Close", { id: "agent.form.close.label" })}
+                @ak-modal-hide=${() => this.fetch()}
+            >
+                <span slot="submit">${msg("Create", { id: "agent.create.submit" })}</span>
+                <span slot="header">${msg("Create Agent", { id: "agent.create.header" })}</span>
+                <ak-user-agent-form slot="form"></ak-user-agent-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${msg("Create Agent", { id: "agent.create.trigger" })}
+                </button>
+            </ak-forms-modal>
             ${super.renderToolbar()}
         `;
     }

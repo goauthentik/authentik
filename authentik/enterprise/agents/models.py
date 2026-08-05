@@ -15,9 +15,15 @@ USER_PATH_AGENTS = f"{USER_PATH_SYSTEM_PREFIX}/agents"
 
 class Agent(Actor):
 
-    class Meta:
+    class Meta(Actor.Meta):
         verbose_name = _("Agent")
         verbose_name_plural = _("Agents")
+        # expires/expiring live on the parent Actor table under multi-table inheritance, so the
+        # indexes inherited from Actor.Meta (via ExpiringModel.Meta) don't apply to Agent itself.
+        indexes = []
+        permissions = [
+            ("add_agent_self_service", _("Add an agent user (self-service)")),
+        ]
 
     @classmethod
     def create_for_user(

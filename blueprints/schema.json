@@ -5667,6 +5667,7 @@
                         "type": "string",
                         "enum": [
                             "authentik_agents.add_agent",
+                            "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",
                             "authentik_agents.delete_agent",
                             "authentik_agents.view_agent",
@@ -7060,6 +7061,7 @@
                         "type": "string",
                         "enum": [
                             "authentik_agents.add_agent",
+                            "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",
                             "authentik_agents.delete_agent",
                             "authentik_agents.view_agent",
@@ -8510,6 +8512,7 @@
                         "type": "string",
                         "enum": [
                             "add_agent",
+                            "add_agent_self_service",
                             "change_agent",
                             "delete_agent",
                             "view_agent"
@@ -13547,6 +13550,7 @@
                         "type": "string",
                         "enum": [
                             "authentik_agents.add_agent",
+                            "authentik_agents.add_agent_self_service",
                             "authentik_agents.change_agent",
                             "authentik_agents.delete_agent",
                             "authentik_agents.view_agent",

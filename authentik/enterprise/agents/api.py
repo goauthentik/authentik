@@ -29,7 +29,6 @@ from authentik.core.models import (
     User,
     default_token_duration,
 )
-from authentik.enterprise.agents.apps import AllowAnyAgentCreate
 from authentik.enterprise.agents.models import Agent
 from authentik.enterprise.api import EnterpriseRequiredMixin
 
@@ -97,15 +96,17 @@ class AgentViewSet(
     @validate(AgentCreateSerializer)
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
         parent: User = body.validated_data.get("parent") or request.user
-        is_admin = request.user.has_perm("authentik_agents.add_agent")
+        self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
+        admin_perm = request.user.has_perm("authentik_agents.add_agent")
         # Self-service = creating an agent for yourself; provisioning for another user is an
         # admin action. The distinction is ownership, not merely holding the permission.
         self_service = parent == request.user
 
-        if not self_service and not is_admin:
-            raise PermissionDenied(_("You can only create agents for yourself."))
-        if self_service and not is_admin and not AllowAnyAgentCreate.get():
-            raise PermissionDenied(_("Self-service agent creation is not enabled."))
+        if not admin_perm:
+            if not self_service:
+                raise PermissionDenied(_("You can only create agents for yourself."))
+            if not self_service_perm:
+                raise PermissionDenied(_("Self-service agent creation is not enabled."))
 
         if self_service:
             # Self-service agents always expire with the tenant default and MIRROR their owner,
