@@ -24,7 +24,7 @@ import { styleframe, type StyleframeOptions } from "styleframe";
 export const authentikStyleframeOptions: StyleframeOptions = {
     indent: "    ",
     variables: {
-        name: ({ name }: { name: string }) => `ak-${name.replace(/\./g, "-")}`,
+        name: ({ name }: { name: string }) => `ak-global--${name.replace(/\./g, "--")}`,
     },
     themes: {
         selector: ({ name }: { name: string }) => `html[data-theme="${name}"]`,
@@ -39,16 +39,4 @@ export const authentikStyleframeOptions: StyleframeOptions = {
  */
 export const instance = styleframe(authentikStyleframeOptions);
 
-export const {
-    variable,
-    theme,
-    ref,
-    selector,
-    atRule,
-    keyframes,
-    media,
-    css,
-    utility,
-    modifier,
-    recipe,
-} = instance;
+export const { variable, theme, ref, selector, atRule, keyframes, media, css, utility, modifier, recipe } = instance;

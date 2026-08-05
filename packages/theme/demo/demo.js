@@ -171,39 +171,39 @@ const rung = (token, prefix) => token.slice(prefix.length);
 const COLOR_GROUPS = [
     {
         title: "Brand",
-        tokens: ["--ak-color-accent", "--ak-color-primary", "--ak-color-primary-hover"],
-        against: "--ak-color-surface",
+        tokens: ["--ak-global--color--accent", "--ak-global--color--primary", "--ak-global--color--primary--hover"],
+        against: "--ak-global--color--surface",
         threshold: 3,
     },
     {
         title: "Text",
-        tokens: ["--ak-color-text", "--ak-color-text-muted"],
-        against: "--ak-color-surface",
+        tokens: ["--ak-global--color--text", "--ak-global--color--text--muted"],
+        against: "--ak-global--color--surface",
         threshold: 4.5,
     },
     {
         title: "Link",
-        tokens: ["--ak-color-link", "--ak-color-link-hover", "--ak-color-link-visited"],
-        against: "--ak-color-surface",
+        tokens: ["--ak-global--color--link", "--ak-global--color--link--hover", "--ak-global--color--link--visited"],
+        against: "--ak-global--color--surface",
         threshold: 4.5,
     },
     {
         title: "Surface",
-        tokens: ["--ak-color-surface", "--ak-color-surface-raised", "--ak-color-surface-muted"],
-        against: "--ak-color-text",
+        tokens: ["--ak-global--color--surface", "--ak-global--color--surface--raised", "--ak-global--color--surface--muted"],
+        against: "--ak-global--color--text",
         threshold: 4.5,
         ringed: true,
     },
     {
         title: "Border",
-        tokens: ["--ak-color-border", "--ak-color-border-strong"],
-        against: "--ak-color-surface",
+        tokens: ["--ak-global--color--border", "--ak-global--color--border--strong"],
+        against: "--ak-global--color--surface",
         threshold: 3,
     },
     {
         title: "Status",
-        tokens: ["--ak-color-info", "--ak-color-success", "--ak-color-warning", "--ak-color-danger"],
-        against: "--ak-color-surface",
+        tokens: ["--ak-global--color--info", "--ak-global--color--success", "--ak-global--color--warning", "--ak-global--color--danger"],
+        against: "--ak-global--color--surface",
         threshold: 3,
     },
 ];
@@ -342,7 +342,7 @@ function contrastBadge(swatchToken, counterpartToken, threshold) {
     const ratio = contrastRatio(parseColor(resolve(swatchToken)), parseColor(resolve(counterpartToken)));
     if (ratio == null) return null;
     const variant = ratio >= 4.5 ? "pass" : ratio >= threshold ? "mid" : "fail";
-    const other = rung(counterpartToken, "--ak-color-");
+    const other = rung(counterpartToken, "--ak-global--color--");
     return badge(`${ratio.toFixed(2)}:1 vs ${other}`, variant);
 }
 
@@ -352,14 +352,14 @@ function renderColors() {
 
     const claimed = new Set(COLOR_GROUPS.flatMap((g) => g.tokens));
     const groups = [...COLOR_GROUPS];
-    const orphans = byPrefix("--ak-color-")
+    const orphans = byPrefix("--ak-global--color--")
         .filter((t) => !claimed.has(t.name))
         .map((t) => t.name);
     if (orphans.length) {
         groups.push({
             title: "Ungrouped",
             tokens: orphans,
-            against: "--ak-color-surface",
+            against: "--ak-global--color--surface",
             threshold: 3,
         });
     }
@@ -400,7 +400,7 @@ function renderColors() {
                                 ? badge(
                                       `alias of ${token.authored
                                           .match(/var\(\s*(--[\w-]+)/)[1]
-                                          .replace("--ak-color-", "")}`
+                                          .replace("--ak-global--color--", "")}`
                                   )
                                 : null,
                             // Contrast is symmetric, so the swatch
@@ -419,7 +419,7 @@ function renderColors() {
         );
     }
 
-    document.getElementById("color-count").textContent = `${byPrefix("--ak-color-").length} tokens`;
+    document.getElementById("color-count").textContent = `${byPrefix("--ak-global--color--").length} tokens`;
 }
 
 // ------------------------------------------------------------------
@@ -427,10 +427,10 @@ function renderColors() {
 // ------------------------------------------------------------------
 
 function renderTypography() {
-    const families = byPrefix("--ak-font-family-");
-    const sizes = byPrefix("--ak-font-size-");
-    const weights = byPrefix("--ak-font-weight-");
-    const leadings = byPrefix("--ak-line-height-");
+    const families = byPrefix("--ak-global--font-family--");
+    const sizes = byPrefix("--ak-global--font-size--");
+    const weights = byPrefix("--ak-global--font-weight--");
+    const leadings = byPrefix("--ak-global--line-height--");
 
     document.getElementById("families").replaceChildren(
         ...families.map((token) => {
@@ -475,9 +475,9 @@ function renderTypography() {
     );
 
     const FACES = [
-        ["--ak-font-family-display", "RedHatDisplay", "300–900"],
-        ["--ak-font-family-sans-serif", "RedHatText", "400–500"],
-        ["--ak-font-family-monospace", "RedHatMono", "300–700"],
+        ["--ak-global--font-family--display", "RedHatDisplay", "300–900"],
+        ["--ak-global--font-family--sans-serif", "RedHatText", "400–500"],
+        ["--ak-global--font-family--monospace", "RedHatMono", "300–700"],
     ];
     document.getElementById("weights").replaceChildren(
         ...FACES.map(([familyToken, face, range]) =>
@@ -495,7 +495,7 @@ function renderTypography() {
                             style: `font-family:${resolve(familyToken)};font-weight:${w}`,
                             textContent: "Identity",
                         }),
-                        value(`${rung(token.name, "--ak-font-weight-")} ${w}`)
+                        value(`${rung(token.name, "--ak-global--font-weight--")} ${w}`)
                     );
                 })
             )
@@ -510,6 +510,7 @@ function renderTypography() {
                 "div",
                 { className: "specimen" },
                 name(token.name),
+                ": ",
                 value(effective),
                 el("p", {
                     className: "specimen__para",
@@ -529,26 +530,25 @@ function renderTypography() {
 // ------------------------------------------------------------------
 
 function renderSpacing() {
-    const spaces = byPrefix("--ak-space-");
+    const spaces = byPrefix("--ak-global--space--");
     document.getElementById("spaces").replaceChildren(
-        ...spaces.map((token) => {
+        ...spaces.flatMap((token) => {
             mark(token);
             const effective = resolve(token.name);
-            return el(
-                "div",
-                { className: "bars__row" },
+            return [
                 name(token.name),
                 value(`${effective} · ${toPx(effective).toFixed(0)}px`),
                 el("div", { className: "bar", style: `width:${effective}` })
-            );
+            ];
+
         })
     );
     document.getElementById("space-count").textContent = `${spaces.length} tokens`;
 }
 
 function renderShape() {
-    const radii = byPrefix("--ak-radius-");
-    const strokes = byPrefix("--ak-border-width-");
+    const radii = byPrefix("--ak-global--radius--");
+    const strokes = byPrefix("--ak-global--border-width--");
 
     document.getElementById("radii").replaceChildren(
         ...radii.map((token) => {
@@ -592,8 +592,8 @@ function renderShape() {
 // ------------------------------------------------------------------
 
 function renderSurfaces() {
-    const planes = byPrefix("--ak-color-surface");
-    const shadows = byPrefix("--ak-shadow-");
+    const planes = byPrefix("--ak-global--color--surface");
+    const shadows = byPrefix("--ak-global--shadow--");
 
     document.getElementById("surface-planes").replaceChildren(
         ...planes.map((token) => {
@@ -635,7 +635,7 @@ function renderSurfaces() {
 // ------------------------------------------------------------------
 
 function renderMotion() {
-    const motion = [...byPrefix("--ak-duration-"), ...byPrefix("--ak-easing-")];
+    const motion = [...byPrefix("--ak-global--duration--"), ...byPrefix("--ak-global--easing--")];
     document.getElementById("motion-tokens").replaceChildren(
         ...motion.map((token) => {
             mark(token);
@@ -656,7 +656,7 @@ function renderMotion() {
 
     const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById("motion-state").textContent =
-        ` — --ak-duration-normal resolves to ${resolve("--ak-duration-normal")}; ` +
+        ` — --ak-global--duration--normal resolves to ${resolve("--ak-global--duration--normal")}; ` +
         `prefers-reduced-motion is ${prefersReduced ? "on" : "off"}; ` +
         `data-theme is "${document.documentElement.dataset.theme || "(unset)"}". ` +
         `Note that data-theme holds one value, so "dark" and "reduced" cannot both apply.`;
@@ -669,7 +669,7 @@ function renderMotion() {
 // ------------------------------------------------------------------
 
 function renderLayering() {
-    const zs = byPrefix("--ak-z-index-");
+    const zs = byPrefix("--ak-global--z-index--");
     document.getElementById("zstack").replaceChildren(
         ...zs.map((token, i) => {
             mark(token);
@@ -722,13 +722,14 @@ function renderIcons() {
 // ------------------------------------------------------------------
 
 function renderOverview() {
-    const categories = new Set(TOKENS.map((t) => t.name.replace(/^--ak-/, "").split("-")[0]));
+    const categories = new Set(TOKENS.map((t) => t.name.replace(/^--ak-global--/, "").split("--")[0]));
+    console.log("C:", categories);
     document.getElementById("stats").replaceChildren(
         ...[
             [TOKENS.length, "tokens in :root"],
             [categories.size, "categories"],
             [darkNames.size, "dark overrides"],
-            [byPrefix("--ak-color-").length, "color tokens"],
+            [byPrefix("--ak-global--color--").length, "color tokens"],
             [TOKENS.filter((t) => t.authored.startsWith("var(")).length, "aliases"],
         ].map(([v, label]) =>
             el(

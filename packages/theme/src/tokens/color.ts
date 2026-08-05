@@ -22,28 +22,29 @@ import { oklchTransform, useColorDesignTokens, type VPPair } from "./color-libs.
 
 // prettier-ignore
 export const colors = useColorDesignTokens(instance, {
-    "accent":         "#fd4b2d",
-    "primary":        "#0066cc",
-    "primary-hover":  "#004080",
+    "accent":          "#fd4b2d",
+    "primary":         "#0066cc",
+    "primary.hover":   "#004080",
 
-    "text":           "#151515",
-    "text-muted":     "#6a6e73",
+    "text":            "#151515",
+    "text.muted":      "#6a6e73",
 
-    "link":           ref("color.primary"),
-    "link-hover":     ref("color.primary-hover"),
-    "link-visited":   "#40199a",
+    "link":            ref("color.primary"),
+    "link.hover":      ref("color.primary.hover"),
+    "link.visited":    "#40199a",
 
-    "surface":        "#ffffff",
-    "surface-raised": "#fafafa",
-    "surface-muted":  "#f0f0f0",
+    "surface":         "#ffffff",
+    "surface.raised":  "#fafafa",
+    "surface.muted":   "#f0f0f0",
 
-    "border":         "#d2d2d2",
-    "border-strong":  "#8a8d90",
+    "border":          "#8a8d90",
+    "border.strong":   "#d2d2d2",
+    "border.subtle":   "#f0f0f0",
 
-    "info":           "#2b9af3",
-    "success":        "#3e8635",
-    "warning":        "#f0ab00",
-    "danger":         "#c9190b",
+    "info":            "#2b9af3",
+    "success":         "#3e8635",
+    "warning":         "#f0ab00",
+    "danger":          "#c9190b",
 });
 
 // Dark theme overrides. Surface values are pinned near PatternFly 4's
@@ -67,6 +68,7 @@ theme("dark", (ctx) => {
 
         [c.colorBorder,        "#444548"],
         [c.colorBorderStrong,  "#57585a"],
+        [c.colorBorderSubtle,  "#aaabac"],
 
         [c.colorInfo,          "#73bcf7"],
         [c.colorSuccess,       "#5ba352"],
