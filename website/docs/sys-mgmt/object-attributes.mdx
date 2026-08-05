@@ -8,8 +8,6 @@ authentik_preview: true
 
 ## About object attributes
 
-Before authentik 2026.8, an object's attributes were edited as free-form YAML or JSON in an object's **Attributes** field. These attributes had no discoverable keys, human-readable labels, or validation. Object attributes improve that experience without changing how attributes are stored: they remain in an object's **Attributes** field.
-
 Object attributes let you define structured, reusable attribute fields for Users, Groups, Application entitlements, and Device access groups. When you define an object attribute, authentik displays it as a labeled field in the relevant create and edit forms. You can group related attribute fields and optionally validate submitted values.
 
 Attributes remain editable in the **Attributes** field on an object. However, when an attribute has an object attribute definition, its generated form field is authoritative. When you save the object, authentik overwrites any value entered directly in **Attributes** for the same key.
