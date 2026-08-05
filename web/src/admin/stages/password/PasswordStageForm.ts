@@ -1,6 +1,7 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
+import "#elements/LicenseNotice";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
@@ -160,7 +161,26 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Failed attempts before lockout")}
+                        required
+                        name="failedAttemptsBeforeLockout"
+                    >
+                        <input
+                            type="number"
+                            min="0"
+                            value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <ak-license-notice></ak-license-notice>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "How many consecutive failed attempts lock the user's password, until an administrator unlocks it or the password is changed. Set to 0 to never lock.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

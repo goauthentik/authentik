@@ -4,10 +4,12 @@ import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
 import "#components/ak-status-label";
+import "#elements/buttons/ActionButton/index";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
 import { userTypeToLabel } from "#common/labels";
 import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 
@@ -24,6 +26,8 @@ import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
 
 import {
+    CompositeStatusEnum,
+    CoreApi,
     LifecycleApi,
     OffboardingActionEnum,
     OffboardingStatusEnum,
@@ -133,6 +137,17 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
+            ${user.compositeStatus === CompositeStatusEnum.PasswordLocked
+                ? html`<ak-action-button
+                      class="pf-m-secondary pf-m-block"
+                      .apiRequest=${() =>
+                          aki(CoreApi)
+                              .coreUsersUnlockPasswordCreate({ id: user.pk })
+                              .then(() => this.dispatchEvent(new CustomEvent(EVENT_REFRESH)))}
+                  >
+                      ${msg("Unlock password")}
+                  </ak-action-button>`
+                : nothing}
             ${showEnterpriseActions
                 ? html`<button
                       class="pf-c-button pf-m-danger pf-m-block"
