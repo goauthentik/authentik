@@ -27,15 +27,16 @@ type User struct {
 	// User's display name.
 	Name string `json:"name"`
 	// Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-	IsActive    *bool          `json:"is_active,omitempty"`
-	LastLogin   NullableTime   `json:"last_login,omitempty"`
-	DateJoined  time.Time      `json:"date_joined"`
-	IsSuperuser bool           `json:"is_superuser"`
-	Groups      []string       `json:"groups,omitempty"`
-	GroupsObj   []PartialGroup `json:"groups_obj"`
-	Roles       []string       `json:"roles,omitempty"`
-	RolesObj    []Role         `json:"roles_obj"`
-	Email       *string        `json:"email,omitempty"`
+	IsActive        *bool               `json:"is_active,omitempty"`
+	CompositeStatus CompositeStatusEnum `json:"composite_status"`
+	LastLogin       NullableTime        `json:"last_login,omitempty"`
+	DateJoined      time.Time           `json:"date_joined"`
+	IsSuperuser     bool                `json:"is_superuser"`
+	Groups          []string            `json:"groups,omitempty"`
+	GroupsObj       []PartialGroup      `json:"groups_obj"`
+	Roles           []string            `json:"roles,omitempty"`
+	RolesObj        []Role              `json:"roles_obj"`
+	Email           *string             `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
 	Avatar             string                 `json:"avatar"`
 	Attributes         map[string]interface{} `json:"attributes,omitempty"`
@@ -56,11 +57,12 @@ type _User User
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUser(pk int32, username string, name string, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, passwordLoginLockedAt NullableTime, lastUpdated time.Time) *User {
+func NewUser(pk int32, username string, name string, compositeStatus CompositeStatusEnum, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, passwordLoginLockedAt NullableTime, lastUpdated time.Time) *User {
 	this := User{}
 	this.Pk = pk
 	this.Username = username
 	this.Name = name
+	this.CompositeStatus = compositeStatus
 	this.DateJoined = dateJoined
 	this.IsSuperuser = isSuperuser
 	this.GroupsObj = groupsObj
@@ -184,6 +186,30 @@ func (o *User) HasIsActive() bool {
 // SetIsActive gets a reference to the given bool and assigns it to the IsActive field.
 func (o *User) SetIsActive(v bool) {
 	o.IsActive = &v
+}
+
+// GetCompositeStatus returns the CompositeStatus field value
+func (o *User) GetCompositeStatus() CompositeStatusEnum {
+	if o == nil {
+		var ret CompositeStatusEnum
+		return ret
+	}
+
+	return o.CompositeStatus
+}
+
+// GetCompositeStatusOk returns a tuple with the CompositeStatus field value
+// and a boolean to check if the value has been set.
+func (o *User) GetCompositeStatusOk() (*CompositeStatusEnum, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CompositeStatus, true
+}
+
+// SetCompositeStatus sets field value
+func (o *User) SetCompositeStatus(v CompositeStatusEnum) {
+	o.CompositeStatus = v
 }
 
 // GetLastLogin returns the LastLogin field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -683,6 +709,7 @@ func (o User) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.IsActive) {
 		toSerialize["is_active"] = o.IsActive
 	}
+	toSerialize["composite_status"] = o.CompositeStatus
 	if o.LastLogin.IsSet() {
 		toSerialize["last_login"] = o.LastLogin.Get()
 	}
@@ -734,6 +761,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		"pk",
 		"username",
 		"name",
+		"composite_status",
 		"date_joined",
 		"is_superuser",
 		"groups_obj",
@@ -777,6 +805,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "username")
 		delete(additionalProperties, "name")
 		delete(additionalProperties, "is_active")
+		delete(additionalProperties, "composite_status")
 		delete(additionalProperties, "last_login")
 		delete(additionalProperties, "date_joined")
 		delete(additionalProperties, "is_superuser")

@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { CompositeStatusEnum } from "./CompositeStatusEnum";
+import { CompositeStatusEnumFromJSON } from "./CompositeStatusEnum";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Role } from "./Role";
@@ -49,6 +51,12 @@ export interface User {
      * @memberof User
      */
     isActive?: boolean;
+    /**
+     *
+     * @type {CompositeStatusEnum}
+     * @memberof User
+     */
+    readonly compositeStatus: CompositeStatusEnum;
     /**
      *
      * @type {Date}
@@ -161,6 +169,13 @@ export function instanceOfUser(value: object): value is User {
     if (!("username" in value) || value["username"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
     if (
+        (!("compositeStatus" in (value as Record<string, any>)) &&
+            !("composite_status" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["compositeStatus"] === undefined &&
+            (value as Record<string, any>)["composite_status"] === undefined)
+    )
+        return false;
+    if (
         (!("dateJoined" in (value as Record<string, any>)) &&
             !("date_joined" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["dateJoined"] === undefined &&
@@ -228,6 +243,7 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         username: json["username"],
         name: json["name"],
         isActive: json["is_active"] == null ? undefined : json["is_active"],
+        compositeStatus: CompositeStatusEnumFromJSON(json["composite_status"]),
         lastLogin:
             json["last_login"] === undefined
                 ? undefined
@@ -268,6 +284,7 @@ export function UserToJSONTyped(
     value?: Omit<
         User,
         | "pk"
+        | "compositeStatus"
         | "dateJoined"
         | "isSuperuser"
         | "groupsObj"

@@ -38575,6 +38575,12 @@ components:
       - webex
       - vcenter
       type: string
+    CompositeStatusEnum:
+      enum:
+      - active
+      - password_locked
+      - deactivated
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -60568,6 +60574,10 @@ components:
           title: Active
           description: Designates whether this user should be treated as active. Unselect
             this instead of deleting accounts.
+        composite_status:
+          allOf:
+          - $ref: '#/components/schemas/CompositeStatusEnum'
+          readOnly: true
         last_login:
           type: string
           format: date-time
@@ -60640,6 +60650,7 @@ components:
           readOnly: true
       required:
       - avatar
+      - composite_status
       - date_joined
       - groups_obj
       - is_superuser
