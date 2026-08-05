@@ -7,6 +7,7 @@ export interface ISearchSelectConfig<T = unknown> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
+    optionDisabled?: (element: T) => boolean;
     value: (element: T | null) => string;
     selected?: (element: T, elements: T[]) => boolean;
     groupBy?: (items: T[]) => [string, T[]][];
@@ -48,6 +49,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> {
     public fetchObjects!: (query?: string) => Promise<T[]>;
     public renderElement!: (element: T) => string;
     public renderDescription?: ((element: T) => string | TemplateResult) | undefined;
+    public optionDisabled?: ((element: T) => boolean) | undefined;
     public value!: (element: T | null) => string;
     public selected?: ((element: T, elements: T[]) => boolean) | undefined;
 
@@ -59,6 +61,7 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> {
         this.fetchObjects = this.config.fetchObjects;
         this.renderElement = this.config.renderElement;
         this.renderDescription = this.config.renderDescription;
+        this.optionDisabled = this.config.optionDisabled;
         this.value = this.config.value;
         this.selected = this.config.selected;
 

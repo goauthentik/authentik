@@ -62,6 +62,13 @@ export abstract class SearchSelectBase<T>
     public abstract renderDescription?: (element: T) => SlottedTemplateResult;
 
     /**
+     * A function which decides whether an item of the collection under search may be chosen. Items
+     * it rejects are still listed, but grayed out and inert; pair it with `renderDescription` to
+     * say why an item is unavailable.
+     */
+    public abstract optionDisabled?: (element: T) => boolean;
+
+    /**
      * A function which returns the currently selected object's primary key, used for serialization
      * into forms.
      */
@@ -404,11 +411,18 @@ export abstract class SearchSelectBase<T>
 
         const options = this.getGroupedItems();
         const value = this.selectedObject ? `${this.value(this.selectedObject) ?? ""}` : undefined;
+        const optionDisabled = this.optionDisabled;
+        const disabledOptions = optionDisabled
+            ? this.objects
+                  .filter((item) => optionDisabled(item))
+                  .map((item) => `${this.value(item)}`)
+            : [];
 
         return html`<ak-search-select-view
             managed
             .fieldID=${this.fieldID}
             .options=${options}
+            .disabledOptions=${disabledOptions}
             value=${ifPresent(value)}
             ?blankable=${this.blankable}
             ?readonly=${this.readOnly}

@@ -8,12 +8,15 @@ import { match } from "ts-pattern";
 
 import { css, html, nothing, PropertyValueMap } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 
 export interface IListSelect {
     options: SelectOptions;
+    disabledOptions: string[];
     value?: string | null;
     emptyOption?: string;
     actionLabel?: string;
@@ -28,6 +31,8 @@ export interface IListSelect {
  * Provides a menu of elements to be used for selection.
  *
  * - @prop options (SelectOption[]): The options to display.
+ * - @prop disabledOptions (string[]): the keys of options that are shown but cannot be
+ *   selected.
  * - @attr value (string): the current value of the Component
  * - @attr emptyOption (string): if defined, the component can be `undefined` and will
  *   display this string at the top.
@@ -94,6 +99,25 @@ export class ListSelect extends AKElement implements IListSelect {
     }
 
     #options!: GroupedOptions;
+
+    /**
+     * The keys of the options that are rendered but cannot be chosen. Such options stay
+     * focusable — they are marked `aria-disabled` rather than `disabled` — so that the reason
+     * they are unavailable, carried in their description, remains reachable by keyboard.
+     *
+     * @prop
+     */
+    @property({ type: Array, attribute: false })
+    public set disabledOptions(values: string[]) {
+        this.#disabledOptions = new Set(values);
+        this.requestUpdate();
+    }
+
+    public get disabledOptions(): string[] {
+        return [...this.#disabledOptions];
+    }
+
+    #disabledOptions = new Set<string>();
 
     /**
      * The current value of the menu.
@@ -226,6 +250,8 @@ export class ListSelect extends AKElement implements IListSelect {
     };
 
     #clickListener = (value: string | null) => {
+        if (value !== null && this.#disabledOptions.has(value)) return;
+
         // let the click through, but include the change event.
         this.value = value;
 
@@ -258,6 +284,10 @@ export class ListSelect extends AKElement implements IListSelect {
             if (element?.hasAttribute("data-action")) {
                 return this.#actionListener();
             }
+
+            // Disabled options can be arrowed onto so their description can be read, but
+            // committing to one is a no-op.
+            if (element?.getAttribute("aria-disabled") === "true") return;
 
             this.value = element?.getAttribute("value");
 
@@ -320,16 +350,26 @@ export class ListSelect extends AKElement implements IListSelect {
     }
 
     private renderMenuItems(options: SelectOption[]) {
-        return options.map(
-            ([value, label, desc]: SelectOption) => html`
+        return options.map(([value, label, desc]: SelectOption) => {
+            const disabled = this.#disabledOptions.has(value);
+
+            return html`
                 <li
                     role="option"
                     value=${value}
                     class="ak-select-item"
+                    aria-disabled=${ifDefined(disabled || undefined)}
                     part="ak-list-select-option"
                 >
                     <button
-                        class="pf-c-dropdown__menu-item pf-m-description"
+                        class=${classMap({
+                            "pf-c-dropdown__menu-item": true,
+                            "pf-m-description": true,
+                            // `pf-m-aria-disabled` grays the item out without the
+                            // `pointer-events: none` that `pf-m-disabled` carries, so the row can
+                            // still be hovered and focused.
+                            "pf-m-aria-disabled": disabled,
+                        })}
                         value="${value}"
                         tabindex="0"
                         @click=${() => this.#clickListener(value)}
@@ -348,8 +388,8 @@ export class ListSelect extends AKElement implements IListSelect {
                             : nothing}
                     </button>
                 </li>
-            `,
-        );
+            `;
+        });
     }
 
     private renderMenuGroups(optionGroups: SelectGroup[]) {
