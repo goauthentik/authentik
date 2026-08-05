@@ -11598,6 +11598,21 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 <trans-unit id="s2242f5c6b4625d84">
   <source>Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.</source>
 </trans-unit>
+<trans-unit id="s583559b56228966c">
+  <source>Define who can approve access requests for the objects this rule is bound to.</source>
+</trans-unit>
+<trans-unit id="s15ee5b29a732e82a">
+  <source>New Request Rule</source>
+</trans-unit>
+<trans-unit id="s90eefcc5ed423895">
+  <source>Create a new request rule to bind to this object.</source>
+</trans-unit>
+<trans-unit id="s622e11fa5a62c709">
+  <source>Existing Request Rule</source>
+</trans-unit>
+<trans-unit id="scf0457b46d32a983">
+  <source>Bind an existing request rule to this object.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
