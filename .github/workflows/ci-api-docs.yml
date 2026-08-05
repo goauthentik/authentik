@@ -39,15 +39,11 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build:
@@ -68,15 +64,11 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         with:
           path: |
@@ -120,15 +112,11 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Deploy Netlify (Production)
         working-directory: website/api
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

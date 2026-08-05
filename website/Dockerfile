@@ -25,9 +25,8 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
     node ./scripts/node/lint-runtime.mjs ./website
 
-# Install attempts are bounded and retried once: pnpm can hang after an
-# install completes (pnpm/pnpm#13617); the retry validates the already-written
-# store and node_modules in seconds.
+# pnpm can intermittently hang after an install completes (pnpm/pnpm#13617);
+# a stalled build here is bounded by the CI job's timeout-minutes.
 #
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
 # (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source
@@ -44,9 +43,7 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
     --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
     --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
-    timeout --kill-after=20 420 pnpm install --frozen-lockfile --config.node-linker=hoisted \
-    --filter "@goauthentik/docusaurus-config" \
-    || timeout --kill-after=20 420 pnpm install --frozen-lockfile --config.node-linker=hoisted \
+    pnpm install --frozen-lockfile --config.node-linker=hoisted \
     --filter "@goauthentik/docusaurus-config"
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
@@ -60,8 +57,7 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=pnpm-website,sharing=shared,target=/root/.local/share/pnpm/store \
-    timeout --kill-after=20 420 pnpm --dir website install --frozen-lockfile \
-    || timeout --kill-after=20 420 pnpm --dir website install --frozen-lockfile
+    pnpm --dir website install --frozen-lockfile
 
 WORKDIR /work/website
 

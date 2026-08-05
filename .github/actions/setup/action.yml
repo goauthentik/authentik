@@ -91,18 +91,10 @@ runs:
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      # pnpm 11 can intermittently finish an install and then never exit (its
-      # worker-pool shutdown waits forever; pnpm/pnpm#13617), which stalls the
-      # job until the workflow timeout. The hang happens after the store and
-      # node_modules are fully written, so each attempt is bounded and retried
-      # once — the retry validates the completed work in seconds.
+      # pnpm can hang after installing (pnpm/pnpm#13617); bounded by the calling job's timeout-minutes.
       run: |
-        pnpm_install() {
-          timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-            || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-        }
-        pnpm_install
-        pnpm_install --dir web
+        pnpm install --frozen-lockfile
+        pnpm --dir web install --frozen-lockfile
     - name: Setup go
       if: ${{ contains(inputs.dependencies, 'go') }}
       uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v5
@@ -129,10 +121,8 @@ runs:
       if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
-      # Bounded + retried for the same pnpm hang-after-install as above.
-      run: |
-        timeout --kill-after=15 420 pnpm --dir web install --frozen-lockfile \
-          || timeout --kill-after=15 420 pnpm --dir web install --frozen-lockfile
+      # Same pnpm hang-after-install caveat as above (pnpm/pnpm#13617).
+      run: pnpm --dir web install --frozen-lockfile
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: uv run python {0}

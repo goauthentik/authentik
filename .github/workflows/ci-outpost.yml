@@ -43,6 +43,7 @@ jobs:
           skip-cache: true
   test-unittest:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -101,15 +102,11 @@ jobs:
             pnpm-lock.yaml
             web/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir web
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
       - name: Build web
         run: pnpm --dir web run build-proxy
       - name: Build outpost

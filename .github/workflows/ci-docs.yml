@@ -41,15 +41,11 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build-docs:
@@ -72,15 +68,11 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Build Documentation via Docusaurus
         run: pnpm --dir website run build
   build-integrations:
@@ -102,19 +94,17 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
-          pnpm_install() {
-            # Bounded + retried once: pnpm can hang after an install completes
-            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
-            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
-              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
-          }
-          pnpm_install
-          pnpm_install --dir website
+          pnpm install --frozen-lockfile
+          pnpm --dir website install --frozen-lockfile
       - name: Build Integrations via Docusaurus
         run: pnpm --dir website run build:integrations
   build-container:
     runs-on: ubuntu-latest
+    # Bounds a pnpm hang-after-install (pnpm/pnpm#13617) inside `docker build`.
+    timeout-minutes: 60
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write

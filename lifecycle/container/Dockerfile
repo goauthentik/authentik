@@ -42,8 +42,7 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
     --mount=type=cache,id=pnpm-ak,sharing=shared,target=/root/.local/share/pnpm/store \
-    timeout --kill-after=20 420 pnpm install --frozen-lockfile \
-    || timeout --kill-after=20 420 pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile
 
 COPY ./package.json /work
 COPY ./web /work/web/
