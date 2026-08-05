@@ -13,6 +13,7 @@ export const sourceLocale = `en`;
 export const targetLocales = [
   `ar`,
   `bg-BG`,
+  `bn-BD`,
   `cs-CZ`,
   `de-DE`,
   `en-XA`,
@@ -38,6 +39,7 @@ export const targetLocales = [
 export const allLocales = [
   `ar`,
   `bg-BG`,
+  `bn-BD`,
   `cs-CZ`,
   `de-DE`,
   `en`,
