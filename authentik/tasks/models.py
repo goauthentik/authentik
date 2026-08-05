@@ -76,19 +76,23 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 name="update_aggregated_status",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.Before,
+                # Logs live in TaskLog (see 0005_tasklog), so the status of a finished task
+                # is aggregated from its log rows. The table is referenced unqualified so
+                # that it resolves through the search path to the current tenant's schema.
                 func=f"""
-                    NEW.aggregated_status := CASE
-                        WHEN NEW.state != '{TaskState.DONE.value}' THEN NEW.state
-                        ELSE COALESCE((
-                            SELECT CASE
-                                WHEN bool_or(msg->>'log_level' = 'error') THEN 'error'
-                                WHEN bool_or(msg->>'log_level' = 'warning') THEN 'warning'
-                                WHEN bool_or(msg->>'log_level' = 'info') THEN 'info'
-                                ELSE '{TaskState.DONE.value}'
-                            END
-                            FROM jsonb_array_elements(NEW._messages) AS msg
-                        ), '{TaskState.DONE.value}')
-                    END;
+                    IF NEW.state != '{TaskState.DONE.value}' THEN
+                        NEW.aggregated_status := NEW.state;
+                    ELSE
+                        SELECT CASE
+                            WHEN bool_or(log_level = 'error') THEN 'error'
+                            WHEN bool_or(log_level = 'warning') THEN 'warning'
+                            WHEN bool_or(log_level = 'info') THEN 'info'
+                            ELSE '{TaskState.DONE.value}'
+                        END
+                        INTO NEW.aggregated_status
+                        FROM authentik_tasks_tasklog
+                        WHERE task_id = NEW.message_id AND NOT previous;
+                    END IF;
 
                     RETURN NEW;
                 """,  # nosec
