@@ -347,7 +347,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          # Bounded + retried once: pnpm can hang after an install completes
+          # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+          timeout --kill-after=15 420 pnpm install --frozen-lockfile \
+            || timeout --kill-after=15 420 pnpm install --frozen-lockfile
       - id: cache-web
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
         if: contains(matrix.job.profiles, 'selenium')
@@ -360,7 +364,10 @@ jobs:
         env:
           NODE_ENV: "production"
         run: |
-          pnpm install --frozen-lockfile
+          # Bounded + retried once: pnpm can hang after an install completes
+          # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+          timeout --kill-after=15 420 pnpm install --frozen-lockfile \
+            || timeout --kill-after=15 420 pnpm install --frozen-lockfile
           pnpm run build
           pnpm run build:sfe
       - name: run e2e
@@ -416,7 +423,10 @@ jobs:
         env:
           NODE_ENV: "production"
         run: |
-          pnpm --dir web install --frozen-lockfile
+          # Bounded + retried once: pnpm can hang after an install completes
+          # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+          timeout --kill-after=15 420 pnpm --dir web install --frozen-lockfile \
+            || timeout --kill-after=15 420 pnpm --dir web install --frozen-lockfile
           pnpm --dir web run build
           pnpm --dir web run build:sfe
       - name: run conformance

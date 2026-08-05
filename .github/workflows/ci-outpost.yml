@@ -102,8 +102,14 @@ jobs:
             web/pnpm-lock.yaml
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir web install --frozen-lockfile
+          pnpm_install() {
+            # Bounded + retried once: pnpm can hang after an install completes
+            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
+              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
+          }
+          pnpm_install
+          pnpm_install --dir web
       - name: Build web
         run: pnpm --dir web run build-proxy
       - name: Build outpost

@@ -11,6 +11,13 @@ WORKDIR /work
 COPY --from=pnpm /opt/pnpm /opt/pnpm
 ENV PATH="/opt/pnpm:${PATH}"
 
+# `pnpm run` would otherwise spawn a nested `pnpm install` to re-verify
+# node_modules against the lockfile. The install layers below already
+# guarantee that, the re-verify mis-prunes workspace packages whose manifests
+# are bind-mounted only in the install layers, and the nested install is the
+# spot where pnpm's hang-after-install (pnpm/pnpm#13617) stalls image builds.
+ENV npm_config_verify_deps_before_run=false
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
@@ -18,6 +25,10 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
     node ./scripts/node/lint-runtime.mjs ./website
 
+# Install attempts are bounded and retried once: pnpm can hang after an
+# install completes (pnpm/pnpm#13617); the retry validates the already-written
+# store and node_modules in seconds.
+#
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
 # (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source
 # is bind-mounted read-only, so a per-package node_modules can't be written.
@@ -33,7 +44,9 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/packages/tsconfig/package.json,src=./packages/tsconfig/package.json \
     --mount=type=bind,target=/work/lifecycle/aws/package.json,src=./lifecycle/aws/package.json \
     --mount=type=cache,id=pnpm-root,sharing=shared,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile --config.node-linker=hoisted \
+    timeout --kill-after=20 420 pnpm install --frozen-lockfile --config.node-linker=hoisted \
+    --filter "@goauthentik/docusaurus-config" \
+    || timeout --kill-after=20 420 pnpm install --frozen-lockfile --config.node-linker=hoisted \
     --filter "@goauthentik/docusaurus-config"
 
 RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
@@ -47,7 +60,8 @@ RUN --mount=type=bind,target=/work/.npmrc,src=./.npmrc \
     --mount=type=bind,target=/work/website/integrations/package.json,src=./website/integrations/package.json \
     --mount=type=bind,target=/work/website/docs/package.json,src=./website/docs/package.json \
     --mount=type=cache,id=pnpm-website,sharing=shared,target=/root/.local/share/pnpm/store \
-    pnpm --dir website install --frozen-lockfile
+    timeout --kill-after=20 420 pnpm --dir website install --frozen-lockfile \
+    || timeout --kill-after=20 420 pnpm --dir website install --frozen-lockfile
 
 WORKDIR /work/website
 

@@ -42,8 +42,14 @@ jobs:
             website/pnpm-lock.yaml
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir website install --frozen-lockfile
+          pnpm_install() {
+            # Bounded + retried once: pnpm can hang after an install completes
+            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
+              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
+          }
+          pnpm_install
+          pnpm_install --dir website
       - name: Lint
         run: pnpm --dir website run ${{ matrix.command }}
   build-docs:
@@ -67,8 +73,14 @@ jobs:
             website/pnpm-lock.yaml
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir website install --frozen-lockfile
+          pnpm_install() {
+            # Bounded + retried once: pnpm can hang after an install completes
+            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
+              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
+          }
+          pnpm_install
+          pnpm_install --dir website
       - name: Build Documentation via Docusaurus
         run: pnpm --dir website run build
   build-integrations:
@@ -91,8 +103,14 @@ jobs:
             website/pnpm-lock.yaml
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir website install --frozen-lockfile
+          pnpm_install() {
+            # Bounded + retried once: pnpm can hang after an install completes
+            # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+            timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile \
+              || timeout --kill-after=15 420 pnpm "$@" install --frozen-lockfile
+          }
+          pnpm_install
+          pnpm_install --dir website
       - name: Build Integrations via Docusaurus
         run: pnpm --dir website run build:integrations
   build-container:

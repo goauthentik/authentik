@@ -39,7 +39,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          # Bounded + retried once: pnpm can hang after an install completes
+          # (pnpm/pnpm#13617); the retry validates the finished work in seconds.
+          timeout --kill-after=15 420 pnpm install --frozen-lockfile \
+            || timeout --kill-after=15 420 pnpm install --frozen-lockfile
       - name: Check changes have been applied
         run: |
           uv run make aws-cfn
