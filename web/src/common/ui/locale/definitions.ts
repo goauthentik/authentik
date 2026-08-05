@@ -35,6 +35,7 @@ export const LocaleLoaderRecord: Record<TargetLanguageTag, () => Promise<LocaleM
     [PseudoLanguageTag]: () => import("#locales/en-XA"),
     "ar": () => import("#locales/ar"),
     "bg-BG": () => import("#locales/bg-BG"),
+    "bn-BD": () => import("#locales/bn-BD"),
     "cs-CZ": () => import("#locales/cs-CZ"),
     "de-DE": () => import("#locales/de-DE"),
     "es-ES": () => import("#locales/es-ES"),
