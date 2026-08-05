@@ -1,18 +1,18 @@
 ---
 title: Dynamic Client Registration (DCR)
-description: "Allow authorized applications to dynamically create OAuth2/OIDC applications in authentik"
+description: "Allow authorized clients to dynamically register OAuth2/OIDC applications in authentik"
 sidebar_label: Dynamic Client Registration (DCR)
 authentik_enterprise: true
 authentik_version: "2026.8"
 ---
 
-## About Dynamic Client Registration (DCR)
+## About Dynamic Client Registration
 
-DCR allows an authorized application to register an OAuth2 or OpenID Connect (OIDC) client dynamically with authentik rather than an administrator needing to create the application and provider pair manually.
+DCR allows an authorized client to dynamically register an OAuth2 or OpenID Connect (OIDC) application with authentik, instead of requiring an administrator to manually create the application and provider.
 
-A client authenticates to the registration endpoint with a Bearer access token that includes the DCR scope. If the request is authorized, authentik creates a child application and OAuth2 provider and returns the generated client credentials.
+The client authenticates to the registration endpoint using a Bearer access token that includes the required DCR scope. If the request is authorized, authentik creates an application and OAuth2/OIDC provider and returns the generated client metadata and credentials.
 
-authentik implements the client registration portion of:
+authentik implements dynamic client registration as defined by:
 
 - [OpenID Connect Dynamic Client Registration 1.0](https://openid.net/specs/openid-connect-registration-1_0.html)
 - [RFC 7591: OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
@@ -21,7 +21,7 @@ authentik's DCR implementation does not provide RFC 7592 client-management endpo
 
 ## Requirements and limitations
 
-- The user associated with the access token must be allowed by the policies bound to the parent application.
+- The user associated with the access token must be authorized by the applicable policies and bindings.
 - DCR creates a new application and provider for every successful registration.
 - Configuration is not inherited dynamically from the parent provider. Settings from the parent provider are copied to a dynamically created provider when it is created. Subsequent changes to the parent provider do not automatically update providers that were already created through DCR.
 - The registration implementation does not provide RFC 7592 client-management endpoints for dynamically updating or deleting a client with a registration access token.
@@ -49,19 +49,19 @@ To enable DCR on an OAuth2/OIDC provider:
 
 ### Configure DCR policy bindings
 
-Bindings on the DCR configuration control which bindings are copied to dynamically created applications.
+Policy bindings configured for DCR determine which bindings are copied to each dynamically created application.
 
-- If bindings are set on the DCR configuration, those bindings are copied to each dynamically created application.
-- If no bindings are set on the DCR configuration, the bindings on the parent application are copied to each dynamically created application.
+- When the DCR configuration has its own bindings, authentik copies those bindings to each dynamically created application.
+- When the DCR configuration has no bindings, authentik copies the parent application's bindings instead.
 
-Modifying bindings on the parent application and DCR configuration _after_ an application is dynamically created does not update bindings on any child applications. Bindings are only copied from the parent application when the child application is created.
+Changes made to the parent application's or DCR configuration's bindings after registration are not propagated to existing dynamically created applications. The applicable bindings are copied only when each application is created.
 
 To set bindings on the DCR configuration:
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Applications** > **Providers** and click the name of the provider that you want to modify.
 3. Open the **Dynamic Client Registration** tab and click **Create or bind...**.
-4. Either select an existing user, group, or policy to bind, or create a new policy to bind to the DCR configuration.
+4. Select an existing user, group, or policy, or create a new policy, and bind it to the DCR configuration.
 5. Repeat the process for any further bindings.
 
 :::note Policy engine mode
@@ -70,7 +70,7 @@ The **Policy engine mode** can be changed by clicking the **Edit** button on the
 
 ## Authorization and policy evaluation
 
-authentik performs registration authorization before creating the new application.
+authentik authorizes each registration request before creating an application and provider.
 
 When a client sends a request to the registration endpoint:
 
@@ -80,7 +80,7 @@ When a client sends a request to the registration endpoint:
 4. If registration is allowed, authentik creates the child application and provider.
 5. authentik copies the applicable bindings to the newly created application.
 
-If the user is not authorized to register a client, authentik returns HTTP `403 Forbidden` with an `access_denied` error.
+If the user is not authorized to register a client, authentik returns `403 Forbidden` with the error code `access_denied`.
 
 A successful registration is therefore not an anonymous or open registration unless the configured policies explicitly allow that behavior.
 
@@ -98,7 +98,7 @@ https://authentik.company/application/o/<application_slug>/register/
 
 A registration request is an authenticated HTTP `POST` request with a JSON request body.
 
-The following metadata can be used used:
+The request supports the following client metadata:
 
 | Property                     | Description                                                                                                 |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -108,11 +108,11 @@ The following metadata can be used used:
 | `response_types`             | OIDC response types the client intends to use, when applicable                                              |
 | `token_endpoint_auth_method` | Method used by the client to authenticate at the token endpoint. If omitted, `client_secret_basic` is used. |
 
-authentik may apply defaults, reject unsupported values, or restrict the request according to the DCR configuration and the parent provider's capabilities.
+authentik applies defaults and validates the requested metadata against the DCR configuration and the capabilities of the parent provider.
 
 ### Supported grant types
 
-authentik supports the following grant-type values for DCR:
+Dynamically registered clients can request the following grant types:
 
 - `authorization_code`
 - `implicit`
