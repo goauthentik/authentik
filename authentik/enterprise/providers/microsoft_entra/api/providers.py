@@ -37,6 +37,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "user_delete_action",
             "group_delete_action",
             "sync_page_size",
+            "discovery_enabled",
             "sync_page_timeout",
             "dry_run",
         ]

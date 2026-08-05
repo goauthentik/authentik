@@ -30,8 +30,9 @@
         "#theme/*": "./theme/*"
     },
     "dependencies": {
-        "@docusaurus/preset-classic": "^3.10.2",
-        "@docusaurus/utils": "^3.10.2",
+        "@docusaurus/preset-classic": "catalog:",
+        "@docusaurus/theme-common": "catalog:",
+        "@docusaurus/utils": "catalog:",
         "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
         "@types/semver": "^7.7.1",
         "clsx": "^2.1.1",

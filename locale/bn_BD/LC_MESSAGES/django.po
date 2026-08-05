@@ -1,0 +1,6000 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Azharul Haque, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-30 14:39+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Azharul Haque, 2026\n"
+"Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: bn_BD\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr "ফাইলের আকার ({file.size}B) সর্বোচ্চ সীমা অতিক্রম করেছে"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr "ফাইলের নাম খালি রাখা যাবে না"
+
+#: authentik/admin/files/validation.py
+#, python-format
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
+msgstr ""
+"ফাইলের নামে শুধুমাত্র অক্ষর (a-z, A-Z), সংখ্যা (0-9), ডট (.), হাইফেন (-), "
+"আন্ডারস্কোর (_), ফরওয়ার্ড স্ল্যাশ (/), এবং থিম-নির্দিষ্ট ফাইলের জন্য "
+"প্লেসহোল্ডার %(theme)s ব্যবহার করা যাবে"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr "ফাইলের নামে পুনরাবৃত্ত / থাকতে পারবে না"
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr "অ্যাবসোলিউট পাথ ব্যবহার করা যাবে না"
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr "প্যারেন্ট ডিরেক্টরি রেফারেন্স ('..') অনুমোদিত নয়"
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr "পাথ '.' দিয়ে শুরু করা যাবে না"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr "ফাইলের নাম অনেক বড় (সর্বোচ্চ {MAX_FILE_NAME_LENGTH} অক্ষর)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr "পাথ কম্পোনেন্ট অনেক বড় (সর্বোচ্চ {MAX_PATH_COMPONENT_LENGTH} অক্ষর)"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "সংস্করণ ইতিহাস"
+
+#: authentik/admin/tasks.py
+msgid "Update latest version info."
+msgstr "সর্বশেষ সংস্করণের তথ্য আপডেট করুন।"
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "নতুন সংস্করণ {version} উপলব্ধ!"
+
+#: authentik/api/v3/schema/query.py
+msgid "Which field to use when ordering the results."
+msgstr "ফলাফল সাজানোর জন্য কোন ফিল্ড ব্যবহার করা হবে।"
+
+#: authentik/api/v3/schema/query.py
+msgid "A page number within the paginated result set."
+msgstr "পেজিনেটেড ফলাফল সেটের মধ্যে একটি পৃষ্ঠা নম্বর।"
+
+#: authentik/api/v3/schema/query.py
+msgid "Number of results to return per page."
+msgstr "প্রতি পৃষ্ঠায় প্রদর্শিত ফলাফলের সংখ্যা।"
+
+#: authentik/api/v3/schema/query.py
+msgid "A search term."
+msgstr "একটি অনুসন্ধান শব্দ।"
+
+#: authentik/api/v3/schema/response.py
+msgid "Generic API Error"
+msgstr "সাধারণ API ত্রুটি"
+
+#: authentik/api/v3/schema/response.py
+msgid "Validation Error"
+msgstr "ভ্যালিডেশন ত্রুটি"
+
+#: authentik/blueprints/api.py
+msgid "Blueprint file does not exist"
+msgstr "ব্লুপ্রিন্ট ফাইলটি বিদ্যমান নেই"
+
+#: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr "কনটেক্সট অবশ্যই বৈধ JSON হতে হবে"
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr "কনটেক্সট অবশ্যই একটি JSON অবজেক্ট হতে হবে"
+
+#: authentik/blueprints/api.py
+msgid "Failed to validate blueprint"
+msgstr "ব্লুপ্রিন্ট যাচাই করতে ব্যর্থ হয়েছে"
+
+#: authentik/blueprints/api.py
+msgid "Either path or content must be set."
+msgstr "পাথ অথবা কনটেন্ট এর যেকোনো একটি অবশ্যই সেট করতে হবে।"
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "{model} তৈরি করার অনুমতি ব্যবহারকারীর নেই"
+
+#: authentik/blueprints/models.py
+msgid "Managed by authentik"
+msgstr "authentik দ্বারা পরিচালিত"
+
+#: authentik/blueprints/models.py
+msgid ""
+"Objects that are managed by authentik. These objects are created and updated"
+" automatically. This flag only indicates that an object can be overwritten "
+"by migrations. You can still modify the objects via the API, but expect "
+"changes to be overwritten in a later update."
+msgstr ""
+"authentik দ্বারা পরিচালিত অবজেক্টসমূহ। এই অবজেক্টগুলো স্বয়ংক্রিয়ভাবে তৈরি "
+"ও আপডেট করা হয়। এই ফ্ল্যাগটি শুধু নির্দেশ করে যে একটি অবজেক্ট মাইগ্রেশনের "
+"মাধ্যমে ওভাররাইট করা যেতে পারে। আপনি এখনও API-এর মাধ্যমে অবজেক্টগুলো "
+"পরিবর্তন করতে পারবেন, তবে পরবর্তী আপডেটে পরিবর্তনগুলো ওভাররাইট হয়ে যেতে "
+"পারে বলে আশা করুন।"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instance"
+msgstr "ব্লুপ্রিন্ট ইনস্ট্যান্স"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instances"
+msgstr "ব্লুপ্রিন্ট ইনস্ট্যান্সসমূহ"
+
+#: authentik/blueprints/v1/exporter.py
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "authentik এক্সপোর্ট - {date}"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
+msgstr ""
+"`blueprints_find`-এর মতোই ব্লুপ্রিন্ট খুঁজে বের করে, তবে একটি নিরাপদ dict "
+"রিটার্ন করে।"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints and check if they need to be created in the database."
+msgstr ""
+"ব্লুপ্রিন্ট খুঁজে বের করে এবং যাচাই করে যে সেগুলো ডেটাবেজে তৈরি করা প্রয়োজন"
+" কিনা।"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Apply single blueprint."
+msgstr "একটি একক ব্লুপ্রিন্ট প্রয়োগ করুন।"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Remove blueprints which couldn't be fetched."
+msgstr "যেসব ব্লুপ্রিন্ট আনা সম্ভব হয়নি সেগুলো সরিয়ে ফেলুন।"
+
+#: authentik/brands/models.py
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+"এই ব্র্যান্ড সক্রিয় করে এমন ডোমেইন। এটি একটি সুপারসেট হতে পারে, যেমন `aa.b`"
+" এবং `ba.b`-এর জন্য `a.b`।"
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"সেট করা থাকলে, বাহ্যিক ব্যবহারকারীরা প্রমাণীকরণের পর এই অ্যাপ্লিকেশনে "
+"পুনঃনির্দেশিত হবেন।"
+
+#: authentik/brands/models.py
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr "authentik কোর ওয়েবসার্ভার দ্বারা ব্যবহৃত ওয়েব সার্টিফিকেট।"
+
+#: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "ক্লায়েন্ট প্রমাণীকরণের জন্য ব্যবহৃত সার্টিফিকেটসমূহ।"
+
+#: authentik/brands/models.py
+msgid "Brand"
+msgstr "ব্র্যান্ড"
+
+#: authentik/brands/models.py
+msgid "Brands"
+msgstr "ব্র্যান্ডসমূহ"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificate"
+msgstr "ব্র্যান্ড ক্লায়েন্ট সার্টিফিকেট"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificates"
+msgstr "ব্র্যান্ড ক্লায়েন্ট সার্টিফিকেটসমূহ"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "হ্যাশড ইউজার আইডির ভিত্তিতে"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "ইউজার আইডির ভিত্তিতে"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "ইউজার UUID-র ভিত্তিতে"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "ইউজারনেমের ভিত্তিতে"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr "ব্যবহারকারীর ইমেইলের ভিত্তিতে। UPN পদ্ধতির চেয়ে এটি সুপারিশ করা হয়।"
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"ব্যবহারকারীর UPN-এর ভিত্তিতে, শুধুমাত্র তখনই কাজ করে যখন ব্যবহারকারীর একটি "
+"'upn' অ্যাট্রিবিউট সেট করা থাকে। শুধুমাত্র তখনই এই পদ্ধতি ব্যবহার করুন যখন "
+"আপনার ভিন্ন UPN এবং মেইল ডোমেইন থাকে।"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr "ব্যবহারকারীর অ্যাপ্লিকেশনে অ্যাক্সেস নেই।"
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr "স্লাগ '{slug}' সংরক্ষিত এবং অ্যাপ্লিকেশনের জন্য ব্যবহার করা যাবে না।"
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add members to this group."
+msgstr "এই গ্রুপে সদস্য যোগ করার অনুমতি ব্যবহারকারীর নেই।"
+
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
+msgstr "অ্যারের জন্য Unique সক্রিয় করা যাবে না।"
+
+#: authentik/core/api/providers.py
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"সেট করা না থাকলে সব প্রোভাইডার রিটার্ন করা হয়। true সেট করা থাকলে, "
+"শুধুমাত্র ব্যাকচ্যানেল প্রোভাইডার রিটার্ন করা হয়। false সেট করা থাকলে, "
+"ব্যাকচ্যানেল প্রোভাইডার বাদ দেওয়া হয়"
+
+#: authentik/core/api/users.py
+msgid "No leading or trailing slashes allowed."
+msgstr "শুরুতে বা শেষে স্ল্যাশ ব্যবহারের অনুমতি নেই।"
+
+#: authentik/core/api/users.py
+msgid "No empty segments in user path allowed."
+msgstr "ইউজার পাথে কোনো খালি সেগমেন্টের অনুমতি নেই।"
+
+#: authentik/core/api/users.py
+msgid "Can't create internal service accounts"
+msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্ট তৈরি করা যাবে না"
+
+#: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্টকে অন্য ইউজার টাইপে পরিবর্তন করা যাবে না।"
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr "সুপারইউজার গ্রুপে সদস্য যোগ করার অনুমতি ব্যবহারকারীর নেই।"
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr "রোল বরাদ্দ করার অনুমতি ব্যবহারকারীর নেই।"
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
+"password এবং password_hash উভয়ই একসাথে সেট করা যাবে না। শুধুমাত্র একটি "
+"ব্যবহার করুন।"
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্ট ব্যবহারকারীদের পরিবর্তন করা যাবে না"
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr "filter: JSON পার্স করতে ব্যর্থ হয়েছে"
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr "filter: মান অবশ্যই key:value ম্যাপিং হতে হবে"
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr "কোনো রিকভারি ফ্লো সেট করা নেই।"
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr "রিকভারি ফ্লো ব্যবহারকারীর জন্য প্রযোজ্য নয়"
+
+#: authentik/core/api/users.py
+msgid "A user/group with these details already exists"
+msgstr "এই তথ্য সহ একটি ব্যবহারকারী/গ্রুপ ইতিমধ্যে বিদ্যমান"
+
+#: authentik/core/api/users.py
+msgid "Unable to create user"
+msgstr "ব্যবহারকারী তৈরি করা সম্ভব হয়নি"
+
+#: authentik/core/api/users.py
+msgid "Unknown error occurred"
+msgstr "অজানা ত্রুটি ঘটেছে"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr "ব্যবহারকারীর কোনো ইমেইল ঠিকানা সেট করা নেই।"
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr "ইমেইল স্টেজ খুঁজে পাওয়া যায়নি।"
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "এই ফিল্ডটি আবশ্যক।"
+
+#: authentik/core/apps.py
+msgid "Applications with no policies bound can be accessed by any user."
+msgstr ""
+"যেসব অ্যাপ্লিকেশনে কোনো পলিসি যুক্ত নেই, সেগুলোতে যেকোনো ব্যবহারকারী প্রবেশ "
+"করতে পারেন।"
+
+#: authentik/core/models.py
+msgid "name"
+msgstr "নাম"
+
+#: authentik/core/models.py
+msgid "Users added to this group will be superusers."
+msgstr "এই গ্রুপে যোগ করা ব্যবহারকারীরা সুপারইউজার হবেন।"
+
+#: authentik/core/models.py
+msgid "Group"
+msgstr "গ্রুপ"
+
+#: authentik/core/models.py
+msgid "Groups"
+msgstr "গ্রুপসমূহ"
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr "গ্রুপে ব্যবহারকারী যোগ করুন"
+
+#: authentik/core/models.py
+msgid "Remove user from group"
+msgstr "গ্রুপ থেকে ব্যবহারকারী সরান"
+
+#: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr "সুপারইউজার স্ট্যাটাস সক্রিয় করুন"
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr "সুপারইউজার স্ট্যাটাস নিষ্ক্রিয় করুন"
+
+#: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr "গ্রুপ প্যারেন্টেজ নোড"
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr "গ্রুপ প্যারেন্টেজ নোডসমূহ"
+
+#: authentik/core/models.py
+msgid "User's display name."
+msgstr "ব্যবহারকারীর প্রদর্শন নাম।"
+
+#: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/providers/saml/models.py
+msgid "User"
+msgstr "ব্যবহারকারী"
+
+#: authentik/core/models.py
+msgid "Users"
+msgstr "ব্যবহারকারীগণ"
+
+#: authentik/core/models.py
+#: authentik/stages/email/templates/email/password_reset.html
+msgid "Reset Password"
+msgstr "পাসওয়ার্ড রিসেট করুন"
+
+#: authentik/core/models.py
+msgid "Can impersonate other users"
+msgstr "অন্যান্য ব্যবহারকারীর ছদ্মবেশ ধারণ করতে পারবেন"
+
+#: authentik/core/models.py
+msgid "Can preview user data sent to providers"
+msgstr "প্রোভাইডারে পাঠানো ব্যবহারকারীর তথ্য প্রিভিউ করতে পারবেন"
+
+#: authentik/core/models.py
+msgid "View applications the user has access to"
+msgstr "ব্যবহারকারীর অ্যাক্সেস থাকা অ্যাপ্লিকেশনসমূহ দেখুন"
+
+#: authentik/core/models.py
+msgid ""
+"Flow used for authentication when the associated application is accessed by "
+"an un-authenticated user."
+msgstr ""
+"সংশ্লিষ্ট অ্যাপ্লিকেশনে একজন অপ্রমাণীকৃত ব্যবহারকারী প্রবেশ করলে "
+"প্রমাণীকরণের জন্য ব্যবহৃত ফ্লো।"
+
+#: authentik/core/models.py
+msgid "Flow used when authorizing this provider."
+msgstr "এই প্রোভাইডার অনুমোদনের সময় ব্যবহৃত ফ্লো।"
+
+#: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "প্রোভাইডার থেকে সেশন শেষ করতে ব্যবহৃত ফ্লো।"
+
+#: authentik/core/models.py
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr ""
+"অ্যাপ্লিকেশন থেকে অ্যাক্সেস করা হয়; LDAP এবং SCIM-এর মতো প্রোটোকলের জন্য "
+"ঐচ্ছিক ব্যাকচ্যানেল প্রোভাইডার।"
+
+#: authentik/core/models.py
+msgid "Application's display Name."
+msgstr "অ্যাপ্লিকেশনের প্রদর্শন নাম।"
+
+#: authentik/core/models.py
+msgid "Internal application name, used in URLs."
+msgstr "ইন্টারনাল অ্যাপ্লিকেশন নাম, URL-এ ব্যবহৃত হয়।"
+
+#: authentik/core/models.py
+msgid "Open launch URL in a new browser tab or window."
+msgstr "লঞ্চ URL একটি নতুন ব্রাউজার ট্যাব বা উইন্ডোতে খুলুন।"
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr "ব্যবহারকারীর 'আমার অ্যাপ্লিকেশন' পৃষ্ঠা থেকে এই অ্যাপ্লিকেশনটি লুকান।"
+
+#: authentik/core/models.py
+msgid "Application"
+msgstr "অ্যাপ্লিকেশন"
+
+#: authentik/core/models.py
+msgid "Applications"
+msgstr "অ্যাপ্লিকেশনসমূহ"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr "অ্যাপ্লিকেশন এনটাইটেলমেন্ট"
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr "অ্যাপ্লিকেশন এনটাইটেলমেন্টসমূহ"
+
+#: authentik/core/models.py
+msgid "Use the source-specific identifier"
+msgstr "সোর্স-নির্দিষ্ট আইডেন্টিফায়ার ব্যবহার করুন"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical email address. Can have security implications "
+"when a source doesn't validate email addresses."
+msgstr ""
+"অভিন্ন ইমেইল ঠিকানাযুক্ত একজন ব্যবহারকারীর সাথে লিঙ্ক করুন। কোনো সোর্স ইমেইল"
+" ঠিকানা যাচাই না করলে এর নিরাপত্তাগত প্রভাব থাকতে পারে।"
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's email address, but deny enrollment when the email address "
+"already exists."
+msgstr ""
+"ব্যবহারকারীর ইমেইল ঠিকানা ব্যবহার করুন, তবে ইমেইল ঠিকানা ইতিমধ্যে বিদ্যমান "
+"থাকলে এনরোলমেন্ট প্রত্যাখ্যান করুন।"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical username. Can have security implications when "
+"a username is used with another source."
+msgstr ""
+"অভিন্ন ইউজারনেমযুক্ত একজন ব্যবহারকারীর সাথে লিঙ্ক করুন। একটি ইউজারনেম অন্য "
+"সোর্সের সাথে ব্যবহৃত হলে এর নিরাপত্তাগত প্রভাব থাকতে পারে।"
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's username, but deny enrollment when the username already "
+"exists."
+msgstr ""
+"ব্যবহারকারীর ইউজারনেম ব্যবহার করুন, তবে ইউজারনেম ইতিমধ্যে বিদ্যমান থাকলে "
+"এনরোলমেন্ট প্রত্যাখ্যান করুন।"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"অভিন্ন নামযুক্ত একটি গ্রুপের সাথে লিঙ্ক করুন। একটি গ্রুপের নাম অন্য সোর্সের "
+"সাথে ব্যবহৃত হলে এর নিরাপত্তাগত প্রভাব থাকতে পারে।"
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr ""
+"গ্রুপের নাম ব্যবহার করুন, তবে নাম ইতিমধ্যে বিদ্যমান থাকলে এনরোলমেন্ট "
+"প্রত্যাখ্যান করুন।"
+
+#: authentik/core/models.py
+msgid "Source's display Name."
+msgstr "সোর্সের প্রদর্শন নাম।"
+
+#: authentik/core/models.py
+msgid "Internal source name, used in URLs."
+msgstr "ইন্টারনাল সোর্স নাম, URL-এ ব্যবহৃত হয়।"
+
+#: authentik/core/models.py
+msgid ""
+"When enabled, this source will be displayed as a prominent button on the "
+"login page, instead of a small icon."
+msgstr ""
+"সক্রিয় করা থাকলে, এই সোর্সটি লগইন পৃষ্ঠায় একটি ছোট আইকনের পরিবর্তে একটি "
+"প্রকট বাটন হিসেবে প্রদর্শিত হবে।"
+
+#: authentik/core/models.py
+msgid "Flow to use when authenticating existing users."
+msgstr "বিদ্যমান ব্যবহারকারীদের প্রমাণীকরণের সময় ব্যবহারের জন্য ফ্লো।"
+
+#: authentik/core/models.py
+msgid "Flow to use when enrolling new users."
+msgstr "নতুন ব্যবহারকারী এনরোল করার সময় ব্যবহারের জন্য ফ্লো।"
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing user should be authenticated or a "
+"new user enrolled."
+msgstr ""
+"একজন বিদ্যমান ব্যবহারকারীকে প্রমাণীকরণ করা হবে নাকি একজন নতুন ব্যবহারকারী "
+"এনরোল করা হবে, তা সোর্স কীভাবে নির্ধারণ করে।"
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr ""
+"একটি বিদ্যমান গ্রুপ ব্যবহার করা হবে নাকি একটি নতুন গ্রুপ তৈরি করা হবে, তা "
+"সোর্স কীভাবে নির্ধারণ করে।"
+
+#: authentik/core/models.py authentik/providers/scim/models.py
+msgid "Token"
+msgstr "টোকেন"
+
+#: authentik/core/models.py
+msgid "Tokens"
+msgstr "টোকেনসমূহ"
+
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
+msgid "View token's key"
+msgstr "টোকেনের কী দেখুন"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "টোকেনের কী সেট করুন"
+
+#: authentik/core/models.py
+msgid "Property Mapping"
+msgstr "প্রপার্টি ম্যাপিং"
+
+#: authentik/core/models.py
+msgid "Property Mappings"
+msgstr "প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/core/models.py
+msgid "Source User Property Mapping"
+msgstr "সোর্স ইউজার প্রপার্টি ম্যাপিং"
+
+#: authentik/core/models.py
+msgid "Source User Property Mappings"
+msgstr "সোর্স ইউজার প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mapping"
+msgstr "সোর্স গ্রুপ প্রপার্টি ম্যাপিং"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mappings"
+msgstr "সোর্স গ্রুপ প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/core/models.py
+msgid "Provider Property Mapping"
+msgstr "প্রোভাইডার প্রপার্টি ম্যাপিং"
+
+#: authentik/core/models.py
+msgid "Provider Property Mappings"
+msgstr "প্রোভাইডার প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/core/models.py
+msgid "User Role"
+msgstr "ইউজার রোল"
+
+#: authentik/core/models.py
+msgid "User Roles"
+msgstr "ইউজার রোলসমূহ"
+
+#: authentik/core/models.py
+msgid "Group Role"
+msgstr "গ্রুপ রোল"
+
+#: authentik/core/models.py
+msgid "Group Roles"
+msgstr "গ্রুপ রোলসমূহ"
+
+#: authentik/core/models.py
+msgid "User Group"
+msgstr "ইউজার গ্রুপ"
+
+#: authentik/core/models.py
+msgid "User Groups"
+msgstr "ইউজার গ্রুপসমূহ"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr "সেশন ডেটা"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "সেশন"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "সেশনসমূহ"
+
+#: authentik/core/models.py
+msgid "Authenticated Session"
+msgstr "প্রমাণীকৃত সেশন"
+
+#: authentik/core/models.py
+msgid "Authenticated Sessions"
+msgstr "প্রমাণীকৃত সেশনসমূহ"
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr "এই ফিল্ডটি আবশ্যক"
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr "মান অবশ্যই একটি অ্যারে হতে হবে।"
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr "মান কনফিগার করা প্যাটার্নের সাথে মেলে না।"
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr "মানটি ইউনিক নয়।"
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr "অবজেক্ট অ্যাট্রিবিউট"
+
+#: authentik/core/models.py
+msgid "Object Attributes"
+msgstr "অবজেক্ট অ্যাট্রিবিউটসমূহ"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid ""
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
+msgstr ""
+"{source}-এর মাধ্যমে প্রমাণীকরণের অনুরোধ প্রত্যাখ্যান করা হয়েছে। অনুগ্রহ করে"
+" আপনি পূর্বে যে সোর্স দিয়ে সাইন আপ করেছিলেন তা দিয়ে প্রমাণীকরণ করুন।"
+
+#: authentik/core/sources/flow_manager.py
+msgid "Configured flow does not exist."
+msgstr "কনফিগার করা ফ্লো বিদ্যমান নেই।"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "{source}-এর মাধ্যমে সফলভাবে প্রমাণীকরণ সম্পন্ন হয়েছে!"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "{source} সফলভাবে লিঙ্ক করা হয়েছে!"
+
+#: authentik/core/sources/flow_manager.py
+msgid "Source is not configured for enrollment."
+msgstr "সোর্সটি এনরোলমেন্টের জন্য কনফিগার করা নেই।"
+
+#: authentik/core/tasks.py
+msgid "Remove expired objects."
+msgstr "মেয়াদোত্তীর্ণ অবজেক্ট সরান।"
+
+#: authentik/core/tasks.py
+msgid "Remove temporary users created by SAML Sources."
+msgstr "SAML সোর্স দ্বারা তৈরি অস্থায়ী ব্যবহারকারীদের সরান।"
+
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
+msgstr "রিকভারি সেশন সক্রিয় আছে। কাস্টম ব্র্যান্ডিং নিষ্ক্রিয় করা হয়েছে।"
+
+#: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
+msgid "Go home"
+msgstr "হোমে যান"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Site footer"
+msgstr "সাইট ফুটার"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Flow links"
+msgstr "ফ্লো লিঙ্ক"
+
+#: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
+msgid "Powered by authentik"
+msgstr "authentik দ্বারা চালিত"
+
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/oauth2/views/device_init.py
+#: authentik/providers/saml/views/sso.py
+#, python-format
+msgid "You're about to sign into %(application)s."
+msgstr "আপনি %(application)s-এ সাইন ইন করতে যাচ্ছেন।"
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "ইন্টারফেসটি শুধুমাত্র ইন্টারনাল ব্যবহারকারীরা অ্যাক্সেস করতে পারবেন।"
+
+#: authentik/crypto/api.py
+msgid "Subject-alt name"
+msgstr "সাবজেক্ট-অল্ট নেম"
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
+#: authentik/crypto/models.py
+msgid "RSA"
+msgstr "RSA"
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr "ইলিপ্টিক কার্ভ"
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr "DSA"
+
+#: authentik/crypto/models.py
+msgid "PEM-encoded Certificate data"
+msgstr "PEM-এনকোডেড সার্টিফিকেট ডেটা"
+
+#: authentik/crypto/models.py
+msgid ""
+"Optional Private Key. If this is set, you can use this keypair for "
+"encryption."
+msgstr ""
+"ঐচ্ছিক প্রাইভেট কী। এটি সেট করা থাকলে, আপনি এই কীপেয়ারটি এনক্রিপশনের জন্য "
+"ব্যবহার করতে পারবেন।"
+
+#: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr "সার্টিফিকেটের পাবলিক কী থেকে শনাক্ত করা কী অ্যালগরিদম টাইপ"
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr "সার্টিফিকেটের মেয়াদ উত্তীর্ণের তারিখ"
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr "RFC4514 স্ট্রিং হিসেবে সার্টিফিকেট সাবজেক্ট"
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr "সার্টিফিকেটের SHA256 ফিঙ্গারপ্রিন্ট"
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr "সার্টিফিকেটের SHA1 ফিঙ্গারপ্রিন্ট"
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr "প্রাইভেট কী থেকে তৈরি কী আইডি"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pair"
+msgstr "সার্টিফিকেট-কী পেয়ার"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pairs"
+msgstr "সার্টিফিকেট-কী পেয়ারসমূহ"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr "সার্টিফিকেট-কী পেয়ারের সার্টিফিকেট দেখুন"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr "সার্টিফিকেট-কী পেয়ারের প্রাইভেট কী দেখুন"
+
+#: authentik/crypto/tasks.py
+msgid "Discover, import and update certificates from the filesystem."
+msgstr "ফাইলসিস্টেম থেকে সার্টিফিকেট আবিষ্কার, ইম্পোর্ট এবং আপডেট করুন।"
+
+#: authentik/endpoints/api/stages.py
+msgid "Selected connector is not compatible with this stage."
+msgstr "নির্বাচিত কানেক্টরটি এই স্টেজের সাথে সামঞ্জস্যপূর্ণ নয়।"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr "নির্বাচিত প্ল্যাটফর্ম সমর্থিত নয়"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr "টোকেনের মেয়াদ উত্তীর্ণ হয়ে গেছে"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr "কানেক্টরের জন্য টোকেনটি অবৈধ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr "এজেন্ট কানেক্টর"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr "এজেন্ট কানেক্টরসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Provider"
+msgstr "এজেন্ট কানেক্টর JWT ফেডারেশন প্রোভাইডার"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Providers"
+msgstr "এজেন্ট কানেক্টর JWT ফেডারেশন প্রোভাইডারসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr "এজেন্ট ডিভাইস ইউজার বাইন্ডিং"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
+msgstr "এজেন্ট ডিভাইস ইউজার বাইন্ডিংসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "ডিভাইস টোকেন"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "ডিভাইস টোকেনসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr "এনরোলমেন্ট টোকেন"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr "এনরোলমেন্ট টোকেনসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication token"
+msgstr "ডিভাইস প্রমাণীকরণ টোকেন"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication tokens"
+msgstr "ডিভাইস প্রমাণীকরণ টোকেনসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonce"
+msgstr "অ্যাপল ননস"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonces"
+msgstr "অ্যাপল ননসসমূহ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr "অ্যাপল ইনডিপেন্ডেন্ট সিকিউর এনক্লেভ"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr "অ্যাপল ইনডিপেন্ডেন্ট সিকিউর এনক্লেভসমূহ"
+
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr "অপারেটিং সিস্টেমের নাম, যেমন 'Server 2022' বা 'Ubuntu'"
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+"অপারেটিং সিস্টেমের সংস্করণ, এটি সবসময় ভার্সন নম্বর হতে হবে তবে এতে বিল্ড "
+"নেম থাকতে পারে"
+
+#: authentik/endpoints/models.py
+msgid "Device"
+msgstr "ডিভাইস"
+
+#: authentik/endpoints/models.py
+msgid "Devices"
+msgstr "ডিভাইসসমূহ"
+
+#: authentik/endpoints/models.py
+msgid "Device User binding"
+msgstr "ডিভাইস ইউজার বাইন্ডিং"
+
+#: authentik/endpoints/models.py
+msgid "Device User bindings"
+msgstr "ডিভাইস ইউজার বাইন্ডিংসমূহ"
+
+#: authentik/endpoints/models.py
+msgid "Device connection"
+msgstr "ডিভাইস কানেকশন"
+
+#: authentik/endpoints/models.py
+msgid "Device connections"
+msgstr "ডিভাইস কানেকশনসমূহ"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshot"
+msgstr "ডিভাইস ফ্যাক্ট স্ন্যাপশট"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshots"
+msgstr "ডিভাইস ফ্যাক্ট স্ন্যাপশটসমূহ"
+
+#: authentik/endpoints/models.py
+msgid "Device access group"
+msgstr "ডিভাইস অ্যাক্সেস গ্রুপ"
+
+#: authentik/endpoints/models.py
+msgid "Device access groups"
+msgstr "ডিভাইস অ্যাক্সেস গ্রুপসমূহ"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr "এন্ডপয়েন্ট স্টেজ"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
+msgstr "এন্ডপয়েন্ট স্টেজসমূহ"
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
+msgstr "এন্ডপয়েন্ট সিঙ্ক করুন।"
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to create/update this object."
+msgstr "এই অবজেক্ট তৈরি/আপডেট করতে এন্টারপ্রাইজ প্রয়োজন।"
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr "এই এন্ডপয়েন্ট ব্যবহার করতে এন্টারপ্রাইজ প্রয়োজন।"
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
+msgstr ""
+"অডিট লগে অতিরিক্ত তথ্য অন্তর্ভুক্ত করুন, এতে পারফরম্যান্স হ্রাস হতে পারে।"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"পাঠানোর জন্য অতিরিক্ত হেডার কনফিগার করুন। ম্যাপিংটি key-value জোড়ার একটি "
+"ডিকশনারি রিটার্ন করা উচিত"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr "ফ্লিট কানেক্টর"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr "ফ্লিট কানেক্টরসমূহ"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connector"
+msgstr "Google ডিভাইস ট্রাস্ট কানেক্টর"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connectors"
+msgstr "Google ডিভাইস ট্রাস্ট কানেক্টরসমূহ"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/stage.py
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "আপনার ব্রাউজার যাচাই করা হচ্ছে..."
+
+#: authentik/enterprise/lifecycle/offboarding/actions.py
+#, python-format
+msgid "User %(username)s was offboarded (%(action)s)"
+msgstr "ব্যবহারকারী %(username)s অফবোর্ড করা হয়েছে (%(action)s)"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "This user already has a pending offboarding scheduled."
+msgstr "এই ব্যবহারকারীর জন্য ইতিমধ্যে একটি অপেক্ষমাণ অফবোর্ডিং নির্ধারিত আছে।"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Offboarding must be scheduled in the future."
+msgstr "অফবোর্ডিং অবশ্যই ভবিষ্যতের কোনো সময়ে নির্ধারণ করতে হবে।"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Internal service accounts cannot be offboarded."
+msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্ট অফবোর্ড করা যাবে না।"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot offboard your own account."
+msgstr "আপনি নিজের অ্যাকাউন্ট অফবোর্ড করতে পারবেন না।"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot cancel your own offboarding."
+msgstr "আপনি নিজের অফবোর্ডিং বাতিল করতে পারবেন না।"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Only a pending offboarding can be cancelled."
+msgstr "শুধুমাত্র একটি অপেক্ষমাণ অফবোর্ডিং বাতিল করা যাবে।"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Deactivate"
+msgstr "নিষ্ক্রিয় করুন"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Delete"
+msgstr "মুছে ফেলুন"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Pending"
+msgstr "অপেক্ষমাণ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Completed"
+msgstr "সম্পন্ন"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Failed"
+msgstr "ব্যর্থ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Canceled"
+msgstr "বাতিল করা হয়েছে"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Absolute time at which the offboarding action is executed."
+msgstr "যে নির্দিষ্ট সময়ে অফবোর্ডিং অ্যাকশনটি কার্যকর হবে।"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's sessions when offboarding."
+msgstr "অফবোর্ডিং করার সময় ব্যবহারকারীর সমস্ত সেশন প্রত্যাহার করুন।"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's tokens when offboarding."
+msgstr "অফবোর্ডিং করার সময় ব্যবহারকারীর সমস্ত টোকেন প্রত্যাহার করুন।"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Number of times execution has been attempted and failed."
+msgstr "যতবার এক্সিকিউশন চেষ্টা করা হয়েছে এবং ব্যর্থ হয়েছে তার সংখ্যা।"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboarding"
+msgstr "ইউজার অফবোর্ডিং"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboardings"
+msgstr "ইউজার অফবোর্ডিংসমূহ"
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute due user offboardings."
+msgstr "নির্ধারিত সময়ে পৌঁছানো ইউজার অফবোর্ডিং কার্যকর করুন।"
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute a single user offboarding."
+msgstr "একটি একক ইউজার অফবোর্ডিং কার্যকর করুন।"
+
+#: authentik/enterprise/lifecycle/review/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr "আপনি এই অবজেক্টের জন্য রিভিউ জমা দিতে পারবেন না।"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Object does not exist"
+msgstr "অবজেক্টটি বিদ্যমান নেই"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr "একটি রিভিউয়ার গ্রুপ অথবা একজন রিভিউয়ার অবশ্যই সেট করতে হবে।"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr "গ্রেস পিরিয়ড অবশ্যই ইন্টারভালের চেয়ে ছোট হতে হবে।"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"রিভিউয়ারদের অবহিত করতে কোন ট্রান্সপোর্ট ব্যবহার করা হবে তা নির্বাচন করুন। "
+"কোনোটি নির্বাচন না করা হলে, নোটিফিকেশনটি শুধুমাত্র authentik UI-তে দেখানো "
+"হবে।"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Group"
+msgstr "লাইফসাইকেল রুল রিভিউয়ার গ্রুপ"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Groups"
+msgstr "লাইফসাইকেল রুল রিভিউয়ার গ্রুপসমূহ"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer"
+msgstr "লাইফসাইকেল রুল রিভিউয়ার"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewers"
+msgstr "লাইফসাইকেল রুল রিভিউয়ারসমূহ"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transport"
+msgstr "লাইফসাইকেল রুল নোটিফিকেশন ট্রান্সপোর্ট"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transports"
+msgstr "লাইফসাইকেল রুল নোটিফিকেশন ট্রান্সপোর্টসমূহ"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Reviewed"
+msgstr "পর্যালোচিত"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Overdue"
+msgstr "মেয়াদোত্তীর্ণ"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr "{self._get_model_name()}-এ যান"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
+msgstr ""
+"{self.content_type.name.lower()} {object_label}-এর জন্য অ্যাক্সেস রিভিউ "
+"প্রয়োজন"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"{self.content_type.name} {str(self.object)}-এর জন্য অ্যাক্সেস রিভিউ "
+"মেয়াদোত্তীর্ণ হয়ে গেছে"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"{self.content_type.name} {str(self.object)}-এর জন্য অ্যাক্সেস রিভিউ সম্পন্ন "
+"হয়েছে"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Dispatch tasks to apply lifecycle rules."
+msgstr "লাইফসাইকেল রুল প্রয়োগ করতে টাস্ক পাঠান।"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Apply lifecycle rule."
+msgstr "লাইফসাইকেল রুল প্রয়োগ করুন।"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr "লাইফসাইকেল রুল নোটিফিকেশন পাঠান।"
+
+#: authentik/enterprise/models.py
+msgid "License"
+msgstr "লাইসেন্স"
+
+#: authentik/enterprise/models.py
+msgid "Licenses"
+msgstr "লাইসেন্সসমূহ"
+
+#: authentik/enterprise/models.py
+msgid "License Usage"
+msgstr "লাইসেন্স ব্যবহার"
+
+#: authentik/enterprise/models.py
+msgid "License Usage Records"
+msgstr "লাইসেন্স ব্যবহারের রেকর্ড"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr "যাচাই করার জন্য ফিল্ড কী, Prompt স্টেজে সংজ্ঞায়িত ফিল্ড কী উপলব্ধ।"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "যাচাই করার জন্য পাসওয়ার্ডের সংখ্যা।"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "কনটেক্সটে পাসওয়ার্ড সেট করা নেই"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+"এই পাসওয়ার্ডটি আগে ব্যবহার করা হয়েছে। অনুগ্রহ করে একটি ভিন্ন পাসওয়ার্ড "
+"বেছে নিন।"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "পাসওয়ার্ড ইউনিকনেস পলিসি"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "পাসওয়ার্ড ইউনিকনেস পলিসিসমূহ"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "ইউজার পাসওয়ার্ড হিস্টরি"
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid ""
+"Check if any UniquePasswordPolicy exists, and if not, purge the password "
+"history table."
+msgstr ""
+"কোনো UniquePasswordPolicy বিদ্যমান কিনা তা যাচাই করুন, এবং না থাকলে "
+"পাসওয়ার্ড হিস্টরি টেবিলটি খালি করুন।"
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid "Remove user password history that are too old."
+msgstr "অনেক পুরনো ইউজার পাসওয়ার্ড হিস্টরি সরান।"
+
+#: authentik/enterprise/policy.py
+msgid "Enterprise required to access this feature."
+msgstr "এই ফিচার অ্যাক্সেস করতে এন্টারপ্রাইজ প্রয়োজন।"
+
+#: authentik/enterprise/policy.py
+msgid "Feature only accessible for internal users."
+msgstr "ফিচারটি শুধুমাত্র ইন্টারনাল ব্যবহারকারীদের জন্য প্রবেশযোগ্য।"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Google Workspace প্রোভাইডার ইউজার"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Google Workspace প্রোভাইডার ইউজারগণ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Google Workspace প্রোভাইডার গ্রুপ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Google Workspace প্রোভাইডার গ্রুপসমূহ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr "গ্রুপ তৈরি/আপডেট করার জন্য ব্যবহৃত প্রপার্টি ম্যাপিং।"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Google Workspace প্রোভাইডার"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Google Workspace প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Group"
+msgstr "Google Workspace প্রোভাইডার প্রপার্টি ম্যাপিং গ্রুপ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Groups"
+msgstr "Google Workspace প্রোভাইডার প্রপার্টি ম্যাপিং গ্রুপসমূহ"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Google Workspace প্রোভাইডার ম্যাপিং"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Google Workspace প্রোভাইডার ম্যাপিংসমূহ"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync Google Workspace provider objects."
+msgstr "Google Workspace প্রোভাইডার অবজেক্ট সিঙ্ক করুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Full sync for Google Workspace provider."
+msgstr "Google Workspace প্রোভাইডারের জন্য সম্পূর্ণ সিঙ্ক।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a direct object (user, group) for Google Workspace provider."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) "
+"সিঙ্ক করুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন "
+"ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) "
+"সিঙ্ক ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a related object (memberships) for Google Workspace provider."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্ট (মেম্বারশিপ) সিঙ্ক"
+" করুন।"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Google Workspace "
+"providers."
+msgstr ""
+"Google Workspace প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্টের (মেম্বারশিপ) "
+"সিঙ্ক ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Microsoft Entra প্রোভাইডার ইউজার"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Microsoft Entra প্রোভাইডার গ্রুপ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Microsoft Entra প্রোভাইডার গ্রুপসমূহ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Microsoft Entra প্রোভাইডার"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Microsoft Entra প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Group"
+msgstr "Microsoft Entra প্রোভাইডার প্রপার্টি ম্যাপিং গ্রুপ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Groups"
+msgstr "Microsoft Entra প্রোভাইডার প্রপার্টি ম্যাপিং গ্রুপসমূহ"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Microsoft Entra প্রোভাইডার ম্যাপিং"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Microsoft Entra প্রোভাইডার ম্যাপিংসমূহ"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync Microsoft Entra provider objects."
+msgstr "Microsoft Entra প্রোভাইডার অবজেক্ট সিঙ্ক করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Full sync for Microsoft Entra provider."
+msgstr "Microsoft Entra প্রোভাইডারের জন্য সম্পূর্ণ সিঙ্ক।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a direct object (user, group) for Microsoft Entra provider."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) সিঙ্ক"
+" করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) "
+"সিঙ্ক ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন "
+"ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a related object (memberships) for Microsoft Entra provider."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্ট (মেম্বারশিপ) সিঙ্ক "
+"করুন।"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Microsoft Entra "
+"providers."
+msgstr ""
+"Microsoft Entra প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্টের (মেম্বারশিপ) "
+"সিঙ্ক ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr "EAP-TLS ব্যবহার করতে এন্টারপ্রাইজ প্রয়োজন।"
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr "OAuth মোড ব্যবহার করতে এন্টারপ্রাইজ প্রয়োজন।"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr "SSF RFC পুশ"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
+msgstr "SSF RFC পুল"
+
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "সাইনিং কী"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr "SSF ইভেন্ট সাইন করতে ব্যবহৃত কী।"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr "Shared Signals Framework প্রোভাইডার"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr "Shared Signals Framework প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr "SSF প্রোভাইডারে স্ট্রিম যোগ করুন"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Provider"
+msgstr "SSF প্রোভাইডার OIDC অথ প্রোভাইডার"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Providers"
+msgstr "SSF প্রোভাইডার OIDC অথ প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr "SSF স্ট্রিম"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr "SSF স্ট্রিমসমূহ"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr "SSF স্ট্রিম ইভেন্ট"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr "SSF স্ট্রিম ইভেন্টসমূহ"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Dispatch SSF events."
+msgstr "SSF ইভেন্ট ডিসপ্যাচ করুন।"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Send an SSF event."
+msgstr "একটি SSF ইভেন্ট পাঠান।"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 1.1"
+msgstr "SAML 1.1"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid ""
+"SAML assertion version to issue in the security token. Microsoft Entra ID "
+"and classic ADFS-style relying parties typically require SAML 1.1."
+msgstr ""
+"সিকিউরিটি টোকেনে ইস্যু করার জন্য SAML অ্যাসারশন ভার্সন। Microsoft Entra ID "
+"এবং ক্লাসিক ADFS-স্টাইল রিলাইং পার্টির সাধারণত SAML 1.1 প্রয়োজন হয়।"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr "WS-Federation প্রোভাইডার"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr "WS-Federation প্রোভাইডারসমূহ"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "{app}-এ পুনঃনির্দেশিত করা হচ্ছে..."
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr "ডেটা এক্সপোর্ট"
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr "ডেটা এক্সপোর্টসমূহ"
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "{model_verbose_name} এক্সপোর্ট সফলভাবে তৈরি করা হয়েছে"
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "ডাউনলোড করুন"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
+msgstr "ডেটা এক্সপোর্ট তৈরি করুন।"
+
+#: authentik/enterprise/requests/models.py
+msgid "Everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Only individually-selected reviewers"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "A random subset of size min_reviewers, from everyone who can approve"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid ""
+"How long a request against this binding stays pending before it "
+"automatically lapses if not approved or denied."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "The maximum duration a grant approved against this binding can last."
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Binding"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Bindings"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rules"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transport"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transports"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Requests"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can create a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can fulfill (approve/deny) a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Can revoke a grant request"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Target"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Targets"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approval"
+msgstr ""
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approvals"
+msgstr ""
+
+#: authentik/enterprise/requests/tasks.py
+msgid "Send access-request review notification."
+msgstr ""
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr ""
+"যে ব্যবহারকারীকে লক করতে হবে। বাদ দেওয়া হলে, বর্তমান ব্যবহারকারীকে "
+"(সেলফ-সার্ভিস) লক করে।"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr "কোনো লকডাউন ফ্লো কনফিগার করা নেই।"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr "লকডাউন ফ্লো প্রযোজ্য নয়।"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr "টার্গেট অ্যাকাউন্ট নির্বাচন করুন, তারপর একটি ফ্লো লিঙ্ক রিটার্ন করুন।"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr "কোনো লকডাউন ফ্লো কনফিগার করা নেই অথবা ফ্লোটি প্রযোজ্য নয়"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr "অনুমতি প্রত্যাখ্যাত (অন্য ব্যবহারকারীকে টার্গেট করার সময়)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr "ইউজার অ্যাকাউন্ট নিষ্ক্রিয় করুন (is_active-কে False সেট করে)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr "ব্যবহারকারীর জন্য একটি অব্যবহারযোগ্য পাসওয়ার্ড সেট করুন"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr "ব্যবহারকারীর সমস্ত সক্রিয় সেশন মুছে ফেলুন"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+"ব্যবহারকারীর সমস্ত টোকেন প্রত্যাহার করুন (API, অ্যাপ পাসওয়ার্ড, রিকভারি, "
+"ভেরিফিকেশন, OAuth)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+"সেলফ-সার্ভিস লকডাউনের পর ব্যবহারকারীদের পুনঃনির্দেশ করার ফ্লো। এই ফ্লোতে "
+"প্রমাণীকরণের প্রয়োজন হওয়া উচিত নয় কারণ ব্যবহারকারীর সেশন মুছে ফেলা হয়।"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr "অ্যাকাউন্ট লকডাউন স্টেজ"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr "অ্যাকাউন্ট লকডাউন স্টেজসমূহ"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr "অ্যাকাউন্ট লকডাউনের জন্য কোনো টার্গেট ব্যবহারকারী নির্দিষ্ট করা হয়নি"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr "এই অ্যাকাউন্টটি লকডাউন করার অনুমতি আপনার নেই।"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr "এই অ্যাকাউন্টের জন্য অ্যাকাউন্ট লকডাউন ব্যর্থ হয়েছে।"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr "সেলফ-সার্ভিস অ্যাকাউন্ট লকডাউনের জন্য একটি কমপ্লিশন ফ্লো প্রয়োজন।"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "এন্ডপয়েন্ট অথেন্টিকেটর Google ডিভাইস ট্রাস্ট কানেক্টর স্টেজ"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "এন্ডপয়েন্ট অথেন্টিকেটর Google ডিভাইস ট্রাস্ট কানেক্টর স্টেজসমূহ"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "এন্ডপয়েন্ট ডিভাইস"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "এন্ডপয়েন্ট ডিভাইসসমূহ"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"সার্টিফিকেট যাচাই করার জন্য সার্টিফিকেট অথরিটি কনফিগার করুন। এই অপশনটির "
+"`Brand`-এ থাকা `client_certificate` অপশনের চেয়ে উচ্চতর অগ্রাধিকার রয়েছে।"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "মিউচুয়াল TLS স্টেজ"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "মিউচুয়াল TLS স্টেজসমূহ"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "আউটপোস্টের জন্য সার্টিফিকেট পাস করার অনুমতি।"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authority"
+msgstr "মিউচুয়াল TLS স্টেজ সার্টিফিকেট অথরিটি"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authoritys"
+msgstr "মিউচুয়াল TLS স্টেজ সার্টিফিকেট অথরিটিসমূহ"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "সার্টিফিকেট প্রয়োজন কিন্তু কোনো সার্টিফিকেট প্রদান করা হয়নি।"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "সার্টিফিকেটের জন্য কোনো ব্যবহারকারী পাওয়া যায়নি।"
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"ফ্লো চালিয়ে যাওয়ার জন্য সোর্স থেকে ফিরে আসতে একজন ব্যবহারকারী কত সময় নিতে"
+" পারেন (ফরম্যাট: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr "সোর্স স্টেজ"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr "সোর্স স্টেজসমূহ"
+
+#: authentik/enterprise/tasks.py
+msgid "Update enterprise license status."
+msgstr "এন্টারপ্রাইজ লাইসেন্স স্ট্যাটাস আপডেট করুন।"
+
+#: authentik/events/models.py
+msgid "Event"
+msgstr "ইভেন্ট"
+
+#: authentik/events/models.py
+msgid "Events"
+msgstr "ইভেন্টসমূহ"
+
+#: authentik/events/models.py
+msgid "authentik inbuilt notifications"
+msgstr "authentik-এর অন্তর্নির্মিত নোটিফিকেশন"
+
+#: authentik/events/models.py
+msgid "Generic Webhook"
+msgstr "জেনেরিক ওয়েবহুক"
+
+#: authentik/events/models.py
+msgid "Slack Webhook (Slack/Discord)"
+msgstr "Slack ওয়েবহুক (Slack/Discord)"
+
+#: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
+msgid "Email"
+msgstr "ইমেইল"
+
+#: authentik/events/models.py
+msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr ""
+"শুধুমাত্র একবার নোটিফিকেশন পাঠান, যেমন একটি চ্যাট চ্যানেলে ওয়েবহুক পাঠানোর "
+"সময়।"
+
+#: authentik/events/models.py
+msgid ""
+"When set, the selected certificate is used to validate the certificate of "
+"the webhook server."
+msgstr ""
+"সেট করা থাকলে, নির্বাচিত সার্টিফিকেটটি ওয়েবহুক সার্ভারের সার্টিফিকেট যাচাই "
+"করতে ব্যবহৃত হয়।"
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+"রিকোয়েস্টের বডি কাস্টমাইজ করুন। ম্যাপিংটি এমন ডেটা রিটার্ন করা উচিত যা "
+"JSON-সিরিয়ালাইজেবল।"
+
+#: authentik/events/models.py
+msgid "Severity"
+msgstr "সেভেরিটি"
+
+#: authentik/events/models.py
+msgid "Dispatched for user"
+msgstr "ব্যবহারকারীর জন্য ডিসপ্যাচ করা হয়েছে"
+
+#: authentik/events/models.py
+msgid "Event user"
+msgstr "ইভেন্ট ব্যবহারকারী"
+
+#: authentik/events/models.py
+msgid "Notification Transport"
+msgstr "নোটিফিকেশন ট্রান্সপোর্ট"
+
+#: authentik/events/models.py
+msgid "Notification Transports"
+msgstr "নোটিফিকেশন ট্রান্সপোর্টসমূহ"
+
+#: authentik/events/models.py
+msgid "Notice"
+msgstr "নোটিস"
+
+#: authentik/events/models.py
+msgid "Warning"
+msgstr "সতর্কতা"
+
+#: authentik/events/models.py
+msgid "Alert"
+msgstr "অ্যালার্ট"
+
+#: authentik/events/models.py
+msgid "Notification"
+msgstr "নোটিফিকেশন"
+
+#: authentik/events/models.py
+msgid "Notifications"
+msgstr "নোটিফিকেশনসমূহ"
+
+#: authentik/events/models.py
+msgid ""
+"Select which transports should be used to notify the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"ব্যবহারকারীকে অবহিত করতে কোন ট্রান্সপোর্ট ব্যবহার করা হবে তা নির্বাচন করুন। "
+"কোনোটি নির্বাচন না করা হলে, নোটিফিকেশনটি শুধুমাত্র authentik UI-তে দেখানো "
+"হবে।"
+
+#: authentik/events/models.py
+msgid "Controls which severity level the created notifications will have."
+msgstr "তৈরি হওয়া নোটিফিকেশনের সেভেরিটি লেভেল নিয়ন্ত্রণ করে।"
+
+#: authentik/events/models.py
+msgid ""
+"Define which group of users this notification should be sent and shown to. "
+"If left empty, Notification won't ben sent."
+msgstr ""
+"এই নোটিফিকেশনটি কোন গ্রুপের ব্যবহারকারীদের পাঠানো এবং দেখানো হবে তা নির্ধারণ"
+" করুন। ফাঁকা রাখা হলে, নোটিফিকেশন পাঠানো হবে না।"
+
+#: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+"সক্রিয় করা থাকলে, যে ব্যবহারকারী ইভেন্টটি ট্রিগার করেছেন তাকে নোটিফিকেশন "
+"পাঠানো হবে। destination_group কনফিগার করা থাকলে, উভয় পক্ষকেই নোটিফিকেশন "
+"পাঠানো হয়।"
+
+#: authentik/events/models.py
+msgid "Notification Rule"
+msgstr "নোটিফিকেশন রুল"
+
+#: authentik/events/models.py
+msgid "Notification Rules"
+msgstr "নোটিফিকেশন রুলসমূহ"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transport"
+msgstr "নোটিফিকেশন রুল নোটিফিকেশন ট্রান্সপোর্ট"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transports"
+msgstr "নোটিফিকেশন রুল নোটিফিকেশন ট্রান্সপোর্টসমূহ"
+
+#: authentik/events/models.py
+msgid "Webhook Mapping"
+msgstr "ওয়েবহুক ম্যাপিং"
+
+#: authentik/events/models.py
+msgid "Webhook Mappings"
+msgstr "ওয়েবহুক ম্যাপিংসমূহ"
+
+#: authentik/events/tasks.py
+msgid "Dispatch new event notifications."
+msgstr "নতুন ইভেন্ট নোটিফিকেশন ডিসপ্যাচ করুন।"
+
+#: authentik/events/tasks.py
+msgid ""
+"Check if policies attached to NotificationRule match event and dispatch "
+"notification tasks."
+msgstr ""
+"NotificationRule-এ যুক্ত পলিসিগুলো ইভেন্টের সাথে মেলে কিনা তা যাচাই করুন এবং"
+" নোটিফিকেশন টাস্ক ডিসপ্যাচ করুন।"
+
+#: authentik/events/tasks.py
+msgid "Send notification."
+msgstr "নোটিফিকেশন পাঠান।"
+
+#: authentik/events/tasks.py
+msgid "Cleanup events for GDPR compliance."
+msgstr "GDPR কমপ্লায়েন্সের জন্য ইভেন্ট পরিষ্কার করুন।"
+
+#: authentik/events/tasks.py
+msgid "Cleanup seen notifications and notifications whose event expired."
+msgstr ""
+"দেখা হয়ে গেছে এমন নোটিফিকেশন এবং যাদের ইভেন্টের মেয়াদ উত্তীর্ণ হয়ে গেছে "
+"এমন নোটিফিকেশন পরিষ্কার করুন।"
+
+#: authentik/flows/api/flows.py
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
+msgstr "ফ্লোটি বর্তমান ব্যবহারকারী/রিকোয়েস্টের জন্য প্রযোজ্য নয়: {messages}"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "পলিসি ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "বাইন্ডিং {order}"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy passed"
+msgstr "পলিসি উত্তীর্ণ হয়েছে"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "স্টেজ ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy denied"
+msgstr "পলিসি প্রত্যাখ্যাত"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "End of the flow"
+msgstr "ফ্লোর সমাপ্তি"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement not fulfilled"
+msgstr "প্রয়োজনীয়তা পূরণ হয়নি"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Flow authentication requirement"
+msgstr "ফ্লো প্রমাণীকরণ প্রয়োজনীয়তা"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement fulfilled"
+msgstr "প্রয়োজনীয়তা পূরণ হয়েছে"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Pre-flow policies"
+msgstr "প্রি-ফ্লো পলিসি"
+
+#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
+msgid "Flow"
+msgstr "ফ্লো"
+
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr "সফল প্রমাণীকরণের পর অন্যান্য ট্যাব রিফ্রেশ করুন।"
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+"সফল প্রমাণীকরণের পর, অন্যান্য খোলা ট্যাবে প্রমাণীকরণ পুনরায় শুরু করুন।"
+
+#: authentik/flows/exceptions.py
+msgid "Flow does not apply to current user."
+msgstr "ফ্লোটি বর্তমান ব্যবহারকারীর জন্য প্রযোজ্য নয়।"
+
+#: authentik/flows/models.py
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "ডাইনামিক ইন-মেমরি স্টেজ: {doc}"
+
+#: authentik/flows/models.py
+msgid "Visible in the URL."
+msgstr "URL-এ দৃশ্যমান।"
+
+#: authentik/flows/models.py
+msgid "Shown as the Title in Flow pages."
+msgstr "ফ্লো পৃষ্ঠায় টাইটেল হিসেবে দেখানো হয়।"
+
+#: authentik/flows/models.py
+msgid ""
+"Decides what this Flow is used for. For example, the Authentication flow is "
+"redirect to when an un-authenticated user visits authentik."
+msgstr ""
+"এই ফ্লোটি কী কাজে ব্যবহৃত হবে তা নির্ধারণ করে। উদাহরণস্বরূপ, একজন "
+"অপ্রমাণীকৃত ব্যবহারকারী authentik-এ প্রবেশ করলে প্রমাণীকরণ ফ্লোতে "
+"পুনঃনির্দেশিত করা হয়।"
+
+#: authentik/flows/models.py
+msgid "Background shown during execution"
+msgstr "এক্সিকিউশনের সময় দেখানো ব্যাকগ্রাউন্ড"
+
+#: authentik/flows/models.py
+msgid ""
+"Enable compatibility mode, increases compatibility with password managers on"
+" mobile devices."
+msgstr ""
+"কম্প্যাটিবিলিটি মোড সক্রিয় করুন, এটি মোবাইল ডিভাইসে পাসওয়ার্ড ম্যানেজারের "
+"সাথে সামঞ্জস্য বাড়ায়।"
+
+#: authentik/flows/models.py
+msgid "Configure what should happen when a flow denies access to a user."
+msgstr ""
+"একটি ফ্লো একজন ব্যবহারকারীর অ্যাক্সেস প্রত্যাখ্যান করলে কী ঘটবে তা কনফিগার "
+"করুন।"
+
+#: authentik/flows/models.py
+msgid "Required level of authentication and authorization to access a flow."
+msgstr ""
+"একটি ফ্লো অ্যাক্সেস করার জন্য প্রয়োজনীয় প্রমাণীকরণ এবং অনুমোদনের স্তর।"
+
+#: authentik/flows/models.py
+msgid "Flows"
+msgstr "ফ্লোসমূহ"
+
+#: authentik/flows/models.py
+msgid "Can export a Flow"
+msgstr "একটি ফ্লো এক্সপোর্ট করতে পারবেন"
+
+#: authentik/flows/models.py
+msgid "Can inspect a Flow's execution"
+msgstr "একটি ফ্লোর এক্সিকিউশন পরিদর্শন করতে পারবেন"
+
+#: authentik/flows/models.py
+msgid "View Flow's cache metrics"
+msgstr "ফ্লোর ক্যাশ মেট্রিক্স দেখুন"
+
+#: authentik/flows/models.py
+msgid "Clear Flow's cache metrics"
+msgstr "ফ্লোর ক্যাশ মেট্রিক্স মুছুন"
+
+#: authentik/flows/models.py
+msgid "Evaluate policies during the Flow planning process."
+msgstr "ফ্লো পরিকল্পনা প্রক্রিয়ার সময় পলিসি মূল্যায়ন করুন।"
+
+#: authentik/flows/models.py
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr "স্টেজটি ব্যবহারকারীর কাছে উপস্থাপন করার সময় পলিসি মূল্যায়ন করুন।"
+
+#: authentik/flows/models.py
+msgid ""
+"Configure how the flow executor should handle an invalid response to a "
+"challenge. RETRY returns the error message and a similar challenge to the "
+"executor. RESTART restarts the flow from the beginning, and "
+"RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
+msgstr ""
+"একটি চ্যালেঞ্জের অবৈধ প্রতিক্রিয়া ফ্লো এক্সিকিউটর কীভাবে পরিচালনা করবে তা "
+"কনফিগার করুন। RETRY এক্সিকিউটরকে ত্রুটির বার্তা এবং একটি অনুরূপ চ্যালেঞ্জ "
+"ফেরত দেয়। RESTART ফ্লোটি শুরু থেকে পুনরায় আরম্ভ করে, এবং "
+"RESTART_WITH_CONTEXT বর্তমান কনটেক্সট বজায় রেখে ফ্লোটি পুনরায় আরম্ভ করে।"
+
+#: authentik/flows/models.py
+msgid "Flow Stage Binding"
+msgstr "ফ্লো স্টেজ বাইন্ডিং"
+
+#: authentik/flows/models.py
+msgid "Flow Stage Bindings"
+msgstr "ফ্লো স্টেজ বাইন্ডিংসমূহ"
+
+#: authentik/flows/models.py
+msgid ""
+"Flow used by an authenticated user to configure this Stage. If empty, user "
+"will not be able to configure this stage."
+msgstr ""
+"এই স্টেজ কনফিগার করতে একজন প্রমাণীকৃত ব্যবহারকারীর দ্বারা ব্যবহৃত ফ্লো। "
+"ফাঁকা থাকলে, ব্যবহারকারী এই স্টেজ কনফিগার করতে পারবেন না।"
+
+#: authentik/flows/models.py
+msgid "Flow Token"
+msgstr "ফ্লো টোকেন"
+
+#: authentik/flows/models.py
+msgid "Flow Tokens"
+msgstr "ফ্লো টোকেনসমূহ"
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
+msgstr ""
+"এই লিঙ্কটি অবৈধ অথবা মেয়াদ উত্তীর্ণ হয়ে গেছে। অনুগ্রহ করে একটি নতুন "
+"লিঙ্কের অনুরোধ করুন।"
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "পরবর্তী URL অবৈধ"
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr "আউটগোয়িং প্রোভাইডারের জন্য কখন সিঙ্ক ট্রিগার করতে হবে"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr "একটি একক টাস্কে সিঙ্ক করা অবজেক্টের সংখ্যা নিয়ন্ত্রণ করে"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr "একটি একক পৃষ্ঠার সিঙ্ক্রোনাইজেশনের জন্য টাইমআউট"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+"সক্রিয় করা থাকলে, প্রোভাইডার রিমোট সিস্টেমে অবজেক্ট পরিবর্তন বা তৈরি করবে "
+"না।"
+
+#: authentik/lib/utils/time.py
+#, python-format
+msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
+msgstr "%(value)s 'hours=3;minutes=1' ফরম্যাটে সঠিক নয়।"
+
+#: authentik/lib/validators.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr ""
+"পাসওয়ার্ড হ্যাশ ফরম্যাট অবৈধ। এটি অবশ্যই একটি বৈধ Django পাসওয়ার্ড হ্যাশ "
+"হতে হবে।"
+
+#: authentik/lib/validators.py
+#, python-brace-format
+msgid "The fields {field_names} must be used together."
+msgstr "{field_names} ফিল্ডগুলো অবশ্যই একসাথে ব্যবহার করতে হবে।"
+
+#: authentik/outposts/api/service_connections.py
+msgid ""
+"You can only use an empty kubeconfig when connecting to a local cluster."
+msgstr ""
+"শুধুমাত্র একটি লোকাল ক্লাস্টারে সংযোগ করার সময় আপনি একটি খালি kubeconfig "
+"ব্যবহার করতে পারবেন।"
+
+#: authentik/outposts/api/service_connections.py
+msgid "Invalid kubeconfig"
+msgstr "kubeconfig অবৈধ"
+
+#: authentik/outposts/models.py
+msgid ""
+"If enabled, use the local connection. Required Docker socket/Kubernetes "
+"Integration"
+msgstr ""
+"সক্রিয় করা থাকলে, লোকাল সংযোগ ব্যবহার করুন। Docker সকেট/Kubernetes "
+"ইন্টিগ্রেশন প্রয়োজন"
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connection"
+msgstr "আউটপোস্ট সার্ভিস-কানেকশন"
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connections"
+msgstr "আউটপোস্ট সার্ভিস-কানেকশনসমূহ"
+
+#: authentik/outposts/models.py
+msgid ""
+"Can be in the format of 'unix://<path>' when connecting to a local docker "
+"daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+msgstr ""
+"একটি লোকাল docker ডেমনে সংযোগ করার সময় 'unix://<path>' ফরম্যাটে, অথবা একটি "
+"রিমোট সিস্টেমে সংযোগ করার সময় 'https://<hostname>:2376' ফরম্যাটে হতে পারে।"
+
+#: authentik/outposts/models.py
+msgid ""
+"CA which the endpoint's Certificate is verified against. Can be left empty "
+"for no validation."
+msgstr ""
+"যে CA-এর বিপরীতে এন্ডপয়েন্টের সার্টিফিকেট যাচাই করা হয়। কোনো ভ্যালিডেশন না"
+" চাইলে খালি রাখা যেতে পারে।"
+
+#: authentik/outposts/models.py
+msgid ""
+"Certificate/Key used for authentication. Can be left empty for no "
+"authentication."
+msgstr ""
+"প্রমাণীকরণের জন্য ব্যবহৃত সার্টিফিকেট/কী। কোনো প্রমাণীকরণ না চাইলে খালি রাখা"
+" যেতে পারে।"
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connection"
+msgstr "Docker সার্ভিস-কানেকশন"
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connections"
+msgstr "Docker সার্ভিস-কানেকশনসমূহ"
+
+#: authentik/outposts/models.py
+msgid ""
+"Paste your kubeconfig here. authentik will automatically use the currently "
+"selected context."
+msgstr ""
+"এখানে আপনার kubeconfig পেস্ট করুন। authentik স্বয়ংক্রিয়ভাবে বর্তমানে "
+"নির্বাচিত কনটেক্সট ব্যবহার করবে।"
+
+#: authentik/outposts/models.py
+msgid "Verify SSL Certificates of the Kubernetes API endpoint"
+msgstr "Kubernetes API এন্ডপয়েন্টের SSL সার্টিফিকেট যাচাই করুন"
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connection"
+msgstr "Kubernetes সার্ভিস-কানেকশন"
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connections"
+msgstr "Kubernetes সার্ভিস-কানেকশনসমূহ"
+
+#: authentik/outposts/models.py
+msgid ""
+"Select Service-Connection authentik should use to manage this outpost. Leave"
+" empty if authentik should not handle the deployment."
+msgstr ""
+"এই আউটপোস্ট পরিচালনা করতে authentik-এর যে সার্ভিস-কানেকশন ব্যবহার করা উচিত "
+"তা নির্বাচন করুন। authentik ডিপ্লয়মেন্ট পরিচালনা না করলে খালি রাখুন।"
+
+#: authentik/outposts/models.py
+msgid "Outpost"
+msgstr "আউটপোস্ট"
+
+#: authentik/outposts/models.py
+msgid "Outposts"
+msgstr "আউটপোস্টসমূহ"
+
+#: authentik/outposts/models.py
+msgid "Outpost Provider"
+msgstr "আউটপোস্ট প্রোভাইডার"
+
+#: authentik/outposts/models.py
+msgid "Outpost Providers"
+msgstr "আউটপোস্ট প্রোভাইডারসমূহ"
+
+#: authentik/outposts/tasks.py
+msgid "Update cached state of service connection."
+msgstr "সার্ভিস কানেকশনের ক্যাশড স্টেট আপডেট করুন।"
+
+#: authentik/outposts/tasks.py
+msgid "Create/update/monitor/delete the deployment of an Outpost."
+msgstr "একটি আউটপোস্টের ডিপ্লয়মেন্ট তৈরি/আপডেট/মনিটর/মুছে ফেলুন।"
+
+#: authentik/outposts/tasks.py
+msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
+msgstr ""
+"নিশ্চিত করুন যে সমস্ত আউটপোস্টের বৈধ সার্ভিস অ্যাকাউন্ট এবং টোকেন রয়েছে।"
+
+#: authentik/outposts/tasks.py
+msgid "Send update to outpost"
+msgstr "আউটপোস্টে আপডেট পাঠান"
+
+#: authentik/outposts/tasks.py
+msgid "Checks the local environment and create Service connections."
+msgstr "লোকাল এনভায়রনমেন্ট যাচাই করে সার্ভিস কানেকশন তৈরি করে।"
+
+#: authentik/outposts/tasks.py
+msgid "Terminate session on all outposts."
+msgstr "সমস্ত আউটপোস্টে সেশন সমাপ্ত করুন।"
+
+#: authentik/policies/denied.py
+msgid "Access denied"
+msgstr "অ্যাক্সেস প্রত্যাখ্যাত"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policy"
+msgstr "ডামি পলিসি"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policies"
+msgstr "ডামি পলিসিসমূহ"
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+"নির্বাচিত অ্যাপ্লিকেশন দ্বারা তৈরি ইভেন্ট মেলান। খালি রাখা হলে, সমস্ত "
+"অ্যাপ্লিকেশন মেলানো হবে।"
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected model. When left empty, all models are "
+"matched. When an app is selected, all the application's models are matched."
+msgstr ""
+"নির্বাচিত মডেল দ্বারা তৈরি ইভেন্ট মেলান। খালি রাখা হলে, সমস্ত মডেল মেলানো "
+"হবে। একটি অ্যাপ নির্বাচন করা হলে, অ্যাপ্লিকেশনের সমস্ত মডেল মেলানো হবে।"
+
+#: authentik/policies/event_matcher/api.py
+msgid "At least one criteria must be set."
+msgstr "কমপক্ষে একটি ক্রাইটেরিয়া সেট করতে হবে।"
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match created events with this action type. When left empty, all action "
+"types will be matched."
+msgstr ""
+"এই অ্যাকশন টাইপের সাথে তৈরি হওয়া ইভেন্ট মেলান। খালি রাখা হলে, সমস্ত অ্যাকশন"
+" টাইপ মেলানো হবে।"
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Matches Event's Client IP (strict matching, for network matching use an "
+"Expression Policy)"
+msgstr ""
+"ইভেন্টের ক্লায়েন্ট IP মেলায় (কঠোর ম্যাচিং, নেটওয়ার্ক ম্যাচিং-এর জন্য একটি"
+" Expression Policy ব্যবহার করুন)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policy"
+msgstr "ইভেন্ট ম্যাচার পলিসি"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policies"
+msgstr "ইভেন্ট ম্যাচার পলিসিসমূহ"
+
+#: authentik/policies/expiry/models.py
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr ""
+"পাসওয়ার্ডের মেয়াদ {days} দিন আগে উত্তীর্ণ হয়ে গেছে। অনুগ্রহ করে আপনার "
+"পাসওয়ার্ড আপডেট করুন।"
+
+#: authentik/policies/expiry/models.py
+msgid "Password has expired."
+msgstr "পাসওয়ার্ডের মেয়াদ উত্তীর্ণ হয়ে গেছে।"
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policy"
+msgstr "পাসওয়ার্ড মেয়াদোত্তীর্ণ পলিসি"
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policies"
+msgstr "পাসওয়ার্ড মেয়াদোত্তীর্ণ পলিসিসমূহ"
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policy"
+msgstr "Expression পলিসি"
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policies"
+msgstr "Expression পলিসিসমূহ"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP: ASN ডেটাবেজে ক্লায়েন্ট IP পাওয়া যায়নি।"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "ক্লায়েন্ট IP অনুমোদিত অটোনোমাস সিস্টেমের অংশ নয়।"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP: City ডেটাবেজে ক্লায়েন্ট IP ঠিকানা পাওয়া যায়নি।"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "ক্লায়েন্ট IP একটি অনুমোদিত দেশে নেই।"
+
+#: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr "পূর্ববর্তী প্রমাণীকরণ থেকে দূরত্ব থ্রেশহোল্ডের চেয়ে বেশি।"
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr "দূরত্ব সম্ভাব্যতার চেয়ে বেশি।"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "GeoIP পলিসি"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "GeoIP পলিসিসমূহ"
+
+#: authentik/policies/models.py
+msgid "all, all policies must pass"
+msgstr "সব, সমস্ত পলিসি উত্তীর্ণ হতে হবে"
+
+#: authentik/policies/models.py
+msgid "any, any policy must pass"
+msgstr "যেকোনো একটি, যেকোনো একটি পলিসি উত্তীর্ণ হতে হবে"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Model"
+msgstr "পলিসি বাইন্ডিং মডেল"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Models"
+msgstr "পলিসি বাইন্ডিং মডেলসমূহ"
+
+#: authentik/policies/models.py
+msgid "Negates the outcome of the policy. Messages are unaffected."
+msgstr "পলিসির ফলাফল নেগেট করে। বার্তাগুলো প্রভাবিত হয় না।"
+
+#: authentik/policies/models.py
+msgid "Timeout after which Policy execution is terminated."
+msgstr "যে টাইমআউটের পর পলিসি এক্সিকিউশন সমাপ্ত হয়।"
+
+#: authentik/policies/models.py
+msgid "Result if the Policy execution fails."
+msgstr "পলিসি এক্সিকিউশন ব্যর্থ হলে ফলাফল।"
+
+#: authentik/policies/models.py
+msgid "Policy Binding"
+msgstr "পলিসি বাইন্ডিং"
+
+#: authentik/policies/models.py
+msgid "Policy Bindings"
+msgstr "পলিসি বাইন্ডিংসমূহ"
+
+#: authentik/policies/models.py
+msgid ""
+"When this option is enabled, all executions of this policy will be logged. "
+"By default, only execution errors are logged."
+msgstr ""
+"এই অপশনটি সক্রিয় থাকলে, এই পলিসির সমস্ত এক্সিকিউশন লগ করা হবে। ডিফল্টভাবে, "
+"শুধুমাত্র এক্সিকিউশন ত্রুটি লগ করা হয়।"
+
+#: authentik/policies/models.py
+msgid "Policy"
+msgstr "পলিসি"
+
+#: authentik/policies/models.py
+msgid "Policies"
+msgstr "পলিসিসমূহ"
+
+#: authentik/policies/models.py
+msgid "View Policy's cache metrics"
+msgstr "পলিসির ক্যাশ মেট্রিক্স দেখুন"
+
+#: authentik/policies/models.py
+msgid "Clear Policy's cache metrics"
+msgstr "পলিসির ক্যাশ মেট্রিক্স মুছুন"
+
+#: authentik/policies/password/models.py
+msgid "How many times the password hash is allowed to be on haveibeenpwned"
+msgstr "haveibeenpwned-এ পাসওয়ার্ড হ্যাশ কতবার থাকার অনুমতি আছে"
+
+#: authentik/policies/password/models.py
+msgid ""
+"If the zxcvbn score is equal or less than this value, the policy will fail."
+msgstr "zxcvbn স্কোর এই মানের সমান বা এর চেয়ে কম হলে, পলিসি ব্যর্থ হবে।"
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "পাসওয়ার্ড অবৈধ।"
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "পাসওয়ার্ডটি {count}টি অনলাইন তালিকায় বিদ্যমান।"
+
+#: authentik/policies/password/models.py
+msgid "Password is too weak."
+msgstr "পাসওয়ার্ডটি অত্যন্ত দুর্বল।"
+
+#: authentik/policies/password/models.py
+msgid "Password Policy"
+msgstr "পাসওয়ার্ড পলিসি"
+
+#: authentik/policies/password/models.py
+msgid "Password Policies"
+msgstr "পাসওয়ার্ড পলিসিসমূহ"
+
+#: authentik/policies/reputation/api.py
+msgid "Either IP or Username must be checked"
+msgstr "IP অথবা ইউজারনেম যেকোনো একটি চেক করতে হবে"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policy"
+msgstr "রেপুটেশন পলিসি"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policies"
+msgstr "রেপুটেশন পলিসিসমূহ"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Score"
+msgstr "রেপুটেশন স্কোর"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Scores"
+msgstr "রেপুটেশন স্কোরসমূহ"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Permission denied"
+msgstr "অনুমতি প্রত্যাখ্যাত"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "User's avatar"
+msgstr "ব্যবহারকারীর অ্যাভাটার"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Not you?"
+msgstr "আপনি নন?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "ত্রুটি"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Request has been denied."
+msgstr "রিকোয়েস্ট প্রত্যাখ্যান করা হয়েছে।"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Messages:"
+msgstr "বার্তা:"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Explanation:"
+msgstr "ব্যাখ্যা:"
+
+#: authentik/policies/templates/policies/denied.html
+#, python-format
+msgid ""
+"\n"
+"                    Policy binding '%(name)s' returned result '%(result)s'\n"
+"                    "
+msgstr ""
+"\n"
+"                    পলিসি বাইন্ডিং '%(name)s' ফলাফল '%(result)s' রিটার্ন করেছে\n"
+"                    "
+
+#: authentik/policies/views.py
+msgid "Failed to resolve application"
+msgstr "অ্যাপ্লিকেশন রিজলভ করতে ব্যর্থ হয়েছে"
+
+#: authentik/providers/ldap/models.py
+msgid "DN under which objects are accessible."
+msgstr "যে DN-এর অধীনে অবজেক্টগুলো প্রবেশযোগ্য।"
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for uidNumbers, this number is added to the user.pk to make sure "
+"that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
+"that we don't collide with local users uidNumber"
+msgstr ""
+"uidNumbers-এর শুরু, এই সংখ্যাটি user.pk-এর সাথে যোগ করা হয় যাতে নিশ্চিত করা"
+" যায় যে সংখ্যাগুলো POSIX ব্যবহারকারীদের জন্য খুব কম না হয়। লোকাল "
+"ব্যবহারকারীদের uidNumber-এর সাথে সংঘর্ষ এড়াতে ডিফল্ট মান 2000"
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for gidNumbers, this number is added to a number generated from "
+"the group.pk to make sure that the numbers aren't too low for POSIX groups. "
+"Default is 4000 to ensure that we don't collide with local groups or users "
+"primary groups gidNumber"
+msgstr ""
+"gidNumbers-এর শুরু, এই সংখ্যাটি group.pk থেকে তৈরি একটি সংখ্যার সাথে যোগ করা"
+" হয় যাতে নিশ্চিত করা যায় যে সংখ্যাগুলো POSIX গ্রুপের জন্য খুব কম না হয়। "
+"লোকাল গ্রুপ বা ব্যবহারকারীদের প্রাইমারি গ্রুপ gidNumber-এর সাথে সংঘর্ষ "
+"এড়াতে ডিফল্ট মান 4000"
+
+#: authentik/providers/ldap/models.py authentik/providers/radius/models.py
+msgid ""
+"When enabled, code-based multi-factor authentication can be used by "
+"appending a semicolon and the TOTP code to the password. This should only be"
+" enabled if all users that will bind to this provider have a TOTP device "
+"configured, as otherwise a password may incorrectly be rejected if it "
+"contains a semicolon."
+msgstr ""
+"সক্রিয় করা থাকলে, পাসওয়ার্ডের সাথে একটি সেমিকোলন এবং TOTP কোড যুক্ত করে "
+"কোড-ভিত্তিক মাল্টি-ফ্যাক্টর প্রমাণীকরণ ব্যবহার করা যেতে পারে। এটি শুধুমাত্র "
+"তখনই সক্রিয় করা উচিত যদি এই প্রোভাইডারে বাইন্ড হতে চলা সমস্ত ব্যবহারকারীর "
+"একটি TOTP ডিভাইস কনফিগার করা থাকে, অন্যথায় একটি পাসওয়ার্ডে সেমিকোলন থাকলে "
+"তা ভুলভাবে প্রত্যাখ্যাত হতে পারে।"
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Provider"
+msgstr "LDAP প্রোভাইডার"
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Providers"
+msgstr "LDAP প্রোভাইডারসমূহ"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "সম্পূর্ণ LDAP ডিরেক্টরি অনুসন্ধান করুন"
+
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "রেজেক্স প্যাটার্ন অবৈধ: {url}"
+
+#: authentik/providers/oauth2/models.py
+msgid "Confidential"
+msgstr "কনফিডেনশিয়াল"
+
+#: authentik/providers/oauth2/models.py
+msgid "Public"
+msgstr "পাবলিক"
+
+#: authentik/providers/oauth2/models.py
+msgid "Same identifier is used for all providers"
+msgstr "সমস্ত প্রোভাইডারের জন্য একই আইডেন্টিফায়ার ব্যবহৃত হয়"
+
+#: authentik/providers/oauth2/models.py
+msgid "Each provider has a different issuer, based on the application slug."
+msgstr ""
+"প্রতিটি প্রোভাইডারের অ্যাপ্লিকেশন স্লাগের উপর ভিত্তি করে একটি ভিন্ন "
+"ইস্যুয়ার রয়েছে।"
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "কঠোর URL তুলনা"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "রেগুলার এক্সপ্রেশন URL ম্যাচিং"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr "অথোরাইজেশন"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
+msgstr "লগআউট"
+
+#: authentik/providers/oauth2/models.py
+msgid "Back-channel"
+msgstr "ব্যাক-চ্যানেল"
+
+#: authentik/providers/oauth2/models.py
+msgid "Front-channel"
+msgstr "ফ্রন্ট-চ্যানেল"
+
+#: authentik/providers/oauth2/models.py
+msgid "code (Authorization Code Flow)"
+msgstr "code (অথোরাইজেশন কোড ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token (Implicit Flow)"
+msgstr "id_token (ইমপ্লিসিট ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token token (Implicit Flow)"
+msgstr "id_token token (ইমপ্লিসিট ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code token (Hybrid Flow)"
+msgstr "code token (হাইব্রিড ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token (Hybrid Flow)"
+msgstr "code id_token (হাইব্রিড ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token token (Hybrid Flow)"
+msgstr "code id_token token (হাইব্রিড ফ্লো)"
+
+#: authentik/providers/oauth2/models.py
+msgid "HS256 (Symmetric Encryption)"
+msgstr "HS256 (সিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "RS256 (Asymmetric Encryption)"
+msgstr "RS256 (অ্যাসিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256 (অ্যাসিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr "ES384 (অ্যাসিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr "ES512 (অ্যাসিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "EdDSA (Asymmetric Encryption)"
+msgstr "EdDSA (অ্যাসিমেট্রিক এনক্রিপশন)"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope used by the client"
+msgstr "ক্লায়েন্ট দ্বারা ব্যবহৃত স্কোপ"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Description shown to the user when consenting. If left empty, the user won't"
+" be informed."
+msgstr ""
+"সম্মতি দেওয়ার সময় ব্যবহারকারীকে দেখানো বিবরণ। ফাঁকা রাখা হলে, "
+"ব্যবহারকারীকে অবহিত করা হবে না।"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mapping"
+msgstr "স্কোপ ম্যাপিং"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mappings"
+msgstr "স্কোপ ম্যাপিংসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Type"
+msgstr "ক্লায়েন্ট টাইপ"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Confidential clients are capable of maintaining the confidentiality of their"
+" credentials. Public clients are incapable"
+msgstr ""
+"কনফিডেনশিয়াল ক্লায়েন্ট তাদের ক্রেডেনশিয়ালের গোপনীয়তা বজায় রাখতে সক্ষম। "
+"পাবলিক ক্লায়েন্ট অক্ষম"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client ID"
+msgstr "ক্লায়েন্ট আইডি"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Secret"
+msgstr "ক্লায়েন্ট সিক্রেট"
+
+#: authentik/providers/oauth2/models.py
+msgid "Redirect URIs"
+msgstr "রিডাইরেক্ট URI"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout URI"
+msgstr "লগআউট URI"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout Method"
+msgstr "লগআউট পদ্ধতি"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Backchannel logs out with server to server calls. Frontchannel uses iframes "
+"in your browser"
+msgstr ""
+"ব্যাকচ্যানেল সার্ভার-টু-সার্ভার কল দিয়ে লগআউট করে। ফ্রন্টচ্যানেল আপনার "
+"ব্রাউজারে iframe ব্যবহার করে"
+
+#: authentik/providers/oauth2/models.py
+msgid "Include claims in id_token"
+msgstr "id_token-এ claim অন্তর্ভুক্ত করুন"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Include User claims from scopes in the id_token, for applications that don't"
+" access the userinfo endpoint."
+msgstr ""
+"যেসব অ্যাপ্লিকেশন userinfo এন্ডপয়েন্ট অ্যাক্সেস করে না, তাদের জন্য স্কোপ "
+"থেকে ইউজার claim id_token-এ অন্তর্ভুক্ত করুন।"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Access codes not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"অ্যাক্সেস কোড বর্তমান সময় + এই মানের পরে বৈধ থাকবে না (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Tokens not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"টোকেন বর্তমান সময় + এই মানের পরে বৈধ থাকবে না (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"When refreshing a token, if the refresh token is valid for less than this "
+"duration, it will be renewed. When set to seconds=0, token will always be "
+"renewed. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"একটি টোকেন রিফ্রেশ করার সময়, রিফ্রেশ টোকেনটি এই সময়কালের চেয়ে কম সময়ের "
+"জন্য বৈধ থাকলে, এটি পুনর্নবীকরণ করা হবে। seconds=0 সেট করা থাকলে, টোকেন "
+"সবসময় পুনর্নবীকরণ করা হবে। (ফরম্যাট: hours=1;minutes=2;seconds=3)।"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Configure what data should be used as unique User Identifier. For most "
+"cases, the default should be fine."
+msgstr ""
+"কোন ডেটা ইউনিক ইউজার আইডেন্টিফায়ার হিসেবে ব্যবহার করা হবে তা কনফিগার করুন। "
+"বেশিরভাগ ক্ষেত্রে, ডিফল্ট মানই যথেষ্ট হওয়া উচিত।"
+
+#: authentik/providers/oauth2/models.py
+msgid "Configure how the issuer field of the ID Token should be filled."
+msgstr "ID Token-এর issuer ফিল্ড কীভাবে পূরণ করা হবে তা কনফিগার করুন।"
+
+#: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "টোকেন সাইন করতে ব্যবহৃত কী।"
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "এনক্রিপশন কী"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr ""
+"টোকেন এনক্রিপ্ট করতে ব্যবহৃত কী। সেট করা থাকলে, টোকেন এনক্রিপ্ট করা হবে এবং "
+"JWE হিসেবে রিটার্ন করা হবে।"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Any JWT signed by the JWK of the selected source can be used to "
+"authenticate."
+msgstr ""
+"নির্বাচিত সোর্সের JWK দ্বারা সাইন করা যেকোনো JWT প্রমাণীকরণের জন্য ব্যবহার "
+"করা যেতে পারে।"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Provider"
+msgstr "OAuth2/OpenID প্রোভাইডার"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Providers"
+msgstr "OAuth2/OpenID প্রোভাইডারসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Source"
+msgstr "OAuth2 প্রোভাইডার JWT ফেডারেশন সোর্স"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Sources"
+msgstr "OAuth2 প্রোভাইডার JWT ফেডারেশন সোর্সসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Provider"
+msgstr "OAuth2 প্রোভাইডার JWT ফেডারেশন প্রোভাইডার"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Providers"
+msgstr "OAuth2 প্রোভাইডার JWT ফেডারেশন প্রোভাইডারসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scopes"
+msgstr "স্কোপসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code"
+msgstr "কোড"
+
+#: authentik/providers/oauth2/models.py
+msgid "Nonce"
+msgstr "ননস"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge"
+msgstr "কোড চ্যালেঞ্জ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge Method"
+msgstr "কোড চ্যালেঞ্জ পদ্ধতি"
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
+msgstr "DPoP JWK থাম্বপ্রিন্ট"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Code"
+msgstr "অথোরাইজেশন কোড"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Codes"
+msgstr "অথোরাইজেশন কোডসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Token"
+msgstr "OAuth2 অ্যাক্সেস টোকেন"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Tokens"
+msgstr "OAuth2 অ্যাক্সেস টোকেনসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "ID Token"
+msgstr "ID টোকেন"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Token"
+msgstr "OAuth2 রিফ্রেশ টোকেন"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Tokens"
+msgstr "OAuth2 রিফ্রেশ টোকেনসমূহ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Provider"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Default application group"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Group to assign to automatically created applications."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override authorization flow"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization flow applied to dynamically registered clients."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override invalidation flow"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Override property mappings"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope mappings applied to dynamically registered clients."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Access token validity"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum access token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Refresh token validity"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum refresh token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Allowed grant types"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "If empty, all grant types are allowed."
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registration"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registrations"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mapping"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mappings"
+msgstr ""
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr "নিবন্ধিত ক্লায়েন্টের কাছে একটি ব্যাক-চ্যানেল লগআউট রিকোয়েস্ট পাঠান"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr ""
+"সিগন্যালের মাধ্যমে ডিসপ্যাচ করা ব্যাকচ্যানেল লগআউট নোটিফিকেশন পরিচালনা করুন"
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid "Redirecting..."
+msgstr "পুনঃনির্দেশিত করা হচ্ছে..."
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid ""
+"Your browser does not support JavaScript, please click below to continue."
+msgstr ""
+"আপনার ব্রাউজার JavaScript সমর্থন করে না, চালিয়ে যেতে অনুগ্রহ করে নিচে ক্লিক"
+" করুন।"
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr "চালিয়ে যান"
+
+#: authentik/providers/oauth2/views/device_init.py
+msgid "Invalid code"
+msgstr "কোডটি অবৈধ"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your User Information"
+msgstr "GitHub কম্প্যাটিবিলিটি: আপনার ইউজার তথ্য অ্যাক্সেস করুন"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access you Email addresses"
+msgstr "GitHub কম্প্যাটিবিলিটি: আপনার ইমেইল ঠিকানা অ্যাক্সেস করুন"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your Groups"
+msgstr "GitHub কম্প্যাটিবিলিটি: আপনার গ্রুপ অ্যাক্সেস করুন"
+
+#: authentik/providers/proxy/api.py
+msgid "User and password attributes must be set when basic auth is enabled."
+msgstr ""
+"বেসিক অথ সক্রিয় থাকলে ইউজার এবং পাসওয়ার্ড অ্যাট্রিবিউট অবশ্যই সেট করতে "
+"হবে।"
+
+#: authentik/providers/proxy/api.py
+msgid "Internal host cannot be empty when forward auth is disabled."
+msgstr "ফরওয়ার্ড অথ নিষ্ক্রিয় থাকলে ইন্টারনাল হোস্ট খালি রাখা যাবে না।"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Session"
+msgstr "প্রক্সি সেশন"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Sessions"
+msgstr "প্রক্সি সেশনসমূহ"
+
+#: authentik/providers/proxy/models.py
+msgid "Validate SSL Certificates of upstream servers"
+msgstr "আপস্ট্রিম সার্ভারের SSL সার্টিফিকেট যাচাই করুন"
+
+#: authentik/providers/proxy/models.py
+msgid "Internal host SSL Validation"
+msgstr "ইন্টারনাল হোস্ট SSL ভ্যালিডেশন"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
+"with internal_host."
+msgstr ""
+"traefik এবং nginx auth_request-এ forwardAuth-এর জন্য সাপোর্ট সক্রিয় করুন। "
+"এটি internal_host-এর সাথে পারস্পরিক exclusive।"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Regular expressions for which authentication is not required. Each new line "
+"is interpreted as a new Regular Expression."
+msgstr ""
+"যে রেগুলার এক্সপ্রেশনগুলোর জন্য প্রমাণীকরণের প্রয়োজন নেই। প্রতিটি নতুন "
+"লাইনকে একটি নতুন রেগুলার এক্সপ্রেশন হিসেবে বিবেচনা করা হয়।"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"When enabled, this provider will intercept the authorization header and "
+"authenticate requests based on its value."
+msgstr ""
+"সক্রিয় করা থাকলে, এই প্রোভাইডারটি অথোরাইজেশন হেডার ইন্টারসেপ্ট করবে এবং এর "
+"মান অনুযায়ী রিকোয়েস্ট প্রমাণীকরণ করবে।"
+
+#: authentik/providers/proxy/models.py
+msgid "Set HTTP-Basic Authentication"
+msgstr "HTTP-বেসিক প্রমাণীকরণ সেট করুন"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Set a custom HTTP-Basic Authentication header based on values from "
+"authentik."
+msgstr ""
+"authentik থেকে প্রাপ্ত মানের উপর ভিত্তি করে একটি কাস্টম HTTP-বেসিক "
+"প্রমাণীকরণ হেডার সেট করুন।"
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Username Key"
+msgstr "HTTP-বেসিক ইউজারনেম কী"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
+" set, the user's Email address is used."
+msgstr ""
+"HTTP-বেসিক হেডারের ইউজার অংশের জন্য ব্যবহৃত ইউজার/গ্রুপ অ্যাট্রিবিউট। সেট "
+"করা না থাকলে, ব্যবহারকারীর ইমেইল ঠিকানা ব্যবহৃত হয়।"
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Password Key"
+msgstr "HTTP-বেসিক পাসওয়ার্ড কী"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgstr ""
+"HTTP-বেসিক হেডারের পাসওয়ার্ড অংশের জন্য ব্যবহৃত ইউজার/গ্রুপ অ্যাট্রিবিউট।"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Provider"
+msgstr "প্রক্সি প্রোভাইডার"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Providers"
+msgstr "প্রক্সি প্রোভাইডারসমূহ"
+
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"একটি সেশন কতক্ষণ স্থায়ী হবে তা নির্ধারণ করে। ডিফল্ট মান 0 মানে ব্রাউজার "
+"বন্ধ না করা পর্যন্ত সেশন স্থায়ী থাকে। (ফরম্যাট: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr "true সেট করা থাকলে, ডিসকানেক্ট হওয়ার পর কানেকশন টোকেন মুছে ফেলা হবে।"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "RAC প্রোভাইডার"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "RAC প্রোভাইডারসমূহ"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "RAC এন্ডপয়েন্ট"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "RAC এন্ডপয়েন্টসমূহ"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mapping"
+msgstr "এন্ডপয়েন্ট প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mappings"
+msgstr "এন্ডপয়েন্ট প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "RAC প্রোভাইডার প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "RAC প্রোভাইডার প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "RAC কানেকশন টোকেন"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "RAC কানেকশন টোকেনসমূহ"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "সর্বোচ্চ কানেকশন সীমায় পৌঁছে গেছে।"
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(আপনি ইতিমধ্যে অন্য একটি ট্যাব/উইন্ডোতে সংযুক্ত আছেন)"
+
+#: authentik/providers/radius/models.py
+msgid "Shared secret between clients and server to hash packets."
+msgstr ""
+"প্যাকেট হ্যাশ করার জন্য ক্লায়েন্ট এবং সার্ভারের মধ্যে শেয়ার্ড সিক্রেট।"
+
+#: authentik/providers/radius/models.py
+msgid ""
+"List of CIDRs (comma-separated) that clients can connect from. A more "
+"specific CIDR will match before a looser one. Clients connecting from a non-"
+"specified CIDR will be dropped."
+msgstr ""
+"যে CIDR (কমা-বিভক্ত) থেকে ক্লায়েন্ট সংযোগ করতে পারবে তার তালিকা। একটি আরও "
+"নির্দিষ্ট CIDR একটি সাধারণ CIDR-এর আগে মিলবে। অনির্দিষ্ট CIDR থেকে সংযোগকারী"
+" ক্লায়েন্টদের বাদ দেওয়া হবে।"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider"
+msgstr "Radius প্রোভাইডার"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Providers"
+msgstr "Radius প্রোভাইডারসমূহ"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Radius প্রোভাইডার প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Radius প্রোভাইডার প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"একটি সাইনিং কীপেয়ার নির্বাচিত থাকলে, 'Sign assertion' এবং 'Sign "
+"Response'-এর মধ্যে অন্তত একটি নির্বাচন করতে হবে।"
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr "SAML সাইনিং-এর জন্য শুধুমাত্র RSA, EC, এবং DSA কী টাইপ সমর্থিত।"
+
+#: authentik/providers/saml/api/providers.py
+msgid "Invalid XML Syntax"
+msgstr "XML সিনট্যাক্স অবৈধ"
+
+#: authentik/providers/saml/api/providers.py
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "মেটাডেটা ইম্পোর্ট করতে ব্যর্থ হয়েছে: {messages}"
+
+#: authentik/providers/saml/models.py
+msgid "ACS URL"
+msgstr "ACS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Service Provider Binding"
+msgstr "সার্ভিস প্রোভাইডার বাইন্ডিং"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the response back to the Service "
+"Provider."
+msgstr ""
+"এটি নির্ধারণ করে যে authentik কীভাবে সার্ভিস প্রোভাইডারের কাছে রেসপন্স "
+"পাঠায়।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+"অ্যাসারশনের audience restriction ফিল্ডের মান। ফাঁকা রাখা হলে, কোনো audience "
+"restriction যোগ করা হবে না।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
+"এটি EntityID নামেও পরিচিত। একটি মান প্রদান করলে authentik দ্বারা তৈরি ডিফল্ট"
+" issuer ওভাররাইড হয়ে যায়।"
+
+#: authentik/providers/saml/models.py
+msgid "SLS URL"
+msgstr "SLS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Single Logout Service URL where the logout response should be sent."
+msgstr "যে Single Logout Service URL-এ লগআউট রেসপন্স পাঠানো উচিত।"
+
+#: authentik/providers/saml/models.py
+msgid "SLS Binding"
+msgstr "SLS বাইন্ডিং"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the logout response back to the Service "
+"Provider."
+msgstr ""
+"এটি নির্ধারণ করে যে authentik কীভাবে সার্ভিস প্রোভাইডারের কাছে লগআউট রেসপন্স"
+" পাঠায়।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Method to use for logout. Front-channel iframe loads all logout URLs "
+"simultaneously in hidden iframes. Front-channel native uses your active "
+"browser tab to send post requests and redirect to providers. Back-channel "
+"sends logout requests directly from the server without user interaction "
+"(requires POST SLS binding)."
+msgstr ""
+"লগআউটের জন্য ব্যবহারের পদ্ধতি। Front-channel iframe সমস্ত লগআউট URL একসাথে "
+"লুকানো iframe-এ লোড করে। Front-channel native আপনার সক্রিয় ব্রাউজার ট্যাব "
+"ব্যবহার করে post রিকোয়েস্ট পাঠায় এবং প্রোভাইডারে পুনঃনির্দেশ করে। Back-"
+"channel ব্যবহারকারীর কোনো ইন্টারঅ্যাকশন ছাড়াই সরাসরি সার্ভার থেকে লগআউট "
+"রিকোয়েস্ট পাঠায় (POST SLS বাইন্ডিং প্রয়োজন)।"
+
+#: authentik/providers/saml/models.py
+msgid "NameID Property Mapping"
+msgstr "NameID প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the NameID value will be created. When left empty, the "
+"NameIDPolicy of the incoming request will be considered"
+msgstr ""
+"NameID মান কীভাবে তৈরি করা হবে তা কনফিগার করুন। ফাঁকা রাখা হলে, ইনকামিং "
+"রিকোয়েস্টের NameIDPolicy বিবেচনা করা হবে"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr "AuthnContextClassRef প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+"AuthnContextClassRef মান কীভাবে তৈরি করা হবে তা কনফিগার করুন। ফাঁকা রাখা "
+"হলে, ব্যবহারকারী প্রমাণীকরণের জন্য কোন পদ্ধতি ব্যবহার করেছেন তার উপর ভিত্তি "
+"করে AuthnContextClassRef সেট করা হবে।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion valid not before current time + this value (Format: "
+"hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+"অ্যাসারশন বর্তমান সময় + এই মানের আগে বৈধ হবে না (ফরম্যাট: "
+"hours=-1;minutes=-2;seconds=-3)।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"অ্যাসারশন বর্তমান সময় + এই মানের পরে বৈধ থাকবে না (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"সেশন বর্তমান সময় + এই মানের পরে বৈধ থাকবে না (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA1"
+msgstr "SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA256"
+msgstr "SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA384"
+msgstr "SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA512"
+msgstr "SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA1"
+msgstr "RSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA256"
+msgstr "RSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA384"
+msgstr "RSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA512"
+msgstr "RSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "DSA-SHA1"
+msgstr "DSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertion's Signatures will be validated against "
+"this certificate. To allow unsigned Requests, leave on default."
+msgstr ""
+"নির্বাচিত থাকলে, ইনকামিং অ্যাসারশনের সিগনেচার এই সার্টিফিকেটের বিপরীতে যাচাই"
+" করা হবে। সাইন না করা রিকোয়েস্টের অনুমতি দিতে, ডিফল্টে রেখে দিন।"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Verification Certificate"
+msgstr "ভেরিফিকেশন সার্টিফিকেট"
+
+#: authentik/providers/saml/models.py
+msgid "Keypair used to sign outgoing Responses going to the Service Provider."
+msgstr ""
+"সার্ভিস প্রোভাইডারে যাওয়া আউটগোয়িং রেসপন্স সাইন করতে ব্যবহৃত কীপেয়ার।"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Signing Keypair"
+msgstr "সাইনিং কীপেয়ার"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"নির্বাচিত থাকলে, IdP এনক্রিপশন কীপেয়ারের পাবলিক কী ব্যবহার করে ইনকামিং "
+"অ্যাসারশন এনক্রিপ্ট করে। SP প্রাইভেট কী ব্যবহার করে অ্যাসারশনটি ডিক্রিপ্ট "
+"করে।"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "এনক্রিপশন কীপেয়ার"
+
+#: authentik/providers/saml/models.py
+msgid "Default relay_state value for IDP-initiated logins"
+msgstr "IDP-initiated লগইনের জন্য ডিফল্ট relay_state মান"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider"
+msgstr "SAML প্রোভাইডার"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers"
+msgstr "SAML প্রোভাইডারসমূহ"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mapping"
+msgstr "SAML প্রোভাইডার প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mappings"
+msgstr "SAML প্রোভাইডার প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "মেটাডেটা থেকে SAML প্রোভাইডার"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "মেটাডেটা থেকে SAML প্রোভাইডারসমূহ"
+
+#: authentik/providers/saml/models.py
+msgid "Link to the user's authenticated session"
+msgstr "ব্যবহারকারীর প্রমাণীকৃত সেশনের লিঙ্ক"
+
+#: authentik/providers/saml/models.py
+msgid "SAML SessionIndex for this session"
+msgstr "এই সেশনের জন্য SAML SessionIndex"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID value for this session"
+msgstr "এই সেশনের জন্য SAML NameID মান"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID format"
+msgstr "SAML NameID ফরম্যাট"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr "এই সেশনের জন্য ব্যবহৃত SAML Issuer"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Session"
+msgstr "SAML সেশন"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Sessions"
+msgstr "SAML সেশনসমূহ"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (Silent)"
+msgstr "OAuth (সাইলেন্ট)"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (interactive)"
+msgstr "OAuth (ইন্টারঅ্যাকটিভ)"
+
+#: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "ডিফল্ট"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr "Salesforce"
+
+#: authentik/providers/scim/models.py
+msgid "GitLab"
+msgstr "GitLab"
+
+#: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr "Webex"
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr "vCenter"
+
+#: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr "গ্রুপের জন্য সিঙ্ক-স্কোপ নির্ধারণ করতে ব্যবহৃত গ্রুপ ফিল্টার।"
+
+#: authentik/providers/scim/models.py
+msgid "Base URL to SCIM requests, usually ends in /v2"
+msgstr "SCIM রিকোয়েস্টের বেস URL, সাধারণত /v2 দিয়ে শেষ হয়"
+
+#: authentik/providers/scim/models.py
+msgid "Authentication token"
+msgstr "প্রমাণীকরণ টোকেন"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr "প্রমাণীকরণের জন্য ব্যবহৃত OAuth সোর্স"
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
+msgstr "অতিরিক্ত OAuth প্যারামিটার, যেমন grant_type"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr "SCIM কম্প্যাটিবিলিটি মোড"
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
+"ভেন্ডর-নির্দিষ্ট SCIM ইমপ্লিমেন্টেশনের জন্য authentik-এর আচরণ পরিবর্তন করুন।"
+
+#: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
+msgstr ""
+"ServiceProviderConfig রেসপন্সের জন্য ক্যাশ সময়কাল। নিষ্ক্রিয় করতে "
+"minutes=0 সেট করুন।"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider"
+msgstr "SCIM প্রোভাইডার"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Providers"
+msgstr "SCIM প্রোভাইডারসমূহ"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filter"
+msgstr "SCIM প্রোভাইডার গ্রুপ ফিল্টার"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filters"
+msgstr "SCIM প্রোভাইডার গ্রুপ ফিল্টারসমূহ"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mapping"
+msgstr "SCIMProvider গ্রুপ প্রপার্টি ম্যাপিং"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mappings"
+msgstr "SCIMProvider গ্রুপ প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mapping"
+msgstr "SCIM প্রোভাইডার ম্যাপিং"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mappings"
+msgstr "SCIM প্রোভাইডার ম্যাপিংসমূহ"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync SCIM provider objects."
+msgstr "SCIM প্রোভাইডার অবজেক্ট সিঙ্ক করুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Full sync for SCIM provider."
+msgstr "SCIM প্রোভাইডারের জন্য সম্পূর্ণ সিঙ্ক।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a direct object (user, group) for SCIM provider."
+msgstr ""
+"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্ট (ইউজার, গ্রুপ) সিঙ্ক করুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr ""
+"SCIM প্রোভাইডারের জন্য একটি ডাইরেক্ট অবজেক্টের (ইউজার, গ্রুপ) সিঙ্ক ডিসপ্যাচ"
+" করুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr "SCIM প্রোভাইডারের জন্য একটি অবজেক্ট (ইউজার, গ্রুপ) মুছে ফেলুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr ""
+"SCIM প্রোভাইডারের জন্য একটি অবজেক্টের (ইউজার, গ্রুপ) ডিলিশন ডিসপ্যাচ করুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a related object (memberships) for SCIM provider."
+msgstr ""
+"SCIM প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্ট (মেম্বারশিপ) সিঙ্ক করুন।"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
+msgstr ""
+"SCIM প্রোভাইডারের জন্য একটি সম্পর্কিত অবজেক্টের (মেম্বারশিপ) সিঙ্ক ডিসপ্যাচ "
+"করুন।"
+
+#: authentik/rbac/models.py
+msgid "Role"
+msgstr "রোল"
+
+#: authentik/rbac/models.py
+msgid "Roles"
+msgstr "রোলসমূহ"
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr "রোলে অনুমতি বরাদ্দ করতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
+msgstr "রোল থেকে অনুমতি প্রত্যাহার করতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "প্রাথমিক অনুমতিসমূহ"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permission"
+msgstr "প্রাথমিক অনুমতি পারমিশন"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permissions"
+msgstr "প্রাথমিক অনুমতি পারমিশনসমূহ"
+
+#: authentik/rbac/models.py
+msgid "System permission"
+msgstr "সিস্টেম অনুমতি"
+
+#: authentik/rbac/models.py
+msgid "System permissions"
+msgstr "সিস্টেম অনুমতিসমূহ"
+
+#: authentik/rbac/models.py
+msgid "Can view system info"
+msgstr "সিস্টেম তথ্য দেখতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can access admin interface"
+msgstr "অ্যাডমিন ইন্টারফেস অ্যাক্সেস করতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can view system settings"
+msgstr "সিস্টেম সেটিংস দেখতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can edit system settings"
+msgstr "সিস্টেম সেটিংস সম্পাদনা করতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr "মিডিয়া ফাইল দেখতে পারবেন"
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr "মিডিয়া ফাইল পরিচালনা করতে পারবেন"
+
+#: authentik/recovery/management/commands/create_admin_group.py
+msgid "Create admin group if the default group gets deleted."
+msgstr "ডিফল্ট গ্রুপ মুছে ফেলা হলে অ্যাডমিন গ্রুপ তৈরি করুন।"
+
+#: authentik/recovery/management/commands/create_recovery_key.py
+msgid "Create a Key which can be used to restore access to authentik."
+msgstr ""
+"একটি কী তৈরি করুন যা authentik-এ অ্যাক্সেস পুনরুদ্ধার করতে ব্যবহার করা যেতে "
+"পারে।"
+
+#: authentik/recovery/views.py
+msgid "Used recovery-link to authenticate."
+msgstr "প্রমাণীকরণের জন্য রিকভারি-লিঙ্ক ব্যবহার করা হয়েছে।"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Kerberos realm"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr "ব্যবহারের জন্য কাস্টম krb5.conf। ডিফল্টভাবে সিস্টেমেরটি ব্যবহার করে"
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr "KAdmin সার্ভার টাইপ"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Kerberos থেকে authentik-এ ব্যবহারকারীদের সিঙ্ক করুন"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+"একজন ব্যবহারকারী তাদের পাসওয়ার্ড পরিবর্তন করলে, এটি Kerberos-এ ফিরিয়ে "
+"সিঙ্ক করুন"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "সিঙ্কের জন্য kadmin-এ প্রমাণীকরণের প্রিন্সিপাল।"
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "সিঙ্কের জন্য kadmin-এ প্রমাণীকরণের পাসওয়ার্ড"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"সিঙ্কের জন্য kadmin-এ প্রমাণীকরণের Keytab। এটি অবশ্যই base64-এনকোডেড অথবা "
+"TYPE:residual ফর্মে হতে হবে"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"সিঙ্কের জন্য kadmin-এ প্রমাণীকরণের ক্রেডেনশিয়াল ক্যাশ। এটি অবশ্যই "
+"TYPE:residual ফর্মে হতে হবে"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"SPNEGO-এর জন্য একটি নির্দিষ্ট সার্ভার নামের ব্যবহার বাধ্যতামূলক করুন। এটি "
+"অবশ্যই HTTP@hostname ফর্মে হতে হবে"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr "SPNEGO keytab base64-এনকোডেড অথবা FILE:path ফর্মে keytab-এর পাথ"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "SPNEGO-এর জন্য ব্যবহারের ক্রেডেনশিয়াল ক্যাশ, type:residual ফর্মে"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"সক্রিয় করা থাকলে, Kerberos পাসওয়ার্ড ব্যাকএন্ড দিয়ে লগইন করার সময় "
+"authentik-এ সংরক্ষিত পাসওয়ার্ড আপডেট করা হবে"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Kerberos সোর্স"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Kerberos সোর্সসমূহ"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Kerberos সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Kerberos সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "ইউজার Kerberos সোর্স কানেকশন"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "ইউজার Kerberos সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "গ্রুপ Kerberos সোর্স কানেকশন"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "গ্রুপ Kerberos সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Check connectivity for Kerberos sources."
+msgstr "Kerberos সোর্সের সংযোগ যাচাই করুন।"
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Sync Kerberos source."
+msgstr "Kerberos সোর্স সিঙ্ক করুন।"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "SPNEGO প্রমাণীকরণ প্রয়োজন"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    নিশ্চিত করুন যে আপনার কাছে বৈধ টিকিট আছে (kinit-এর মাধ্যমে পাওয়া যায়)\n"
+"                    এবং ব্রাউজারটি সঠিকভাবে কনফিগার করা আছে।\n"
+"                    অনুগ্রহ করে আপনার অ্যাডমিনিস্ট্রেটরের সাথে যোগাযোগ করুন।\n"
+"                "
+
+#: authentik/sources/ldap/api/sources.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr "পাসওয়ার্ড সিঙ্ক্রোনাইজেশন সহ শুধুমাত্র একটি LDAP সোর্সের অনুমতি আছে"
+
+#: authentik/sources/ldap/models.py
+msgid "Server URI"
+msgstr "সার্ভার URI"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Optionally verify the LDAP Server's Certificate against the CA Chain in this"
+" keypair."
+msgstr ""
+"ঐচ্ছিকভাবে এই কীপেয়ারের CA চেইনের বিপরীতে LDAP সার্ভারের সার্টিফিকেট যাচাই "
+"করুন।"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Client certificate to authenticate against the LDAP Server's Certificate."
+msgstr ""
+"LDAP সার্ভারের সার্টিফিকেটের বিপরীতে প্রমাণীকরণের জন্য ক্লায়েন্ট "
+"সার্টিফিকেট।"
+
+#: authentik/sources/ldap/models.py
+msgid "Bind CN"
+msgstr "Bind CN"
+
+#: authentik/sources/ldap/models.py
+msgid "Enable Start TLS"
+msgstr "Start TLS সক্রিয় করুন"
+
+#: authentik/sources/ldap/models.py
+msgid "Use Server URI for SNI verification"
+msgstr "SNI ভেরিফিকেশনের জন্য সার্ভার URI ব্যবহার করুন"
+
+#: authentik/sources/ldap/models.py
+msgid "Base DN"
+msgstr "Base DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for User-queries."
+msgstr "ইউজার-কোয়েরির জন্য Base DN-এর আগে যুক্ত করা হয়।"
+
+#: authentik/sources/ldap/models.py
+msgid "Addition User DN"
+msgstr "অতিরিক্ত ইউজার DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for Group-queries."
+msgstr "গ্রুপ-কোয়েরির জন্য Base DN-এর আগে যুক্ত করা হয়।"
+
+#: authentik/sources/ldap/models.py
+msgid "Addition Group DN"
+msgstr "অতিরিক্ত গ্রুপ DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Users."
+msgstr "এই ফিল্টারের সাথে মেলে এমন অবজেক্টকে ইউজার হিসেবে বিবেচনা করুন।"
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "যে অ্যাট্রিবিউট `group_membership_field`-এর মানের সাথে মেলে।"
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains members of a group."
+msgstr "যে ফিল্ডে একটি গ্রুপের সদস্যরা থাকে।"
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Groups."
+msgstr "এই ফিল্টারের সাথে মেলে এমন অবজেক্টকে গ্রুপ হিসেবে বিবেচনা করুন।"
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains a unique Identifier."
+msgstr "যে ফিল্ডে একটি ইউনিক আইডেন্টিফায়ার থাকে।"
+
+#: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr "LDAP দিয়ে লগইন সফল হলে ইন্টারনাল authentik পাসওয়ার্ড আপডেট করুন"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"When a user changes their password, sync it back to LDAP. This can only be "
+"enabled on a single LDAP source."
+msgstr ""
+"একজন ব্যবহারকারী তাদের পাসওয়ার্ড পরিবর্তন করলে, এটি LDAP-এ ফিরিয়ে সিঙ্ক "
+"করুন। এটি শুধুমাত্র একটি একক LDAP সোর্সে সক্রিয় করা যেতে পারে।"
+
+#: authentik/sources/ldap/models.py
+msgid "Sync group parentage/hierarchy from LDAP directories."
+msgstr "LDAP ডিরেক্টরি থেকে গ্রুপ প্যারেন্টেজ/হায়ারার্কি সিঙ্ক করুন।"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+"একটি গ্রুপ অ্যাট্রিবিউটের পরিবর্তে একটি ইউজার অ্যাট্রিবিউটের উপর ভিত্তি করে "
+"গ্রুপ মেম্বারশিপ লুকআপ করুন। এটি FreeIPA এবং Active Directory-এর মতো "
+"সিস্টেমে নেস্টেড গ্রুপ রেজোলিউশন সম্ভব করে"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+"যেসব authentik ব্যবহারকারী এবং গ্রুপ পূর্বে এই সোর্স দ্বারা সরবরাহ করা "
+"হয়েছিল কিন্তু এখন এটি থেকে অনুপস্থিত, সেগুলো মুছে ফেলুন।"
+
+#: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr "প্রযোজ্য নয়"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source"
+msgstr "LDAP সোর্স"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Sources"
+msgstr "LDAP সোর্সসমূহ"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mapping"
+msgstr "LDAP সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mappings"
+msgstr "LDAP সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+"এই অবজেক্টটি ডিরেক্টরিতে এখনও বিদ্যমান কিনা তা যাচাই করার সময় ব্যবহৃত ইউনিক"
+" আইডি।"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "ইউজার LDAP সোর্স কানেকশন"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "ইউজার LDAP সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "গ্রুপ LDAP সোর্স কানেকশন"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "গ্রুপ LDAP সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/ldap/signals.py
+msgid "Password does not match Active Directory Complexity."
+msgstr "পাসওয়ার্ডটি Active Directory কমপ্লেক্সিটির সাথে মেলে না।"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Check connectivity for LDAP source."
+msgstr "LDAP সোর্সের সংযোগ যাচাই করুন।"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync LDAP source."
+msgstr "LDAP সোর্স সিঙ্ক করুন।"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync page for LDAP source."
+msgstr "LDAP সোর্সের জন্য সিঙ্ক পৃষ্ঠা।"
+
+#: authentik/sources/oauth/clients/oauth2.py
+msgid "No token received."
+msgstr "কোনো টোকেন পাওয়া যায়নি।"
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "HTTP বেসিক প্রমাণীকরণ"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
+"ক্লায়েন্ট আইডি এবং সিক্রেট রিকোয়েস্ট প্যারামিটার হিসেবে অন্তর্ভুক্ত করুন"
+
+#: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "PKCE নেই"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "প্লেইন"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
+msgid "Request Token URL"
+msgstr "রিকোয়েস্ট টোকেন URL"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"URL used to request the initial token. This URL is only required for OAuth "
+"1."
+msgstr ""
+"প্রাথমিক টোকেনের অনুরোধ করতে ব্যবহৃত URL। এই URLটি শুধুমাত্র OAuth 1-এর জন্য"
+" প্রয়োজন।"
+
+#: authentik/sources/oauth/models.py
+msgid "Authorization URL"
+msgstr "অথোরাইজেশন URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL the user is redirect to to conest the flow."
+msgstr "যে URL-এ ব্যবহারকারীকে ফ্লো সম্মতির জন্য পুনঃনির্দেশিত করা হয়।"
+
+#: authentik/sources/oauth/models.py
+msgid "Access Token URL"
+msgstr "অ্যাক্সেস টোকেন URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to retrieve tokens."
+msgstr "টোকেন সংগ্রহ করতে authentik দ্বারা ব্যবহৃত URL।"
+
+#: authentik/sources/oauth/models.py
+msgid "Profile URL"
+msgstr "প্রোফাইল URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to get user information."
+msgstr "ব্যবহারকারীর তথ্য পেতে authentik দ্বারা ব্যবহৃত URL।"
+
+#: authentik/sources/oauth/models.py
+msgid "Additional Scopes"
+msgstr "অতিরিক্ত স্কোপ"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
+"একটি authorization_code টোকেন রিকোয়েস্ট ফ্লোর সময় কীভাবে প্রমাণীকরণ "
+"সম্পাদন করতে হবে"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source"
+msgstr "OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Sources"
+msgstr "OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Source"
+msgstr "GitHub OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Sources"
+msgstr "GitHub OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "GitLab OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "GitLab OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Source"
+msgstr "Twitch OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Sources"
+msgstr "Twitch OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Source"
+msgstr "Mailcow OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Sources"
+msgstr "Mailcow OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Source"
+msgstr "Twitter OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Sources"
+msgstr "Twitter OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Source"
+msgstr "Facebook OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Sources"
+msgstr "Facebook OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Source"
+msgstr "Discord OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Sources"
+msgstr "Discord OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr "Slack OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr "Slack OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Source"
+msgstr "Patreon OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Sources"
+msgstr "Patreon OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Source"
+msgstr "Google OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Sources"
+msgstr "Google OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr "Entra ID OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr "Entra ID OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Source"
+msgstr "OpenID OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Sources"
+msgstr "OpenID OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Source"
+msgstr "Apple OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Sources"
+msgstr "Apple OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Source"
+msgstr "Okta OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Sources"
+msgstr "Okta OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Source"
+msgstr "Reddit OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Sources"
+msgstr "Reddit OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr "WeChat OAuth সোর্স"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr "WeChat OAuth সোর্সসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "OAuth সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "OAuth সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connection"
+msgstr "ইউজার OAuth সোর্স কানেকশন"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connections"
+msgstr "ইউজার OAuth সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "গ্রুপ OAuth সোর্স কানেকশন"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "গ্রুপ OAuth সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/oauth/tasks.py
+msgid ""
+"Update OAuth sources' config from well_known, and JWKS info from the "
+"configured URL."
+msgstr ""
+"well_known থেকে OAuth সোর্সের কনফিগারেশন, এবং কনফিগার করা URL থেকে JWKS তথ্য"
+" আপডেট করুন।"
+
+#: authentik/sources/oauth/views/callback.py
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "প্রমাণীকরণ ব্যর্থ হয়েছে: {reason}"
+
+#: authentik/sources/plex/models.py
+msgid "Client identifier used to talk to Plex."
+msgstr "Plex-এর সাথে যোগাযোগ করতে ব্যবহৃত ক্লায়েন্ট আইডেন্টিফায়ার।"
+
+#: authentik/sources/plex/models.py
+msgid ""
+"Which servers a user has to be a member of to be granted access. Empty list "
+"allows every server."
+msgstr ""
+"অ্যাক্সেস পেতে একজন ব্যবহারকারীকে কোন সার্ভারের সদস্য হতে হবে। খালি তালিকা "
+"সব সার্ভারের অনুমতি দেয়।"
+
+#: authentik/sources/plex/models.py
+msgid "Allow friends to authenticate, even if you don't share a server."
+msgstr "আপনি কোনো সার্ভার শেয়ার না করলেও বন্ধুদের প্রমাণীকরণের অনুমতি দিন।"
+
+#: authentik/sources/plex/models.py
+msgid "Plex token used to check friends"
+msgstr "বন্ধু যাচাই করতে ব্যবহৃত Plex টোকেন"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source"
+msgstr "Plex সোর্স"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Sources"
+msgstr "Plex সোর্সসমূহ"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Plex সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Plex সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connection"
+msgstr "ইউজার Plex সোর্স কানেকশন"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connections"
+msgstr "ইউজার Plex সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "গ্রুপ Plex সোর্স কানেকশন"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "গ্রুপ Plex সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/plex/tasks.py
+msgid "Check the validity of a Plex source."
+msgstr "একটি Plex সোর্সের বৈধতা যাচাই করুন।"
+
+#: authentik/sources/saml/api/source.py
+msgid ""
+"With a Verification Certificate selected, at least one of 'Verify Assertion "
+"Signature' or 'Verify Response Signature' must be selected."
+msgstr ""
+"একটি ভেরিফিকেশন সার্টিফিকেট নির্বাচিত থাকলে, 'Verify Assertion Signature' "
+"অথবা 'Verify Response Signature'-এর মধ্যে অন্তত একটি নির্বাচন করতে হবে।"
+
+#: authentik/sources/saml/models.py
+msgid "Redirect Binding"
+msgstr "রিডাইরেক্ট বাইন্ডিং"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding"
+msgstr "POST বাইন্ডিং"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding with auto-confirmation"
+msgstr "অটো-কনফার্মেশন সহ POST বাইন্ডিং"
+
+#: authentik/sources/saml/models.py authentik/sources/telegram/models.py
+msgid "Flow used before authentication."
+msgstr "প্রমাণীকরণের আগে ব্যবহৃত ফ্লো।"
+
+#: authentik/sources/saml/models.py
+msgid "Also known as Entity ID. Defaults to the Metadata URL."
+msgstr "এটি Entity ID নামেও পরিচিত। ডিফল্টভাবে মেটাডেটা URL ব্যবহৃত হয়।"
+
+#: authentik/sources/saml/models.py
+msgid "SSO URL"
+msgstr "SSO URL"
+
+#: authentik/sources/saml/models.py
+msgid "URL that the initial Login request is sent to."
+msgstr "যে URL-এ প্রাথমিক লগইন রিকোয়েস্ট পাঠানো হয়।"
+
+#: authentik/sources/saml/models.py
+msgid "SLO URL"
+msgstr "SLO URL"
+
+#: authentik/sources/saml/models.py
+msgid "Optional URL if your IDP supports Single-Logout."
+msgstr "আপনার IDP Single-Logout সমর্থন করলে ঐচ্ছিক URL।"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Allows authentication flows initiated by the IdP. This can be a security "
+"risk, as no validation of the request ID is done."
+msgstr ""
+"IdP দ্বারা আরম্ভ করা প্রমাণীকরণ ফ্লোর অনুমতি দেয়। এটি একটি নিরাপত্তা ঝুঁকি "
+"হতে পারে, কারণ রিকোয়েস্ট আইডির কোনো ভ্যালিডেশন করা হয় না।"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session "
+"exists."
+msgstr ""
+"সক্রিয় করা থাকলে, একটি সেশন বিদ্যমান থাকলেও IdP ব্যবহারকারীকে পুনরায় "
+"প্রমাণীকরণ করবে।"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
+"sent."
+msgstr ""
+"IdP-তে পাঠানো NameID পলিসি। এটি আনসেট রাখা যেতে পারে, সেক্ষেত্রে কোনো পলিসি "
+"পাঠানো হবে না।"
+
+#: authentik/sources/saml/models.py
+msgid "Delete temporary users after"
+msgstr "যার পরে অস্থায়ী ব্যবহারকারী মুছে ফেলা হবে"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Time offset when temporary users should be deleted. This only applies if "
+"your IDP uses the NameID Format 'transient', and the user doesn't log out "
+"manually. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"অস্থায়ী ব্যবহারকারী কখন মুছে ফেলা উচিত তার টাইম অফসেট। এটি শুধুমাত্র তখনই "
+"প্রযোজ্য যখন আপনার IDP 'transient' NameID ফরম্যাট ব্যবহার করে, এবং "
+"ব্যবহারকারী নিজে থেকে লগআউট করেন না। (ফরম্যাট: hours=1;minutes=2;seconds=3)।"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Keypair used to sign outgoing Responses going to the Identity Provider."
+msgstr ""
+"আইডেন্টিটি প্রোভাইডারে যাওয়া আউটগোয়িং রেসপন্স সাইন করতে ব্যবহৃত কীপেয়ার।"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source"
+msgstr "SAML সোর্স"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Sources"
+msgstr "SAML সোর্সসমূহ"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "SAML সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "SAML সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connection"
+msgstr "ইউজার SAML সোর্স কানেকশন"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connections"
+msgstr "ইউজার SAML সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "গ্রুপ SAML সোর্স কানেকশন"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "গ্রুপ SAML সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "{source_name}-এ চালিয়ে যান"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr "SCIM সোর্স"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr "SCIM সোর্সসমূহ"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "SCIM সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "SCIM সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr ""
+"এই Telegram অ্যাকাউন্টটি ইতিমধ্যে অন্য একজন ব্যবহারকারীর সাথে সংযুক্ত।"
+
+#: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
+msgid "Telegram bot username"
+msgstr "Telegram বট ইউজারনেম"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram bot token"
+msgstr "Telegram বট টোকেন"
+
+#: authentik/sources/telegram/models.py
+msgid "Request access to send messages from your bot."
+msgstr "আপনার বট থেকে বার্তা পাঠানোর অ্যাক্সেসের অনুরোধ করুন।"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source"
+msgstr "Telegram সোর্স"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Sources"
+msgstr "Telegram সোর্সসমূহ"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mapping"
+msgstr "Telegram সোর্স প্রপার্টি ম্যাপিং"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mappings"
+msgstr "Telegram সোর্স প্রপার্টি ম্যাপিংসমূহ"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connection"
+msgstr "ইউজার Telegram সোর্স কানেকশন"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connections"
+msgstr "ইউজার Telegram সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connection"
+msgstr "গ্রুপ Telegram সোর্স কানেকশন"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connections"
+msgstr "গ্রুপ Telegram সোর্স কানেকশনসমূহ"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Authentication date is too old"
+msgstr "প্রমাণীকরণের তারিখ অনেক পুরনো"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Invalid hash"
+msgstr "হ্যাশ অবৈধ"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stage"
+msgstr "Duo অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stages"
+msgstr "Duo অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Device"
+msgstr "Duo ডিভাইস"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Devices"
+msgstr "Duo ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid ""
+"A Duo user with this username already exists. Ask an administrator to import"
+" the existing Duo authenticator or delete the Duo user before enrolling "
+"again."
+msgstr ""
+"এই ইউজারনেম সহ একটি Duo ব্যবহারকারী ইতিমধ্যে বিদ্যমান। পুনরায় এনরোল করার "
+"আগে বিদ্যমান Duo অথেন্টিকেটর ইম্পোর্ট করতে অথবা Duo ব্যবহারকারী মুছে ফেলতে "
+"একজন অ্যাডমিনিস্ট্রেটরকে বলুন।"
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid "Failed to enroll with Duo. Please contact an administrator."
+msgstr ""
+"Duo দিয়ে এনরোল করতে ব্যর্থ হয়েছে। অনুগ্রহ করে একজন অ্যাডমিনিস্ট্রেটরের "
+"সাথে যোগাযোগ করুন।"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"সক্রিয় করা থাকলে, গ্লোবাল ইমেইল সংযোগ সেটিংস ব্যবহার করা হবে এবং নিচের "
+"সংযোগ সেটিংস উপেক্ষা করা হবে।"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
+"পাঠানো টোকেন যে সময় পর্যন্ত বৈধ (ফরম্যাট: hours=3,minutes=17,seconds=300)।"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr "ইমেইল অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr "ইমেইল অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "ইমেইল টেমপ্লেট রেন্ডার করার সময় একটি এক্সসেপশন ঘটেছে"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr "ইমেইল ডিভাইস"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr "ইমেইল ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
+msgid "Code does not match"
+msgstr "কোড মেলেনি"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr "ইমেইল অবৈধ"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr "ব্যবহারকারীর ইতিমধ্যে MFA-এর জন্য একটি ইমেইল ঠিকানা নিবন্ধিত আছে।"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"      হ্যালো %(username)s,\n"
+"      "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+"\n"
+"          ইমেইল MFA কোড।\n"
+"          "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"    আপনি যদি এই কোডের অনুরোধ না করে থাকেন, তাহলে অনুগ্রহ করে এই ইমেইলটি উপেক্ষা করুন। উপরের কোডটি %(expires)s পর্যন্ত বৈধ।\n"
+"    "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "হ্যালো %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+"\n"
+"ইমেইল MFA কোড\n"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"আপনি যদি এই কোডের অনুরোধ না করে থাকেন, তাহলে অনুগ্রহ করে এই ইমেইলটি উপেক্ষা করুন। উপরের কোডটি %(expires)s পর্যন্ত বৈধ।\n"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid ""
+"When enabled, the Phone number is only used during enrollment to verify the "
+"users authenticity. Only a hash of the phone number is saved to ensure it is"
+" not reused in the future."
+msgstr ""
+"সক্রিয় করা থাকলে, ফোন নম্বরটি শুধুমাত্র এনরোলমেন্টের সময় ব্যবহারকারীর "
+"সত্যতা যাচাই করতে ব্যবহৃত হয়। ভবিষ্যতে পুনরায় ব্যবহার না হওয়া নিশ্চিত "
+"করতে শুধুমাত্র ফোন নম্বরের একটি হ্যাশ সংরক্ষণ করা হয়।"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "Optionally modify the payload being sent to custom providers."
+msgstr "ঐচ্ছিকভাবে কাস্টম প্রোভাইডারে পাঠানো পেলোড পরিবর্তন করুন।"
+
+#: authentik/stages/authenticator_sms/models.py
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "authentik-এ প্রমাণীকরণের জন্য এই কোডটি ব্যবহার করুন: {token}"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stage"
+msgstr "SMS অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stages"
+msgstr "SMS অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Device"
+msgstr "SMS ডিভাইস"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Devices"
+msgstr "SMS ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_sms/stage.py
+msgid "Invalid phone number"
+msgstr "ফোন নম্বর অবৈধ"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stage"
+msgstr "স্ট্যাটিক অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stages"
+msgstr "স্ট্যাটিক অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Device"
+msgstr "স্ট্যাটিক ডিভাইস"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Devices"
+msgstr "স্ট্যাটিক ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Token"
+msgstr "স্ট্যাটিক টোকেন"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Tokens"
+msgstr "স্ট্যাটিক টোকেনসমূহ"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "6 digits, widely compatible"
+msgstr "6 সংখ্যা, ব্যাপকভাবে সামঞ্জস্যপূর্ণ"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "8 digits, not compatible with apps like Google Authenticator"
+msgstr "8 সংখ্যা, Google Authenticator-এর মতো অ্যাপের সাথে সামঞ্জস্যপূর্ণ নয়"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stage"
+msgstr "TOTP অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stages"
+msgstr "TOTP অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Device"
+msgstr "TOTP ডিভাইস"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Devices"
+msgstr "TOTP ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+"টোকেন অবৈধ। অনুগ্রহ করে নিশ্চিত করুন যে আপনার ডিভাইসের সময় সঠিক আছে এবং "
+"আবার চেষ্টা করুন।"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr ""
+"ডিভাইস টাইপ অবৈধ। সাহায্যের জন্য আপনার {brand} অ্যাডমিনিস্ট্রেটরের সাথে "
+"যোগাযোগ করুন।"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Static"
+msgstr "স্ট্যাটিক"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "TOTP"
+msgstr "TOTP"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "WebAuthn"
+msgstr "WebAuthn"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Duo"
+msgstr "Duo"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "SMS"
+msgstr "SMS"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Stages used to configure Authenticator when user doesn't have any compatible"
+" devices. After this configuration Stage passes, the user is not prompted "
+"again."
+msgstr ""
+"ব্যবহারকারীর কোনো সামঞ্জস্যপূর্ণ ডিভাইস না থাকলে অথেন্টিকেটর কনফিগার করতে "
+"ব্যবহৃত স্টেজ। এই কনফিগারেশন স্টেজ উত্তীর্ণ হওয়ার পর, ব্যবহারকারীকে আর "
+"জিজ্ঞাসা করা হবে না।"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Device classes which can be used to authenticate"
+msgstr "প্রমাণীকরণের জন্য ব্যবহারযোগ্য ডিভাইস ক্লাস"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"If any of the user's device has been used within this threshold, this stage "
+"will be skipped"
+msgstr ""
+"ব্যবহারকারীর কোনো ডিভাইস এই থ্রেশহোল্ডের মধ্যে ব্যবহৃত হয়ে থাকলে, এই "
+"স্টেজটি এড়িয়ে যাওয়া হবে"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Enforce user verification for WebAuthn devices."
+msgstr "WebAuthn ডিভাইসের জন্য ব্যবহারকারী ভেরিফিকেশন বাধ্যতামূলক করুন।"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stage"
+msgstr "অথেন্টিকেটর ভ্যালিডেশন স্টেজ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stages"
+msgstr "অথেন্টিকেটর ভ্যালিডেশন স্টেজসমূহ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stage"
+msgstr "অথেন্টিকেটর ভ্যালিডেট স্টেজ কনফিগারেশন স্টেজ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stages"
+msgstr "অথেন্টিকেটর ভ্যালিডেট স্টেজ কনফিগারেশন স্টেজসমূহ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Type"
+msgstr "অথেন্টিকেটর ভ্যালিডেট স্টেজ WebAuthn অনুমোদিত ডিভাইস টাইপ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Types"
+msgstr "অথেন্টিকেটর ভ্যালিডেট স্টেজ WebAuthn অনুমোদিত ডিভাইস টাইপসমূহ"
+
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "কোনো (অনুমোদিত) MFA অথেন্টিকেটর কনফিগার করা নেই।"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "When enabled, a given device can only be registered once."
+msgstr ""
+"সক্রিয় করা থাকলে, একটি নির্দিষ্ট ডিভাইস শুধুমাত্র একবার নিবন্ধন করা যেতে "
+"পারে।"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stage"
+msgstr "WebAuthn অথেন্টিকেটর সেটআপ স্টেজ"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stages"
+msgstr "WebAuthn অথেন্টিকেটর সেটআপ স্টেজসমূহ"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device"
+msgstr "WebAuthn ডিভাইস"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Devices"
+msgstr "WebAuthn ডিভাইসসমূহ"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "WebAuthn ডিভাইস টাইপ"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "WebAuthn ডিভাইস টাইপসমূহ"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restriction"
+msgstr "অথেন্টিকেটর WebAuthn স্টেজ ডিভাইস টাইপ রেস্ট্রিকশন"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restrictions"
+msgstr "অথেন্টিকেটর WebAuthn স্টেজ ডিভাইস টাইপ রেস্ট্রিকশনসমূহ"
+
+#: authentik/stages/authenticator_webauthn/tasks.py
+msgid ""
+"Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+"FIDO Alliance MDS blob এবং AAGUID ডেটাবেজে ইম্পোর্ট করার ব্যাকগ্রাউন্ড "
+"টাস্ক।"
+
+#: authentik/stages/captcha/models.py
+msgid "Form encoded"
+msgstr "ফর্ম এনকোডেড"
+
+#: authentik/stages/captcha/models.py
+msgid "JSON"
+msgstr "JSON"
+
+#: authentik/stages/captcha/models.py
+msgid "Public key, acquired your captcha Provider."
+msgstr "পাবলিক কী, আপনার ক্যাপচা প্রোভাইডার থেকে সংগৃহীত।"
+
+#: authentik/stages/captcha/models.py
+msgid "Private key, acquired your captcha Provider."
+msgstr "প্রাইভেট কী, আপনার ক্যাপচা প্রোভাইডার থেকে সংগৃহীত।"
+
+#: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"সক্রিয় করা থাকলে এবং প্রাপ্ত ক্যাপচা স্কোর প্রদত্ত থ্রেশহোল্ডের বাইরে "
+"থাকলে, স্টেজটি একটি ত্রুটির বার্তা দেখাবে। সক্রিয় না থাকলে, ফ্লোটি চলতে "
+"থাকবে, তবে ক্যাপচার ডেটা পলিসি সিদ্ধান্তের জন্য কনটেক্সটে উপলব্ধ থাকবে"
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stage"
+msgstr "ক্যাপচা স্টেজ"
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stages"
+msgstr "ক্যাপচা স্টেজসমূহ"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr ""
+"ক্যাপচা রেসপন্স অবৈধ। পুনরায় চেষ্টা করলে এই সমস্যাটি সমাধান হতে পারে।"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "ক্যাপচা রেসপন্স অবৈধ"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "টোকেন যাচাই করতে ব্যর্থ হয়েছে"
+
+#: authentik/stages/consent/models.py
+msgid ""
+"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"যে অফসেটের পর সম্মতির মেয়াদ উত্তীর্ণ হয়। (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stage"
+msgstr "সম্মতি স্টেজ"
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stages"
+msgstr "সম্মতি স্টেজসমূহ"
+
+#: authentik/stages/consent/models.py
+msgid "User Consent"
+msgstr "ইউজার সম্মতি"
+
+#: authentik/stages/consent/models.py
+msgid "User Consents"
+msgstr "ইউজার সম্মতিসমূহ"
+
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr "সম্মতি টোকেন অবৈধ, প্রম্পট পুনরায় দেখানো হচ্ছে"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stage"
+msgstr "প্রত্যাখ্যান স্টেজ"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stages"
+msgstr "প্রত্যাখ্যান স্টেজসমূহ"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stage"
+msgstr "ডামি স্টেজ"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stages"
+msgstr "ডামি স্টেজসমূহ"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "এই ইমেইল ঠিকানাটি নিশ্চিত করতে চালিয়ে যান।"
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr ""
+"লিঙ্কটি ইতিমধ্যে ব্যবহৃত হয়েছে, অনুগ্রহ করে একটি নতুন লিঙ্কের অনুরোধ করুন।"
+
+#: authentik/stages/email/models.py
+msgid "Password Reset"
+msgstr "পাসওয়ার্ড রিসেট"
+
+#: authentik/stages/email/models.py
+msgid "Account Confirmation"
+msgstr "অ্যাকাউন্ট নিশ্চিতকরণ"
+
+#: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr "ইমেইল OTP"
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr "ইভেন্ট নোটিফিকেশন"
+
+#: authentik/stages/email/models.py authentik/stages/invitation/models.py
+msgid "Invitation"
+msgstr "আমন্ত্রণ"
+
+#: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"সাম্প্রতিক অ্যাকাউন্ট রিকভারি প্রচেষ্টা গণনা করতে ব্যবহৃত টাইম উইন্ডো। এই "
+"সময়ের মধ্যে প্রচেষ্টার সংখ্যা recovery_max_attempts অতিক্রম করলে, পরবর্তী "
+"প্রচেষ্টা রেট-লিমিটেড হবে। (ফরম্যাট: hours=1;minutes=2;seconds=3)।"
+
+#: authentik/stages/email/models.py
+msgid "Activate users upon completion of stage."
+msgstr "স্টেজ সম্পন্ন হওয়ার পর ব্যবহারকারীদের সক্রিয় করুন।"
+
+#: authentik/stages/email/models.py
+msgid "Email Stage"
+msgstr "ইমেইল স্টেজ"
+
+#: authentik/stages/email/models.py
+msgid "Email Stages"
+msgstr "ইমেইল স্টেজসমূহ"
+
+#: authentik/stages/email/stage.py
+msgid "Successfully verified Email."
+msgstr "ইমেইল সফলভাবে যাচাই করা হয়েছে।"
+
+#: authentik/stages/email/stage.py
+msgid "No pending user."
+msgstr "কোনো অপেক্ষমাণ ব্যবহারকারী নেই।"
+
+#: authentik/stages/email/stage.py
+msgid "Email sent."
+msgstr "ইমেইল পাঠানো হয়েছে।"
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
+msgstr ""
+"অনেক বেশি অ্যাকাউন্ট ভেরিফিকেশন প্রচেষ্টা হয়েছে। অনুগ্রহ করে {minutes} "
+"মিনিট পর আবার চেষ্টা করুন।"
+
+#: authentik/stages/email/stage.py
+msgid "Email Successfully sent."
+msgstr "ইমেইল সফলভাবে পাঠানো হয়েছে।"
+
+#: authentik/stages/email/tasks.py
+msgid "Send email."
+msgstr "ইমেইল পাঠান।"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid "Welcome!"
+msgstr "স্বাগতম!"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just press the button below."
+msgstr ""
+"আপনাকে শুরু করতে পেরে আমরা আনন্দিত। প্রথমে, আপনাকে আপনার অ্যাকাউন্ট নিশ্চিত "
+"করতে হবে। শুধু নিচের বাটনে চাপুন।"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid "Confirm Account"
+msgstr "অ্যাকাউন্ট নিশ্চিত করুন"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#, python-format
+msgid ""
+"\n"
+"    If that doesn't work, copy and paste the following link in your browser: %(url)s\n"
+"    "
+msgstr ""
+"\n"
+"    যদি এটি কাজ না করে, তাহলে নিচের লিঙ্কটি কপি করে আপনার ব্রাউজারে পেস্ট করুন: %(url)s\n"
+"    "
+
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just open the link below."
+msgstr ""
+"আপনাকে শুরু করতে পেরে আমরা আনন্দিত। প্রথমে, আপনাকে আপনার অ্যাকাউন্ট নিশ্চিত "
+"করতে হবে। শুধু নিচের লিঙ্কটি খুলুন।"
+
+#: authentik/stages/email/templates/email/event_notification.html
+#, python-format
+msgid ""
+"\n"
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
+msgstr ""
+"\n"
+"    এই ইমেইলটি নোটিফিকেশন ট্রান্সপোর্ট <code>%(name)s</code> থেকে পাঠানো হয়েছে।\n"
+"    "
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Dear authentik user,"
+msgstr "প্রিয় authentik ব্যবহারকারী,"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "The following notification was created:"
+msgstr "নিম্নলিখিত নোটিফিকেশনটি তৈরি করা হয়েছে:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Additional attributes:"
+msgstr "অতিরিক্ত অ্যাট্রিবিউট:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+#, python-format
+msgid ""
+"\n"
+"This email was sent from the notification transport %(name)s.\n"
+msgstr ""
+"\n"
+"এই ইমেইলটি নোটিফিকেশন ট্রান্সপোর্ট %(name)s থেকে পাঠানো হয়েছে।\n"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"      You're Invited!\n"
+"      "
+msgstr ""
+"\n"
+"      আপনাকে আমন্ত্রণ জানানো হয়েছে!\n"
+"      "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          You have been invited to join %(host)s. Click the button below to get started.\n"
+"          "
+msgstr ""
+"\n"
+"          আপনাকে %(host)s-এ যোগদানের জন্য আমন্ত্রণ জানানো হয়েছে। শুরু করতে নিচের বাটনে ক্লিক করুন।\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          This invitation expires %(expires)s.\n"
+"          "
+msgstr ""
+"\n"
+"          এই আমন্ত্রণটির মেয়াদ %(expires)s-এ শেষ হবে।\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "Accept Invitation"
+msgstr "আমন্ত্রণ গ্রহণ করুন"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"    If you cannot click the button above, please copy and paste the following URL into your browser:\n"
+"    "
+msgstr ""
+"\n"
+"    যদি আপনি উপরের বাটনে ক্লিক করতে না পারেন, তাহলে অনুগ্রহ করে নিম্নলিখিত URL-টি কপি করে আপনার ব্রাউজারে পেস্ট করুন:\n"
+"    "
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "You're Invited!"
+msgstr "আপনাকে আমন্ত্রণ জানানো হয়েছে!"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid ""
+"You have been invited to join %(host)s. Use the link below to get started."
+msgstr ""
+"আপনাকে %(host)s-এ যোগদানের জন্য আমন্ত্রণ জানানো হয়েছে। শুরু করতে নিচের "
+"লিঙ্কটি ব্যবহার করুন।"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid "This invitation expires %(expires)s."
+msgstr "এই আমন্ত্রণটির মেয়াদ %(expires)s-এ শেষ হবে।"
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid ""
+"If you cannot click the link above, please copy and paste the following URL "
+"into your browser:"
+msgstr ""
+"যদি আপনি উপরের লিঙ্কে ক্লিক করতে না পারেন, তাহলে অনুগ্রহ করে নিম্নলিখিত "
+"URL-টি কপি করে আপনার ব্রাউজারে পেস্ট করুন:"
+
+#: authentik/stages/email/templates/email/password_reset.html
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"          আপনি সম্প্রতি আপনার authentik অ্যাকাউন্টের পাসওয়ার্ড পরিবর্তনের অনুরোধ করেছেন। একটি নতুন পাসওয়ার্ড সেট করতে নিচের বাটনটি ব্যবহার করুন।\n"
+"          "
+
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"    আপনি যদি পাসওয়ার্ড পরিবর্তনের অনুরোধ না করে থাকেন, তাহলে অনুগ্রহ করে এই ইমেইলটি উপেক্ষা করুন। উপরের লিঙ্কটি %(expires)s পর্যন্ত বৈধ।\n"
+"    "
+
+#: authentik/stages/email/templates/email/password_reset.txt
+msgid ""
+"\n"
+"You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
+msgstr ""
+"\n"
+"আপনি সম্প্রতি আপনার authentik অ্যাকাউন্টের পাসওয়ার্ড পরিবর্তনের অনুরোধ করেছেন। একটি নতুন পাসওয়ার্ড সেট করতে নিচের লিঙ্কটি ব্যবহার করুন।\n"
+
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"আপনি যদি পাসওয়ার্ড পরিবর্তনের অনুরোধ না করে থাকেন, তাহলে অনুগ্রহ করে এই ইমেইলটি উপেক্ষা করুন। উপরের লিঙ্কটি %(expires)s পর্যন্ত বৈধ।\n"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid "authentik Test-Email"
+msgstr "authentik টেস্ট-ইমেইল"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid ""
+"\n"
+"                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
+"                    "
+msgstr ""
+"\n"
+"                    এটি একটি টেস্ট ইমেইল যা আপনাকে জানাতে পাঠানো হয়েছে যে আপনি সফলভাবে authentik ইমেইল কনফিগার করেছেন।\n"
+"                    "
+
+#: authentik/stages/email/templates/email/setup.txt
+msgid ""
+"\n"
+"This is a test email to inform you, that you've successfully configured authentik emails.\n"
+msgstr ""
+"\n"
+"এটি একটি টেস্ট ইমেইল যা আপনাকে জানাতে পাঠানো হয়েছে যে আপনি সফলভাবে authentik ইমেইল কনফিগার করেছেন।\n"
+
+#: authentik/stages/identification/api.py
+msgid "When no user fields are selected, at least one source must be selected"
+msgstr ""
+"কোনো ইউজার ফিল্ড নির্বাচন করা না থাকলে, অন্তত একটি সোর্স নির্বাচন করতে হবে"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Fields of the user object to match against. (Hold shift to select multiple "
+"options)"
+msgstr ""
+"যে ইউজার অবজেক্টের ফিল্ডের বিপরীতে মেলানো হবে। (একাধিক অপশন নির্বাচন করতে "
+"shift চেপে ধরুন)"
+
+#: authentik/stages/identification/models.py
+msgid "When enabled, user fields are matched regardless of their casing."
+msgstr "সক্রিয় করা থাকলে, ইউজার ফিল্ড তাদের কেসিং নির্বিশেষে মেলানো হয়।"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When a valid username/email has been entered, and this option is enabled, "
+"the user's username and avatar will be shown. Otherwise, the text that the "
+"user entered will be shown"
+msgstr ""
+"একটি বৈধ ইউজারনেম/ইমেইল প্রবেশ করানো হলে, এবং এই অপশনটি সক্রিয় থাকলে, "
+"ব্যবহারকারীর ইউজারনেম এবং অ্যাভাটার দেখানো হবে। অন্যথায়, ব্যবহারকারী যে "
+"টেক্সট প্রবেশ করিয়েছেন তা দেখানো হবে"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When enabled, the stage will succeed and continue even when incorrect user "
+"info is entered."
+msgstr ""
+"সক্রিয় করা থাকলে, ভুল ইউজার তথ্য প্রবেশ করানো হলেও স্টেজটি সফল হবে এবং চলতে"
+" থাকবে।"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+"ব্যবহারকারীকে 'এই ডিভাইসে আমাকে মনে রাখুন' টগল দেখান, যা পুনরাবৃত্ত "
+"ব্যবহারকারীদের সরাসরি পাসওয়ার্ড প্রবেশ করাতে এড়িয়ে যাওয়ার অনুমতি দেয়।"
+
+#: authentik/stages/identification/models.py
+msgid "Optional enrollment flow, which is linked at the bottom of the page."
+msgstr "ঐচ্ছিক এনরোলমেন্ট ফ্লো, যা পৃষ্ঠার নিচে লিঙ্ক করা থাকে।"
+
+#: authentik/stages/identification/models.py
+msgid "Optional recovery flow, which is linked at the bottom of the page."
+msgstr "ঐচ্ছিক রিকভারি ফ্লো, যা পৃষ্ঠার নিচে লিঙ্ক করা থাকে।"
+
+#: authentik/stages/identification/models.py
+msgid "Optional passwordless flow, which is linked at the bottom of the page."
+msgstr "ঐচ্ছিক পাসওয়ার্ডবিহীন ফ্লো, যা পৃষ্ঠার নিচে লিঙ্ক করা থাকে।"
+
+#: authentik/stages/identification/models.py
+msgid "Specify which sources should be shown."
+msgstr "কোন সোর্স দেখানো হবে তা নির্দিষ্ট করুন।"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage"
+msgstr "আইডেন্টিফিকেশন স্টেজ"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stages"
+msgstr "আইডেন্টিফিকেশন স্টেজসমূহ"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Source"
+msgstr "আইডেন্টিফিকেশন স্টেজ সোর্স"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Sources"
+msgstr "আইডেন্টিফিকেশন স্টেজ সোর্সসমূহ"
+
+#: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr "কোনো আইডেন্টিফিকেশন ডেটা প্রদান করা হয়নি।"
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
+msgstr "প্রমাণীকরণ ব্যর্থ হয়েছে।"
+
+#: authentik/stages/identification/stage.py
+msgid "Log in"
+msgstr "লগইন করুন"
+
+#: authentik/stages/invitation/models.py
+msgid ""
+"If this flag is set, this Stage will jump to the next Stage when no "
+"Invitation is given. By default this Stage will cancel the Flow when no "
+"invitation is given."
+msgstr ""
+"এই ফ্ল্যাগটি সেট করা থাকলে, কোনো আমন্ত্রণ না দেওয়া হলে এই স্টেজটি পরবর্তী "
+"স্টেজে চলে যাবে। ডিফল্টভাবে কোনো আমন্ত্রণ না দেওয়া হলে এই স্টেজটি ফ্লোটি "
+"বাতিল করবে।"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stage"
+msgstr "আমন্ত্রণ স্টেজ"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stages"
+msgstr "আমন্ত্রণ স্টেজসমূহ"
+
+#: authentik/stages/invitation/models.py
+msgid "When set, only the configured flow can use this invitation."
+msgstr ""
+"সেট করা থাকলে, শুধুমাত্র কনফিগার করা ফ্লোই এই আমন্ত্রণটি ব্যবহার করতে পারবে।"
+
+#: authentik/stages/invitation/models.py
+msgid "When enabled, the invitation will be deleted after usage."
+msgstr "সক্রিয় করা থাকলে, ব্যবহারের পর আমন্ত্রণটি মুছে ফেলা হবে।"
+
+#: authentik/stages/invitation/models.py
+msgid "Optional fixed data to enforce on user enrollment."
+msgstr "ইউজার এনরোলমেন্টে বাধ্যতামূলক করার জন্য ঐচ্ছিক স্থির ডেটা।"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitations"
+msgstr "আমন্ত্রণসমূহ"
+
+#: authentik/stages/invitation/stage.py
+msgid "Invalid invite/invite not found"
+msgstr "আমন্ত্রণ অবৈধ/আমন্ত্রণ পাওয়া যায়নি"
+
+#: authentik/stages/password/models.py
+msgid "User database + standard password"
+msgstr "ইউজার ডেটাবেজ + স্ট্যান্ডার্ড পাসওয়ার্ড"
+
+#: authentik/stages/password/models.py
+msgid "User database + app passwords"
+msgstr "ইউজার ডেটাবেজ + অ্যাপ পাসওয়ার্ড"
+
+#: authentik/stages/password/models.py
+msgid "User database + LDAP password"
+msgstr "ইউজার ডেটাবেজ + LDAP পাসওয়ার্ড"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "ইউজার ডেটাবেজ + Kerberos পাসওয়ার্ড"
+
+#: authentik/stages/password/models.py
+msgid "Selection of backends to test the password against."
+msgstr "যে ব্যাকএন্ডগুলোর বিপরীতে পাসওয়ার্ড পরীক্ষা করা হবে তার নির্বাচন।"
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many attempts a user has before the flow is canceled. To lock the user "
+"out, use a reputation policy and a user_write stage."
+msgstr ""
+"ফ্লোটি বাতিল হওয়ার আগে একজন ব্যবহারকারীর কতগুলো প্রচেষ্টা থাকে। "
+"ব্যবহারকারীকে লক আউট করতে, একটি reputation policy এবং একটি user_write স্টেজ "
+"ব্যবহার করুন।"
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr ""
+"সক্রিয় করা থাকলে, পাসওয়ার্ড ইনপুট ফিল্ডের সাথে একটি 'পাসওয়ার্ড দেখান' "
+"বাটন প্রদান করে।"
+
+#: authentik/stages/password/models.py
+msgid "Password Stage"
+msgstr "পাসওয়ার্ড স্টেজ"
+
+#: authentik/stages/password/models.py
+msgid "Password Stages"
+msgstr "পাসওয়ার্ড স্টেজসমূহ"
+
+#: authentik/stages/password/stage.py
+msgid "Invalid password"
+msgstr "পাসওয়ার্ড অবৈধ"
+
+#: authentik/stages/prompt/models.py
+msgid "Text: Simple Text input"
+msgstr "টেক্সট: সাধারণ টেক্সট ইনপুট"
+
+#: authentik/stages/prompt/models.py
+msgid "Text area: Multiline Text Input."
+msgstr "টেক্সট এরিয়া: মাল্টিলাইন টেক্সট ইনপুট।"
+
+#: authentik/stages/prompt/models.py
+msgid "Text (read-only): Simple Text input, but cannot be edited."
+msgstr "টেক্সট (রিড-ওনলি): সাধারণ টেক্সট ইনপুট, তবে সম্পাদনা করা যায় না।"
+
+#: authentik/stages/prompt/models.py
+msgid "Text area (read-only): Multiline Text input, but cannot be edited."
+msgstr ""
+"টেক্সট এরিয়া (রিড-ওনলি): মাল্টিলাইন টেক্সট ইনপুট, তবে সম্পাদনা করা যায় না।"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Username: Same as Text input, but checks for and prevents duplicate "
+"usernames."
+msgstr ""
+"ইউজারনেম: টেক্সট ইনপুটের মতোই, তবে ডুপ্লিকেট ইউজারনেম যাচাই করে এবং প্রতিরোধ"
+" করে।"
+
+#: authentik/stages/prompt/models.py
+msgid "Email: Text field with Email type."
+msgstr "ইমেইল: ইমেইল টাইপ সহ টেক্সট ফিল্ড।"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password: Masked input, multiple inputs of this type on the same prompt need"
+" to be identical."
+msgstr ""
+"পাসওয়ার্ড: মাস্কড ইনপুট, একই প্রম্পটে এই টাইপের একাধিক ইনপুট অভিন্ন হতে "
+"হবে।"
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a group of radio buttons."
+msgstr "একটি রেডিও বাটন গ্রুপ হিসেবে রেন্ডার করা ফিক্সড চয়েস ফিল্ড।"
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a dropdown."
+msgstr "একটি ড্রপডাউন হিসেবে রেন্ডার করা ফিক্সড চয়েস ফিল্ড।"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"File: File upload for arbitrary files. File content will be available in "
+"flow context as data-URI"
+msgstr ""
+"ফাইল: যেকোনো ফাইলের জন্য ফাইল আপলোড। ফাইলের কন্টেন্ট ফ্লো কনটেক্সটে data-URI"
+" হিসেবে উপলব্ধ থাকবে"
+
+#: authentik/stages/prompt/models.py
+msgid "Separator: Static Separator Line"
+msgstr "সেপারেটর: স্ট্যাটিক সেপারেটর লাইন"
+
+#: authentik/stages/prompt/models.py
+msgid "Hidden: Hidden field, can be used to insert data into form."
+msgstr "হিডেন: লুকানো ফিল্ড, ফর্মে ডেটা সন্নিবেশ করতে ব্যবহার করা যেতে পারে।"
+
+#: authentik/stages/prompt/models.py
+msgid "Static: Static value, displayed as-is."
+msgstr "স্ট্যাটিক: স্ট্যাটিক মান, যেমন আছে তেমনই প্রদর্শিত হয়।"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr "অ্যালার্ট (তথ্য): তথ্য স্টাইলিং সহ স্ট্যাটিক অ্যালার্ট বক্স"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr "অ্যালার্ট (সতর্কতা): সতর্কতা স্টাইলিং সহ স্ট্যাটিক অ্যালার্ট বক্স"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr "অ্যালার্ট (বিপদ): বিপদ স্টাইলিং সহ স্ট্যাটিক অ্যালার্ট বক্স"
+
+#: authentik/stages/prompt/models.py
+msgid "authentik: Selection of locales authentik supports"
+msgstr "authentik: authentik যেসব লোকেল সমর্থন করে তার নির্বাচন"
+
+#: authentik/stages/prompt/models.py
+msgid "Name of the form field, also used to store the value"
+msgstr "ফর্ম ফিল্ডের নাম, মান সংরক্ষণ করতেও ব্যবহৃত হয়"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally provide a short hint that describes the expected input value. "
+"When creating a fixed choice field, enable interpreting as expression and "
+"return a list to return multiple choices."
+msgstr ""
+"ঐচ্ছিকভাবে প্রত্যাশিত ইনপুট মান বর্ণনা করে এমন একটি সংক্ষিপ্ত ইঙ্গিত প্রদান "
+"করুন। একটি ফিক্সড চয়েস ফিল্ড তৈরি করার সময়, expression হিসেবে ইন্টারপ্রেট "
+"করা সক্রিয় করুন এবং একাধিক চয়েস রিটার্ন করতে একটি তালিকা রিটার্ন করুন।"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally pre-fill the input with an initial value. When creating a fixed "
+"choice field, enable interpreting as expression and return a list to return "
+"multiple default choices."
+msgstr ""
+"ঐচ্ছিকভাবে একটি প্রাথমিক মান দিয়ে ইনপুট প্রি-ফিল করুন। একটি ফিক্সড চয়েস "
+"ফিল্ড তৈরি করার সময়, expression হিসেবে ইন্টারপ্রেট করা সক্রিয় করুন এবং "
+"একাধিক ডিফল্ট চয়েস রিটার্ন করতে একটি তালিকা রিটার্ন করুন।"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt"
+msgstr "প্রম্পট"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompts"
+msgstr "প্রম্পটসমূহ"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage"
+msgstr "প্রম্পট স্টেজ"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stages"
+msgstr "প্রম্পট স্টেজসমূহ"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Field"
+msgstr "প্রম্পট স্টেজ ফিল্ড"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Fields"
+msgstr "প্রম্পট স্টেজ ফিল্ডসমূহ"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policy"
+msgstr "প্রম্পট স্টেজ ভ্যালিডেশন পলিসি"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policys"
+msgstr "প্রম্পট স্টেজ ভ্যালিডেশন পলিসিসমূহ"
+
+#: authentik/stages/prompt/stage.py
+msgid "Passwords don't match."
+msgstr "পাসওয়ার্ড মেলেনি।"
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr "মোড Static হলে টার্গেট URL উপস্থিত থাকা উচিত।"
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr "মোড Flow হলে টার্গেট ফ্লো উপস্থিত থাকা উচিত।"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "রিডাইরেক্ট স্টেজ"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "রিডাইরেক্ট স্টেজসমূহ"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stage"
+msgstr "ইউজার ডিলিট স্টেজ"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stages"
+msgstr "ইউজার ডিলিট স্টেজসমূহ"
+
+#: authentik/stages/user_delete/stage.py
+msgid "No Pending User."
+msgstr "কোনো অপেক্ষমাণ ব্যবহারকারী নেই।"
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured network"
+msgstr ""
+"এই স্টেজ দ্বারা তৈরি সেশনগুলোকে কনফিগার করা নেটওয়ার্কের সাথে বাইন্ড করুন"
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured GeoIP location"
+msgstr ""
+"এই স্টেজ দ্বারা তৈরি সেশনগুলোকে কনফিগার করা GeoIP অবস্থানের সাথে বাইন্ড করুন"
+
+#: authentik/stages/user_login/models.py
+msgid "Terminate all other sessions of the user logging in."
+msgstr "লগইন করা ব্যবহারকারীর অন্য সমস্ত সেশন সমাপ্ত করুন।"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"Offset the session will be extended by when the user picks the remember me "
+"option. Default of 0 means that the remember me option will not be shown. "
+"(Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"ব্যবহারকারী 'মনে রাখুন' অপশন নির্বাচন করলে সেশনটি যে অফসেট দ্বারা বর্ধিত "
+"হবে। ডিফল্ট মান 0 মানে 'মনে রাখুন' অপশনটি দেখানো হবে না। (ফরম্যাট: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"শূন্য নয় এমন মান সেট করা থাকলে, ব্যবহারকারী যে ডিভাইস থেকে লগইন করছেন তা "
+"মনে রাখতে authentik একটি দীর্ঘ মেয়াদের কুকি সংরক্ষণ করবে। (ফরম্যাট: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stage"
+msgstr "ইউজার লগইন স্টেজ"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stages"
+msgstr "ইউজার লগইন স্টেজসমূহ"
+
+#: authentik/stages/user_login/stage.py
+msgid "No Pending user to login."
+msgstr "লগইন করার জন্য কোনো অপেক্ষমাণ ব্যবহারকারী নেই।"
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stage"
+msgstr "ইউজার লগআউট স্টেজ"
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stages"
+msgstr "ইউজার লগআউট স্টেজসমূহ"
+
+#: authentik/stages/user_write/models.py
+msgid "When set, newly created users are inactive and cannot login."
+msgstr ""
+"সেট করা থাকলে, নতুন তৈরি হওয়া ব্যবহারকারীরা নিষ্ক্রিয় থাকবেন এবং লগইন করতে"
+" পারবেন না।"
+
+#: authentik/stages/user_write/models.py
+msgid "Optionally add newly created users to this group."
+msgstr "ঐচ্ছিকভাবে নতুন তৈরি হওয়া ব্যবহারকারীদের এই গ্রুপে যুক্ত করুন।"
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stage"
+msgstr "ইউজার রাইট স্টেজ"
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stages"
+msgstr "ইউজার রাইট স্টেজসমূহ"
+
+#: authentik/stages/user_write/stage.py
+msgid "No Pending data."
+msgstr "কোনো অপেক্ষমাণ ডেটা নেই।"
+
+#: authentik/stages/user_write/stage.py
+msgid "No user found and can't create new user."
+msgstr ""
+"কোনো ব্যবহারকারী পাওয়া যায়নি এবং নতুন ব্যবহারকারী তৈরি করা যাচ্ছে না।"
+
+#: authentik/stages/user_write/stage.py
+msgid "Failed to update user. Please try again later."
+msgstr ""
+"ব্যবহারকারী আপডেট করতে ব্যর্থ হয়েছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন।"
+
+#: authentik/tasks/models.py
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks that must complete for this task to run."
+msgstr "এই টাস্কটি চালানোর জন্য যে টাস্কগুলো সম্পন্ন হতে হবে।"
+
+#: authentik/tasks/models.py
+msgid "Tenant this task belongs to"
+msgstr "যে টেন্যান্টের অন্তর্গত এই টাস্কটি"
+
+#: authentik/tasks/models.py
+msgid "Retry failed task"
+msgstr "ব্যর্থ টাস্ক পুনরায় চেষ্টা করুন"
+
+#: authentik/tasks/models.py
+msgid "Task dependency"
+msgstr "টাস্ক নির্ভরতা"
+
+#: authentik/tasks/models.py
+msgid "Task dependencies"
+msgstr "টাস্ক নির্ভরতাসমূহ"
+
+#: authentik/tasks/models.py
+msgid "Task log"
+msgstr "টাস্ক লগ"
+
+#: authentik/tasks/models.py
+msgid "Task logs"
+msgstr "টাস্ক লগসমূহ"
+
+#: authentik/tasks/models.py
+msgid "Worker status"
+msgstr "ওয়ার্কার স্ট্যাটাস"
+
+#: authentik/tasks/models.py
+msgid "Worker statuses"
+msgstr "ওয়ার্কার স্ট্যাটাসসমূহ"
+
+#: authentik/tasks/schedules/models.py
+msgid "Unique schedule identifier"
+msgstr "ইউনিক শিডিউল আইডেন্টিফায়ার"
+
+#: authentik/tasks/schedules/models.py
+msgid "User schedule identifier"
+msgstr "ইউজার শিডিউল আইডেন্টিফায়ার"
+
+#: authentik/tasks/schedules/models.py
+msgid "Manually trigger a schedule"
+msgstr "একটি শিডিউল ম্যানুয়ালি ট্রিগার করুন"
+
+#: authentik/tasks/tasks.py
+msgid "Remove old worker statuses."
+msgstr "পুরনো ওয়ার্কার স্ট্যাটাস সরান।"
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr "ফ্ল্যাগ {flag_key}-এর মান অবশ্যই {type} টাইপের হতে হবে।"
+
+#: authentik/tenants/models.py
+msgid ""
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr ""
+"স্কিমার নাম অবশ্যই t_ দিয়ে শুরু হতে হবে, শুধুমাত্র ছোট হাতের অক্ষর এবং "
+"সংখ্যা থাকতে হবে এবং 63 অক্ষরের কম হতে হবে।"
+
+#: authentik/tenants/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+"ব্যবহারকারীদের জন্য authentik কীভাবে অ্যাভাটার দেখাবে তা কনফিগার করুন।"
+
+#: authentik/tenants/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+"যে বেস URL-এর অধীনে এই authentik ইনস্ট্যান্সটি প্রবেশযোগ্য তা কনফিগার করুন, "
+"যেমন https://authentik.company"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "ব্যবহারকারীদের তাদের নাম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "ব্যবহারকারীদের তাদের ইমেইল ঠিকানা পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "ব্যবহারকারীদের তাদের ইউজারনেম পরিবর্তনের ক্ষমতা সক্রিয় করুন।"
+
+#: authentik/tenants/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"এই সময়কালের পর ইভেন্ট মুছে ফেলা হবে। (ফরম্যাট: "
+"weeks=3;days=2;hours=3,seconds=2)।"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "রেপুটেশন এই মানের চেয়ে কম হতে পারবে না। শূন্য অথবা ঋণাত্মক।"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr "রেপুটেশন এই মানের চেয়ে বেশি হতে পারবে না। শূন্য অথবা ধনাত্মক।"
+
+#: authentik/tenants/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr "এই অপশনটি ফ্লো এক্সিকিউটর পৃষ্ঠাগুলোর ফুটার লিঙ্ক কনফিগার করে।"
+
+#: authentik/tenants/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+"সক্রিয় করা থাকলে, একজন ব্যবহারকারীর কারণে ঘটা সমস্ত ইভেন্ট ব্যবহারকারী মুছে"
+" ফেলার সাথে সাথে মুছে ফেলা হবে।"
+
+#: authentik/tenants/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "গ্লোবালভাবে ইমপারসনেশন সক্রিয়/নিষ্ক্রিয় করুন।"
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+"একজন ব্যবহারকারীর ছদ্মবেশ ধারণ করার জন্য অ্যাডমিনিস্ট্রেটরদের একটি কারণ "
+"প্রদান করা বাধ্যতামূলক করুন।"
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "ডিফল্ট টোকেন সময়কাল"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "ডিফল্ট টোকেন দৈর্ঘ্য"
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr "কোনো সাইজের অনুরোধ না করা হলে API রেসপন্সের জন্য ডিফল্ট পৃষ্ঠার আকার।"
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "সর্বোচ্চ পৃষ্ঠার আকার"
+
+#: authentik/tenants/models.py
+msgid "Tenant"
+msgstr "টেন্যান্ট"
+
+#: authentik/tenants/models.py
+msgid "Tenants"
+msgstr "টেন্যান্টসমূহ"
+
+#: authentik/tenants/models.py
+msgid "Domain"
+msgstr "ডোমেইন"
+
+#: authentik/tenants/models.py
+msgid "Domains"
+msgstr "ডোমেইনসমূহ"
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr "অবজেক্ট আইডি"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channel"
+msgstr "গ্রুপ চ্যানেল"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channels"
+msgstr "গ্রুপ চ্যানেলসমূহ"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Message"
+msgstr "বার্তা"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Messages"
+msgstr "বার্তাসমূহ"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Queue name"
+msgstr "কিউ নাম"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor name"
+msgstr "Dramatiq অ্যাক্টর নাম"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Message body"
+msgstr "বার্তার বডি"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task status"
+msgstr "টাস্ক স্ট্যাটাস"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task last modified time"
+msgstr "টাস্ক সর্বশেষ পরিবর্তনের সময়"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Number of retries"
+msgstr "পুনরায় চেষ্টার সংখ্যা"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Planned execution time"
+msgstr "পরিকল্পিত এক্সিকিউশন সময়"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task result"
+msgstr "টাস্ক ফলাফল"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Result expiry time"
+msgstr "ফলাফল মেয়াদ উত্তীর্ণের সময়"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task"
+msgstr "টাস্ক"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks"
+msgstr "টাস্কসমূহ"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+#, python-format
+msgid "%(value)s is not a valid crontab"
+msgstr "%(value)s একটি বৈধ crontab নয়"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor to call"
+msgstr "কল করার জন্য Dramatiq অ্যাক্টর"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Args to send to the actor"
+msgstr "অ্যাক্টরে পাঠানোর জন্য args"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Kwargs to send to the actor"
+msgstr "অ্যাক্টরে পাঠানোর জন্য kwargs"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Options to send to the actor"
+msgstr "অ্যাক্টরে পাঠানোর জন্য অপশন"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "When to schedule tasks"
+msgstr "কখন টাস্ক শিডিউল করতে হবে"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Pause this schedule"
+msgstr "এই শিডিউলটি বিরতি দিন"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedule"
+msgstr "শিডিউল"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedules"
+msgstr "শিডিউলসমূহ"

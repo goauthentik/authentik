@@ -17,10 +17,7 @@ class AppAccessWithoutBindings(Flag[bool], key="core_default_app_access"):
 
     default = True
     visibility = "none"
-    description = _(
-        "Configure if applications without any policy/group/user bindings "
-        "should be accessible to any user."
-    )
+    description = _("Applications with no policies bound can be accessed by any user.")
 
 
 class AuthentikCoreConfig(ManagedAppConfig):

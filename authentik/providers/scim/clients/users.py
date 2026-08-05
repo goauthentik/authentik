@@ -1,5 +1,6 @@
 """User client"""
 
+from copy import deepcopy
 from typing import Any
 
 from django.db import transaction
@@ -74,7 +75,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     "GET",
                     f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
                 )
-                users_res = users.get("Resources", [])
+                users_res = self.lower_case_keys(users.get("resources", []))
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(
@@ -95,8 +96,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         """Check if a user is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
         return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
@@ -120,19 +120,11 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         connection.save()
 
     def discover(self):
-        res = self._request("GET", "/Users")
-        seen_items = 0
-        expected_items = int(res["totalResults"])
-        while True:
-            for user in res["Resources"]:
-                try:
-                    self._discover_user_single(user)
-                except ValidationError:
-                    self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
-                seen_items += 1
-            if seen_items >= expected_items:
-                break
-            res = self._request("GET", f"/Users?startIndex={seen_items + 1}")
+        for user in self.paginate_resources("/Users"):
+            try:
+                self._discover_user_single(user)
+            except ValidationError:
+                self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)
