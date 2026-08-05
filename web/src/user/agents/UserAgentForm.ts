@@ -83,6 +83,7 @@ export class UserAgentForm extends Form<AgentCreateRequest> {
                     value=${ifDefined(this.result?.token)}
                     input-hint="code"
                     readonly
+                    copyable
                 ></ak-hidden-text-input>
             </form>`;
     }
