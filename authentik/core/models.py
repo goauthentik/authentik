@@ -10,13 +10,14 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import UNUSABLE_PASSWORD_PREFIX, check_password, make_password
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import validate_slug
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
@@ -369,6 +370,9 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     # (This knowingly violates the Liskov substitution principle. It is better to fail loudly.)
     user_permissions = None
 
+    # Hash staged by the `password` setter, written to the password device on save.
+    _pending_password_hash: str | None = None
+
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
@@ -406,6 +410,15 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if self._pending_password_hash is None:
+            return super().save(*args, **kwargs)
+        # The user and their password device hold what used to be a single row, so they
+        # have to be written together.
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            self._save_pending_password()
 
     @staticmethod
     def default_path() -> str:
@@ -558,6 +571,39 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         )
         return self.groups
 
+    @property
+    def password(self) -> str:
+        """Password hash of this user, stored on their password device.
+
+        Declaring this property also removes the `password` field that would otherwise be
+        inherited from Django's AbstractBaseUser, so the hash has a single home.
+        """
+        if self._pending_password_hash is not None:
+            return self._pending_password_hash
+        try:
+            return self.password_device.password
+        except ObjectDoesNotExist:
+            return UNUSABLE_PASSWORD_PREFIX
+
+    @password.setter
+    def password(self, password_hash: str):
+        """Stage a password hash. As with any other field, `save()` persists it."""
+        self._pending_password_hash = password_hash
+
+    def _save_pending_password(self):
+        """Write a staged password hash to this user's password device."""
+        from authentik.stages.password.models import PasswordDevice
+
+        if self._pending_password_hash is None:
+            return
+        device, _ = PasswordDevice.objects.update_or_create(
+            user=self,
+            defaults={"password": self._pending_password_hash},
+            create_defaults={"password": self._pending_password_hash, "name": "Password"},
+        )
+        self.password_device = device
+        self._pending_password_hash = None
+
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
@@ -572,7 +618,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
-        must already be validated by the caller, and it is stored directly on the user.
+        must already be validated by the caller, and it is stored as-is.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
@@ -595,10 +641,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """
 
         def setter(raw_password):
-            self.set_password(raw_password, signal=False)
-            # Password hash upgrades shouldn't be considered password changes.
-            self._password = None
-            self.save(update_fields=["password"])
+            # Password hash upgrades shouldn't be considered password changes, so only the
+            # device is written and password_change_date is left alone.
+            self.password = make_password(raw_password)
+            self._save_pending_password()
 
         return check_password(raw_password, self.password, setter)
 
