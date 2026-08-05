@@ -5,6 +5,7 @@
 import { MessageFormatter } from "#common/ui/locale/format";
 
 import {
+    CompositeStatusEnum,
     Device,
     DeviceChallenge,
     DeviceClassesEnum,
@@ -145,6 +146,19 @@ const UserTypeLabelRecord: Record<UserTypeEnum, MessageFormatter<string>> = {
 
 export function userTypeToLabel(type?: UserTypeEnum): string {
     const formatter = type ? UserTypeLabelRecord[type] : null;
+
+    return formatter?.() || "";
+}
+
+const UserStatusLabelRecord: Record<CompositeStatusEnum, MessageFormatter<string>> = {
+    [CompositeStatusEnum.Active]: () => msg("Active"),
+    [CompositeStatusEnum.PasswordLocked]: () => msg("Password locked"),
+    [CompositeStatusEnum.Deactivated]: () => msg("Deactivated"),
+    [CompositeStatusEnum.UnknownDefaultOpenApi]: () => msg("Unknown status"),
+};
+
+export function userStatusToLabel(status?: CompositeStatusEnum): string {
+    const formatter = status ? UserStatusLabelRecord[status] : null;
 
     return formatter?.() || "";
 }

@@ -16,7 +16,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
-import { userTypeToLabel } from "#common/labels";
+import { userStatusToLabel, userTypeToLabel } from "#common/labels";
 import { DefaultUIConfig } from "#common/ui/config";
 import { formatUserDisplayName } from "#common/users";
 
@@ -199,6 +199,7 @@ export class UserListPage extends WithLicenseSummary(
         ["", null, msg("Avatar")],
         [msg("Name"), "username"],
         [msg("Active"), "is_active"],
+        [msg("Status"), null],
         [msg("Last login"), "last_login"],
         [msg("Type"), "type"],
         [msg("Actions"), null, msg("Row Actions")],
@@ -316,6 +317,7 @@ export class UserListPage extends WithLicenseSummary(
                 >
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
+            html`${userStatusToLabel(item.compositeStatus)}`,
             Timestamp(item.lastLogin),
             html`${userTypeToLabel(item.type)}`,
             html`<div class="ak-c-table__actions">
