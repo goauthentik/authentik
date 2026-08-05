@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
 from authentik.core.models import Token, TokenIntents, UserTypes
-from authentik.core.tests.utils import create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.agents.models import Agent
 
 
@@ -230,6 +230,23 @@ class AgentTests(APITestCase):
 
         self.client.force_login(user)
         res = self.client.get(reverse("authentik_api:agent-list"))
+        content = res.json()
+        self.assertEqual(content["pagination"]["count"], 1)
+        self.assertEqual(content["results"][0]["parent"]["pk"], user.pk)
+
+    def test_list_filters_by_parent(self):
+        """?parent=<pk> scopes the list to just that parent's agents. Uses a superuser so
+        the list isn't already scoped down to one agent by RBAC object permissions --
+        the filter itself is what's under test"""
+        admin = create_test_admin_user()
+        user = create_test_user()
+        other_user = create_test_user()
+        self.client.force_login(admin)
+
+        self.client.post(reverse("authentik_api:agent-list"), data={"parent": user.pk})
+        self.client.post(reverse("authentik_api:agent-list"), data={"parent": other_user.pk})
+
+        res = self.client.get(reverse("authentik_api:agent-list"), data={"parent": user.pk})
         content = res.json()
         self.assertEqual(content["pagination"]["count"], 1)
         self.assertEqual(content["results"][0]["parent"]["pk"], user.pk)

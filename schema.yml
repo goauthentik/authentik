@@ -348,6 +348,10 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: parent
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QuerySearch'
       tags:
       - agents

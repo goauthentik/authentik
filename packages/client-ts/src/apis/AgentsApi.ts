@@ -32,6 +32,7 @@ export interface AgentsAgentsListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    parent?: number;
     search?: string;
 }
 
@@ -189,6 +190,10 @@ export class AgentsApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["parent"] != null) {
+            queryParameters["parent"] = requestParameters["parent"];
         }
 
         if (requestParameters["search"] != null) {

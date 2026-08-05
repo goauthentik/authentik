@@ -79,6 +79,7 @@ class AgentViewSet(
     serializer_class = AgentSerializer
     owner_field = "parent"
     rbac_allow_create_without_perm = True
+    filterset_fields = ["parent"]
 
     class AgentCreateSerializer(PassiveSerializer):
 
