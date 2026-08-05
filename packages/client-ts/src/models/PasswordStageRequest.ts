@@ -40,11 +40,17 @@ export interface PasswordStageRequest {
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
+     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.
      * @type {number}
      * @memberof PasswordStageRequest
      */
     failedAttemptsBeforeCancel?: number;
+    /**
+     * How many consecutive failed attempts lock the user's password, until an administrator unlocks it or the password is changed. Set to 0 to never lock. Requires an enterprise license.
+     * @type {number}
+     * @memberof PasswordStageRequest
+     */
+    failedAttemptsBeforeLockout?: number;
     /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
@@ -86,6 +92,10 @@ export function PasswordStageRequestFromJSONTyped(
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -108,6 +118,7 @@ export function PasswordStageRequestToJSONTyped(
         backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
         allow_show_password: value["allowShowPassword"],
     };
 }

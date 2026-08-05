@@ -5,8 +5,12 @@ from unittest.mock import MagicMock, patch
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.enterprise.license import LicenseSummary
+from authentik.enterprise.models import LicenseUsageStatus
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -213,3 +217,143 @@ class TestPasswordDevice(TestCase):
         self.assertNotIn(PasswordDevice, list(device_classes()))
         self.assertEqual(list(devices_for_user(user)), [])
         self.assertIsNone(Device.from_persistent_id(device.persistent_id))
+
+
+class TestPasswordLockout(FlowTestCase):
+    """Password lockout tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.licensed(True).start()
+        self.addCleanup(patch.stopall)
+
+        self.user = create_test_admin_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.stage = PasswordStage.objects.create(
+            name=generate_id(),
+            backends=[BACKEND_INBUILT],
+            failed_attempts_before_lockout=2,
+        )
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+
+    def licensed(self, valid: bool):
+        """Patch the license summary this stage reads to decide whether it may lock"""
+        summary = LicenseSummary(
+            internal_users=100,
+            external_users=100,
+            status=LicenseUsageStatus.VALID if valid else LicenseUsageStatus.UNLICENSED,
+            latest_valid=now(),
+            license_flags=[],
+        )
+        return patch(
+            "authentik.stages.password.models.LicenseKey.cached_summary", return_value=summary
+        )
+
+    def start_flow(self):
+        """Put a plan with the test user pending into the session"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+    def submit(self, password: str):
+        return self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            {"password": password},
+        )
+
+    @property
+    def device(self) -> PasswordDevice:
+        return PasswordDevice.objects.get(user=self.user)
+
+    def test_locks_after_limit(self):
+        """Test the password is locked once the stage's limit is reached"""
+        self.start_flow()
+        self.submit("wrong")
+        self.assertEqual(self.device.failed_attempts, 1)
+        self.assertFalse(self.device.locked)
+
+        self.submit("wrong")
+        self.assertEqual(self.device.failed_attempts, 2)
+        self.assertTrue(self.device.locked)
+        self.assertTrue(
+            Event.objects.filter(action=EventAction.PASSWORD_LOCKED, user__pk=self.user.pk).exists()
+        )
+
+    def test_locked_refuses_correct_password(self):
+        """Test a locked password is refused even when the submitted password is correct"""
+        device = self.device
+        device.locked_at = now()
+        device.save()
+
+        self.start_flow()
+        response = self.submit(self.user.username)
+        self.assertStageResponse(response, component="ak-stage-access-denied")
+
+    def test_success_resets_failures(self):
+        """Test authenticating successfully forgets earlier failures"""
+        self.start_flow()
+        self.submit("wrong")
+        self.assertEqual(self.device.failed_attempts, 1)
+
+        self.submit(self.user.username)
+        self.assertEqual(self.device.failed_attempts, 0)
+
+    def test_new_password_unlocks(self):
+        """Test setting a password clears the lock"""
+        device = self.device
+        device.failed_attempts = 5
+        device.locked_at = now()
+        device.save()
+
+        self.user.set_password(generate_id())
+        self.user.save()
+
+        self.assertEqual(self.device.failed_attempts, 0)
+        self.assertFalse(self.device.locked)
+
+    def test_unlicensed_never_locks(self):
+        """Test passwords are not locked without an enterprise license"""
+        with self.licensed(False):
+            self.start_flow()
+            self.submit("wrong")
+            self.submit("wrong")
+        self.assertFalse(self.device.locked)
+
+    def test_api_requires_license(self):
+        """Test the lockout limit cannot be configured without an enterprise license"""
+        self.client.force_login(self.user)
+        url = reverse("authentik_api:passwordstage-detail", kwargs={"pk": self.stage.pk})
+
+        with self.licensed(False):
+            response = self.client.patch(
+                url, data={"failed_attempts_before_lockout": 3}, content_type="application/json"
+            )
+        self.assertEqual(response.status_code, 400)
+
+        response = self.client.patch(
+            url, data={"failed_attempts_before_lockout": 3}, content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_unlock(self):
+        """Test an administrator can unlock a locked password"""
+        device = self.device
+        device.failed_attempts = 5
+        device.locked_at = now()
+        device.save()
+
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:user-unlock-password", kwargs={"pk": self.user.pk})
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(self.device.locked)
+        self.assertEqual(self.device.failed_attempts, 0)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_UNLOCKED, user__pk=self.user.pk
+            ).exists()
+        )
