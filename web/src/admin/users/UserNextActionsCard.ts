@@ -1,3 +1,5 @@
+import "#elements/chips/Chip";
+import "#elements/chips/ChipGroup";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
@@ -138,22 +140,19 @@ export class UserNextActionsCard extends AKElement {
             </div>
             <div class="pf-c-card__body">
                 ${actions.length
-                    ? actions.map(
-                          (slug) => html`
-                              <div class="ak-next-action">
-                                  <span>${slug}</span>
-                                  <button
-                                      class="pf-c-button pf-m-plain"
-                                      aria-label=${msg("Remove action", {
-                                          id: "user-next-actions.remove.aria-label",
-                                      })}
-                                      @click=${() => this.removeAction(slug)}
+                    ? html`<ak-chip-group>
+                          ${actions.map(
+                              (slug) => html`
+                                  <ak-chip
+                                      removable
+                                      value=${slug}
+                                      @remove=${() => this.removeAction(slug)}
                                   >
-                                      <i class="fas fa-times" aria-hidden="true"></i>
-                                  </button>
-                              </div>
-                          `,
-                      )
+                                      ${slug}
+                                  </ak-chip>
+                              `,
+                          )}
+                      </ak-chip-group>`
                     : html`<p class="ak-next-actions-empty">
                           ${msg("No actions pending.", {
                               id: "user-next-actions.empty.description",
