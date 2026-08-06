@@ -110,7 +110,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-from authentik.stages.user_login.next_actions import resolve_next_actions
+from authentik.stages.user_login.next_actions import next_action_slugs, resolve_next_actions
 
 LOGGER = get_logger()
 
@@ -217,6 +217,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             permissions = validated_data.pop("permissions", [])
 
         instance: User = super().create(validated_data)
+        self._log_next_action_changes([], instance)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
@@ -235,7 +236,9 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
 
+        previous_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
         instance = super().update(instance, validated_data)
+        self._log_next_action_changes(previous_actions, instance)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
@@ -245,6 +248,28 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
+
+    def _log_next_action_changes(self, previous_actions: list[str], instance: User):
+        """Create events for next actions added to or removed from the user."""
+        current_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
+        request = self.context.get("request")
+        changes = (
+            (
+                EventAction.NEXT_ACTION_SET,
+                [s for s in current_actions if s not in previous_actions],
+            ),
+            (
+                EventAction.NEXT_ACTION_REMOVED,
+                [s for s in previous_actions if s not in current_actions],
+            ),
+        )
+        for event_action, slugs in changes:
+            for slug in slugs:
+                event = Event.new(event_action, flow_slug=slug, affected_user=instance.username)
+                if request:
+                    event.from_http(request)
+                else:
+                    event.save()
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
