@@ -32,6 +32,7 @@ GDTC
 GHES
 GHSA
 GLPI
+GitGuardian
 Guac
 Guacd
 Gunicorn
