@@ -100,109 +100,114 @@ export function generateCVESidebar(args) {
 
 //#region Configuration
 
-export default createDocusaurusConfig(
-    extendConfig({
-        future: {
-            faster: true,
-        },
-        clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: DocusaurusURL.Docs,
-        //#region Preset
+export default /** @type {import("@docusaurus/types").Config} */ (
+    createDocusaurusConfig(
+        extendConfig({
+            future: {
+                faster: true,
+            },
+            clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
+            url: DocusaurusURL.Docs,
+            //#region Preset
 
-        presets: [
-            createClassicPreset({
-                pages: false,
-                docs: {
-                    sidebarItemsGenerator: async ({ defaultSidebarItemsGenerator, ...args }) => {
-                        const sidebarItems = await defaultSidebarItemsGenerator(args);
-                        if (args.item.dirName === "security/cves") {
-                            return generateCVESidebar(args);
-                        }
-                        return sidebarItems;
+            presets: [
+                createClassicPreset({
+                    pages: false,
+                    docs: {
+                        sidebarItemsGenerator: async ({
+                            defaultSidebarItemsGenerator,
+                            ...args
+                        }) => {
+                            const sidebarItems = await defaultSidebarItemsGenerator(args);
+                            if (args.item.dirName === "security/cves") {
+                                return generateCVESidebar(args);
+                            }
+                            return sidebarItems;
+                        },
+                        exclude: [
+                            /**
+                             * Exclude previously generated API docs.
+                             *
+                             * @expires 2025-12-01
+                             */
+                            "**/developer-docs/api/reference/**",
+                        ],
+                        routeBasePath: "/",
+                        path: ".",
+
+                        sidebarPath: "./sidebar.mjs",
+                        showLastUpdateTime: false,
+                        editUrl: "https://github.com/goauthentik/authentik/edit/main/website/docs/",
+
+                        //#region Docs Plugins
+
+                        beforeDefaultRemarkPlugins: [
+                            remarkLinkRewrite([
+                                ["/api", "https://api.goauthentik.io"],
+                                ["/integrations", DocusaurusURL.Integrations],
+                            ]),
+                        ],
                     },
-                    exclude: [
-                        /**
-                         * Exclude previously generated API docs.
-                         *
-                         * @expires 2025-12-01
-                         */
-                        "**/developer-docs/api/reference/**",
-                    ],
-                    routeBasePath: "/",
-                    path: ".",
-
-                    sidebarPath: "./sidebar.mjs",
-                    showLastUpdateTime: false,
-                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/docs/",
-
-                    //#region Docs Plugins
-
-                    beforeDefaultRemarkPlugins: [
-                        remarkLinkRewrite([
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", DocusaurusURL.Integrations],
-                        ]),
-                    ],
-                },
-            }),
-        ],
-
-        //#endregion
-
-        //#region Plugins
-
-        plugins: [
-            [
-                "@goauthentik/docusaurus-theme/releases/plugin",
-                /** @type {AKReleasesPluginOptions} */ ({
-                    docsDirectory: __dirname,
-                    environment: releaseEnvironment,
                 }),
             ],
 
-            createLLMSPlugin({
-                sections: [{ path: ".", routeBasePath: "/" }],
-                groupBy: "topic",
-                // Normalized section headings for the top-level topics.
-                categories: topics,
-                // Split the glossary out of "Core Concepts" into its own section.
-                regroup: [["core/glossary", "glossary"]],
-                crossLinks: [
-                    {
-                        label: "Integrations",
-                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
-                    },
+            //#endregion
+
+            //#region Plugins
+
+            plugins: [
+                [
+                    "@goauthentik/docusaurus-theme/releases/plugin",
+                    /** @type {AKReleasesPluginOptions} */ ({
+                        docsDirectory: __dirname,
+                        environment: releaseEnvironment,
+                    }),
                 ],
-            }),
 
-            ...redirectPlugins,
-        ],
+                createLLMSPlugin({
+                    sections: [{ path: ".", routeBasePath: "/" }],
+                    groupBy: "topic",
+                    // Normalized section headings for the top-level topics.
+                    categories: topics,
+                    // Split the glossary out of "Core Concepts" into its own section.
+                    regroup: [["core/glossary", "glossary"]],
+                    crossLinks: [
+                        {
+                            label: "Integrations",
+                            url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
+                        },
+                    ],
+                }),
 
-        //#endregion
+                ...redirectPlugins,
+            ],
 
-        //#region Theme
+            //#endregion
 
-        themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+            //#region Theme
 
-        themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
-            algolia: createAlgoliaConfig({
-                externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
-            }),
+            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
 
-            image: "img/social.png",
-            navbarReplacements: {
-                DOCS_URL: "/",
-            },
-            navbar: {
-                logo: {
-                    alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
-                    href: "https://goauthentik.io/",
-                    target: "_self",
+            themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
+                algolia: createAlgoliaConfig({
+                    externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
+                }),
+
+                image: "img/social.png",
+                navbarReplacements: {
+                    DOCS_URL: "/",
                 },
-            },
-        }),
+                navbar: {
+                    logo: {
+                        alt: "authentik logo",
+                        src: "img/icon_left_brand.svg",
+                        href: "https://goauthentik.io/",
+                        target: "_self",
+                    },
+                },
+            }),
 
-        //#endregion
-    }),
+            //#endregion
+        }),
+    )
 );

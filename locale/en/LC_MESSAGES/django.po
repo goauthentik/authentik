@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-30 14:39+0000\n"
+"POT-Creation-Date: 2026-08-06 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -170,6 +170,16 @@ msgid ""
 msgstr ""
 
 #: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ "
+"templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
+msgstr ""
+
+#: authentik/brands/models.py
 msgid ""
 "When set, external users will be redirected to this application after "
 "authenticating."
@@ -281,6 +291,10 @@ msgid "Can't modify internal service account users"
 msgstr ""
 
 #: authentik/core/api/users.py
+msgid "This field is required."
+msgstr ""
+
+#: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
 msgstr ""
 
@@ -314,10 +328,6 @@ msgstr ""
 
 #: authentik/core/api/users.py
 msgid "Email stage not found."
-msgstr ""
-
-#: authentik/core/api/users.py
-msgid "This field is required."
 msgstr ""
 
 #: authentik/core/apps.py
@@ -603,6 +613,14 @@ msgid "Sessions"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr ""
 
@@ -632,6 +650,30 @@ msgstr ""
 
 #: authentik/core/models.py
 msgid "Object Attributes"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
 msgstr ""
 
 #: authentik/core/sources/flow_manager.py
@@ -700,6 +742,14 @@ msgstr ""
 
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr ""
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
 msgstr ""
 
 #: authentik/crypto/api.py
@@ -930,6 +980,26 @@ msgstr ""
 
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -2047,6 +2117,12 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
@@ -4518,10 +4594,6 @@ msgid "No (allowed) MFA authenticator configured."
 msgstr ""
 
 #: authentik/stages/authenticator_webauthn/models.py
-msgid "When enabled, a given device can only be registered once."
-msgstr ""
-
-#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr ""
 
@@ -5232,6 +5304,10 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
+msgstr ""
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

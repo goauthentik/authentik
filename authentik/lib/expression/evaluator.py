@@ -249,7 +249,7 @@ class BaseEvaluator:
         kwargs["aud"] = provider.client_id
         return provider.encode(kwargs)
 
-    def expr_send_email(  # noqa: PLR0913
+    def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
         address: str | list[str],
         subject: str,

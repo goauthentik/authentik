@@ -176,8 +176,11 @@ class TestProviderProxyForward(SeleniumTestCase):
 
         self.prepare()
 
-        self.driver.get("http://localhost/api")
+        self.driver.get("http://localhost")
         self.login()
+        sleep(1)
+
+        self.driver.get("http://localhost/api")
         sleep(1)
 
         body_json = self.parse_json_content()

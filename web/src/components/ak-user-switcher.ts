@@ -19,11 +19,12 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 
 @customElement("ak-user-switcher")
 export class UserSwitcher extends WithSession(AKElement) {
-    static styles = [PFButton, PFDropdown, Styles];
+    static styles = [PFButton, PFDropdown, PFDivider, Styles];
 
     async #startSwitch(userPk?: number): Promise<void> {
         const { redirect } = await aki(CoreApi).coreUsersSwitchCreate({
@@ -120,9 +121,7 @@ export class UserSwitcher extends WithSession(AKElement) {
                 tabindex="-1"
             >
                 ${users.map((user) => this.#renderUser(user))}
-                ${users.length
-                    ? html`<li class="pf-c-dropdown__separator" role="separator"></li>`
-                    : null}
+                ${users.length ? html` <li class="pf-c-divider" role="separator"></li> ` : null}
                 ${enabled
                     ? html`<li role="presentation">
                           <button

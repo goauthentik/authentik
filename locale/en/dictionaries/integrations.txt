@@ -1,5 +1,6 @@
 # Integrations
 ADOM
+Apereo
 appflowy
 appsmith
 Ascensio
@@ -9,6 +10,7 @@ Bitnami
 Budibase
 Chatwoot
 Coolify
+Directus
 Doki
 Doku
 dokuwiki
@@ -33,6 +35,7 @@ Homarr
 Icinga
 Informatique
 Jellyseerr
+Kavita
 Kimai
 Kiota
 Knoc

@@ -70,14 +70,6 @@
   <source>Stop impersonation</source>
   <target>Arrêter l'usurpation d'identité</target>
 </trans-unit>
-<trans-unit id="s6abff64e7ff7fde9">
-  <source>Avatar image</source>
-  <target>Image d'avatar</target>
-</trans-unit>
-<trans-unit id="s7cfe12cd14df9950">
-  <source>Sign out</source>
-  <target>Se déconnecter</target>
-</trans-unit>
 <trans-unit id="saae1c70e168b45b4">
   <source>Admin</source>
   <target>Administrateur</target>
@@ -10142,12 +10134,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s03b42cb6a95eddfb">
   <source>Authorizations (1 month)</source>
 </trans-unit>
-<trans-unit id="s767b102301dd9d7b">
-  <source>Prevent duplicate devices</source>
-</trans-unit>
-<trans-unit id="s477c7aa824db217c">
-  <source>When enabled, any unique authenticator can only be registered once.</source>
-</trans-unit>
 <trans-unit id="sce00b83d404f4037">
   <source>Successfully imported blueprint.</source>
 </trans-unit>
@@ -12041,9 +12027,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sa4ad8a8c594e1355">
   <source>Override property mappings</source>
 </trans-unit>
-<trans-unit id="s476bf94eb185f36c">
-  <source>Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.</source>
-</trans-unit>
 <trans-unit id="s9c21e17fba762b70">
   <source>Access token validity</source>
 </trans-unit>
@@ -12076,6 +12059,219 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="safbe8177d10f3a25">
   <source>Bindings configured here will be copied to dynamically registered applications. If no bindings are created, bindings of this providers' application are copied.</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.label">
+  <source>User switch flow</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.placeholder">
+  <source>Select a user switch flow...</source>
+</trans-unit>
+<trans-unit id="brand.form.flow-user-switch.description">
+  <source>Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.</source>
+</trans-unit>
+<trans-unit id="user-switcher.toggle.label">
+  <source>Switch user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.add-user.label">
+  <source>Add another user</source>
+</trans-unit>
+<trans-unit id="user-switcher.actions.sign-out-current.label">
+  <source>Sign out current user</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.label">
+  <source>Map tiles</source>
+</trans-unit>
+<trans-unit id="brand.map-tiles.description">
+  <source>Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login.label">
+  <source>Login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.login-failed.label">
+  <source>Failed login</source>
+</trans-unit>
+<trans-unit id="events.map.kind.logout.label">
+  <source>Logout</source>
+</trans-unit>
+<trans-unit id="events.map.kind.authorize-application.label">
+  <source>Authorize Application</source>
+</trans-unit>
+<trans-unit id="events.map.kind.other.label">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="s0ef37c2c3c5770e4">
+  <source>Adding</source>
+</trans-unit>
+<trans-unit id="sf1d3d13eaff0f517">
+  <source>Enable automatic discovery of remote resources.</source>
+</trans-unit>
+<trans-unit id="s9d1116ec684cc9dc">
+  <source>Scope mappings applied to dynamically registered clients. When not selected, scope mappings of the parent provider are used.</source>
+</trans-unit>
+<trans-unit id="s5a64cc153009e9fb">
+  <source>Dynamic Client Registration URL</source>
+</trans-unit>
+<trans-unit id="scb836fa821092872">
+  <source>Successfully deleted Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="sf21f2ef85ea4c84b">
+  <source>Failed to delete Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="s36865a6d374ff739">
+  <source>Delete Dynamic Client Registration configuration</source>
+</trans-unit>
+<trans-unit id="s2242f5c6b4625d84">
+  <source>Are you sure you want to delete the Dynamic Client Registration configuration for this provider? No new clients will be able to register themselves, existing clients will not be removed.</source>
+</trans-unit>
+<trans-unit id="s583559b56228966c">
+  <source>Define who can approve access requests for the objects this rule is bound to.</source>
+</trans-unit>
+<trans-unit id="s15ee5b29a732e82a">
+  <source>New Request Rule</source>
+</trans-unit>
+<trans-unit id="s90eefcc5ed423895">
+  <source>Create a new request rule to bind to this object.</source>
+</trans-unit>
+<trans-unit id="s622e11fa5a62c709">
+  <source>Existing Request Rule</source>
+</trans-unit>
+<trans-unit id="scf0457b46d32a983">
+  <source>Bind an existing request rule to this object.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.label">
+  <source>Mirror</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.description">
+  <source>The agent has exactly the parent user's access, evaluated live.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.label">
+  <source>Copy</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.description">
+  <source>Copy the parent's policy bindings onto the agent.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.label">
+  <source>None</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.description">
+  <source>The agent uses only its own policy bindings.</source>
+</trans-unit>
+<trans-unit id="s95416925fd51a346">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="sefc8e08d71b8530f">
+  <source>Agents</source>
+</trans-unit>
+<trans-unit id="agent.form.close.label">
+  <source>Close</source>
+</trans-unit>
+<trans-unit id="s3687e4f7ae814ce1">
+  <source>Successfully created agent.</source>
+</trans-unit>
+<trans-unit id="s725865ad04deb9d4">
+  <source>Parent user</source>
+</trans-unit>
+<trans-unit id="sb4e8961d5ee9a6df">
+  <source>The user this agent acts on behalf of.</source>
+</trans-unit>
+<trans-unit id="s41a70d75feb46cd2">
+  <source>Optional display name. Defaults to the parent user's name.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.label">
+  <source>Policy behavior</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.help">
+  <source>How the agent's access relates to its parent user.</source>
+</trans-unit>
+<trans-unit id="se105d24a03216c66">
+  <source>Whether this agent should be automatically removed once it expires.</source>
+</trans-unit>
+<trans-unit id="agent.token.description">
+  <source>Use the token below to authenticate as this agent. It is shown only once — store it now.</source>
+</trans-unit>
+<trans-unit id="agent.token.label">
+  <source>Token</source>
+</trans-unit>
+<trans-unit id="s2854025f8d4405b6">
+  <source>Search for a agent...</source>
+</trans-unit>
+<trans-unit id="s4a29404019d64d40">
+  <source>Admin-provisioned delegate identities that access can be requested and granted for, separately from their parent user.</source>
+</trans-unit>
+<trans-unit id="s4eb514ebcb80553d">
+  <source>Parent</source>
+</trans-unit>
+<trans-unit id="s9e5233ef650728d6">
+  <source>Agent(s)</source>
+</trans-unit>
+<trans-unit id="user.activation.confirm.deactivate">
+  <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+</trans-unit>
+<trans-unit id="user.activation.confirm.activate">
+  <source>Are you sure you want to activate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+</trans-unit>
+<trans-unit id="agent.column.name">
+  <source>Name</source>
+</trans-unit>
+<trans-unit id="agent.column.expires">
+  <source>Expires</source>
+</trans-unit>
+<trans-unit id="agent.column.actions">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="agent.delete.object-label">
+  <source>Agent(s)</source>
+</trans-unit>
+<trans-unit id="agent.delete.trigger">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="agent.expires.never">
+  <source>-</source>
+</trans-unit>
+<trans-unit id="agent.delete.object-label-single">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="agent.delete.tooltip">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="s98d9f46353f3fd25">
+  <source>Copy value</source>
+</trans-unit>
+<trans-unit id="agent.verbose-name.label">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="agent.verbose-name-plural.label">
+  <source>Agents</source>
+</trans-unit>
+<trans-unit id="agent.create.label">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="agent.create.submit">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="agent.create.success">
+  <source>Successfully created agent.</source>
+</trans-unit>
+<trans-unit id="agent.label.label">
+  <source>Label</source>
+</trans-unit>
+<trans-unit id="agent.label.description">
+  <source>Optional display name for this agent.</source>
+</trans-unit>
+<trans-unit id="agent.mirror.description">
+  <source>This agent mirrors your access: it can act on exactly the applications you can, and never more.</source>
+</trans-unit>
+<trans-unit id="agent.list.empty">
+  <source>No agents.</source>
+</trans-unit>
+<trans-unit id="agent.create.header">
+  <source>Create Agent</source>
+</trans-unit>
+<trans-unit id="agent.create.trigger">
+  <source>Create Agent</source>
+</trans-unit>
+<trans-unit id="agent.page.description">
+  <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
 </trans-unit>
 </body>
 </file>
