@@ -57,28 +57,19 @@ export function logoutMethodOptions(hasPostBinding: boolean) {
     ];
 }
 
-export const digestAlgorithmOptions = openAPIEnumOptions(DigestAlgorithmEnum).map((option) => ({
-    ...option,
-    default: option.value === DigestAlgorithmEnum.SHA256,
-}));
-
-export const signatureAlgorithmOptions = openAPIEnumOptions(SignatureAlgorithmEnum).map(
-    (option) => ({
-        ...option,
-        default: option.value === SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
-    }),
+export const digestAlgorithmOptions = openAPIEnumOptions(
+    DigestAlgorithmEnum,
+    DigestAlgorithmEnum.SHA256,
 );
 
-const SAML_SOURCE_SIGNATURE_ALGORITHMS: readonly SignatureAlgorithmEnum[] = [
-    SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
+export const signatureAlgorithmOptions = openAPIEnumOptions(
+    SignatureAlgorithmEnum,
     SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
-    SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
-    SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
-    SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
-];
+);
 
-export const samlSourceSignatureAlgorithmOptions = signatureAlgorithmOptions.filter((option) =>
-    SAML_SOURCE_SIGNATURE_ALGORITHMS.includes(option.value),
+/** SAML sources do not support ECDSA signatures. */
+export const samlSourceSignatureAlgorithmOptions = signatureAlgorithmOptions.filter(
+    (option) => !option.label.startsWith("ECDSA"),
 );
 
 export type HashAlgorithm = "SHA1" | "SHA256" | "SHA384" | "SHA512";

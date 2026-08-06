@@ -11,13 +11,13 @@ from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.x509.oid import NameOID
-from django.db import models
 
 from authentik import authentik_version
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import GeneratedEnum
 
 
-class PrivateKeyAlg(models.TextChoices):
+class PrivateKeyAlg(GeneratedEnum):
     """Algorithm to create private key with"""
 
     RSA = "rsa", "RSA"

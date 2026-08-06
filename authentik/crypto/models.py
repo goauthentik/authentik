@@ -24,7 +24,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.lib.models import CreatedUpdatedModel, GeneratedEnum, SerializerModel
 
 LOGGER = get_logger()
 
@@ -50,7 +50,7 @@ def format_cert(raw_pam: str) -> str:
     return "\n".join([PEM_HEADER, *wrap(raw_pam.replace("\n", ""), 64), PEM_FOOTER])
 
 
-class KeyType(models.TextChoices):
+class KeyType(GeneratedEnum):
     """Cryptographic key algorithm types"""
 
     RSA = "rsa", "RSA"

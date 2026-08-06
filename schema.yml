@@ -53198,13 +53198,9 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid
@@ -53381,13 +53377,9 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         temporary_user_delete_after:
           type: string
           minLength: 1
@@ -53467,7 +53459,6 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
-          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -54195,13 +54186,9 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid
@@ -57011,13 +56998,9 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid
@@ -57226,13 +57209,9 @@ components:
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid
@@ -57434,13 +57413,9 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         temporary_user_delete_after:
           type: string
           title: Delete temporary users after
@@ -57643,13 +57618,9 @@ components:
           description: Keypair used to sign outgoing Responses going to the Identity
             Provider.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         temporary_user_delete_after:
           type: string
           minLength: 1
@@ -57834,7 +57805,6 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
-          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -57966,7 +57936,6 @@ components:
         compatibility_mode:
           allOf:
           - $ref: '#/components/schemas/CompatibilityModeEnum'
-          default: default
           title: SCIM Compatibility Mode
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         service_provider_config_cache_timeout:
@@ -61762,13 +61731,9 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid
@@ -61890,13 +61855,9 @@ components:
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
         digest_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/DigestAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmlenc#sha256
+          $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
-          allOf:
-          - $ref: '#/components/schemas/SignatureAlgorithmEnum'
-          default: http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+          $ref: '#/components/schemas/SignatureAlgorithmEnum'
         signing_kp:
           type: string
           format: uuid

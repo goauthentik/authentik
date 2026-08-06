@@ -63,13 +63,7 @@ export class CryptoCertificateGenerateForm extends Form<CertificateGenerationReq
             ></ak-number-input>
 
             <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
-                <ak-radio
-                    .options=${openAPIEnumOptions(AlgEnum).map((option) => ({
-                        ...option,
-                        default: option.value === AlgEnum.RSA,
-                    }))}
-                >
-                </ak-radio>
+                <ak-radio .options=${openAPIEnumOptions(AlgEnum, AlgEnum.RSA)}> </ak-radio>
                 <p class="pf-c-form__helper-text">
                     ${msg("Algorithm used to generate the private key.")}
                 </p>

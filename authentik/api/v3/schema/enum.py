@@ -4,12 +4,10 @@ import functools
 import inspect
 import re
 from collections import defaultdict
-from collections.abc import Iterable
 from enum import Enum
 
-from django.conf import settings
 from django.db.models import Choices
-from django.utils.translation import get_language, override
+from django.utils.translation import get_language
 from drf_spectacular.drainage import error, warn
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.hooks import postprocess_schema_enum_id_removal
@@ -23,50 +21,31 @@ from drf_spectacular.settings import spectacular_settings
 from inflection import camelize
 from structlog.stdlib import get_logger
 
-from authentik.api.fields import GeneratedEnumChoiceField
+from authentik.lib.models import GeneratedEnum
 
 LOGGER = get_logger()
 
 
-def enum_var_names(choices: Iterable[tuple[object, object]]) -> list[str] | None:
-    """Return concise labels only when they improve generated identifiers."""
-    choices = [(str(value), str(label)) for value, label in choices if value not in ("", None)]
-    labels = [label for _, label in choices]
-    if not labels or len(labels) != len(set(labels)):
-        return None
-    if not all(
-        re.fullmatch(r"(?:[A-Z][A-Za-z0-9]*|v[A-Z][A-Za-z0-9]*)", label) for label in labels
-    ):
-        return None
-
-    def inferred_member_name(value: str) -> str:
-        return value[:1].upper() + value[1:] if value else value
-
-    # Skip when labels match the default client names derived from values (foo → Foo).
-    if not any(label != inferred_member_name(value) for value, label in choices):
-        return None
-    return labels
+def generated_enum_varnames() -> dict[tuple[str, ...], list[str]]:
+    """Client member names by choice values, for choice sets subclassing GeneratedEnum."""
+    return {
+        tuple(str(value) for value in enum.values): [str(label) for label in enum.labels]
+        for enum in GeneratedEnum.__subclasses__()
+    }
 
 
 class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):
-    """Emit enum varnames only for opt-in GeneratedEnumChoiceField fields."""
+    """Emit `x-enum-varnames` for choice sets that opted in via GeneratedEnum."""
 
-    target_class = GeneratedEnumChoiceField
+    target_class = "rest_framework.fields.ChoiceField"
     match_subclasses = True
     priority = -1
 
     def map_serializer_field(self, auto_schema, direction):
-        schema = auto_schema._map_serializer_field(
-            self.target,
-            direction,
-            bypass_extensions=True,
-        )
-        enum_schema = schema.get("items", schema)
-        with override(settings.LANGUAGE_CODE):
-            choices = list(self.target.choices.items())
-            names = enum_var_names(choices)
+        schema = auto_schema._map_serializer_field(self.target, direction, bypass_extensions=True)
+        names = generated_enum_varnames().get(tuple(str(value) for value in self.target.choices))
         if names:
-            enum_schema["x-enum-varnames"] = names
+            schema.get("items", schema)["x-enum-varnames"] = names
         return schema
 
 
@@ -217,13 +196,10 @@ def postprocess_schema_enums(result, generator, **kwargs):  # noqa: PLR0912, PLR
             enum_name = enum_name_mapping.get(prop_hash) or enum_name_mapping[prop_hash, prop_name]
 
             # split property into remaining property and enum component parts
-            enum_schema = {
-                k: v for k, v in prop_schema.items() if k in ["type", "enum", "x-enum-varnames"]
-            }
+            enum_keys = ["type", "enum", "x-enum-varnames"]
+            enum_schema = {k: v for k, v in prop_schema.items() if k in enum_keys}
             prop_schema = {
-                k: v
-                for k, v in prop_schema.items()
-                if k not in ["type", "enum", "x-enum-varnames", "x-spec-enum-id"]
+                k: v for k, v in prop_schema.items() if k not in [*enum_keys, "x-spec-enum-id"]
             }
 
             # separate actual description from name-value tuples

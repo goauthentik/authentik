@@ -193,6 +193,7 @@ SPECTACULAR_SETTINGS = {
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
+        "KeyTypeEnum": "authentik.crypto.models.KeyType",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
         "OffboardingActionEnum": (
@@ -211,7 +212,6 @@ SPECTACULAR_SETTINGS = {
         "SAMLLogoutMethods": "authentik.providers.saml.models.SAMLLogoutMethods",
         "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
         "SCIMAuthenticationModeEnum": "authentik.providers.scim.models.SCIMAuthenticationMode",
-        "KeyTypeEnum": "authentik.crypto.models.KeyType",
         "StageModeEnum": "authentik.endpoints.models.StageMode",
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",

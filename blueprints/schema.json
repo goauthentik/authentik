@@ -9489,7 +9489,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "digest algorithm"
+                    "title": "Digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -9504,7 +9504,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "signature algorithm"
+                    "title": "Signature algorithm"
                 },
                 "signing_kp": {
                     "type": "string",
@@ -13163,7 +13163,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "digest algorithm"
+                    "title": "Digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -13178,7 +13178,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "signature algorithm"
+                    "title": "Signature algorithm"
                 },
                 "signing_kp": {
                     "type": "string",
@@ -16035,7 +16035,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#sha384",
                         "http://www.w3.org/2001/04/xmlenc#sha512"
                     ],
-                    "title": "digest algorithm"
+                    "title": "Digest algorithm"
                 },
                 "signature_algorithm": {
                     "type": "string",
@@ -16050,7 +16050,7 @@
                         "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512",
                         "http://www.w3.org/2000/09/xmldsig#dsa-sha1"
                     ],
-                    "title": "signature algorithm"
+                    "title": "Signature algorithm"
                 },
                 "temporary_user_delete_after": {
                     "type": "string",

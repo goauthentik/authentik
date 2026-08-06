@@ -23,7 +23,6 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.fields import GeneratedEnumChoiceField
 from authentik.api.validation import validate
 from authentik.common.saml.constants import (
     DEFAULT_ISSUER,
@@ -72,12 +71,6 @@ class SAMLProviderSerializer(ProviderSerializer):
     url_sso_init = SerializerMethodField()
     url_slo_post = SerializerMethodField()
     url_slo_redirect = SerializerMethodField()
-    digest_algorithm = GeneratedEnumChoiceField.from_model_field(
-        SAMLProvider._meta.get_field("digest_algorithm"),
-    )
-    signature_algorithm = GeneratedEnumChoiceField.from_model_field(
-        SAMLProvider._meta.get_field("signature_algorithm"),
-    )
 
     def get_url_download_metadata(self, instance: SAMLProvider) -> str:
         """Get metadata download URL"""

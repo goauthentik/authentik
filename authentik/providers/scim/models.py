@@ -14,7 +14,12 @@ from structlog.stdlib import get_logger
 
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
-from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
+from authentik.lib.models import (
+    GeneratedEnum,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
@@ -76,16 +81,16 @@ class SCIMAuthenticationMode(models.TextChoices):
     OAUTH_INTERACTIVE = "oauth_interactive", _("OAuth (interactive)")
 
 
-class SCIMCompatibilityMode(models.TextChoices):
+class SCIMCompatibilityMode(GeneratedEnum):
     """SCIM compatibility mode"""
 
-    DEFAULT = "default", _("Default")
-    AWS = "aws", _("AWS")
-    SLACK = "slack", _("Slack")
-    SALESFORCE = "sfdc", _("Salesforce")
-    GITLAB = "gitlab", _("GitLab")
-    WEBEX = "webex", _("Webex")
-    VCENTER = "vcenter", _("vCenter")
+    DEFAULT = "default", "Default"
+    AWS = "aws", "AWS"
+    SLACK = "slack", "Slack"
+    SALESFORCE = "sfdc", "Salesforce"
+    GITLAB = "gitlab", "GitLab"
+    WEBEX = "webex", "Webex"
+    VCENTER = "vcenter", "vCenter"
 
 
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):

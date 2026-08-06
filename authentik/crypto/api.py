@@ -18,6 +18,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
+    ChoiceField,
     IntegerField,
     SerializerMethodField,
 )
@@ -29,7 +30,6 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.fields import GeneratedEnumChoiceField
 from authentik.api.validation import validate
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -48,12 +48,9 @@ class CertificateKeyPairSerializer(ModelSerializer):
     """CertificateKeyPair Serializer"""
 
     private_key_available = SerializerMethodField()
+
     certificate_download_url = SerializerMethodField()
     private_key_download_url = SerializerMethodField()
-    key_type = GeneratedEnumChoiceField.from_model_field(
-        CertificateKeyPair._meta.get_field("key_type"),
-        read_only=True,
-    )
 
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:
         """Show if this keypair has a private key configured or not"""
@@ -153,11 +150,7 @@ class CertificateGenerationSerializer(PassiveSerializer):
     )
     subject_alt_name = CharField(required=False, allow_blank=True, label=_("Subject-alt name"))
     validity_days = IntegerField(initial=365)
-    alg = GeneratedEnumChoiceField(
-        choices=PrivateKeyAlg.choices,
-        default=PrivateKeyAlg.RSA,
-        required=False,
-    )
+    alg = ChoiceField(default=PrivateKeyAlg.RSA, choices=PrivateKeyAlg.choices)
 
 
 class CertificateKeyPairFilter(FilterSet):
@@ -213,15 +206,10 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
             ),
             OpenApiParameter(
                 "key_type",
-                {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "enum": list(KeyType.values),
-                        "x-enum-varnames": [str(label) for label in KeyType.labels],
-                    },
-                },
+                OpenApiTypes.STR,
                 required=False,
+                many=True,
+                enum=[choice[0] for choice in KeyType.choices],
                 description=(
                     "Filter by key algorithm type (RSA, EC, DSA, etc). "
                     "Can be specified multiple times (e.g. '?key_type=rsa&key_type=ec')"

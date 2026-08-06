@@ -3,7 +3,6 @@
 from rest_framework.fields import SerializerMethodField
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.fields import GeneratedEnumChoiceField
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
@@ -22,10 +21,6 @@ class SCIMProviderSerializer(
     auth_oauth_token_expires = SerializerMethodField()
     auth_oauth_url_callback = SerializerMethodField()
     auth_oauth_url_start = SerializerMethodField()
-    compatibility_mode = GeneratedEnumChoiceField.from_model_field(
-        SCIMProvider._meta.get_field("compatibility_mode"),
-        required=False,
-    )
 
     class Meta:
         model = SCIMProvider

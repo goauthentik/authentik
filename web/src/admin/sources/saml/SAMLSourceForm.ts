@@ -13,18 +13,19 @@ import "#elements/utils/TimeDeltaHelp";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
-import { openAPIEnumOptions } from "#common/api/enums";
 
 import { type AkCryptoCertificateSearch } from "#admin/common/ak-crypto-certificate-search";
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
-import { samlSourceSignatureAlgorithmOptions } from "#admin/providers/saml/SAMLProviderOptions";
+import {
+    digestAlgorithmOptions,
+    samlSourceSignatureAlgorithmOptions,
+} from "#admin/providers/saml/SAMLProviderOptions";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
 import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     BindingTypeEnum,
-    DigestAlgorithmEnum,
     FlowDesignationEnum,
     GroupMatchingModeEnum,
     SAMLNameIDPolicyEnum,
@@ -379,10 +380,7 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         name="digestAlgorithm"
                     >
                         <ak-radio
-                            .options=${openAPIEnumOptions(DigestAlgorithmEnum).map((option) => ({
-                                ...option,
-                                default: option.value === DigestAlgorithmEnum.SHA256,
-                            }))}
+                            .options=${digestAlgorithmOptions}
                             .value=${this.instance?.digestAlgorithm}
                         >
                         </ak-radio>
