@@ -10,6 +10,8 @@ An internal user account can access the authentik application dashboard, open th
 
 For an overview of all account types, see [Account types](./).
 
+For information on creating and managing internal users, see [Managing users](../user_basic_operations.md).
+
 ## Application dashboard
 
 After logging in, internal users are redirected to the application dashboard. They can also access the application dashboard directly at:

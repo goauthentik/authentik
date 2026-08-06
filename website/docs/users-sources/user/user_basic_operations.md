@@ -9,7 +9,9 @@ Use these procedures to create, modify, deactivate, delete, and recover users.
 
 ## Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write/index.md), or [using the API](/api/reference/core-users-create).
+:::note Automated user creation
+If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../add-secure-apps/flows-stages/stages/user_write/index.md), or [using the API](/api/reference/core-users-create).
+:::
 
 1. In the Admin interface of your authentik instance, select **Directory** > **Users** in the left menu.
 2. In the **User folders** area, select the folder where you want to create a user.

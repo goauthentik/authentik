@@ -23,7 +23,47 @@ Agents are service accounts for authorization purposes. You can grant them acces
 
 For general information about service accounts, see [Service accounts](./service-accounts.md).
 
-## Create an agent account
+## Permissions to manage agent accounts
+
+The following permissions control a user's ability to create, view, change, and delete agent accounts:
+
+- `authentik_agents.add_agent`
+- `authentik_agents.view_agent`
+- `authentik_agents.change_agent`
+- `authentik_agents.delete_agent`
+
+The parent user receives managed permissions to view, change, and delete an agent when the agent is created.
+
+Users who are not the parent can manage an agent only if they have the required object or global permissions.
+
+[TODO] This section needs updating based on RBAC changes for self service
+
+## Agent account creation
+
+Agent accounts can be created in two ways:
+
+1. [**User interface (Self-service)**](#user-interface-self-service): Users with the required permissions can create their own agents via the user interface.
+2. [**authentik API**](#authentik-api): Agents can be created programatically via the authentik API.
+
+### User interface (Self-Service)
+
+Self-service agent account creation is controlled by the `enterprise_agent_allow_any` tenant setting which is disabled by default.
+
+[TODO] How to enable the setting and exact UI term
+
+When the setting is enabled, an authenticated user can create an agent for themselves. Self-service agents have the following properties:
+
+- The parent is always the authenticated user. A user cannot create an agent for another user through self-service creation.
+- The agent always expires.
+- The agent uses the default token duration.
+- The agent always uses [`MIRROR` policy behavior](#policy-behavior).
+- Request values for `expiring`, `expires`, and `policy_behavior` are ignored.
+
+#### Create an agent via the user interface
+
+[TODO] Add instructions for doing this from user ui and admin ui
+
+### authentik API
 
 Create an agent account with the authentik API:
 
@@ -43,7 +83,9 @@ The request body can contain the following fields:
 
 The `parent` field is optional when an authenticated user creates an agent for themselves. An administrator or a user with the `authentik_agents.add_agent` permission can specify another user as the parent.
 
-For example:
+#### Create an agent via the authentik API
+
+Here is an example of a API request to create an agent account:
 
 ```bash
 curl \
@@ -82,48 +124,6 @@ The response contains the agent and the generated API token:
 
 :::warning Token value
 The token value is returned when the agent is created. Store it securely before closing or discarding the response. The `token_identifier` identifies the token but cannot be used to authenticate.
-:::
-
-### Self-service agent creation
-
-Self-service creation is controlled by the `enterprise_agent_allow_any` tenant setting. The setting is disabled by default.
-
-When the setting is enabled, an authenticated user can create an agent for themselves. Self-service agents have the following properties:
-
-- The parent is always the authenticated user.
-- The agent always expires.
-- The agent uses the default token duration.
-- The agent always uses `MIRROR` policy behavior.
-- Request values for `expiring`, `expires`, and `policy_behavior` are ignored.
-
-A user cannot create an agent for another user through self-service creation.
-
-A user with the `authentik_agents.add_agent` permission can create an agent for themselves even when self-service creation is disabled. Creating an agent for another user requires the `authentik_agents.add_agent` permission.
-
-:::warning
-Verify the tenant settings interface and its navigation before publishing this procedure. The feature flag is named `enterprise_agent_allow_any` in the implementation, but the final Admin interface label and location are not specified by the pull request.
-:::
-
-## Authenticate with an agent token
-
-Use the generated token as a Bearer token when calling the authentik API:
-
-```http
-Authorization: Bearer <agent-token>
-```
-
-For example:
-
-```bash
-curl \
-  --header "Authorization: Bearer <agent-token>" \
-  https://authentik.example.com/api/v3/core/users/me/
-```
-
-The request is authenticated as the agent. authentik evaluates the agent's access according to its policy behavior and assigned permissions.
-
-:::warning Handling agent tokens
-Treat an agent token as a credential. Store it in a secret manager or another protected secret store. Do not commit it to source control or include it in logs.
 :::
 
 ## Policy behavior
@@ -165,7 +165,7 @@ Use `MIRROR` unless you specifically need a policy snapshot or independent polic
 
 ## Grant access to an agent
 
-Agents start with no special access beyond their ability to authenticate. Grant access through the same mechanisms used for other service accounts and users:
+Agent accounts start with no special access beyond their ability to authenticate. Grant access through the same mechanisms used for other service accounts and users:
 
 - Add the agent to a group.
 - Add the agent to a role.
@@ -176,51 +176,27 @@ Agents start with no special access beyond their ability to authenticate. Grant 
 
 For more information, see [Manage permissions](../../users-sources/access-control/manage_permissions/).
 
-## Manage agent accounts
+## Authenticate with an agent token
 
-The agent API supports the following operations:
+Use the generated token as a Bearer token when calling the authentik API:
 
-| Operation                 | Method   | Endpoint                      |
-| ------------------------- | -------- | ----------------------------- |
-| List agents               | `GET`    | `/api/v3/agents/agents/`      |
-| Create an agent           | `POST`   | `/api/v3/agents/agents/`      |
-| Retrieve an agent         | `GET`    | `/api/v3/agents/agents/<id>/` |
-| Update an agent           | `PUT`    | `/api/v3/agents/agents/<id>/` |
-| Partially update an agent | `PATCH`  | `/api/v3/agents/agents/<id>/` |
-| Delete an agent           | `DELETE` | `/api/v3/agents/agents/<id>/` |
+```http
+Authorization: Bearer <agent-token>
+```
 
-See the [API reference](https://api.goauthentik.io/) for the complete request and response schemas.
+For example:
 
-### Agent permissions
+```bash
+curl \
+  --header "Authorization: Bearer <agent-token>" \
+  https://authentik.example.com/api/v3/core/users/me/
+```
 
-The following permissions control a user's ability to creat, view, change, and delete agent accounts:
+The request is authenticated as the agent. authentik evaluates the agent's access according to its policy behavior and assigned permissions.
 
-- `authentik_agents.add_agent`
-- `authentik_agents.view_agent`
-- `authentik_agents.change_agent`
-- `authentik_agents.delete_agent`
-
-The parent user receives managed permissions to view, change, and delete an agent when the agent is created.
-
-Users who are not the parent can manage an agent only if they have the required object or global permissions.
-
-### Update an agent
-
-You can update the agent's normal user fields, such as its name, email address, attributes, and active status.
-
-The following fields are read-only after creation:
-
-- `parent`
-- `policy_behavior`
-- `token_identifier`
-
-### Delete an agent
-
-Deleting an agent deletes its associated API token. Requests authenticated with that token fail after the agent is deleted.
-
-Deleting the parent user does not delete the agent. The agent remains as a parentless service account.
-
-TODO Confirm that there's no automatic handling of parentless agent accounts
+:::warning Handling agent tokens
+Treat an agent token as a credential. Store it in a secret manager or another protected secret store. Do not commit it to source control or include it in logs.
+:::
 
 ## Manage agent tokens
 
@@ -241,12 +217,44 @@ Users with the `authentik_core.view_token_key` permission can retrieve the token
 
 Agent tokens are managed in the same token system as other authentik tokens. See [Service accounts](./) for general token-management information.
 
-TODO How can user retrieve token from UI
+[TODO] How can user retrieve token from UI
+
+## Manage agent accounts
+
+The agent API supports the following operations:
+
+| Operation                 | Method   | Endpoint                      |
+| ------------------------- | -------- | ----------------------------- |
+| List agents               | `GET`    | `/api/v3/agents/agents/`      |
+| Create an agent           | `POST`   | `/api/v3/agents/agents/`      |
+| Retrieve an agent         | `GET`    | `/api/v3/agents/agents/<id>/` |
+| Update an agent           | `PUT`    | `/api/v3/agents/agents/<id>/` |
+| Partially update an agent | `PATCH`  | `/api/v3/agents/agents/<id>/` |
+| Delete an agent           | `DELETE` | `/api/v3/agents/agents/<id>/` |
+
+See the [API reference](https://api.goauthentik.io/) for the complete request and response schemas.
+
+## Update an agent
+
+You can update the agent's normal user fields, such as its name, email address, attributes, and active status.
+
+The following fields are read-only after creation:
+
+- `parent`
+- `policy_behavior`
+- `token_identifier`
+
+## Delete an agent
+
+Deleting an agent deletes its associated API token. Requests authenticated with that token fail after the agent is deleted.
+
+Deleting the parent user does not delete the agent. The agent remains as a parentless service account.
+
+[TODO] Confirm that there's no automatic handling of parentless agent accounts
 
 ## Audit events
 
-Actions performed by an agent are attributed to the agent's parent user in audit events.
-TODO confirm this
+Actions performed by an agent are attributed to the agent's parent user in audit events/
 
 Agent audit data identifies:
 
@@ -257,7 +265,7 @@ A regular service account that is not an agent does not receive parent-user attr
 
 Review [Events](../events/) when investigating agent activity or validating that an integration has the expected access.
 
-TODO Give example of event
+[TODO] Give example of event
 
 ## Troubleshooting
 

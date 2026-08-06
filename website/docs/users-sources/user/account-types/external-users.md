@@ -12,6 +12,8 @@ External users cannot access the application dashboard. They therefore do not ha
 
 For an overview of all account types, see [Account types](./index.mdx).
 
+For information on creating and managing external users, see [Managing users](../user_basic_operations.md).
+
 ## Application access
 
 External users typically authenticate to a single default application. After successful authentication, authentik redirects them to the application configured for the authentication request or to the brand's default application.
