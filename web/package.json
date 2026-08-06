@@ -52,7 +52,6 @@
         }
     },
     "imports": {
-        "#fonts/*.css": "./fonts/*.css",
         "#styles/*.css": "./src/styles/*.css",
         "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
@@ -102,6 +101,7 @@
         "@goauthentik/core": "workspace:*",
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.3",
         "@goauthentik/eslint-config": "^2.0.3",
+        "@goauthentik/fonts": "link:../packages/fonts",
         "@goauthentik/prettier-config": "^3.5.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.2.0",

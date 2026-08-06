@@ -1,3 +1,10 @@
+/*
+ * authentik's brand text faces: the RedHat variable families.
+ *
+ * Copyright 2021 The Red Hat Project Authors, under the SIL Open Font License
+ * 1.1. See NOTICE.md for the full attribution and licenses/ for the texts.
+ */
+
 @font-face {
     font-family: "RedHatDisplay";
     src: url("./RedHatDisplayVF.woff2") format("woff2-variations");
