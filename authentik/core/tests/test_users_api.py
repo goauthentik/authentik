@@ -170,6 +170,13 @@ class TestUsersAPI(APITestCase):
             ).count(),
             1,
         )
+        # Next-action-only updates don't additionally log a model update
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model__pk=self.user.pk,
+            ).exists()
+        )
 
     def test_set_next_actions_invalid(self):
         """Test that unknown flows and disallowed designations are rejected"""
