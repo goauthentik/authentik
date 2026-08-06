@@ -118,7 +118,7 @@ a.pf-c-button {
     --pf-c-button--m-warning--focus--BackgroundColor: var(--pf-global--warning-color--200);
     --pf-c-button--m-warning--active--BackgroundColor: var(--pf-global--warning-color--200);
     /* --pf-c-button--m-danger--Color: var(--pf-global--palette--black-900); */
-    --pf-c-button--m-danger--Color: var(--pf-global--palette-black-50);
+    --pf-c-button--m-danger--Color: var(--pf-global--palette--black-50);
     --pf-c-button--m-danger--hover--Color: var(--pf-global--palette--black-900);
     --pf-c-button--m-danger--focus--Color: var(--pf-global--palette--black-900);
     --pf-c-button--m-danger--active--Color: var(--pf-global--palette--black-900);
