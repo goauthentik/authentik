@@ -265,7 +265,8 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         )
         for event_action, slugs in changes:
             for slug in slugs:
-                event = Event.new(event_action, flow_slug=slug, affected_user=instance.username)
+                # `username` in the context makes the event visible on the user's events tab
+                event = Event.new(event_action, flow_slug=slug, username=instance.username)
                 if request:
                     event.from_http(request)
                 else:
