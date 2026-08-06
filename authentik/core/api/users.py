@@ -80,6 +80,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
@@ -109,6 +110,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.user_login.next_actions import resolve_next_actions
 
 LOGGER = get_logger()
 
@@ -288,6 +290,15 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
                     _("Can't change internal service account to other user type.")
                 )
         return user_type
+
+    def validate_attributes(self, attributes: dict) -> dict:
+        """Validate that the next-actions attribute only holds usable flows."""
+        if USER_ATTRIBUTE_NEXT_ACTIONS in attributes:
+            try:
+                resolve_next_actions(attributes[USER_ATTRIBUTE_NEXT_ACTIONS])
+            except ValueError as exc:
+                raise ValidationError(str(exc)) from exc
+        return attributes
 
     def validate_groups(self, groups: list) -> list:
         """Require enable_group_superuser permission when adding a user to a superuser group."""

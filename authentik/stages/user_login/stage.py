@@ -12,16 +12,25 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
+    AuthenticatedSession,
+    Session,
+    User,
+)
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
+from authentik.flows.exceptions import FlowNonApplicableException
+from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_USER_SWITCH_ADD_USER,
     PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION,
+    FlowPlan,
+    FlowPlanner,
 )
-from authentik.flows.stage import ChallengeStageView
+from authentik.flows.stage import ChallengeStageView, StageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -35,6 +44,7 @@ from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
 )
 from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_login.next_actions import resolve_next_actions
 from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
@@ -56,6 +66,26 @@ class UserLoginChallengeResponse(ChallengeResponse):
     remember_me = BooleanField(required=True)
 
 
+class NextActionDoneStageView(StageView):
+    """Remove a completed next action flow from the pending user's attributes"""
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        user: User | None = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
+        slug = self.executor.current_stage.flow_slug
+        if not user:
+            return self.executor.stage_ok()
+        value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
+        if isinstance(value, list):
+            if slug in value:
+                value.remove(slug)
+            if not value:
+                user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
+        elif value == slug:
+            user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
+        user.save(update_fields=["attributes"])
+        return self.executor.stage_ok()
+
+
 class UserLoginStageView(ChallengeStageView):
     """Finalize Authentication flow by logging the user in"""
 
@@ -64,8 +94,61 @@ class UserLoginStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> UserLoginChallenge:
         return UserLoginChallenge(data={})
 
+    def enforce_next_actions(self) -> HttpResponse | None:
+        """Splice the pending user's next action flows into the plan, ahead of this
+        login stage. Returns None when there is nothing to enforce."""
+        context = self.executor.plan.context
+        user: User | None = context.get(PLAN_CONTEXT_PENDING_USER)
+        if not user or not user.pk:
+            return None
+        if (
+            PLAN_CONTEXT_USER_SWITCH_ADD_USER in context
+            or PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION in context
+        ):
+            return None
+        value = user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
+        if not value:
+            return None
+        from authentik.enterprise.license import LicenseKey
+
+        if not LicenseKey.cached_summary().status.is_valid:
+            return None
+        error_message = _(
+            "Actions required for this login are invalid. Please contact your administrator."
+        )
+        try:
+            flows = resolve_next_actions(value)
+        except ValueError as exc:
+            self.logger.warning(
+                "Failed to resolve next actions", user=user.username, error=str(exc)
+            )
+            return self.executor.stage_invalid(error_message)
+        splice = FlowPlan(flow_pk=self.executor.plan.flow_pk)
+        for flow in flows:
+            planner = FlowPlanner(flow)
+            planner.use_cache = False
+            planner.allow_empty_flows = True
+            # The pending user has already passed this flow's authentication requirements
+            planner.check_authentication = False
+            try:
+                action_plan = planner.plan(self.request, context)
+            except FlowNonApplicableException:
+                self.logger.warning(
+                    "Next action flow not applicable to user", user=user.username, flow=flow.slug
+                )
+                return self.executor.stage_invalid(error_message)
+            splice.bindings.extend(action_plan.bindings)
+            splice.markers.extend(action_plan.markers)
+            splice.append_stage(in_memory_stage(NextActionDoneStageView, flow_slug=flow.slug))
+        # Run this login stage again once all actions are completed
+        splice.append(self.executor.plan.bindings[0], self.executor.plan.markers[0])
+        self.executor.plan.insert_plan(splice)
+        return self.executor.stage_ok()
+
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        """Check for remember_me, and do login"""
+        """Check for pending next actions and remember_me, and do login"""
+        if next_actions_response := self.enforce_next_actions():
+            return next_actions_response
         stage: UserLoginStage = self.executor.current_stage
         if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
             return super().dispatch(request)
