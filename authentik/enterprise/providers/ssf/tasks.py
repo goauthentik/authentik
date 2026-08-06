@@ -8,6 +8,7 @@ from dramatiq.actor import actor
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import User
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
@@ -15,6 +16,7 @@ from authentik.enterprise.providers.ssf.models import (
     SSFEventStatus,
     Stream,
     StreamEvent,
+    StreamStatus,
 )
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
@@ -56,53 +58,76 @@ def ssf_events_dispatch(events_data: dict[str, dict[str, Any]]):
         send_ssf_event.send_with_options(args=(stream_uuid, event_data), rel_obj=stream.provider)
 
 
-def _check_app_access(stream: Stream, event_data: dict) -> bool:
+def _check_app_access(stream: Stream, event_data: dict) -> tuple[bool, User]:
     """Check if event is related to user and if so, check
     if the user has access to the application"""
     # `event_data` is a dict version of a StreamEvent
     sub_id = event_data.get("payload", {}).get("sub_id", {})
     email = sub_id.get("user", {}).get("email", None)
     if not email:
-        return True
+        return True, None
     user = User.objects.filter(email=email).first()
     if not user:
-        return True
+        return True, None
     engine = PolicyEngine(stream.provider.backchannel_application, user)
+    engine.empty_result = AppAccessWithoutBindings.get()
     engine.use_cache = False
     engine.build()
-    return engine.passing
+    return engine.passing, user
 
 
 @actor(description=_("Send an SSF event."))
 def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
     self = CurrentTask.get_task()
 
+    self.info(f"Event type: {event_data.get("type")}")
     stream = Stream.objects.filter(pk=stream_uuid).first()
     if not stream:
         return
-    if not _check_app_access(stream, event_data):
+    access, user = _check_app_access(stream, event_data)
+    if not access:
         return
     event = StreamEvent.objects.create(**event_data)
     self.set_uid(event.pk)
     if event.status == SSFEventStatus.SENT:
         return
-    if stream.delivery_method != DeliveryMethods.RISC_PUSH:
+    if stream.delivery_method not in [DeliveryMethods.RISC_PUSH, DeliveryMethods.RFC_PUSH]:
         return
 
+    self.info("Sending event for user", user_username=user.username if user else None)
+    headers = {"Content-Type": "application/secevent+jwt", "Accept": "application/json"}
+    if stream.authorization_header:
+        headers["Authorization"] = stream.authorization_header
     try:
         response = session.post(
             event.stream.endpoint_url,
             data=event.stream.encode(event.payload),
-            headers={"Content-Type": "application/secevent+jwt", "Accept": "application/json"},
+            headers=headers,
+            verify=stream.provider.push_verify_certificates,
+            timeout=180,
         )
         response.raise_for_status()
         event.status = SSFEventStatus.SENT
         event.save()
-        return
+        self.info("Event successfully sent", status=response.status_code)
+        # Cleanup, if we were the last pending message for this stream and it has been deleted
+        # (status=StreamStatus.DISABLED_DELETED), then we can delete the stream
+        if (
+            not StreamEvent.objects.filter(
+                stream=stream,
+                status__in=[SSFEventStatus.PENDING_FAILED, SSFEventStatus.PENDING_NEW],
+            ).exists()
+            and stream.status == StreamStatus.DISABLED_DELETED
+        ):
+            LOGGER.info(
+                "Deleting inactive stream as all pending messages were sent.", stream=stream
+            )
+            self.info("Deleting inactive stream as all pending messages were sent.")
+            stream.delete()
     except RequestException as exc:
-        LOGGER.warning("Failed to send SSF event", exc=exc)
+        LOGGER.warning("Failed to send SSF event", exc=exc, stream=stream)
         attrs = {}
-        if exc.response:
+        if exc.response is not None:
             attrs["response"] = {
                 "content": exc.response.text,
                 "status": exc.response.status_code,
@@ -111,5 +136,6 @@ def send_ssf_event(stream_uuid: UUID, event_data: dict[str, Any]):
         self.warning("Failed to send request", **attrs)
         # Re-up the expiry of the stream event
         event.expires = now() + timedelta_from_string(event.stream.provider.event_retention)
+        self.info(f"Event will be re-sent at {event.expires}")
         event.status = SSFEventStatus.PENDING_FAILED
         event.save()

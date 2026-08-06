@@ -1,0 +1,206 @@
+//! axum extractor and middleware to retrieve the host.
+use axum::{
+    Extension, RequestPartsExt as _,
+    extract::{FromRequestParts, Request},
+    http::{header::HOST, request::Parts, status::StatusCode},
+    middleware::Next,
+    response::{IntoResponse as _, Response},
+};
+use tracing::{Span, instrument};
+
+use crate::extract::trusted_proxy::TrustedProxy;
+
+const X_FORWARDED_HOST: &str = "X-Forwarded-Host";
+
+/// Request host.
+///
+/// The [`host_middleware`] must be added to the router before using this extractor,
+/// otherwise this will result in requests erroring.
+#[derive(Clone, Debug)]
+pub struct Host(pub String);
+
+impl Host {
+    fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl<S> FromRequestParts<S> for Host
+where
+    S: Send + Sync,
+{
+    type Rejection = <Extension<Self> as FromRequestParts<S>>::Rejection;
+
+    async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+        Extension::<Self>::from_request_parts(parts, state)
+            .await
+            .map(|Extension(host)| host)
+    }
+}
+
+/// Get the host from the request.
+#[instrument(skip_all)]
+async fn extract_host(parts: &mut Parts) -> Result<String, (StatusCode, &'static str)> {
+    let is_trusted = parts
+        .extract::<TrustedProxy>()
+        .await
+        .unwrap_or(TrustedProxy(false))
+        .0;
+
+    if is_trusted
+        && let Some(host) = parts
+            .headers
+            .get(X_FORWARDED_HOST)
+            .and_then(|host| host.to_str().ok())
+    {
+        return Ok(host.to_owned());
+    }
+
+    if let Some(host) = parts.headers.get(HOST).and_then(|host| host.to_str().ok()) {
+        return Ok(host.to_owned());
+    }
+
+    if let Some(host) = parts.uri.host() {
+        Ok(host.to_owned())
+    } else {
+        Err((StatusCode::BAD_REQUEST, "missing host header"))
+    }
+}
+
+/// Middleware required by the [`Host`] extractor.
+///
+/// Use with [`axum::middleware::from_fn`].
+pub async fn host_middleware(request: Request, next: Next) -> Response {
+    let (mut parts, body) = request.into_parts();
+
+    let host = if let Some(host) = parts.extensions.get::<Host>() {
+        host
+    } else {
+        let host = match extract_host(&mut parts).await {
+            Ok(host) => Host(host),
+            Err(err) => return err.into_response(),
+        };
+        parts.extensions.insert(host);
+        parts.extensions.get::<Host>().expect("infallible")
+    };
+
+    Span::current().record("host", host.as_str());
+
+    let request = Request::from_parts(parts, body);
+
+    next.run(request).await
+}
+
+#[cfg(test)]
+mod tests {
+    use axum::{body::Body, http::Request};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn x_forwarded_host_trusted() {
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "forwarded.example.com")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed"),
+            "forwarded.example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn x_forwarded_host_untrusted() {
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "malicious.example.com")
+            .extension(TrustedProxy(false))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed"),
+            "example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn priority_order() {
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-host", "x-forwarded.example.com")
+            .header("host", "host-header.example.com")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed"),
+            "x-forwarded.example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn host_header() {
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("host", "example.com:8080")
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed"),
+            "example.com:8080",
+        );
+    }
+
+    #[tokio::test]
+    async fn from_uri() {
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com:8080/path")
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_ok());
+        assert_eq!(
+            result.expect("Host extraction should succeed"),
+            "example.com",
+        );
+    }
+
+    #[tokio::test]
+    async fn no_host_found() {
+        let (mut parts, _) = Request::builder()
+            .uri("/path")
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let result = extract_host(&mut parts).await;
+
+        assert!(result.is_err());
+        assert_eq!(result.expect_err("Host extract should fail").0, 400);
+    }
+}

@@ -13,7 +13,7 @@ To use any of the GitHub Compatibility scopes, you have to use the GitHub Compat
 | User Info       | `/user`                     |
 | User Teams Info | `/user/teams`               |
 
-To access the user's email address, a scope of `user:email` is required. To access their groups, `read:org` is required. Because these scopes are handled by a different endpoint, they are not customisable as a Scope Mapping.
+To access the user's email address, a scope of `user:email` is required. To access their groups, `read:org` is required. Because these scopes are handled by a different endpoint, they are not customizable as a Scope Mapping.
 
 ## Special scopes for GitHub compatibility
 

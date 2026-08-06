@@ -3,6 +3,8 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  */
 
+import { copyAssets } from "../scripts/build-assets.mjs";
+
 /**
  * @param {TemplateStringsArray} strings
  * @param  {...any} values
@@ -10,15 +12,14 @@
  */
 const html = (strings, ...values) => String.raw({ raw: strings }, ...values);
 
+await copyAssets();
+
 /**
  * @satisfies {StorybookConfig}
  */
 const config = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
-    staticDirs: [
-        { from: "../icons", to: "/static/dist/assets/icons" },
-        { from: "../authentik", to: "/static/authentik" },
-    ],
+    staticDirs: [{ from: "../dist/assets", to: "/static/dist/assets" }],
     addons: [
         // ---
         "@storybook/addon-links",

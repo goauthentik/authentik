@@ -13,6 +13,8 @@ app.company {
 
             # capitalization of the headers is important, otherwise they will be empty
             copy_headers X-Authentik-Username X-Authentik-Groups X-Authentik-Entitlements X-Authentik-Email X-Authentik-Name X-Authentik-Uid X-Authentik-Jwt X-Authentik-Meta-Jwks X-Authentik-Meta-Outpost X-Authentik-Meta-Provider X-Authentik-Meta-App X-Authentik-Meta-Version
+            # Add the 'authorization' header to the list if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
 
             # optional, in this config trust all private ranges, should probably be set to the outposts IP
             trusted_proxies private_ranges

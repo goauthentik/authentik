@@ -8,8 +8,9 @@ import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
-import "#elements/cards/AggregatePromiseCard";
+import "#elements/cards/AggregateCard";
 import "#elements/cards/QuickActionsCard";
+import "#elements/Divider";
 
 import { formatUserDisplayName } from "#common/users";
 
@@ -27,7 +28,6 @@ import { customElement } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
@@ -39,7 +39,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
         PFGrid,
         PFPage,
         PFContent,
-        PFDivider,
         css`
             .pf-l-grid__item {
                 height: 100%;
@@ -98,15 +97,15 @@ export class AdminOverviewPage extends AdminOverviewBase {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-m-12-col">
-                        <hr class="pf-c-divider" />
+                        <ak-divider></ak-divider>
                     </div>
                     ${this.renderCards()}
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                    <ak-recent-events pageSize="6"></ak-recent-events>
+                    <ak-recent-events></ak-recent-events>
                 </div>
                 <div class="pf-l-grid__item pf-m-12-col">
-                    <hr class="pf-c-divider" />
+                    <ak-divider></ak-divider>
                 </div>
                 <!-- row 3 -->
                 <div

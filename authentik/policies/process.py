@@ -2,6 +2,7 @@
 
 from multiprocessing import get_context
 from multiprocessing.connection import Connection
+from time import perf_counter
 
 from django.core.cache import cache
 from sentry_sdk import start_span
@@ -11,8 +12,6 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_dict
-from authentik.lib.utils.reflection import class_to_path
-from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
@@ -123,18 +122,9 @@ class PolicyProcess(PROCESS_CLASS):
 
     def profiling_wrapper(self):
         """Run with profiling enabled"""
-        with (
-            start_span(
-                op="authentik.policy.process.execute",
-            ) as span,
-            HIST_POLICIES_EXECUTION_TIME.labels(
-                binding_order=self.binding.order,
-                binding_target_type=self.binding.target_type,
-                binding_target_name=self.binding.target_name,
-                object_type=class_to_path(self.request.obj.__class__) if self.request.obj else "",
-                mode="execute_process",
-            ).time(),
-        ):
+        with start_span(
+            op="authentik.policy.process.execute",
+        ) as span:
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
@@ -142,8 +132,14 @@ class PolicyProcess(PROCESS_CLASS):
 
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
+        result = None
         try:
-            self.connection.send(self.profiling_wrapper())
+            start = perf_counter()
+            result = self.profiling_wrapper()
+            end = perf_counter()
+            result._exec_time = max((end - start), 0)
         except Exception as exc:  # noqa
             LOGGER.warning("Policy failed to run", exc=exc)
-            self.connection.send(PolicyResult(False, str(exc)))
+            result = PolicyResult(False, str(exc))
+        finally:
+            self.connection.send(result)

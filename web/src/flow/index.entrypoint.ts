@@ -1,4 +1,5 @@
 import "#elements/messages/MessageContainer";
+import "#elements/ak-drawer/ak-drawer";
 import "#flow/FlowExecutor";
 // Statically import some stages to speed up load speed
 import "#flow/stages/access_denied/AccessDeniedStage";
@@ -15,5 +16,5 @@ import "#flow/stages/password/PasswordStage";
 // end of stage import
 
 if (process.env.NODE_ENV === "development") {
-    await import("@goauthentik/esbuild-plugin-live-reload/client");
+    await import("@goauthentik/esbuild-plugin-live-reload");
 }

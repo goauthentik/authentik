@@ -208,7 +208,11 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        # resolve() may raise; a repr must never raise (called by the log sanitizer).
+        try:
+            return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        except Exception as exc:  # noqa: BLE001 - a repr must never raise
+            return f"<{self.__class__.__name__}> (failed to resolve: {exc})"
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -264,7 +268,11 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key) or self.default
+        if env := getenv(self.key):
+            return env
+        if isinstance(self.default, YAMLTag):
+            return self.default.resolve(entry, blueprint)
+        return self.default
 
 
 class File(YAMLTag):

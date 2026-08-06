@@ -106,6 +106,7 @@ class Backend:
         self,
         name: str,
         request: HttpRequest | None = None,
+        use_cache: bool = True,
     ) -> dict[str, str] | None:
         """
         Get URLs for each theme variant when filename contains %(theme)s.
@@ -121,7 +122,7 @@ class Backend:
             return None
 
         return {
-            theme: self.file_url(substitute_theme(name, theme), request, use_cache=True)
+            theme: self.file_url(substitute_theme(name, theme), request, use_cache=use_cache)
             for theme in get_valid_themes()
         }
 

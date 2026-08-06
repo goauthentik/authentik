@@ -31,7 +31,7 @@ export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relative
  *
  * @runtime node
  */
-export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectoryName}`} */ (
+export const DistDirectory = /** @type {`${WebPackageIdentifier}/${typeof DistDirectoryName}`} */ (
     resolve(PackageRoot, DistDirectoryName)
 );
 
@@ -55,7 +55,7 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  */
 export const EntryPoint = /** @type {const} */ ({
     Admin: {
-        in: resolve(PackageRoot, "src", "admin", "AdminInterface", "index.entrypoint.ts"),
+        in: resolve(PackageRoot, "src", "admin", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "admin", "AdminInterface"),
     },
     User: {
@@ -83,12 +83,16 @@ export const EntryPoint = /** @type {const} */ ({
         out: resolve(DistDirectory, "poly"),
     },
     InterfaceStyles: {
-        in: resolve(PackageRoot, "src", "styles", "authentik", "interface.global.css"),
+        in: resolve(PackageRoot, "src", "styles", "interface.global.css"),
         out: resolve(DistDirectory, "styles", "interface"),
     },
     StaticStyles: {
-        in: resolve(PackageRoot, "src", "styles", "authentik", "static.global.css"),
+        in: resolve(PackageRoot, "src", "styles", "static.global.css"),
         out: resolve(DistDirectory, "styles", "static"),
+    },
+    FlowStyles: {
+        in: resolve(PackageRoot, "src", "styles", "flows.global.css"),
+        out: resolve(DistDirectory, "styles", "flow"),
     },
 });
 

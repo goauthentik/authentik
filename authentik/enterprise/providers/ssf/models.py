@@ -12,9 +12,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
-from authentik.core.models import BackchannelProvider, ExpiringModel, Token
+from authentik.core.models import BackchannelProvider, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, InternallyManagedMixin
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 from authentik.tasks.models import TasksModel
@@ -24,8 +29,31 @@ class EventTypes(models.TextChoices):
     """SSF Event types supported by authentik"""
 
     CAEP_SESSION_REVOKED = "https://schemas.openid.net/secevent/caep/event-type/session-revoked"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.1"""
+    CAEP_TOKEN_CLAIMS_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/token-claims-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.2"""
     CAEP_CREDENTIAL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/credential-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.3"""
+    CAEP_ASSURANCE_LEVEL_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/assurance-level-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.4"""
+    CAEP_DEVICE_COMPLIANCE_CHANGE = (
+        "https://schemas.openid.net/secevent/caep/event-type/device-compliance-change"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.5"""
+    CAEP_SESSION_ESTABLISHED = (
+        "https://schemas.openid.net/secevent/caep/event-type/session-established"
+    )
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.6"""
+    CAEP_SESSION_PRESENTED = "https://schemas.openid.net/secevent/caep/event-type/session-presented"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.7"""
+    CAEP_RISK_LEVEL_CHANGE = "https://schemas.openid.net/secevent/caep/event-type/risk-level-change"
+    """https://openid.net/specs/openid-caep-1_0-final.html#section-3.8"""
     SET_VERIFICATION = "https://schemas.openid.net/secevent/ssf/event-type/verification"
+    """https://openid.net/specs/openid-sharedsignals-framework-1_0.html#section-8.1.4.1"""
 
 
 class DeliveryMethods(models.TextChoices):
@@ -33,6 +61,8 @@ class DeliveryMethods(models.TextChoices):
 
     RISC_PUSH = "https://schemas.openid.net/secevent/risc/delivery-method/push"
     RISC_POLL = "https://schemas.openid.net/secevent/risc/delivery-method/poll"
+    RFC_PUSH = "urn:ietf:rfc:8935", _("SSF RFC Push")
+    RFC_PULL = "urn:ietf:rfc:8936", _("SSF RFC Pull")
 
 
 class SSFEventStatus(models.TextChoices):
@@ -41,6 +71,15 @@ class SSFEventStatus(models.TextChoices):
     PENDING_NEW = "pending_new"
     PENDING_FAILED = "pending_failed"
     SENT = "sent"
+
+
+class StreamStatus(models.TextChoices):
+    """SSF Stream status"""
+
+    ENABLED = "enabled"
+    PAUSED = "paused"
+    DISABLED = "disabled"
+    DISABLED_DELETED = "disabled_deleted"
 
 
 class SSFProvider(TasksModel, BackchannelProvider):
@@ -54,7 +93,11 @@ class SSFProvider(TasksModel, BackchannelProvider):
         help_text=_("Key used to sign the SSF Events."),
     )
 
-    oidc_auth_providers = models.ManyToManyField(OAuth2Provider, blank=True, default=None)
+    push_verify_certificates = models.BooleanField(default=True)
+
+    oidc_auth_providers = models.ManyToManyField(
+        OAuth2Provider, blank=True, default=None, through="SSFProviderOIDCAuthProvider"
+    )
 
     token = models.ForeignKey(Token, on_delete=models.CASCADE, null=True, default=None)
 
@@ -102,14 +145,41 @@ class SSFProvider(TasksModel, BackchannelProvider):
         ]
 
 
+class SSFProviderOIDCAuthProvider(SimpleThroughModel):
+    ssf_provider = models.ForeignKey(
+        SSFProvider, on_delete=models.CASCADE, db_column="ssfprovider_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_ssf_ssfprovider_oidc_auth_providers"
+        unique_together = (("ssf_provider", "oauth2_provider"),)
+        verbose_name = _("SSF Provider OIDC Auth Provider")
+        verbose_name_plural = _("SSF Provider OIDC Auth Providers")
+
+    def __str__(self):
+        return (
+            f"SSFProviderOIDCAuthProvider for SSFProvider {self.ssf_provider_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
+
+
 class Stream(models.Model):
     """SSF Stream"""
 
     uuid = models.UUIDField(default=uuid4, primary_key=True, editable=False)
+
+    status = models.TextField(choices=StreamStatus.choices, default=StreamStatus.ENABLED)
+
     provider = models.ForeignKey(SSFProvider, on_delete=models.CASCADE)
 
     delivery_method = models.TextField(choices=DeliveryMethods.choices)
     endpoint_url = models.TextField(null=True)
+    authorization_header = models.TextField(null=True, default=None)
 
     events_requested = ArrayField(models.TextField(choices=EventTypes.choices), default=list)
     format = models.TextField()
@@ -146,7 +216,7 @@ class Stream(models.Model):
         }
 
     def encode(self, data: dict) -> str:
-        headers = {}
+        headers = {"typ": "secevent+jwt"}
         if self.provider.signing_key:
             headers["kid"] = self.provider.signing_key.kid
         key, alg = self.provider.jwt_key

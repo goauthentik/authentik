@@ -23,7 +23,7 @@ from guardian.conf import settings
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.v1.common import YAMLTag
-from authentik.core.models import User
+from authentik.core.models import User, UserTypes
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.policies.types import PolicyRequest
@@ -31,9 +31,13 @@ from authentik.policies.types import PolicyRequest
 # Special keys which are *not* cleaned, even when the default filter
 # is matched
 ALLOWED_SPECIAL_KEYS = re.compile(
-    r"passing|password_change_date|^auth_method(_args)?$",
+    r"passing|password_change_date|^auth_method(_args)?$|^revoke_tokens$",
     flags=re.I,
 )
+
+
+def cleanse_str(raw: Any) -> str:
+    return str(raw).replace("\u0000", "")
 
 
 def cleanse_item(key: str, value: Any) -> Any:
@@ -41,9 +45,7 @@ def cleanse_item(key: str, value: Any) -> Any:
     if isinstance(value, dict):
         return cleanse_dict(value)
     if isinstance(value, list | tuple | set):
-        for idx, item in enumerate(value):
-            value[idx] = cleanse_item(key, item)
-        return value
+        return type(value)(cleanse_item(key, item) for item in value)
     try:
         if not SafeExceptionReporterFilter.hidden_settings.search(key):
             return value
@@ -66,7 +68,7 @@ def cleanse_dict(source: dict[Any, Any]) -> dict[Any, Any]:
 
 def model_to_dict(model: Model) -> dict[str, Any]:
     """Convert model to dict"""
-    name = str(model)
+    name = cleanse_str(model)
     if hasattr(model, "name"):
         name = model.name
     return {
@@ -91,6 +93,12 @@ def get_user(user: User | AnonymousUser) -> dict[str, Any]:
     }
     if user.username == settings.ANONYMOUS_USER_NAME:
         user_data["is_anonymous"] = True
+    # Actions performed by an actor are recorded on behalf of its parent, so the
+    # audit log always ties the activity back to a responsible human.
+    if getattr(user, "type", None) == UserTypes.SERVICE_ACCOUNT and hasattr(user, "actor"):
+        user_data["is_agent"] = True
+        # FIXME: This will need to be adjusted for OAuth OBO
+        user_data["on_behalf_of"] = get_user(user.actor.parent)
     return user_data
 
 
@@ -133,11 +141,11 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     if isinstance(value, ASN):
         return ASN_CONTEXT_PROCESSOR.asn_to_dict(value)
     if isinstance(value, Path):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, Exception):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, YAMLTag):
-        return str(value)
+        return cleanse_str(value)
     if isinstance(value, Enum):
         return value.value
     if isinstance(value, type):
@@ -161,7 +169,7 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
             raise ValueError("JSON can't represent timezone-aware times.")
         return value.isoformat()
     if isinstance(value, timedelta):
-        return str(value.total_seconds())
+        return cleanse_str(value.total_seconds())
     if callable(value):
         return {
             "type": "callable",
@@ -174,8 +182,8 @@ def sanitize_item(value: Any) -> Any:  # noqa: PLR0911, PLR0912
     try:
         return DjangoJSONEncoder().default(value)
     except TypeError:
-        return str(value)
-    return str(value)
+        return cleanse_str(value)
+    return cleanse_str(value)
 
 
 def sanitize_dict(source: dict[Any, Any]) -> dict[Any, Any]:

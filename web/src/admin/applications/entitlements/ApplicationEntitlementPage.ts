@@ -6,19 +6,14 @@ import "#elements/Tabs";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
+import { PolicyBindingCheckTarget } from "#common/policies/utils";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { PolicyBindingCheckTarget } from "#admin/policies/utils";
-
-import {
-    ApplicationEntitlement,
-    CoreApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { ApplicationEntitlement, CoreApi, ModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -39,7 +34,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     protected override searchEnabled = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<ApplicationEntitlement>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsList({
+        return aki(CoreApi).coreApplicationEntitlementsList({
             ...(await this.defaultEndpointConfig()),
             app: this.app || "",
         });
@@ -57,12 +52,12 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
             object-label=${msg("Application entitlement(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ApplicationEntitlement) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsUsedByList({
+                return aki(CoreApi).coreApplicationEntitlementsUsedByList({
                     pbmUuid: item.pbmUuid || "",
                 });
             }}
             .delete=${(item: ApplicationEntitlement) => {
-                return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsDestroy({
+                return aki(CoreApi).coreApplicationEntitlementsDestroy({
                     pbmUuid: item.pbmUuid || "",
                 });
             }}
@@ -77,7 +72,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         return [
             html`${item.name}`,
             html`<ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="submit">${msg("Save Changes")}</span>
                     <span slot="header">${msg("Update Entitlement")}</span>
                     <ak-application-entitlement-form
                         slot="form"
@@ -92,7 +87,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreApplicationentitlement}
+                    model=${ModelEnum.AuthentikCoreApplicationentitlement}
                     objectPk=${item.pbmUuid}
                 >
                 </ak-rbac-object-permission-modal>`,
@@ -110,7 +105,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
         </div>`;
     }
 
-    renderEmpty(): TemplateResult {
+    protected override renderEmpty(): SlottedTemplateResult {
         return super.renderEmpty(
             html`<ak-empty-state icon="pf-icon-module"
                 ><span>${msg("No app entitlements created.")}</span>

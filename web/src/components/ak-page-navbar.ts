@@ -7,20 +7,19 @@ import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
+import { SlottedTemplateResult } from "#elements/types";
 import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#components/ak-page-navbar.css";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
@@ -40,7 +39,7 @@ export function setPageDetails(header: PageHeaderInit) {
 
 export interface PageHeaderInit {
     header?: string | null;
-    description?: string | null;
+    description?: SlottedTemplateResult;
     icon?: string | null;
     iconImage?: boolean;
 }
@@ -68,8 +67,6 @@ export class AKPageNavbar
         PFDrawer,
         PFNotificationBadge,
         PFContent,
-        PFAvatar,
-        PFDropdown,
         Styles,
     ];
 
@@ -77,20 +74,20 @@ export class AKPageNavbar
 
     //#region Properties
 
-    @state()
-    icon?: string | null = null;
+    @property({ attribute: false })
+    public icon?: string | null = null;
 
-    @state()
-    iconImage = false;
+    @property({ attribute: false })
+    public iconImage = false;
 
-    @state()
-    header?: string | null = null;
+    @property({ attribute: false })
+    public header?: string | null = null;
 
-    @state()
-    description?: string | null = null;
+    @property({ attribute: false })
+    public description?: SlottedTemplateResult = null;
 
-    @state()
-    hasIcon = true;
+    @property({ attribute: false })
+    public hasIcon = true;
 
     //#endregion
 
@@ -221,6 +218,7 @@ export class AKPageNavbar
                             >
                                 ${msg("User interface")}
                             </a>
+                            <slot name="nav-buttons"></slot>
                         </ak-nav-buttons>
                     </div>
                 </div>

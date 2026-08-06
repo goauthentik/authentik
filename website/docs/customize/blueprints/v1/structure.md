@@ -54,13 +54,18 @@ entries:
           - text
           - 2
           - !Condition [AND, ...] # See custom tags section
-      # Key:value filters to uniquely identify this object (required)
-      # On creation: identifiers are merged with attrs to create the object
-      # On lookup: identifiers are used to find existing objects (using OR logic - see below)
+      # Key:value filters to uniquely identify this object (required).
+      # Identifier keys must be fields on the target model; they are not arbitrary labels.
+      # The blueprint JSON schema lists the available fields for each model.
+      # On creation: identifiers are merged with attrs to create the object.
+      # Avoid setting the same field in both places.
+      # On lookup: identifiers are used to find existing objects
       # On update: only attrs are applied (if state is present)
       #
-      # Multiple identifiers create an OR query: an object matches if ANY identifier matches.
-      # Example: identifiers with both slug and pk will match if either the slug OR pk matches.
+      # Multiple non-pk identifiers are matched together. Use multiple fields when one field
+      # is not unique enough on its own, for example target and order on a binding.
+      # If pk is set together with other identifiers, the lookup matches either pk or the
+      # combined non-pk identifiers.
       #
       # Dictionary values use Django's __contains query for JSON field matching:
       # identifiers:
@@ -71,7 +76,7 @@ entries:
       id: flow
       # Attributes to set on the object. Only explicitly required settings should be stated
       # as these values will override existing attributes.
-      # Note: When creating objects, both identifiers and attrs are merged together.
+      # Note: When creating objects, identifiers and attrs are merged together.
       # On updates (state: present), only fields specified in attrs are modified - other
       # fields (like auto-generated client_id/client_secret) are left unchanged.
       attrs:

@@ -41,17 +41,25 @@ export default defineConfig({
         projects: [
             {
                 test: {
-                    include: ["./unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
-                    name: "unit",
+                    include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
+                    name: "Unit Tests",
                     environment: "node",
+                    typecheck: {
+                        tsconfig: "./tsconfig.unit.json",
+                    },
                 },
             },
             {
+                // Projects do not inherit the root plugin list, and elements
+                // import their stylesheets as text for `unsafeCSS`. Without
+                // this the CSS resolves to a Vite style side-effect with no
+                // default export, and importing any AKElement throws.
+                plugins: [inlineCSSPlugin()],
                 test: {
                     setupFiles: ["./test/lit/setup.js"],
 
                     include: ["./browser/**/*.{test,spec}.ts", "**/*.browser.{test,spec}.ts"],
-                    name: "browser",
+                    name: "Browser Tests",
                     browser: {
                         enabled: true,
                         provider: playwright(),

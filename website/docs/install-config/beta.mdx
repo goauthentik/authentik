@@ -18,7 +18,7 @@ Downgrading from RC or Beta versions is not supported. It is recommended to take
 
 ## Release Candidate (RC) versions
 
-Release candidates are available for testing before major version releases. To use an RC version, you need to specify the exact RC tag (e.g., `2025.10.0-rc3`).
+Release candidates are available for testing before major version releases. To use an RC version, you need to specify the exact RC tag (e.g., `2026.5.0-rc2`).
 
 <Tabs
   defaultValue="docker-compose"
@@ -28,10 +28,10 @@ Release candidates are available for testing before major version releases. To u
   ]}
   groupId="platform">
   <TabItem value="docker-compose">
-Add the following block to your `.env` file, replacing `2025.10.0-rc3` with the desired RC version:
+Add the following block to your `.env` file, replacing `2026.5.0-rc2` with the desired RC version:
 
 ```shell
-AUTHENTIK_TAG=2025.10.0-rc3
+AUTHENTIK_TAG=2026.5.0-rc2
 ```
 
 Next, pull the image and redeploy:
@@ -44,13 +44,14 @@ docker compose up -d
   </TabItem>
 
   <TabItem value="kubernetes">
-Add the following block to your `values.yaml` file, replacing `2025.10.0-rc3` with the desired RC version:
+Add the following block to your `values.yaml` file, replacing `2026.5.0-rc2` with the desired RC version:
 
 ```yaml
-image:
-    tag: 2025.10.0-rc3
-    # pullPolicy: Always to ensure you always get the latest version
-    pullPolicy: Always
+global:
+    image:
+        tag: 2026.5.0-rc2
+        # pullPolicy: Always to ensure you always get the latest version
+        pullPolicy: Always
 ```
 
 Next, run the upgrade commands:
@@ -94,11 +95,12 @@ Add the following block to your `values.yml` file:
 authentik:
     outposts:
         container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-image:
-    repository: ghcr.io/goauthentik/dev-server
-    tag: gh-next
-    # pullPolicy: Always to ensure you always get the latest version
-    pullPolicy: Always
+global:
+    image:
+        repository: ghcr.io/goauthentik/dev-server
+        tag: gh-next
+        # pullPolicy: Always to ensure you always get the latest version
+        pullPolicy: Always
 ```
 
 Next, run the upgrade commands below.
@@ -137,6 +139,6 @@ helm upgrade authentik authentik/authentik -f values.yaml
 If you are upgrading from an older Beta release to the most recent Beta release, you might need to run `kubectl rollout restart deployment`, because Helm needs to recreate the pods in order to pick up the new image (the tag doesn't change).
 :::
 
-## Verifying the installation
+## Verify the installation
 
 To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the RC or Beta version you intended.

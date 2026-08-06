@@ -17,6 +17,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
@@ -90,7 +91,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     unbind_flow_slug = SerializerMethodField()
 
     def get_application_slug(self, instance: LDAPProvider) -> str:
-        """Prioritise backchannel slug over direct application slug"""
+        """Prioritize backchannel slug over direct application slug"""
         if instance.backchannel_application:
             return instance.backchannel_application.slug
         return instance.application.slug
@@ -153,6 +154,7 @@ class LDAPOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         provider = get_object_or_404(LDAPProvider, pk=pk)
         application = get_object_or_404(Application, slug=request.query_params["app_slug"])
         engine = PolicyEngine(application, request.user, request)
+        engine.empty_result = AppAccessWithoutBindings.get()
         engine.use_cache = False
         engine.build()
         result = engine.result

@@ -56,6 +56,14 @@ const eslintConfig = defineConfig(
         },
         files: ["**/*.d.ts"],
     },
+    {
+        rules: {
+            // Playwright first parameter must be a destructure pattern,
+            // even when not referencing any fixtures.
+            "no-empty-pattern": "off",
+        },
+        files: ["**/*.spec.ts", "**/*.test.ts"],
+    },
 );
 
 export default eslintConfig;

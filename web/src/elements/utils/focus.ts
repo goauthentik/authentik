@@ -4,6 +4,44 @@
 
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 
+export interface FocusErrorOptions extends ErrorOptions {
+    target: Element | null;
+}
+
+export class FocusAssertionError extends Error {
+    public override name = "FocusAssertionError";
+    public readonly target: Element | null;
+
+    constructor(message: string, { target, ...options }: FocusErrorOptions) {
+        super(message, options);
+        this.target = target;
+    }
+}
+
+export function assertFocusable(target: Element | null | undefined): asserts target is HTMLElement {
+    if (!target) {
+        throw new FocusAssertionError("Skipping focus, no target", { target: null });
+    }
+    if (!(target instanceof HTMLElement)) {
+        throw new FocusAssertionError("Skipping focus, target is not an HTMLElement", { target });
+    }
+
+    if (document.activeElement === target) {
+        throw new FocusAssertionError("Target is already focused", { target });
+    }
+
+    // Despite our type definitions, this method isn't available in all browsers,
+    // so we fallback to assuming the element is visible.
+    const visible = target.checkVisibility?.() ?? true;
+
+    if (!visible) {
+        throw new FocusAssertionError("Skipping focus, target is not visible", { target });
+    }
+
+    if (typeof target.focus !== "function") {
+        throw new FocusAssertionError("Skipping focus, target has no focus method", { target });
+    }
+}
 /**
  * Recursively check if the target element or any of its children are active (i.e. "focused").
  *
@@ -36,35 +74,17 @@ export function isActiveElement(
  * @category DOM
  */
 export function isFocusable(target: Element | null | undefined): target is HTMLElement {
-    if (!target) {
-        console.debug("FocusTarget: Skipping focus, no target", target);
+    try {
+        assertFocusable(target);
+        return true;
+    } catch (error) {
+        if (error instanceof FocusAssertionError) {
+            console.debug(error.message, error.target);
+        } else {
+            console.error("Unexpected error during focus assertion", error);
+        }
         return false;
     }
-    if (!(target instanceof HTMLElement)) {
-        console.debug("FocusTarget: Skipping focus, target is not an HTMLElement", target);
-        return false;
-    }
-
-    if (document.activeElement === target) {
-        console.debug("FocusTarget: Target is already focused", target);
-        return false;
-    }
-
-    // Despite our type definitions, this method isn't available in all browsers,
-    // so we fallback to assuming the element is visible.
-    const visible = target.checkVisibility?.() ?? true;
-
-    if (!visible) {
-        console.debug("FocusTarget: Skipping focus, target is not visible", target);
-        return false;
-    }
-
-    if (typeof target.focus !== "function") {
-        console.debug("FocusTarget: Skipping focus, target has no focus method", target);
-        return false;
-    }
-
-    return true;
 }
 
 /**

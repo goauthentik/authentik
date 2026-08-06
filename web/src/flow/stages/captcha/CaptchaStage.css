@@ -36,4 +36,9 @@ ak-stage-captcha[theme="dark"].style-scope {
         background-color: var(--captcha-background-from);
         animation: captcha-background-animation 1s infinite var(--pf-global--TimingFunction);
     }
+
+    &[data-transparent-loading="true"][data-ready="loading"] {
+        background-color: transparent;
+        animation: none;
+    }
 }

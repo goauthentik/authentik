@@ -1,6 +1,5 @@
 """authentik core signals"""
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
@@ -14,18 +13,23 @@ from authentik.core.models import (
     Application,
     AuthenticatedSession,
     BackchannelProvider,
-    ExpiringModel,
     Session,
     User,
     default_token_duration,
 )
 from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
+from authentik.lib.models import ExpiringModel
 from authentik.root.ws.consumer import build_device_group
 
-# Arguments: user: User, password: str
 password_changed = Signal()
-# Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
+"""Arguments: user: User, password: str"""
+password_hash_changed = Signal()
+"""Arguments: user: User, request: HttpRequest | None"""
 login_failed = Signal()
+"""Arguments: credentials: dict[str, any], request: HttpRequest,
+stage: Stage, context: dict[str, any]"""
+admin_authenticated_session_deleted = Signal()
+"""Arguments: instance: AuthenticatedSession, request: HttpRequest"""
 
 LOGGER = get_logger()
 
@@ -47,16 +51,14 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
-    session = AuthenticatedSession.from_request(request, user)
-    if session:
-        session.save()
+    AuthenticatedSession.create_from_request(request, user)
 
     if not RefreshOtherFlowsAfterAuthentication.get():
         return
     layer = get_channel_layer()
     device_cookie = request.COOKIES.get("authentik_device")
     if device_cookie:
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             build_device_group(device_cookie),
             {"type": "event.session.authenticated"},
         )

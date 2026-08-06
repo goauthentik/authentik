@@ -1,24 +1,20 @@
 import "#admin/providers/RelatedApplicationButton";
 import "#admin/providers/ldap/LDAPProviderForm";
-import "#admin/rbac/ObjectPermissionsPage";
-import "#components/events/ObjectChangelog";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
-import {
-    LDAPProvider,
-    ProvidersApi,
-    RbacPermissionsAssignedByRolesListModelEnum,
-} from "@goauthentik/api";
+import { LDAPProvider, ModelEnum, ProvidersApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";
@@ -66,7 +62,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersLdapRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -101,23 +97,20 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
-                        <div class="pf-c-card__body">
-                            <ak-object-changelog
-                                targetModelPk=${this.provider?.pk || ""}
-                                targetModelName=${this.provider?.metaModelName || ""}
-                            >
-                            </ak-object-changelog>
-                        </div>
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
                     </div>
                 </div>
                 <ak-rbac-object-permission-page
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     role="tabpanel"
                     tabindex="0"
                     slot="page-permissions"
                     id="page-permissions"
                     aria-label="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByRolesListModelEnum.AuthentikProvidersLdapLdapprovider}
+                    model=${ModelEnum.AuthentikProvidersLdapLdapprovider}
                     objectPk=${this.provider.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>
@@ -130,13 +123,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
         }
 
         return html`
-            ${
-                this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Provider is not used by any Outpost.")}
-                      </div>`
-                    : nothing
-            }
+            ${this.provider?.outpostSet.length < 1 ? html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by any Outpost.")}</div>` : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -181,7 +168,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit">${msg("Update")}</span>
+                            <span slot="submit">${msg("Save Changes")}</span>
                             <span slot="header">${msg("Update LDAP Provider")}</span>
                             <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-ldap-form>
@@ -217,9 +204,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg(
-                                        "Bind Password",
-                                    )}</span>
+                                    <span class="pf-c-form__label-text">${msg("Bind Password")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"

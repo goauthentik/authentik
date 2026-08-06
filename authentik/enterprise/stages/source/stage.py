@@ -16,7 +16,7 @@ from authentik.core.sources.flow_manager import (
 )
 from authentik.core.types import UILoginButton
 from authentik.enterprise.stages.source.models import SourceStage
-from authentik.flows.challenge import Challenge, ChallengeResponse
+from authentik.flows.challenge import Challenge, ChallengeResponse, HttpChallengeResponse
 from authentik.flows.models import FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_REDIRECTED, PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView, StageView
@@ -84,7 +84,8 @@ class SourceStageView(ChallengeStageView):
         return token
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        return self.executor.stage_ok()
+        # Completion happens via dispatch(), not here.
+        return HttpChallengeResponse(self._get_challenge())
 
 
 class SourceStageFinal(StageView):

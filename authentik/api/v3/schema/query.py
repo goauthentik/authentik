@@ -1,10 +1,17 @@
+from typing import Any
+
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.plumbing import (
     ResolvedComponent,
     build_basic_type,
     build_parameter_type,
 )
 from drf_spectacular.types import OpenApiTypes
+from structlog.stdlib import get_logger
+
+LOGGER = get_logger()
+
 
 QUERY_PARAMS = {
     "ordering": ResolvedComponent(
@@ -63,3 +70,18 @@ QUERY_PARAMS = {
         ),
     ),
 }
+
+
+def postprocess_schema_query_params(
+    result: dict[str, Any], generator: SchemaGenerator, **kwargs
+) -> dict[str, Any]:
+    """Optimize pagination parameters, instead of redeclaring parameters for each endpoint
+    declare them globally and refer to them"""
+    LOGGER.debug("Deduplicating query parameters")
+    for path in result["paths"].values():
+        for method in path.values():
+            for idx, param in enumerate(method.get("parameters", [])):
+                if param["name"] not in QUERY_PARAMS:
+                    continue
+                method["parameters"][idx] = QUERY_PARAMS[param["name"]].ref
+    return result

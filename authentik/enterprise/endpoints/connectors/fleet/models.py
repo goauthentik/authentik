@@ -51,6 +51,12 @@ class FleetConnector(Connector):
     def component(self) -> str:
         return "ak-endpoints-connector-fleet-form"
 
+    @property
+    def stage(self):
+        from authentik.enterprise.endpoints.connectors.fleet.stage import FleetStageView
+
+        return FleetStageView
+
     class Meta:
         verbose_name = _("Fleet Connector")
         verbose_name_plural = _("Fleet Connectors")

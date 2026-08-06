@@ -2,9 +2,9 @@
 title: Translations
 ---
 
-Translation in authentik is done in two places. Most of the text is defined in the frontend in `web/`, and a subset of messages is defined in the backend.
+Translations in authentik are handled in two places. Most of the text is defined in the frontend in `web/`, and a subset of messages is defined in the backend.
 
-The frontend uses [@lit/localize](https://lit.dev/docs/localization/overview/), and the backend uses the built-in django translation tools.
+The frontend uses [@lit/localize](https://lit.dev/docs/localization/overview/), and the backend uses the built-in Django translation tools.
 
 :::info
 Please review the [Writing documentation](./docs/writing-documentation.md) guidelines as they apply to documentation too.
@@ -18,13 +18,14 @@ To simplify translation you can use [Transifex](https://explore.transifex.com/au
 
 ### Prerequisites
 
-- Node (any recent version should work, we use 16.x to build)
+- [Node.js](https://nodejs.org/en) (24 or later), installed with [nvm](https://github.com/nvm-sh/nvm)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), installed by following the [pnpm installation guide](https://pnpm.io/installation) or by running `corepack enable pnpm`
 - Make (again, any recent version should work)
 - Docker
 
 ### Frontend
 
-Run `npm i` in the `/web` folder to install all dependencies.
+Run `pnpm install` in the `/web` folder to install all dependencies.
 
 Ensure the language code is in the `lit-localize.json` file in `web/`:
 

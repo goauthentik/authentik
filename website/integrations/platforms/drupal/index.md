@@ -4,7 +4,9 @@ sidebar_label: Drupal
 support_level: community
 ---
 
-## What is Drupal
+import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
+
+## What is Drupal?
 
 > Drupal is a free and open-source content management system written in PHP and
 > paired with a database.
@@ -22,51 +24,51 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::info
-There are many different modules for Drupal that allow you to set up SSO using different authentication methods. This tutorial uses the [OpenID Connect / OAuth client](https://www.drupal.org/project/openid_connect) module.
-:::
+This guide uses the [OpenID Connect / OAuth client](https://www.drupal.org/project/openid_connect) module. Install and enable this module in Drupal before continuing.
 
 ## authentik configuration
 
+<RedirectURI20265Note />
+
 To support the integration of Drupal with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `drupal-slug` placeholder defined earlier.
-- **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Add the following **Redirect URI**: `https://drupal.company/openid-connect/generic`
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://drupal.company/openid-connect/authentik`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
-4. Note the **Client ID** and **Client Secret** for later use.
 
 ## Drupal configuration
 
-1. From the Admin Toolbar or admin page at `https://drupal.company/admin`, navigate to **Configuration** > **Web Services** > **OpenID Connect** (or directly at `https://drupal.company/admin/config/services/openid-connect`)
-2. Configure the following settings:
-    - Set the **Client ID** and **Client Secret** to the values noted from authentik
-    - Configure the endpoints:
-        - **Authorization endpoint**: `https://authentik.company/application/o/authorize/`
-        - **Token endpoint**: `https://authentik.company/application/o/token/`
-        - **UserInfo endpoint**: `https://authentik.company/application/o/userinfo/`
-3. Under **Admin** > **Configuration** > **People** > **Account Settings** (or `https://drupal.company/admin/config/people/accounts`):
-    - If new user registration is disabled, check **Override registration settings** to enable new account creation
-    - Note: Without this setting, new users will receive a message that their account is blocked pending administrator approval
-4. Enable the OpenID button on the user login form
-
-:::info
-If you are developing Drupal locally with DDEV and authentik is also running locally, use `host.docker.internal:9000` as the hostname for the Token and UserInfo endpoints.
-:::
+1. Log in to Drupal as an administrator.
+2. Navigate to **Configuration** > **People** > **OpenID Connect** and click **Generic OAuth 2.0**.
+3. Configure the following settings:
+    - **Name**: `authentik`
+    - **Machine name**: `authentik`
+    - **Client ID**: enter the **Client ID** from authentik.
+    - **Client secret**: enter the **Client Secret** from authentik.
+    - **Auto discover endpoints**: enable this setting.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Scopes**: `openid email profile`
+4. Confirm that the **Redirect URL** shown by Drupal is `https://drupal.company/openid-connect/authentik`.
+5. Click **Save**.
+6. Open the **Settings** tab and configure the following settings:
+    - **Override registration settings**: enable this setting if Drupal should create users who do not already have an account.
+    - **OpenID buttons display in user login form**: select where the authentik login button should appear on the Drupal login form.
+7. Click **Save configuration**.
 
 ## Configuration verification
 
-TODO
+To confirm that authentik is properly configured with Drupal, log out of Drupal, open the Drupal login page, and click **Log in with authentik**. You should be redirected to authentik to log in, and then redirected back to Drupal.
 
-## Additional Resources
+## Resources
 
 - [Drupal OpenID Connect Module Documentation](https://www.drupal.org/project/openid_connect)
-- [Drupal User Account Settings Documentation](https://www.drupal.org/docs/user_guide/en/user-registration.html)
+- [Drupal OpenID Connect client configuration documentation](https://www.drupal.org/docs/contributed-modules/openid-connect/client-configuration)

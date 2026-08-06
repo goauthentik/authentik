@@ -114,15 +114,16 @@ def certificate_discovery():
     discovered = 0
     for file in glob(CONFIG.get("cert_discovery_dir") + "/**", recursive=True):
         path = Path(file)
-        if not path.exists():
-            continue
-        if path.is_dir():
+        if not path.exists() or path.is_dir():
             continue
         # For certbot setups, we want to ignore archive.
         if "archive" in file:
             continue
-        # Support certbot's directory structure
-        if path.name in ["fullchain.pem", "privkey.pem"]:
+        # Handle additionalOutputFormats from cert-manager gracefully
+        if path.name in ["ca.crt", "tls-combined.pem", "key.der"]:
+            continue
+        # Support certbot & kubernetes.io/tls directory structure
+        if path.name in ["fullchain.pem", "privkey.pem", "tls.crt", "tls.key"]:
             cert_name = path.parent.name
         else:
             cert_name = path.name.replace(path.suffix, "")

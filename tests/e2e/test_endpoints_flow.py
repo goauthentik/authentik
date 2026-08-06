@@ -8,7 +8,8 @@ from authentik.endpoints.models import Device, EndpointStage, StageMode
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, FlowStageBinding
 from authentik.lib.generators import generate_id
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.selenium import SeleniumTestCase
 
 
 class TestEndpointsFlow(SeleniumTestCase):

@@ -11,6 +11,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -21,6 +22,7 @@ from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
+    ACTOR_TOKEN_TYPES,
     CLIENT_ASSERTION,
     CLIENT_ASSERTION_TYPE,
     CLIENT_ASSERTION_TYPE_JWT,
@@ -29,34 +31,49 @@ from authentik.common.oauth.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
+    JWT_TYPE_DPOP_ID_TOKEN,
     PKCE_METHOD_S256,
+    SCOPE_BOUND_KEY,
     SCOPE_OFFLINE_ACCESS,
+    TOKEN_EXCHANGE_TOKEN_TYPES,
     TOKEN_TYPE,
+    TOKEN_TYPE_URI_ACCESS_TOKEN,
+    TOKEN_TYPE_URI_AUTHENTIK_TOKEN,
 )
+from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
     USER_PATH_SYSTEM_PREFIX,
     USERNAME_MAX_LENGTH,
+    Actor,
     Application,
     Token,
     TokenIntents,
     User,
     UserTypes,
 )
+from authentik.core.sources.mapper import SourceMapper
 from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
+from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
+from authentik.providers.oauth2.errors import (
+    DeviceCodeError,
+    TokenError,
+    TokenExchangeError,
+    UserAuthError,
+)
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
+    ClientType,
     DeviceToken,
     OAuth2Provider,
     RedirectURIMatchingMode,
@@ -67,6 +84,7 @@ from authentik.providers.oauth2.utils import (
     TokenResponse,
     cors_allow,
     extract_client_auth,
+    is_all_vschar,
     pkce_s256_challenge,
 )
 from authentik.providers.oauth2.views.authorize import FORBIDDEN_URI_SCHEMES
@@ -93,8 +111,13 @@ class TokenParams:
     refresh_token: RefreshToken | None = None
     device_code: DeviceToken | None = None
     user: User | None = None
+    actor: User | None = None
 
     code_verifier: str | None = None
+    dpop_proof: str | None = None
+    dpop_jwk: dict | None = None
+
+    requested_token_type: str | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
@@ -123,6 +146,10 @@ class TokenParams:
             scope=set(request.POST.get("scope", "").split()),
             # PKCE parameter.
             code_verifier=request.POST.get("code_verifier"),
+            # DPoP proof-of-possession header (RFC 9449)
+            dpop_proof=request.headers.get("DPoP"),
+            # Token exchange parameter.
+            requested_token_type=request.POST.get("requested_token_type"),
         )
 
     def __check_scopes(self):
@@ -146,6 +173,7 @@ class TokenParams:
         ):
             user = self.user if self.user else get_anonymous_user()
             engine = PolicyEngine(app, user, request)
+            engine.empty_result = AppAccessWithoutBindings.get()
             # Don't cache as for client_credentials flows the user will not be set
             # so we'll get generic cache results
             engine.use_cache = False
@@ -161,16 +189,67 @@ class TokenParams:
                 )
                 raise TokenError("invalid_grant")
 
+    def _validate_dpop(
+        self,
+        request: HttpRequest,
+        dpop_jkt: str | None,
+        raw_code: str | None = None,
+        flow_name: str = "token",
+    ) -> None:
+        """Validate DPoP proof for key-bound tokens.
+
+        :param request: The current HTTP request
+        :param dpop_jkt: The expected JWK thumbprint (from auth request or previous token)
+        :param raw_code: The raw authorization code or device code (for c_s256 computation)
+        :param flow_name: Description of flow for logging (e.g., "authorization code")
+        :raises TokenError: If DPoP validation fails
+        """
+        if not self.dpop_proof:
+            LOGGER.warning("Missing DPoP proof for key-bound token", flow_name=flow_name)
+            raise TokenError("invalid_request")
+        if dpop_jkt is None:
+            LOGGER.warning("bound_key scope requested but no dpop_jkt", flow_name=flow_name)
+            raise TokenError("invalid_request")
+        try:
+            kwargs = {}
+            if raw_code is not None:
+                kwargs["expected_c_s256"] = pkce_s256_challenge(raw_code)
+            token_url = request.build_absolute_uri(reverse("authentik_providers_oauth2:token"))
+            self.dpop_jwk = DPoPValidator().validate(
+                self.dpop_proof,
+                expected_htm="POST",
+                expected_htu=token_url,
+                expected_jkt=dpop_jkt,
+                **kwargs,
+            )
+        except DPoPError as exc:
+            LOGGER.warning("DPoP validation failed", flow_name=flow_name, exc=str(exc))
+            raise TokenError("invalid_request") from exc
+
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
-        if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
-            if self.provider.client_type == ClientTypes.CONFIDENTIAL and not compare_digest(
-                self.provider.client_secret, self.client_secret
+        if self.grant_type not in self.provider.grant_types:
+            LOGGER.warning("Invalid grant_type for provider", grant_type=self.grant_type)
+            raise TokenError("invalid_grant").with_cause("grant_type_not_configured")
+
+        # Confidential clients MUST authenticate to the token endpoint per
+        # RFC 6749 §2.3.1. The device code grant (RFC 8628 §3.4) and the token
+        # exchange grant (RFC 8693 §2.1) inherit that requirement - neither the
+        # device_code nor the subject_token is a substitute for client credentials.
+        if self.grant_type in [
+            GRANT_TYPE_AUTHORIZATION_CODE,
+            GRANT_TYPE_REFRESH_TOKEN,
+            GRANT_TYPE_DEVICE_CODE,
+            GRANT_TYPE_TOKEN_EXCHANGE,
+        ]:
+            if self.provider.client_type == ClientType.CONFIDENTIAL and (
+                not is_all_vschar(self.client_secret)
+                or not compare_digest(self.provider.client_secret, self.client_secret)
             ):
                 LOGGER.warning(
                     "Invalid client secret",
                     client_id=self.provider.client_id,
                 )
-                raise TokenError("invalid_client")
+                raise TokenError("invalid_client").with_cause("invalid_secret")
         self.__check_scopes()
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
             with start_span(
@@ -192,6 +271,11 @@ class TokenParams:
                 op="authentik.providers.oauth2.post.parse.device_code",
             ):
                 self.__post_init_device_code(request)
+        elif self.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
+            with start_span(
+                op="authentik.providers.oauth2.post.parse.token_exchange",
+            ):
+                self.__post_init_token_exchange(request)
         else:
             LOGGER.warning("Invalid grant type", grant_type=self.grant_type)
             raise TokenError("unsupported_grant_type")
@@ -237,8 +321,16 @@ class TokenParams:
         if not self.authorization_code.code_challenge and self.code_verifier:
             raise TokenError("invalid_grant")
 
+        if SCOPE_BOUND_KEY in self.authorization_code.scope:
+            self._validate_dpop(
+                request,
+                self.authorization_code.dpop_jkt,
+                raw_code=raw_code,
+                flow_name="authorization code",
+            )
+
     def __check_redirect_uri(self, request: HttpRequest):
-        allowed_redirect_urls = self.provider.redirect_uris
+        allowed_redirect_urls = self.provider.authorization_redirect_uris
         # At this point, no provider should have a blank redirect_uri, in case they do
         # this will check an empty array and raise an error
 
@@ -313,6 +405,13 @@ class TokenParams:
             ).from_http(request, user=self.refresh_token.user)
             raise TokenError("invalid_grant")
 
+        if self.refresh_token.dpop_jkt:
+            self._validate_dpop(
+                request,
+                self.refresh_token.dpop_jkt,
+                flow_name="refresh token",
+            )
+
     def __post_init_client_credentials(self, request: HttpRequest):
         # client_credentials flow with client assertion
         if request.POST.get(CLIENT_ASSERTION_TYPE, "") != "":
@@ -340,7 +439,7 @@ class TokenParams:
         user = User.objects.filter(username=username, is_active=True).first()
         if not user:
             raise TokenError("invalid_grant")
-        token: Token = Token.filter_not_expired(
+        token: Token = Token.objects.filter(
             key=password, intent=TokenIntents.INTENT_APP_PASSWORD, user=user
         ).first()
         if not token or token.user.uid != user.uid:
@@ -413,8 +512,8 @@ class TokenParams:
 
     def __validate_jwt_from_provider(
         self, assertion: str
-    ) -> tuple[dict, OAuth2Provider] | tuple[None, None]:
-        token = provider = _key = None
+    ) -> tuple[dict, OAuth2Provider, User] | tuple[None, None, None]:
+        token = provider = resolved_user = _key = None
         federated_token = AccessToken.objects.filter(
             token=assertion, provider__in=self.provider.jwt_federation_providers.all()
         ).first()
@@ -430,7 +529,7 @@ class TokenParams:
                     },
                 )
                 provider = federated_token.provider
-                self.user = federated_token.user
+                resolved_user = federated_token.user
             except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
                 LOGGER.warning(
                     "failed to verify JWT", exc=exc, provider=federated_token.provider.name
@@ -438,7 +537,7 @@ class TokenParams:
 
         if token:
             LOGGER.info("successfully verified JWT with provider", provider=provider.name)
-        return token, provider
+        return token, provider, resolved_user
 
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
@@ -452,11 +551,11 @@ class TokenParams:
             LOGGER.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
-        source = provider = None
+        source = provider = resolved_user = None
 
         token, source = self.__validate_jwt_from_source(assertion)
         if not token:
-            token, provider = self.__validate_jwt_from_provider(assertion)
+            token, provider, resolved_user = self.__validate_jwt_from_provider(assertion)
 
         if not token:
             LOGGER.warning("No token could be verified")
@@ -475,8 +574,10 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
         self.__check_policy_access(app, request, oauth_jwt=token)
-        if not provider:
-            self.__create_user_from_jwt(token, app, source)
+        if provider:
+            self.user = resolved_user
+        else:
+            self.__create_user_from_jwt(token, app, source, request)
 
         method_args = {
             "jwt": token,
@@ -525,23 +626,173 @@ class TokenParams:
 
     def __post_init_device_code(self, request: HttpRequest):
         device_code = request.POST.get("device_code", "")
-        code = DeviceToken.objects.filter(device_code=device_code, provider=self.provider).first()
+        # Look up including expired codes so an expired code can be told apart from an
+        # unknown one, see https://datatracker.ietf.org/doc/html/rfc8628#section-3.5
+        code = (
+            DeviceToken.objects.including_expired()
+            .filter(device_code=device_code, provider=self.provider)
+            .first()
+        )
         if not code:
             raise TokenError("invalid_grant")
+        if code.expires and code.is_expired:
+            raise DeviceCodeError("expired_token")
         self.device_code = code
 
-    def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
+        if SCOPE_BOUND_KEY in self.device_code.scope:
+            self._validate_dpop(
+                request,
+                self.device_code.dpop_jkt,
+                raw_code=device_code,
+                flow_name="device code",
+            )
+
+    def __post_init_token_exchange(self, request: HttpRequest):
+        """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
+        # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
+        # requested target cannot be honored, so the parameters are refused rather than ignored.
+        if request.POST.getlist("audience") or request.POST.getlist("resource"):
+            LOGGER.warning("Token targeting is not supported")
+            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+
+        subject_token = request.POST.get("subject_token", "")
+        subject_token_type = request.POST.get("subject_token_type", "")
+        if not subject_token or not subject_token_type:
+            LOGGER.warning("Missing subject_token or subject_token_type")
+            raise TokenExchangeError("invalid_request").with_cause("missing_subject_token")
+        if subject_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+            LOGGER.warning("Unsupported subject token type", token_type=subject_token_type)
+            raise TokenExchangeError("invalid_request").with_cause("unsupported_subject_token_type")
+        if self.requested_token_type is None:
+            self.requested_token_type = TOKEN_TYPE_URI_ACCESS_TOKEN
+        if self.requested_token_type not in TOKEN_EXCHANGE_TOKEN_TYPES:
+            LOGGER.warning("Unsupported requested token type", token_type=self.requested_token_type)
+            raise TokenExchangeError("invalid_request").with_cause(
+                "unsupported_requested_token_type"
+            )
+
+        source = provider = resolved_user = None
+        token, source = self.__validate_jwt_from_source(subject_token)
+        if not token:
+            token, provider, resolved_user = self.__validate_jwt_from_provider(subject_token)
+        if not token:
+            # Expiry is enforced by PyJWT during signature verification, so an expired
+            # subject token also lands here.
+            LOGGER.warning("No subject token could be verified")
+            raise TokenExchangeError("invalid_grant").with_cause("subject_token_not_verified")
+
+        app = Application.objects.filter(provider=self.provider).first()
+        if not app or not app.provider:
+            LOGGER.info("token_exchange grant for provider without application")
+            raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
+
+        self.__check_policy_access(app, request, oauth_jwt=token)
+        if provider:
+            self.user = resolved_user
+        else:
+            self.__create_user_from_jwt(token, app, source, request)
+
+        self.__post_init_token_exchange_actor(request)
+
+        method_args = {
+            "jwt": token,
+            "subject_token_type": subject_token_type,
+            "requested_token_type": self.requested_token_type,
+        }
+        if source:
+            method_args["source"] = source
+        if provider:
+            method_args["provider"] = provider
+        Event.new(
+            action=EventAction.LOGIN,
+            **{
+                PLAN_CONTEXT_METHOD: "token_exchange",
+                PLAN_CONTEXT_METHOD_ARGS: method_args,
+                PLAN_CONTEXT_APPLICATION: app,
+            },
+        ).from_http(request, user=self.user)
+
+    def __post_init_token_exchange_actor(self, request: HttpRequest):
+        """RFC 8693 §4.1 delegation: validate an optional `actor_token`, identifying who
+        is actually exercising the resulting token (e.g. an Actor acting for the
+        verified subject_token's human).
+
+        Actors without an owner (`parent=None`) may only be used via a JWT actor_token.
+        Actors with an owner may be used via a JWT *or* an authentik built-in Token,
+        but only by the human that owns them (`actor.parent_id == self.user.pk`)."""
+        actor_token = request.POST.get("actor_token", "")
+        actor_token_type = request.POST.get("actor_token_type", "")
+        if not actor_token and not actor_token_type:
+            return
+        if not actor_token or not actor_token_type:
+            LOGGER.warning("Missing actor_token or actor_token_type")
+            raise TokenExchangeError("invalid_request").with_cause("missing_actor_token")
+        if actor_token_type not in ACTOR_TOKEN_TYPES:
+            LOGGER.warning("Unsupported actor token type", token_type=actor_token_type)
+            raise TokenExchangeError("invalid_request").with_cause("unsupported_actor_token_type")
+
+        if actor_token_type == TOKEN_TYPE_URI_AUTHENTIK_TOKEN:
+            # Built-in tokens: only valid for actors with an owner -- same lookup idiom as
+            # TokenAuthentication.auth_user_lookup (authentik/api/authentication.py).
+            # Token.objects excludes expired tokens by default (ExpiringManager).
+            key_token = Token.objects.filter(
+                key=actor_token, intent=TokenIntents.INTENT_API
+            ).first()
+            if not key_token:
+                LOGGER.warning("Actor token not found")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
+            # Actor.objects excludes expired actors by default (ExpiringManager), so an
+            # expired actor_token's user simply won't resolve here.
+            actor = Actor.objects.filter(pk=key_token.user_id).first()
+            if not actor or actor.parent_id != self.user.pk:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+        else:
+            # TOKEN_TYPE_URI_JWT: verified via the same federation-provider trust used
+            # for subject_token.
+            # Only the provider-federation path applies -- Actors are authentik-internal
+            # service accounts, never externally-sourced identities, so the source/JWKS
+            # path (__validate_jwt_from_source) does not apply here.
+            token, _provider, resolved_user = self.__validate_jwt_from_provider(actor_token)
+            if not token:
+                LOGGER.warning("Actor token not found")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
+            actor = Actor.objects.filter(pk=resolved_user.pk).first()
+            if not actor:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+            # Ownerless actors (parent=None) are allowed via JWT with no ownership check;
+            # owned actors must still belong to the verified subject.
+            if actor.parent_id is not None and actor.parent_id != self.user.pk:
+                LOGGER.warning("Actor is not controlled by the verified subject")
+                raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")
+
+        self.actor = actor
+
+    def __create_user_from_jwt(
+        self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
+    ):
         """Create user from JWT"""
         with audit_ignore():
+            # Run the JWT payload through the core mapping engine
+            mapped = SourceMapper(source).build_object_properties(
+                User, request=request, info=token, oauth_userinfo=token
+            )
+
             self.user, created = User.objects.update_or_create(
-                username=f"{self.provider.name}-{token.get('sub')}",
+                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
+                    :USERNAME_MAX_LENGTH
+                ],
                 defaults={
                     "last_login": timezone.now(),
-                    "name": (
-                        f"Autogenerated user from application {app.name} (client credentials JWT)"
+                    "name": mapped.get(
+                        "name",
+                        f"Autogenerated user from application {app.name} (client credentials JWT)",
                     ),
+                    "email": mapped.get("email", ""),
                     "path": source.get_user_path(),
                     "type": UserTypes.SERVICE_ACCOUNT,
+                    "attributes": mapped.get("attributes", {}),
                 },
             )
             self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
@@ -583,10 +834,10 @@ class TokenView(View):
                 if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
-                CTX_AUTH_VIA.set("oauth_client_secret")
                 self.params = self.params_class.parse(
                     request, self.provider, client_id, client_secret
                 )
+                CTX_AUTH_VIA.set("oauth_client_secret")
 
             with start_span(
                 op="authentik.providers.oauth2.post.response",
@@ -603,11 +854,25 @@ class TokenView(View):
                 if self.params.grant_type == GRANT_TYPE_DEVICE_CODE:
                     LOGGER.debug("Device code grant")
                     return TokenResponse(self.create_device_code_response())
+                if self.params.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
+                    LOGGER.debug("Token exchange grant")
+                    return TokenResponse(self.create_token_exchange_response())
                 raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
             return TokenResponse(error.create_dict(request), status=400)
         except UserAuthError as error:
             return TokenResponse(error.create_dict(request), status=403)
+
+    def _get_id_token_jwt_type(self) -> str | None:
+        """Return dpop+id_token if key binding is active, else None"""
+        if self.params.dpop_jwk is not None:
+            return JWT_TYPE_DPOP_ID_TOKEN
+        return None
+
+    def _add_cnf_to_id_token(self, id_token: IDToken) -> None:
+        """Add cnf claim to ID Token when key binding is active"""
+        if self.params.dpop_jwk is not None:
+            id_token.cnf = {"jwk": self.params.dpop_jwk}
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
@@ -628,9 +893,11 @@ class TokenView(View):
             self.request,
         )
         access_id_token.nonce = self.params.authorization_code.nonce
+        self._add_cnf_to_id_token(access_id_token)
         access_token.id_token = access_id_token
         access_token.save()
 
+        id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
@@ -638,7 +905,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         if SCOPE_OFFLINE_ACCESS in self.params.authorization_code.scope:
@@ -650,6 +917,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=self.params.authorization_code.auth_time,
                 session=self.params.authorization_code.session,
+                dpop_jkt=self.params.authorization_code.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -658,6 +926,7 @@ class TokenView(View):
             )
             id_token.nonce = self.params.authorization_code.nonce
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
             response["refresh_token"] = refresh_token.token
@@ -684,27 +953,30 @@ class TokenView(View):
             auth_time=self.params.refresh_token.auth_time,
             session=self.params.refresh_token.session,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        self._add_cnf_to_id_token(access_id_token)
+        access_token.id_token = access_id_token
         access_token.save()
 
-        res = {
+        id_token_jwt_type = self._get_id_token_jwt_type()
+        response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         refresh_token_threshold = timedelta_from_string(self.provider.refresh_token_threshold)
         if (
             refresh_token_threshold.total_seconds() == 0
-            or (now - self.params.refresh_token.expires) > refresh_token_threshold
+            or (self.params.refresh_token.expires - now) < refresh_token_threshold
         ):
             refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
             refresh_token = RefreshToken(
@@ -714,6 +986,7 @@ class TokenView(View):
                 provider=self.provider,
                 auth_time=self.params.refresh_token.auth_time,
                 session=self.params.refresh_token.session,
+                dpop_jkt=self.params.refresh_token.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -722,15 +995,16 @@ class TokenView(View):
             )
             id_token.nonce = self.params.refresh_token.id_token.nonce
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
 
             # Mark old token as revoked
             self.params.refresh_token.revoked = True
             self.params.refresh_token.save()
-            res["refresh_token"] = refresh_token.token
+            response["refresh_token"] = refresh_token.token
 
-        return res
+        return response
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
@@ -774,13 +1048,16 @@ class TokenView(View):
             auth_time=auth_event.created if auth_event else now,
             session=self.params.device_code.session,
         )
-        access_token.id_token = IDToken.new(
+        access_id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
         )
+        self._add_cnf_to_id_token(access_id_token)
+        access_token.id_token = access_id_token
         access_token.save()
 
+        id_token_jwt_type = self._get_id_token_jwt_type()
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
@@ -788,7 +1065,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(self.provider),
+            "id_token": access_token.id_token.to_jwt(self.provider, jwt_type=id_token_jwt_type),
         }
 
         if SCOPE_OFFLINE_ACCESS in self.params.device_code.scope:
@@ -799,6 +1076,7 @@ class TokenView(View):
                 expires=refresh_token_expiry,
                 provider=self.provider,
                 auth_time=auth_event.created if auth_event else now,
+                dpop_jkt=self.params.device_code.dpop_jkt,
             )
             id_token = IDToken.new(
                 self.provider,
@@ -806,6 +1084,7 @@ class TokenView(View):
                 self.request,
             )
             id_token.at_hash = access_token.at_hash
+            self._add_cnf_to_id_token(id_token)
             refresh_token.id_token = id_token
             refresh_token.save()
             response["refresh_token"] = refresh_token.token
@@ -813,3 +1092,34 @@ class TokenView(View):
         # Delete device code
         self.params.device_code.delete()
         return response
+
+    def create_token_exchange_response(self) -> dict[str, Any]:
+        """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
+            user=self.params.user,
+            actor=self.params.actor,
+            expires=access_token_expiry,
+            scope=self.params.scope,
+            auth_time=now,
+        )
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
+        )
+        access_token.save()
+
+        return {
+            "access_token": access_token.token,
+            # Access tokens are themselves JWTs, so the issued token satisfies either
+            # identifier the client may have requested.
+            "issued_token_type": self.params.requested_token_type,
+            "token_type": TOKEN_TYPE,
+            "scope": " ".join(access_token.scope),
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+        }

@@ -1,3 +1,11 @@
+/* #region Dark Theme */
+
+[data-theme="dark"] .pf-c-drawer,
+:host([theme="dark"]) .pf-c-drawer {
+    --pf-c-drawer__panel--BackgroundColor: var(--ak-dark-background);
+}
+
+/* #endregion */
 .pf-c-drawer {
     /* TODO: Revisit this after native <dialog> modals are implemented. */
     --pf-c-drawer__content--ZIndex: auto;
@@ -30,14 +38,3 @@
         }
     }
 }
-
-/* #region Dark Theme */
-
-[data-theme="dark"] .pf-c-drawer,
-:host([theme="dark"]) .pf-c-drawer {
-    .pf-c-drawer__panel {
-        background-color: var(--ak-dark-background);
-    }
-}
-
-/* #endregion */

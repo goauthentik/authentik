@@ -2,11 +2,11 @@ import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
-import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
+import { ConsentModeEnum, ConsentStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
@@ -16,12 +16,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {
     loadInstance(pk: string): Promise<ConsentStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesConsentRetrieve({
                 stageUuid: pk,
             })
             .then((stage) => {
-                this.showExpiresIn = stage.mode === ConsentStageModeEnum.Expiring;
+                this.showExpiresIn = stage.mode === ConsentModeEnum.Expiring;
                 return stage;
             });
     }
@@ -31,12 +31,12 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
 
     async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
+            return aki(StagesApi).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
                 consentStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
+        return aki(StagesApi).stagesConsentCreate({
             consentStageRequest: data,
         });
     }
@@ -62,10 +62,7 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
                                 const target = ev.target as HTMLSelectElement;
-                                if (
-                                    target.selectedOptions[0].value ===
-                                    ConsentStageModeEnum.Expiring
-                                ) {
+                                if (target.selectedOptions[0].value === ConsentModeEnum.Expiring) {
                                     this.showExpiresIn = true;
                                 } else {
                                     this.showExpiresIn = false;
@@ -73,21 +70,20 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                             }}
                         >
                             <option
-                                value=${ConsentStageModeEnum.AlwaysRequire}
-                                ?selected=${this.instance?.mode ===
-                                ConsentStageModeEnum.AlwaysRequire}
+                                value=${ConsentModeEnum.AlwaysRequire}
+                                ?selected=${this.instance?.mode === ConsentModeEnum.AlwaysRequire}
                             >
                                 ${msg("Always require consent")}
                             </option>
                             <option
-                                value=${ConsentStageModeEnum.Permanent}
-                                ?selected=${this.instance?.mode === ConsentStageModeEnum.Permanent}
+                                value=${ConsentModeEnum.Permanent}
+                                ?selected=${this.instance?.mode === ConsentModeEnum.Permanent}
                             >
                                 ${msg("Consent given lasts indefinitely")}
                             </option>
                             <option
-                                value=${ConsentStageModeEnum.Expiring}
-                                ?selected=${this.instance?.mode === ConsentStageModeEnum.Expiring}
+                                value=${ConsentModeEnum.Expiring}
+                                ?selected=${this.instance?.mode === ConsentModeEnum.Expiring}
                             >
                                 ${msg("Consent expires")}
                             </option>

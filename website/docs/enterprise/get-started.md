@@ -1,38 +1,52 @@
 ---
-title: Get started with Enterprise
+title: Get started with authentik Enterprise
+description: "Enable authentik Enterprise on a new or existing installation"
+sidebar_position: 1
 ---
 
-Installing authentik is exactly the same process for both the Enterprise version and our open source version.
+Installing authentik is exactly the same process for both the Enterprise version and our open source version. Enterprise features are enabled by installing a license.
 
-## 1. Install Enterprise
+## Before you begin
 
-To get started working with Enterprise authentik, [upgrade](../install-config/upgrade.mdx) to the [2023.8.x](../../releases/) version or later.
+You need:
 
-If this is a fresh install, refer to our technical documentation for instructions on how to [install and configure authentik](../install-config/index.mdx).
+- A running, supported version of authentik.
+- Administrator access to the authentik Admin interface.
+- Access to an organization in the [Customer Portal](https://customers.goauthentik.io/).
 
-- [Docker Compose installation](../install-config/install/docker-compose.mdx)
-- [Kubernetes installation](../install-config/install/kubernetes.md)
+For a new deployment, [install authentik](../install-config/index.mdx) before continuing.
 
-## 2. Access Enterprise
+## 1. Copy the Install ID
 
-Access your Enterprise features by [purchasing a license](./manage-enterprise.mdx#buy-a-license) for the organization.
+Each authentik installation has a unique Install ID that binds a license to that installation.
 
-To open the Customer Portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise > Licenses**, and then click **Go to Customer Portal**.
+1. Log in to the authentik Admin interface.
+2. Navigate to **Enterprise** > **Licenses**.
+3. Copy the value under **Your Install ID**.
 
-Alternatively you can open a new browser window and go directly to the [Customer Portal](https://customers.goauthentik.io/). If you do not yet have an authentik account, there is a [Sign up link](https://customers.goauthentik.io/signup) on the Customer Portal login page.
+In a [multi-tenant deployment](../sys-mgmt/tenancy.md), each tenant has its own Install ID and requires its own license.
 
-In the Customer Portal you [define your organization](./manage-enterprise.mdx#create-an-organization) and its members, manage your [licenses](./manage-enterprise.mdx#license-management) and [billing](./manage-enterprise.mdx#manage-billing), and access our [Support center](./entsupport.md).
+## 2. Obtain a license key
 
-:::info
-A license is associated with a specific Organization in the customer portal and a specific authentik instance (with a unique Install ID), and not with individual users. A single license is purchased for a specified number of users. Additional users can be added to a license, or additional licenses purchased for the same instance, if more users need to be added later.
-:::
+You can purchase a license from the **Your Install ID** card in the Admin interface or directly from the [Customer Portal](https://customers.goauthentik.io/).
 
-## 3. Visit the Support center
+When you purchase a license, provide the Install ID and the required internal and external user capacity. For the complete purchase workflow, see [Purchase a license](./manage-enterprise.md#purchase-a-license).
 
-Enterprise authentik provides dedicated support, with a Support center where you can open a request and view the progress and communications for your current requests.
+To request a trial or discuss an Enterprise Plus agreement, contact [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
-:::info
-Access to the Support center and the ticketing system requires a licensed instance of authentik.
-:::
+## 3. Install the license key
 
-To learn about our Support center, see ["Enterprise support"](./entsupport.md).
+1. In the Admin interface, navigate to **Enterprise** > **Licenses**.
+2. Click **Install**.
+3. Paste the license key into **License key**.
+4. Click **Install**.
+
+The **Licenses** page displays the installed license, its internal and external user capacity, and its expiry date. The **Current license status** card displays the combined status and capacity of all active licenses for the installation.
+
+If authentik rejects the key, verify that you copied the complete key and that its Install ID matches the current installation. Contact [Enterprise support](./enterprise-support.md) if a valid key still cannot be installed.
+
+## Next steps
+
+- Review the [Enterprise features](./enterprise-features.md) and configure the features that you need in the standard authentik documentation.
+- Learn how authentik [counts licensed users](./manage-enterprise.md#about-users-and-licenses).
+- Configure additional Customer Portal users to avoid relying on a single account for license access.

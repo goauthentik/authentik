@@ -40,7 +40,7 @@ class TestUserinfo(OAuthTestCase):
         self.app.provider = self.provider
         self.app.save()
         self.user = create_test_admin_user()
-        self.token: AccessToken = AccessToken.objects.create(
+        self.token = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
             token=generate_id(),
@@ -68,6 +68,7 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
+                "picture": self.user.avatar,
             },
         )
         self.assertEqual(res.status_code, 200)
@@ -90,6 +91,7 @@ class TestUserinfo(OAuthTestCase):
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.groups.all()],
                 "sub": "bar",
+                "picture": self.user.avatar,
             },
         )
         self.assertEqual(res.status_code, 200)

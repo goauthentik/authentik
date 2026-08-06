@@ -3,6 +3,27 @@
 This is the default UI for the authentik server. The documentation is going to be a little sparse
 for awhile, but at least let's get started.
 
+# Setup
+
+Install dependencies from the repo root with `make node-install` (or `make install` for the full
+Python + web + docs bootstrap). This wraps `npm ci` and explicitly rebuilds the small set of
+packages whose install scripts are required for the toolchain to function — currently `esbuild`,
+`chromedriver`, `tree-sitter`, and `tree-sitter-json`.
+
+The repo-root `.npmrc` sets `ignore-scripts=true` to neutralize the dominant npm supply-chain
+attack vector. As a side effect, running `npm ci` directly in this directory will install
+dependencies but skip those rebuilds, leaving `esbuild` and `chromedriver` in a non-functional
+state. If you bypass `make`, run the rebuild step yourself:
+
+```bash
+npm rebuild --ignore-scripts=false --foreground-scripts \
+    esbuild chromedriver tree-sitter tree-sitter-json
+```
+
+New dependencies that ship install scripts must be audited and added to `TRUSTED_INSTALL_SCRIPTS`
+in the repo-root `Makefile`. Each entry is arbitrary code that runs at install time, so the list
+is intentionally small.
+
 # The Theory of the authentik UI
 
 In Peter Naur's 1985 essay [Programming as Theory

@@ -1,8 +1,9 @@
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
-import "#elements/sync/SyncObjectForm";
+import "#components/sync/SyncObjectForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -31,16 +32,14 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     clearOnRefresh = true;
 
     renderToolbar(): TemplateResult {
-        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+        return html`<ak-forms-modal cancelText=${msg("Close")} keep-open-after-submit>
                 <span slot="submit">${msg("Sync")}</span>
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
-                        return new ProvidersApi(
-                            DEFAULT_CONFIG,
-                        ).providersGoogleWorkspaceSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersGoogleWorkspaceSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -56,7 +55,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
             object-label=${msg("Google Workspace User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: GoogleWorkspaceProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersDestroy({
+                return aki(ProvidersApi).providersGoogleWorkspaceUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -68,14 +67,14 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<GoogleWorkspaceProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceUsersList({
+        return aki(ProvidersApi).providersGoogleWorkspaceUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });
     }
 
     protected override rowLabel(item: GoogleWorkspaceProviderUser): string {
-        return item.userObj.name || item.userObj.username;
+        return formatUserDisplayName(item.userObj);
     }
 
     protected columns: TableColumn[] = [

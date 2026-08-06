@@ -12,7 +12,7 @@ The docs below cover applying, creating, editing, and managing blueprints.
 
 To _apply_ a blueprint is to have authentik read and execute the contents of a blueprint file. authentik provides many out-of-the-box blueprints, which can be applied either as a [blueprint instance](./index.mdx#blueprint-instance) or as an [imported flow](./index.mdx#imported-flow).
 
-### Add and apply a new blueprint instance
+### Create and apply a new blueprint
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Customization** > **Blueprints**.
@@ -24,25 +24,39 @@ To _apply_ a blueprint is to have authentik read and execute the contents of a b
         - **Context**: add any [`key:value` context variable](./index.mdx#blueprint-execution) used in the blueprint instance.
 4. Click **Create** to save the new blueprint instance. This file is read and applied regularly by authentik.
 
-### Apply a new flow
+### Import and apply a blueprint
 
-You can apply a new flow from either the **Flows** page or the **Blueprints** page.
+You can import and apply a blueprint from either the **Flows** page or the **Blueprints** page. This validates and applies the blueprint immediately, but it does not create a blueprint instance that is monitored or automatically re-applied.
 
 #### Flows page
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Flows and Stages > Flows**, then click **Import**.
-3. Under **Flow**, select the YAML file to import. Typically this is a file you [exported](./export.mdx) and saved to your local file system.
+3. Choose how to import the blueprint:
+    - **File upload**: upload a `.yaml` file from your local file system. Typically this is a downloaded example flow or a file you [exported](./export.mdx).
+    - **Local path**: select one of the blueprints available on the authentik server, such as a bundled [example flow](../../add-secure-apps/flows-stages/flow/examples/flows.md).
+4. Click **Import**.
 
 #### Blueprints page
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Customization > Blueprints**.
-3. Select the blueprint, and, under **Actions**, click the **Apply** icon.
+3. Click **Import**.
+4. Choose **File upload** to upload a `.yaml` file, or choose **Local path** to select a blueprint available on the authentik server.
+5. Click **Import**.
 
-:::info Download example flows
-You can download our [example flows](../../add-secure-apps/flows-stages/flow/examples/flows.md) and import them into your authentik instance.
-:::
+### Apply an existing blueprint
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Customization** > **Blueprints**.
+3. Select the blueprint instance from the list.
+4. Under **Actions**, click the **Apply** icon.
+
+### Download an example flow, upload it, and apply it
+
+1. Download one of the [example flows](../../add-secure-apps/flows-stages/flow/examples/flows.md).
+2. Navigate to **Customization** > **Blueprints** and click **Import**.
+3. Choose **File upload**, select the downloaded `.yaml` file, and click **Import**.
 
 ## Edit a blueprint instance or flow
 

@@ -2,7 +2,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -21,23 +21,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-source-form")
 export class SourceStageForm extends BaseStageForm<SourceStage> {
-    loadInstance(pk: string): Promise<SourceStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesSourceRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: SourceStage): Promise<SourceStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesSourceUpdate({
-                stageUuid: this.instance.pk || "",
-                sourceStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
-            sourceStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesSourceRetrieve({ stageUuid }),
+        create: (sourceStageRequest: SourceStage) =>
+            aki(StagesApi).stagesSourceCreate({ sourceStageRequest }),
+        update: (stageUuid: string, sourceStageRequest: SourceStage) =>
+            aki(StagesApi).stagesSourceUpdate({ stageUuid, sourceStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`
@@ -63,7 +53,7 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList(args);
+                        const users = await aki(SourcesApi).sourcesAllList(args);
                         return users.results;
                     }}
                     .renderElement=${(source: Source): string => {

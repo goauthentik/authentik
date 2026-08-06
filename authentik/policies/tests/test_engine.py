@@ -1,9 +1,12 @@
 """policy engine tests"""
 
+from datetime import timedelta
+
 from django.core.cache import cache
 from django.db import connections
 from django.test import TestCase
 from django.test.utils import CaptureQueriesContext
+from django.utils.timezone import now
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_user
@@ -33,6 +36,9 @@ class TestPolicyEngine(TestCase):
         self.policy_raises = ExpressionPolicy.objects.create(
             name=generate_id(), expression="{{ 0/0 }}"
         )
+        self.group_member = Group.objects.create(name=generate_id())
+        self.user.groups.add(self.group_member)
+        self.group_non_member = Group.objects.create(name=generate_id())
 
     def test_engine_empty(self):
         """Ensure empty policy list passes"""
@@ -51,7 +57,7 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, True)
         self.assertEqual(result.messages, ("dummy",))
 
-    def test_engine_mode_all(self):
+    def test_engine_mode_all_dyn(self):
         """Ensure all policies passes with AND mode (false and true -> false)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
         PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
@@ -67,7 +73,7 @@ class TestPolicyEngine(TestCase):
             ),
         )
 
-    def test_engine_mode_any(self):
+    def test_engine_mode_any_dyn(self):
         """Ensure all policies passes with OR mode (false and true -> true)"""
         pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ANY)
         PolicyBinding.objects.create(target=pbm, policy=self.policy_false, order=0)
@@ -82,6 +88,26 @@ class TestPolicyEngine(TestCase):
                 "dummy",
             ),
         )
+
+    def test_engine_mode_all_static(self):
+        """Ensure all policies passes with OR mode (false and true -> true)"""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, False)
+        self.assertEqual(result.messages, ())
+
+    def test_engine_mode_any_static(self):
+        """Ensure all policies passes with OR mode (false and true -> true)"""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ANY)
+        PolicyBinding.objects.create(target=pbm, group=self.group_member, order=0)
+        PolicyBinding.objects.create(target=pbm, group=self.group_non_member, order=1)
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(result.messages, ())
 
     def test_engine_negate(self):
         """Test negate flag"""
@@ -131,6 +157,23 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(engine.build().passing, False)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
 
+    def test_engine_cache_expired(self):
+        """Ensure a cached passing result is not used once its binding has expired"""
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(target=pbm, policy=self.policy_true, order=0)
+        engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
+        self.assertEqual(engine.build().passing, True)
+        self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
+
+        binding.expiring = True
+        binding.expires = now() - timedelta(minutes=10)
+        binding.save()
+
+        engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
+        self.assertEqual(engine.build().passing, False)
+
     def test_engine_static_bindings(self):
         """Test static bindings"""
         group_a = Group.objects.create(name=generate_id())
@@ -160,7 +203,7 @@ class TestPolicyEngine(TestCase):
                 "passing": True,
             },
         ]:
-            with self.subTest():
+            with self.subTest(case["message"]):
                 pbm = PolicyBindingModel.objects.create()
                 for x in range(1000):
                     PolicyBinding.objects.create(target=pbm, order=x, **case["binding_args"])
@@ -186,3 +229,19 @@ class TestPolicyEngine(TestCase):
             engine.build()
         self.assertLess(ctx.final_queries, 1000)
         self.assertTrue(engine.result.passing)
+
+    def test_engine_expired(self):
+        """Ensure that expired binding does not pass"""
+        pbm = PolicyBindingModel.objects.create(policy_engine_mode=PolicyEngineMode.MODE_ALL)
+        PolicyBinding.objects.create(
+            target=pbm,
+            user=self.user,
+            order=0,
+            expiring=True,
+            expires=now() - timedelta(minutes=10),
+        )
+        engine = PolicyEngine(pbm, self.user)
+        engine.empty_result = False
+        result = engine.build().result
+        self.assertEqual(result.passing, False)
+        self.assertEqual(result.messages, ())

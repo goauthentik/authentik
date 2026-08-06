@@ -1,0 +1,32 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "noEmit": true,
+        "erasableSyntaxOnly": true,
+        "emitDeclarationOnly": false,
+        "declaration": false,
+        "declarationMap": false,
+        "sourceMap": false,
+        "composite": false,
+        "incremental": false,
+        "checkJs": false,
+        "allowJs": false,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        // The browser test pulls in `ak-map`, a Lit element — same decorator
+        // and class-field semantics the package's own tsconfig sets.
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        // A test indexes into a fixture it built and asserted the length of two
+        // lines earlier. Carrying `| undefined` through that reads as noise and
+        // buries the assertion under non-null operators.
+        "noUncheckedIndexedAccess": false,
+        // The generator reads the archive contract (bands, labels,
+        // attribution) from web, so the program spans both packages.
+        "rootDir": "../../.."
+    },
+    // `../src/types.d.ts` declares the `*.css` text imports `ak-map` relies on;
+    // it lives outside this directory, so name it explicitly.
+    "include": ["./**/*.ts", "../src/types.d.ts"],
+    "exclude": ["./**/out/**", "./**/node_modules/**"]
+}

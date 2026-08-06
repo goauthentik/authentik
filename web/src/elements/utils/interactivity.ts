@@ -1,5 +1,12 @@
-export function isInteractiveElement(target: Element | null | undefined): target is HTMLElement {
-    if (!target || !(target instanceof HTMLElement)) {
+export const InteractiveElementsQuery =
+    "[href],input,button,i,[role='button'],select,[tabindex]:not([tabindex='-1'])";
+
+export function isInteractiveElement(
+    target: EventTarget | Element | null | undefined,
+): target is HTMLElement {
+    if (!target) return false;
+
+    if (!(target instanceof HTMLElement)) {
         return false;
     }
 
@@ -7,16 +14,13 @@ export function isInteractiveElement(target: Element | null | undefined): target
         return false;
     }
 
-    const { tabIndex } = target;
-
     // Despite our type definitions, this method isn't available in all browsers,
     // so we fallback to assuming the element is visible.
     const visible = target.checkVisibility?.() ?? true;
 
+    const { tabIndex } = target;
+
     return (
-        visible &&
-        (tabIndex === 0 ||
-            tabIndex === -1 ||
-            target.matches("button, [role='button'], a[href], input, select, textarea"))
+        visible && (tabIndex === 0 || tabIndex === -1 || target.matches(InteractiveElementsQuery))
     );
 }

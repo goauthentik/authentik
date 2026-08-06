@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
+from kubernetes.client import CoreV1Api, V1ObjectMeta, V1Service, V1ServicePort, V1ServiceSpec
 
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
@@ -83,4 +83,48 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
             self.namespace,
             reference,
             field_manager=FIELD_MANAGER,
+        )
+
+
+class MetricsServiceReconciler(ServiceReconciler):
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
+
+    @staticmethod
+    def reconciler_name() -> str:
+        return "service-metrics"
+
+    @property
+    def name(self):
+        name_suffix = "-metrics"
+        name = super().name
+        return name[: 63 - len(name_suffix)] + name_suffix
+
+    def get_object_meta(self, **kwargs) -> V1ObjectMeta:
+        meta: V1ObjectMeta = super().get_object_meta(**kwargs)
+        meta.labels["goauthentik.io/service-type"] = "metrics"
+        return meta
+
+    def get_reference_object(self) -> V1Service:
+        """Get deployment object for outpost"""
+        meta = self.get_object_meta(name=self.name)
+        ports = []
+        for port in self.controller.metrics_ports:
+            ports.append(
+                V1ServicePort(
+                    name=port.name,
+                    port=port.port,
+                    protocol=port.protocol.upper(),
+                    target_port=port.inner_port or port.port,
+                )
+            )
+        selector_labels = DeploymentReconciler(self.controller).get_pod_meta()
+        return V1Service(
+            metadata=meta,
+            spec=V1ServiceSpec(
+                ports=ports,
+                selector=selector_labels,
+                type="ClusterIP",
+            ),
         )

@@ -1,0 +1,132 @@
+---
+title: Integrate with n8n
+sidebar_label: n8n
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is n8n?
+
+> n8n is a workflow automation platform that combines AI capabilities with business process automation.
+>
+> -- https://n8n.io/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `n8n.company` is the FQDN of the n8n installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::caution n8n requirements
+n8n OIDC SSO requires an Enterprise plan. You also need to be an n8n instance owner or administrator to configure SSO.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of n8n with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://n8n.company/rest/sso/oidc/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Configure role claims _(optional)_
+
+n8n can provision instance roles and project roles from OIDC claims. Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to keep n8n-specific role assignment scoped to this application.
+
+1. Open the n8n application that you just created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create one entitlement for each n8n role value that authentik should send, such as `global:admin` or `global:member`.
+4. To provision project roles, create entitlements in the format `<project_id>:<role>`, such as `<project_id>:editor`.
+5. Bind the appropriate users or groups to each entitlement.
+6. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
+    - **Name**: choose a descriptive name, such as `authentik n8n OAuth Mapping: OpenID 'n8n'`.
+    - **Scope name**: `n8n`
+    - **Expression**:
+
+        ```python showLineNumbers
+        instance_roles = {"global:member", "global:admin", "global:chatUser"}
+        entitlement_names = {
+            entitlement.name
+            for entitlement in request.user.app_entitlements(provider.application)
+        }
+
+        claims = {
+            "n8n_instance_role": "global:member",
+            "n8n_projects": [],
+        }
+        for role in instance_roles:
+            if role in entitlement_names:
+                claims["n8n_instance_role"] = role
+                break
+
+        claims["n8n_projects"] = sorted(
+            name
+            for name in entitlement_names - instance_roles
+            if ":" in name
+        )
+
+        return claims
+        ```
+
+7. Click **Finish**.
+8. Navigate to **Applications** > **Providers** and edit the n8n provider.
+9. Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you just created.
+10. Click **Update**.
+
+## n8n configuration
+
+1. Log in to n8n as an instance owner or administrator.
+2. Navigate to **Settings** > **SSO**.
+3. Under **Select Authentication Protocol**, select **OIDC**.
+4. Confirm that the redirect URL shown by n8n is `https://n8n.company/rest/sso/oidc/callback`.
+5. Configure the following settings:
+    - **Discovery Endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client ID**: Client ID from authentik
+    - **Client Secret**: Client Secret from authentik
+6. Click **Save settings**.
+7. Set **OIDC** to **Activated**.
+
+If n8n is running behind a load balancer or reverse proxy and shows an internal redirect URL, set `N8N_EDITOR_BASE_URL` to the public n8n URL, then re-check the redirect URL before saving the SSO configuration.
+
+### Enable role provisioning _(optional)_
+
+If you configured the optional `n8n` scope mapping in authentik, use n8n's SSO role assignment settings to consume those claims.
+
+:::warning Existing n8n access
+When SSO role provisioning is enabled, n8n re-evaluates roles on every login and can remove access that is not reflected in the IdP response.
+:::
+
+1. In n8n, navigate to **Settings** > **SSO**.
+2. Set **Additional scopes** to `n8n`.
+3. Set **Role assignment** to **Instance roles via SSO** or **Instance and project roles via SSO**.
+4. Set **Role mapping method** to **Map rules on your IdP**.
+5. Click **Save settings**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with n8n, log out of n8n and sign in again using SSO. You should be redirected to authentik and returned to n8n after authentication.
+
+If you enabled role provisioning, sign in with a user that has an n8n application entitlement and verify that n8n assigned the expected instance role or project role.
+
+## Resources
+
+- [n8n Docs - Set up OIDC](https://docs.n8n.io/user-management/oidc/setup/)
+- [n8n Docs - SSO environment variables](https://docs.n8n.io/deploy/host-n8n/configure-n8n/basic-configuration/use-environment-variables/sso/)

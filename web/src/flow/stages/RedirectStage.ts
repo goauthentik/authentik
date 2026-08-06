@@ -3,12 +3,17 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
+import {
+    multiTabOrchestrateLeave,
+    multiTabOrchestrateResume,
+    suppressNextExitForSameOriginNavigation,
+} from "#flow/tabs/orchestrator";
 
 import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -18,9 +23,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {
-    @property({ type: Boolean })
-    promptUser = false;
-
     @state()
     startedRedirect = false;
 
@@ -41,6 +43,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         return new URL(this.challenge?.to || "", document.baseURI).toString();
     }
 
+    // The current implementation expects the button and the stage to share the same DOM context,
+    // and the same rootNode. If that changes, this will need to be updated.
+    get promptUser() {
+        return !!(this.getRootNode() as Element | undefined)?.querySelector(
+            "ak-flow-inspector-button",
+        )?.open;
+    }
+
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
@@ -58,13 +68,31 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         this.redirect();
     }
 
-    redirect() {
+    async redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge?.to,
         );
 
-        window.location.assign(this.challenge?.to || "");
+        // `final_redirect` marks the terminal redirect out of a completed flow. Only then do we
+        // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
+        // SAML resume re-entry) skip orchestration entirely.
+        const finalRedirect = this.challenge?.finalRedirect ?? false;
+        if (finalRedirect) {
+            await multiTabOrchestrateResume();
+        }
+
+        // A foreign final redirect means we're leaving authentik for good, so signal our exit.
+        // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
+        const url = new URL(this.challenge!.to, window.location.origin);
+
+        if (finalRedirect && url.origin !== window.location.origin) {
+            multiTabOrchestrateLeave();
+        } else {
+            suppressNextExitForSameOriginNavigation();
+        }
+
+        window.location.assign(this.challenge!.to);
         this.startedRedirect = true;
     }
 
@@ -97,17 +125,18 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             <span slot="title">${msg("Redirect")}</span>
             <form class="pf-c-form">
                 <div class="pf-c-form__group">
-                    <p>${msg("You're about to be redirect to the following URL.")}</p>
+                    <p>${msg("You're about to be redirected to the following URL.")}</p>
                     <code>${this.getURL()}</code>
                 </div>
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <a
                         type="submit"
                         class="pf-c-button pf-m-primary pf-m-block"
                         href=${this.challenge.to}
-                        @click=${() => {
-                            this.startedRedirect = true;
+                        @click=${(ev: Event) => {
+                            ev.preventDefault();
+                            this.redirect();
                         }}
                     >
                         ${msg("Follow redirect")}

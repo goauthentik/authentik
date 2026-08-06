@@ -13,7 +13,7 @@ We appreciate contributions of code, documentation, enhancements, and bug fixes.
 
 We expect all contributors to act professionally and respectfully in all interactions. If there's something you dislike or think can be done better, tell us! We'd love to hear any suggestions for improvement.
 
-## I don't want to read this whole thing I just have a question!!!
+## Ask a question
 
 Either [create a question on GitHub](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=question&template=question.md&title=) or join [the Discord server](https://goauthentik.io/discord?utm_source=developer-docs).
 
@@ -23,12 +23,11 @@ Either [create a question on GitHub](https://github.com/goauthentik/authentik/is
 
 authentik consists of a few larger components:
 
-- _authentik_ — the actual application server, described below.
-- _outpost-proxy_ — a Go application based on a forked version of oauth2_proxy, which does identity-aware reverse proxying.
-- _outpost-ldap_ — a Go LDAP server that uses the _authentik_ application server as its backend.
-- _outpost-radius_ — a Go RADIUS server that uses the _authentik_ application server as its backend.
-- _web_ — the web frontend, both for administrating and using authentik. It is written in TypeScript using lit-html and the PatternFly CSS library.
-- _website_ — the website/documentation, which uses Docusaurus.
+- `authentik/` — The Django application server and source of truth for authentik's identity features.
+- `cmd/` and `internal/` — Go outposts and the front reverse proxy.
+- `src/` and `packages/ak-*` — Native Rust server, worker, and shared components.
+- `web/` — The TypeScript web interfaces, built with Lit and PatternFly.
+- `website/` — The Docusaurus documentation, integrations, and API sites.
 
 ### authentik's structure
 
@@ -49,47 +48,47 @@ authentik
 ├── lib - Generic library of functions, few dependencies on other packages.
 ├── outposts - Configure and deploy outposts on Kubernetes and Docker.
 ├── policies - General PolicyEngine
-│   ├── dummy - A Dummy policy used for testing
-│   ├── event_matcher - Match events based on different criteria
-│   ├── expiry - Check when a user's password was last set
-│   ├── expression - Execute any arbitrary python code
-│   ├── password - Check a password against several rules
-│   └── reputation - Check the user's/client's reputation
+│   ├── dummy - A Dummy policy used for testing
+│   ├── event_matcher - Match events based on different criteria
+│   ├── expiry - Check when a user's password was last set
+│   ├── expression - Execute any arbitrary python code
+│   ├── password - Check a password against several rules
+│   └── reputation - Check the user's/client's reputation
 ├── providers
-│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
-│   ├── oauth2 - OIDC-compliant OAuth2 provider
-│   ├── proxy - Provides an identity-aware proxy using an outpost
-│   ├── radius - Provides a RADIUS server that authenticates using flows
-│   ├── saml - SAML2 provider
-│   └── scim - SCIM provider
+│   ├── ldap - Provide LDAP access to authentik users/groups using an outpost
+│   ├── oauth2 - OIDC-compliant OAuth2 provider
+│   ├── proxy - Provides an identity-aware proxy using an outpost
+│   ├── radius - Provides a RADIUS server that authenticates using flows
+│   ├── saml - SAML2 provider
+│   └── scim - SCIM provider
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
-│   ├── kerberos - Sync Kerberos users into authentik
-│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
-│   ├── oauth - OAuth1 and OAuth2 source
-│   ├── plex - Plex source
-│   ├── saml - SAML2 source
-│   └── telegram - Telegram source
+│   ├── kerberos - Sync Kerberos users into authentik
+│   ├── ldap - Sync LDAP users from OpenLDAP or Active Directory into authentik
+│   ├── oauth - OAuth1 and OAuth2 source
+│   ├── plex - Plex source
+│   ├── saml - SAML2 source
+│   └── telegram - Telegram source
 ├── stages
-│   ├── authenticator_duo - Configure a DUO authenticator
-│   ├── authenticator_static - Configure TOTP backup keys
-│   ├── authenticator_totp - Configure a TOTP authenticator
-│   ├── authenticator_validate - Validate any authenticator
-│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
-│   ├── captcha - Make the user pass a captcha
-│   ├── consent - Let the user decide if they want to consent to an action
-│   ├── deny - Static deny, can be used with policies
-│   ├── dummy - Dummy stage to test
-│   ├── email - Send the user an email and block execution until they click the link
-│   ├── identification - Identify a user with any combination of fields
-│   ├── invitation - Invitation system to limit flows to certain users
-│   ├── password - Password authentication
-│   ├── prompt - Arbitrary prompts
-│   ├── user_delete - Delete the currently pending user
-│   ├── user_login - Login the currently pending user
-│   ├── user_logout - Logout the currently pending user
-│   └── user_write - Write any currently pending data to the user.
+│   ├── authenticator_duo - Configure a DUO authenticator
+│   ├── authenticator_static - Configure TOTP backup keys
+│   ├── authenticator_totp - Configure a TOTP authenticator
+│   ├── authenticator_validate - Validate any authenticator
+│   ├── authenticator_webauthn - Configure a WebAuthn / Passkeys authenticator
+│   ├── captcha - Make the user pass a captcha
+│   ├── consent - Let the user decide if they want to consent to an action
+│   ├── deny - Static deny, can be used with policies
+│   ├── dummy - Dummy stage to test
+│   ├── email - Send the user an email and block execution until they click the link
+│   ├── identification - Identify a user with any combination of fields
+│   ├── invitation - Invitation system to limit flows to certain users
+│   ├── password - Password authentication
+│   ├── prompt - Arbitrary prompts
+│   ├── user_delete - Delete the currently pending user
+│   ├── user_login - Login the currently pending user
+│   ├── user_logout - Logout the currently pending user
+│   └── user_write - Write any currently pending data to the user.
 ├── tasks - Background tasks
 └── tenants - Soft tenancy, configure defaults and branding per domain
 ```
@@ -120,7 +119,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 authentik can be run locally, although depending on which part you want to work on, different prerequisites are required.
 
-This is documented in the [developer docs](./setup/frontend-dev-environment.md).
+This is documented in the [developer docs](./setup/frontend-dev-environment.mdx).
 
 ### Help with the docs
 
@@ -183,7 +182,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 ### PR naming
 
 - Use the format of `<package>: <verb> <description>`
-    - See [here](#authentiks-structure) for `package`
+    - See [authentik's structure](#authentiks-structure) for `package`.
     - Examples:
       `providers/saml2: fix parsing of requests`
       `website/docs: add config info for GWS`
@@ -191,30 +190,30 @@ While the prerequisites above must be satisfied prior to having your pull reques
 ### Git commit messages
 
 - Use the format of `<package>: <verb> <description>`
-    - See [here](#authentiks-structure) for `package`
+    - See [authentik's structure](#authentiks-structure) for `package`.
     - Example: `providers/saml2: fix parsing of requests`
 - Reference issues and pull requests liberally after the first line
 - Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
-### Python Style Guide
+### Python style guide
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.14 at the time of writing this.
+The required Python version is defined in the repository's [`pyproject.toml`](https://github.com/goauthentik/authentik/blob/main/pyproject.toml).
 
 - Use native type-annotations wherever possible.
 - Add meaningful docstrings when possible.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
 
-### Documentation Style Guide
+### Documentation style guide
 
 Refer to the full [Style Guide](../developer-docs/docs/style-guide.mdx) for details, but here are some important highlights:
 
-- Our product name is authentik, with a lower-case "a" and a "k" on the end. Our company name is Authentik Security.
+- Our product name is authentik, with a lowercase "a" and a "k" on the end. Our company name is Authentik Security.
 
-- We use sentence style case in our titles and headings.
+- We use sentence case in our titles and headings.
 
 - We use **bold** text to name UI components, and _italic_ text for variables.
 
-- Use [MDX](https://mdxjs.com/) whenever appropriate. MDX, which uses React components, is useful for creating tabs, action buttons, and advanced content formatting.
+- Use [MDX](https://mdxjs.com/) only when the page requires components such as tabs or action buttons. Use Markdown for ordinary prose and formatting.

@@ -1,10 +1,11 @@
 ---
-title: Okta
+title: Log in with Okta
+sidebar_label: Okta
 description: "Integrate Okta as a source in authentik"
 tags: [source, okta]
 ---
 
-Allows users to authenticate using their Okta credentials by configuring Okta as a federated identity provider via OAuth2.
+This source lets users authenticate with their Okta credentials by configuring Okta as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -15,7 +16,7 @@ The following placeholders are used in this guide:
 
 ## Okta configuration
 
-To integrate Okta with authentik you will need to create an App Integration in the Okta Admin Console.
+To integrate Okta with authentik, create an app integration in the Okta Admin Console.
 
 1. Log in to the Okta Admin Console as an administrator.
 2. Navigate to **Applications** > **Applications** > **Add App Integration**.
@@ -33,9 +34,9 @@ To integrate Okta with authentik you will need to create an App Integration in t
 To support the integration of Okta with authentik, you need to create an Okta OAuth source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Federation and Social login**, click **Create**, and then configure the following settings:
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Okta OAuth Source** as the source type.
-    - **Create Okta OAuth Source**: provide a name, a slug which must match the slug used in the Okta Sign-in redirect URI field (e.g. `okta`), and the following required settings:
+    - **Create Okta OAuth Source**: provide a name, a slug that must match the slug used in the Okta Sign-in redirect URI field (e.g. `okta`), and the following required settings:
         - Under **Protocol settings**:
             - **Consumer key**: paste the **Client ID** from Okta
             - **Consumer secret**: paste the **Secret** from Okta

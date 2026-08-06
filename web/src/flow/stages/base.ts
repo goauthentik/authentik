@@ -44,10 +44,9 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         delegatesFocus: true,
     };
 
-    protected logger = ConsoleLogger.prefix(`flow:${this.tagName.toLowerCase()}`);
+    protected logger = ConsoleLogger.prefix(`flow:${this.localName}`);
 
-    // TODO: Should have a property but this needs some refactoring first.
-    // @property({ attribute: false })
+    @property({ type: Object, attribute: false })
     public host!: StageHost;
 
     @property({ attribute: false })
@@ -56,7 +55,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     @intersectionObserver()
     public visible = false;
 
-    protected autofocusTarget = new FocusTarget();
+    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
     focus = this.autofocusTarget.focus;
 
     #visibilityListener = () => {
@@ -104,7 +103,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         const payload: Record<string, unknown> = defaults || {};
 
-        const form = this.shadowRoot?.querySelector("form");
+        const form = this.shadowRoot?.querySelector("form") ?? this.querySelector("form");
 
         if (form) {
             const data = new FormData(form);

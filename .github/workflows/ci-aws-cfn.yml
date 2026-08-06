@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
@@ -21,17 +25,21 @@ jobs:
   check-changes-applied:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v5
-        with:
-          node-version-file: lifecycle/aws/package.json
-          cache: "npm"
-          cache-dependency-path: lifecycle/aws/package-lock.json
-      - working-directory: lifecycle/aws/
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - name: Pin pnpm store directory
         run: |
-          npm ci
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Check changes have been applied
         run: |
           uv run make aws-cfn

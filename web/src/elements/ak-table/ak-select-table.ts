@@ -124,7 +124,7 @@ export class SelectTable extends SimpleTable {
         return this._selected;
     }
 
-    public json() {
+    public toJSON() {
         return this._selected;
     }
 

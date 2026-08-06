@@ -1,15 +1,16 @@
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#components/ak-switch-input";
 import "#elements/CodeMirror";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -22,7 +23,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
-enum BlueprintSource {
+export enum BlueprintSource {
+    Upload = "upload",
     File = "file",
     OCI = "oci",
     Internal = "internal",
@@ -30,6 +32,9 @@ enum BlueprintSource {
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
+    public static override verboseName = msg("Blueprint");
+    public static override verboseNamePlural = msg("Blueprints");
+
     @state()
     protected source: BlueprintSource = BlueprintSource.File;
 
@@ -40,7 +45,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     async loadInstance(pk: string): Promise<BlueprintInstance> {
-        const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
+        const inst = await aki(ManagedApi).managedBlueprintsRetrieve({
             instanceUuid: pk,
         });
         if (inst.path?.startsWith("oci://")) {
@@ -62,12 +67,12 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
-            return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUpdate({
+            return aki(ManagedApi).managedBlueprintsUpdate({
                 instanceUuid: this.instance.pk,
                 blueprintInstanceRequest: data,
             });
         }
-        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
+        return aki(ManagedApi).managedBlueprintsCreate({
             blueprintInstanceRequest: data,
         });
     }
@@ -92,8 +97,8 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div class="pf-c-card__body">
                     <ak-toggle-group
                         value=${this.source}
-                        @ak-toggle=${(ev: CustomEvent<{ value: BlueprintSource }>) => {
-                            this.source = ev.detail.value;
+                        @ak-toggle=${(ev: ToggleGroupEvent<BlueprintSource>) => {
+                            this.source = ev.value;
                         }}
                     >
                         <option value=${BlueprintSource.File}>${msg("Local path")}</option>
@@ -108,9 +113,8 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   .fetchObjects=${async (
                                       query?: string,
                                   ): Promise<BlueprintFile[]> => {
-                                      const items = await new ManagedApi(
-                                          DEFAULT_CONFIG,
-                                      ).managedBlueprintsAvailableList();
+                                      const items =
+                                          await aki(ManagedApi).managedBlueprintsAvailableList();
                                       return items.filter((item) =>
                                           query ? item.path.includes(query) : true,
                                       );
@@ -134,7 +138,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           </ak-form-element-horizontal>`
                         : nothing}
                     ${this.source === BlueprintSource.OCI
-                        ? html` <ak-text-input
+                        ? html`<ak-text-input
                               name="path"
                               label=${msg("OCI URL")}
                               input-hint="code"

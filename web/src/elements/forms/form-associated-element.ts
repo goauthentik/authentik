@@ -1,6 +1,6 @@
 import { AKElement } from "#elements/Base";
 
-import { Jsonifiable } from "type-fest";
+import type { Jsonifiable } from "type-fest";
 
 import { msg } from "@lit/localize";
 import { LitElement } from "lit";
@@ -8,25 +8,48 @@ import { property } from "lit/decorators.js";
 import { createRef, Ref } from "lit/directives/ref.js";
 
 /**
+ * Properties common to elements which represent a form field.
+ */
+export interface FormField<T = Jsonifiable> extends HTMLElement {
+    /**
+     * The name of the input, provided to the form.
+     *
+     * @todo Remove optionality after replacing `AKControlElement`.
+     */
+    name?: string | null;
+
+    /**
+     * A JSON representation of the value.
+     */
+    toJSON(): T;
+}
+
+export function isFormField<T extends Jsonifiable = Jsonifiable>(
+    element: object,
+): element is FormField<T> {
+    if (!("toJSON" in element)) return false;
+
+    return typeof element.toJSON === "function";
+}
+
+/**
  * A subset of form associated {@linkcode ElementInternals} properties.
  *
  * @see {@linkcode FormAssociatedElement} for usage.
  */
-export interface FormAssociated extends Pick<
-    ElementInternals,
-    | "form"
-    | "validity"
-    | "validationMessage"
-    | "willValidate"
-    | "labels"
-    | "checkValidity"
-    | "reportValidity"
-> {
-    /**
-     * The name of the input, provided to the form.
-     */
-    name: string | null;
-
+export interface FormAssociated
+    extends
+        FormField,
+        Pick<
+            ElementInternals,
+            | "form"
+            | "validity"
+            | "validationMessage"
+            | "willValidate"
+            | "labels"
+            | "checkValidity"
+            | "reportValidity"
+        > {
     /**
      * The type of the input, provided to the form.
      */
@@ -41,11 +64,6 @@ export interface FormAssociated extends Pick<
      * Whether or not the input is read-only.
      */
     readonly?: boolean;
-
-    /**
-     * A JSON representation of the value.
-     */
-    toJSON(): Jsonifiable;
 }
 
 export type FormValue = File | string | FormData | null;

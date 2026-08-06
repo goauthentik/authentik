@@ -11,11 +11,13 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import SCOPE_BOUND_KEY
 from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import DeviceCodeError
-from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
+from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.utils import TokenResponse, extract_client_auth
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
@@ -28,7 +30,8 @@ class DeviceView(View):
 
     client_id: str
     provider: OAuth2Provider
-    scopes: list[str] = []
+    scopes: set[str] = []
+    dpop_jkt: str | None = None
 
     def parse_request(self):
         """Parse incoming request"""
@@ -42,9 +45,36 @@ class DeviceView(View):
             _ = provider.application
         except Application.DoesNotExist:
             raise DeviceCodeError("invalid_client") from None
+        if GrantType.DEVICE_CODE not in provider.grant_types:
+            raise DeviceCodeError("invalid_client")
         self.provider = provider
         self.client_id = client_id
-        self.scopes = self.request.POST.get("scope", "").split(" ")
+
+        scopes_to_check = set(self.request.POST.get("scope", "").split())
+        default_scope_names = set(
+            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+                "scope_name", flat=True
+            )
+        )
+        self.scopes = scopes_to_check
+        if not scopes_to_check.issubset(default_scope_names):
+            LOGGER.info(
+                "Application requested scopes not configured, setting to overlap",
+                scope_allowed=default_scope_names,
+                scope_given=self.scopes,
+            )
+            self.scopes = self.scopes.intersection(default_scope_names)
+
+        self.dpop_jkt = self.request.POST.get("dpop_jkt")
+        if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
+            raise DeviceCodeError("invalid_dpop_jkt")
+
+        # Key binding requires dpop_jkt at authorization time
+        if SCOPE_BOUND_KEY in self.scopes and not self.dpop_jkt:
+            raise DeviceCodeError("dpop_jkt_required")
+        # dpop_jkt should only be set if requesting the key binding scope
+        if SCOPE_BOUND_KEY not in self.scopes and self.dpop_jkt:
+            raise DeviceCodeError("dpop_jkt_not_allowed")
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
@@ -62,7 +92,10 @@ class DeviceView(View):
             return TokenResponse(exc.create_dict(request), status=400)
         until = timedelta_from_string(self.provider.access_code_validity)
         token: DeviceToken = DeviceToken.objects.create(
-            expires=now() + until, provider=self.provider, _scope=" ".join(self.scopes)
+            expires=now() + until,
+            provider=self.provider,
+            _scope=" ".join(self.scopes),
+            dpop_jkt=self.dpop_jkt,
         )
         device_url = self.request.build_absolute_uri(
             reverse("authentik_providers_oauth2_root:device-login")

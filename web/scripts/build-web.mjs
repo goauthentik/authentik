@@ -7,10 +7,12 @@ import "@goauthentik/core/environment/load/node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
+import { copyAssets } from "./build-assets.mjs";
+
 /**
  * @file ESBuild script for building the authentik web UI.
  *
- * @import { BuildOptions } from "esbuild";
+ * @import { BuildOptions, Plugin } from "esbuild";
  */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
@@ -22,7 +24,6 @@ import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
-import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 
 /// <reference types="../types/esbuild.js" />
@@ -36,29 +37,70 @@ const publicBundledDefinitions = Object.fromEntries(
 );
 logger.info(publicBundledDefinitions, "Bundle definitions");
 
-/**
- * @typedef {[from: string, to: string]} SourceDestinationPair
- */
+const entryPointNames = Object.keys(EntryPoint);
+const entryPoints = Object.values(EntryPoint);
+const entryPointsDescription = entryPointNames.join("\n\t");
 
 /**
- * @type {SourceDestinationPair[]}
+ * @type {Plugin[]}
  */
-const assets = [
-    [
-        path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
-        path.dirname(EntryPoint.StandaloneLoading.out),
-    ],
-    [path.resolve(PackageRoot, "src", "assets", "images"), "./assets/images"],
-    [path.resolve(PackageRoot, "icons"), "./assets/icons"],
+const BASE_ESBUILD_PLUGINS = [
+    {
+        name: "copy",
+        setup(build) {
+            build.onEnd(async () => {
+                /**
+                 * @type {import('esbuild').PartialMessage[]}
+                 */
+                const errors = [];
+
+                await copyAssets();
+
+                return { errors };
+            });
+        },
+    },
+    {
+        name: "log",
+        setup(build) {
+            let start = new Date(0);
+            build.onStart(() => {
+                start = new Date();
+                logger.info("Build started");
+            });
+            build.onEnd((r) => {
+                const end = new Date();
+                const dur = end.getTime() - start.getTime();
+                logger.info(
+                    `Build finished (took ${dur} ms, ${r.errors.length} error(s), ${r.warnings.length} warning(s))`,
+                );
+            });
+        },
+    },
+
+    mdxPlugin({
+        root: MonoRepoRoot,
+    }),
 ];
 
 /**
- * @type {Readonly<BuildOptions>}
+ * @type {BuildOptions}
  */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
+    /**
+     * Anchor `[dir]` at the monorepo root rather than letting ESBuild infer it
+     * from the entry points.
+     *
+     * Assets pulled from a workspace package outside `web/` (the RedHat faces in
+     * `@goauthentik/fonts`) would otherwise resolve to a `..` segment, which
+     * ESBuild sanitizes to `_.._`. Go's `//go:embed dist/*` in `static_outpost.go`
+     * silently skips any path segment starting with `_`, so those fonts would be
+     * missing from the embedded outpost build.
+     */
+    outbase: MonoRepoRoot,
     outdir: DistDirectory,
     bundle: true,
     write: true,
@@ -83,60 +125,31 @@ const BASE_ESBUILD_OPTIONS = {
      * @see https://esbuild.github.io/api/#conditions
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */
-    conditions: NodeEnvironment === "production" ? ["production"] : ["development", "production"],
-    plugins: [
-        {
-            name: "copy",
-            setup(build) {
-                build.onEnd(async () => {
-                    /**
-                     * @type {import('esbuild').PartialMessage[]}
-                     */
-                    const errors = [];
-
-                    /**
-                     * @param {SourceDestinationPair} pair
-                     */
-                    const copy = ([from, to]) => {
-                        const resolvedDestination = path.resolve(DistDirectory, to);
-
-                        logger.debug(`📋 Copying assets from ${from} to ${to}`);
-
-                        return fs
-                            .cp(from, resolvedDestination, { recursive: true })
-                            .catch((error) => {
-                                errors.push({
-                                    text: `Failed to copy assets from ${from} to ${to}: ${error}`,
-                                    location: {
-                                        file: from,
-                                    },
-                                });
-                            });
-                    };
-
-                    await Promise.all(assets.map(copy));
-
-                    return { errors };
-                });
-            },
-        },
-
-        mdxPlugin({
-            root: MonoRepoRoot,
-        }),
+    conditions: [
+        "bundler",
+        ...(NodeEnvironment === "production" ? ["production"] : ["development", "production"]),
     ],
+    plugins: BASE_ESBUILD_PLUGINS,
     define: bundleDefinitions,
     format: "esm",
-    logOverride: {
-        /**
-         * HACK: Silences issue originating in ESBuild.
-         *
-         * @see {@link https://github.com/evanw/esbuild/blob/b914dd30294346aa15fcc04278f4b4b51b8b43b5/internal/logger/msg_ids.go#L211 ESBuild source}
-         * @expires 2025-08-11
-         */
-        "invalid-source-url": "silent",
-    },
 };
+
+/**
+ * Creates an ESBuild options, extending the base options with the given overrides.
+ *
+ * @param {BuildOptions["entryPoints"]} entryPoints
+ * @param {Plugin[]} plugIns
+ * @returns {BuildOptions}
+ */
+export function createESBuildOptions(entryPoints, plugIns = []) {
+    const plugins = [...BASE_ESBUILD_PLUGINS, ...plugIns];
+
+    return {
+        ...BASE_ESBUILD_OPTIONS,
+        entryPoints,
+        plugins,
+    };
+}
 
 async function cleanDistDirectory() {
     logger.info(`♻️ Cleaning previous builds...`);
@@ -153,29 +166,12 @@ async function cleanDistDirectory() {
     logger.info(`♻️ Done!`);
 }
 
-/**
- * Creates an ESBuild options, extending the base options with the given overrides.
- *
- * @param {BuildOptions} overrides
- * @returns {BuildOptions}
- */
-export function createESBuildOptions(overrides) {
-    /**
-     * @type {BuildOptions}
-     */
-    const mergedOptions = deepmerge(BASE_ESBUILD_OPTIONS, overrides);
-
-    return mergedOptions;
-}
-
 function doHelp() {
     logger.info(`Build the authentik UI
 
         options:
             -w, --watch: Build all interfaces
-            -p, --proxy: Build only the polyfills and the loading application
-            -h, --help: This help message
-`);
+            -s, --styles-only: Build the static CSS`);
 
     process.exit(0);
 }
@@ -185,23 +181,23 @@ function doHelp() {
  * @returns {Promise<() => Promise<void>>} dispose
  */
 async function doWatch() {
-    logger.info(`🤖 Watching entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
-
-    const entryPoints = Object.values(EntryPoint);
+    logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
         .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
-                logger: logger.child({ name: "Live Reload" }),
+                logger: logger.child({
+                    name: "Live Reload",
+                }),
             }),
         ])
         .catch(() => []);
 
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [...developmentPlugins, styleLoaderPlugin({ logger, watch: true })],
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [
+        ...developmentPlugins,
+        styleLoaderPlugin({ logger, watch: true }),
+    ]);
 
     const buildContext = await esbuild.context(buildOptions);
 
@@ -228,14 +224,9 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    logger.info(`🤖 Building entry points:\n\t${Object.keys(EntryPoint).join("\n\t")}`);
+    logger.info(`🤖 Building entry points:\n\t${entryPointsDescription}`);
 
-    const entryPoints = Object.values(EntryPoint);
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [styleLoaderPlugin({ logger })],
-    });
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
 
@@ -243,12 +234,12 @@ async function doBuild() {
 }
 
 async function doProxy() {
-    const entryPoints = [EntryPoint.InterfaceStyles, EntryPoint.StaticStyles];
-
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [styleLoaderPlugin({ logger })],
-    });
+    const entryPoints = [
+        EntryPoint.InterfaceStyles,
+        EntryPoint.StaticStyles,
+        EntryPoint.FlowStyles,
+    ];
+    const buildOptions = createESBuildOptions(entryPoints, [styleLoaderPlugin({ logger })]);
 
     await esbuild.build(buildOptions);
     logger.info("Proxy build complete");
@@ -265,8 +256,8 @@ async function delegateCommand() {
         case "--watch":
             return doWatch();
         // There's no watch-for-proxy, sorry.
-        case "-p":
-        case "--proxy":
+        case "-s":
+        case "--styles-only":
             return doProxy();
         default:
             return doBuild();

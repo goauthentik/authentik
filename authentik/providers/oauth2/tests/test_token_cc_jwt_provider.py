@@ -22,6 +22,7 @@ from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (
     AccessToken,
+    GrantType,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -55,6 +56,7 @@ class TestTokenClientCredentialsJWTProvider(OAuthTestCase):
             authorization_flow=create_test_flow(),
             redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.cert,
+            grant_types=[GrantType.CLIENT_CREDENTIALS],
         )
         self.provider.jwt_federation_providers.add(self.other_provider)
         self.provider.property_mappings.set(ScopeMapping.objects.all())

@@ -57,9 +57,11 @@ class PolicyBindingSerializer(ModelSerializer):
         required=True,
     )
 
-    policy_obj = PolicySerializer(required=False, read_only=True, source="policy")
-    group_obj = PartialGroupSerializer(required=False, read_only=True, source="group")
-    user_obj = PartialUserSerializer(required=False, read_only=True, source="user")
+    policy_obj = PolicySerializer(required=False, allow_null=True, read_only=True, source="policy")
+    group_obj = PartialGroupSerializer(
+        required=False, allow_null=True, read_only=True, source="group"
+    )
+    user_obj = PartialUserSerializer(required=False, allow_null=True, read_only=True, source="user")
 
     class Meta:
         model = PolicyBinding
@@ -77,7 +79,13 @@ class PolicyBindingSerializer(ModelSerializer):
             "order",
             "timeout",
             "failure_result",
+            "expires",
+            "expiring",
         ]
+        extra_kwargs = {
+            "expires": {"read_only": True},
+            "expiring": {"read_only": True},
+        }
 
     def validate(self, attrs: OrderedDict) -> OrderedDict:
         """Check that either policy, group or user is set."""

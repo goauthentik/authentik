@@ -2,7 +2,7 @@ import "#components/ak-switch-input";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -26,7 +26,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
     mode: string = RedirectStageModeEnum.Static;
 
     loadInstance(pk: string): Promise<RedirectStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesRedirectRetrieve({
                 stageUuid: pk,
             })
@@ -38,19 +38,21 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
 
     async send(data: RedirectStage): Promise<RedirectStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesRedirectUpdate({
+            return aki(StagesApi).stagesRedirectUpdate({
                 stageUuid: this.instance.pk || "",
                 redirectStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
+        return aki(StagesApi).stagesRedirectCreate({
             redirectStageRequest: data,
         });
     }
 
     protected override renderForm(): TemplateResult {
         return html`<span>
-                ${msg("Redirect the user to another flow, potentially with all gathered context")}
+                ${msg(
+                    "Redirect the user to a static URL or another flow, optionally with all gathered context.",
+                )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
@@ -115,9 +117,7 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => RenderFlowOption(flow)}

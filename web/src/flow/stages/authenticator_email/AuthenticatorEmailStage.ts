@@ -64,7 +64,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge?.responseErrors?.email })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"
@@ -120,7 +120,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
                 ${this.renderNonFieldErrors()}
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
                         name="continue"

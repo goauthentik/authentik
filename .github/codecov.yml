@@ -1,3 +1,6 @@
+codecov:
+  notify:
+    wait_for_ci: true
 coverage:
   status:
     project:
@@ -8,3 +11,6 @@ coverage:
         threshold: 1%
 comment:
   after_n_builds: 3
+ignore:
+  - packages/client-rust
+  - packages/client-ts

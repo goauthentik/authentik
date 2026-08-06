@@ -8,10 +8,10 @@ from inspect import currentframe
 from typing import Any
 from uuid import uuid4
 
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -27,7 +27,8 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
 )
-from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
+from authentik.core.models import Group, PropertyMapping, User
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -36,11 +37,17 @@ from authentik.events.utils import (
     sanitize_dict,
     sanitize_item,
 )
-from authentik.lib.models import DomainlessURLValidator, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.root.ws.consumer import build_user_group
@@ -88,6 +95,7 @@ class EventAction(models.TextChoices):
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
+    USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
@@ -128,7 +136,17 @@ class EventAction(models.TextChoices):
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
 
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_APPROVED = "access_request_approved"
+    ACCESS_REQUEST_DENIED = "access_request_denied"
+    ACCESS_REQUEST_REVOKED = "access_request_revoked"
+
     CUSTOM_PREFIX = "custom_"
+
+
+def event_actions():
+    # Wrapper used in models to prevent migrations constantly changing when actions are added
+    return EventAction.choices
 
 
 class Event(SerializerModel, ExpiringModel):
@@ -136,7 +154,7 @@ class Event(SerializerModel, ExpiringModel):
 
     event_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     user = models.JSONField(default=dict)
-    action = models.TextField(choices=EventAction.choices)
+    action = models.TextField(choices=event_actions)
     app = models.TextField()
     context = models.JSONField(default=dict, blank=True)
     client_ip = models.GenericIPAddressField(null=True)
@@ -248,6 +266,29 @@ class Event(SerializerModel, ExpiringModel):
         self.save()
         return self
 
+    @staticmethod
+    def log_deprecation(
+        identifier: str, message: str, cause: str | None = None, expiry_days=30, **kwargs
+    ):
+        query = Q(
+            action=EventAction.CONFIGURATION_WARNING,
+            context__deprecation=identifier,
+        )
+        cause = str(cause)
+        if cause:
+            query &= Q(context__cause=cause)
+        if Event.objects.filter(query).exists():
+            return
+        event = Event.new(
+            EventAction.CONFIGURATION_WARNING,
+            deprecation=identifier,
+            message=message,
+            cause=cause,
+            **kwargs,
+        )
+        event.expires = now() + timedelta(days=expiry_days)
+        event.save()
+
     def save(self, *args, **kwargs):
         if self._state.adding:
             LOGGER.info(
@@ -296,6 +337,10 @@ class Event(SerializerModel, ExpiringModel):
                 models.F("context__authorized_application"),
                 name="authentik_e_ctx_app__idx",
             ),
+            models.Index(
+                models.F("user__pk"),
+                name="authentik_e_user_pk__idx",
+            ),
         ]
 
 
@@ -326,6 +371,16 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
+    webhook_ca = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_(
+            "When set, the selected certificate is used to "
+            "validate the certificate of the webhook server."
+        ),
+    )
     webhook_mapping_body = models.ForeignKey(
         "NotificationWebhookMapping",
         on_delete=models.SET_DEFAULT,
@@ -371,7 +426,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         notification.save()
         layer = get_channel_layer()
-        async_to_sync(layer.group_send)(
+        layer.group_send_blocking(
             build_user_group(notification.user),
             {
                 "type": "event.notification",
@@ -409,21 +464,29 @@ class NotificationTransport(TasksModel, SerializerModel):
                     notification=notification,
                 )
             )
-        try:
-            response = get_http_session().post(
-                self.webhook_url,
-                json=default_body,
-                headers=headers,
-            )
-            response.raise_for_status()
-        except RequestException as exc:
-            raise NotificationTransportError(
-                exc.response.text if exc.response else str(exc)
-            ) from exc
-        return [
-            response.status_code,
-            response.text,
-        ]
+
+        def send(**kwargs):
+            try:
+                response = get_http_session().post(
+                    self.webhook_url,
+                    json=default_body,
+                    headers=headers,
+                    **kwargs,
+                )
+                response.raise_for_status()
+            except RequestException as exc:
+                raise NotificationTransportError(
+                    exc.response.text if exc.response is not None else str(exc)
+                ) from exc
+            return [
+                response.status_code,
+                response.text,
+            ]
+
+        if self.webhook_ca:
+            with DockerInlineTLS(self.webhook_ca, authentication_kp=None) as tls:
+                return send(verify=tls.ca_cert)
+        return send()
 
     def send_webhook_slack(self, notification: Notification) -> list[str]:
         """Send notification to slack or slack-compatible endpoints"""
@@ -472,11 +535,33 @@ class NotificationTransport(TasksModel, SerializerModel):
         }
         if notification.event:
             body["attachments"][0]["title"] = notification.event.action
+        headers = {}
+        if self.webhook_mapping_body:
+            body = sanitize_item(
+                self.webhook_mapping_body.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                    original_body=body,
+                )
+            )
+        if self.webhook_mapping_headers:
+            headers = sanitize_item(
+                self.webhook_mapping_headers.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                )
+            )
         try:
-            response = get_http_session().post(self.webhook_url, json=body)
+            response = get_http_session().post(
+                self.webhook_url,
+                json=body,
+                headers=headers,
+            )
             response.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             raise NotificationTransportError(text) from exc
         return [
             response.status_code,
@@ -602,6 +687,7 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
             "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
+        through="NotificationRuleNotificationTransport",
     )
     severity = models.TextField(
         choices=NotificationSeverity.choices,
@@ -644,6 +730,30 @@ class NotificationRule(TasksModel, SerializerModel, PolicyBindingModel):
     class Meta:
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
+
+
+class NotificationRuleNotificationTransport(SimpleThroughModel):
+    notification_rule = models.ForeignKey(
+        NotificationRule, on_delete=models.CASCADE, db_column="notificationrule_id"
+    )
+    notification_transport = models.ForeignKey(
+        NotificationTransport,
+        on_delete=models.CASCADE,
+        db_column="notificationtransport_id",
+    )
+
+    class Meta:
+        db_table = "authentik_events_notificationrule_transports"
+        unique_together = (("notification_rule", "notification_transport"),)
+        verbose_name = _("Notification Rule Notification Transport")
+        verbose_name_plural = _("Notification Rule Notification Transports")
+
+    def __str__(self):
+        return (
+            "NotificationRuleNotificationTransport for NotificationRule "
+            f"{self.notification_rule_id} "
+            f"and NotificationTransport {self.notification_transport_id}."
+        )
 
 
 class NotificationWebhookMapping(PropertyMapping):

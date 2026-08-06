@@ -2,7 +2,7 @@
 title: I can't log in to authentik
 ---
 
-In case you can't login anymore, perhaps due to an incorrectly configured stage or a failed flow import, you can create a recovery key.
+In case you can't log in anymore, perhaps due to an incorrectly configured stage or a failed flow import, you can create a recovery key.
 
 :::caution
 This recovery key will give whoever has the link direct access to your instances. Keep this key safe.
@@ -26,7 +26,7 @@ or, for CLI, run
 uv run ak create_recovery_key 10 akadmin
 ```
 
-This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of minutes specified above, in this case, 10 minutes.
+This will output a link that can be used to instantly gain access to authentik as the user specified above. The link is valid for the amount of minutes specified above, in this case, 10 minutes.
 
 ## Can't access initial setup flow during installation steps
 
@@ -46,7 +46,7 @@ Kubernetes deployments:
     kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
     ```
 
-After following the prompts to set a new password, you can then login via: `https://authentik.company/if/flow/default-authentication-flow/?next=%2F`
+After following the prompts to set a new password, you can then log in via: `https://authentik.company/if/flow/default-authentication-flow/?next=%2F`
 
 After logging in, you can set the email address and other settings for the account by navigating to **Directory** > **Users** and editing the user account.
 
