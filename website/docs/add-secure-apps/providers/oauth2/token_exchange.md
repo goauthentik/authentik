@@ -23,7 +23,7 @@ A subject token that neither trust relationship covers is rejected. This is the 
 
 Confidential clients must authenticate to the token endpoint. The subject token is not a substitute for client credentials.
 
-### Exchanging a token
+### Exchange a token
 
 Send a POST request to the token endpoint:
 

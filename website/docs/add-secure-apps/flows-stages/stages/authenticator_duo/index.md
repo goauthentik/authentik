@@ -37,7 +37,7 @@ Due to the way the Duo API works, authentik can only automatically import existi
 
 The Duo Auth API enrollment flow creates a new Duo user. If a Duo user already exists with the same username, Duo rejects the enrollment request. To use that existing Duo user in authentik, configure the optional Duo Admin API credentials on the stage and import the authenticator instead of using the enrollment flow. If the Admin API is not available, delete or rename the existing Duo user before enrolling the authenticator.
 
-If you already have Duo users, you can import their authenticators into authentik from the admin UI. The Duo username can be found in the Duo Admin dashboard under **Users**. If needed, you can also use the Duo user ID shown in the Duo Admin URL for that user.
+If you already have Duo users, you can import their authenticators into authentik from the Admin interface. The Duo username can be found in the Duo Admin dashboard under **Users**. If needed, you can also use the Duo user ID shown in the Duo Admin URL for that user.
 
 For direct API use, the import endpoint accepts:
 

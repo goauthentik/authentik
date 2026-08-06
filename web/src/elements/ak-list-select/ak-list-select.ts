@@ -52,6 +52,7 @@ export class ListSelect extends AKElement implements IListSelect {
             :host {
                 overflow: visible;
                 z-index: 9999;
+                box-shadow: var(--pf-global--BoxShadow--md-bottom);
             }
 
             :host([hidden]) {

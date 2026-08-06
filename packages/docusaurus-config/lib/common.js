@@ -104,7 +104,27 @@ export function createDocusaurusConfig({ themeConfig, ...overrides }) {
     };
 
     // @ts-expect-error JSDoc types cannot infer that `overrides` is of the correct type.
-    return deepmerge(config, overrides);
+    const merged = deepmerge(config, overrides);
+
+    // Declare the site name for search engines. Without an explicit `WebSite`
+    // structured-data `name`, Google synthesizes the site name from the hostname
+    // and renders it title-cased ("Authentik"); the product name is always
+    // lowercase. https://developers.google.com/search/docs/appearance/site-names
+    merged.headTags = [
+        ...(merged.headTags ?? []),
+        {
+            tagName: "script",
+            attributes: { type: "application/ld+json" },
+            innerHTML: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "authentik",
+                url: `${merged.url}${merged.baseUrl}`,
+            }),
+        },
+    ];
+
+    return merged;
 }
 
 //#endregion

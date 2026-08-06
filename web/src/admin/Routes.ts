@@ -87,9 +87,25 @@ export const ROUTES: Route[] = [
         await import("#admin/policies/reputation/ReputationListPage");
         return html`<ak-policy-reputation-list></ak-policy-reputation-list>`;
     }),
+    new Route(new RegExp("^/requests/rules$"), async () => {
+        await import("#admin/requests/RequestRuleListPage");
+        return html`<ak-request-rule-list></ak-request-rule-list>`;
+    }),
+    new Route(new RegExp("^/requests/access-requests$"), async () => {
+        await import("#admin/requests/AccessRequestListPage");
+        return html`<ak-access-requests-list></ak-access-requests-list>`;
+    }),
+    new Route(new RegExp("^/identity/object-attributes$"), async () => {
+        await import("#admin/object-attributes/ObjectAttributeListPage");
+        return html`<ak-object-attribute-list></ak-object-attribute-list>`;
+    }),
     new Route(new RegExp("^/identity/groups$"), async () => {
         await import("#admin/groups/GroupListPage");
         return html`<ak-group-list></ak-group-list>`;
+    }),
+    new Route(new RegExp("^/identity/agents$"), async () => {
+        await import("#admin/agents/AgentListPage");
+        return html`<ak-agent-list></ak-agent-list>`;
     }),
     new Route(new RegExp(`^/identity/groups/(?<uuid>${UUID_REGEX})$`), async (args) => {
         await import("#admin/groups/GroupViewPage");
@@ -162,6 +178,10 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/events/lifecycle-reviews"), async () => {
         await import("#admin/lifecycle/ReviewListPage");
         return html`<ak-review-list></ak-review-list>`;
+    }),
+    new Route(new RegExp("^/events/offboardings$"), async () => {
+        await import("#admin/lifecycle/OffboardingListPage");
+        return html`<ak-offboarding-list></ak-offboarding-list>`;
     }),
     new Route(new RegExp("^/outpost/outposts$"), async () => {
         await import("#admin/outposts/OutpostListPage");

@@ -76,7 +76,7 @@ Common follow-ups include:
 
 ## Notes
 
-### Accessing submitted data
+### Access submitted data
 
 Prompt values are stored in `prompt_data`:
 

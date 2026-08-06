@@ -27,45 +27,51 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of MeshCentral with authentik, you need to create an application/provider pair in authentik.
+To support the integration of MeshCentral with authentik, you need to create an application and provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://meshcentral.company/auth-oidc-callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://meshcentral.company/auth-oidc-callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## MeshCentral configuration
 
-Edit the `config.json` file for your MeshCentral deployment, and add the following code in the `domains:` subsection:
+Edit the `config.json` file for your MeshCentral deployment, and add the OIDC authentication strategy to the domain that should use authentik. The example below configures the default MeshCentral domain, `""`.
 
-:::info
-For Docker deployments, the `config.json` should be located in the directory on the host machine you mapped to `/opt/meshcentral/meshcentral-data`.
-:::
+For Docker deployments, `config.json` is located in the host directory that is mapped to `/opt/meshcentral/meshcentral-data`.
 
-:::info
-If you need to enable advanced OIDC configurations, please refer to the [Using the OpenID Connect Strategy](https://ylianst.github.io/MeshCentral/meshcentral/openidConnectStrategy/) section in the MeshCentral documentation for detailed instructions.
-:::
-
-```json
+```json title="config.json"
+{
     "domains": {
+        "": {
             "authStrategies": {
                 "oidc": {
-                    "issuer": "https://authentik.company/application/o/meshcentral/",
-                    "clientid": "<Client ID>",
-                    "clientsecret": "<Client Secret>",
-                    "newAccounts": true
+                    "issuer": "https://authentik.company/application/o/<application_slug>/",
+                    "client": {
+                        "client_id": "<Client ID from authentik>",
+                        "client_secret": "<Client Secret from authentik>"
+                    }
                 }
-            },
+            }
+        }
+    }
+}
 ```
 
-To ensure everything is setup correctly, restart your MeshCentral instance and visit the main page. You should be greeted with a new button to allow signing in with OIDC.
+Restart your MeshCentral instance to apply the updated configuration.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with MeshCentral, open your MeshCentral instance and click the OpenID Connect sign-in button. After you authenticate with authentik, MeshCentral should redirect you back and sign you in.
+
+## Resources
+
+- [MeshCentral documentation: Using the OpenID Connect Strategy](https://docs.meshcentral.com/meshcentral/openidConnectStrategy/)

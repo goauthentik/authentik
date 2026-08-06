@@ -10,7 +10,7 @@ Starting with authentik 2022.12, GeoIP is bundled and does not require any addit
 
 By default, the GeoIP database is loaded from `/geoip/GeoLite2-City.mmdb`. If more frequent database updates are desired, a volume can be mounted to `/geoip` to update this file externally. authentik will automatically re-load the file when it changes.
 
-### Deactivating GeoIP
+### Deactivate GeoIP
 
 If you want to disable GeoIP, you can set the path to a non-existent path and authentik will skip the GeoIP.
 
