@@ -1,6 +1,6 @@
 import "#admin/users/UserChart";
 import "#admin/users/UserInfoCard";
-import "#admin/users/UserNextActionsCard";
+import "#admin/users/UserNextActionsList";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
 import "#admin/events/ObjectChangelog";
@@ -69,7 +69,10 @@ export class UserOverviewTab extends AKElement {
             </div>
             ${this.hasEnterpriseLicense
                 ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                      <ak-user-next-actions-card .user=${this.user}></ak-user-next-actions-card>
+                      <div class="pf-c-card__title">
+                          ${msg("Next actions on login", { id: "user-next-actions.card.title" })}
+                      </div>
+                      <ak-user-next-actions-list .user=${this.user}></ak-user-next-actions-list>
                   </div>`
                 : nothing}
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
