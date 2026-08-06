@@ -4,7 +4,7 @@
  * @satisfies {StorybookConfig}
  */
 const config = {
-    stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+    stories: ["../dist/**/*.mdx", "../dist/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
     addons: ["@storybook/addon-links", "@storybook/addon-a11y", "@storybook/addon-docs"],
     framework: "@storybook/web-components-vite",
 };

@@ -1,6 +1,17 @@
 /**
  * @file Storybook Preview 
  * @import {Preview} from "@storybook/web-components-vite";
+ */
+
+import "@goauthentik/fonts/faces.css";
+import "@goauthentik/fonts/icons.css";
+import "@goauthentik/theme/index.css";
+import "@goauthentik/elements/styles/Divider.root.css";
+import "@goauthentik/elements/styles/Progress.root.css";
+import "@goauthentik/elements/styles/ToggleGroup.root.css";
+import "./preview.css";
+
+/*
  * @satisfies {Preview}
  */
 const preview = {

@@ -1,36 +1,36 @@
 :root {
-    --ak-c-progress--GridGap: var(--pf-global--spacer--xs);
-    --ak-c-progress--m-danger__bar--BackgroundColor: var(--pf-global--danger-color--100);
+    --ak-c-progress--GridGap: var(--ak-global--space--xs);
+    --ak-c-progress--m-danger__bar--BackgroundColor: var(--ak-global--color--warning);
     --ak-c-progress--m-indeterminate--GridGap: 0;
-    --ak-c-progress--m-inside__indicator--MinWidth: var(--pf-global--spacer--xl);
-    --ak-c-progress--m-inside__measure--Color: var(--pf-global--Color--light-100);
-    --ak-c-progress--m-inside__measure--FontSize: var(--pf-global--FontSize--sm);
-    --ak-c-progress--m-lg__bar--Height: var(--pf-global--spacer--lg);
-    --ak-c-progress--m-outside__measure--FontSize: var(--pf-global--FontSize--sm);
-    --ak-c-progress--m-sm__bar--Height: var(--pf-global--spacer--sm);
-    --ak-c-progress--m-sm__description--FontSize: var(--pf-global--FontSize--sm);
-    --ak-c-progress--m-sm__measure--FontSize: var(--pf-global--FontSize--sm);
-    --ak-c-progress--m-success--m-inside__measure--Color: var(--pf-global--Color--light-100);
-    --ak-c-progress--m-success__bar--BackgroundColor: var(--pf-global--success-color--100);
-    --ak-c-progress--m-warning--m-inside__measure--Color: var(--pf-global--Color--dark-100);
-    --ak-c-progress--m-warning__bar--BackgroundColor: var(--pf-global--warning-color--100);
-    --ak-c-progress--m-xs__bar--Height: min(2px, calc(var(--pf-global--spacer--md) / 8));
-    --ak-c-progress__bar--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
-    --ak-c-progress__bar--Height: var(--pf-global--spacer--md);
-    --ak-c-progress__bar--before--BackgroundColor: var(--pf-global--primary-color--100);
+    --ak-c-progress--m-inside__indicator--MinWidth: var(--ak-global--space--xl);
+    --ak-c-progress--m-inside__measure--Color: var(--ak-global--color--primary);
+    --ak-c-progress--m-inside__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-lg__bar--Height: var(--ak-global--space--lg);
+    --ak-c-progress--m-outside__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-sm__bar--Height: var(--ak-global--space--sm);
+    --ak-c-progress--m-sm__description--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-sm__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-success--m-inside__measure--Color: var(--ak-global--color--surface);
+    --ak-c-progress--m-success__bar--BackgroundColor: var(--ak-global--color--success);
+    --ak-c-progress--m-warning--m-inside__measure--Color: var(--ak-global--color--dark-100);
+    --ak-c-progress--m-warning__bar--BackgroundColor: var(--ak-global--color--warning);
+    --ak-c-progress--m-xs__bar--Height: min(2px, calc(var(--ak-global--space--md) / 8));
+    --ak-c-progress__bar--BackgroundColor: var(--ak-global--color--surface);
+    --ak-c-progress__bar--Height: var(--ak-global--space--md);
+    --ak-c-progress__bar--before--BackgroundColor: var(--ak-global--color--primary);
     --ak-c-progress__bar--before--Opacity: 0.2;
     --ak-c-progress__helper-text--MarginTop: var(
-        --pf-v5-c-progress__helper-text--MarginTop,
+        --ak-c-progress__helper-text--MarginTop,
         calc(0.25rem - 1rem)
     );
     --ak-c-progress__indicator--BackgroundColor: var(--ak-c-progress__bar--before--BackgroundColor);
     --ak-c-progress__indicator--Height: var(--ak-c-progress__bar--Height);
     --ak-c-progress__measure--m-static-width--MinWidth: 4.5ch;
-    --ak-c-progress__status--Gap: var(--pf-global--spacer--sm);
+    --ak-c-progress__status--Gap: var(--ak-global--space--sm);
 }
 
 html[data-theme="dark"] {
-    --ak-c-progress--m-inside__measure--Color: var(--pf-global--palette--black-900);
-    --ak-c-progress--m-success--m-inside__measure--Color: var(--pf-global--palette--black-900);
-    --ak-c-progress--m-warning--m-inside__measure--Color: var(--pf-global--palette--black-900);
+    --ak-c-progress--m-inside__measure--Color: var(--ak-global--palette--black-900);
+    --ak-c-progress--m-success--m-inside__measure--Color: var(--ak-global--palette--black-900);
+    --ak-c-progress--m-warning--m-inside__measure--Color: var(--ak-global--palette--black-900);
 }

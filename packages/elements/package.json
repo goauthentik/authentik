@@ -9,8 +9,10 @@
         "directory": "packages/elements"
     },
     "scripts": {
-        "build": "tsgo -p .",
+        "build": "run-p build:source build:styles",
         "build:format": "prettier --write ./dist",
+        "build:source": "tsgo -p .",
+        "build:styles": "copyfiles --flat ./src/**/*.root.css ./dist/styles",
         "build-storybook": "storybook build",
         "check": "run-s lint-check lint-output",
         "clean": "rimraf ./dist",
@@ -25,10 +27,14 @@
     },
     "type": "module",
     "types": "./src/index.ts",
+    "exports": {
+        "./*": "./dist/*"
+    },
     "imports": {
         "#elements/*.js": "./src/*.js"
     },
     "dependencies": {
+        "@goauthentik/fonts": "link:../fonts",
         "@goauthentik/theme": "link:../theme",
         "@open-wc/lit-helpers": "^0.7.0",
         "@storybook/addon-docs": "^10.5.6",
@@ -39,6 +45,7 @@
         "@styleframe/dtcg": "^1.1.0",
         "@styleframe/theme": "^3.7.0",
         "@styleframe/transpiler": "^3.3.0",
+        "copyfiles": "^2.4.1",
         "lit": "^3.3.3",
         "storybook": "^10.5.6",
         "styleframe": "^3.7.0"

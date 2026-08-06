@@ -5,9 +5,9 @@
 :root {
     --ak-c-divider--line-thickness: 1px;
     /* These colors change globally when dark mode is active; no dark block required. */
-    --ak-c-divider--color: var(--pf-global--BorderColor--100);
-    --ak-c-divider--strong-color: var(--pf-global--BorderColor--light-100);
-    --ak-c-divider--subtle-color: var(--pf-global--BorderColor--300);
+    --ak-c-divider--color: var(--ak-global--color--border);
+    --ak-c-divider--strong-color: var(--ak-global--color--border--strong);
+    --ak-c-divider--subtle-color: var(--ak-global--color--border--subtle);
     --ak-c-divider--display: flex;
     --ak-c-divider--flex-direction: row;
     --ak-c-divider--content-spacing: 0.35em;
