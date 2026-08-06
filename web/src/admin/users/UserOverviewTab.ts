@@ -1,5 +1,6 @@
 import "#admin/users/UserChart";
 import "#admin/users/UserInfoCard";
+import "#admin/users/UserNextActionsCard";
 import "#admin/users/UserNotesCard";
 import "#components/ak-object-attributes-card";
 import "#admin/events/ObjectChangelog";
@@ -66,6 +67,11 @@ export class UserOverviewTab extends AKElement {
                     .objectAttributes=${this.user.attributes}
                 ></ak-object-attributes-card>
             </div>
+            ${this.hasEnterpriseLicense
+                ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl">
+                      <ak-user-next-actions-card .user=${this.user}></ak-user-next-actions-card>
+                  </div>`
+                : nothing}
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__title">${msg("Changelog")}</div>
                 <ak-object-changelog
