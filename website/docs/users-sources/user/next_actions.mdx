@@ -1,0 +1,37 @@
+---
+title: Require actions on next login
+authentik_version: "2026.11"
+authentik_enterprise: true
+---
+
+You can require a user to complete one or more flows the next time they log in, before their session is created. Typical uses are forcing a password change or requiring the user to set up an authenticator.
+
+## How it works
+
+The required actions are stored on the user in the `goauthentik.io/user/next-actions` attribute, as a single flow slug or a list of flow slugs.
+
+When a login flow reaches the [User Login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md), authentik runs each listed flow in order within the login, and then completes the login. Each flow is removed from the attribute once the user completes it, so an action only runs once.
+
+Any flow can be used as an action, except flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.md). The built-in stage configuration flows cover the most common actions:
+
+- `default-password-change`: change the password
+- `default-authenticator-totp-setup`: set up an authenticator app
+- `default-authenticator-webauthn-setup`: register a passkey or security key
+- `default-authenticator-static-setup`: generate recovery codes
+
+If a listed flow doesn't exist or its policies deny the user, the login fails until the attribute is corrected or removed. On installations without a valid enterprise license the attribute is ignored.
+
+## Require an action for a user
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users** and click the **Edit** icon of the user.
+3. Add the flow slugs to the user's **Attributes** field:
+
+    ```yaml
+    goauthentik.io/user/next-actions:
+        - default-password-change
+    ```
+
+4. Click **Update**.
+
+The attribute can also be set through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.md) in an enrollment flow.
