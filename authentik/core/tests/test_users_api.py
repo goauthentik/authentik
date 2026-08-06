@@ -10,6 +10,7 @@ from rest_framework.test import APITestCase
 
 from authentik.brands.models import Brand
 from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
     Group,
@@ -134,6 +135,32 @@ class TestUsersAPI(APITestCase):
             response.content,
             {"type": ["Can't change internal service account to other user type."]},
         )
+
+    def test_set_next_actions(self):
+        """Test setting next action flows on a user"""
+        self.client.force_login(self.admin)
+        flow = create_test_flow(FlowDesignation.STAGE_CONFIGURATION)
+        for value in [flow.slug, [flow.slug]]:
+            response = self.client.patch(
+                reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+                data={"attributes": {USER_ATTRIBUTE_NEXT_ACTIONS: value}},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 200)
+            self.user.refresh_from_db()
+            self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], value)
+
+    def test_set_next_actions_invalid(self):
+        """Test that unknown flows and disallowed designations are rejected"""
+        self.client.force_login(self.admin)
+        authentication_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        for value in ["does-not-exist", [authentication_flow.slug], [42]]:
+            response = self.client.patch(
+                reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+                data={"attributes": {USER_ATTRIBUTE_NEXT_ACTIONS: value}},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 400)
 
     def test_set_password(self):
         """Test Direct password set"""

@@ -4,25 +4,42 @@ from time import sleep
 from unittest.mock import patch
 
 from django.conf import settings
+from django.core.cache import cache
 from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User, UserSwitchingSession
+from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
+    AuthenticatedSession,
+    Session,
+    User,
+    UserSwitchingSession,
+)
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.enterprise.license import CACHE_KEY_ENTERPRISE_LICENSE
+from authentik.enterprise.tests import enterprise_test
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import get_user
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import (
+    Flow,
+    FlowAuthenticationRequirement,
+    FlowDesignation,
+    FlowStageBinding,
+)
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.policies.dummy.models import DummyPolicy
+from authentik.policies.models import PolicyBinding
 from authentik.root.middleware import ClientIPMiddleware
+from authentik.stages.dummy.models import DummyStage
 from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
     BoundSessionMiddleware,
@@ -429,3 +446,141 @@ class TestUserLoginStage(FlowTestCase):
         )
         event = Event.objects.filter(action=EventAction.LOGOUT).first()
         self.assertEqual(event.user, get_user(self.user))
+
+
+class TestUserLoginNextActions(FlowTestCase):
+    """Next action enforcement tests"""
+
+    def setUp(self):
+        super().setUp()
+        cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
+        self.user = create_test_user()
+        self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        self.stage = UserLoginStage.objects.create(name=generate_id())
+        self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
+        self.executor_url = reverse(
+            "authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}
+        )
+
+    def create_action_flow(self) -> Flow:
+        """Stage configuration flow with a single dummy stage, requiring authentication
+        like the built-in configuration flows"""
+        flow = create_test_flow(
+            FlowDesignation.STAGE_CONFIGURATION,
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED,
+        )
+        FlowStageBinding.objects.create(
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
+        )
+        return flow
+
+    def set_next_actions(self, value):
+        self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS] = value
+        self.user.save()
+
+    def start_login(self):
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        return self.client.get(self.executor_url)
+
+    def complete_action_stage(self):
+        """Complete a spliced dummy stage and its follow-up done stage.
+        Redirects within the executor to itself are raw 302s."""
+        response = self.client.get(self.executor_url)
+        self.assertStageResponse(response, self.flow, component="ak-stage-dummy")
+        response = self.client.post(self.executor_url, {})
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(self.executor_url)
+        self.assertEqual(response.status_code, 302)
+
+    @enterprise_test()
+    def test_actions_run_before_login(self):
+        """Next action flows run and are cleared before the login completes"""
+        action = self.create_action_flow()
+        self.set_next_actions([action.slug])
+
+        response = self.start_login()
+        self.assertEqual(response.status_code, 302)
+        self.complete_action_stage()
+        response = self.client.get(self.executor_url)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+        self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
+
+    @enterprise_test()
+    def test_action_as_string(self):
+        """A single flow slug works without being wrapped in a list"""
+        action = self.create_action_flow()
+        self.set_next_actions(action.slug)
+
+        response = self.start_login()
+        self.assertEqual(response.status_code, 302)
+        self.complete_action_stage()
+        response = self.client.get(self.executor_url)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+
+    @enterprise_test()
+    def test_multiple_actions(self):
+        """Multiple actions run in order and are cleared one by one"""
+        first = self.create_action_flow()
+        second = self.create_action_flow()
+        self.set_next_actions([first.slug, second.slug])
+
+        response = self.start_login()
+        self.assertEqual(response.status_code, 302)
+        self.complete_action_stage()
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], [second.slug])
+        self.complete_action_stage()
+        response = self.client.get(self.executor_url)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        self.user.refresh_from_db()
+        self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
+        self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
+
+    @enterprise_test()
+    def test_invalid_action_denies_login(self):
+        """A next action that doesn't resolve to a flow fails the login"""
+        self.set_next_actions(["does-not-exist"])
+
+        response = self.start_login()
+        self.assertStageResponse(response, component="ak-stage-access-denied")
+        self.assertFalse(AuthenticatedSession.objects.filter(user=self.user).exists())
+
+    @enterprise_test()
+    def test_non_applicable_action_denies_login(self):
+        """A next action flow whose policies deny the user fails the login"""
+        action = self.create_action_flow()
+        PolicyBinding.objects.create(
+            policy=DummyPolicy.objects.create(
+                name=generate_id(), result=False, wait_min=0, wait_max=1
+            ),
+            target=action,
+            order=0,
+        )
+        self.set_next_actions([action.slug])
+
+        response = self.start_login()
+        self.assertStageResponse(response, component="ak-stage-access-denied")
+        self.assertFalse(AuthenticatedSession.objects.filter(user=self.user).exists())
+
+    def test_without_license_actions_are_skipped(self):
+        """Without a valid enterprise license the login proceeds without actions"""
+        action = self.create_action_flow()
+        self.set_next_actions([action.slug])
+
+        response = self.start_login()
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.attributes[USER_ATTRIBUTE_NEXT_ACTIONS], [action.slug])
+        self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
