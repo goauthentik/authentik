@@ -4,7 +4,7 @@ title: Captcha stage
 
 The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha, Cloudflare Turnstile, and Cap.
 
-## Overview
+## About the Captcha stage
 
 This stage verifies that the current interaction appears human before the flow continues.
 
@@ -31,6 +31,10 @@ If you embed it in the [Identification stage](../identification/index.md), confi
 ## Notes
 
 ### Google reCAPTCHA
+
+:::note Supported versions
+Google reCAPTCHA Enterprise, reCAPTCHA v2, and reCAPTCHA v3 are all supported.
+:::
 
 Use the keys from https://www.google.com/recaptcha/admin.
 

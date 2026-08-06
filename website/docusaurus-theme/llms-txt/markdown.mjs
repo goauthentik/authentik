@@ -1,5 +1,3 @@
-// docusaurus-theme/llms-txt/markdown.mjs
-/* eslint-disable no-console */
 /**
  * @file Convert authentik MDX into clean Markdown for the .md payload:
  * inline partial imports, strip custom directives and JSX/imports.
@@ -73,10 +71,11 @@ function regexClean(content) {
 }
 
 /**
- * Read and recursively clean a partial file's body.
+ * Read a partial file's body, without its frontmatter. Imports inside the
+ * partial are not inlined further.
  *
  * @param {string} partialPath
- * @param {Set<string>} chain Guards against circular imports.
+ * @param {Set<string>} chain Guards against a partial importing its importer.
  * @returns {string}
  */
 function loadPartial(partialPath, chain) {
@@ -125,6 +124,40 @@ function inlinePartials(content, filePath) {
 }
 
 /**
+ * Remark transformer: drop MDX/JSX and ESM nodes, unwrap directives to text.
+ *
+ * @returns {(tree: import("mdast").Root) => void}
+ */
+function stripNodesPlugin() {
+    return (/** @type {import("mdast").Root} */ tree) => {
+        visit(tree, (node, index, parent) => {
+            if (!parent || index === undefined) return undefined;
+            const t = node.type;
+            /** @type {import("unist").Node[]} */
+            const kids = Array.isArray(/** @type {any} */ (node).children)
+                ? /** @type {any} */ (node).children
+                : [];
+            if (
+                t === "mdxjsEsm" ||
+                t === "mdxFlowExpression" ||
+                t === "mdxTextExpression" ||
+                t === "mdxJsxFlowElement" ||
+                t === "mdxJsxTextElement"
+            ) {
+                // Replace JSX containers with their text children, drop bare expr/esm.
+                /** @type {any} */ (parent).children.splice(index, 1, ...kids);
+                return [SKIP, index];
+            }
+            if (t === "containerDirective" || t === "leafDirective" || t === "textDirective") {
+                /** @type {any} */ (parent).children.splice(index, 1, ...kids);
+                return [SKIP, index];
+            }
+            return undefined;
+        });
+    };
+}
+
+/**
  * Convert authentik MDX to clean Markdown.
  *
  * @param {string} content Raw file content (may include frontmatter).
@@ -150,38 +183,4 @@ export async function cleanMdxToMarkdown(content, filePath, onFallback) {
         onFallback?.(filePath, err);
         return regexClean(content);
     }
-}
-
-/**
- * Remark transformer: drop MDX/JSX and ESM nodes, unwrap directives to text.
- *
- * @returns {(tree: import("mdast").Root) => void}
- */
-function stripNodesPlugin() {
-    return (/** @type {import("mdast").Root} */ tree) => {
-        visit(tree, (node, index, parent) => {
-            if (!parent || index === undefined) return;
-            const t = node.type;
-            /** @type {import("unist").Node[]} */
-            const kids = Array.isArray(/** @type {any} */ (node).children)
-                ? /** @type {any} */ (node).children
-                : [];
-            if (
-                t === "mdxjsEsm" ||
-                t === "mdxFlowExpression" ||
-                t === "mdxTextExpression" ||
-                t === "mdxJsxFlowElement" ||
-                t === "mdxJsxTextElement"
-            ) {
-                // Replace JSX containers with their text children, drop bare expr/esm.
-                /** @type {any} */ (parent).children.splice(index, 1, ...kids);
-                return [SKIP, index];
-            }
-            if (t === "containerDirective" || t === "leafDirective" || t === "textDirective") {
-                /** @type {any} */ (parent).children.splice(index, 1, ...kids);
-                return [SKIP, index];
-            }
-            return undefined;
-        });
-    };
 }

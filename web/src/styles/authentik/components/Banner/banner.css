@@ -8,11 +8,13 @@
     a {
         text-decoration-color: color-mix(in srgb, currentColor 30%, transparent 70%);
     }
+
     a:hover {
         text-decoration-color: currentColor;
     }
 }
 
+html[theme="dark"] .pf-c-banner,
 :host([theme="dark"]) .pf-c-banner {
     &.pf-m-info,
     &.pf-m-blue,

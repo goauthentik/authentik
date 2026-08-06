@@ -177,21 +177,21 @@ The fields available to AKQL are specific to each list.
 
 Available in **Events** > **Logs** and in the **Query** field on Event Matcher policies.
 
-| Field              | Type      | Description                                                                    |
-| ------------------ | --------- | ------------------------------------------------------------------------------ |
-| `action`           | Choice    | The [event action](./events/event-actions.md), such as `login`.                |
-| `event_uuid`       | String    | The event's unique identifier.                                                 |
-| `app`              | String    | The application or authentik component that emitted the event.                 |
-| `client_ip`        | String    | The client IP address associated with the event.                               |
-| `user.pk`          | Integer   | The acting user's primary key.                                                 |
-| `user.username`    | String    | The acting user's username.                                                    |
-| `user.email`       | String    | The acting user's email address.                                               |
-| `brand.pk`         | String    | The primary key of the [brand](../customize/branding.md) active for the event. |
-| `brand.app`        | String    | The brand's app label.                                                         |
-| `brand.name`       | String    | The brand's name.                                                              |
-| `brand.model_name` | String    | The brand's model name.                                                        |
-| `context.*`        | JSON      | Arbitrary event context.                                                       |
-| `created`          | Date/time | When the event occurred.                                                       |
+| Field              | Type      | Description                                                                          |
+| ------------------ | --------- | ------------------------------------------------------------------------------------ |
+| `action`           | Choice    | The [event action](./events/event-actions.md), such as `login`.                      |
+| `event_uuid`       | String    | The event's unique identifier.                                                       |
+| `app`              | String    | The application or authentik component that emitted the event.                       |
+| `client_ip`        | String    | The client IP address associated with the event.                                     |
+| `user.pk`          | Integer   | The acting user's primary key.                                                       |
+| `user.username`    | String    | The acting user's username.                                                          |
+| `user.email`       | String    | The acting user's email address.                                                     |
+| `brand.pk`         | String    | The primary key of the [brand](../customize/branding/index.md) active for the event. |
+| `brand.app`        | String    | The brand's app label.                                                               |
+| `brand.name`       | String    | The brand's name.                                                                    |
+| `brand.model_name` | String    | The brand's model name.                                                              |
+| `context.*`        | JSON      | Arbitrary event context.                                                             |
+| `created`          | Date/time | When the event occurred.                                                             |
 
 Common event context paths include:
 

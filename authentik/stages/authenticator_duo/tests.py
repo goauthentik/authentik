@@ -3,6 +3,7 @@
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
+from django.db.models.deletion import ProtectedError
 from django.test.client import RequestFactory
 from django.urls import reverse
 
@@ -36,6 +37,22 @@ class AuthenticatorDuoStageTests(FlowTestCase):
         stage.admin_integration_key = ""
         with self.assertRaises(ValueError):
             self.assertEqual(stage.admin_client().ikey, stage.admin_integration_key)
+
+    def test_stage_deletion_is_protected(self):
+        """A setup stage with enrolled devices cannot be deleted."""
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        device = DuoDevice.objects.create(user=self.user, stage=stage)
+
+        with self.assertRaises(ProtectedError):
+            stage.delete()
+
+        self.assertTrue(AuthenticatorDuoStage.objects.filter(pk=stage.pk).exists())
+        self.assertTrue(DuoDevice.objects.filter(pk=device.pk).exists())
 
     def test_api_enrollment_invalid(self):
         """Test `enrollment_status`"""
@@ -292,3 +309,50 @@ class AuthenticatorDuoStageTests(FlowTestCase):
                     reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), {}
                 )
                 self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+
+    def test_stage_enroll_existing_duo_user(self):
+        """Test stage with a username that already exists in Duo"""
+        conf_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+
+        with patch(
+            "duo_client.auth.Auth.enroll",
+            MagicMock(
+                side_effect=RuntimeError(
+                    "Received 400 Invalid request parameters (username already exists)"
+                )
+            ),
+        ):
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+                follow=True,
+            )
+            self.assertStageResponse(
+                response,
+                flow,
+                component="ak-stage-access-denied",
+                error_message=(
+                    "A Duo user with this username already exists. Ask an administrator to "
+                    "import the existing Duo authenticator or delete the Duo user before "
+                    "enrolling again."
+                ),
+            )

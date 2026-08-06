@@ -8,9 +8,9 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is NetBox?
 
-> NetBox is the leading solution for modeling and documenting modern networks.
+> NetBox is the world's most popular platform for understanding, operating, automating, and securing networks.
 >
-> -- https://github.com/netbox-community/netbox
+> -- https://netboxlabs.com/products/netbox/
 
 ## Preparation
 
@@ -29,207 +29,145 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of NetBox with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://netbox.company/oauth/complete/oidc/`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://netbox.company/oauth/complete/oidc/`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
-## NetBox
+### Configure NetBox entitlements _(optional)_
 
-:::info
-This setup was tested and developed with NetBox Docker. For a non-Docker installation, disable the Docker section and use the non-Docker section.
-:::
+NetBox can create local groups from an OIDC `groups` claim by using a custom Social Auth pipeline. To control those groups with app-specific authentik grants, create an OAuth2 scope mapping that exposes application entitlements as the `groups` claim.
 
-The following Docker env vars are required for the configuration.
+1. In authentik, navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+2. Select **OAuth2 Scope Mapping** and use the following values:
+    - **Name**: `NetBox entitlements`
+    - **Scope name**: `netbox`
+    - **Expression**:
 
-```env
-# Enable python-social-auth
-REMOTE_AUTH_ENABLED='true'
-REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
+        ```python
+        return {
+            "name": request.user.name,
+            "given_name": request.user.name,
+            "preferred_username": request.user.username,
+            "groups": [
+                entitlement.name
+                for entitlement in request.user.app_entitlements(provider.application)
+            ],
+        }
+        ```
 
-# python-social-auth config
-SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<application_slug>/'
-SOCIAL_AUTH_OIDC_KEY='<Client ID>'
-SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
-SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
-LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
-```
+3. Open the NetBox provider that you created earlier and add `NetBox entitlements` to the selected **Scopes**.
+4. Open the NetBox application and create the required **Application entitlements**. Use an entitlement named `superusers` for users that should receive NetBox superuser access through the optional pipeline below, and bind each entitlement to the users or groups that should receive it.
+
+## NetBox configuration
+
+NetBox supports SSO through the `python-social-auth` library. Configure the generic OpenID Connect backend, then restart NetBox so the configuration is loaded.
 
 Use the authentik provider URL without `/.well-known/openid-configuration`. python-social-auth discovers the OpenID configuration from that endpoint.
 
-For non-Docker installations, extend the NetBox configuration by creating a new file in the configuration folder (for example, `authentik.py`).
+### Configure NetBox Docker
 
-```py
-# NetBox settings
+Add the following environment variables to your NetBox Docker environment file:
+
+```env title=".env"
+REMOTE_AUTH_ENABLED=true
+REMOTE_AUTH_BACKEND=social_core.backends.open_id_connect.OpenIdConnectAuth
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT=https://authentik.company/application/o/<application_slug>/
+SOCIAL_AUTH_OIDC_KEY=<Client ID from authentik>
+SOCIAL_AUTH_OIDC_SECRET=<Client Secret from authentik>
+SOCIAL_AUTH_OIDC_SCOPE=openid email profile
+LOGOUT_REDIRECT_URL=https://authentik.company/application/o/<application_slug>/end-session/
+```
+
+If you configured the optional NetBox entitlements scope mapping, set `SOCIAL_AUTH_OIDC_SCOPE` to `openid email netbox`.
+
+### Configure a non-Docker installation
+
+Add the following settings to the NetBox configuration file:
+
+```python title="/opt/netbox/netbox/netbox/configuration.py"
 REMOTE_AUTH_ENABLED = True
-REMOTE_AUTH_BACKEND = 'social_core.backends.open_id_connect.OpenIdConnectAuth'
+REMOTE_AUTH_BACKEND = "social_core.backends.open_id_connect.OpenIdConnectAuth"
 
-# python-social-auth configuration
-SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = 'https://authentik.company/application/o/<application_slug>/'
-SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
-SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-SOCIAL_AUTH_OIDC_SCOPE = ['openid', 'profile', 'email', 'roles']
-LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/'
-```
-
-### Groups
-
-To manage groups in NetBox, custom social auth pipelines are required. Create a `custom_pipeline.py` file in the NetBox directory with the following content.
-
-:::info
-Starting with NetBox 4.0.0, NetBox adds custom `Group` models. The following code is compatible with NetBox 4.0.0 and later. For NetBox versions earlier than 4.0.0, update the import statement and the lines that add or remove user groups.
-:::
-
-```python
-# from django.contrib.auth.models import Group # For NetBox < 4.0.0
-from netbox.authentication import Group # For NetBox >= 4.0.0
-
-class AuthFailed(Exception):
-    pass
-
-def add_groups(response, user, backend, *args, **kwargs):
-    try:
-        groups = response['groups']
-    except KeyError:
-        pass
-
-    # Add all groups from OAuth token
-    for group in groups:
-        group, created = Group.objects.get_or_create(name=group)
-        # group.user_set.add(user) # For NetBox < 4.0.0
-        user.groups.add(group) # For NetBox >= 4.0.0
-
-def remove_groups(response, user, backend, *args, **kwargs):
-    try:
-        groups = response['groups']
-    except KeyError:
-        # Remove all groups if no groups in OAuth token
-        user.groups.clear()
-        pass
-
-    # Get all groups for user
-    user_groups = [item.name for item in user.groups.all()]
-    # Get user groups that are not part of the OAuth token
-    delete_groups = list(set(user_groups) - set(groups))
-
-    # Delete groups not included in the OAuth token
-    for delete_group in delete_groups:
-        group = Group.objects.get(name=delete_group)
-        # group.user_set.remove(user) # For NetBox < 4.0.0
-        user.groups.remove(group) # For NetBox >= 4.0.0
-
-
-def set_roles(response, user, backend, *args, **kwargs):
-    # Remove Roles temporarily
-    user.is_superuser = False
-    user.is_staff = False
-    try:
-        groups = response['groups']
-    except KeyError:
-        # When no groups are set
-        # save the user without Roles
-        user.save()
-        pass
-
-    # Set roles when role groups (superuser or staff) are present
-    user.is_superuser = True if 'superusers' in groups else False
-    user.is_staff = True if 'staff' in groups else False
-    user.save()
-```
-
-The path of the file in the official Docker image is `/opt/netbox/netbox/netbox/custom_pipeline.py`.
-
-After creating or updating this file, restart NetBox so pipeline changes are loaded.
-
-To enable the pipelines, add the pipeline section to the NetBox configuration file you created above.
-
-```python
-SOCIAL_AUTH_PIPELINE = (
-    ###################
-    # Default pipelines
-    ###################
-
-    # Get the information we can about the user and return it in a simple
-    # format to create the user instance later. In some cases the details are
-    # already part of the auth response from the provider, but sometimes this
-    # could hit a provider API.
-    'social_core.pipeline.social_auth.social_details',
-
-    # Get the social uid from whichever service we're authing thru. The uid is
-    # the unique identifier of the given user in the provider.
-    'social_core.pipeline.social_auth.social_uid',
-
-    # Verifies that the current auth process is valid within the current
-    # project, this is where emails and domains whitelists are applied (if
-    # defined).
-    'social_core.pipeline.social_auth.auth_allowed',
-
-    # Checks if the current social-account is already associated in the site.
-    'social_core.pipeline.social_auth.social_user',
-
-    # Make up a username for this person, appends a random string at the end if
-    # there's any collision.
-    'social_core.pipeline.user.get_username',
-
-    # Send a validation email to the user to verify its email address.
-    # Disabled by default.
-    # 'social_core.pipeline.mail.mail_validation',
-
-    # Associates the current social details with another user account with
-    # a similar email address. Disabled by default.
-    # 'social_core.pipeline.social_auth.associate_by_email',
-
-    # Create a user account if we haven't found one yet.
-    'social_core.pipeline.user.create_user',
-
-    # Create the record that associates the social account with the user.
-    'social_core.pipeline.social_auth.associate_user',
-
-    # Populate the extra_data field in the social record with the values
-    # specified by settings (and the default ones like access_token, etc).
-    'social_core.pipeline.social_auth.load_extra_data',
-
-    # Update the user record with any changed info from the auth service.
-    'social_core.pipeline.user.user_details',
-
-
-    ###################
-    # Custom pipelines
-    ###################
-    # Set authentik Groups
-    'netbox.custom_pipeline.add_groups',
-    'netbox.custom_pipeline.remove_groups',
-    # Set Roles
-    'netbox.custom_pipeline.set_roles'
-)
-
-```
-
-### Roles
-
-In NetBox, there are two special user roles: `superuser` and `staff`. To set them, add your users to the `superusers` or `staff` group in authentik.
-
-To use custom group names, the following scope mapping example can be used. In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
-
-Name: `NetBox roles`
-Scope name: `roles`
-
-Expression:
-
-```python
-return {
-  "groups": ["superusers" if group.name == "netbox_admin" else "staff" if group.name == "netbox_staff" else group.name for group in request.user.groups.all()],
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = "https://authentik.company/application/o/<application_slug>/"
+SOCIAL_AUTH_OIDC_KEY = "<Client ID from authentik>"
+SOCIAL_AUTH_OIDC_SECRET = "<Client Secret from authentik>"
+SOCIAL_AUTH_OIDC_SCOPE = ["openid", "email", "profile"]
+LOGOUT_REDIRECT_URL = "https://authentik.company/application/o/<application_slug>/end-session/"
+SOCIAL_AUTH_BACKEND_ATTRS = {
+    "oidc": ("authentik", "login"),
 }
 ```
 
-This scope mapping must also be selected in the _OAuth2/OpenID Provider_ created above.
+If you configured the optional NetBox entitlements scope mapping, set `SOCIAL_AUTH_OIDC_SCOPE` to `["openid", "email", "netbox"]`.
+
+### Sync groups and superuser status _(optional)_
+
+To manage NetBox groups from authentik, create a custom Social Auth pipeline. The default authentik `profile` scope exposes authentik group names as the `groups` claim. If you configured the optional NetBox entitlements scope mapping, the `netbox` scope exposes application entitlement names instead.
+
+Create `custom_pipeline.py` in the NetBox package directory. In the official NetBox Docker image, mount or add this file at `/opt/netbox/netbox/netbox/custom_pipeline.py`.
+
+```python title="/opt/netbox/netbox/netbox/custom_pipeline.py"
+from users.models import Group
+
+SUPERUSER_GROUP = "superusers"
+
+
+def _claim_groups(response):
+    groups = response.get("groups", [])
+    if isinstance(groups, str):
+        return {groups}
+    return set(groups)
+
+
+def sync_groups(response, user, backend, *args, **kwargs):
+    groups = [
+        Group.objects.get_or_create(name=group_name)[0]
+        for group_name in sorted(_claim_groups(response))
+    ]
+    user.groups.set(groups)
+
+
+def set_superuser(response, user, backend, *args, **kwargs):
+    user.is_superuser = SUPERUSER_GROUP in _claim_groups(response)
+    user.save(update_fields=["is_superuser"])
+```
+
+Add the pipeline configuration to the NetBox configuration file. For NetBox Docker, place this setting in a Python configuration file that is loaded from the mounted `configuration/` directory, such as `configuration/authentik.py`.
+
+```python title="/opt/netbox/netbox/netbox/configuration.py"
+SOCIAL_AUTH_PIPELINE = (
+    "social_core.pipeline.social_auth.social_details",
+    "social_core.pipeline.social_auth.social_uid",
+    "social_core.pipeline.social_auth.social_user",
+    "social_core.pipeline.user.get_username",
+    "social_core.pipeline.user.create_user",
+    "social_core.pipeline.social_auth.associate_user",
+    "netbox.authentication.user_default_groups_handler",
+    "social_core.pipeline.social_auth.load_extra_data",
+    "social_core.pipeline.user.user_details",
+    "netbox.custom_pipeline.sync_groups",
+    "netbox.custom_pipeline.set_superuser",
+)
+```
+
+Restart NetBox after creating or updating the custom pipeline.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with NetBox, open NetBox and select **authentik** on the login page. After a successful login, NetBox opens. If you enabled the optional group sync pipeline, verify that the user has the expected NetBox groups and superuser status.
+
+## Resources
+
+- [NetBox documentation - Authentication](https://netboxlabs.com/docs/netbox/administration/authentication/overview/)
+- [NetBox documentation - Configuration](https://netboxlabs.com/docs/netbox/configuration/)
+- [NetBox Docker - Configuration](https://github.com/netbox-community/netbox-docker/blob/release/configuration/configuration.py)
+- [Python Social Auth - OIDC](https://python-social-auth.readthedocs.io/en/latest/backends/oidc.html)

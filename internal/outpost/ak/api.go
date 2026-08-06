@@ -3,6 +3,7 @@ package ak
 import (
 	"context"
 	"crypto/fips140"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net"
@@ -220,6 +221,9 @@ func (a *APIController) OnRefresh() error {
 	if err != nil {
 		log.WithError(err).Error("Failed to fetch outpost configuration")
 		return err
+	}
+	if outposts == nil || len(outposts.Results) < 1 {
+		return errors.New("no outposts found")
 	}
 	a.Outpost = outposts.Results[0]
 

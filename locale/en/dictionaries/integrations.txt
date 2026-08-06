@@ -1,11 +1,16 @@
 # Integrations
 ADOM
+Apereo
 appflowy
+appsmith
 Ascensio
 Authy
 Beszel
 Bitnami
 Budibase
+Chatwoot
+Coolify
+Directus
 Doki
 Doku
 dokuwiki
@@ -30,6 +35,7 @@ Homarr
 Icinga
 Informatique
 Jellyseerr
+Kavita
 Kimai
 Kiota
 Knoc
@@ -39,6 +45,8 @@ Kubeconfig
 Mautic
 Mobilizon
 myabsorb
+n8n
+NocoDB
 Nexterm
 Observium
 Ofair
@@ -61,6 +69,7 @@ Planka
 Plesk
 PostHog
 proftpd
+pveum
 Qube
 Relatedly
 Seerr

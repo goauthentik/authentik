@@ -55,22 +55,16 @@ class DockerTestCase(TestCase):
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
-        image = f"{base}:gh-main"
-        try:
-            branch_image = f"{base}:{get_docker_tag()}"
-            self.docker_client.images.pull(branch_image)
-            return branch_image
-        except DockerException:
-            self.docker_client.images.pull(image)
-        return image
+        return f"{base}:{get_docker_tag()}"
 
     def run_container(self, **specs: Any) -> Container:
         if "network_mode" not in specs:
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
+        specs.setdefault("environment", {})
+        specs["environment"]["AUTHENTIK_LOG_LEVEL"] = "debug"
         if hasattr(self, "live_server_url"):
-            specs.setdefault("environment", {})
             specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
         container: Container = self.docker_client.containers.run(**specs)
         container.reload()

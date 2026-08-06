@@ -3,8 +3,6 @@
  *
  * @import { UserThemeConfig, UserThemeConfigExtra } from "@goauthentik/docusaurus-config";
  * @import { AKReleasesPluginOptions } from "@goauthentik/docusaurus-theme/releases/common"
- * @import { AKRedirectsPluginOptions } from "@goauthentik/docusaurus-theme/redirects/plugin"
- * @import { Options as RedirectsPluginOptions } from "@docusaurus/plugin-client-redirects";
  * @import { NormalizedSidebar, NormalizedSidebarItemCategory, SidebarItemsGeneratorArgs } from "@docusaurus/plugin-content-docs/src/sidebars/types.ts";
  */
 
@@ -22,8 +20,7 @@ import {
     createLLMSPlugin,
     extendConfig,
 } from "@goauthentik/docusaurus-theme/config";
-import { RewriteIndex } from "@goauthentik/docusaurus-theme/redirects";
-import { parse } from "@goauthentik/docusaurus-theme/redirects/node";
+import { createRedirectPlugins } from "@goauthentik/docusaurus-theme/redirects/node";
 import { prepareReleaseEnvironment } from "@goauthentik/docusaurus-theme/releases/node";
 import { remarkLinkRewrite } from "@goauthentik/docusaurus-theme/remark";
 
@@ -59,9 +56,7 @@ await Promise.all(
     }),
 );
 
-const redirectsFile = resolve(packageStaticDirectory, "_redirects");
-const redirects = await parse(redirectsFile);
-const redirectsIndex = new RewriteIndex(redirects);
+const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirectory, "_redirects"));
 
 //#endregion
 
@@ -105,135 +100,114 @@ export function generateCVESidebar(args) {
 
 //#region Configuration
 
-export default createDocusaurusConfig(
-    extendConfig({
-        future: {
-            faster: true,
-        },
-        clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
-        url: DocusaurusURL.Docs,
-        //#region Preset
+export default /** @type {import("@docusaurus/types").Config} */ (
+    createDocusaurusConfig(
+        extendConfig({
+            future: {
+                faster: true,
+            },
+            clientModules: ["../docusaurus-theme/theme/utils/mermaid_icons.js"],
+            url: DocusaurusURL.Docs,
+            //#region Preset
 
-        presets: [
-            createClassicPreset({
-                pages: false,
-                docs: {
-                    sidebarItemsGenerator: async ({ defaultSidebarItemsGenerator, ...args }) => {
-                        const sidebarItems = await defaultSidebarItemsGenerator(args);
-                        if (args.item.dirName === "security/cves") {
-                            return generateCVESidebar(args);
-                        }
-                        return sidebarItems;
+            presets: [
+                createClassicPreset({
+                    pages: false,
+                    docs: {
+                        sidebarItemsGenerator: async ({
+                            defaultSidebarItemsGenerator,
+                            ...args
+                        }) => {
+                            const sidebarItems = await defaultSidebarItemsGenerator(args);
+                            if (args.item.dirName === "security/cves") {
+                                return generateCVESidebar(args);
+                            }
+                            return sidebarItems;
+                        },
+                        exclude: [
+                            /**
+                             * Exclude previously generated API docs.
+                             *
+                             * @expires 2025-12-01
+                             */
+                            "**/developer-docs/api/reference/**",
+                        ],
+                        routeBasePath: "/",
+                        path: ".",
+
+                        sidebarPath: "./sidebar.mjs",
+                        showLastUpdateTime: false,
+                        editUrl: "https://github.com/goauthentik/authentik/edit/main/website/docs/",
+
+                        //#region Docs Plugins
+
+                        beforeDefaultRemarkPlugins: [
+                            remarkLinkRewrite([
+                                ["/api", "https://api.goauthentik.io"],
+                                ["/integrations", DocusaurusURL.Integrations],
+                            ]),
+                        ],
                     },
-                    exclude: [
-                        /**
-                         * Exclude previously generated API docs.
-                         *
-                         * @expires 2025-12-01
-                         */
-                        "**/developer-docs/api/reference/**",
-                    ],
-                    routeBasePath: "/",
-                    path: ".",
-
-                    sidebarPath: "./sidebar.mjs",
-                    showLastUpdateTime: false,
-                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/docs/",
-
-                    //#region Docs Plugins
-
-                    beforeDefaultRemarkPlugins: [
-                        remarkLinkRewrite([
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/integrations", DocusaurusURL.Integrations],
-                        ]),
-                    ],
-                },
-            }),
-        ],
-
-        //#endregion
-
-        //#region Plugins
-
-        plugins: [
-            [
-                "@goauthentik/docusaurus-theme/releases/plugin",
-                /** @type {AKReleasesPluginOptions} */ ({
-                    docsDirectory: __dirname,
-                    environment: releaseEnvironment,
                 }),
             ],
 
-            createLLMSPlugin({
-                sections: [{ path: ".", routeBasePath: "/" }],
-                groupBy: "topic",
-                // Normalized section headings for the top-level topics.
-                categories: topics,
-                // Split the glossary out of "Core Concepts" into its own section.
-                regroup: [["core/glossary", "glossary"]],
-                crossLinks: [
-                    {
-                        label: "Integrations",
-                        url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
-                    },
+            //#endregion
+
+            //#region Plugins
+
+            plugins: [
+                [
+                    "@goauthentik/docusaurus-theme/releases/plugin",
+                    /** @type {AKReleasesPluginOptions} */ ({
+                        docsDirectory: __dirname,
+                        environment: releaseEnvironment,
+                    }),
                 ],
-            }),
 
-            // Inject redirects for later use during runtime,
-            // such as navigating to non-existent page with the client-side router.
-
-            [
-                "@goauthentik/docusaurus-theme/redirects/plugin",
-                /** @type {AKRedirectsPluginOptions} */ ({
-                    redirects,
+                createLLMSPlugin({
+                    sections: [{ path: ".", routeBasePath: "/" }],
+                    groupBy: "topic",
+                    // Normalized section headings for the top-level topics.
+                    categories: topics,
+                    // Split the glossary out of "Core Concepts" into its own section.
+                    regroup: [["core/glossary", "glossary"]],
+                    crossLinks: [
+                        {
+                            label: "Integrations",
+                            url: new URL("llms.txt", DocusaurusURL.Integrations).toString(),
+                        },
+                    ],
                 }),
+
+                ...redirectPlugins,
             ],
 
-            // Create build-time redirects for later use in HTTP responses,
-            // such as when navigating to a page for the first time.
-            //
-            // The existence of the _redirects file is also picked up by
-            // Netlify's deployment, which will redirect to the correct URL, even
-            // if the source is no longer present within the build output,
-            // such as when a page is removed, renamed, or moved.
-            [
-                "@docusaurus/plugin-client-redirects",
-                /** @type {RedirectsPluginOptions} */ ({
-                    createRedirects(existingPath) {
-                        const redirects = redirectsIndex.findAliases(existingPath);
+            //#endregion
 
-                        return redirects;
-                    },
+            //#region Theme
+
+            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+
+            themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
+                algolia: createAlgoliaConfig({
+                    externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
                 }),
-            ],
-        ],
 
-        //#endregion
-
-        //#region Theme
-
-        themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
-
-        themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
-            algolia: createAlgoliaConfig({
-                externalUrlRegex: /^(?:https?:\/\/)(?!docs\.goauthentik.io)/.source,
-            }),
-
-            image: "img/social.png",
-            navbarReplacements: {
-                DOCS_URL: "/",
-            },
-            navbar: {
-                logo: {
-                    alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
-                    href: "https://goauthentik.io/",
-                    target: "_self",
+                image: "img/social.png",
+                navbarReplacements: {
+                    DOCS_URL: "/",
                 },
-            },
-        }),
+                navbar: {
+                    logo: {
+                        alt: "authentik logo",
+                        src: "img/icon_left_brand.svg",
+                        href: "https://goauthentik.io/",
+                        target: "_self",
+                    },
+                },
+            }),
 
-        //#endregion
-    }),
+            //#endregion
+        }),
+    )
 );

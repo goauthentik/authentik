@@ -10,7 +10,7 @@ support_level: community
 >
 > -- https://www.runatlantis.io
 
-Atlantis does not provide native SSO for the web UI. Use authentik as a forward auth proxy in front of Atlantis, and allow the Atlantis webhook endpoint to remain reachable by your Git host.
+Atlantis does not provide native SSO for the web UI. This guide uses authentik's proxy provider as a forward auth layer in front of Atlantis, while keeping the Atlantis webhook endpoint reachable by your Git host.
 
 ## Preparation
 
@@ -23,11 +23,13 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+Before beginning, ensure that Atlantis is already deployed behind a reverse proxy that supports authentik forward auth.
+
 ## authentik configuration
 
-To support the integration of Atlantis with authentik, you need to create an application/provider pair in authentik. This guide assumes that Atlantis is already deployed behind a reverse proxy that supports authentik forward auth.
+To support the integration of Atlantis with authentik, you need to create an application/provider pair in authentik and assign it to a proxy outpost.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -36,7 +38,7 @@ To support the integration of Atlantis with authentik, you need to create an app
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **Mode** to **Forward auth (single application)**.
         - Set **External host** to `https://atlantis.company`.
-        - Under **Advanced protocol settings**, set **Unauthenticated Paths** to the following value:
+        - Under **Advanced protocol settings**, set **Unauthenticated Paths** to the following value to allow Git host webhooks to reach Atlantis:
 
             ```text
             ^/events$
@@ -62,13 +64,19 @@ Add the Atlantis application to a proxy outpost that will serve it:
 
 ## Atlantis configuration
 
-No SSO configuration is required in Atlantis.
+No SSO configuration is required in Atlantis. Configure Atlantis so that its public URL matches the protected external host:
+
+```env title=".env"
+ATLANTIS_ATLANTIS_URL=https://atlantis.company
+```
+
+If Atlantis web Basic Auth is enabled, disable it for a single authentik login prompt. Keep Basic Auth enabled only if you want users to complete both authentik authentication and a local Atlantis Basic Auth challenge.
 
 Configure your reverse proxy to use the authentik outpost as the forward auth endpoint for `https://atlantis.company`.
 
 Requests to `/outpost.goauthentik.io` must be routed to the authentik outpost. All other requests, including `/events`, must continue to be routed to Atlantis.
 
-Set your Git host webhook URL to `https://atlantis.company/events`. The `/events` endpoint is skipped by authentik so that Git host webhooks can reach Atlantis. Atlantis should still validate those webhook requests with its existing webhook secret or webhook authentication settings.
+Set your Git host webhook URL to `https://atlantis.company/events`. The `/events` endpoint is skipped by authentik so that Git host webhooks can reach Atlantis. Atlantis should still validate these webhook requests with its existing webhook secret or webhook authentication settings.
 
 ## Configuration verification
 
@@ -76,7 +84,8 @@ To verify the login flow, open Atlantis. You should be redirected to authentik b
 
 ## Resources
 
-- [Atlantis Docs - Introduction](https://www.runatlantis.io/guide)
+- [Atlantis Docs - Deployment](https://www.runatlantis.io/docs/deployment.html)
+- [Atlantis Docs - Server Configuration](https://www.runatlantis.io/docs/server-configuration)
+- [Atlantis Docs - Security](https://www.runatlantis.io/docs/security)
 - [Atlantis Docs - Configuring Webhooks](https://www.runatlantis.io/docs/configuring-webhooks.html)
 - [Atlantis Docs - Webhook Secrets](https://www.runatlantis.io/docs/webhook-secrets)
-- [Atlantis Docs - Deployment](https://www.runatlantis.io/docs/deployment.html)
