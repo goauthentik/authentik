@@ -52,7 +52,6 @@
         }
     },
     "imports": {
-        "#fonts/*.css": "./fonts/*.css",
         "#styles/*.css": "./src/styles/*.css",
         "#styles/*": "./src/styles/*.js",
         "#common/*": "./src/common/*.js",
@@ -102,6 +101,7 @@
         "@goauthentik/core": "workspace:*",
         "@goauthentik/esbuild-plugin-live-reload": "^2.0.3",
         "@goauthentik/eslint-config": "^2.0.3",
+        "@goauthentik/fonts": "link:../packages/fonts",
         "@goauthentik/prettier-config": "^3.5.0",
         "@goauthentik/tsconfig": "^1.0.9",
         "@hcaptcha/types": "^1.2.0",
@@ -205,9 +205,9 @@
         "@esbuild/linux-arm64": "^0.28.1",
         "@esbuild/linux-x64": "^0.28.1",
         "@goauthentik/prettier-config-dev": "link:../packages/prettier-config",
-        "@rollup/rollup-darwin-arm64": "^4.62.3",
-        "@rollup/rollup-linux-arm64-gnu": "^4.62.3",
-        "@rollup/rollup-linux-x64-gnu": "^4.62.3"
+        "@rollup/rollup-darwin-arm64": "^4.62.4",
+        "@rollup/rollup-linux-arm64-gnu": "^4.62.4",
+        "@rollup/rollup-linux-x64-gnu": "^4.62.4"
     },
     "wireit": {
         "build": {

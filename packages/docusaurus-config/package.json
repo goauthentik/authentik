@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {

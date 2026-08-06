@@ -626,9 +626,17 @@ class TokenParams:
 
     def __post_init_device_code(self, request: HttpRequest):
         device_code = request.POST.get("device_code", "")
-        code = DeviceToken.objects.filter(device_code=device_code, provider=self.provider).first()
+        # Look up including expired codes so an expired code can be told apart from an
+        # unknown one, see https://datatracker.ietf.org/doc/html/rfc8628#section-3.5
+        code = (
+            DeviceToken.objects.including_expired()
+            .filter(device_code=device_code, provider=self.provider)
+            .first()
+        )
         if not code:
             raise TokenError("invalid_grant")
+        if code.expires and code.is_expired:
+            raise DeviceCodeError("expired_token")
         self.device_code = code
 
         if SCOPE_BOUND_KEY in self.device_code.scope:
