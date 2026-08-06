@@ -39,4 +39,16 @@ export const authentikStyleframeOptions: StyleframeOptions = {
  */
 export const instance = styleframe(authentikStyleframeOptions);
 
-export const { variable, theme, ref, selector, atRule, keyframes, media, css, utility, modifier, recipe } = instance;
+export const {
+    variable,
+    theme,
+    ref,
+    selector,
+    atRule,
+    keyframes,
+    media,
+    css,
+    utility,
+    modifier,
+    recipe,
+} = instance;
