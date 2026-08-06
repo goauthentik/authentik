@@ -20,7 +20,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::warning Incus authorization
-By default, every user who authenticates through the configured OIDC provider has full access to Incus. Before allowing untrusted users to authenticate, configure Incus to authorize OIDC clients with OpenFGA or an authorization scriptlet.
+By default, every user who authenticates through the configured OIDC provider has full access to Incus. Before allowing untrusted users to authenticate, configure Incus to authorize OIDC clients with OpenFGA, which is the only authorization method that Incus supports for OIDC clients.
 :::
 
 :::info
@@ -51,21 +51,9 @@ To support the integration of Incus with authentik, you need to create an applic
 
 If users access Incus through a port other than `443`, include that port in both redirect URIs. For example, use `https://incus.company:8443/oidc/callback` and `https://incus.company:8443` when connecting directly to the Incus server on port `8443`.
 
-### Create and apply a device code flow
+### Apply a device code flow
 
-The Incus CLI uses the OAuth device authorization grant to authenticate users. If the active brand already has a device code flow configured, skip this section.
-
-1. Navigate to **Flows and Stages** > **Flows** and click **Create**.
-2. Configure the following settings:
-    - **Name**: enter a descriptive name, such as `Incus device code flow`.
-    - **Title**: enter a descriptive title, such as `Incus device code flow`.
-    - **Slug**: enter a slug, such as `incus-device-code-flow`.
-    - **Designation**: select **Stage Configuration**.
-    - **Authentication**: select **Require authentication**.
-3. Click **Create**.
-4. Navigate to **System** > **Brands** and edit the brand that serves `authentik.company`.
-5. Under **Default flows**, set **Device code flow** to the flow that you created.
-6. Click **Update**.
+The Incus CLI uses the OAuth device authorization grant, which requires a device code flow on the brand that serves `authentik.company`. This flow is set per brand and is shared by every application that uses this grant, so it is not specific to Incus. If the brand already has one, skip this section; otherwise follow [Create and apply a device code flow](/docs/add-secure-apps/providers/oauth2/device_code/#create-and-apply-a-device-code-flow).
 
 ## Incus configuration
 
