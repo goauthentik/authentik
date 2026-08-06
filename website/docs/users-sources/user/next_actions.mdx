@@ -12,12 +12,9 @@ The required actions are stored on the user in the `goauthentik.io/user/next-act
 
 When a login flow reaches the [User Login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md), authentik runs each listed flow in order within the login, and then completes the login. Each flow is removed from the attribute once the user completes it, so an action only runs once.
 
-Any flow can be used as an action, except flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.md). The built-in stage configuration flows cover the most common actions:
+Any flow can be used as an action, except flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.md). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.md) already cover changing the password (`default-password-change`) and setting up the various authenticator types (for example `default-authenticator-totp-setup`).
 
-- `default-password-change`: change the password
-- `default-authenticator-totp-setup`: set up an authenticator app
-- `default-authenticator-webauthn-setup`: register a passkey or security key
-- `default-authenticator-static-setup`: generate recovery codes
+For anything else, [create a flow](../../add-secure-apps/flows-stages/flow/index.md#create-a-flow) that walks the user through the action and use its slug. For example, a flow with a [Prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.md) followed by a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.md) can collect missing profile details, and a flow with a [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.md) can require the user to accept updated terms.
 
 If a listed flow doesn't exist or its policies deny the user, the login fails until the attribute is corrected or removed. On installations without a valid enterprise license the attribute is ignored.
 
