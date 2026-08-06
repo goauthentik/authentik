@@ -19,6 +19,8 @@ from authentik.common.saml.constants import (
     RSA_SHA256,
     RSA_SHA384,
     RSA_SHA512,
+    SAML_BINDING_POST,
+    SAML_BINDING_REDIRECT,
     SHA1,
     SHA256,
     SHA384,
@@ -49,6 +51,15 @@ class SAMLBindings(models.TextChoices):
 
     REDIRECT = "redirect"
     POST = "post"
+
+    @classmethod
+    def from_metadata_binding(cls, binding: str | None) -> SAMLBindings | None:
+        """Get the binding matching the `Binding` attribute `binding` of an endpoint in
+        SAML metadata, returns None for bindings authentik doesn't support."""
+        return {
+            SAML_BINDING_REDIRECT: cls.REDIRECT,
+            SAML_BINDING_POST: cls.POST,
+        }.get(binding)
 
 
 class SAMLLogoutMethods(models.TextChoices):

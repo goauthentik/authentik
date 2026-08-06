@@ -6,4 +6,5 @@ Yubikeys
 mycorp
 mocksaml
 VSCHAR
+PAOS
 pbms
