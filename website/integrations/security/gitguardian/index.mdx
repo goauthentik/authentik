@@ -5,6 +5,8 @@ support_level: community
 ---
 
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 ## What is GitGuardian?
 
@@ -27,11 +29,21 @@ This documentation lists only the settings that you need to change from their de
 GitGuardian SAML SSO can be configured by the Owner or any Manager of the workspace. GitGuardian supports Just-In-Time (JIT) provisioning for users who are authorized to access the authentik application. SCIM provisioning requires SAML SSO to be configured first.
 :::
 
-## authentik configuration
+## Integration configuration
 
-To support the integration of GitGuardian with authentik, you need to create property mappings and an application/provider pair in authentik. If you also want to provision GitGuardian users and teams from authentik, create the optional SCIM property mappings.
+To support the integration of GitGuardian with authentik, you need to create property mappings and an application/provider pair in authentik. Optionally, to provision GitGuardian users and teams from authentik, also create the SCIM property mappings and a SCIM provider.
 
-### Create property mappings
+<Tabs
+  defaultValue="saml"
+  values={[
+    { label: "SAML SSO", value: "saml" },
+    { label: "SCIM provisioning (optional)", value: "scim" },
+  ]}>
+  <TabItem value="saml">
+
+### authentik configuration
+
+#### Create property mappings
 
 GitGuardian expects SAML attributes named `first_name` and `last_name`.
 
@@ -57,7 +69,7 @@ GitGuardian expects SAML attributes named `first_name` and `last_name`.
         return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else ""
         ```
 
-### Create an application and provider
+#### Create an application and provider
 
 <SAMLProvider20265Warning />
 
@@ -76,14 +88,58 @@ GitGuardian expects SAML attributes named `first_name` and `last_name`.
 
 3. Click **Submit** to save the new application and provider.
 
-### Download the signing certificate
+#### Download the signing certificate
 
 1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
 2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file is required in the GitGuardian SSO setup flow.
 
-### Create SCIM property mappings _(optional)_
+### GitGuardian configuration
 
-GitGuardian SCIM provisioning expects email-based user identifiers. Make sure each authentik user that should be provisioned to GitGuardian has an email address.
+1. Log in to the GitGuardian dashboard as the workspace Owner or a Manager. For GitGuardian SaaS, use [https://dashboard.gitguardian.com/](https://dashboard.gitguardian.com/). For self-hosted GitGuardian, use `https://gitguardian.company`.
+2. Navigate to **Settings** > **Authentication**.
+3. Under **SAML**, click **Configure**.
+4. Copy the following values because they are required in the next section:
+    - **ACS URL**
+    - **SP Entity ID**
+5. Keep the GitGuardian SAML setup page open.
+
+#### Update the authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the provider that you created earlier.
+3. Under **Protocol settings**, set the following values:
+    - **ACS URL**: the **ACS URL** value from GitGuardian.
+    - **Audience**: the **SP Entity ID** value from GitGuardian.
+4. Click **Update** to save the provider.
+
+#### Register the identity provider
+
+1. Return to the GitGuardian SAML setup page.
+2. Configure the identity provider fields with the following values:
+    - **Entity Id**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Single Sign On Url**: `https://authentik.company/application/saml/<application_slug>/`
+    - **X509 certificate**: upload or paste the signing certificate that you downloaded from authentik.
+    - **I have mapped the attributes first_name and last_name in my IdP**: select this option.
+3. Submit the form to finish the SAML integration.
+
+#### Configure access controls _(optional)_
+
+GitGuardian can create users on their first SAML login with JIT provisioning. To control who can join the workspace, configure an authentik binding for this application so only authorized users can access it.
+
+After SAML works, GitGuardian SaaS can also reserve your email domain so users are automatically redirected to SSO from the standard login page and cannot create separate workspaces with that email domain. Domain reservation is outside the scope of this integration guide and is not available for self-hosted GitGuardian.
+
+### Configuration verification
+
+To confirm that authentik is properly configured with GitGuardian, log out of GitGuardian and open the GitGuardian SSO login URL. You should be redirected to authentik and, after authenticating, returned to GitGuardian. For self-hosted GitGuardian, use the SSO login URL shown in your self-hosted dashboard.
+
+  </TabItem>
+  <TabItem value="scim">
+
+Use SCIM provisioning to create, update, deactivate, and delete GitGuardian users and teams from authentik. Configure SAML SSO first, as described in the **SAML SSO** tab.
+
+GitGuardian SCIM provisioning uses email addresses as user identifiers, so only users with emails can be provisioned. Ensure every authentik user you plan to provision to GitGuardian has a valid email address configured.
+
+### Create SCIM property mappings in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -133,46 +189,7 @@ GitGuardian SCIM provisioning expects email-based user identifiers. Make sure ea
         }
         ```
 
-## GitGuardian configuration
-
-1. Log in to the GitGuardian dashboard as the workspace Owner or a Manager. For GitGuardian SaaS, use [https://dashboard.gitguardian.com/](https://dashboard.gitguardian.com/). For self-hosted GitGuardian, use `https://gitguardian.company`.
-2. Navigate to **Settings** > **Authentication**.
-3. Under **SAML**, click **Configure**.
-4. Copy the following values because they are required in the next section:
-    - **ACS URL**
-    - **SP Entity ID**
-5. Keep the GitGuardian SAML setup page open.
-
-### Update the authentik provider
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and open the provider that you created earlier.
-3. Under **Protocol settings**, set the following values:
-    - **ACS URL**: the **ACS URL** value from GitGuardian.
-    - **Audience**: the **SP Entity ID** value from GitGuardian.
-4. Click **Update** to save the provider.
-
-### Register the identity provider
-
-1. Return to the GitGuardian SAML setup page.
-2. Configure the identity provider fields with the following values:
-    - **Entity Id**: `https://authentik.company/application/saml/<application_slug>/metadata/`
-    - **Single Sign On Url**: `https://authentik.company/application/saml/<application_slug>/`
-    - **X509 certificate**: upload or paste the signing certificate that you downloaded from authentik.
-    - **I have mapped the attributes first_name and last_name in my IdP**: select this option.
-3. Submit the form to finish the SAML integration.
-
-### Configure access controls _(optional)_
-
-GitGuardian can create users on their first SAML login with JIT provisioning. To control who can join the workspace, configure an authentik binding for this application so only authorized users can access it.
-
-After SAML works, GitGuardian SaaS can also reserve your email domain so users are automatically redirected to SSO from the standard login page and cannot create separate workspaces with that email domain. Domain reservation is outside the scope of this integration guide and is not available for self-hosted GitGuardian.
-
-### Configure SCIM provisioning _(optional)_
-
-Use SCIM provisioning to create, update, deactivate, and delete GitGuardian users and teams from authentik.
-
-#### Enable SCIM in GitGuardian
+### Enable SCIM in GitGuardian
 
 1. In GitGuardian, navigate to **API** > **Service accounts**.
 2. Click **Create service account**.
@@ -183,7 +200,7 @@ Use SCIM provisioning to create, update, deactivate, and delete GitGuardian user
 5. Navigate to **Settings** > **Authentication**.
 6. Under **SCIM**, enable SCIM integration.
 
-#### Create the SCIM provider in authentik
+### Create the SCIM provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **Create**.
@@ -204,11 +221,12 @@ Use SCIM provisioning to create, update, deactivate, and delete GitGuardian user
 
 Users that should be provisioned to GitGuardian must be bound to the GitGuardian application in authentik. If no group filters are selected on the SCIM provider, authentik synchronizes all groups.
 
-## Configuration verification
+### Configuration verification
 
-To confirm that authentik is properly configured with GitGuardian, log out of GitGuardian and open the GitGuardian SSO login URL. You should be redirected to authentik and, after authenticating, returned to GitGuardian. For self-hosted GitGuardian, use the SSO login URL shown in your self-hosted dashboard.
+To confirm that SCIM provisioning is working, assign a test user to the GitGuardian application in authentik. Open the SCIM provider in authentik, click **Run sync again**, and confirm that the user is provisioned in GitGuardian.
 
-If you configured SCIM provisioning, assign a test user to the GitGuardian application in authentik. Open the SCIM provider in authentik, click **Run sync again**, and confirm that the user is provisioned in GitGuardian.
+  </TabItem>
+</Tabs>
 
 ## Resources
 
