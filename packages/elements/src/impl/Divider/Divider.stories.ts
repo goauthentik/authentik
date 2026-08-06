@@ -72,7 +72,9 @@ export const Basic: Story = {
     render: (args) => html`
         <div style="padding: 2rem;">
             <p>Content before the divider</p>
-            <ak-divider variant=${ifDefined(args.variant)} orientation=${ifDefined(args.orientation)}
+            <ak-divider
+                variant=${ifDefined(args.variant)}
+                orientation=${ifDefined(args.orientation)}
                 >${args.content ? html`<span>${args.content}</span>` : nothing}</ak-divider
             >
             <p>Content after the divider</p>
@@ -89,7 +91,9 @@ export const WithText: Story = {
     render: (args) => html`
         <div style="padding: 2rem;">
             <p>Option One</p>
-            <ak-divider variant=${ifDefined(args.variant)} orientation=${ifDefined(args.orientation)}
+            <ak-divider
+                variant=${ifDefined(args.variant)}
+                orientation=${ifDefined(args.orientation)}
                 >${args.content}</ak-divider
             >
             <p>Option Two</p>
@@ -103,7 +107,10 @@ export const WithHTML: Story = {
     render: (args) => html`
         <div style="padding: 2rem;">
             <p>Section One</p>
-            <ak-divider variant=${ifDefined(args.variant)} orientation=${ifDefined(args.orientation)}>
+            <ak-divider
+                variant=${ifDefined(args.variant)}
+                orientation=${ifDefined(args.orientation)}
+            >
                 <span style="display: inline-flex; align-items: center;">
                     <span style="margin-right: 0.5rem;">●</span> Section Break
                 </span>
@@ -141,11 +148,15 @@ export const Vertical: Story = {
     args: {
         orientation: "vertical",
     },
-    parameters: describe("Divider with vertical orientation, useful for separating inline content."),
+    parameters: describe(
+        "Divider with vertical orientation, useful for separating inline content.",
+    ),
     render: (args) => html`
         <div style="padding: 2rem; display: flex; align-items: center; height: 100px;">
             <span>Left Content</span>
-            <ak-divider variant=${ifDefined(args.variant)} orientation="vertical">${args.content}</ak-divider>
+            <ak-divider variant=${ifDefined(args.variant)} orientation="vertical"
+                >${args.content}</ak-divider
+            >
             <span>Right Content</span>
         </div>
     `,
@@ -155,11 +166,16 @@ export const VerticalWithContent: Story = {
     args: {
         orientation: "vertical",
     },
-    parameters: describe("Divider with vertical orientation, useful for separating inline content."),
+    parameters: describe(
+        "Divider with vertical orientation, useful for separating inline content.",
+    ),
     render: (args) => html`
         <div style="padding: 2rem; display: flex; align-items: center; height: 100px;">
             <span>That's supposed to</span>
-            <ak-divider variant=${ifDefined(args.variant)} orientation="vertical" style="margin: 0 0.5rem"
+            <ak-divider
+                variant=${ifDefined(args.variant)}
+                orientation="vertical"
+                style="margin: 0 0.5rem"
                 ><span style="color: black">𝄞</span></ak-divider
             >
             <span>be a clef symbol.</span>
@@ -169,7 +185,9 @@ export const VerticalWithContent: Story = {
 
 // Helper function usage
 export const HelperFunction: Story = {
-    parameters: describe("Using the `akDivider` helper function to create dividers programmatically."),
+    parameters: describe(
+        "Using the `akDivider` helper function to create dividers programmatically.",
+    ),
     render: () => html`
         <div style="padding: 2rem; display: flex; flex-direction: column; gap: 2rem;">
             <div>
@@ -180,9 +198,9 @@ export const HelperFunction: Story = {
             <div>
                 <p>HTML stuff with helper:</p>
                 ${akDivider({
-                    content: html`<code>Some</code>&nbsp;<strong style="color: rebeccapurple">HTML</strong>&nbsp;<em
-                            >stuff</em
-                        >`,
+                    content: html`<code>Some</code>&nbsp;<strong style="color: rebeccapurple"
+                            >HTML</strong
+                        >&nbsp;<em>stuff</em>`,
                     variant: "strong",
                 })}
             </div>

@@ -53,7 +53,7 @@ export class Divider extends LitElement {
         this.hasContent = nodes.some(
             (n) =>
                 n.nodeType === Node.ELEMENT_NODE ||
-                (n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim().length > 0)
+                (n.nodeType === Node.TEXT_NODE && (n.textContent ?? "").trim().length > 0),
         );
     };
 
@@ -61,7 +61,9 @@ export class Divider extends LitElement {
         const contentClass = classList([this.hasContent && "has-content"]);
         return html`<div part="divider">
             <span part="line start"></span>
-            <span part="content" class=${contentClass}><slot @slotchange=${this.onSlotChange}></slot></span>
+            <span part="content" class=${contentClass}
+                ><slot @slotchange=${this.onSlotChange}></slot
+            ></span>
             <span part="line end"></span>
         </div> `;
     }
@@ -95,7 +97,10 @@ export function akDivider(options: DividerProps = {}) {
     const message = typeof content === "string" ? html`<span>${content.trim()}</span>` : content;
 
     return html`
-        <ak-divider ${spread(rest)} variant=${ifDefined(variant)} orientation=${ifDefined(orientation)}
+        <ak-divider
+            ${spread(rest)}
+            variant=${ifDefined(variant)}
+            orientation=${ifDefined(orientation)}
             >${message}</ak-divider
         >
     `;

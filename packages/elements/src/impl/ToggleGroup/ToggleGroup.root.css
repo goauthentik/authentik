@@ -12,14 +12,16 @@
         var(--ak-global--font-size--md) * var(--ak-global--line-height--md)
     );
     --pf-c-toggle-group__button--Color: var(--ak-global--color--primary);
-        --pf-c-toggle-group__button--BackgroundColor: var(--ak-global--background-color--primary);
+    --pf-c-toggle-group__button--BackgroundColor: var(--ak-global--background-color--primary);
     --pf-c-toggle-group__button--ZIndex: auto;
     --pf-c-toggle-group__button--hover--BackgroundColor: var(--ak-global--BackgroundColor--200);
     --pf-c-toggle-group__button--hover--ZIndex: var(--ak-global--ZIndex--xs);
     --pf-c-toggle-group__button--hover--before--BorderColor: var(--ak-global--BorderColor--200);
     --pf-c-toggle-group__button--focus--BackgroundColor: var(--ak-global--color--secondary);
     --pf-c-toggle-group__button--focus--ZIndex: var(--ak-global--ZIndex--xs);
-    --pf-c-toggle-group__button--focus--before--BorderColor: var(--ak-global--color--border--strong);
+    --pf-c-toggle-group__button--focus--before--BorderColor: var(
+        --ak-global--color--border--strong
+    );
     --pf-c-toggle-group__button--disabled--BackgroundColor: var(--ak-global--color--disabled);
     --pf-c-toggle-group__button--disabled--Color: var(--ak-global--color--disabled);
     --pf-c-toggle-group__button--before--BorderWidth: var(--ak-global--border-width--sm);

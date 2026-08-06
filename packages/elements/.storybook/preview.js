@@ -1,5 +1,5 @@
 /**
- * @file Storybook Preview 
+ * @file Storybook Preview
  * @import {Preview} from "@storybook/web-components-vite";
  */
 

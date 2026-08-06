@@ -95,7 +95,9 @@ export class Progress extends LitElement {
     }
 
     protected get renderedValue() {
-        return this.getSlotted("status") ? html`<slot name="status"></slot>` : this.displayValue(this.value);
+        return this.getSlotted("status")
+            ? html`<slot name="status"></slot>`
+            : this.displayValue(this.value);
     }
 
     protected get percentage() {
@@ -132,7 +134,9 @@ export class Progress extends LitElement {
             ${status}
             <div part="bar">
                 <div part="indicator" style=${styleMap(width)}>
-                    ${this.variant === "inside" ? html`<span part="measure">${this.renderedValue}</span>` : nothing}
+                    ${this.variant === "inside"
+                        ? html`<span part="measure">${this.renderedValue}</span>`
+                        : nothing}
                 </div>
             </div>
         </div>`;
@@ -140,7 +144,9 @@ export class Progress extends LitElement {
 }
 
 export type ProgressProps = ElementRest &
-    Partial<Pick<Progress, "variant" | "severity" | "min" | "max" | "value" | "oneWay" | "displayValue">> & {
+    Partial<
+        Pick<Progress, "variant" | "severity" | "min" | "max" | "value" | "oneWay" | "displayValue">
+    > & {
         size?: ProgressSize;
         label?: string | TemplateResult;
     };
@@ -153,7 +159,8 @@ export type ProgressProps = ElementRest &
  * @see {@link Progress} - The underlying web component
  */
 export function akProgress(options: ProgressProps) {
-    const { variant, size, severity, min, max, value, oneWay, displayValue, label, ...rest } = options;
+    const { variant, size, severity, min, max, value, oneWay, displayValue, label, ...rest } =
+        options;
 
     // Route around a bug in lit-analyzer about passing undefined to a property that has a default.
     const others = {

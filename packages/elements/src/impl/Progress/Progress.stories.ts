@@ -1,6 +1,12 @@
 import "#elements/Progress.js";
 
-import { akProgress, Progress, ProgressProps, ProgressSeverity, ProgressSize } from "#elements/Progress.js";
+import {
+    akProgress,
+    Progress,
+    ProgressProps,
+    ProgressSeverity,
+    ProgressSize,
+} from "#elements/Progress.js";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -98,15 +104,21 @@ export const Variants: Story = {
             </div>
             <div>
                 <h4>Top (default)</h4>
-                <ak-progress variant="top" value="65"><span slot="label">Loading data...</span></ak-progress>
+                <ak-progress variant="top" value="65"
+                    ><span slot="label">Loading data...</span></ak-progress
+                >
             </div>
             <div>
                 <h4>Inside</h4>
-                <ak-progress variant="inside" value="80"><span slot="label">Processing files...</span></ak-progress>
+                <ak-progress variant="inside" value="80"
+                    ><span slot="label">Processing files...</span></ak-progress
+                >
             </div>
             <div>
                 <h4>Outside</h4>
-                <ak-progress variant="outside" value="30"><span slot="label">Uploading...</span></ak-progress>
+                <ak-progress variant="outside" value="30"
+                    ><span slot="label">Uploading...</span></ak-progress
+                >
             </div>
             <div>
                 <h4>Indeterminate And Tiny</h4>
@@ -162,7 +174,9 @@ export const Sizes: Story = {
         <div style="display: flex; flex-direction: column; gap: 2rem;">
             <div>
                 <h4>Small</h4>
-                <ak-progress size="sm" value="60"><span slot="label">Compact progress</span></ak-progress>
+                <ak-progress size="sm" value="60"
+                    ><span slot="label">Compact progress</span></ak-progress
+                >
             </div>
             <div>
                 <h4>Default</h4>
@@ -170,7 +184,9 @@ export const Sizes: Story = {
             </div>
             <div>
                 <h4>Large</h4>
-                <ak-progress size="lg" value="60"><span slot="label">Prominent progress</span></ak-progress>
+                <ak-progress size="lg" value="60"
+                    ><span slot="label">Prominent progress</span></ak-progress
+                >
             </div>
         </div>
     `,
@@ -210,13 +226,23 @@ export const CustomRange: Story = {
         <div style="display: flex; flex-direction: column; gap: 2rem;">
             <div>
                 <h4>Temperature range (°F)</h4>
-                <ak-progress min="32" max="212" value="72" .displayValue=${(value: number) => `${value}°F`}>
+                <ak-progress
+                    min="32"
+                    max="212"
+                    value="72"
+                    .displayValue=${(value: number) => `${value}°F`}
+                >
                     <span slot="label">Current temperature (between freezing and boiling)</span>
                 </ak-progress>
             </div>
             <div>
                 <h4>Score range</h4>
-                <ak-progress min="0" max="500" value="350" .displayValue=${(value: number) => `${value}/500 points`}>
+                <ak-progress
+                    min="0"
+                    max="500"
+                    value="350"
+                    .displayValue=${(value: number) => `${value}/500 points`}
+                >
                     <span slot="label">Quiz score</span>
                 </ak-progress>
             </div>
@@ -256,7 +282,9 @@ export const AnimatedProgress: Story = {
         }, 100);
 
         return html`
-            <ak-progress id="animated-progress" value="0"> <label slot="label">Processing... </label></ak-progress>
+            <ak-progress id="animated-progress" value="0">
+                <label slot="label">Processing... </label></ak-progress
+            >
         `;
     },
 };
@@ -278,7 +306,9 @@ export const EdgeCases: Story = {
             </div>
             <div>
                 <h4>Complete</h4>
-                <ak-progress value="100" severity="success"><label slot="label"> Completed</label> </ak-progress>
+                <ak-progress value="100" severity="success"
+                    ><label slot="label"> Completed</label>
+                </ak-progress>
             </div>
             <div>
                 <h4>Over maximum (should clamp to 100%)</h4>
@@ -380,7 +410,9 @@ export const InteractiveControls: Story = {
                         <button type="button" @click=${() => handleDecrement("normal-progress")}>
                             Decrement (-5%)
                         </button>
-                        <button type="button" @click=${() => handleReset("normal-progress")}>Reset</button>
+                        <button type="button" @click=${() => handleReset("normal-progress")}>
+                            Reset
+                        </button>
                     </div>
                 </div>
 
@@ -401,12 +433,14 @@ export const InteractiveControls: Story = {
                         >
                             Decrement (-5%)
                         </button>
-                        <button type="button" @click=${() => handleReset("oneway-progress")}>Reset</button>
+                        <button type="button" @click=${() => handleReset("oneway-progress")}>
+                            Reset
+                        </button>
                     </div>
                     <p style="font-size: 0.875rem; color: #666; margin-top: 0.5rem;">
                         <em
-                            >Note: The decrement button will modify the HTML attribute but the visual progress won't
-                            decrease due to one-way protection.</em
+                            >Note: The decrement button will modify the HTML attribute but the
+                            visual progress won't decrease due to one-way protection.</em
                         >
                     </p>
                 </div>
@@ -471,7 +505,9 @@ export const BuilderDynamic: Story = {
                         severity: task.status as ProgressSeverity,
                         variant: "top",
                         label: html`
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center;"
+                            >
                                 <span>${task.name}</span>
                                 <small style="opacity: 0.7;">
                                     ${task.progress === 0
@@ -482,7 +518,7 @@ export const BuilderDynamic: Story = {
                                 </small>
                             </div>
                         `,
-                    })
+                    }),
                 )}
             </div>
         `;
@@ -550,7 +586,10 @@ export const BuilderReactive: Story = {
             if (!container) return;
 
             // Simulate fluctuating normal progress
-            normalProgress = Math.max(0, Math.min(100, normalProgress + (Math.random() - 0.5) * 20));
+            normalProgress = Math.max(
+                0,
+                Math.min(100, normalProgress + (Math.random() - 0.5) * 20),
+            );
 
             // Simulate only increasing one-way progress
             oneWayProgress = Math.min(100, oneWayProgress + Math.random() * 5);
@@ -626,18 +665,24 @@ export const BuilderComposition: Story = {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
             <div>
                 <h4>Dashboard Card Style</h4>
-                <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; background: #f9f9f9;">
+                <div
+                    style="border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; background: #f9f9f9;"
+                >
                     ${akProgress({
                         variant: "none",
                         value: 73,
                         label: html`
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <div
+                                style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;"
+                            >
                                 <span style="font-weight: 500;">Server Load</span>
                                 <span style="font-size: 0.875rem; color: #666;">73%</span>
                             </div>
                         `,
                     })}
-                    <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #888;">Last updated: 2 minutes ago</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.75rem; color: #888;">
+                        Last updated: 2 minutes ago
+                    </div>
                 </div>
             </div>
 

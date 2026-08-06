@@ -79,7 +79,7 @@ export class ToggleGroup extends LitElement {
                 option.getAttribute("value") ?? "",
                 option.textContent ?? "",
                 { disabled: option.hasAttribute("disabled") },
-            ]
+            ],
         );
     }
 
@@ -106,7 +106,7 @@ export class ToggleGroup extends LitElement {
                         >
                             <span part="label">${label}</span>
                         </button>
-                    </div> `
+                    </div> `,
             )}
         </div>`;
     }
