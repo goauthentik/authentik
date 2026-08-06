@@ -4,20 +4,29 @@ import "#elements/forms/SearchSelect/index";
 import HostStyles from "./ak-file-search-input.css";
 
 import { aki } from "#common/api/client";
-import { docLink, globalAK } from "#common/global";
+import { PFSize } from "#common/enums";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { renderModal } from "#elements/dialogs";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
+import SearchSelect from "#elements/forms/SearchSelect/index";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
 
-import { AdminApi, FileList, UsageEnum } from "@goauthentik/api";
+import { FileUploadForm } from "#admin/files/FileUploadForm";
+
+import { ConsoleLogger } from "#logger/browser";
+
+import { AdminApi, AdminFileCreateRequest, FileList, UsageEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
@@ -39,6 +48,8 @@ export class AKFileSearchInput extends AKElement {
     protected createRenderRoot() {
         return this;
     }
+
+    protected logger = ConsoleLogger.prefix(`model-form/${this.localName}`);
 
     @property({ type: String })
     public name: string | null = null;
@@ -64,15 +75,65 @@ export class AKFileSearchInput extends AKElement {
     @property({ type: String, reflect: false })
     public fieldID?: string = IDGenerator.elementID().toString();
 
+    protected fileSearchRef = createRef<SearchSelect>();
+
+    protected openFileUploadModal = (invocationEvent?: Event) => {
+        invocationEvent?.stopPropagation();
+
+        const fileUploadForm = new FileUploadForm();
+
+        let createdFile: AdminFileCreateRequest | null = null;
+
+        fileUploadForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
+            createdFile = (event as AKFormSubmittedEvent<AdminFileCreateRequest>).response;
+        });
+
+        return renderModal(fileUploadForm, {
+            invokerElement:
+                invocationEvent?.target instanceof HTMLElement ? invocationEvent.target : this,
+            size: PFSize.Medium,
+            onDispose: (disposeEvent) => {
+                const { target } = disposeEvent || {};
+
+                if (!(target instanceof HTMLDialogElement) || target.returnValue !== "submitted") {
+                    return;
+                }
+
+                const fileSearch = this.fileSearchRef.value;
+
+                if (!fileSearch) {
+                    this.logger.error(
+                        "Failed to refresh file search after creating new file. No file search found.",
+                    );
+
+                    return;
+                }
+
+                // Refresh the file search and select the newly created file.
+                if (!createdFile) {
+                    this.logger.error(
+                        "File upload form closed as submitted, but no created file was captured.",
+                    );
+
+                    return;
+                }
+
+                this.value = createdFile.name ?? "";
+
+                return fileSearch.updateData();
+            },
+        });
+    };
+
     #selected = (item: FileList) => {
         return this.value === item.name;
     };
 
-    #changeListener(event: CustomEvent<{ value: FileList | null }>) {
+    protected changeListener = (event: CustomEvent<{ value: FileList | null }>) => {
         this.value = event.detail.value?.name ?? "";
-    }
+    };
 
-    async #fetch(query?: string): Promise<FileList[]> {
+    protected refresh = async (query?: string): Promise<FileList[]> => {
         const results = await aki(AdminApi).adminFileList({
             usage: this.usage,
             ...(query ? { search: query.toLocaleLowerCase() } : {}),
@@ -92,12 +153,12 @@ export class AKFileSearchInput extends AKElement {
         }
 
         return results;
-    }
+    };
 
-    render() {
+    protected override render(): SlottedTemplateResult {
         const uploadLabel = msg("Upload file", { id: "file-picker.upload-link.label" });
 
-        return html` <ak-form-element-horizontal name=${ifDefined(this.name ?? undefined)}>
+        return html`<ak-form-element-horizontal name=${ifPresent(this.name)}>
             ${AKLabel(
                 {
                     slot: "label",
@@ -110,9 +171,10 @@ export class AKFileSearchInput extends AKElement {
 
             <div class="pf-c-input-group">
                 <ak-search-select
+                    ${ref(this.fileSearchRef)}
                     class="ak-file-search-input__select"
                     .fieldID=${this.fieldID}
-                    .fetchObjects=${this.#fetch.bind(this)}
+                    .fetchObjects=${this.refresh.bind(this)}
                     .renderElement=${renderElement}
                     .value=${renderValue}
                     .selected=${this.#selected}
@@ -121,19 +183,19 @@ export class AKFileSearchInput extends AKElement {
                     })}
                     ?blankable=${this.blankable}
                     creatable
-                    @ak-change=${this.#changeListener}
-                >
-                </ak-search-select>
-                <a
+                    @ak-change=${this.changeListener}
+                    action-label=${msg("Upload a file", { id: "file-picker.upload-link.label" })}
+                    @ak-search-select-action=${this.openFileUploadModal}
+                ></ak-search-select>
+                <button
+                    @click=${this.openFileUploadModal}
+                    type="button"
                     class="pf-c-button pf-m-control"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href=${`${globalAK().api.base}if/admin/${paramURL("/files", { upload: true })}`}
                     aria-label=${uploadLabel}
                     title=${uploadLabel}
                 >
                     <i class="fas fa-upload" aria-hidden="true"></i>
-                </a>
+                </button>
             </div>
             <p class="pf-c-form__helper-text">
                 ${this.help
