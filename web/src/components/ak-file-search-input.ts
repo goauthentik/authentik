@@ -184,7 +184,7 @@ export class AKFileSearchInput extends AKElement {
                     ?blankable=${this.blankable}
                     creatable
                     @ak-change=${this.changeListener}
-                    action-label=${msg("Upload a file", { id: "file-picker.upload-link.label" })}
+                    action-label=${uploadLabel}
                     @ak-search-select-action=${this.openFileUploadModal}
                 ></ak-search-select>
                 <button
