@@ -511,6 +511,16 @@ class TestUserLoginNextActions(FlowTestCase):
         self.user.refresh_from_db()
         self.assertNotIn(USER_ATTRIBUTE_NEXT_ACTIONS, self.user.attributes)
         self.assertTrue(AuthenticatedSession.objects.filter(user=self.user).exists())
+        event = Event.objects.filter(action=EventAction.NEXT_ACTION_COMPLETED).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["flow_slug"], action.slug)
+        self.assertEqual(event.user, get_user(self.user))
+        self.assertFalse(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model__model_name="user",
+            ).exists()
+        )
 
     @enterprise_test()
     def test_action_as_string(self):

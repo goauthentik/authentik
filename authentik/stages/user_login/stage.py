@@ -20,6 +20,7 @@ from authentik.core.models import (
 )
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
+from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
@@ -82,7 +83,11 @@ class NextActionDoneStageView(StageView):
                 user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
         elif value == slug:
             user.attributes.pop(USER_ATTRIBUTE_NEXT_ACTIONS, None)
-        user.save(update_fields=["attributes"])
+        with audit_ignore():
+            user.save(update_fields=["attributes"])
+        Event.new(EventAction.NEXT_ACTION_COMPLETED, flow_slug=slug).from_http(
+            self.request, user=user
+        )
         return self.executor.stage_ok()
 
 
