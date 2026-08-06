@@ -13,6 +13,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // checks if the BskyAuthenticationChallenge type satisfies the MappedNullable interface at compile time
@@ -23,6 +24,7 @@ type BskyAuthenticationChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Slug                 string                    `json:"slug"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -32,10 +34,11 @@ type _BskyAuthenticationChallenge BskyAuthenticationChallenge
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBskyAuthenticationChallenge() *BskyAuthenticationChallenge {
+func NewBskyAuthenticationChallenge(slug string) *BskyAuthenticationChallenge {
 	this := BskyAuthenticationChallenge{}
 	var component string = "ak-source-bsky"
 	this.Component = &component
+	this.Slug = slug
 	return &this
 }
 
@@ -145,6 +148,30 @@ func (o *BskyAuthenticationChallenge) SetResponseErrors(v map[string][]ErrorDeta
 	o.ResponseErrors = &v
 }
 
+// GetSlug returns the Slug field value
+func (o *BskyAuthenticationChallenge) GetSlug() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Slug
+}
+
+// GetSlugOk returns a tuple with the Slug field value
+// and a boolean to check if the value has been set.
+func (o *BskyAuthenticationChallenge) GetSlugOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Slug, true
+}
+
+// SetSlug sets field value
+func (o *BskyAuthenticationChallenge) SetSlug(v string) {
+	o.Slug = v
+}
+
 func (o BskyAuthenticationChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -164,6 +191,7 @@ func (o BskyAuthenticationChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	toSerialize["slug"] = o.Slug
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -173,6 +201,27 @@ func (o BskyAuthenticationChallenge) ToMap() (map[string]interface{}, error) {
 }
 
 func (o *BskyAuthenticationChallenge) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"slug",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
 	varBskyAuthenticationChallenge := _BskyAuthenticationChallenge{}
 
 	err = json.Unmarshal(data, &varBskyAuthenticationChallenge)
@@ -189,6 +238,7 @@ func (o *BskyAuthenticationChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "slug")
 		o.AdditionalProperties = additionalProperties
 	}
 

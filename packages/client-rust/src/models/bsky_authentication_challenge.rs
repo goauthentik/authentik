@@ -19,15 +19,18 @@ pub struct BskyAuthenticationChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
+    #[serde(rename = "slug")]
+    pub slug: String,
 }
 
 impl BskyAuthenticationChallenge {
     /// Challenge shown to the user in identification stage
-    pub fn new() -> BskyAuthenticationChallenge {
+    pub fn new(slug: String) -> BskyAuthenticationChallenge {
         BskyAuthenticationChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
+            slug,
         }
     }
 }

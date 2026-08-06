@@ -143,7 +143,7 @@ export interface BskySource {
      * @type {string}
      * @memberof BskySource
      */
-    readonly iconUrl: string;
+    readonly iconUrl: string | null;
     /**
      *
      * @type {ThemedUrls}

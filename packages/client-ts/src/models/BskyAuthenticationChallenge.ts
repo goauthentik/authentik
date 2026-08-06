@@ -40,6 +40,12 @@ export interface BskyAuthenticationChallenge {
      * @memberof BskyAuthenticationChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {string}
+     * @memberof BskyAuthenticationChallenge
+     */
+    slug: string;
 }
 
 /**
@@ -48,6 +54,7 @@ export interface BskyAuthenticationChallenge {
 export function instanceOfBskyAuthenticationChallenge(
     value: object,
 ): value is BskyAuthenticationChallenge {
+    if (!("slug" in value) || value["slug"] === undefined) return false;
     return true;
 }
 
@@ -67,6 +74,7 @@ export function BskyAuthenticationChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        slug: json["slug"],
     };
 }
 
@@ -86,5 +94,6 @@ export function BskyAuthenticationChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        slug: value["slug"],
     };
 }

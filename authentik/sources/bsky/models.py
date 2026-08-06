@@ -24,6 +24,7 @@ from authentik.stages.identification.stage import LoginChallengeMixin
 class BskyAuthenticationChallenge(LoginChallengeMixin, Challenge):
     """Challenge shown to the user in identification stage"""
 
+    slug = CharField()
     component = CharField(default="ak-source-bsky")
 
 
@@ -35,7 +36,7 @@ class BskyAuthenticationChallengeResult(ChallengeResponse):
 
 
 class BskySource(Source):
-    """Authenticate against bluesky"""
+    """Social Login with Bluesky"""
 
     signing_key = models.TextField(default=generate_bsky_signing_key)
     scope = models.TextField(default="atproto transition:generic")
@@ -91,14 +92,17 @@ class BskySource(Source):
         return UserSettingSerializer(
             data={
                 "title": self.name,
-                "component": "ak-user-settings-bsky",
+                "component": "ak-user-settings-source-bsky",
+                "configure_url": reverse(
+                    "authentik_sources_bsky:oauth-client-login", kwargs={"source_slug": self.slug}
+                ),
                 "icon_url": self.icon_url,
             }
         )
 
     class Meta:
-        verbose_name = _("Bluesky Source")
-        verbose_name_plural = _("Bluesky Sources")
+        verbose_name = _("Bluesky OAuth Source")
+        verbose_name_plural = _("Bluesky OAuth Sources")
 
 
 class BskySourcePropertyMapping(PropertyMapping):

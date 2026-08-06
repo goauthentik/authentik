@@ -22,7 +22,7 @@ class BskySourceFlowManager(SourceFlowManager):
     user_connection_type = UserBskySourceConnection
     group_connection_type = GroupBskySourceConnection
 
-    def update_user_connection( # type: ignore[override]
+    def update_user_connection(  # type: ignore[override]
         self,
         connection: UserBskySourceConnection,
         access_token: str | None = None,

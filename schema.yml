@@ -38874,6 +38874,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        slug:
+          type: string
+      required:
+      - slug
     BskyAuthenticationChallengeResultRequest:
       type: object
       description: Pseudo class for bsky response
@@ -38967,6 +38971,7 @@ components:
           type: string
         icon_url:
           type: string
+          nullable: true
           readOnly: true
         icon_themed_urls:
           allOf:

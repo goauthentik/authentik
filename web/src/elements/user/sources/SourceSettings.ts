@@ -1,4 +1,5 @@
 import "#elements/EmptyState";
+import "#elements/user/sources/SourceSettingsBsky";
 import "#elements/user/sources/SourceSettingsOAuth";
 import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
@@ -103,6 +104,13 @@ export class UserSourceSettingsPage extends AKElement {
         const connectionPk = connection?.pk ?? -1;
 
         switch (source.component) {
+            case "ak-user-settings-source-bsky":
+                return html`<ak-user-settings-source-bsky
+                    .source=${source}
+                    connection-pk=${connectionPk}
+                    ?allow-configuration=${allowConfiguration}
+                >
+                </ak-user-settings-source-bsky>`;
             case "ak-user-settings-source-oauth":
                 return html`<ak-user-settings-source-oauth
                     .source=${source}
