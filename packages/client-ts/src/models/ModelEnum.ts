@@ -24,6 +24,7 @@ export const ModelEnum = {
     AuthentikCoreApplicationentitlement: "authentik_core.applicationentitlement",
     AuthentikCoreToken: "authentik_core.token",
     AuthentikCoreObjectattribute: "authentik_core.objectattribute",
+    AuthentikCoreActor: "authentik_core.actor",
     AuthentikCryptoCertificatekeypair: "authentik_crypto.certificatekeypair",
     AuthentikEndpointsDeviceuserbinding: "authentik_endpoints.deviceuserbinding",
     AuthentikEndpointsDeviceaccessgroup: "authentik_endpoints.deviceaccessgroup",
@@ -157,6 +158,7 @@ export const ModelEnum = {
     AuthentikTasksSchedulesSchedule: "authentik_tasks_schedules.schedule",
     AuthentikBrandsBrand: "authentik_brands.brand",
     AuthentikBlueprintsBlueprintinstance: "authentik_blueprints.blueprintinstance",
+    AuthentikAgentsAgent: "authentik_agents.agent",
     AuthentikEndpointsConnectorsFleetFleetconnector:
         "authentik_endpoints_connectors_fleet.fleetconnector",
     AuthentikEndpointsConnectorsGoogleChromeGooglechromeconnector:
