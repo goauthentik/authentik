@@ -2,9 +2,9 @@
  * @file Build the theme demo
  */
 
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
+import { copyFileSync, mkdirSync, readdirSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
-import { join, dirname, basename, resolve } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(import.meta.url);
@@ -20,8 +20,8 @@ const TOKENS_CSS = join(HERE, "./dist/index.css");
 const DEMO_SRC_PATH = join(HERE, DEMO_SRC_NAME);
 
 const DEMO_SRCS = readdirSync(DEMO_SRC_PATH)
-                  .filter((filename) => /\.(html|css|js)$/.test(filename))
-                  .map((filename) => join(DEMO_SRC_PATH, filename));
+    .filter((filename) => /\.(html|css|js)$/.test(filename))
+    .map((filename) => join(DEMO_SRC_PATH, filename));
 
 /* It's a coincidence that the icons and font files are in the same folder. Don't rely on this in
  * the future.
@@ -44,7 +44,6 @@ function findFontFiles() {
     return Array.from(fontFiles);
 }
 
-
 const fontFiles = findFontFiles();
 mkdirSync(OUT, { recursive: true });
 for (const fontFile of fontFiles) {
@@ -56,4 +55,3 @@ for (const fontFile of fontFiles) {
 for (const source of [TOKENS_CSS, ICONS_CSS, FONTS_CSS, ...DEMO_SRCS]) {
     copyFileSync(source, join(OUT, basename(source)));
 }
-

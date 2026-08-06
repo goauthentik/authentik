@@ -17,4 +17,8 @@ export const ROUTES: Route[] = [
         await import("#user/user-settings/UserSettingsPage");
         return html`<ak-user-settings></ak-user-settings>`;
     }),
+    new Route(new RegExp("^/agents$"), async () => {
+        await import("#user/agents/UserAgentsPage");
+        return html`<ak-user-agents-page></ak-user-agents-page>`;
+    }),
 ];

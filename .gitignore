@@ -246,4 +246,9 @@ tests/openid_conformance/exports/*.zip
 compose.override.yml
 
 ### Agent-generated metadata ###
-**/claude_export_
+**/claude_export_*
+
+### Claude Local Instructions
+# https://code.claude.com/docs/en/memory#choose-where-to-put-claude-md-files
+CLAUDE.local.md
+
