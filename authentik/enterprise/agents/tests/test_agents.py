@@ -4,8 +4,10 @@ from rest_framework.test import APIClient, APITestCase
 from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.agents.models import Agent
+from authentik.enterprise.tests import enterprise_test
 
 
+@enterprise_test()
 class AgentTests(APITestCase):
 
     def _grant_self_service_perm(self, user):
