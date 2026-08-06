@@ -104,44 +104,26 @@ export interface AnchoredPopoverPlacementOptions {
 }
 
 /**
- * Place a top-layer popover against its anchor: below by default, flipped above when the
- * roomier side is up, and never taller than the space its boundary leaves it.
- *
- * @returns Whether the popover was placed above its anchor.
+ * Place a top-layer popover directly under its anchor, never taller than the space its
+ * boundary leaves below the anchor.
  */
 export function placeAnchoredPopover(
     anchor: HTMLElement,
     popover: HTMLElement,
     { matchAnchorWidth }: AnchoredPopoverPlacementOptions = {},
-): boolean {
+): void {
     const rect = anchor.getBoundingClientRect();
     const bounds = popoverBoundaryBand(anchor);
 
     const ceiling = Math.round(window.innerHeight * MAX_POPOVER_VIEWPORT_RATIO);
-    const spaceBelow = bounds.bottom - rect.bottom - BOUNDARY_INSET;
-    const spaceAbove = rect.top - bounds.top - BOUNDARY_INSET;
-
-    // `scrollHeight` is the popover's unconstrained content height, so this flips only when
-    // the content genuinely doesn't fit below, not on every long list.
-    const desired = Math.min(popover.scrollHeight || ceiling, ceiling);
-    const flipUp = spaceBelow < desired && spaceAbove > spaceBelow;
-    const available = Math.max(flipUp ? spaceAbove : spaceBelow, MIN_POPOVER_HEIGHT);
+    const spaceBelow = Math.max(bounds.bottom - rect.bottom - BOUNDARY_INSET, MIN_POPOVER_HEIGHT);
 
     popover.style.position = "fixed";
     popover.style.left = `${Math.round(rect.left)}px`;
-    popover.style.maxHeight = `${Math.round(Math.min(ceiling, available))}px`;
+    popover.style.top = `${Math.round(rect.bottom)}px`;
+    popover.style.maxHeight = `${Math.round(Math.min(ceiling, spaceBelow))}px`;
 
     if (matchAnchorWidth) {
         popover.style.width = `${Math.round(rect.width)}px`;
     }
-
-    if (flipUp) {
-        popover.style.top = "auto";
-        popover.style.bottom = `${Math.round(window.innerHeight - rect.top)}px`;
-    } else {
-        popover.style.bottom = "auto";
-        popover.style.top = `${Math.round(rect.bottom)}px`;
-    }
-
-    return flipUp;
 }
