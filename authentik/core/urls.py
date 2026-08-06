@@ -51,8 +51,8 @@ urlpatterns = [
         BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
         name="if-admin",
     ),
-    re_path(
-        r"^if/admin/(?P<path>.*)$",
+    path(
+        "if/admin/<path:path>",
         BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
         name="if-admin-path",
     ),
@@ -61,8 +61,8 @@ urlpatterns = [
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
     ),
-    re_path(
-        r"^if/user/(?P<path>.*)$",
+    path(
+        "if/user/<path:path>",
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user-path",
     ),
