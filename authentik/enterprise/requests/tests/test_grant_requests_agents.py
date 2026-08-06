@@ -7,6 +7,7 @@ from rest_framework.test import APIClient, APITestCase
 from authentik.core.models import (
     ActorPolicyInheritance,
     Application,
+    ApplicationEntitlement,
     Token,
     TokenIntents,
     User,
@@ -25,7 +26,7 @@ from authentik.enterprise.tests import enterprise_test
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.models import PolicyBinding
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
 @enterprise_test()
@@ -36,6 +37,9 @@ class AgentGrantRequestTests(APITestCase):
 
     def _app(self) -> Application:
         return Application.objects.create(name=generate_id(), slug=generate_id())
+
+    def _entitlement(self, app: Application) -> ApplicationEntitlement:
+        return ApplicationEntitlement.objects.create(app=app, name=generate_id())
 
     def _agent_for(self, owner: User) -> tuple[Agent, APIClient]:
         """A self-service-shaped agent (no inherited access) plus a client authenticating
@@ -71,10 +75,12 @@ class AgentGrantRequestTests(APITestCase):
             data={"status": status, "data": {}},
         )
 
-    def _requestable_by(self, app: Application, requester: User, reviewer: User) -> RequestRule:
-        """Wire `app` up so `requester` may request it and `reviewer` may approve."""
+    def _requestable_by(
+        self, target: PolicyBindingModel, requester: User, reviewer: User
+    ) -> RequestRule:
+        """Wire `target` up so `requester` may request it and `reviewer` may approve."""
         rule = RequestRule.objects.create(name=generate_id())
-        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=app)
+        rule_binding = RequestRuleBinding.objects.create(rule=rule, target=target)
         PolicyBinding.objects.create(target=rule_binding, user=requester, order=0)
         PolicyBinding.objects.create(target=rule, user=reviewer, order=0)
         return rule
@@ -214,6 +220,88 @@ class AgentGrantRequestTests(APITestCase):
         self.assertEqual(res.status_code, 201, res.content)
         req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
         self.assertTrue(req.rules_approval_required)
+
+    def test_entitlement_owner_holds_owner_approval_suffices(self):
+        """An entitlement the owner is actually bound to is genuinely held, so the owner's
+        approval alone grants it -- the application case, for a child target."""
+        owner = create_test_user()
+        app = self._app()
+        ent = self._entitlement(app)
+        PolicyBinding.objects.create(target=ent, user=owner, order=0)
+        agent, agent_client = self._agent_for(owner)
+
+        self.assertIn(ent, owner.app_entitlements(app))
+        self.assertNotIn(ent, agent.app_entitlements(app))
+
+        res = self._request_access(agent_client, ent)
+        self.assertEqual(res.status_code, 201, res.content)
+        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
+        self.assertFalse(req.rules_approval_required)
+
+        self.assertEqual(self._fulfill(owner, req).status_code, 204)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        # Checked through authentik's own definition of holding an entitlement, not just the
+        # presence of a PolicyBinding row.
+        self.assertIn(ent, agent.app_entitlements(app))
+
+    def test_unbound_entitlement_needs_the_rule_flow(self):
+        """An entitlement with no bindings is held by NOBODY -- unlike an application, where
+        no bindings means everyone. So it must go through the reviewer flow rather than
+        collapsing to owner-only approval."""
+        owner = create_test_user()
+        reviewer = create_test_user()
+        app = self._app()
+        ent = self._entitlement(app)  # deliberately left with no bindings
+        self._requestable_by(ent, owner, reviewer)
+        agent, agent_client = self._agent_for(owner)
+
+        self.assertNotIn(ent, owner.app_entitlements(app))
+
+        res = self._request_access(agent_client, ent)
+        self.assertEqual(res.status_code, 201, res.content)
+        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
+        self.assertTrue(req.rules_approval_required)
+
+        # The owner's approval alone must not be enough here.
+        self._fulfill(owner, req)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.CREATED)
+        self.assertNotIn(ent, agent.app_entitlements(app))
+
+        self._fulfill(reviewer, req)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        self.assertIn(ent, agent.app_entitlements(app))
+
+    def test_unbound_entitlement_without_rule_rejected(self):
+        """An entitlement nobody holds, that no RequestRule makes requestable, is refused --
+        otherwise an agent could mint itself an entitlement its owner has never had."""
+        owner = create_test_user()
+        app = self._app()
+        ent = self._entitlement(app)
+        _, agent_client = self._agent_for(owner)
+
+        res = self._request_access(agent_client, ent)
+        self.assertEqual(res.status_code, 400, res.content)
+        self.assertFalse(GrantRequest.objects.exists())
+
+    def test_mixed_app_and_entitlement_batch(self):
+        """A held application batched with an unbound-but-requestable entitlement: the two
+        engine passes combine, and the stricter requirement still wins for the request."""
+        owner = create_test_user()
+        reviewer = create_test_user()
+        held_app = self._app()
+        PolicyBinding.objects.create(target=held_app, user=owner, order=0)
+        ent = self._entitlement(self._app())
+        self._requestable_by(ent, owner, reviewer)
+        _, agent_client = self._agent_for(owner)
+
+        res = self._request_access(agent_client, held_app, ent)
+        self.assertEqual(res.status_code, 201, res.content)
+        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
+        self.assertTrue(req.rules_approval_required)
+        self.assertEqual(req.targets.count(), 2)
 
     def test_non_agent_callers_rejected(self):
         """Only an agent may use this endpoint."""

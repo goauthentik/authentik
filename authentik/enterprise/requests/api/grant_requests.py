@@ -64,6 +64,31 @@ from authentik.policies.models import PolicyBindingModel, RequestableChildModel,
 from authentik.rbac.decorators import permission_required
 
 
+def _owner_holds(pbms: list[PolicyBindingModel], owner: User, request: Request) -> set:
+    """The subset of `pbms` that `owner` already has access to.
+
+    An application and one of its child objects disagree on what "no bindings" means: an
+    application with none is reachable by anyone (`AppAccessWithoutBindings`), while an
+    entitlement with none is held by nobody -- `User.app_entitlements` only ever counts an
+    enabled, matching binding. So each kind is evaluated with its own `empty_result` rather
+    than under one blanket rule. Still batched: one engine pass per kind, not per target.
+    """
+    children = [pbm for pbm in pbms if isinstance(pbm, RequestableChildModel)]
+    parents = [pbm for pbm in pbms if not isinstance(pbm, RequestableChildModel)]
+    held = set()
+    for targets, empty_result in ((parents, AppAccessWithoutBindings.get()), (children, False)):
+        if not targets:
+            continue
+        engine = ListPolicyEngine(
+            PolicyBindingModel.objects.filter(pbm_uuid__in=[pbm.pbm_uuid for pbm in targets]),
+            owner,
+            request,
+        )
+        engine.empty_result = empty_result
+        held |= {obj.pbm_uuid for obj in engine.build().result}
+    return held
+
+
 def _binding_default(field_name: str) -> timedelta:
     """A `RequestRuleBinding` expiry default, used when a request carries no granting binding
     at all (an agent requesting a target its owner already has access to)."""
@@ -291,15 +316,8 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
 
         pbms = body.validated_data["pbms"]
         # An agent can never reach past its owner, so every target is judged against the owner
-        # -- under NONE inheritance the agent itself passes nothing of its own. Evaluated as a
-        # single batched pass over the whole target set rather than an engine per target.
-        engine = ListPolicyEngine(
-            PolicyBindingModel.objects.filter(pbm_uuid__in=[pbm.pbm_uuid for pbm in pbms]),
-            owner,
-            request,
-        )
-        engine.empty_result = AppAccessWithoutBindings.get()
-        owner_holds = {obj.pbm_uuid for obj in engine.build().result}
+        # -- under NONE inheritance the agent itself passes nothing of its own.
+        owner_holds = _owner_holds(pbms, owner, request)
         # A target the owner already holds leaves nothing for the regular reviewer flow to
         # decide -- their own approval suffices. Anything else must at least be requestable by
         # them, and drags the request through the rules. Strictest wins across a mixed batch.
