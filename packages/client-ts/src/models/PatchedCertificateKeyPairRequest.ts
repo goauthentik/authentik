@@ -12,9 +12,6 @@
  * Do not edit the class manually.
  */
 
-import type { KeyTypeEnum } from "./KeyTypeEnum";
-import { KeyTypeEnumFromJSON, KeyTypeEnumToJSON } from "./KeyTypeEnum";
-
 /**
  * CertificateKeyPair Serializer
  * @export
@@ -39,12 +36,6 @@ export interface PatchedCertificateKeyPairRequest {
      * @memberof PatchedCertificateKeyPairRequest
      */
     keyData?: string;
-    /**
-     * Key algorithm type detected from the certificate's public key
-     * @type {KeyTypeEnum}
-     * @memberof PatchedCertificateKeyPairRequest
-     */
-    keyType?: KeyTypeEnum | null;
 }
 
 /**
@@ -73,12 +64,6 @@ export function PatchedCertificateKeyPairRequestFromJSONTyped(
         name: json["name"] == null ? undefined : json["name"],
         certificateData: json["certificate_data"] == null ? undefined : json["certificate_data"],
         keyData: json["key_data"] == null ? undefined : json["key_data"],
-        keyType:
-            json["key_type"] === undefined
-                ? undefined
-                : json["key_type"] === null
-                  ? null
-                  : KeyTypeEnumFromJSON(json["key_type"]),
     };
 }
 
@@ -100,6 +85,5 @@ export function PatchedCertificateKeyPairRequestToJSONTyped(
         name: value["name"],
         certificate_data: value["certificateData"],
         key_data: value["keyData"],
-        key_type: KeyTypeEnumToJSON(value["keyType"]),
     };
 }

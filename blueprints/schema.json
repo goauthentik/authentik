@@ -7947,23 +7947,6 @@
                     "type": "string",
                     "title": "Key data",
                     "description": "Optional Private Key. If this is set, you can use this keypair for encryption."
-                },
-                "key_type": {
-                    "type": [
-                        "null",
-                        "string"
-                    ],
-                    "enum": [
-                        null,
-                        "",
-                        "rsa",
-                        "ec",
-                        "dsa",
-                        "ed25519",
-                        "ed448"
-                    ],
-                    "title": "key type",
-                    "description": "Key algorithm type detected from the certificate's public key"
                 }
             },
             "required": []

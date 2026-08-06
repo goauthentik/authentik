@@ -52,8 +52,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
     private_key_download_url = SerializerMethodField()
     key_type = GeneratedEnumChoiceField.from_model_field(
         CertificateKeyPair._meta.get_field("key_type"),
-        required=False,
-        allow_null=True,
+        read_only=True,
     )
 
     def get_private_key_available(self, instance: CertificateKeyPair) -> bool:

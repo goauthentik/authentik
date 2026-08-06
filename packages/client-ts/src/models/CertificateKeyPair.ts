@@ -13,7 +13,7 @@
  */
 
 import type { KeyTypeEnum } from "./KeyTypeEnum";
-import { KeyTypeEnumFromJSON, KeyTypeEnumToJSON } from "./KeyTypeEnum";
+import { KeyTypeEnumFromJSON } from "./KeyTypeEnum";
 
 /**
  * CertificateKeyPair Serializer
@@ -68,7 +68,7 @@ export interface CertificateKeyPair {
      * @type {KeyTypeEnum}
      * @memberof CertificateKeyPair
      */
-    keyType?: KeyTypeEnum | null;
+    readonly keyType: KeyTypeEnum | null;
     /**
      * Get URL to download certificate
      * @type {string}
@@ -131,6 +131,13 @@ export function instanceOfCertificateKeyPair(value: object): value is Certificat
     )
         return false;
     if (
+        (!("keyType" in (value as Record<string, any>)) &&
+            !("key_type" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["keyType"] === undefined &&
+            (value as Record<string, any>)["key_type"] === undefined)
+    )
+        return false;
+    if (
         (!("certificateDownloadUrl" in (value as Record<string, any>)) &&
             !("certificate_download_url" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["certificateDownloadUrl"] === undefined &&
@@ -167,12 +174,7 @@ export function CertificateKeyPairFromJSONTyped(
         certExpiry: json["cert_expiry"] == null ? null : new Date(json["cert_expiry"]),
         certSubject: json["cert_subject"],
         privateKeyAvailable: json["private_key_available"],
-        keyType:
-            json["key_type"] === undefined
-                ? undefined
-                : json["key_type"] === null
-                  ? null
-                  : KeyTypeEnumFromJSON(json["key_type"]),
+        keyType: KeyTypeEnumFromJSON(json["key_type"]),
         certificateDownloadUrl: json["certificate_download_url"],
         privateKeyDownloadUrl: json["private_key_download_url"],
         managed: json["managed"],
@@ -192,6 +194,7 @@ export function CertificateKeyPairToJSONTyped(
         | "certExpiry"
         | "certSubject"
         | "privateKeyAvailable"
+        | "keyType"
         | "certificateDownloadUrl"
         | "privateKeyDownloadUrl"
         | "managed"
@@ -204,6 +207,5 @@ export function CertificateKeyPairToJSONTyped(
 
     return {
         name: value["name"],
-        key_type: KeyTypeEnumToJSON(value["keyType"]),
     };
 }

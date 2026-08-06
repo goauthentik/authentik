@@ -37979,6 +37979,7 @@ components:
         key_type:
           allOf:
           - $ref: '#/components/schemas/KeyTypeEnum'
+          readOnly: true
           nullable: true
           description: Key algorithm type detected from the certificate's public key
         certificate_download_url:
@@ -38004,6 +38005,7 @@ components:
       - certificate_download_url
       - fingerprint_sha1
       - fingerprint_sha256
+      - key_type
       - managed
       - name
       - pk
@@ -38026,11 +38028,6 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
-        key_type:
-          allOf:
-          - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
-          description: Key algorithm type detected from the certificate's public key
       required:
       - certificate_data
       - name
@@ -50276,11 +50273,6 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
-        key_type:
-          allOf:
-          - $ref: '#/components/schemas/KeyTypeEnum'
-          nullable: true
-          description: Key algorithm type detected from the certificate's public key
     PatchedConnectionTokenRequest:
       type: object
       description: ConnectionToken Serializer
