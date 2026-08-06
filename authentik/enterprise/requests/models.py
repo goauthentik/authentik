@@ -212,6 +212,19 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
         null=True,
         default=None,
     )
+    # Set when `created_by` is an Agent: the human the agent acts for. Their approval is
+    # mandatory for the request to be fulfilled, on top of any RequestRule reviewers.
+    agent_owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        related_name="agent_grant_requests",
+        null=True,
+        default=None,
+    )
+    # Whether the normal RequestRule reviewer flow must ALSO be satisfied. False only when the
+    # agent's owner already had access to every requested target at creation time -- snapshotted,
+    # because the owner's own access can change while the request is pending.
+    rules_approval_required = models.BooleanField(default=True)
 
     # Targets access was requested to
     targets = models.ManyToManyField(PolicyBindingModel, through="GrantRequestTarget")
@@ -274,12 +287,23 @@ class GrantRequest(SerializerModel, ExpiringModel, CreatedUpdatedModel):
     def is_satisfied(self) -> bool:
         """Whether enough reviewers have approved to fulfill every rule attached to this
         request's targets. A target with no rule attached needs no more than one approval."""
-        approving_users = GrantRequestApproval.objects.filter(
-            request=self, status=RequestStatus.APPROVED
-        ).values_list("reviewer", flat=True)
+        approving_users = set(
+            GrantRequestApproval.objects.filter(
+                request=self, status=RequestStatus.APPROVED
+            ).values_list("reviewer", flat=True)
+        )
+        if self.agent_owner_id:
+            # An agent acts for a human, so that human's approval is mandatory and can never
+            # be substituted by a reviewer -- even one who would otherwise satisfy every rule.
+            if self.agent_owner_id not in approving_users:
+                return False
+            # The owner already had access to every target when the request was filed, so there
+            # is nothing left for the regular reviewer flow to decide.
+            if not self.rules_approval_required:
+                return True
         rules = RequestRule.objects.filter(targets__in=self.targets.all()).distinct()
         if not rules.exists():
-            return approving_users.exists()
+            return bool(approving_users)
         return all(self._rule_satisfied(rule, approving_users) for rule in rules)
 
     @transaction.atomic

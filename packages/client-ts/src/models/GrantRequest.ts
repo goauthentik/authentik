@@ -58,6 +58,18 @@ export interface GrantRequest {
     readonly revokedBy: PartialUser;
     /**
      *
+     * @type {PartialUser}
+     * @memberof GrantRequest
+     */
+    readonly agentOwner: PartialUser;
+    /**
+     *
+     * @type {boolean}
+     * @memberof GrantRequest
+     */
+    readonly rulesApprovalRequired: boolean;
+    /**
+     *
      * @type {boolean}
      * @memberof GrantRequest
      */
@@ -114,6 +126,20 @@ export function instanceOfGrantRequest(value: object): value is GrantRequest {
     )
         return false;
     if (
+        (!("agentOwner" in (value as Record<string, any>)) &&
+            !("agent_owner" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["agentOwner"] === undefined &&
+            (value as Record<string, any>)["agent_owner"] === undefined)
+    )
+        return false;
+    if (
+        (!("rulesApprovalRequired" in (value as Record<string, any>)) &&
+            !("rules_approval_required" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["rulesApprovalRequired"] === undefined &&
+            (value as Record<string, any>)["rules_approval_required"] === undefined)
+    )
+        return false;
+    if (
         (!("isActive" in (value as Record<string, any>)) &&
             !("is_active" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["isActive"] === undefined &&
@@ -146,6 +172,8 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         revokedBy: PartialUserFromJSON(json["revoked_by"]),
+        agentOwner: PartialUserFromJSON(json["agent_owner"]),
+        rulesApprovalRequired: json["rules_approval_required"],
         isActive: json["is_active"],
         expires:
             json["expires"] === undefined
@@ -167,7 +195,15 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 export function GrantRequestToJSONTyped(
     value?: Omit<
         GrantRequest,
-        "created" | "createdBy" | "revokedBy" | "isActive" | "status" | "targets" | "targetObjs"
+        | "created"
+        | "createdBy"
+        | "revokedBy"
+        | "agentOwner"
+        | "rulesApprovalRequired"
+        | "isActive"
+        | "status"
+        | "targets"
+        | "targetObjs"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
