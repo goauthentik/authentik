@@ -1,5 +1,4 @@
 from asyncio import run
-from dataclasses import asdict
 from typing import Any
 
 from msgraph.generated.models.managed_device import ManagedDevice
@@ -10,6 +9,7 @@ from authentik.endpoints.models import Device, DeviceConnection
 from authentik.enterprise.endpoints.connectors.microsoft_intune.models import (
     MicrosoftIntuneConnector,
 )
+from authentik.enterprise.providers.microsoft_entra.clients.base import entity_as_dict
 from authentik.policies.utils import delete_none_values
 
 
@@ -69,6 +69,6 @@ class MicrosoftIntuneController(BaseController):
             ),
             "software": [],
             "vendor": {
-                self.vendor_identifier(): asdict(device),
+                self.vendor_identifier(): entity_as_dict(device),
             },
         }

@@ -39,6 +39,14 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 
 
+def entity_as_dict(entity: Entity) -> dict:
+    """Create a dictionary of a model instance, making sure to remove (known) things
+    we can't JSON serialize"""
+    raw_data = asdict(entity)
+    raw_data.pop("backing_store", None)
+    return sanitize_item(raw_data)
+
+
 class AuthentikRequestAdapter(GraphRequestAdapter):
     def __init__(self, auth_provider, provider: MicrosoftEntraProvider, client=None):
         super().__init__(auth_provider, client)
@@ -128,10 +136,3 @@ class MicrosoftEntraSyncClient[TModel: Model, TConnection: Model, TSchema: dict]
         for email in emails:
             if not any(email.endswith(f"@{domain_name}") for domain_name in self.domains):
                 raise BadRequestSyncException(f"Invalid email domain: {email}")
-
-    def entity_as_dict(self, entity: Entity) -> dict:
-        """Create a dictionary of a model instance, making sure to remove (known) things
-        we can't JSON serialize"""
-        raw_data = asdict(entity)
-        raw_data.pop("backing_store", None)
-        return sanitize_item(raw_data)
