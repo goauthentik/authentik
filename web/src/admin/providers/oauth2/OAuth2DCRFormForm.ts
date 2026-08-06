@@ -78,7 +78,7 @@ export function renderForm({ dcr }: OAuth2DCRFormProps) {
             ></ak-dual-select-dynamic-selected>
             <p class="pf-c-form__helper-text">
                 ${msg(
-                    "Scope mappings applied to dynamically registered clients. When not selected, authorization flow of the parent provider is used.",
+                    "Scope mappings applied to dynamically registered clients. When not selected, scope mappings of the parent provider are used.",
                 )}
             </p>
         </ak-form-element-horizontal>

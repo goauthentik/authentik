@@ -149,6 +149,8 @@ export class TaskList extends Table<Task> {
                           }}
                       ></ak-table-filter-select>`
                     : nothing}
+            </div>
+            <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
                     .options=${[
                         { label: msg("Exclude successful tasks"), value: true },
