@@ -2,6 +2,7 @@ package ldap
 
 import (
 	"net"
+	"regexp"
 	"time"
 
 	"beryju.io/ldap"
@@ -78,4 +79,53 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 		},
 		Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
 	}, nil
+}
+
+func (ls *LDAPServer) Compare(boundDN string, req ldap.CompareRequest, conn net.Conn) (ldap.LDAPResultCode, error) {
+	log.WithField("CompareRequest", req).Info()
+
+	// search for entry referred to by req.DN
+	searchReq := ldap.NewSearchRequest(req.DN, ldap.ScopeBaseObject, ldap.DerefAlways, 0, 0, true, "(objectClass=*)", []string{}, []ldap.Control{})
+	searchResult, err := ls.Search(boundDN, *searchReq, conn)
+	if err != nil {
+		return searchResult.ResultCode, err
+	}
+	if len(searchResult.Entries) != 1 {
+		return ldap.LDAPResultNoSuchObject, nil
+	}
+
+	// transform assertions into a filter string
+	// TODO: Create the ber.Packet directly, instead of relying so heavily on ldap.CompileFilter
+	safe := regexp.MustCompile(`[\w\s]*`)
+	searchFilter := "(&"
+	for _, ava := range req.AVA {
+		// we could put more effort into sanitizing input, but for now we bail on anything suspicous
+		if !safe.MatchString(ava.AttributeDesc) || !safe.MatchString(ava.AssertionValue) {
+			log.WithField("CompareRequest", req).Warning("bailing out due to scary chars in AVA")
+			return ldap.LDAPResultUnwillingToPerform, nil
+		}
+
+		searchFilter += "("
+		searchFilter += ava.AttributeDesc
+		searchFilter += "="
+		searchFilter += ava.AssertionValue
+		searchFilter += ")"
+	}
+	searchFilter += ")"
+
+	// compile & apply filter
+	compiledFilter, err := ldap.CompileFilter(searchFilter)
+	if err != nil {
+		return ldap.LDAPResultOperationsError, err
+	}
+	equal, resultCode := ldap.ServerApplyFilter(compiledFilter, searchResult.Entries[0])
+	if resultCode != ldap.LDAPResultSuccess {
+		return resultCode, nil
+	}
+
+	if equal {
+		return ldap.LDAPResultCompareTrue, nil
+	}
+
+	return ldap.LDAPResultCompareFalse, nil
 }
