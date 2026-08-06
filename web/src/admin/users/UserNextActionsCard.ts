@@ -1,5 +1,3 @@
-import "#elements/chips/Chip";
-import "#elements/chips/ChipGroup";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
@@ -21,6 +19,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
 
 export const USER_ATTRIBUTE_NEXT_ACTIONS = "goauthentik.io/user/next-actions";
 
@@ -43,7 +42,7 @@ export class UserNextActionsCard extends AKElement {
     @state()
     protected selectedFlow: Flow | null = null;
 
-    static styles = [PFCard, PFContent, PFButton, Styles];
+    static styles = [PFCard, PFContent, PFButton, PFDataList, Styles];
 
     protected get actions(): string[] {
         const value = this.user?.attributes?.[USER_ATTRIBUTE_NEXT_ACTIONS];
@@ -140,19 +139,32 @@ export class UserNextActionsCard extends AKElement {
             </div>
             <div class="pf-c-card__body">
                 ${actions.length
-                    ? html`<ak-chip-group>
+                    ? html`<ul class="pf-c-data-list pf-m-compact" role="list">
                           ${actions.map(
                               (slug) => html`
-                                  <ak-chip
-                                      removable
-                                      value=${slug}
-                                      @remove=${() => this.removeAction(slug)}
-                                  >
-                                      ${slug}
-                                  </ak-chip>
+                                  <li class="pf-c-data-list__item">
+                                      <div class="pf-c-data-list__item-row">
+                                          <div
+                                              class="pf-c-data-list__item-content ak-next-action-slug"
+                                          >
+                                              ${slug}
+                                          </div>
+                                          <div class="pf-c-data-list__item-action">
+                                              <button
+                                                  class="pf-c-button pf-m-plain"
+                                                  aria-label=${msg("Remove action", {
+                                                      id: "user-next-actions.remove.aria-label",
+                                                  })}
+                                                  @click=${() => this.removeAction(slug)}
+                                              >
+                                                  <i class="fas fa-times" aria-hidden="true"></i>
+                                              </button>
+                                          </div>
+                                      </div>
+                                  </li>
                               `,
                           )}
-                      </ak-chip-group>`
+                      </ul>`
                     : html`<p class="ak-next-actions-empty">
                           ${msg("No actions pending.", {
                               id: "user-next-actions.empty.description",

@@ -1,3 +1,17 @@
+.ak-next-action-slug {
+    align-self: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+}
+
+.pf-c-data-list__item-action {
+    display: flex;
+    align-items: center;
+}
+
 .ak-next-actions-empty {
     color: var(--pf-global--Color--200);
     margin: 0;
