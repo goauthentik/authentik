@@ -67,12 +67,6 @@ export interface GrantRequest {
      * @type {boolean}
      * @memberof GrantRequest
      */
-    readonly rulesApprovalRequired: boolean;
-    /**
-     *
-     * @type {boolean}
-     * @memberof GrantRequest
-     */
     readonly isActive: boolean;
     /**
      *
@@ -133,13 +127,6 @@ export function instanceOfGrantRequest(value: object): value is GrantRequest {
     )
         return false;
     if (
-        (!("rulesApprovalRequired" in (value as Record<string, any>)) &&
-            !("rules_approval_required" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["rulesApprovalRequired"] === undefined &&
-            (value as Record<string, any>)["rules_approval_required"] === undefined)
-    )
-        return false;
-    if (
         (!("isActive" in (value as Record<string, any>)) &&
             !("is_active" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["isActive"] === undefined &&
@@ -173,7 +160,6 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         revokedBy: PartialUserFromJSON(json["revoked_by"]),
         agentOwner: PartialUserFromJSON(json["agent_owner"]),
-        rulesApprovalRequired: json["rules_approval_required"],
         isActive: json["is_active"],
         expires:
             json["expires"] === undefined
@@ -199,7 +185,6 @@ export function GrantRequestToJSONTyped(
         | "createdBy"
         | "revokedBy"
         | "agentOwner"
-        | "rulesApprovalRequired"
         | "isActive"
         | "status"
         | "targets"

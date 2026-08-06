@@ -72,19 +72,16 @@ def assign_request_permissions(
         )
 
 
-def notify_reviewers(rules: QuerySet[RequestRule], event: Event, agent_owner: User | None = None):
+def notify_reviewers(rules: QuerySet[RequestRule], event: Event):
     """Notify reviewers of each rule attached to any of the requested targets,
-    per that rule's own notification_transports/notification_mode. An agent's owner is
-    notified alongside them -- note that a request carrying no rule at all has no transport
-    configured to notify through, and is surfaced only through `pending_review`."""
+    per that rule's own notification_transports/notification_mode. An agent request resolves no
+    rules, so nothing is dispatched for one -- its owner reaches it through the `fulfill_url`
+    handed back to the agent, and through `pending_review`."""
     for rule in rules:
         transports = list(rule.notification_transports.all())
         if not transports:
             continue
-        recipients = set(rule.notification_recipients())
-        if agent_owner:
-            recipients.add(agent_owner)
-        for recipient in recipients:
+        for recipient in rule.notification_recipients():
             for transport in transports:
                 requests_send_request_notification.send_with_options(
                     args=(transport.pk, event.pk, recipient.pk),
@@ -100,7 +97,6 @@ def create_grant_request(
     requester_data: dict[str, Any],
     expiry: GrantExpiry,
     agent_owner: User | None = None,
-    rules_approval_required: bool = True,
 ) -> GrantRequest:
     """Persist a grant request against `pbms`, assign the object permissions the requester,
     reviewers and (for an agent) its owner need to act on it, and notify them."""
@@ -113,7 +109,6 @@ def create_grant_request(
             expires=now() + expiry.pending,
             status=RequestStatus.CREATED,
             agent_owner=agent_owner,
-            rules_approval_required=rules_approval_required,
         )
         for pbm in pbms:
             GrantRequestTarget.objects.create(
@@ -121,8 +116,13 @@ def create_grant_request(
                 target=pbm,
                 binding=None,
             )
+        # An agent request is decided by its owner alone, so RequestRules attached to the target
+        # play no part: their reviewers must not be handed fulfill/revoke on it, and telling
+        # them about a request they have no say in would only leak it.
         rules = (
-            RequestRule.objects.filter(targets__in=pbms)
+            RequestRule.objects.none()
+            if agent_owner
+            else RequestRule.objects.filter(targets__in=pbms)
             .distinct()
             .prefetch_related("notification_transports")
         )
@@ -134,5 +134,5 @@ def create_grant_request(
             hyperlink=fulfill_url(request, req),
             hyperlink_label="Fulfill",
         ).from_http(request, created_by)
-        notify_reviewers(rules, event, agent_owner)
+        notify_reviewers(rules, event)
     return req

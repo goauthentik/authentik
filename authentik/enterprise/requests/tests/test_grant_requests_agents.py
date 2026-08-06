@@ -31,9 +31,9 @@ from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 @enterprise_test()
 class AgentGrantRequestTests(APITestCase):
-    """An agent inherits no access, so it earns it by filing a grant request its owner must
-    approve. When the owner already has the access, their approval is enough; otherwise the
-    regular reviewer flow has to be satisfied too."""
+    """An agent inherits no access, so it earns it by asking its owner to delegate some. It may
+    only ask for what the owner already holds -- no flow runs on this path, so there is no
+    justification to hand a reviewer -- and the owner's approval is the whole decision."""
 
     def _app(self) -> Application:
         return Application.objects.create(name=generate_id(), slug=generate_id())
@@ -102,7 +102,6 @@ class AgentGrantRequestTests(APITestCase):
         req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
         self.assertEqual(req.created_by_id, agent.pk)
         self.assertEqual(req.agent_owner_id, owner.pk)
-        self.assertFalse(req.rules_approval_required)
 
         res = self._fulfill(owner, req)
         self.assertEqual(res.status_code, 204, res.content)
@@ -129,42 +128,30 @@ class AgentGrantRequestTests(APITestCase):
             body["fulfill_url"],
         )
 
-    def test_owner_can_only_request_needs_owner_and_reviewer(self):
-        """The owner would have to go through the rule themselves, so the agent's request
-        needs the owner's approval AND the regular reviewer flow."""
+    def test_target_owner_may_only_request_is_rejected(self):
+        """A target the owner could request but does not yet hold is refused: approving it
+        would mean asking a reviewer to judge a request with no justification, since no flow
+        runs on this path."""
         owner = create_test_user()
         reviewer = create_test_user()
         app = self._app()
         # Bound to somebody else, so the owner does not currently pass.
         PolicyBinding.objects.create(target=app, user=create_test_user(), order=0)
         self._requestable_by(app, owner, reviewer)
-        agent, agent_client = self._agent_for(owner)
+        _, agent_client = self._agent_for(owner)
 
         res = self._request_access(agent_client, app)
-        self.assertEqual(res.status_code, 201, res.content)
-        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
-        self.assertTrue(req.rules_approval_required)
+        self.assertEqual(res.status_code, 400, res.content)
+        self.assertFalse(GrantRequest.objects.exists())
 
-        # The owner alone is not enough: the rule still has to be satisfied.
-        res = self._fulfill(owner, req)
-        self.assertEqual(res.status_code, 204, res.content)
-        req.refresh_from_db()
-        self.assertEqual(req.status, RequestStatus.CREATED)
-        self.assertFalse(PolicyBinding.objects.filter(user=agent, target=app).exists())
-
-        res = self._fulfill(reviewer, req)
-        self.assertEqual(res.status_code, 204, res.content)
-        req.refresh_from_db()
-        self.assertEqual(req.status, RequestStatus.APPROVED)
-        self.assertTrue(PolicyBinding.objects.filter(user=agent, target=app).exists())
-
-    def test_reviewer_alone_cannot_satisfy_agent_request(self):
-        """The owner's approval is mandatory and can never be substituted by a reviewer who
-        would otherwise satisfy every rule attached to the request."""
+    def test_rule_reviewer_cannot_act_on_agent_request(self):
+        """A held target can still carry a RequestRule, but its reviewers have no say in an
+        agent's request -- they must not be able to deny it (a denial finalizes immediately)
+        or revoke the grant, and it must not show up in their queue."""
         owner = create_test_user()
         reviewer = create_test_user()
         app = self._app()
-        PolicyBinding.objects.create(target=app, user=create_test_user(), order=0)
+        PolicyBinding.objects.create(target=app, user=owner, order=0)
         self._requestable_by(app, owner, reviewer)
         agent, agent_client = self._agent_for(owner)
 
@@ -172,11 +159,42 @@ class AgentGrantRequestTests(APITestCase):
         self.assertEqual(res.status_code, 201, res.content)
         req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
 
-        res = self._fulfill(reviewer, req)
-        self.assertEqual(res.status_code, 204, res.content)
+        # Not in the reviewer's queue...
+        self.client.force_login(reviewer)
+        res = self.client.get(reverse("authentik_api:grantrequest-pending-review"))
+        self.assertEqual(res.json()["results"], [])
+        # ...and they cannot deny it.
+        self.assertEqual(self._fulfill(reviewer, req, status="denied").status_code, 403)
         req.refresh_from_db()
         self.assertEqual(req.status, RequestStatus.CREATED)
-        self.assertFalse(PolicyBinding.objects.filter(user=agent, target=app).exists())
+
+        # The owner approves; the reviewer still cannot revoke the resulting grant.
+        self.assertEqual(self._fulfill(owner, req).status_code, 204)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        self.client.force_login(reviewer)
+        res = self.client.delete(
+            reverse("authentik_api:grantrequest-revoke", kwargs={"pk": req.pk})
+        )
+        self.assertEqual(res.status_code, 403, res.content)
+        req.refresh_from_db()
+        self.assertEqual(req.status, RequestStatus.APPROVED)
+        self.assertTrue(PolicyEngine(app, agent).build().passing)
+
+    def test_non_expiring_agent_cannot_request(self):
+        """Delegated access is bounded by the agent's own lifetime, so a standing agent has
+        nothing to bound the grant with and may not request at all."""
+        owner = create_test_user()
+        app = self._app()
+        PolicyBinding.objects.create(target=app, user=owner, order=0)
+        agent, agent_client = self._agent_for(owner)
+        agent.expiring = False
+        agent.expires = None
+        agent.save()
+
+        res = self._request_access(agent_client, app)
+        self.assertEqual(res.status_code, 403, res.content)
+        self.assertFalse(GrantRequest.objects.exists())
 
     def test_owner_denial_finalizes_immediately(self):
         owner = create_test_user()
@@ -205,9 +223,9 @@ class AgentGrantRequestTests(APITestCase):
         self.assertEqual(res.status_code, 400, res.content)
         self.assertFalse(GrantRequest.objects.exists())
 
-    def test_mixed_batch_takes_strictest(self):
-        """A batch mixing an already-accessible target with a merely-requestable one needs
-        the full reviewer flow -- the strictest requirement wins."""
+    def test_one_unheld_target_rejects_the_batch(self):
+        """A batch is all-or-nothing: one target the owner does not hold refuses the whole
+        request, so a held target cannot smuggle an unheld one through with it."""
         owner = create_test_user()
         reviewer = create_test_user()
         held, requestable = self._app(), self._app()
@@ -217,9 +235,8 @@ class AgentGrantRequestTests(APITestCase):
         _, agent_client = self._agent_for(owner)
 
         res = self._request_access(agent_client, held, requestable)
-        self.assertEqual(res.status_code, 201, res.content)
-        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
-        self.assertTrue(req.rules_approval_required)
+        self.assertEqual(res.status_code, 400, res.content)
+        self.assertFalse(GrantRequest.objects.exists())
 
     def test_entitlement_owner_holds_owner_approval_suffices(self):
         """An entitlement the owner is actually bound to is genuinely held, so the owner's
@@ -236,7 +253,6 @@ class AgentGrantRequestTests(APITestCase):
         res = self._request_access(agent_client, ent)
         self.assertEqual(res.status_code, 201, res.content)
         req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
-        self.assertFalse(req.rules_approval_required)
 
         self.assertEqual(self._fulfill(owner, req).status_code, 204)
         req.refresh_from_db()
@@ -245,62 +261,39 @@ class AgentGrantRequestTests(APITestCase):
         # presence of a PolicyBinding row.
         self.assertIn(ent, agent.app_entitlements(app))
 
-    def test_unbound_entitlement_needs_the_rule_flow(self):
-        """An entitlement with no bindings is held by NOBODY -- unlike an application, where
-        no bindings means everyone. So it must go through the reviewer flow rather than
-        collapsing to owner-only approval."""
+    def test_unbound_entitlement_rejected(self):
+        """An entitlement with no bindings is held by NOBODY -- unlike an application, where no
+        bindings means everyone -- so the owner does not hold it and the agent cannot ask for
+        it. True whether or not a RequestRule happens to cover it."""
         owner = create_test_user()
         reviewer = create_test_user()
         app = self._app()
-        ent = self._entitlement(app)  # deliberately left with no bindings
-        self._requestable_by(ent, owner, reviewer)
-        agent, agent_client = self._agent_for(owner)
-
-        self.assertNotIn(ent, owner.app_entitlements(app))
-
-        res = self._request_access(agent_client, ent)
-        self.assertEqual(res.status_code, 201, res.content)
-        req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
-        self.assertTrue(req.rules_approval_required)
-
-        # The owner's approval alone must not be enough here.
-        self._fulfill(owner, req)
-        req.refresh_from_db()
-        self.assertEqual(req.status, RequestStatus.CREATED)
-        self.assertNotIn(ent, agent.app_entitlements(app))
-
-        self._fulfill(reviewer, req)
-        req.refresh_from_db()
-        self.assertEqual(req.status, RequestStatus.APPROVED)
-        self.assertIn(ent, agent.app_entitlements(app))
-
-    def test_unbound_entitlement_without_rule_rejected(self):
-        """An entitlement nobody holds, that no RequestRule makes requestable, is refused --
-        otherwise an agent could mint itself an entitlement its owner has never had."""
-        owner = create_test_user()
-        app = self._app()
-        ent = self._entitlement(app)
+        ruleless = self._entitlement(app)
+        covered = self._entitlement(app)
+        self._requestable_by(covered, owner, reviewer)
         _, agent_client = self._agent_for(owner)
 
-        res = self._request_access(agent_client, ent)
-        self.assertEqual(res.status_code, 400, res.content)
+        self.assertNotIn(ruleless, owner.app_entitlements(app))
+        self.assertNotIn(covered, owner.app_entitlements(app))
+
+        for ent in (ruleless, covered):
+            res = self._request_access(agent_client, ent)
+            self.assertEqual(res.status_code, 400, res.content)
         self.assertFalse(GrantRequest.objects.exists())
 
-    def test_mixed_app_and_entitlement_batch(self):
-        """A held application batched with an unbound-but-requestable entitlement: the two
-        engine passes combine, and the stricter requirement still wins for the request."""
+    def test_held_app_and_entitlement_batch(self):
+        """A held application and a held entitlement in one call: the two `_owner_holds`
+        engine passes combine, and both targets land on the request."""
         owner = create_test_user()
-        reviewer = create_test_user()
-        held_app = self._app()
-        PolicyBinding.objects.create(target=held_app, user=owner, order=0)
+        app = self._app()
+        PolicyBinding.objects.create(target=app, user=owner, order=0)
         ent = self._entitlement(self._app())
-        self._requestable_by(ent, owner, reviewer)
+        PolicyBinding.objects.create(target=ent, user=owner, order=0)
         _, agent_client = self._agent_for(owner)
 
-        res = self._request_access(agent_client, held_app, ent)
+        res = self._request_access(agent_client, app, ent)
         self.assertEqual(res.status_code, 201, res.content)
         req = GrantRequest.objects.get(pk=res.json()["grant_request"]["uuid"])
-        self.assertTrue(req.rules_approval_required)
         self.assertEqual(req.targets.count(), 2)
 
     def test_non_agent_callers_rejected(self):
@@ -366,8 +359,8 @@ class AgentGrantRequestTests(APITestCase):
         self.assertEqual(req.status, RequestStatus.CREATED)
 
     def test_owner_can_revoke_without_being_a_reviewer(self):
-        """The owner is entitled to end their agent's grant, whether or not any rule makes
-        them an eligible reviewer."""
+        """The owner can end their agent's grant on their own -- reviewer eligibility never
+        enters into it."""
         owner = create_test_user()
         app = self._app()
         PolicyBinding.objects.create(target=app, user=owner, order=0)
@@ -405,9 +398,9 @@ class AgentGrantRequestTests(APITestCase):
         self.assertLessEqual(timedelta_from_string(req.requested_expiry), timedelta(minutes=5))
         self.assertGreater(timedelta_from_string(req.requested_expiry), timedelta(minutes=4))
 
-    def test_pending_review_surfaces_ruleless_request_to_owner(self):
-        """A request for a target the owner already has access to carries no rule at all, so
-        it has to reach the owner through their ownership rather than reviewer eligibility."""
+    def test_pending_review_surfaces_agent_request_to_owner(self):
+        """An agent request reaches its owner through ownership rather than through reviewer
+        eligibility, and reaches nobody else."""
         owner = create_test_user()
         outsider = create_test_user()
         app = self._app()

@@ -274,7 +274,7 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Request access as an agent, for itself. Unlike `create`, this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in. Eligibility is always evaluated against the agent\'s owner, whose approval is mandatory; the returned `fulfill_url` is what the agent surfaces to that owner so they can act on it.
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreateRaw(
         requestParameters: RequestsGrantRequestsAgentCreateRequest,
@@ -290,7 +290,7 @@ export class RequestsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Request access as an agent, for itself. Unlike `create`, this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in. Eligibility is always evaluated against the agent\'s owner, whose approval is mandatory; the returned `fulfill_url` is what the agent surfaces to that owner so they can act on it.
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
      */
     async requestsGrantRequestsAgentCreate(
         requestParameters: RequestsGrantRequestsAgentCreateRequest,

@@ -24,9 +24,4 @@ class Migration(migrations.Migration):
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
-        migrations.AddField(
-            model_name="grantrequest",
-            name="rules_approval_required",
-            field=models.BooleanField(default=True),
-        ),
     ]

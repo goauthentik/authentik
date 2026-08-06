@@ -64,15 +64,10 @@ from authentik.policies.models import PolicyBindingModel, RequestableChildModel,
 from authentik.rbac.decorators import permission_required
 
 
-def _owner_holds(pbms: list[PolicyBindingModel], owner: User, request: Request) -> set:
-    """The subset of `pbms` that `owner` already has access to.
-
-    An application and one of its child objects disagree on what "no bindings" means: an
-    application with none is reachable by anyone (`AppAccessWithoutBindings`), while an
-    entitlement with none is held by nobody -- `User.app_entitlements` only ever counts an
-    enabled, matching binding. So each kind is evaluated with its own `empty_result` rather
-    than under one blanket rule. Still batched: one engine pass per kind, not per target.
-    """
+def _owner_holds(
+    pbms: list[PolicyBindingModel], owner: User, request: Request
+) -> set[PolicyBindingModel]:
+    """The subset of `pbms` that `owner` already has access to."""
     children = [pbm for pbm in pbms if isinstance(pbm, RequestableChildModel)]
     parents = [pbm for pbm in pbms if not isinstance(pbm, RequestableChildModel)]
     held = set()
@@ -90,8 +85,9 @@ def _owner_holds(pbms: list[PolicyBindingModel], owner: User, request: Request) 
 
 
 def _binding_default(field_name: str) -> timedelta:
-    """A `RequestRuleBinding` expiry default, used when a request carries no granting binding
-    at all (an agent requesting a target its owner already has access to)."""
+    """A `RequestRuleBinding` expiry field default. RequestRules play no part in an agent's
+    request, so it has no binding to take a duration from -- borrowing their defaults keeps
+    agent grants in step with the rest of the requests system rather than inventing a knob."""
     return timedelta_from_string(RequestRuleBinding._meta.get_field(field_name).default)
 
 
@@ -117,7 +113,6 @@ class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
             "fulfiller_data",
             "revoked_by",
             "agent_owner",
-            "rules_approval_required",
             "is_active",
             "expires",
             "status",
@@ -127,17 +122,7 @@ class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
         ]
         extra_kwargs = {
             "status": {"read_only": True},
-            "rules_approval_required": {"read_only": True},
         }
-
-
-class AgentGrantRequestCreatedSerializer(PassiveSerializer):
-    """Response to an agent's access request: the request it created, plus the URL to hand to
-    the human it acts for. An agent has no browser, so it cannot run the approval itself --
-    `fulfill_url` is what its owner opens to approve or deny."""
-
-    grant_request = GrantRequestSerializer(read_only=True)
-    fulfill_url = CharField(read_only=True)
 
 
 class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin, GenericViewSet):
@@ -200,11 +185,21 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         data = JSONDictField()
         status = ChoiceField(choices=RequestStatus.choices)
 
+    class AgentGrantRequestCreatedSerializer(PassiveSerializer):
+        """Response to an agent's access request: the request it created, plus the URL to hand to
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+        `fulfill_url` is what its owner opens to approve or deny."""
+
+        grant_request = GrantRequestSerializer(read_only=True)
+        fulfill_url = CharField(read_only=True)
+
     def _assert_reviewer(self, request: Request, grant: GrantRequest):
-        # An agent's owner is always entitled to act on their own agent's request, whether or
-        # not any rule attached to its targets makes them an eligible reviewer -- and a request
-        # for a target the owner already has access to may carry no rule at all.
-        if grant.agent_owner_id and request.user.pk == grant.agent_owner_id:
+        # An agent's request is decided by its owner and nobody else -- it only ever delegates
+        # access the owner already holds, so rules attached to the target play no part. A rule
+        # reviewer must not be able to deny it (a denial finalizes immediately) or revoke it.
+        if grant.agent_owner_id:
+            if request.user.pk != grant.agent_owner_id:
+                raise ValidationError("User does not have permissions to act on this object")
             return
         rules = RequestRule.objects.filter(targets__in=grant.targets.all()).distinct()
         engine = ListPolicyEngine(rules, request.user, request)
@@ -235,9 +230,11 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
         reviewable_rules = engine.build().result
         queryset = (
             GrantRequest.objects.filter(
-                # An agent's owner must approve its request even when its targets carry no rule
-                # they could ever review, so surface those alongside the reviewable ones.
-                Q(targets__request_rules__in=reviewable_rules) | Q(agent_owner=request.user),
+                # An agent's request is its owner's to decide alone, so it reaches them through
+                # ownership rather than reviewer eligibility -- and must not reach a rule
+                # reviewer, who could no longer act on it anyway.
+                Q(targets__request_rules__in=reviewable_rules, agent_owner__isnull=True)
+                | Q(agent_owner=request.user),
                 status=RequestStatus.CREATED,
             )
             .distinct()
@@ -302,48 +299,39 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
     @validate(AgentGrantRequestCreateSerializer)
     @enterprise_action
     def agent(self, request: Request, body: AgentGrantRequestCreateSerializer) -> Response:
-        """Request access as an agent, for itself. Unlike `create`, this persists the request
-        directly instead of returning a flow link -- an agent authenticates with an API token
-        and has no browser to run a flow in. Eligibility is always evaluated against the
-        agent's owner, whose approval is mandatory; the returned `fulfill_url` is what the
-        agent surfaces to that owner so they can act on it."""
+        """Delegate access an agent's owner already holds to the agent, time-boxed. Unlike
+        `create` this persists the request directly instead of returning a flow link -- an agent
+        authenticates with an API token and has no browser to run a flow in, so no justification
+        is ever collected. That is why the agent may only ask for what its owner already has:
+        the owner's approval is then the whole decision, and no reviewer is asked to judge a
+        request with nothing in it. The returned `fulfill_url` is what the agent hands to its
+        owner so they can act on it."""
         agent = Agent.objects.filter(pk=request.user.pk).first()
         if not agent:
             raise PermissionDenied(_("Only agents can request access through this endpoint."))
         owner: User | None = agent.parent
         if not owner:
             raise PermissionDenied(_("This agent has no owner who could approve its request."))
+        # Delegated access is time-boxed by the agent's own lifetime, so a standing agent has
+        # nothing to bound the grant with.
+        if not (agent.expiring and agent.expires):
+            raise PermissionDenied(_("Only agents with an expiry can request access."))
 
         pbms = body.validated_data["pbms"]
-        # An agent can never reach past its owner, so every target is judged against the owner
-        # -- under NONE inheritance the agent itself passes nothing of its own.
+        # An agent can never reach past its owner: it may only be delegated access the owner
+        # already holds. Anything more would need the requester's justification and the reviewer
+        # flow that collects it, and this endpoint has no flow to run.
         owner_holds = _owner_holds(pbms, owner, request)
-        # A target the owner already holds leaves nothing for the regular reviewer flow to
-        # decide -- their own approval suffices. Anything else must at least be requestable by
-        # them, and drags the request through the rules. Strictest wins across a mixed batch.
-        rules_approval_required = False
         for pbm in pbms:
-            if pbm.pbm_uuid in owner_holds:
-                continue
-            if not user_can_request(pbm, owner, request):
+            if pbm.pbm_uuid not in owner_holds:
                 raise ValidationError(f"Cannot request access to '{pbm.requestable_label}'")
-            rules_approval_required = True
 
-        # The strictest (shortest) pending/max expiry among the bindings that make this
-        # requestable wins, as in `create`. With no granting binding at all -- the owner already
-        # had access -- fall back to the binding defaults.
-        rule_bindings = list(granting_rule_bindings(pbms, owner, request))
+        # No RequestRule gates this request, so there is no binding to take a duration from.
+        # The grant is additionally capped so it can never outlive the agent holding it.
         pending_expiry = _binding_default("expiry_pending")
-        granted_expiry = _binding_default("expiry_granted_max")
-        if rule_bindings:
-            pending_expiry = min(timedelta_from_string(rb.expiry_pending) for rb in rule_bindings)
-            granted_expiry = min(
-                timedelta_from_string(rb.expiry_granted_max) for rb in rule_bindings
-            )
-        # A grant must never outlive the agent holding it. Self-service agents always expire,
-        # so this ceiling always applies to them.
-        if agent.expiring and agent.expires:
-            granted_expiry = min(granted_expiry, max(agent.expires - now(), timedelta(0)))
+        granted_expiry = min(
+            _binding_default("expiry_granted_max"), max(agent.expires - now(), timedelta(0))
+        )
 
         req = create_grant_request(
             request,
@@ -352,10 +340,9 @@ class GrantRequestViewSet(RetrieveModelMixin, DestroyModelMixin, ListModelMixin,
             requester_data={},
             expiry=GrantExpiry(pending=pending_expiry, granted=granted_expiry),
             agent_owner=owner,
-            rules_approval_required=rules_approval_required,
         )
         return Response(
-            AgentGrantRequestCreatedSerializer(
+            self.AgentGrantRequestCreatedSerializer(
                 {"grant_request": req, "fulfill_url": fulfill_url(request, req)}
             ).data,
             status=201,
