@@ -50,16 +50,18 @@ export function* composedAncestors(node: Node): Generator<HTMLElement> {
     }
 }
 
+function scrollableY(element: HTMLElement): boolean {
+    const { overflowY } = getComputedStyle(element);
+
+    return overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
+}
+
 /**
  * The nearest vertically scrollable ancestor of `node`, crossing shadow boundaries.
  */
 export function findScrollableAncestor(node: Node): HTMLElement | null {
     for (const ancestor of composedAncestors(node)) {
-        const { overflowY } = getComputedStyle(ancestor);
-        const scrollable =
-            overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
-
-        if (scrollable && ancestor.scrollHeight > ancestor.clientHeight) {
+        if (scrollableY(ancestor) && ancestor.scrollHeight > ancestor.clientHeight) {
             return ancestor;
         }
     }

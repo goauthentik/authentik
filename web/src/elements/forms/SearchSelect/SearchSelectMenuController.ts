@@ -66,7 +66,9 @@ export class SearchSelectMenuController implements ReactiveController {
         const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < refocusDelay;
 
         this.host.open = dismissedByThisClick ? false : !this.host.open;
-        this.getInput()?.focus();
+        // preventScroll: an auto-scroll here would shift the anchor in the same beat the
+        // menu is being placed against it.
+        this.getInput()?.focus({ preventScroll: true });
     };
 
     public readonly handleMenuToggle = (event: ToggleEvent) => {
