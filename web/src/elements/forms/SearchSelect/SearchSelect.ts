@@ -181,6 +181,7 @@ export abstract class SearchSelectBase<T>
     //#region State
 
     #loading = false;
+    #updateRequestID = 0;
 
     @state()
     protected error?: APIError;
@@ -234,15 +235,16 @@ export abstract class SearchSelectBase<T>
     }
 
     public async updateData() {
-        if (this.#loading) {
-            return Promise.resolve();
-        }
-
+        const requestID = ++this.#updateRequestID;
         this.#loading = true;
         this.dispatchEvent(new Event("loading"));
 
         return this.fetchObjects(this.query)
             .then((nextObjects) => {
+                if (requestID !== this.#updateRequestID) {
+                    return;
+                }
+
                 const selectedObject = nextObjects.find((obj) => this.selected?.(obj, nextObjects));
 
                 if (selectedObject) {
@@ -251,14 +253,18 @@ export abstract class SearchSelectBase<T>
                 }
 
                 this.objects = nextObjects;
+                this.error = undefined;
                 this.#loading = false;
             })
             .catch(async (error: unknown) => {
-                this.#loading = false;
-                this.objects = undefined;
-
                 const parsedError = await parseAPIResponseError(error);
 
+                if (requestID !== this.#updateRequestID) {
+                    return;
+                }
+
+                this.#loading = false;
+                this.objects = undefined;
                 this.error = parsedError;
             });
     }
@@ -277,37 +283,46 @@ export abstract class SearchSelectBase<T>
         this.removeEventListener(EVENT_REFRESH, this.updateData);
     }
 
-    #searchListener = (event: InputEvent) => {
+    #searchListener = async (event: InputEvent) => {
         if (this.readOnly) return;
 
-        const value = (event.target as SearchSelectView).rawValue;
+        const view = event.target as SearchSelectView;
+        const value = view.rawValue;
+        const requestID = this.#updateRequestID + 1;
 
         if (!value) {
+            view.open = false;
             this.selectedObject = null;
             this.query = undefined;
-            this.updateData();
+            this.dispatchChangeEvent(null);
+            await this.updateData();
             return;
         }
 
         this.query = value;
-        this.updateData()?.then(() => {
-            // If creatable, check if selectedObject's value matches the typed value exactly
-            if (this.creatable) {
-                const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
-                if (selectedValue !== value) {
-                    // No exact match so create a synthetic object with the raw value
-                    // "synthetic" isn't an official term or anything, it's just called like that here
-                    this.selectedObject = { name: value } as T;
-                }
+        this.objects = [];
+        await this.updateData();
+
+        if (requestID !== this.#updateRequestID) {
+            return;
+        }
+
+        // If creatable, check if selectedObject's value matches the typed value exactly
+        if (this.creatable) {
+            const selectedValue = this.selectedObject ? this.value(this.selectedObject) : null;
+            if (selectedValue !== value) {
+                // No exact match so create a synthetic object with the raw value
+                // "synthetic" isn't an official term or anything, it's just called like that here
+                this.selectedObject = { name: value } as T;
             }
-            this.dispatchChangeEvent(this.selectedObject);
-        });
+        }
+        this.dispatchChangeEvent(this.selectedObject);
     };
 
-    private onSelect(event: InputEvent) {
+    private onSelect(event: Event) {
         if (this.readOnly) return;
 
-        const value = (event.target as SearchSelectView).value;
+        const value = (event.currentTarget as SearchSelectView).value;
 
         if (!value) {
             this.selectedObject = null;

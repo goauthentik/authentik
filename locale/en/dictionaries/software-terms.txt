@@ -66,6 +66,7 @@ SPSSO
 SVGOMG
 SeaweedFS
 Sfdc
+Symfony
 TOTP
 Transifex
 Unenrollment
@@ -179,6 +180,7 @@ uisp
 unenrollment
 unhashed
 unmigrate
+unscalable
 unskippable
 unsynchronized
 uperm

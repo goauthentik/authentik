@@ -138,3 +138,22 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         else:
             cache.delete(cache_key)
         return config
+
+    def paginate_resources(self, path: str):
+        start_index = 1
+        while True:
+            response: dict[str, Any] = self.lower_case_keys(
+                self._request(
+                    "GET",
+                    path,
+                    params={"count": self.provider.sync_page_size, "startIndex": start_index},
+                )
+            )
+            total_items = int(response["totalresults"])
+            start_index += int(response["itemsperpage"])
+            resources = response.get("resources", [])
+            if not resources:
+                break
+            yield from response["resources"]
+            if start_index >= total_items:
+                break

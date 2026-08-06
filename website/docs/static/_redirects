@@ -84,6 +84,7 @@
 /flow/*                                                     /add-secure-apps/flows-stages/flow/:splat 301!
 /flow/stages/*                                              /add-secure-apps/flows-stages/stages/:splat 301!
 /outposts/*                                                 /add-secure-apps/outposts/:splat 301!
+/add-secure-apps/flows-stages/flow/examples/default_flows   /add-secure-apps/flows-stages/flow/default-flows 301!
 #endregion
 
 #region Sources

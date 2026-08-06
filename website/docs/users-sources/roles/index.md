@@ -1,5 +1,5 @@
 ---
-title: About roles
+title: Roles
 sidebar_position: 3
 ---
 
