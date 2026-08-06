@@ -1,17 +1,22 @@
 """Device backchannel tests"""
 
 from base64 import b64encode
+from datetime import timedelta
 from json import loads
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.oauth.constants import SCOPE_OPENID
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
 
 class TesOAuth2DeviceBackchannel(OAuthTestCase):
@@ -39,10 +44,12 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
         res = self.client.post(
             reverse("authentik_providers_oauth2:device"),
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
 
     def test_backchannel_invalid_no_grant(self):
         """Test backchannel"""
@@ -55,6 +62,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
 
     def test_backchannel_invalid_no_app(self):
         """Test backchannel"""
@@ -68,6 +76,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
 
     def test_backchannel_client_id_via_post_body(self):
         """Test backchannel"""
@@ -89,10 +98,12 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {creds}",
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
         res = self.client.post(
             reverse("authentik_providers_oauth2:device"),
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
         # test without application
         self.application.provider = None
         self.application.save()
@@ -103,6 +114,7 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.json()["error"], "invalid_client")
 
     def test_backchannel_client_id_via_auth_header(self):
         """Test backchannel"""
@@ -181,3 +193,85 @@ class TesOAuth2DeviceBackchannel(OAuthTestCase):
         self.assertEqual(len(token.scope), 2)
         self.assertIn("openid", token.scope)
         self.assertIn("email", token.scope)
+
+    def test_backchannel_response_shape(self):
+        """Test the full device authorization response, not just expires_in"""
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": self.provider.client_id,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        body = loads(res.content.decode())
+        token = DeviceToken.objects.filter(device_code=body["device_code"]).first()
+        self.assertIsNotNone(token)
+        self.assertEqual(body["user_code"], token.user_code)
+        device_url = "http://testserver" + reverse("authentik_providers_oauth2_root:device-login")
+        self.assertEqual(body["verification_uri"], device_url)
+        self.assertEqual(
+            body["verification_uri_complete"],
+            device_url + "?" + urlencode({QS_KEY_CODE: token.user_code}),
+        )
+        self.assertEqual(body["interval"], 5)
+        # TokenResponse must not be cached
+        self.assertEqual(res["Cache-Control"], "no-store")
+        self.assertEqual(res["Pragma"], "no-cache")
+
+    def test_backchannel_expires_in_honors_access_code_validity(self):
+        """expires_in and DeviceToken.expires derive from provider.access_code_validity"""
+        self.provider.access_code_validity = "minutes=10"
+        self.provider.save()
+        before = now()
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": self.provider.client_id,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        body = loads(res.content.decode())
+        self.assertEqual(body["expires_in"], 600)
+        token = DeviceToken.objects.filter(device_code=body["device_code"]).first()
+        self.assertGreaterEqual(token.expires, before + timedelta(minutes=10))
+        self.assertLessEqual(token.expires, now() + timedelta(minutes=10))
+
+    def test_backchannel_no_scope_mappings(self):
+        """A provider without any scope mappings narrows every requested scope away"""
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:device"),
+            data={
+                "client_id": self.provider.client_id,
+                "scope": SCOPE_OPENID,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        body = loads(res.content.decode())
+        token = DeviceToken.objects.filter(device_code=body["device_code"]).first()
+        self.assertEqual(token.scope, [])
+        self.assertNotIn("scope", body)
+
+    def test_backchannel_get_not_allowed(self):
+        """The device endpoint is POST-only"""
+        res = self.client.get(reverse("authentik_providers_oauth2:device"))
+        self.assertEqual(res.status_code, 405)
+
+    def test_backchannel_throttled(self):
+        """Exceeding the configured rate returns slow_down"""
+        with CONFIG.patch("throttle.providers.oauth2.device", "1/hour"):
+            res = self.client.post(
+                reverse("authentik_providers_oauth2:device"),
+                data={
+                    "client_id": self.provider.client_id,
+                },
+            )
+            self.assertEqual(res.status_code, 200)
+            res = self.client.post(
+                reverse("authentik_providers_oauth2:device"),
+                data={
+                    "client_id": self.provider.client_id,
+                },
+            )
+        self.assertEqual(res.status_code, 429)
+        body = loads(res.content.decode())
+        self.assertEqual(body["error"], "slow_down")
