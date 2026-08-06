@@ -28,6 +28,7 @@ dependencies = [
   "django==5.2.17",
   "djangoql==0.19.1",
   "djangorestframework==3.17.1",
+  "dnspython>=2.8.0",
   "docker==7.2.0",
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",

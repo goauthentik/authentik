@@ -73,6 +73,12 @@ export const ModelEnum = {
     AuthentikProvidersScimScimmapping: "authentik_providers_scim.scimmapping",
     AuthentikRbacRole: "authentik_rbac.role",
     AuthentikRbacInitialpermissions: "authentik_rbac.initialpermissions",
+    AuthentikSourcesBskyBskysource: "authentik_sources_bsky.bskysource",
+    AuthentikSourcesBskyBskysourcepropertymapping:
+        "authentik_sources_bsky.bskysourcepropertymapping",
+    AuthentikSourcesBskyUserbskysourceconnection: "authentik_sources_bsky.userbskysourceconnection",
+    AuthentikSourcesBskyGroupbskysourceconnection:
+        "authentik_sources_bsky.groupbskysourceconnection",
     AuthentikSourcesKerberosKerberossource: "authentik_sources_kerberos.kerberossource",
     AuthentikSourcesKerberosKerberossourcepropertymapping:
         "authentik_sources_kerberos.kerberossourcepropertymapping",
