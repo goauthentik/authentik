@@ -1,6 +1,7 @@
 """Enterprise additional settings"""
 
 TENANT_APPS = [
+    "authentik.enterprise.agents",
     "authentik.enterprise.audit",
     "authentik.enterprise.endpoints.connectors.agent",
     "authentik.enterprise.endpoints.connectors.fleet",

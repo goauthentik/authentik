@@ -1,12 +1,16 @@
 """Device init tests"""
 
+from datetime import timedelta
+from json import loads
 from urllib.parse import urlencode
 
 from django.urls import reverse
+from django.utils.timezone import now
 from rest_framework.test import APIClient
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.flows.models import FlowAuthenticationRequirement
 from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import DeviceToken, GrantType, OAuth2Provider
@@ -181,3 +185,108 @@ class TesOAuth2DeviceInit(OAuthTestCase):
         )
         self.assertEqual(res.status_code, 200)
         self.assertIn(b"Permission denied", res.content)
+
+    def test_device_init_unauthenticated(self):
+        """An anonymous user is sent to the authentication flow first"""
+        self.client.logout()
+        res = self.client.get(reverse("authentik_providers_oauth2_root:device-login"))
+        self.assertEqual(res.status_code, 302)
+        self.assertIn(reverse("authentik_flows:default-authentication"), res.url)
+
+    def test_device_init_qs_unknown_code(self):
+        """An unknown code in the query string is rejected.
+
+        CodeValidatorView raises Application.DoesNotExist, so PolicyAccessView returns an
+        AccessDeniedResponse. That response is truthy, so DeviceEntryView returns it rather
+        than falling through to the code entry form."""
+        res = self.client.get(
+            reverse("authentik_providers_oauth2_root:device-login")
+            + "?"
+            + urlencode({QS_KEY_CODE: generate_id()})
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(b"Permission denied", res.content)
+
+    def test_device_init_qs_expired_code(self):
+        """An expired code is hidden by ExpiringModel's manager and treated as unknown"""
+        token = DeviceToken.objects.create(
+            user_code="foo",
+            provider=self.provider,
+            expires=now() - timedelta(seconds=1),
+        )
+        res = self.client.get(
+            reverse("authentik_providers_oauth2_root:device-login")
+            + "?"
+            + urlencode({QS_KEY_CODE: token.user_code})
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(b"Permission denied", res.content)
+
+    def test_device_code_stage_unknown_code(self):
+        """An unknown code entered into the stage is rejected the same way"""
+        executor = reverse(
+            "authentik_api:flow-executor",
+            kwargs={"flow_slug": self.device_flow.slug},
+        )
+        self.api_client.get(reverse("authentik_providers_oauth2_root:device-login"))
+        res = self.api_client.post(
+            executor,
+            data={
+                "component": "ak-provider-oauth2-device-code",
+                "code": generate_id(),
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertIn(b"Permission denied", res.content)
+
+    def test_device_init_flow_non_applicable(self):
+        """A device code flow that isn't applicable to the user 404s"""
+        self.device_flow.authentication = FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        self.device_flow.save()
+        res = self.client.get(reverse("authentik_providers_oauth2_root:device-login"))
+        self.assertEqual(res.status_code, 404)
+
+    def test_code_validator_flow_non_applicable(self):
+        """When the provider's authorization flow isn't applicable, the code is refused
+        and the user is returned to the code entry form"""
+        self.provider.authorization_flow.authentication = (
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        self.provider.authorization_flow.save()
+        token = DeviceToken.objects.create(
+            user_code="foo",
+            provider=self.provider,
+        )
+        res = self.client.get(
+            reverse("authentik_providers_oauth2_root:device-login")
+            + "?"
+            + urlencode({QS_KEY_CODE: token.user_code})
+        )
+        self.assertEqual(res.status_code, 302)
+        self.assertIn(self.device_flow.slug, res.url)
+
+    def test_code_validator_flow_non_applicable_stage(self):
+        """Same, but entered into the stage: validate_code raises Invalid code"""
+        self.provider.authorization_flow.authentication = (
+            FlowAuthenticationRequirement.REQUIRE_UNAUTHENTICATED
+        )
+        self.provider.authorization_flow.save()
+        token = DeviceToken.objects.create(
+            user_code="foo",
+            provider=self.provider,
+        )
+        executor = reverse(
+            "authentik_api:flow-executor",
+            kwargs={"flow_slug": self.device_flow.slug},
+        )
+        self.api_client.get(reverse("authentik_providers_oauth2_root:device-login"))
+        res = self.api_client.post(
+            executor,
+            data={
+                "component": "ak-provider-oauth2-device-code",
+                "code": token.user_code,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+        body = loads(res.content.decode())
+        self.assertEqual(body["response_errors"]["code"][0]["code"], "invalid")

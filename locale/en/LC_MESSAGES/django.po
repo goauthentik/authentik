@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-03 00:30+0000\n"
+"POT-Creation-Date: 2026-08-06 00:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -652,6 +652,30 @@ msgstr ""
 msgid "Object Attributes"
 msgstr ""
 
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
+msgstr ""
+
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
 msgid ""
@@ -956,6 +980,26 @@ msgstr ""
 
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
 msgstr ""
 
 #: authentik/enterprise/api.py
@@ -2073,6 +2117,12 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
 msgstr ""
 
 #: authentik/lib/sync/outgoing/models.py

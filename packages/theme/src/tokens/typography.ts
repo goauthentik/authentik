@@ -14,9 +14,18 @@ import { instance, variable } from "../shared.js";
 
 import { useFontSizeDesignTokens } from "@styleframe/theme";
 
-export const fontFamilyBody = variable("font-family.body", "var(--ak-global--font-family--sans-serif)");
-export const fontFamilyHeading = variable("font-family.heading", "var(--ak-global--font-family--display)");
-export const fontFamilyCode = variable("font-family.code", "var(--ak-global--font-family--monospace)");
+export const fontFamilyBody = variable(
+    "font-family.body",
+    "var(--ak-global--font-family--sans-serif)",
+);
+export const fontFamilyHeading = variable(
+    "font-family.heading",
+    "var(--ak-global--font-family--display)",
+);
+export const fontFamilyCode = variable(
+    "font-family.code",
+    "var(--ak-global--font-family--monospace)",
+);
 
 export const fontSize = useFontSizeDesignTokens(instance, {
     "xs": "0.75rem",

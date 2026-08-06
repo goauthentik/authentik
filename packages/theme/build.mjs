@@ -26,16 +26,21 @@ const HEADER = `/*
 
 /** @type {Category[]} */
 const CATEGORIES = [
-    { name: "color", prefixes: ["color-"] },
+    { name: "color", prefixes: ["global--color--"] },
     {
         name: "typography",
-        prefixes: ["font-family-", "font-size-", "font-weight-", "line-height-"],
+        prefixes: [
+            "global--font-family--",
+            "global--font-size--",
+            "global--font-weight--",
+            "global--line-height--",
+        ],
     },
-    { name: "spacing", prefixes: ["space-"] },
-    { name: "shape", prefixes: ["radius-", "border-width-"] },
-    { name: "shadow", prefixes: ["shadow-"] },
-    { name: "motion", prefixes: ["duration-", "easing-"] },
-    { name: "z-index", prefixes: ["z-index-"] },
+    { name: "spacing", prefixes: ["global--space--"] },
+    { name: "shape", prefixes: ["global--radius--", "global--border-width--"] },
+    { name: "shadow", prefixes: ["global--shadow--"] },
+    { name: "motion", prefixes: ["global--duration--", "global--easing--"] },
+    { name: "z-index", prefixes: ["global--z-index--"] },
 ];
 
 /**

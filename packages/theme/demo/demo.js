@@ -33,9 +33,12 @@ function parseColor(value) {
     if (!value) return null;
     const v = value.trim();
 
-    const ok = v.match(/oklch\(\s*([\d.]+%?)\s+([\d.]+%?)\s+([\d.]+)(?:deg)?(?:\s*\/\s*([\d.]+%?))?/i);
+    const ok = v.match(
+        /oklch\(\s*([\d.]+%?)\s+([\d.]+%?)\s+([\d.]+)(?:deg)?(?:\s*\/\s*([\d.]+%?))?/i,
+    );
     if (ok) {
-        const num = (raw, scale) => (raw.endsWith("%") ? (parseFloat(raw) / 100) * scale : parseFloat(raw));
+        const num = (raw, scale) =>
+            raw.endsWith("%") ? (parseFloat(raw) / 100) * scale : parseFloat(raw);
         return oklchToSrgb(num(ok[1], 1), num(ok[2], 0.4), parseFloat(ok[3]));
     }
 
@@ -80,7 +83,7 @@ function toHex(rgb) {
             .map((c) =>
                 Math.round(c * 255)
                     .toString(16)
-                    .padStart(2, "0")
+                    .padStart(2, "0"),
             )
             .join("")
     );
@@ -166,12 +169,15 @@ const badge = (text, variant) =>
 
 const rung = (token, prefix) => token.slice(prefix.length);
 
-
 // The background colors, text and item colors colors, and the WCAG threshold for readability.
 const COLOR_GROUPS = [
     {
         title: "Brand",
-        tokens: ["--ak-global--color--accent", "--ak-global--color--primary", "--ak-global--color--primary--hover"],
+        tokens: [
+            "--ak-global--color--accent",
+            "--ak-global--color--primary",
+            "--ak-global--color--primary--hover",
+        ],
         against: "--ak-global--color--surface",
         threshold: 3,
     },
@@ -183,13 +189,21 @@ const COLOR_GROUPS = [
     },
     {
         title: "Link",
-        tokens: ["--ak-global--color--link", "--ak-global--color--link--hover", "--ak-global--color--link--visited"],
+        tokens: [
+            "--ak-global--color--link",
+            "--ak-global--color--link--hover",
+            "--ak-global--color--link--visited",
+        ],
         against: "--ak-global--color--surface",
         threshold: 4.5,
     },
     {
         title: "Surface",
-        tokens: ["--ak-global--color--surface", "--ak-global--color--surface--raised", "--ak-global--color--surface--muted"],
+        tokens: [
+            "--ak-global--color--surface",
+            "--ak-global--color--surface--raised",
+            "--ak-global--color--surface--muted",
+        ],
         against: "--ak-global--color--text",
         threshold: 4.5,
         ringed: true,
@@ -202,7 +216,12 @@ const COLOR_GROUPS = [
     },
     {
         title: "Status",
-        tokens: ["--ak-global--color--info", "--ak-global--color--success", "--ak-global--color--warning", "--ak-global--color--danger"],
+        tokens: [
+            "--ak-global--color--info",
+            "--ak-global--color--success",
+            "--ak-global--color--warning",
+            "--ak-global--color--danger",
+        ],
         against: "--ak-global--color--surface",
         threshold: 3,
     },
@@ -309,7 +328,8 @@ const FA_ICONS = [
 ];
 
 const PANGRAM = "Sphinx of black quartz, judge my vow";
-const PROSE = "authentik is an IdP (Identity Provider) and SSO (Single Sign-On) platform that is built with security at the forefront of every piece of code and every feature, with an emphasis on flexibility and versatility."
+const PROSE =
+    "authentik is an IdP (Identity Provider) and SSO (Single Sign-On) platform that is built with security at the forefront of every piece of code and every feature, with an emphasis on flexibility and versatility.";
 
 const blocks = parseStylesheet(await fetch(CSS_URL).then((r) => r.text()));
 
@@ -319,10 +339,14 @@ if (!rootBlock) throw new Error(`no top-level :root block in ${CSS_URL}`);
 
 const TOKENS = rootBlock.decls;
 const darkNames = new Set(
-    blocks.filter((b) => b.path.at(-1) === DARK_SELECTOR).flatMap((b) => b.decls.map((d) => d.name))
+    blocks
+        .filter((b) => b.path.at(-1) === DARK_SELECTOR)
+        .flatMap((b) => b.decls.map((d) => d.name)),
 );
 const mediaNames = new Set(
-    blocks.filter((b) => b.path.some((p) => p.startsWith("@media"))).flatMap((b) => b.decls.map((d) => d.name))
+    blocks
+        .filter((b) => b.path.some((p) => p.startsWith("@media")))
+        .flatMap((b) => b.decls.map((d) => d.name)),
 );
 
 const byPrefix = (prefix) => TOKENS.filter((t) => t.name.startsWith(prefix));
@@ -339,7 +363,10 @@ const mark = (token) => {
 // ------------------------------------------------------------------
 
 function contrastBadge(swatchToken, counterpartToken, threshold) {
-    const ratio = contrastRatio(parseColor(resolve(swatchToken)), parseColor(resolve(counterpartToken)));
+    const ratio = contrastRatio(
+        parseColor(resolve(swatchToken)),
+        parseColor(resolve(counterpartToken)),
+    );
     if (ratio == null) return null;
     const variant = ratio >= 4.5 ? "pass" : ratio >= threshold ? "mid" : "fail";
     const other = rung(counterpartToken, "--ak-global--color--");
@@ -400,26 +427,29 @@ function renderColors() {
                                 ? badge(
                                       `alias of ${token.authored
                                           .match(/var\(\s*(--[\w-]+)/)[1]
-                                          .replace("--ak-global--color--", "")}`
+                                          .replace("--ak-global--color--", "")}`,
                                   )
                                 : null,
                             // Contrast is symmetric, so the swatch
                             // and its counterpart are just the pair.
                             contrastBadge(tokenName, group.against, group.threshold),
-                            !overridden && !isAlias ? badge("no dark override", "fallthrough") : null
-                        )
-                    )
+                            !overridden && !isAlias
+                                ? badge("no dark override", "fallthrough")
+                                : null,
+                        ),
+                    ),
                 );
             })
             .filter(Boolean);
 
         host.append(
             el("h3", { className: "subhead", textContent: group.title }),
-            el("div", { className: "grid" }, cells)
+            el("div", { className: "grid" }, cells),
         );
     }
 
-    document.getElementById("color-count").textContent = `${byPrefix("--ak-global--color--").length} tokens`;
+    document.getElementById("color-count").textContent =
+        `${byPrefix("--ak-global--color--").length} tokens`;
 }
 
 // ------------------------------------------------------------------
@@ -451,9 +481,9 @@ function renderTypography() {
                     className: "specimen__para",
                     style: `font-family:${effective}`,
                     textContent: PANGRAM,
-                })
+                }),
             );
-        })
+        }),
     );
 
     document.getElementById("sizes").replaceChildren(
@@ -469,9 +499,9 @@ function renderTypography() {
                     className: "ramp__sample",
                     style: `font-size:${effective}`,
                     textContent: PANGRAM,
-                })
+                }),
             );
-        })
+        }),
     );
 
     const FACES = [
@@ -495,11 +525,11 @@ function renderTypography() {
                             style: `font-family:${resolve(familyToken)};font-weight:${w}`,
                             textContent: "Identity",
                         }),
-                        value(`${rung(token.name, "--ak-global--font-weight--")} ${w}`)
+                        value(`${rung(token.name, "--ak-global--font-weight--")} ${w}`),
                     );
-                })
-            )
-        )
+                }),
+            ),
+        ),
     );
 
     document.getElementById("leading").replaceChildren(
@@ -516,9 +546,9 @@ function renderTypography() {
                     className: "specimen__para",
                     style: `line-height:${effective}`,
                     textContent: PROSE,
-                })
+                }),
             );
-        })
+        }),
     );
 
     document.getElementById("type-count").textContent =
@@ -538,10 +568,9 @@ function renderSpacing() {
             return [
                 name(token.name),
                 value(`${effective} · ${toPx(effective).toFixed(0)}px`),
-                el("div", { className: "bar", style: `width:${effective}` })
+                el("div", { className: "bar", style: `width:${effective}` }),
             ];
-
-        })
+        }),
     );
     document.getElementById("space-count").textContent = `${spaces.length} tokens`;
 }
@@ -562,9 +591,9 @@ function renderShape() {
                     style: `border-radius:${effective}`,
                 }),
                 name(token.name),
-                value(effective)
+                value(effective),
             );
-        })
+        }),
     );
 
     document.getElementById("strokes").replaceChildren(
@@ -579,9 +608,9 @@ function renderShape() {
                     style: `border-width:${effective}`,
                 }),
                 name(token.name),
-                value(effective)
+                value(effective),
             );
-        })
+        }),
     );
 
     document.getElementById("shape-count").textContent = `${radii.length + strokes.length} tokens`;
@@ -606,9 +635,9 @@ function renderSurfaces() {
                 },
                 name(token.name),
                 el("br"),
-                value(effective)
+                value(effective),
             );
-        })
+        }),
     );
 
     document.getElementById("shadows").replaceChildren(
@@ -621,13 +650,14 @@ function renderSurfaces() {
                 name(token.name),
                 badge(
                     darkNames.has(token.name) ? "themed" : "no dark override",
-                    darkNames.has(token.name) ? null : "fallthrough"
-                )
+                    darkNames.has(token.name) ? null : "fallthrough",
+                ),
             );
-        })
+        }),
     );
 
-    document.getElementById("surface-count").textContent = `${planes.length} planes · ${shadows.length} shadows`;
+    document.getElementById("surface-count").textContent =
+        `${planes.length} planes · ${shadows.length} shadows`;
 }
 
 // ------------------------------------------------------------------
@@ -648,10 +678,10 @@ function renderMotion() {
                 el(
                     "div",
                     { className: "badges" },
-                    mediaNames.has(token.name) ? badge("zeroed by prefers-reduced-motion") : null
-                )
+                    mediaNames.has(token.name) ? badge("zeroed by prefers-reduced-motion") : null,
+                ),
             );
-        })
+        }),
     );
 
     const prefersReduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -681,9 +711,9 @@ function renderLayering() {
                     style: `left:${i * 4.5}rem;z-index:${effective}`,
                 },
                 name(token.name),
-                value(effective)
+                value(effective),
             );
-        })
+        }),
     );
     document.getElementById("z-count").textContent = `${zs.length} tokens`;
 }
@@ -707,8 +737,8 @@ function renderIcons() {
                     className: "icon-cell__name",
                     textContent: `${prefix}${iconName}`,
                 }),
-                value(`\\${cp.toString(16)}`)
-            )
+                value(`\\${cp.toString(16)}`),
+            ),
         );
 
     document.getElementById("icons-pf").replaceChildren(...cells(PF_ICONS, "pf", "pf-icon-"));
@@ -722,7 +752,9 @@ function renderIcons() {
 // ------------------------------------------------------------------
 
 function renderOverview() {
-    const categories = new Set(TOKENS.map((t) => t.name.replace(/^--ak-global--/, "").split("--")[0]));
+    const categories = new Set(
+        TOKENS.map((t) => t.name.replace(/^--ak-global--/, "").split("--")[0]),
+    );
     console.log("C:", categories);
     document.getElementById("stats").replaceChildren(
         ...[
@@ -736,9 +768,9 @@ function renderOverview() {
                 "div",
                 { className: "stat" },
                 el("div", { className: "stat__value", textContent: String(v) }),
-                el("div", { className: "stat__label", textContent: label })
-            )
-        )
+                el("div", { className: "stat__label", textContent: label }),
+            ),
+        ),
     );
 
     document.getElementById("tokens-count").textContent = `${TOKENS.length} in :root`;
@@ -757,7 +789,7 @@ function renderAudit() {
         host.append(
             el("strong", {
                 textContent: `Complete: all ${TOKENS.length} tokens in dist/index.css are represented above.`,
-            })
+            }),
         );
         return;
     }
@@ -770,8 +802,8 @@ function renderAudit() {
                 "div",
                 {},
                 `${missing.length} token(s) exist in dist/index.css but no section renders them:`,
-                el("ul", {}, ...missing.map((n) => el("li", {}, el("code", { textContent: n }))))
-            )
+                el("ul", {}, ...missing.map((n) => el("li", {}, el("code", { textContent: n })))),
+            ),
         );
     }
     if (unknownDark.length) {
@@ -780,8 +812,12 @@ function renderAudit() {
                 "div",
                 {},
                 `${unknownDark.length} token(s) are defined only in ${DARK_SELECTOR}, with no :root default:`,
-                el("ul", {}, ...unknownDark.map((n) => el("li", {}, el("code", { textContent: n }))))
-            )
+                el(
+                    "ul",
+                    {},
+                    ...unknownDark.map((n) => el("li", {}, el("code", { textContent: n }))),
+                ),
+            ),
         );
     }
 }
