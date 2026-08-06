@@ -68,7 +68,7 @@ export class UserOverviewTab extends AKElement {
                 ></ak-object-attributes-card>
             </div>
             ${this.hasEnterpriseLicense
-                ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-5-col-on-xl">
+                ? html`<div class="pf-c-card pf-l-grid__item pf-m-12-col">
                       <ak-user-next-actions-card .user=${this.user}></ak-user-next-actions-card>
                   </div>`
                 : nothing}
