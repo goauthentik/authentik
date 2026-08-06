@@ -94,6 +94,7 @@ from authentik.core.models import (
 )
 from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -237,7 +238,13 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             permissions = validated_data.pop("permissions", [])
 
         previous_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
-        instance = super().update(instance, validated_data)
+        # When only the next-actions attribute changes, the dedicated events below
+        # replace the generic model update event
+        if self._is_next_actions_only_change(instance, validated_data):
+            with audit_ignore():
+                instance = super().update(instance, validated_data)
+        else:
+            instance = super().update(instance, validated_data)
         self._log_next_action_changes(previous_actions, instance)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
@@ -248,6 +255,20 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
+
+    def _is_next_actions_only_change(self, instance: User, validated_data: dict) -> bool:
+        """Check whether the update only changes the next-actions attribute."""
+        if set(validated_data.keys()) != {"attributes"}:
+            return False
+        previous = {
+            k: v for k, v in instance.attributes.items() if k != USER_ATTRIBUTE_NEXT_ACTIONS
+        }
+        updated = {
+            k: v
+            for k, v in validated_data["attributes"].items()
+            if k != USER_ATTRIBUTE_NEXT_ACTIONS
+        }
+        return previous == updated
 
     def _log_next_action_changes(self, previous_actions: list[str], instance: User):
         """Create events for next actions added to or removed from the user."""
