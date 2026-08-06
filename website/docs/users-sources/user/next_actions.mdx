@@ -21,14 +21,12 @@ If a listed flow doesn't exist or its policies deny the user, the login fails un
 ## Require an action for a user
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Users** and click the **Edit** icon of the user.
-3. Add the flow slugs to the user's **Attributes** field:
+2. Navigate to **Directory** > **Users** and click the name of the user.
+3. In the **Next actions on login** card, select a flow and click **Add**. Pending actions are listed in the same card and can be removed there.
 
-    ```yaml
-    goauthentik.io/user/next-actions:
-        - default-password-change
-    ```
+Because the actions are stored in the `goauthentik.io/user/next-actions` attribute, they can also be set by editing the user's **Attributes** field directly, through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.md) in an enrollment flow:
 
-4. Click **Update**.
-
-The attribute can also be set through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.md) in an enrollment flow.
+```yaml
+goauthentik.io/user/next-actions:
+    - default-password-change
+```
