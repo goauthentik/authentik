@@ -12,7 +12,7 @@ Device compliance policies are currently in development and inaccessible. Howeve
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#enable-device-compliance-ssh-server-authentication-and-local-device-login), [Windows](../../authentik-agent/agent-deployment/windows/#enable-device-compliance-and-local-device-login), [macOS](../../authentik-agent/agent-deployment/macos/#enable-device-compliance)).
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#join-the-device-to-an-authentik-domain), [Windows](../../authentik-agent/agent-deployment/windows/#join-the-device-to-an-authentik-domain), [macOS](../../authentik-agent/agent-deployment/macos/#join-the-device-to-an-authentik-domain)).
 
 ## Access device facts within a flow
 
@@ -54,7 +54,7 @@ If your goal is to only allow authentication via endpoint devices, this is achie
 
 If your goal is to only allow authentication via a specific type of endpoint device, this is achievable by adding an [Endpoint stage](../../add-secure-apps/flows-stages/stages/endpoint/index.md) and a [Deny stage](../../add-secure-apps/flows-stages/stages/deny/index.md) to your authentication flow.
 
-The following example will only allow authentication via Apple devices.
+The following example allows authentication only through Apple devices.
 
 #### Create an Endpoint stage
 

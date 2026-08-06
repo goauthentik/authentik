@@ -105,6 +105,12 @@ jobs:
         uses: ./.github/actions/setup
         with:
           dependencies: ${{ matrix.deps }}
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
@@ -140,7 +146,7 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -150,7 +156,9 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    env:
+      AUTHENTIK_MIGRATIONS__DANGEROUSLY_ALLOW_MULTIPLE_MAJOR_VERSION_UPGRADES: "true"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -213,7 +221,7 @@ jobs:
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -221,7 +229,7 @@ jobs:
         with:
           flags: unit-migrate
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -231,7 +239,7 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -242,7 +250,7 @@ jobs:
         env:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -328,7 +336,7 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - name: Pin pnpm store directory
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
@@ -345,7 +353,7 @@ jobs:
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package.json', 'web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
@@ -433,7 +441,16 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust,runtime
+          dependencies: system,python,rust,runtime
+      - name: Prepare database
+        run: |
+          uv run make migrate
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
@@ -490,11 +507,11 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # Docker login is required for attestations
-      - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -510,7 +527,7 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@f7c74d28b9d84cb8768d0b8ca14a4bac6ef463e6
+      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"

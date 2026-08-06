@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-17 00:27+0000\n"
+"POT-Creation-Date: 2026-08-04 00:31+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Igor Dobrača <id.public@rovinj.net>, 2026\n"
 "Language-Team: Croatian (Croatia) (https://app.transifex.com/authentik/teams/119923/hr_HR/)\n"
@@ -186,6 +186,22 @@ msgstr ""
 "'ba.b'"
 
 #: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ"
+" templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
+msgstr ""
+"URL predložak za izvor vektorskih pločica koje koristi karta događaja. "
+"Podržava XYZ predloške s rezerviranim mjestima {z}, {x} i {y} ili pmtiles://"
+" arhivskim URL-ovima. Kada je prazno, prednji dio koristi paketnu osnovnu "
+"kartu hexworlda. Ova vrijednost dio je informacija o robnoj marki koje se "
+"poslužuju neautentificiranim klijentima; nemojte u nju ugrađivati ​​API "
+"ključeve ili druge vjerodajnice."
+
+#: authentik/brands/models.py
 msgid ""
 "When set, external users will be redirected to this application after "
 "authenticating."
@@ -208,6 +224,14 @@ msgstr "Robna marka"
 #: authentik/brands/models.py
 msgid "Brands"
 msgstr "Robne marke"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificate"
+msgstr "Certifikat klijenta robne marke"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificates"
+msgstr "Certifikat klijenta robne marke"
 
 #: authentik/common/oauth/constants.py
 msgid "Based on the Hashed User ID"
@@ -251,6 +275,10 @@ msgstr "Slug '{slug}' je rezerviran i ne može se koristiti za primjene."
 msgid "User does not have permission to add members to this group."
 msgstr "Korisnik nema dopuštenje za dodavanje članova u ovu grupu."
 
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
+msgstr "Jedinstvenost se ne može omogućiti za nizove."
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -260,14 +288,6 @@ msgstr ""
 "Kada nisu postavljeni, svi pružatelji usluga se vraćaju. Kada je postavljeno"
 " na true, vraćaju se samo backchannel pružatelji. Kada su postavljeni na "
 "lažno, pružatelji backchannel usluga su isključeni"
-
-#: authentik/core/api/users.py
-msgid "Invalid password hash format. Must be a valid Django password hash."
-msgstr "Nevažeći hash format lozinke. Mora biti valjan Django hash lozinke."
-
-#: authentik/core/api/users.py
-msgid "Cannot set both password and password_hash. Use only one."
-msgstr "Ne mogu postaviti i lozinku i password_hash. Koristi samo jednu."
 
 #: authentik/core/api/users.py
 msgid "No leading or trailing slashes allowed."
@@ -294,8 +314,16 @@ msgid "User does not have permission to assign roles."
 msgstr "Korisnik nema dopuštenje za dodjeljivanje uloga."
 
 #: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr "Ne mogu postaviti i lozinku i password_hash. Koristi samo jednu."
+
+#: authentik/core/api/users.py
 msgid "Can't modify internal service account users"
 msgstr "Ne mogu mijenjati korisnike internih servisnih računa"
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "Ovo polje je obavezno."
 
 #: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
@@ -333,17 +361,9 @@ msgstr "Korisnik nema postavljenu e-mail adresu."
 msgid "Email stage not found."
 msgstr "Faza e-pošte nije pronađena."
 
-#: authentik/core/api/users.py
-msgid "This field is required."
-msgstr "Ovo polje je obavezno."
-
 #: authentik/core/apps.py
-msgid ""
-"Configure if applications without any policy/group/user bindings should be "
-"accessible to any user."
-msgstr ""
-"Konfigurirajte ako aplikacije bez ikakvih veza, grupnih ili korisničkih veza"
-" trebaju biti dostupne svakom korisniku."
+msgid "Applications with no policies bound can be accessed by any user."
+msgstr "Aplikacijama bez vezanih pravila može pristupiti bilo koji korisnik."
 
 #: authentik/core/models.py
 msgid "name"
@@ -582,6 +602,54 @@ msgid "Property Mappings"
 msgstr "Mapiranja svojstava"
 
 #: authentik/core/models.py
+msgid "Source User Property Mapping"
+msgstr "Mapiranje korisničkih svojstava izvora"
+
+#: authentik/core/models.py
+msgid "Source User Property Mappings"
+msgstr "Mapiranje korisničkih svojstava izvora"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mapping"
+msgstr "Mapiranje grupnih svojstava izvora"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mappings"
+msgstr "Mapiranje grupnih svojstava izvora"
+
+#: authentik/core/models.py
+msgid "Provider Property Mapping"
+msgstr "Mapiranje imovine pružatelja usluga"
+
+#: authentik/core/models.py
+msgid "Provider Property Mappings"
+msgstr "Mapiranje imovine pružatelja usluga"
+
+#: authentik/core/models.py
+msgid "User Role"
+msgstr "Korisnička rola"
+
+#: authentik/core/models.py
+msgid "User Roles"
+msgstr "Korisnička rola"
+
+#: authentik/core/models.py
+msgid "Group Role"
+msgstr "Rola grupe"
+
+#: authentik/core/models.py
+msgid "Group Roles"
+msgstr "Rola grupe"
+
+#: authentik/core/models.py
+msgid "User Group"
+msgstr "Korisnička grupa"
+
+#: authentik/core/models.py
+msgid "User Groups"
+msgstr "Korisnička grupa"
+
+#: authentik/core/models.py
 msgid "session data"
 msgstr "podaci sesije"
 
@@ -594,12 +662,68 @@ msgid "Sessions"
 msgstr "Sjednice"
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr "Korisnik prebacuje sesiju"
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr "Korisnik prebacuje sesije"
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "Autentificirana sesija"
 
 #: authentik/core/models.py
 msgid "Authenticated Sessions"
 msgstr "Autentificirane sesije"
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr "Ovo polje je obavezno"
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr "Vrijednost mora biti niz."
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr "Vrijednost ne odgovara konfiguriranom uzorku."
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr "Vrijednost nije jedinstvena."
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr "Atribut objekta"
+
+#: authentik/core/models.py
+msgid "Object Attributes"
+msgstr "Atribut objekta"
+
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr "Mehanizam za zrcalne politike"
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr "Kopiraj povezivanja pravila"
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr "Ne nasljeđuj nikakva povezivanja pravila"
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr "Glumac"
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr "Glumci"
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
+msgstr "Ponašanje pravila ne može se mijenjati nakon stvaranja."
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -670,6 +794,14 @@ msgstr "Upravo ćeš se prijaviti u %(application)s."
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
 msgstr "Sučelju mogu pristupiti samo interni korisnici."
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr "Prebacivanje korisnika je onemogućeno."
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
+msgstr "Prebacivanje korisnika onemogućeno"
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -782,6 +914,14 @@ msgstr "Agent konektor"
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Connectors"
 msgstr "Agent konektori"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Provider"
+msgstr "Pružatelj federacije JWT-a za konektor agenta"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Providers"
+msgstr "Pružatelj federacije JWT-a za konektor agenta"
 
 #: authentik/endpoints/connectors/agent/models.py
 msgid "Agent Device User binding"
@@ -943,23 +1083,110 @@ msgstr "Google Device Trust Connectors"
 msgid "Verifying your browser..."
 msgstr "Provjeravam vaš preglednik..."
 
-#: authentik/enterprise/lifecycle/api/reviews.py
+#: authentik/enterprise/lifecycle/offboarding/actions.py
+#, python-format
+msgid "User %(username)s was offboarded (%(action)s)"
+msgstr "Korisnik %(username)s je isključen (%(action)s)"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "This user already has a pending offboarding scheduled."
+msgstr "Ovaj korisnik već ima zakazano uklanjanje s liste čekanja."
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Offboarding must be scheduled in the future."
+msgstr "Isključivanje iz programa mora se zakazati u budućnosti."
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Internal service accounts cannot be offboarded."
+msgstr "Interni servisni računi ne mogu se isključiti iz programa."
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot offboard your own account."
+msgstr "Ne možete odjaviti vlastiti račun."
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot cancel your own offboarding."
+msgstr "Ne možete otkazati vlastito odjavljivanje."
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Only a pending offboarding can be cancelled."
+msgstr "Samo se predstojeće isključivanje može otkazati."
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Deactivate"
+msgstr "Deaktiviraj"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Delete"
+msgstr "Obriši"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Pending"
+msgstr "U tijeku"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Completed"
+msgstr "Završeno"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Failed"
+msgstr "Neuspješno"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Canceled"
+msgstr "Otkazano"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Absolute time at which the offboarding action is executed."
+msgstr "Apsolutno vrijeme u kojem se izvršava radnja isključivanja."
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's sessions when offboarding."
+msgstr "Poništi sve korisnikove sesije prilikom odjave."
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's tokens when offboarding."
+msgstr "Poništi sve tokene korisnika prilikom odjave."
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Number of times execution has been attempted and failed."
+msgstr "Broj neuspješnih pokušaja izvršenja."
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboarding"
+msgstr "Isključivanje korisnika"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboardings"
+msgstr "Isključivanja korisnika"
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute due user offboardings."
+msgstr "Izvršite naknadna uklanjanja korisnika."
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute a single user offboarding."
+msgstr "Izvršite uklanjanje jednog korisnika s liste korisnika."
+
+#: authentik/enterprise/lifecycle/review/api/reviews.py
 msgid "You are not allowed to submit a review for this object."
 msgstr "Nije dopušteno slati recenziju za ovaj objekt."
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Object does not exist"
 msgstr "Objekt ne postoji"
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Either a reviewer group or a reviewer must be set."
 msgstr "Mora biti formirana ili grupa recenzenata ili recenzent."
 
-#: authentik/enterprise/lifecycle/api/rules.py
+#: authentik/enterprise/lifecycle/review/api/rules.py
 msgid "Grace period must be shorter than the interval."
 msgstr "Razdoblje milosti mora biti kraće od intervala."
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Select which transports should be used to notify the reviewers. If none are "
 "selected, the notification will only be shown in the authentik UI."
@@ -967,55 +1194,71 @@ msgstr ""
 "Odaberite koji će se transporti koristiti za obavještavanje recenzenta. Ako "
 "nijedna nije odabrana, obavijest će se prikazivati samo u authentik sučelju."
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Group"
+msgstr "Grupa za pregled pravila životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Groups"
+msgstr "Grupa za pregled pravila životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer"
+msgstr "Preglednik pravila životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewers"
+msgstr "Preglednik pravila životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transport"
+msgstr "Prijenos obavijesti o pravilu životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transports"
+msgstr "Prijenos obavijesti o pravilu životnog ciklusa"
+
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Reviewed"
-msgstr "Revidirano %s"
+msgstr "Recenzirano"
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Pending"
-msgstr "U tijeku"
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Overdue"
 msgstr "Prošao rok"
 
-#: authentik/enterprise/lifecycle/models.py
-msgid "Canceled"
-msgstr "Otkazano"
-
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid "Go to {self._get_model_name()}"
 msgstr "Idi na {self._get_model_name()}"
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is due for {self.content_type.name.lower()} {object_label}"
 msgstr ""
 "Pregled pristupa je predviđen za {self.content_type.name.lower()} "
 "{object_label}"
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review is overdue for {self.content_type.name} {str(self.object)}"
 msgstr ""
 "Pregled pristupa je odavno potreban za {self.content_type.name} "
 "{str(self.object)}"
 
-#: authentik/enterprise/lifecycle/models.py
+#: authentik/enterprise/lifecycle/review/models.py
 msgid ""
 "Access review completed for {self.content_type.name} {str(self.object)}"
 msgstr ""
 "Pregled pristupa završen za {self.content_type.name} {str(self.object)}"
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Dispatch tasks to apply lifecycle rules."
 msgstr "Pošaljite zadatke za primjenu pravila životnog ciklusa."
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Apply lifecycle rule."
 msgstr "Primijenite pravilo životnog ciklusa."
 
-#: authentik/enterprise/lifecycle/tasks.py
+#: authentik/enterprise/lifecycle/review/tasks.py
 msgid "Send lifecycle rule notification."
 msgstr "Pošaljite obavijest o pravilima životnog ciklusa."
 
@@ -1118,6 +1361,14 @@ msgid "Google Workspace Providers"
 msgstr "Google Workspace pružatelji usluga"
 
 #: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Group"
+msgstr "Grupa za mapiranje svojstava pružatelja usluga Google Workspacea"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Groups"
+msgstr "Grupa za mapiranje svojstava pružatelja usluga Google Workspacea"
+
+#: authentik/enterprise/providers/google_workspace/models.py
 msgid "Google Workspace Provider Mapping"
 msgstr "Google Workspace Provider Mapiranje"
 
@@ -1191,6 +1442,14 @@ msgstr "Microsoft Entra Provider"
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Providers"
 msgstr "Microsoft Entra pružatelji usluga"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Group"
+msgstr "Grupa za mapiranje svojstava pružatelja usluga Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Groups"
+msgstr "Grupa za mapiranje svojstava pružatelja usluga Microsoft Entra"
 
 #: authentik/enterprise/providers/microsoft_entra/models.py
 msgid "Microsoft Entra Provider Mapping"
@@ -1284,6 +1543,14 @@ msgid "Add stream to SSF provider"
 msgstr "Dodaj stream SSF provideru"
 
 #: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Provider"
+msgstr "Pružatelj autentifikacije OIDC-a za SSF pružatelja usluga"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Providers"
+msgstr "Pružatelj autentifikacije OIDC-a za SSF pružatelja usluga"
+
+#: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
 msgstr "SSF Stream"
 
@@ -1306,6 +1573,22 @@ msgstr "Pošaljite SSF događaje."
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Send an SSF event."
 msgstr "Pošaljite SSF događaj."
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 1.1"
+msgstr "SAML 1.1"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid ""
+"SAML assertion version to issue in the security token. Microsoft Entra ID "
+"and classic ADFS-style relying parties typically require SAML 1.1."
+msgstr ""
+"Verzija SAML tvrdnje za izdavanje u sigurnosnom tokenu. Microsoft Entra ID i"
+" klasične ADFS-stilske ovisne strane obično zahtijevaju SAML 1.1."
 
 #: authentik/enterprise/providers/ws_federation/models.py
 msgid "WS-Federation Provider"
@@ -1342,6 +1625,102 @@ msgstr "Preuzimanja"
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
 msgstr "Generirajte izvoz podataka."
+
+#: authentik/enterprise/requests/models.py
+msgid "Everyone who can approve"
+msgstr "Svi koji mogu odobriti"
+
+#: authentik/enterprise/requests/models.py
+msgid "Only individually-selected reviewers"
+msgstr "Samo pojedinačno odabrani recenzenti"
+
+#: authentik/enterprise/requests/models.py
+msgid "A random subset of size min_reviewers, from everyone who can approve"
+msgstr "Slučajni podskup veličine min_recenzenti, od svih koji mogu odobriti"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Binding"
+msgstr "Zahtjev za povezivanje podređenog pravila"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Bindings"
+msgstr "Zahtjev za podređene veze pravila"
+
+#: authentik/enterprise/requests/models.py
+msgid ""
+"How long a request against this binding stays pending before it "
+"automatically lapses if not approved or denied."
+msgstr ""
+"Koliko dugo zahtjev za ovu vezu ostaje na čekanju prije nego što automatski "
+"istekne ako nije odobren ili odbijen."
+
+#: authentik/enterprise/requests/models.py
+msgid "The maximum duration a grant approved against this binding can last."
+msgstr "Maksimalno trajanje odobrenja pristupa vezanog uz ovo povezivanje."
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Binding"
+msgstr "Zahtjev za povezivanje pravila"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Bindings"
+msgstr "Zahtjev za povezivanje pravila"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule"
+msgstr "Zahtjev za pravilo"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rules"
+msgstr "Zahtjev za pravila"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transport"
+msgstr "Zahtjev za prijenos obavijesti o pravilu"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transports"
+msgstr "Zahtjev za prijenos obavijesti o pravilima"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request"
+msgstr "Zahtjev za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Requests"
+msgstr "Zahtjev za odobrenja"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can create a grant request"
+msgstr "Ne mogu stvori zahtjev za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can fulfill (approve/deny) a grant request"
+msgstr "Može ispuniti (odobriti/odbiti) zahtjev za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can revoke a grant request"
+msgstr "Može opozvati zahtjev za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Target"
+msgstr "Cilj zahtjeva za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Targets"
+msgstr "Cilj zahtjeva za odobrenje"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approval"
+msgstr "Odobrenje zahtjeva za pristup"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approvals"
+msgstr "Odobrenje zahtjeva za pristup"
+
+#: authentik/enterprise/requests/tasks.py
+msgid "Send access-request review notification."
+msgstr "Pošalji obavijest o pregledu zahtjeva za pristup."
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
@@ -1459,6 +1838,14 @@ msgstr "Međusobne TLS faze"
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
 msgstr "Dozvole za prijenos certifikata za ispostave."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authority"
+msgstr "Uzajamni TLS certifikatni autoritet faze"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authoritys"
+msgstr "Uzajamni TLS certifikatni autoritet faze"
 
 #: authentik/enterprise/stages/mtls/stage.py
 msgid "Certificate required but no certificate was given."
@@ -1613,6 +2000,14 @@ msgstr "Pravilo obavijesti"
 #: authentik/events/models.py
 msgid "Notification Rules"
 msgstr "Pravila obavijesti"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transport"
+msgstr "Pravilo obavještavanja Prijenos obavijesti"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transports"
+msgstr "Pravilo obavještavanja Prijenos obavijesti"
 
 #: authentik/events/models.py
 msgid "Webhook Mapping"
@@ -1843,6 +2238,14 @@ msgstr "Vremensko ograničenje za sinkronizaciju jedne stranice"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
+msgstr ""
+"Kada je omogućeno, authentik će pokušati otkriti postojeće resurse u "
+"udaljenom sustavu."
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
 "When enabled, provider will not modify or create objects in the remote "
 "system."
 msgstr ""
@@ -1853,6 +2256,10 @@ msgstr ""
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
 msgstr "%(value)s nije u ispravnom formatu 'hours=3; minuta=1'."
+
+#: authentik/lib/validators.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr "Nevažeći hash format lozinke. Mora biti valjan Django hash lozinke."
 
 #: authentik/lib/validators.py
 #, python-brace-format
@@ -1955,6 +2362,14 @@ msgstr "Ispostava"
 #: authentik/outposts/models.py
 msgid "Outposts"
 msgstr "Ispostave"
+
+#: authentik/outposts/models.py
+msgid "Outpost Provider"
+msgstr "Pružatelj usluga na ispostavi"
+
+#: authentik/outposts/models.py
+msgid "Outpost Providers"
+msgstr "Pružatelj usluga na ispostavi"
 
 #: authentik/outposts/tasks.py
 msgid "Update cached state of service connection."
@@ -2541,6 +2956,22 @@ msgid "OAuth2/OpenID Providers"
 msgstr "OAuth2/OpenID pružatelji"
 
 #: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Source"
+msgstr "Izvor federacije JWT pružatelja OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Sources"
+msgstr "Izvori federacije JWT pružatelja OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Provider"
+msgstr "OAuth2 pružatelj JWT federacijski pružatelj"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Providers"
+msgstr "OAuth2 pružatelj JWT federacijski pružatelji"
+
+#: authentik/providers/oauth2/models.py
 msgid "Scopes"
 msgstr "Opseg"
 
@@ -2591,6 +3022,86 @@ msgstr "OAuth2 Refresh Token"
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 Refresh Tokens"
+
+#: authentik/providers/oauth2/models.py
+msgid "Provider"
+msgstr "Pružatelj usluga"
+
+#: authentik/providers/oauth2/models.py
+msgid "Default application group"
+msgstr "Zadana grupa aplikacija"
+
+#: authentik/providers/oauth2/models.py
+msgid "Group to assign to automatically created applications."
+msgstr "Grupa za dodjeljivanje automatski kreiranim aplikacijama."
+
+#: authentik/providers/oauth2/models.py
+msgid "Override authorization flow"
+msgstr "Nadjačavanje toka autorizacije"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization flow applied to dynamically registered clients."
+msgstr "Tijek autorizacije primijenjen na dinamički registrirane klijente."
+
+#: authentik/providers/oauth2/models.py
+msgid "Override invalidation flow"
+msgstr "Nadjačavanje toka poništavanja"
+
+#: authentik/providers/oauth2/models.py
+msgid "Override property mappings"
+msgstr "Nadjačavanje mapiranja svojstava"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope mappings applied to dynamically registered clients."
+msgstr "Mapiranje opsega primijenjeno na dinamički registrirane klijente."
+
+#: authentik/providers/oauth2/models.py
+msgid "Access token validity"
+msgstr "Valjanost pristupnog tokena"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum access token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Maksimalna valjanost pristupnog tokena za registrirane klijente (Format: "
+"sati=1; minute=2; sekunde=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid "Refresh token validity"
+msgstr "Osvježi valjanost tokena"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum refresh token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Maksimalna valjanost tokena za osvježavanje za registrirane klijente "
+"(Format: sati=1; minute=2; sekunde=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid "Allowed grant types"
+msgstr "Dopuštene vrste odobrenja"
+
+#: authentik/providers/oauth2/models.py
+msgid "If empty, all grant types are allowed."
+msgstr "Ako je prazno, dopuštene su sve vrste odobrenja."
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registration"
+msgstr "OAuth2 dinamička registracija klijenta"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registrations"
+msgstr "OAuth2 dinamičke registracije klijenta"
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mapping"
+msgstr "Mapiranje svojstava dinamičke registracije klijenta"
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mappings"
+msgstr "Mapiranje svojstava dinamičke registracije klijenata"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
@@ -2753,6 +3264,14 @@ msgstr "RAC krajnja točka"
 #: authentik/providers/rac/models.py
 msgid "RAC Endpoints"
 msgstr "RAC krajnje točke"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mapping"
+msgstr "Mapiranje svojstava krajnje točke"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mappings"
+msgstr "Mapiranja svojstava krajnje točke"
 
 #: authentik/providers/rac/models.py
 msgid "RAC Provider Property Mapping"
@@ -3172,6 +3691,22 @@ msgid "SCIM Providers"
 msgstr "SCIM pružatelji"
 
 #: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filter"
+msgstr "Filtar grupe pružatelja SCIM-a"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filters"
+msgstr "Filteri grupe pružatelja SCIM-a"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mapping"
+msgstr "Mapiranje svojstava grupe SCIMProvider"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mappings"
+msgstr "Mapiranja svojstava grupe SCIMProvider"
+
+#: authentik/providers/scim/models.py
 msgid "SCIM Provider Mapping"
 msgstr "Mapiranje SCIM pružatelja usluga"
 
@@ -3233,6 +3768,14 @@ msgstr "Može se oduzeti dopuštenja ulogama"
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
 msgstr "Početna dopuštenja"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permission"
+msgstr "Početna dopuštenja dozvola"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permissions"
+msgstr "Početna dopuštenja dozvola"
 
 #: authentik/rbac/models.py
 msgid "System permission"
@@ -3493,6 +4036,10 @@ msgid ""
 msgstr ""
 "Kada korisnik promijeni lozinku, sinkronizirajte je natrag na LDAP. Ovo se "
 "može omogućiti samo na jednom LDAP izvoru."
+
+#: authentik/sources/ldap/models.py
+msgid "Sync group parentage/hierarchy from LDAP directories."
+msgstr "Sinkroniziraj roditeljstvo/hijerarhiju grupe iz LDAP direktorija."
 
 #: authentik/sources/ldap/models.py
 msgid ""
@@ -3829,8 +4376,8 @@ msgid ""
 "Which servers a user has to be a member of to be granted access. Empty list "
 "allows every server."
 msgstr ""
-"Na koje servere korisnik mora biti član da bi mu se omogućio pristup. Prazan"
-" popis dopušta svaki server."
+"Kojih poslužitelja korisnik mora biti član da bi mu bio odobren pristup. "
+"Prazan popis dopušta svaki poslužitelj."
 
 #: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
@@ -4370,13 +4917,25 @@ msgstr "Faza validacije autentifikatora"
 msgid "Authenticator Validation Stages"
 msgstr "Faze validacije autentifikatora"
 
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stage"
+msgstr "Faza konfiguracije provjere autentičnosti autentifikatora"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stages"
+msgstr "Faze konfiguracije provjere autentičnosti autentifikatora"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Type"
+msgstr "Autentifikator Valid Stage WebAuthn Dopuštena vrsta uređaja"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Types"
+msgstr "Autentifikator Valid Stage WebAuthn Dopuštena vrsta uređaja"
+
 #: authentik/stages/authenticator_validate/stage.py
 msgid "No (allowed) MFA authenticator configured."
 msgstr "Nije konfiguriran (dozvoljen) MFA autentifikator."
-
-#: authentik/stages/authenticator_webauthn/models.py
-msgid "When enabled, a given device can only be registered once."
-msgstr "Kada je omogućeno, određeni uređaj može se registrirati samo jednom."
 
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
@@ -4401,6 +4960,14 @@ msgstr "WebAuthn tip uređaja"
 #: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device types"
 msgstr "WebAuthn tipovi uređaja"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restriction"
+msgstr "Ograničenje vrste uređaja za WebAuthenticator Stage"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restrictions"
+msgstr "Ograničenje vrste uređaja za WebAuthenticator Stage"
 
 #: authentik/stages/authenticator_webauthn/tasks.py
 msgid ""
@@ -4850,6 +5417,14 @@ msgstr "Faza identifikacije"
 msgid "Identification Stages"
 msgstr "Faze identifikacije"
 
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Source"
+msgstr "Izvor faze identifikacije"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Sources"
+msgstr "Izvor faze identifikacije"
+
 #: authentik/stages/identification/stage.py
 msgid "No identification data provided."
 msgstr "Nisu dostavljeni identifikacijski podaci."
@@ -5077,6 +5652,22 @@ msgstr "Faza prompta"
 msgid "Prompt Stages"
 msgstr "Faze zadataka"
 
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Field"
+msgstr "Polje faze upita"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Fields"
+msgstr "Polje faze upita"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policy"
+msgstr "Pravila validacije faze brzog slanja"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policys"
+msgstr "Pravila validacije faze brzog slanja"
+
 #: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
 msgstr "Lozinke se ne podudaraju."
@@ -5152,6 +5743,10 @@ msgstr "Stupnjevi korisničke prijave"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Nema korisnika na čekanju za prijavu."
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
+msgstr "Odabrana sesija više nije dostupna. Pokušajte ponovno."
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
@@ -5260,6 +5855,14 @@ msgstr ""
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
 msgstr "Konfigurirajte kako Authentik treba prikazivati avatare korisnicima."
+
+#: authentik/tenants/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+"Konfigurirajte osnovni URL pod kojim je ova instanca autentifikacijske "
+"usluge dostupna, npr. https://authentik.company"
 
 #: authentik/tenants/models.py
 msgid "Enable the ability for users to change their name."

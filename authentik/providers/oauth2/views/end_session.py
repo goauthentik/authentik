@@ -52,6 +52,12 @@ class EndSessionView(PolicyAccessView):
         if not self.flow:
             raise Http404
 
+    def handle_no_permission(self) -> HttpResponse:
+        """RP-Initiated Logout is idempotent: an unauthenticated request is a
+        valid no-op, so run the invalidation flow instead of redirecting to
+        the authentication flow."""
+        return self.get(self.request, *self.args, **self.kwargs)
+
     def validate(self):
         # Parse end session parameters
         query_dict = self.request.POST if self.request.method == "POST" else self.request.GET
@@ -140,60 +146,65 @@ class EndSessionView(PolicyAccessView):
             PLAN_CONTEXT_APPLICATION: self.application,
         }
 
-        auth_session = AuthenticatedSession.from_request(request, request.user)
-
         if self.post_logout_redirect_uri:
             context[PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI] = self.post_logout_redirect_uri
 
-        session_key = (
-            auth_session.session.session_key if auth_session and auth_session.session else None
-        )
-
         frontchannel_logout_url = None
-        if self.provider.logout_method == OAuth2LogoutMethod.FRONTCHANNEL:
-            frontchannel_logout_url = build_frontchannel_logout_url(
-                self.provider, request, session_key
+
+        # An unauthenticated logout request (e.g. the session already expired) is a no-op:
+        # there is no session to end and no tokens to revoke. We still run the invalidation
+        # flow below, so that e.g. redirect stages are executed.
+        if request.user.is_authenticated:
+            auth_session = AuthenticatedSession.from_request(request, request.user)
+
+            session_key = (
+                auth_session.session.session_key if auth_session and auth_session.session else None
             )
 
-        if (
-            self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
-            and self.provider.logout_uri
-        ):
-            access_token = AccessToken.objects.filter(
+            if self.provider.logout_method == OAuth2LogoutMethod.FRONTCHANNEL:
+                frontchannel_logout_url = build_frontchannel_logout_url(
+                    self.provider, request, session_key
+                )
+
+            if (
+                self.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+                and self.provider.logout_uri
+            ):
+                access_token = AccessToken.objects.filter(
+                    user=request.user,
+                    provider=self.provider,
+                    session=auth_session,
+                ).first()
+                if access_token and access_token.id_token:
+                    send_backchannel_logout_request.send(
+                        self.provider.pk,
+                        access_token.id_token.iss,
+                        access_token.id_token.sub,
+                        session_key,
+                    )
+                    # Delete the token to prevent duplicate backchannel logout
+                    # when UserLogoutStage triggers the session deletion signal
+                    access_token.delete()
+
+            if frontchannel_logout_url:
+                context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
+                    {
+                        "url": frontchannel_logout_url,
+                        "provider_name": self.provider.name,
+                        "binding": OAUTH2_BINDING,
+                        "provider_type": (
+                            f"{self.provider._meta.app_label}.{self.provider._meta.model_name}"
+                        ),
+                    }
+                ]
+
+            access_tokens = AccessToken.objects.filter(
                 user=request.user,
                 provider=self.provider,
-                session=auth_session,
-            ).first()
-            if access_token and access_token.id_token:
-                send_backchannel_logout_request.send(
-                    self.provider.pk,
-                    access_token.id_token.iss,
-                    access_token.id_token.sub,
-                    session_key,
-                )
-                # Delete the token to prevent duplicate backchannel logout
-                # when UserLogoutStage triggers the session deletion signal
-                access_token.delete()
-
-        if frontchannel_logout_url:
-            context[PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS] = [
-                {
-                    "url": frontchannel_logout_url,
-                    "provider_name": self.provider.name,
-                    "binding": OAUTH2_BINDING,
-                    "provider_type": (
-                        f"{self.provider._meta.app_label}.{self.provider._meta.model_name}"
-                    ),
-                }
-            ]
-
-        access_tokens = AccessToken.objects.filter(
-            user=request.user,
-            provider=self.provider,
-        )
-        if auth_session:
-            access_tokens = access_tokens.filter(session=auth_session)
-        access_tokens.delete()
+            )
+            if auth_session:
+                access_tokens = access_tokens.filter(session=auth_session)
+            access_tokens.delete()
 
         plan = planner.plan(request, context)
 

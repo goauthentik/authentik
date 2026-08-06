@@ -14,6 +14,7 @@ media
 # Node
 
 node_modules
+tsconfig.tsbuildinfo
 
 .cspellcache
 cspell-report.*
@@ -242,3 +243,7 @@ source_docs/
 ### Docker ###
 tests/openid_conformance/exports/*.zip
 compose.override.yml
+
+# Claude Local Instructions
+# https://code.claude.com/docs/en/memory#choose-where-to-put-claude-md-files
+CLAUDE.local.md
