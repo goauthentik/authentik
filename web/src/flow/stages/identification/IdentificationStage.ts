@@ -316,7 +316,98 @@ export class IdentificationStage extends BaseStage<
             captchaInput.value = "";
         }
 
+<<<<<<< HEAD
         this.captchaRefreshedAt = new Date();
+=======
+        return html`<input
+            ${ref(this.autofocusTarget.reference)}
+            id=${id}
+            type=${type}
+            name="uidField"
+            placeholder=${label}
+            autofocus
+            autocomplete=${autocomplete}
+            spellcheck="false"
+            inputmode=${type === "email" ? "email" : "text"}
+            autocapitalize="none"
+            enterkeyhint=${passwordFields ? "next" : "go"}
+            class="pf-c-form-control"
+            value=${initialUserIdentification ?? ""}
+            required
+        />`;
+    }
+
+    protected renderPasswordFields(challenge: IdentificationChallenge) {
+        const { allowShowPassword } = challenge;
+        return html`<ak-flow-input-password
+            .inputRef=${this.passwordFieldRef}
+            label=${msg("Password")}
+            input-id="ak-stage-identification-password"
+            class="pf-c-form__group"
+            .errors=${challenge.responseErrors?.password}
+            ?allow-show-password=${allowShowPassword}
+            prefill=${PasswordManagerPrefill.password ?? ""}
+            required
+        ></ak-flow-input-password> `;
+    }
+
+    protected renderInput(challenge: IdentificationChallenge) {
+        const { flowDesignation, passwordFields, passwordlessUrl, primaryAction, userFields } =
+            challenge;
+
+        const fields = (userFields || []).sort();
+
+        if (fields.length === 0) {
+            return html`<p>${msg("Select one of the options below to continue.")}</p>`;
+        }
+
+        const {
+            inputID,
+            defaultUserIdentification: initialUserIdentification,
+            rememberMeController,
+        } = this;
+
+        const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
+        const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
+
+        const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
+
+        // prettier-ignore
+        return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
+            <div class="pf-c-form__group">
+                ${AKLabel({ required: true, htmlFor: inputID }, label)}
+                ${this.renderUidField(inputID, type, label, initialUserIdentification, passwordFields)}
+                ${rememberMeController?.renderToggleInput() ?? null}
+                ${AKFormErrors({ errors: challenge.responseErrors?.uid_field })}
+            </div>
+            ${passwordFields ? this.renderPasswordFields(challenge) : nothing}
+            ${this.renderNonFieldErrors()}
+            ${this.#captcha.render()}
+            <div class="pf-c-form__group ${this.#captcha.live ? "" : "pf-m-action"}">
+                <button
+                    ?disabled=${this.#captcha.pending}
+                    type="submit"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                >
+                    ${primaryAction}
+                </button>
+            </div>
+            ${passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
+    }
+
+    protected renderPrelude(prelude: string) {
+        return html`<p>${msg(str`Log in to continue to ${prelude}.`)}</p>`;
+    }
+
+    protected renderPasswordlessUrl(url: string) {
+        return html`<a
+            href=${url}
+            class="pf-c-button pf-m-secondary pf-m-block"
+            data-ouia-component-id="passwordless"
+        >
+            ${msg("Use a security key")}
+        </a> `;
+>>>>>>> a68e23066 (web/flows: fix missing required flag on password input (#24831))
     }
 
     //#region Render

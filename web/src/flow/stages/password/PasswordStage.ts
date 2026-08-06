@@ -52,6 +52,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     .errors=${this.#errors("password")}
                     ?allow-show-password=${!!this.challenge?.allowShowPassword}
                     prefill=${PasswordManagerPrefill.password ?? ""}
+                    required
                 ></ak-flow-input-password>
                 <fieldset class="pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
