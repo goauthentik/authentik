@@ -187,7 +187,7 @@ export class UserNextActionsList extends Table<NextActionRow> {
             html`${item.flow?.name ?? item.slug}`,
             html`${item.slug}`,
             html`<ak-forms-delete-bulk
-                objectLabel=${msg("Next action", { id: "user-next-actions.object.label" })}
+                object-label=${msg("Next action", { id: "user-next-actions.object.label" })}
                 .objects=${[item]}
                 .delete=${() =>
                     this.#patch((actions) => actions.filter((entry) => entry !== item.slug))}
