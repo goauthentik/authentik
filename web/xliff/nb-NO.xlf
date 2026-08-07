@@ -2126,10 +2126,6 @@
   <source>Selected Property Mappings</source>
   <target>Valgte egenskapsmapperinger</target>
 </trans-unit>
-<trans-unit id="s9b6bf63fddc7362f">
-  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
-  <target>Liste over CIDR-er (kommadelt) som klienter kan koble til fra. En mer spesifikk CIDR vil matche før en løsere. Klienter som kobler til fra en ikke-spesifisert CIDR, vil bli droppet.</target>
-</trans-unit>
 <trans-unit id="sb95baab425322600">
   <source>Shared secret</source>
   <target>Delt hemmelighet</target>
@@ -8797,14 +8793,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
   <target>Via <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
-<trans-unit id="s0b7ddc0168e79ea2">
-  <source>Failed to fetch files</source>
-  <target>Kunne ikke hente filer</target>
-</trans-unit>
-<trans-unit id="sdc4f1cfd587212b4">
-  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
-  <target>Du kan også skrive inn en URL (https://...), Font Awesome-ikon (fa://fa-icon-name), eller laste opp en ny fil.</target>
-</trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
   <target>Velg fra opplastede filer, eller skriv et Font Awesome-ikon (fa://fa-icon-name) eller URL.</target>
@@ -8877,22 +8865,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>If no device was provided, this stage will stop flow execution.</source>
   <target>Hvis ingen enhet ble oppgitt, vil dette trinnet stoppe flytutkjøringen.</target>
 </trans-unit>
-<trans-unit id="s3a3d5b2575cd32ea">
-  <source>File uploaded successfully</source>
-  <target>Fil opplastet vellykket</target>
-</trans-unit>
-<trans-unit id="sd3775ef947e0de32">
-  <source>File Name</source>
-  <target>Filnavn</target>
-</trans-unit>
-<trans-unit id="s1afc99a84a890514">
-  <source>Type an optional custom file name...</source>
-  <target>Skriv inn et valgfritt tilpasset filnavn...</target>
-</trans-unit>
-<trans-unit id="sb40e2763045466ea">
-  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
-  <target>Gi eventuelt filen et nytt navn (uten filtype). La stå tomt for å beholde det opprinnelige filnavnet.</target>
-</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
   <target>Filer</target>
@@ -8912,10 +8884,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
   <target>Last opp</target>
-</trans-unit>
-<trans-unit id="sa32e9d0a108ee802">
-  <source>Upload File</source>
-  <target>Last opp fil</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
@@ -9707,10 +9675,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
                          <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}                                 &gt;${formatAPISource()}&lt;/a                             &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
-<trans-unit id="s87f858ca3c8e5579">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
-  <target>Filnavnet kan kun inneholde bokstaver, tall, punktum, bindestreker, understreker, skråstreker og plassholderen %(theme)s</target>
-</trans-unit>
 <trans-unit id="s3934affe32f6a454">
   <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
   <target><x id="0" equiv-text="${availableCount}"/> element markert for å legges til.</target>
@@ -10282,10 +10246,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
   <target>Se dokumentasjonen for baneregler og tema-bevisste navn.</target>
-</trans-unit>
-<trans-unit id="s7e9afe092ef50353">
-  <source>See documentation for supported values.</source>
-  <target>Se dokumentasjonen for støttede verdier.</target>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
@@ -13161,6 +13121,43 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="agent.page.description">
   <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
+</trans-unit>
+<trans-unit id="s46eb6cf13a8022e9">
+  <source>Select File</source>
+</trans-unit>
+<trans-unit id="s0d1ed094b601e76d">
+  <source>Type an optional file name without an extension...</source>
+</trans-unit>
+<trans-unit id="s384efdec2b99d471">
+  <source>Custom Name</source>
+</trans-unit>
+<trans-unit id="sd749d80c570a0d0e">
+  <source>Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s1ea1d3a777930fd3">
+  <source>List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+</trans-unit>
+<trans-unit id="file-picker.upload-link.label">
+  <source>Upload file</source>
+</trans-unit>
+<trans-unit id="file-picker.value.placeholder">
+  <source>Select a file or enter a value...</source>
+</trans-unit>
+<trans-unit id="file-picker.value.description">
+  <source>Choose an existing file, or enter a URL or Font Awesome icon.</source>
+</trans-unit>
+<trans-unit id="file-picker.documentation-link.label">
+  <source>Supported values</source>
+</trans-unit>
+<trans-unit id="file.name.validation.html">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as code elements.</note>
+</trans-unit>
+<trans-unit id="file.name.validation.plaintext">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
 </trans-unit>
 </body>
 </file>
