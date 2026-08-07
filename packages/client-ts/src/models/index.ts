@@ -22,6 +22,7 @@ export * from "./AppleChallengeResponseRequest";
 export * from "./AppleIndependentSecureEnclave";
 export * from "./AppleIndependentSecureEnclaveRequest";
 export * from "./AppleLoginChallenge";
+export * from "./ApplePssoFilevaultPolicyEnum";
 export * from "./Application";
 export * from "./ApplicationEntitlement";
 export * from "./ApplicationEntitlementRequest";

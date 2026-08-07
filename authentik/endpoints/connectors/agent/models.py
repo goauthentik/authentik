@@ -30,6 +30,16 @@ if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.controller import AgentConnectorController
 
 
+class ApplePSSOAuthenticationPolicy(models.TextChoices):
+    """Apple Platform SSO enforcement policy for the login window, screen unlock and
+    FileVault. Maps to the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the
+    com.apple.extensiblesso payload. macOS only."""
+
+    NONE = "none", _("None (silent background token only)")
+    ATTEMPT = "attempt", _("Attempt authentication (enforced only when online)")
+    REQUIRE = "require", _("Require authentication")
+
+
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
@@ -60,6 +70,30 @@ class AgentConnector(Connector):
         validators=[timedelta_string_validator], default="seconds=5"
     )
     challenge_trigger_check_in = models.BooleanField(default=False)
+
+    # Apple Platform SSO (macOS) login-window behaviour. These map to the LoginPolicy,
+    # UnlockPolicy and FileVaultPolicy keys of the generated com.apple.extensiblesso
+    # payload and only affect macOS devices. When left at "none" the key is omitted and
+    # Platform SSO runs in its passive, background-token-only mode.
+    apple_psso_login_policy = models.TextField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=ApplePSSOAuthenticationPolicy.NONE,
+    )
+    apple_psso_unlock_policy = models.TextField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=ApplePSSOAuthenticationPolicy.NONE,
+    )
+    apple_psso_filevault_policy = models.TextField(
+        choices=ApplePSSOAuthenticationPolicy.choices,
+        default=ApplePSSOAuthenticationPolicy.NONE,
+    )
+    # Apple Platform SSO maximum interval (seconds) before a full re-authentication is
+    # required. Maps to LoginFrequency; Apple's default is 64800 (18 hours), minimum 3600.
+    apple_psso_login_frequency = models.PositiveIntegerField(default=64800)
+    # Require Touch ID (or Apple Watch) whenever the user Secure Enclave key is used. Maps to
+    # ASAuthorizationProviderExtensionLoginConfiguration.userSecureEnclaveKeyBiometricPolicy,
+    # which is set by the native agent's PSSO extension (macOS only, UserSecureEnclaveKey).
+    apple_psso_require_biometrics = models.BooleanField(default=False)
 
     @property
     def icon_url(self):

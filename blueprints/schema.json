@@ -8102,6 +8102,43 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
+                },
+                "apple_psso_login_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso login policy"
+                },
+                "apple_psso_unlock_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso unlock policy"
+                },
+                "apple_psso_filevault_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso filevault policy"
+                },
+                "apple_psso_login_frequency": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso login frequency"
+                },
+                "apple_psso_require_biometrics": {
+                    "type": "boolean",
+                    "title": "Apple psso require biometrics"
                 }
             },
             "required": []

@@ -1,7 +1,7 @@
 from django.urls import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import BooleanField, CharField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -40,6 +40,7 @@ class RegisterDeviceView(APIView):
         jwks_endpoint = CharField()
         audience = CharField()
         nonce_endpoint = CharField()
+        require_biometrics = BooleanField()
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
@@ -78,6 +79,7 @@ class RegisterDeviceView(APIView):
                 "nonce_endpoint": request.build_absolute_uri(
                     reverse("authentik_enterprise_endpoints_connectors_agent:psso-nonce")
                 ),
+                "require_biometrics": conn.connector.agentconnector.apple_psso_require_biometrics,
             }
         )
 

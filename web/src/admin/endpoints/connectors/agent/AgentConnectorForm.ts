@@ -2,6 +2,7 @@ import "#components/ak-secret-text-input";
 import "#components/ak-text-input";
 import "#components/ak-number-input";
 import "#components/ak-switch-input";
+import "#components/ak-radio-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/FormGroup";
 import "#admin/common/ak-flow-search/ak-flow-search";
@@ -23,6 +24,7 @@ import {
 import {
     AgentConnector,
     AgentConnectorRequest,
+    ApplePssoFilevaultPolicyEnum,
     EndpointsApi,
     FlowDesignationEnum,
 } from "@goauthentik/api";
@@ -57,6 +59,20 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     }
 
     renderForm() {
+        const pssoPolicyOptions = [
+            {
+                label: msg("None (silent background token only)"),
+                value: ApplePssoFilevaultPolicyEnum.None,
+            },
+            {
+                label: msg("Attempt authentication (enforced only when online)"),
+                value: ApplePssoFilevaultPolicyEnum.Attempt,
+            },
+            {
+                label: msg("Require authentication"),
+                value: ApplePssoFilevaultPolicyEnum.Require,
+            },
+        ];
         return html`<ak-text-input
                 name="name"
                 placeholder=${msg("Type a connector name...")}
@@ -196,6 +212,63 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "The start for group ID numbers, this number is added to a number generated from the groups' ID to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to prevent collisions with local groups.",
                         )}
                     ></ak-number-input>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Apple Platform SSO (macOS)")}">
+                <div class="pf-c-form">
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "These settings only affect macOS devices enrolled via this connector. When every policy is left at its default, Platform SSO runs silently and acquires SSO tokens in the background without prompting at the login window.",
+                        )}
+                    </p>
+                    <ak-radio-input
+                        name="applePssoLoginPolicy"
+                        label=${msg("Login window policy")}
+                        .options=${pssoPolicyOptions}
+                        .value=${this.instance?.applePssoLoginPolicy ??
+                        ApplePssoFilevaultPolicyEnum.None}
+                        help=${msg(
+                            "Whether Platform SSO authenticates the user against authentik at the macOS login window.",
+                        )}
+                    ></ak-radio-input>
+                    <ak-radio-input
+                        name="applePssoUnlockPolicy"
+                        label=${msg("Screen unlock policy")}
+                        .options=${pssoPolicyOptions}
+                        .value=${this.instance?.applePssoUnlockPolicy ??
+                        ApplePssoFilevaultPolicyEnum.None}
+                        help=${msg(
+                            "Whether Platform SSO authenticates the user against authentik when unlocking the screen.",
+                        )}
+                    ></ak-radio-input>
+                    <ak-radio-input
+                        name="applePssoFilevaultPolicy"
+                        label=${msg("FileVault policy")}
+                        .options=${pssoPolicyOptions}
+                        .value=${this.instance?.applePssoFilevaultPolicy ??
+                        ApplePssoFilevaultPolicyEnum.None}
+                        help=${msg(
+                            "Whether Platform SSO authenticates the user against authentik at FileVault unlock after a restart.",
+                        )}
+                    ></ak-radio-input>
+                    <ak-number-input
+                        name="applePssoLoginFrequency"
+                        label=${msg("Login frequency")}
+                        required
+                        value="${this.instance?.applePssoLoginFrequency ?? 64800}"
+                        help=${msg(
+                            "Maximum interval, in seconds, before a full re-authentication is required. Apple default is 64800 (18 hours); minimum is 3600 (1 hour).",
+                        )}
+                    ></ak-number-input>
+                    <ak-switch-input
+                        name="applePssoRequireBiometrics"
+                        label=${msg("Require Touch ID")}
+                        ?checked=${this.instance?.applePssoRequireBiometrics ?? false}
+                        help=${msg(
+                            "Require Touch ID (or Apple Watch) whenever the Secure Enclave key is used. Requires native agent support.",
+                        )}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

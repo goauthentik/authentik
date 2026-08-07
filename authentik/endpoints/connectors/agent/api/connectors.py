@@ -58,6 +58,11 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "challenge_idle_timeout",
             "challenge_trigger_check_in",
             "jwt_federation_providers",
+            "apple_psso_login_policy",
+            "apple_psso_unlock_policy",
+            "apple_psso_filevault_policy",
+            "apple_psso_login_frequency",
+            "apple_psso_require_biometrics",
         ]
 
 

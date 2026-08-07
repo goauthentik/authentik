@@ -7,7 +7,11 @@ from django.urls import reverse
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
-from authentik.endpoints.connectors.agent.models import AgentConnector, EnrollmentToken
+from authentik.endpoints.connectors.agent.models import (
+    AgentConnector,
+    ApplePSSOAuthenticationPolicy,
+    EnrollmentToken,
+)
 from authentik.endpoints.controller import BaseController, Capabilities
 from authentik.endpoints.facts import OSFamily
 
@@ -88,6 +92,27 @@ class AgentConnectorController(BaseController[AgentConnector]):
             }
         )
 
+    def _psso_login_policies(self) -> dict:
+        """Build the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the Platform SSO
+        payload from the connector configuration. Each is an array of policy strings (see
+        the reference ee/psso/example.mobileconfig); the key is omitted entirely when the
+        policy is left at "none" so Platform SSO keeps its passive, background-token-only
+        behaviour."""
+        mapping = {
+            ApplePSSOAuthenticationPolicy.ATTEMPT: "AttemptAuthentication",
+            ApplePSSOAuthenticationPolicy.REQUIRE: "RequireAuthentication",
+        }
+        policies = {}
+        for field, payload_key in (
+            ("apple_psso_login_policy", "LoginPolicy"),
+            ("apple_psso_unlock_policy", "UnlockPolicy"),
+            ("apple_psso_filevault_policy", "FileVaultPolicy"),
+        ):
+            value = mapping.get(getattr(self.connector, field))
+            if value:
+                policies[payload_key] = [value]
+        return policies
+
     def _generate_mdm_config_macos(
         self, request: HttpRequest, token: EnrollmentToken
     ) -> MDMConfigResponseSerializer:
@@ -139,6 +164,8 @@ class AgentConnectorController(BaseController[AgentConnector]):
                             "AuthenticationMethod": "UserSecureEnclaveKey",
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
+                            "LoginFrequency": self.connector.apple_psso_login_frequency,
+                            **self._psso_login_policies(),
                         },
                     },
                 ],

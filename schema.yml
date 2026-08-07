@@ -35838,6 +35838,18 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_login_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_filevault_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_login_frequency:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_require_biometrics:
+          type: boolean
       required:
       - component
       - meta_model_name
@@ -35891,6 +35903,18 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_login_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_filevault_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_login_frequency:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_require_biometrics:
+          type: boolean
       required:
       - name
     AgentCreateRequest:
@@ -35964,12 +35988,15 @@ components:
           type: string
         nonce_endpoint:
           type: string
+        require_biometrics:
+          type: boolean
       required:
       - audience
       - client_id
       - issuer
       - jwks_endpoint
       - nonce_endpoint
+      - require_biometrics
       - token_endpoint
     AgentPSSOUserRegistrationRequest:
       type: object
@@ -36225,6 +36252,12 @@ components:
       - redirect_uri
       - scope
       - state
+    ApplePssoFilevaultPolicyEnum:
+      enum:
+      - none
+      - attempt
+      - require
+      type: string
     Application:
       type: object
       description: Application Serializer
@@ -50102,6 +50135,18 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_login_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_filevault_policy:
+          $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_login_frequency:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_require_biometrics:
+          type: boolean
     PatchedAgentRequest:
       type: object
       description: |-

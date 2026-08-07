@@ -12,6 +12,12 @@
  * Do not edit the class manually.
  */
 
+import type { ApplePssoFilevaultPolicyEnum } from "./ApplePssoFilevaultPolicyEnum";
+import {
+    ApplePssoFilevaultPolicyEnumFromJSON,
+    ApplePssoFilevaultPolicyEnumToJSON,
+} from "./ApplePssoFilevaultPolicyEnum";
+
 /**
  *
  * @export
@@ -102,6 +108,36 @@ export interface AgentConnectorRequest {
      * @memberof AgentConnectorRequest
      */
     jwtFederationProviders?: Array<number>;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoLoginPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoUnlockPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {ApplePssoFilevaultPolicyEnum}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoFilevaultPolicy?: ApplePssoFilevaultPolicyEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoLoginFrequency?: number;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoRequireBiometrics?: boolean;
 }
 
 /**
@@ -157,6 +193,26 @@ export function AgentConnectorRequestFromJSONTyped(
                 : json["challenge_trigger_check_in"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        applePssoLoginPolicy:
+            json["apple_psso_login_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_login_policy"]),
+        applePssoUnlockPolicy:
+            json["apple_psso_unlock_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_unlock_policy"]),
+        applePssoFilevaultPolicy:
+            json["apple_psso_filevault_policy"] == null
+                ? undefined
+                : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_filevault_policy"]),
+        applePssoLoginFrequency:
+            json["apple_psso_login_frequency"] == null
+                ? undefined
+                : json["apple_psso_login_frequency"],
+        applePssoRequireBiometrics:
+            json["apple_psso_require_biometrics"] == null
+                ? undefined
+                : json["apple_psso_require_biometrics"],
     };
 }
 
@@ -187,5 +243,14 @@ export function AgentConnectorRequestToJSONTyped(
         challenge_idle_timeout: value["challengeIdleTimeout"],
         challenge_trigger_check_in: value["challengeTriggerCheckIn"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        apple_psso_login_policy: ApplePssoFilevaultPolicyEnumToJSON(value["applePssoLoginPolicy"]),
+        apple_psso_unlock_policy: ApplePssoFilevaultPolicyEnumToJSON(
+            value["applePssoUnlockPolicy"],
+        ),
+        apple_psso_filevault_policy: ApplePssoFilevaultPolicyEnumToJSON(
+            value["applePssoFilevaultPolicy"],
+        ),
+        apple_psso_login_frequency: value["applePssoLoginFrequency"],
+        apple_psso_require_biometrics: value["applePssoRequireBiometrics"],
     };
 }
