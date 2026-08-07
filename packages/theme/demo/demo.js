@@ -203,10 +203,16 @@ const COLOR_GROUPS = [
             "--ak-global--color--surface",
             "--ak-global--color--surface--raised",
             "--ak-global--color--surface--muted",
+            "--ak-global--color--surface--inset",
+            "--ak-global--color--surface--nested",
         ],
         against: "--ak-global--color--text",
         threshold: 4.5,
         ringed: true,
+    },
+    {
+        title: "Selection",
+        tokens: ["--ak-global--color--selected"]
     },
     {
         title: "Border",
@@ -755,7 +761,6 @@ function renderOverview() {
     const categories = new Set(
         TOKENS.map((t) => t.name.replace(/^--ak-global--/, "").split("--")[0]),
     );
-    console.log("C:", categories);
     document.getElementById("stats").replaceChildren(
         ...[
             [TOKENS.length, "tokens in :root"],

@@ -3,61 +3,52 @@
  */
 
 :root {
-    --pf-c-toggle-group__button--PaddingTop: var(--ak-global--spacer--sm);
-    --pf-c-toggle-group__button--PaddingRight: var(--ak-global--spacer--md);
-    --pf-c-toggle-group__button--PaddingBottom: var(--ak-global--spacer--sm);
-    --pf-c-toggle-group__button--PaddingLeft: var(--ak-global--spacer--md);
+    --pf-c-toggle-group__button--PaddingTop: var(--ak-global--space--sm);
+    --pf-c-toggle-group__button--PaddingRight: var(--ak-global--space--md);
+    --pf-c-toggle-group__button--PaddingBottom: var(--ak-global--space--sm);
+    --pf-c-toggle-group__button--PaddingLeft: var(--ak-global--space--md);
     --pf-c-toggle-group__button--font-size: var(--ak-global--font-size--sm);
     --pf-c-toggle-group__button--line-height: calc(
         var(--ak-global--font-size--md) * var(--ak-global--line-height--md)
     );
-    --pf-c-toggle-group__button--Color: var(--ak-global--color--primary);
-    --pf-c-toggle-group__button--BackgroundColor: var(--ak-global--background-color--primary);
+    --pf-c-toggle-group__button--Color: var(--ak-global--color--text);
+    --pf-c-toggle-group__button--BackgroundColor: var(--ak-global--color--surface);
     --pf-c-toggle-group__button--ZIndex: auto;
-    --pf-c-toggle-group__button--hover--BackgroundColor: var(--ak-global--BackgroundColor--200);
-    --pf-c-toggle-group__button--hover--ZIndex: var(--ak-global--ZIndex--xs);
-    --pf-c-toggle-group__button--hover--before--BorderColor: var(--ak-global--BorderColor--200);
+    --pf-c-toggle-group__button--hover--BackgroundColor: var(--ak-global--color--surface--inset);
+    --pf-c-toggle-group__button--hover--ZIndex: var(--ak-global--z-index--xs);
+    --pf-c-toggle-group__button--hover--before--BorderColor: var(--ak-global--color--border--strong);
     --pf-c-toggle-group__button--focus--BackgroundColor: var(--ak-global--color--secondary);
-    --pf-c-toggle-group__button--focus--ZIndex: var(--ak-global--ZIndex--xs);
+    --pf-c-toggle-group__button--focus--ZIndex: var(--ak-global--z-index--xs);
     --pf-c-toggle-group__button--focus--before--BorderColor: var(
         --ak-global--color--border--strong
     );
-    --pf-c-toggle-group__button--disabled--BackgroundColor: var(--ak-global--color--disabled);
-    --pf-c-toggle-group__button--disabled--Color: var(--ak-global--color--disabled);
+    --pf-c-toggle-group__button--disabled--BackgroundColor: var(--ak-global--color--disabled--fill);
+    --pf-c-toggle-group__button--disabled--Color: var(--ak-global--color--disabled-text);
     --pf-c-toggle-group__button--before--BorderWidth: var(--ak-global--border-width--sm);
     --pf-c-toggle-group__button--before--BorderColor: var(--ak-global--color--border);
     --pf-c-toggle-group__item--item--MarginLeft: calc(-1 * var(--ak-global--border-width--sm));
     --pf-c-toggle-group__item--first-child__button--BorderTopLeftRadius: var(
-        --ak-global--border-radius--sm
+        --ak-global--radius--sm
     );
     --pf-c-toggle-group__item--first-child__button--BorderBottomLeftRadius: var(
-        --ak-global--border-radius--sm
+        --ak-global--radius--sm
     );
     --pf-c-toggle-group__item--last-child__button--BorderTopRightRadius: var(
-        --ak-global--border-radius--sm
+        --ak-global--radius--sm
     );
     --pf-c-toggle-group__item--last-child__button--BorderBottomRightRadius: var(
-        --ak-global--border-radius--sm
+        --ak-global--radius--sm
     );
-    --pf-c-toggle-group__icon--text--MarginLeft: var(--ak-global--spacer--sm);
-    --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--ak-global--palette--blue-50);
+    --pf-c-toggle-group__icon--text--MarginLeft: var(--ak-global--space--sm);
+    --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--ak-global--color--selected--hint);
     --pf-c-toggle-group__button--m-selected--before--BorderColor: var(
-        --ak-global--primary-color--100
+        --ak-global--color--selected
     );
-    --pf-c-toggle-group__button--m-selected--ZIndex: var(--ak-global--ZIndex--xs);
+    --pf-c-toggle-group__button--m-selected--ZIndex: var(--ak-global--z-index--xs);
     --pf-c-toggle-group--m-compact__button--PaddingTop: 0;
-    --pf-c-toggle-group--m-compact__button--PaddingRight: var(--ak-global--spacer--sm);
+    --pf-c-toggle-group--m-compact__button--PaddingRight: var(--ak-global--space--sm);
     --pf-c-toggle-group--m-compact__button--PaddingBottom: 0;
-    --pf-c-toggle-group--m-compact__button--PaddingLeft: var(--ak-global--spacer--sm);
+    --pf-c-toggle-group--m-compact__button--PaddingLeft: var(--ak-global--space--sm);
     --pf-c-toggle-group--m-compact__button--font-size: var(--ak-global--font-size--xs);
 }
 
-html[data-theme="dark"] {
-    --pf-c-toggle-group__button--hover--BackgroundColor: var(--ak-global--palette--black-700);
-    --pf-c-toggle-group__button--focus--BackgroundColor: var(--ak-global--palette--black-700);
-    --pf-c-toggle-group__button--disabled--BackgroundColor: var(--ak-global--palette--black-600);
-    --pf-c-toggle-group__button--disabled--Color: var(--ak-global--palette--black-100);
-    --pf-c-toggle-group__button--Color: var(--ak-dark-foreground);
-    --pf-c-toggle-group__button--BackgroundColor: var(--ak-dark-background-light);
-    --pf-c-toggle-group__button--m-selected--BackgroundColor: var(--ak-global--primary-color--100);
-}

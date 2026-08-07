@@ -54,7 +54,7 @@ export const Default = () => {
     return container(
         html`<ak-toggle-group @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
-        </ak-toggle-group>`,
+        </ak-toggle-group>`
     );
 };
 
@@ -66,6 +66,6 @@ export const Compact = () => {
     return container(
         html`<ak-toggle-group compact @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
-        </ak-toggle-group>`,
+        </ak-toggle-group>`
     );
 };
