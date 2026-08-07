@@ -3,6 +3,7 @@ from socket import gethostname
 
 from structlog.stdlib import get_logger
 
+from authentik import authentik_build_hash, authentik_full_version, authentik_version
 from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
@@ -48,7 +49,15 @@ def start_pyroscope(component: str, **tags: str) -> bool:
     pyroscope.configure(
         application_name="authentik",
         server_address=server,
-        tags={"component": component, "hostname": gethostname(), **tags},
+        tags={
+            "component": component,
+            "hostname": gethostname(),
+            "service_repository": "https://github.com/goauthentik/authentik",
+            "service_git_ref": authentik_build_hash(),
+            "authentik_version": authentik_version(),
+            "authentik_full_version": authentik_full_version(),
+            **tags,
+        },
         mem_enabled=True,
     )
     return True
