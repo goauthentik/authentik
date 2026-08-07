@@ -30,7 +30,7 @@ packages/           # Shared workspace packages, polyglot:
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup
-locale/             # Backend translations (.po) + shared cspell dictionaries (en/dictionaries/)
+locale/             # Backend translations (.po) + cspell overrides dictionary (en/dictionaries/)
 tests/              # Cross-cutting test support: e2e/, integration/, geoip/, openid_conformance/
 schemas/            # Third-party XSD/JSON schemas (SAML, WS-*, SCIM) used at runtime
 scripts/            # Repo automation (schema build, compose generation, node setup, semver)
@@ -95,7 +95,7 @@ make migrate           # Apply Django migrations
 ### Test
 
 ```bash
-make test              # Python/Django tests + coverage. Append an app to scope: `make test authentik.core`
+make test              # Python/Django tests + coverage. Append a path to scope: `make test authentik/providers/saml`
 make go-test           # Go tests (race + cover)
 make rust-test         # Rust tests (cargo nextest)
 make web-test          # Web UI tests (delegates to web/)
@@ -106,7 +106,7 @@ make web-test          # Web UI tests (delegates to web/)
 ```bash
 make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
-make lint-spellcheck   # cspell across the repo (shared dictionaries in locale/en/dictionaries/)
+make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
 ```
 

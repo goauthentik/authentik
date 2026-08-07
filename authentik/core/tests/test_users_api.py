@@ -54,6 +54,17 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
 
+    def _assert_password_hash_rejected(
+        self, user: User, original_password_hash: str, response
+    ) -> None:
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"password": [INVALID_PASSWORD_HASH_ERROR]},
+        )
+        user.refresh_from_db()
+        self.assertEqual(user.password, original_password_hash)
+
     def test_filter_type(self):
         """Test API filtering by type"""
         self.client.force_login(self.admin)
@@ -158,13 +169,15 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
-        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
+        original_password = self.user.password
+        for password_hash in (
+            INVALID_PASSWORD_HASH,
+            "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
+        ):
+            with self.subTest(password_hash=password_hash):
+                response = self._set_password_hash(self.user, password_hash)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"password": [INVALID_PASSWORD_HASH_ERROR]},
-        )
+                self._assert_password_hash_rejected(self.user, original_password, response)
 
     def test_recovery(self):
         """Test user recovery link"""

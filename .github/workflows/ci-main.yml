@@ -12,6 +12,10 @@ on:
       - main
       - version-*
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
 env:
   POSTGRES_DB: authentik
   POSTGRES_USER: authentik
@@ -32,7 +36,7 @@ jobs:
       tag-branch: "${{ steps.compute-tags.outputs.tag-branch }}"
       tag-flux: "${{ steps.compute-tags.outputs.tag-flux }}"
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - id: compute-tags
         uses: ./.github/actions/compute-container-tags
   build:
@@ -96,17 +100,23 @@ jobs:
             deps: rust-nightly
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
           dependencies: ${{ matrix.deps }}
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Setup authentik env
@@ -122,7 +132,7 @@ jobs:
   test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
@@ -136,7 +146,7 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -146,9 +156,11 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    env:
+      AUTHENTIK_MIGRATIONS__DANGEROUSLY_ALLOW_MULTIPLE_MAJOR_VERSION_UPGRADES: "true"
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
           fetch-depth: 0
       - name: checkout stable
@@ -209,7 +221,7 @@ jobs:
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -217,7 +229,7 @@ jobs:
         with:
           flags: unit-migrate
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: test-make-seed
@@ -227,9 +239,9 @@ jobs:
         psql:
           - 14-alpine
           - 18-alpine
-        run_id: [1, 2, 3, 4, 5]
+        run_id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
@@ -238,7 +250,7 @@ jobs:
         env:
           CI_TEST_SEED: ${{ needs.test-make-seed.outputs.seed }}
           CI_RUN_ID: ${{ matrix.run_id }}
-          CI_TOTAL_RUNS: "5"
+          CI_TOTAL_RUNS: "10"
         run: |
           uv run make ci-test
       - uses: ./.github/actions/test-results
@@ -249,7 +261,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
@@ -316,7 +328,7 @@ jobs:
             skopeo copy "oci-archive:container/${image}-amd64.oci.tar" "docker-daemon:ghcr.io/goauthentik/dev-${image}:${{ needs.build-compute-tags.outputs.tag-branch }}"
           done
           rm -rf container/
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env
@@ -324,12 +336,12 @@ jobs:
           COMPOSE_PROFILES: ${{ matrix.job.profiles }}
         run: |
           docker compose -f tests/e2e/compose.yml up -d --quiet-pull
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - name: Pin pnpm store directory
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
           echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
         with:
           node-version-file: package.json
           cache: pnpm
@@ -341,7 +353,7 @@ jobs:
         if: contains(matrix.job.profiles, 'selenium')
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package.json', 'web/pnpm-lock.yaml', 'pnpm-lock.yaml', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true' && contains(matrix.job.profiles, 'selenium')
         working-directory: web
@@ -383,7 +395,7 @@ jobs:
           - name: ssf_transmitter
             glob: tests/openid_conformance/test_ssf_transmitter.py
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Setup e2e env (chrome, etc)
@@ -425,11 +437,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
-          dependencies: rust,runtime
+          dependencies: system,python,rust,runtime
+      - name: Prepare database
+        run: |
+          uv run make migrate
+      - name: Create required files
+        run: |
+          mkdir -p web/dist/standalone/loading
+          for f in web/robots.txt web/security.txt web/dist/standalone/loading/startup.html; do
+            echo empty > "$f"
+          done
       - name: run tests
         run: |
           cargo llvm-cov --no-report nextest --workspace
@@ -486,11 +507,11 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@39bf30ced4be9d147faaabbde2682e9725fb8bd1
+      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # Docker login is required for attestations
-      - uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -506,13 +527,13 @@ jobs:
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-full }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-branch }}" "container/${{ matrix.name }}.oci.tar"
           regctl image import "ghcr.io/goauthentik/dev-${{ matrix.name }}:${{ needs.build-compute-tags.outputs.tag-flux }}" "container/${{ matrix.name }}.oci.tar"
-      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
         with:
           subject-name: "ghcr.io/goauthentik/dev-${{ matrix.name }}"
           subject-digest: "${{ steps.publish.outputs.digest }}"
           push-to-registry: true
   pr-comment:
-    if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
+    if: "${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}"
     needs:
       - build-compute-tags
       - publish
@@ -522,7 +543,7 @@ jobs:
       pull-requests: write
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Comment on PR
         uses: ./.github/actions/comment-pr-instructions
         with:

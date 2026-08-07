@@ -17,81 +17,63 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is Apple Business Manager?
 
-> Apple Business Manager is a web-based portal for IT administrators, managers, and procurement professionals to manage devices and automate device enrollment.
+> Apple Business Manager, now Apple Business, helps organizations deploy, manage, and secure Apple devices, apps, services, and Managed Apple Accounts.
 >
-> Organizations using Apple Business Essentials can allow their users to authenticate into their Apple devices using their IdP credentials, typically their company email addresses.
->
-> -- [Apple Business Manager](https://www.apple.com/business/)
+> -- https://www.apple.com/business/
 
-:::info Apple Device Management Platforms
-
-Apple packages their device management platform into three brands to cater to different audiences:
-
-- Apple Business Manager: Large organizations
-- Apple Business Essentials: Small businesses
-- Apple School Manager: Educational institutions
-
-While this integration guide focuses on Business Manager, the instructions are applicable to all three platforms with minor changes to the terminology.
-
-:::
-
-## Authentication flow
-
-This sequence diagram shows a high-level flow between Apple device, authentik, and Apple Business Manager.
+Apple Business federated authentication lets users sign in to assigned iPhone, iPad, Mac, Apple Vision Pro, Shared iPad, and iCloud on the web with their identity provider credentials. In this integration, authentik is the OpenID Connect (OIDC) identity provider and the Shared Signals Framework (SSF) transmitter that Apple Business uses for backchannel security events.
 
 ```mermaid
 sequenceDiagram
     autonumber
     participant User
-    participant authentik
     participant Apple
+    participant authentik
 
-    User->>Apple: User sign-in via iCloud
-    Note over Apple: 🔍 Email domain is federated
+    User->>Apple: Sign in with a Managed Apple Account
     Apple-->>authentik: Redirect to authentik
-    Note over authentik: ✅ Authenticate
-    authentik-->>Apple: Identity verified
-    Apple-->>User: Device enrolled!
-
+    authentik-->>Apple: Return OIDC authentication response
+    Apple-->>authentik: Register SSF stream
+    authentik-->>Apple: Send security event tokens
+    Apple-->>User: Complete sign-in
 ```
-
-In short, Apple Business Manager recognizes the email domain as a federated identity provider controlled by authentik. When a user signs in with their email address, Apple redirects them to authentik for authentication. Once authenticated, Apple enrolls the user's device and grants access to Apple services.
 
 ## Preparation
 
-By the end of this integration, your users will be able to enroll their Apple devices using their authentik credentials.
+By the end of this integration, your users will be able to use their authentik credentials to sign in to Apple services and enroll Apple devices with Managed Apple Accounts.
 
-You'll need to have an authentik instance running and accessible on an HTTPS domain, and an Apple Business Manager user with the role of Administrator or People Manager.
+Your authentik instance must be reachable from the internet on an HTTPS domain. In Apple Business, you need a verified domain and a user whose role has permission to configure domains, federation, and identity provider connections.
 
-:::warning Apple Business Manager restrictions
-Be aware that Apple Business Manager imposes the following restrictions on federated authentication:
+The following placeholders are used in this guide:
 
-- Federated authentication should use the user’s email address as their username. Aliases aren’t supported.
-- Existing users with an email address in the federated domain will automatically be converted to federated authentication, effectively _taking ownership_ of the account.
-- User accounts with the role of Administrator, Site Manager, or People Manager can’t sign in using federated authentication; they can only manage the federation process.
-  :::
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.com` is the verified domain that you want to federate in Apple Business.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::warning Domain federation restrictions
+Before you configure federated authentication, review these Apple Business requirements and ownership effects:
+
+- Users should sign in with the email address that matches their Managed Apple Account.
+- Devices that use federated authentication require iOS 15.5, iPadOS 15.5, macOS 12.4, visionOS 1.1, or later.
+- Apple requires the domain to be locked and the Domain Capture process to be turned on.
+- Users with roles that can configure federation and identity provider connections cannot sign in using federated authentication.
+- After Apple Business validates the identity provider connection, users cannot create new unmanaged Apple Accounts on the federated domain.
+
+Domain verification, domain locking, and Domain Capture affect Apple Account ownership for your whole domain. Review Apple's domain documentation before you turn them on.
+:::
 
 ## authentik configuration
 
 <RedirectURI20265Note />
 
-The workflow to configure authentik as an identity provider for Apple Business Manager involves creating scope mappings, signing keys, a Shared Signals Framework provider, and an OIDC provider/application pair.
+To support the integration of Apple Business Manager with authentik, you need to create scope mappings, a signing key, an OAuth2/OpenID provider, an SSF provider, and an application that uses both providers.
 
-Together, these components will handle the authentication flow and backchannel communication between authentik and Apple Business Manager.
+### Create scope mappings
 
-### 1. Create scope mappings
-
-Apple Business Manager requires that we create three scope mappings for our OIDC provider:
-
-- User profile information
-- Read access
-- Management access
-
-#### User profile information
-
-Apple Business Manager requires both a given name and family name in the OIDC claim. The example expression below assumes that the user's name is formatted with the given name first, followed by the family name, delimited by a space.
-
-Consider adjusting the expression to match the name format used in your organization.
+Apple Business needs the `ssf.manage` and `ssf.read` scopes for SSF access. The profile scope mapping below sends the user's given and family name in the OIDC profile claim. Adjust the expression if your authentik deployment stores name components in dedicated attributes.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -110,234 +92,154 @@ Consider adjusting the expression to match the name format used in your organiza
         ```
 
 4. Click **Finish**.
-
-#### Read access
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-3. Select **Scope Mapping** and set the following values:
+5. Click **Create**, select **Scope Mapping**, and set the following values:
     - **Name**: `Apple Business Manager ssf.read`
     - **Scope Name**: `ssf.read`
     - **Expression**: `return {}`
-
-4. Click **Finish**.
-
-#### Management access
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-3. Select **Scope Mapping** and set the following values:
+6. Click **Finish**.
+7. Click **Create**, select **Scope Mapping**, and set the following values:
     - **Name**: `Apple Business Manager ssf.manage`
     - **Scope Name**: `ssf.manage`
     - **Expression**: `return {}`
+8. Click **Finish**.
 
-4. Click **Finish**.
+### Create a signing key
 
-### 2. Create signing key
+Create or import a certificate-key pair that authentik can use to sign OIDC tokens and SSF security event tokens.
 
-You will need to create a **Signing Key** to sign Security Event Tokens (SET).
-This key is used to both sign and verify the SETs that are sent between authentik and Apple Business Manager.
+1. In the authentik Admin interface, navigate to **System** > **Certificates**.
+2. Choose one of the following options:
+    - To create a new key, click **Generate Certificate-Key Pair**, provide a **Certificate Name**, and click **Generate Certificate-Key Pair**.
+    - To import an existing key, click **Import Existing Certificate-Key Pair**, provide a **Certificate Name**, paste the certificate and private key, and click **Import Certificate-Key Pair**.
+3. Note the certificate name because you will select it for both providers.
 
-You can either generate a new key or import an existing one. It is recommended to use the same key for both the OIDC and SSF providers.
+### Create an OAuth2/OpenID provider
 
-#### Generate a new key
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click **New Provider**.
+2. Select **OAuth2/OpenID Provider** as the provider type.
+3. Provide a name, select an authorization flow, and set the following values:
+    - Note the **Client ID** and **Client Secret** values because you need them when configuring Apple Business.
+    - Under **Protocol settings**, add the following **Redirect URIs/Origins (RegEx)** value:
+        - `Strict` `Authorization`: `https://gsa-ws.apple.com/grandslam/GsService2/acs`
+    - Under **Protocol settings**, set **Signing Key** to the certificate-key pair you created.
+    - Under **Advanced protocol settings** > **Scopes**, add the following mappings to **Selected Scopes**:
+        - `Apple Business Manager profile`
+        - `Apple Business Manager ssf.read`
+        - `Apple Business Manager ssf.manage`
+        - `authentik default OAuth Mapping: OpenID 'offline_access'`
+4. Click **Create**.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **System** > **Certificates** and click **Generate Certificate-Key Pair**.
-3. Provide a **Certificate Name** and click **Generate Certificate-Key Pair**.
+### Create an SSF provider
 
-#### Import an existing key
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click **New Provider**.
+2. Select **Shared Signals Framework Provider** as the provider type.
+3. Provide a name and set the following values:
+    - **Signing Key**: select the same certificate-key pair that you selected for the OAuth2/OpenID provider.
+    - **Federated OAuth2/OpenID Providers**: select the OAuth2/OpenID provider that you created for Apple Business.
+4. Click **Create**.
 
-Alternatively, you can import an existing key.
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **System** > **Certificates** and click **Import Existing Certificate-Key Pair**.
-3. Provide a **Certificate Name**, paste the contents of your **Certificate**.
-4. Click **Import Certificate-Key Pair**.
-
-### 3. Create OIDC provider
-
-You will need to create an [OAuth2/OpenID Provider](/docs/add-secure-apps/providers/oauth2/) to handle the authentication flow between authentik and Apple Business Manager.
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **New Provider** to open the provider wizard.
-    - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID** and **Client Secret** values because they will be required later.
-        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gsa-ws.apple.com/grandslam/GsService2/acs`.
-        - Select any available signing key.
-        - Under **Advanced protocol settings**, in addition to the default scopes, add the four following **Selected Scopes** to the provider.
-            - `Apple Business Manager ssf.manage`
-            - `Apple Business Manager ssf.read`
-            - `Apple Business Manager profile`
-            - `authentik default OAuth Mapping: OpenID 'offline_access'`
-
-3. Click **Create**.
-
-### 4. Create Shared Signals Framework provider
-
-While the OIDC provider handles the authentication flow, you'll need to create a [Shared Signals Framework provider](/docs/add-secure-apps/providers/ssf/) to handle the backchannel communication between authentik and Apple Business Manager.
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **New Provider** to open the provider wizard.
-    - **Choose a Provider type**: select **Shared Signals Framework Provider** and the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), and the following required configurations.
-        - Select the same signing key that you selected for the OIDC provider.
-
-3. Click **Create**.
-
-:::note A Blank SSF Config URL is expected
-The **SSF Config URL** will be blank until the SSF provider is assigned to an application as a backchannel provider.
+:::info SSF URL availability
+The SSF provider **URL** value is available only after the SSF provider is assigned to an application as a backchannel provider.
 :::
 
-### 5. Assign SSF permissions
+### Assign stream creation permission
 
-The authentik user you will use to test the stream connection to Apple Business Manager must either be a member of the authentik Admins group (such as the default `akadmin` account) or have permission to **Add stream to SSF provider**.
+Apple Business tests the SSF stream connection during federation setup. The authentik user that Apple redirects to during that test must either be a superuser or have the **Add stream to SSF provider** permission on the SSF provider.
 
-If not using a superuser account, you can assign the correct permission by following these steps:
+If you are not using a superuser account for the test, assign the permission to the test account:
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Roles** and click **New Role**.
-3. Provide a name for the new role and click **Create Role**.
-4. Click on the name of the newly created role and open the **Users** tab.
-5. Add whichever user you want to have the permission.
-6. Navigate to **Applications** > **Providers** and click on the name of the SSF provider.
-7. Open the **Permissions** tab and click **Assign Role Object Permission**.
-8. Select the newly created role, toggle on **Add stream to SSF provider**, and click **Assign Role Object Permission**.
+1. In the authentik Admin interface, navigate to **Directory** > **Roles** and click **New Role**.
+2. Provide a name for the new role and click **Create Role**.
+3. Open the role, select the **Users** tab, and add the authentik user that you will use for the Apple Business connection test.
+4. Navigate to **Applications** > **Providers** and open the SSF provider that you created.
+5. Select the **Permissions** tab and click **Assign Role Object Permission**.
+6. Select the role, toggle on **Add stream to SSF provider**, and click **Assign Role Object Permission**.
 
-### 6. Create application
+### Create an application
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Application**, click the **New Application** dropdown, click **with Existing Provider**, and set the following required values:
+1. In the authentik Admin interface, navigate to **Applications** > **Applications**.
+2. Click **New Application** > **with Existing Provider...** and set the following values:
     - **Application Name**: `Apple Business Manager`
-    - **Slug**: `abm`
-    - **Provider**: Select the OIDC provider that you created
-    - **Backchannel Provider:** Select the SSF provider that you created
-
+    - **Provider**: select the OAuth2/OpenID provider that you created.
+    - **Backchannel Providers**: select the SSF provider that you created.
 3. Click **Create application**.
-4. Navigate to **Application** > **Providers** and click on the name of the SSF provider.
-5. On the **Overview** tab, take note of the **SSF Config URL** value.
-6. Navigate to **Application** > **Providers** and click on the name of the OIDC provider.
-7. On the **Overview** tab, take note of the **OpenID Configuration URL** value.
-
-### 7. Confirm and modify copied authentik values
-
-Before proceeding to Apple Business Manager, ensure that you have noted the following values from authentik:
-
-    - From the OIDC provider:
-        - Client ID
-        - Client Secret
-        - OpenID Configuration URL
-
-    - From the SSF provider:
-        - SSF Config URL
+4. Navigate to **Applications** > **Providers** and open the SSF provider.
+5. On the **Overview** tab, note the **URL** value because Apple Business uses it as the **SSF Config URL**.
+6. Navigate to **Applications** > **Providers** and open the OAuth2/OpenID provider.
+7. On the **Overview** tab, note the **OpenID Configuration URL** value.
 
 ## Apple Business Manager configuration
 
-With these prerequisites in place, authentik is ready to act as an identity provider for Managed Apple Accounts.
+With the authentik values ready, configure Apple Business to trust authentik as a custom identity provider.
 
-Similar to a personal Apple account, a _Managed Apple Account_ uses an email address to access Apple services and devices. What makes an Apple account _managed_ is that the domain associated with the email address is owned and verified by an organization through an Apple Business Manager account.
+### Add and verify the domain
 
-### 1. Add and verify your domain
+Domain verification proves that your organization controls the domain that you want to use for Managed Apple Accounts. The DNS and ownership work happens in Apple Business and your DNS provider, so only the high-level workflow is included here.
 
-By verifying the domain, Apple Business Manager will delegate ownership of any accounts with a matching email address to the organization, allowing for centralized management of devices, apps, and services.
+1. Log in to Apple Business as a user whose role can view, edit, and delete organization domains.
+2. Navigate to **Settings** > **Domains**.
+3. Click **Add**, select **Add Domain**, enter `example.com`, and click **Add Domain**.
+4. Click **Verify** next to the domain.
+5. Copy the TXT record that Apple Business displays and add it to your DNS provider.
+6. After the DNS record is published, return to **Settings** > **Domains** and click **Check Now** for the domain.
 
-1. Log in to the [Apple Business Manager dashboard](https://business.apple.com/) as an administrator.
-2. Click your account name in the sidebar, then select **Preferences**.
-3. From the Preferences page, select **Managed Apple Accounts** tab, click **Add Domain**, and then provide your domain name.
-   Apple will generate a DNS TXT record that you'll need to add to your domain's DNS settings.
-4. Wait for DNS propagation and click **Verify** to complete the domain verification process.
+### Lock the domain
 
-    A confirmation dialog will prompt you to lock your domain before you can proceed with the next steps.
+Locking a domain permanently prevents new unmanaged Apple Accounts from being created with that domain unless the domain is removed from Apple Business.
 
-    :::warning Locking your domain affects all enrolled users
-    Locking your domain ensures that only your organization can use your domain for federated authentication.
+1. In Apple Business, navigate to **Settings** > **Domains**.
+2. Select the domain, click **Manage**, and lock the domain.
+3. Review the ownership impact, then click **Lock Domain**.
 
-    **Once locked, your enrolled users will not be able to access Apple services until you complete the next steps to configure federated authentication.**
+### Configure and test the identity provider connection
 
-    **Only lock your domain when you're ready to proceed with the next steps.**
-    :::
+1. In Apple Business, navigate to **Settings** > **Domains**.
+2. Click **Get Started** next to **User sign-in and directory sync**.
+3. Select **Custom Identity Provider** and click **Continue**.
+4. Provide a name for the connection, for example `authentik`.
+5. Set the following values:
+    - **Client ID**: the Client ID from the authentik OAuth2/OpenID provider.
+    - **Client Secret**: the Client Secret from the authentik OAuth2/OpenID provider.
+    - **SSF Config URL**: the URL from the authentik SSF provider.
+    - **OpenID Config URL**: the OpenID Configuration URL from the authentik OAuth2/OpenID provider.
+6. Click **Continue**.
+7. When Apple Business redirects you to authentik, sign in as the authentik user that has permission to create streams for the SSF provider.
+8. After the test succeeds, click **Done**.
 
-5. In the confirmation dialog, set the **Lock Domain** toggle to **On** and confirm that the domain displays as locked in the **Managed Apple Accounts** tab.
+If the connection test fails, verify the following settings:
 
-### 2. Capture all accounts _(optional)_
+- The authentik instance is reachable from the internet over HTTPS.
+- The Client ID and Client Secret values match the authentik OAuth2/OpenID provider.
+- The OAuth2/OpenID provider has the Apple redirect URI, the Apple scope mappings, the `offline_access` scope, and a signing key.
+- The SSF provider has a signing key and includes the OAuth2/OpenID provider under **Federated OAuth2/OpenID Providers**.
+- The application uses the OAuth2/OpenID provider as its main provider and the SSF provider as a backchannel provider.
+- The authentik user used for the Apple Business connection test can create streams for the SSF provider.
 
-Optionally, you may choose to [capture all accounts](https://support.apple.com/guide/apple-business-manager/capture-a-domain-axm512ce43c3/1/web/1), which will convert all existing accounts with an email address in the federated domain to _Managed Apple Accounts_. You can also choose to capture all accounts at a later time when you're ready to manage all users in the domain.
+### Turn on Domain Capture
 
-:::danger Account capture is one-way migration
-Choosing to capture all accounts will affect all users with an email address in the federated domain, regardless of their enrollment status or device ownership.
-**Once captured, the accounts can't be reverted to personal Apple accounts – even if the domain is unlocked.**
+Domain Capture affects every unmanaged Apple Account that uses the domain. Apple notifies affected users and starts a 30-day transfer window.
 
-**Only capture accounts if you're sure that every user in the domain should be managed by Apple Business Manager.**
-:::
+1. In Apple Business, navigate to **Settings** > **Domains**.
+2. Click **Get Started with Domain Capture**.
+3. Review the affected accounts, confirm that the domain is locked, and click **Start Domain Capture**.
 
-1. Log in to the [Apple Business Manager dashboard](https://business.apple.com/) as an administrator.
-2. Click **your account name** in the sidebar, then select **Preferences**.
-3. From the Preferences page, select **Managed Apple Accounts** tab, and click **Manage** next to the domain you've verified.
-4. In your domain's management dialog, ensure you understand the implications of capturing all accounts and then click **Capture All Accounts**.
-5. Wait for Apple to complete the account capture process, and confirm that all accounts are now managed by Apple Business Manager.
+### Turn on federated authentication
 
-### 3. Enable federated authentication
-
-You're now ready to configure federated authentication with authentik.
-
-1. Log in to the [Apple Business Manager dashboard](https://business.apple.com/) as an administrator.
-2. Click **your account name** in the sidebar, then select **Preferences**.
-3. From the Preferences page, select **Managed Apple Accounts** tab, and click **Get Started** under the **User sign in and directory sync** section.
-4. To define how you want users to sign in, choose **Custom Identity Provider** and click **Continue**.
-5. On the **Set up your Custom Identity Provider** page, use the following values:
-    - **Name**: `authentik`
-    - **Client ID**: Client ID from authentik
-    - **Client Secret**: Client Secret from authentik
-    - **SSF Config URL**: SSF Config URL from authentik
-    - **OpenID Config URL**: OpenID Configuration URL from authentik
-
-6. Click **Continue** to begin Apple's verification of your configuration.
-7. When prompted to authenticate through your authentik instance, provide your credentials and click **Log In**.
-
-    When the test finishes, click **Done** to complete the configuration.
-
-#### Troubleshooting connection issues during the test
-
-If the connection test fails, your configuration may be incorrect. Here are some common issues to check:
-
-- [x] Ensure that your authentik instance is accessible from the internet from an HTTPS domain.
-- [x] Verify that the Client ID and Client Secret values are correct.
-- [x] Verify that scope mappings are created and all assigned to the OIDC provider.
-- [x] Verify that the SSF provider is assigned to the application.
-- [x] Ensure that the SSF Config URL and OpenID Configuration URL are accurate.
-- [x] Ensure that the OAuth and SSF providers both have signing keys set. Ideally the same certificate should be used for both.
-
-If you're still having issues, check your authentik instance's log for any errors that might have occurred during the authentication process. If Apple can reach your authentik instance, you should see logs indicating Apple's attempts to test the authentication flow.
+1. In Apple Business, navigate to **Settings** > **Domains**.
+2. In the **Domains** section, click **Manage** next to the domain.
+3. Click **Turn on Sign in with your Identity Provider**.
+4. Turn on **Sign in with your Identity Provider**.
 
 ## Configuration verification
 
-:::warning Administrators cannot use federated authentication
-Apple Business Manager does not allow users with the role of Administrator, Site Manager, or People Manager to log in using federated authentication.
+To confirm that authentik is properly configured with Apple Business Manager, open Apple Business in a private browsing window and sign in with an account in the federated domain that is allowed to use federated authentication. You should be redirected to authentik to authenticate, then redirected back to Apple Business.
 
-When creating test users, ensure that their role is set to Standard (or Student) to test federated authentication with authentik.
-:::
+You can also sign in to an assigned Apple device with the user's Managed Apple Account to confirm the device sign-in flow.
 
-### 1. Create a test user
+## Resources
 
-1. From the [Apple Business Manager dashboard](https://business.apple.com/), click **Users** on the sidebar, then click **Add**.
-2. In the **Add New User** dialog, use the following values:
-    - **First Name**: `Jessie`
-    - **Last Name**: `Lorem`
-    - **Email**: `jessie@authentik.company`
-    - **Role**: `Standard`
-
-3. Click **Save** to create the user account, and then click **Create Sign-In** in the user's profile.
-4. When prompted to choose a delivery method, select **Create a downloadable PDF and CSV** and click **Continue**. Note the temporary password provided on the next page, optionally downloading the PDF and CSV files for future reference.
-5. Confirm the user is created from the authentik Admin interface by navigating to the **Users** page and searching for the account by their email address. Note that this may take a few minutes to synchronize.
-
-### 2. Test the authentication flow
-
-1. Confirm that the test user is synchronized in authentik.
-2. Open a private browsing window and navigate to the [Apple Business Manager](https://business.apple.com/).
-3. In the email field, provide the email address assigned to the test user.
-4. Submit the form to trigger the authentication flow.
-
-    You should be redirected to authentik for authentication and then back to Apple Business Manager to manage the test user's account.
-
-    If the test is successful, you'll be able to enroll the test user's device and access Apple services.
+- [Apple Business User Guide - Intro to federated authentication with Apple Business](https://support.apple.com/guide/business/intro-to-federated-authentication-axmb19317543/web)
+- [Apple Business User Guide - Use federated authentication with your identity provider in Apple Business](https://support.apple.com/guide/business/federated-authentication-identity-provider-axmfcab66783/web)
+- [Apple Business User Guide - Verify a domain in Apple Business](https://support.apple.com/guide/business/verify-a-domain-axm48c3280c0/web)
+- [Apple Business User Guide - Lock a domain in Apple Business](https://support.apple.com/guide/business/lock-a-domain-axmce04f4299/web)
+- [Apple Business User Guide - Capture a domain in Apple Business](https://support.apple.com/guide/business/capture-a-domain-axm512ce43c3/web)

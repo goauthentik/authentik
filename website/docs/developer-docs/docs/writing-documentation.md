@@ -2,12 +2,9 @@
 title: Writing documentation
 ---
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
-
 Writing documentation for authentik is a great way for both new and experienced users to improve and contribute to the project. We appreciate contributions to our documentation, from fixing typos and adding content to writing completely new topics.
 
-The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `npm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to an NPM script within the `website` directory.
+The [technical documentation](https://docs.goauthentik.io) and our [integration guides](https://integrations.goauthentik.io/) are built, formatted, and tested using `pnpm`. The commands to build the content locally are defined in the `Makefile` in the root of the repository. Each command is prefixed with `docs-` or `integrations-` and corresponds to a package script within the `website` directory.
 
 ## Documentation subdomains
 
@@ -39,29 +36,21 @@ Adhering to the following guidelines will help us get your PRs merged more easil
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en) (24 or later)
+- [pnpm](https://pnpm.io/installation) (11.9 or later), the package manager used by the `website` workspace
 - [Make](https://www.gnu.org/software/make/) (3 or later)
 
-<Tabs defaultValue="macOS">
-<TabItem value="macOS">
-
-Install the required dependencies on macOS using Homebrew:
+Install Node.js with [nvm](https://github.com/nvm-sh/nvm), one of the version managers recommended on the Node.js download page. It keeps the toolchain scoped to your shell rather than installed system-wide, so switching versions between projects doesn't require reinstalling:
 
 ```shell
-brew install node@24
+nvm install 24
+nvm use 24
 ```
 
-</TabItem>
-<TabItem value="Linux">
+Then install pnpm by following the [pnpm installation guide](https://pnpm.io/installation), or run `corepack enable pnpm` to have Node.js manage the version pinned in `package.json`.
 
-[Download Node.js version 24](https://nodejs.org/en/download/current) for your Linux distribution.
-
-</TabItem>
-<TabItem value="Windows">
-
-We're currently seeking community input on building the docs in Windows. If you have experience with this setup, please consider contributing to this documentation.
-
-</TabItem>
-</Tabs>
+:::info Building the docs on Windows
+nvm runs on macOS and Linux; on Windows, use [nvm-windows](https://github.com/coreybutler/nvm-windows), a separate project with its own command set. We're currently seeking community input on building the docs on Windows. If you have experience with this setup, please consider contributing to this documentation.
+:::
 
 ### Clone and fork the authentik repository
 
@@ -92,8 +81,6 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 - For new entries, make sure to add any new pages to the `/docs/sidebar.mjs` file.
   Otherwise, the new page will not appear in the table of contents to the left.
 
-- Always be sure to run the `make docs` command on your local branch _before_ pushing the PR to the authentik repo. This command does important linting, and the build check in our repo will fail if the linting has not been done. In general, check on the health of your build before pushing to the authentik repo, and also check on the build status of your PR after you create it.
-
 For our technical documentation (https://docs.goauthentik.io/), the following commands are used:
 
 ### Build locally
@@ -102,7 +89,7 @@ For our technical documentation (https://docs.goauthentik.io/), the following co
 make docs
 ```
 
-This command is a combination of `make docs-lint-fix` and `make docs-build`. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+This command formats, lints, and builds the technical documentation. Run it before pushing, then inspect the deploy preview after opening the pull request.
 
 ### Live editing
 
@@ -118,7 +105,7 @@ In addition to following the [Style Guide](./style-guide.mdx) please review the 
 
 - For new integration documentation, please use the Integrations template in our [GitHub repo](https://github.com/goauthentik/authentik) at `/website/integrations/template/service.md`.
 
-- For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
+- For placeholder domains, use `authentik.company` and `<app-name>.company`, where `<app-name>` identifies the application. Use hyphens between words inside DNS-label placeholders because underscores are not valid in these host-label examples; use underscores for other multiword placeholders.
 
 - Make sure to create a directory for your service in a fitting category within [`/website/integrations/`](https://github.com/goauthentik/authentik/tree/main/website/integrations).
 
@@ -134,7 +121,7 @@ When authoring integration guides, the following commands are used:
 make integrations
 ```
 
-This command is a combination of `make docs-lint-fix` and `make integrations-build`. This command should always be run on your local branch before committing your changes to a pull request to the authentik repo. It is important to run this command before committing changes because linter errors will prevent the build checks from passing.
+This command formats, lints, and builds the integration documentation. Run it before pushing, then inspect the deploy preview after opening the pull request.
 
 ### Live editing
 

@@ -223,6 +223,7 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
@@ -232,6 +233,7 @@ class TestProviderProxyConnect(ChannelsE2ETestCase):
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
+            invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host="http://localhost",
             external_host="http://localhost:9000",
         )
