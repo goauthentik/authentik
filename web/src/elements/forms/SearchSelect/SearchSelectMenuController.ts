@@ -1,15 +1,9 @@
 import type { ListSelect } from "#elements/ak-list-select/ak-list-select";
-import { AnchorPositionSupported, AnchorSizeSupported } from "#elements/dialogs/positioning";
+import { findScrollableAncestor, placeAnchoredPopover } from "#elements/dialogs/positioning";
 
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
 const DEFAULT_REFOCUS_DELAY = 250;
-
-/**
- * Firefox reports support for anchor positioning but mis-renders anchored elements inside
- * dialogs, so use the shared capability checks rather than CSS.supports directly.
- */
-const CSSAnchorPositioningSupported = AnchorPositionSupported && AnchorSizeSupported;
 
 interface SearchSelectMenuHost extends ReactiveControllerHost, HTMLElement {
     open: boolean;
@@ -33,11 +27,6 @@ export class SearchSelectMenuController implements ReactiveController {
         host.addController(this);
     }
 
-    public hostConnected() {
-        // Styling hook: opt this instance into the CSS anchor-positioning block.
-        this.host.toggleAttribute("data-anchor-css", CSSAnchorPositioningSupported);
-    }
-
     /**
      * Reconcile the popover's actual open state with the host's `open` state.
      * Called after the host updates so the menu has rendered.
@@ -54,9 +43,9 @@ export class SearchSelectMenuController implements ReactiveController {
 
         if (this.host.open && !this.host.readOnly && !popoverOpen) {
             menu.showPopover();
-            // Start tracking synchronously (not via the async `toggle` event) so the
-            // fallback places the menu in the same frame it becomes visible — no flash
-            // at the UA default position.
+            // Start tracking synchronously (not via the async `toggle` event) so the menu
+            // is placed in the same frame it becomes visible — no flash at the UA default
+            // position.
             this.#startTracking();
         } else if ((!this.host.open || this.host.readOnly) && popoverOpen) {
             menu.hidePopover();
@@ -77,7 +66,9 @@ export class SearchSelectMenuController implements ReactiveController {
         const dismissedByThisClick = event.timeStamp - this.#lastLightDismiss < refocusDelay;
 
         this.host.open = dismissedByThisClick ? false : !this.host.open;
-        this.getInput()?.focus();
+        // preventScroll: an auto-scroll here would shift the anchor in the same beat the
+        // menu is being placed against it.
+        this.getInput()?.focus({ preventScroll: true });
     };
 
     public readonly handleMenuToggle = (event: ToggleEvent) => {
@@ -114,7 +105,7 @@ export class SearchSelectMenuController implements ReactiveController {
 
         if (menuCanScroll) return;
 
-        const scroller = this.#findScrollableAncestor();
+        const scroller = findScrollableAncestor(this.host);
         if (!scroller) return;
 
         const deltaY = (() => {
@@ -134,42 +125,13 @@ export class SearchSelectMenuController implements ReactiveController {
         event.preventDefault();
     };
 
-    /**
-     * Walk the flattened (composed) tree upward from the host — crossing shadow
-     * boundaries and slots — to the nearest vertically scrollable ancestor.
-     */
-    #findScrollableAncestor(): HTMLElement | null {
-        const composedParent = (node: Node): Node | null => {
-            const slot = (node as Element).assignedSlot;
-            if (slot) return slot;
-
-            const parent = node.parentNode;
-            return parent instanceof ShadowRoot ? parent.host : parent;
-        };
-
-        for (let node = composedParent(this.host); node; node = composedParent(node)) {
-            if (!(node instanceof HTMLElement)) continue;
-
-            const { overflowY } = getComputedStyle(node);
-            const scrollable =
-                overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay";
-
-            if (scrollable && node.scrollHeight > node.clientHeight) {
-                return node;
-            }
-        }
-
-        return null;
-    }
-
     #startTracking() {
         const input = this.getInput();
         const menu = this.getMenu();
         if (!input || !menu) return;
 
         // Close the menu when its anchor input is no longer visible — scrolled out
-        // of the viewport, clipped away by a scroll container, or hidden. This works
-        // in every browser regardless of anchor-positioning support.
+        // of the viewport, clipped away by a scroll container, or hidden.
         this.#anchorObserver?.disconnect();
         this.#anchorObserver = new IntersectionObserver(
             (entries) => {
@@ -181,21 +143,17 @@ export class SearchSelectMenuController implements ReactiveController {
         );
         this.#anchorObserver.observe(input);
 
-        // Native CSS anchor positioning handles placement and tracks scrolling on its
-        // own — nothing else to do.
-        if (CSSAnchorPositioningSupported) return;
-
-        // Otherwise position the menu imperatively and keep it in sync. We can't rely
-        // on a global scroll listener: `scroll` events are `composed: false`, so
-        // scrolling inside a shadow-rendered container (e.g. a modal dialog body)
-        // never reaches `window`. Instead we re-place the menu each animation frame
-        // while open, which also covers nested scrollers, layout shifts, and resizes.
+        // Position the menu imperatively and keep it in sync. We can't rely on a global
+        // scroll listener: `scroll` events are `composed: false`, so scrolling inside a
+        // shadow-rendered container (e.g. a modal dialog body) never reaches `window`.
+        // Instead we re-place the menu each animation frame while open, which also covers
+        // nested scrollers, layout shifts, resizes, and options arriving late.
         let lastGeometry = "";
         const reflow = () => {
             const rect = this.getInput()?.getBoundingClientRect();
 
             if (rect) {
-                const geometry = `${rect.left},${rect.top},${rect.bottom},${rect.width},${window.innerHeight}`;
+                const geometry = `${rect.left},${rect.top},${rect.bottom},${rect.width},${window.innerHeight},${menu.scrollHeight}`;
 
                 if (geometry !== lastGeometry) {
                     lastGeometry = geometry;
@@ -220,35 +178,11 @@ export class SearchSelectMenuController implements ReactiveController {
         }
     }
 
-    /**
-     * Position the menu against the input imperatively, matching the CSS
-     * anchor-positioning behavior (below by default, flip above when there's no
-     * room, width matched to the input, capped height). Only used where CSS anchor
-     * positioning is unavailable.
-     */
     #positionMenu() {
         const input = this.getInput();
         const menu = this.getMenu();
         if (!input || !menu) return;
 
-        const rect = input.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const maxHeight = Math.round(viewportHeight * 0.4);
-        const menuHeight = Math.min(menu.offsetHeight || maxHeight, maxHeight);
-        const spaceBelow = viewportHeight - rect.bottom;
-        const flipUp = spaceBelow < menuHeight && rect.top > spaceBelow;
-
-        menu.style.position = "fixed";
-        menu.style.left = `${Math.round(rect.left)}px`;
-        menu.style.width = `${Math.round(rect.width)}px`;
-        menu.style.maxHeight = `${maxHeight}px`;
-
-        if (flipUp) {
-            menu.style.top = "auto";
-            menu.style.bottom = `${Math.round(viewportHeight - rect.top)}px`;
-        } else {
-            menu.style.bottom = "auto";
-            menu.style.top = `${Math.round(rect.bottom)}px`;
-        }
+        placeAnchoredPopover(input, menu, { matchAnchorWidth: true });
     }
 }
