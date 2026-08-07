@@ -7,7 +7,7 @@ import { css } from "lit";
 
 export const globalVariables = css`
     :host {
-        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColorg--100);
+        --pf-c-text-input-group--BackgroundColor: var(--pf-global--BackgroundColor--100);
         --pf-c-text-input-group--Color: var(--pf-global--Color--dark-100);
 
         --pf-c-text-input-group__text--before--BorderWidth: var(--pf-global--BorderWidth--sm);

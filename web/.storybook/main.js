@@ -4,6 +4,8 @@
  */
 
 import { copyAssets } from "../scripts/build-assets.mjs";
+import { join } from 'path';
+import { fileURLToPath } from "node:url";
 
 /**
  * @param {TemplateStringsArray} strings
@@ -13,6 +15,8 @@ import { copyAssets } from "../scripts/build-assets.mjs";
 const html = (strings, ...values) => String.raw({ raw: strings }, ...values);
 
 await copyAssets();
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /**
  * @satisfies {StorybookConfig}
@@ -27,7 +31,7 @@ const config = {
     ],
     framework: "@storybook/web-components-vite",
     viteFinal: async (config) => {
-        return {
+        const newConfig = {
             ...config,
             define: {
                 ...config.define,
@@ -39,6 +43,13 @@ const config = {
                 conditions: [],
             },
         };
+        newConfig.server = config.server || {};
+        newConfig.server.fs = config.server.fs || {};
+        newConfig.server.fs.allow = config.server.fs.allow || [];
+        newConfig.server.fs.allow.push(join(__dirname, "../../packages/fonts"));
+        newConfig.server.fs.allow.push(join(__dirname, ".."));
+        return newConfig;
+        
     },
 
     previewBody: (body) => html`
