@@ -334,6 +334,7 @@ ci--meta-debug:
 	node --version || echo "No node installed"
 
 ci-lint-mypy: ci--meta-debug
+	@test -f local.env.yml || (echo "ERROR: local.env.yml is missing. Run 'make gen-dev-config' first." && exit 1)
 	$(UV) run mypy --strict $(PY_SOURCES)
 
 ci-lint-black: ci--meta-debug
