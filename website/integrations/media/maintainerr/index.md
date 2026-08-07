@@ -23,8 +23,8 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::warning Protect the Maintainerr backend
-Maintainerr does not authenticate requests, so anything that reaches it is trusted. `GET /api/settings/database/download` returns its entire database, which stores the credentials for every connected service in plain text. Make sure Maintainerr is reachable only through authentik, and do not add unauthenticated path exceptions for anything under `/api/`.
+:::danger Protect the Maintainerr backend
+Maintainerr does not authenticate requests, so anything that reaches it is trusted. `GET /api/settings/database/download` returns its entire database, which stores the credentials for every connected service in plain text. Make sure that Maintainerr is reachable only through authentik, and do not add unauthenticated path exceptions for anything under `/api/`.
 :::
 
 ## authentik configuration
@@ -102,7 +102,7 @@ architecture-beta
 
 ## Configuration verification
 
-To verify the login flow, open Maintainerr. You should be redirected to authentik before the Maintainerr web interface is shown. Once signed in, open the **Logs** page and confirm that new entries keep appearing, which shows that streamed responses are passing through the outpost.
+To verify the login flow, open Maintainerr. You should be redirected to authentik before the Maintainerr web interface is shown. After you sign in, open the **Logs** page and confirm that new entries keep appearing, which shows that streamed responses are passing through the outpost.
 
 ## Resources
 
