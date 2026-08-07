@@ -5,6 +5,8 @@ import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { DummyPolicy, PoliciesApi } from "@goauthentik/api";
@@ -65,8 +67,18 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                         ?checked=${this.instance?.result ?? false}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal label=${msg("Wait (min)")} required name="waitMin">
+                    <ak-form-element-horizontal required name="waitMin">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "waitMin",
+                                required: true,
+                            },
+                            msg("Wait (min)"),
+                        )}
                         <input
+                            id="waitMin"
                             type="number"
                             value="${this.instance?.waitMin ?? 1}"
                             class="pf-c-form-control"
@@ -78,8 +90,18 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Wait (max)")} required name="waitMax">
+                    <ak-form-element-horizontal required name="waitMax">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "waitMax",
+                                required: true,
+                            },
+                            msg("Wait (max)"),
+                        )}
                         <input
+                            id="waitMax"
                             type="number"
                             value="${this.instance?.waitMax ?? 5}"
                             class="pf-c-form-control"
