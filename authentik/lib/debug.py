@@ -1,4 +1,5 @@
 from os import environ
+from socket import gethostname
 
 from structlog.stdlib import get_logger
 
@@ -47,7 +48,7 @@ def start_pyroscope(component: str, **tags: str) -> bool:
     pyroscope.configure(
         application_name="authentik",
         server_address=server,
-        tags={"component": component, **tags},
+        tags={"component": component, "hostname": gethostname(), **tags},
         mem_enabled=True,
     )
     return True
