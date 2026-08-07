@@ -38,6 +38,7 @@ import { ConsoleLogger } from "#logger/browser";
 
 import {
     ChallengeTypes,
+    ChallengeTypesFromJSON,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowLayoutEnum,
@@ -220,24 +221,46 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
 
         this.loading = true;
 
-        return this.#api
-            .flowsExecutorGet({
+        try {
+            // Check for prefetched flow data from the inline <script data-id="flow-prefetch">
+            // in flow.html. The prefetch fires immediately when HTML is parsed, overlapping
+            // the ~500ms API wait with JS bundle download time and reducing LCP.
+            //
+            // The prefetch stores raw JSON (snake_case fields from the API). We must run it
+            // through ChallengeTypesFromJSON() to get the same camelCase object shape that
+            // FlowsApi.flowsExecutorGet() would return — this is what the rest of the code
+            // expects (e.g. challenge.flowInfo, not challenge.flow_info).
+            const ak = globalAK();
+            const prefetchPromise = ak.flowPrefetch;
+
+            if (prefetchPromise) {
+                // Delete immediately so subsequent stage transitions (which call refresh()
+                // again after a flowsExecutorSolve POST) always make a fresh API call.
+                delete ak.flowPrefetch;
+
+                const rawData = await prefetchPromise;
+
+                if (rawData !== null) {
+                    this.challenge = ChallengeTypesFromJSON(rawData);
+                    return;
+                }
+                // rawData is null — prefetch failed silently. Fall through to normal fetch.
+            }
+
+            // Normal fetch path — existing behavior, unchanged.
+            const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({
                 flowSlug: this.flowSlug,
                 query: window.location.search.substring(1),
-            })
-            .then((challenge) => {
-                this.challenge = challenge;
-                return !!this.challenge;
-            })
-            .catch(async (error) => {
-                const parsedError = await parseAPIResponseError(error);
-                showAPIErrorMessage(parsedError);
-                this.setFlowErrorChallenge(parsedError);
-                return false;
-            })
-            .finally(() => {
-                this.loading = false;
             });
+
+            this.challenge = challenge;
+        } catch (error) {
+            const parsedError = await parseAPIResponseError(error);
+            showAPIErrorMessage(parsedError);
+            this.setFlowErrorChallenge(parsedError);
+        } finally {
+            this.loading = false;
+        }
     };
 
     public async firstUpdated(changed: PropertyValues<this>): Promise<void> {
