@@ -16,17 +16,13 @@ func urlJoin(originalUrl string, newPath string) string {
 }
 
 func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
-	fallbackRedirect := a.proxyConfig.ExternalHost
+	url := a.proxyConfig.ExternalHost
 	state := a.stateFromRequest(rw, r)
-	if state == nil {
-		rw.WriteHeader(http.StatusBadRequest)
-		return
+	if state != nil && state.Redirect != "" {
+		url = state.Redirect
 	}
-	if state.Redirect == "" {
-		state.Redirect = fallbackRedirect
-	}
-	a.log.WithField("redirect", state.Redirect).Trace("final redirect")
-	http.Redirect(rw, r, state.Redirect, http.StatusFound)
+	a.log.WithField("redirect", url).Trace("final redirect")
+	http.Redirect(rw, r, url, http.StatusFound)
 }
 
 // toString Generic to string function, currently supports actual strings and integers
