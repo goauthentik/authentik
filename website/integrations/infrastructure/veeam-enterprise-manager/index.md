@@ -4,6 +4,8 @@ sidebar_label: Veeam Enterprise Manager
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
 ## What is Veeam Enterprise Manager?
 
 > Veeam Backup Enterprise Manager (Enterprise Manager) is a management and reporting component that allows you to manage multiple Veeam Backup & Replication installations from a single web console. Veeam Backup Enterprise Manager helps you optimize performance in remote office/branch office (ROBO) and large-scale deployments and maintain a view of your entire virtual environment.
@@ -23,34 +25,60 @@ This documentation lists only the settings that you need to change from their de
 
 You will need one or more existing groups in authentik to assign roles in Veeam Enterprise Manager.
 
-## Veeam Enterprise Manager pre-configuration
-
-Log in to your Veeam Enterprise Manager. Navigate to **Configuration** in the top-right corner. In the left sidebar, select **Settings**, then select the **SAML Authentication** tab.
-
-Select the **Enable SAML 2.0** checkbox. Further down the page, click **Download** to download the metadata.
-
 ## authentik configuration
 
-To support the integration of Veeam Enterprise Manager with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Veeam Enterprise Manager with authentik, you need to download the Veeam Enterprise Manager service provider metadata and then create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Download the service provider metadata
+
+1. Log in to Veeam Enterprise Manager as an administrator.
+2. In the top-right corner, click **Configuration**.
+3. In the left sidebar, select **Settings**, then open the **SAML Authentication** tab.
+4. Select **Enable SAML 2.0**.
+5. Click **Download** to save the service provider metadata XML file. You will upload this file to authentik in the next section.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **Create** to create a provider.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Click **Import** and upload the metadata XML downloaded from Veeam Enterprise Manager during pre-configuration.
-    - Confirm the imported **ACS URL** and **Issuer** values match your Veeam Enterprise Manager deployment.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider from Metadata** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configuration:
+        - **Metadata**: select the service provider metadata XML you downloaded from Veeam Enterprise Manager in the previous section.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
-
-Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click the **Download Metadata** button.
+4. Navigate to **Applications** > **Providers** and click the provider you created.
+5. Open the **Metadata** tab and click **Download** to save the identity provider metadata XML file.
 
 ## Veeam Enterprise Manager configuration
 
-Back on Veeam Enterprise Manager, click **Import from File**, and select the XML file that you downloaded from authentik. Make sure that the **Enable SAML 2.0** checkbox is still enabled, and click **Save**.
+1. Switch back to Veeam Enterprise Manager and reopen **Configuration** > **Settings** > **SAML Authentication**.
+2. Click **Import from File** and select the identity provider metadata XML file that you downloaded from authentik.
+3. Make sure that **Enable SAML 2.0** is still selected.
+4. Click **Save**.
 
-To map Veeam Enterprise Manager permissions to an authentik user, create an external group. In Veeam Enterprise Manager, navigate to **Configuration** > **Roles**, click **Add...**, and select **External Group**. Enter the name of an authentik group that the user is a member of.
+### Map authentik groups to Veeam Enterprise Manager roles
+
+To grant access to a user, the authentik group the user belongs to must be mapped to a Veeam Enterprise Manager role.
+
+1. In Veeam Enterprise Manager, navigate to **Configuration** > **Roles**.
+2. Click **Add...** and select **External Group**.
+3. Enter the name of the authentik group whose members should be granted access.
+4. Select the role that you want to assign to members of this group.
+5. Click **OK** to save the role mapping.
+
+:::info Group names
+The group name that you enter in Veeam Enterprise Manager must match the authentik group name.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Veeam Enterprise Manager, log out of Veeam Enterprise Manager and click **Sign in with SSO** on the sign-in screen. You should be redirected to authentik to log in, then redirected back to Veeam Enterprise Manager.
+
+## Resources
+
+- [Veeam Help Center - SAML Authentication Support](https://helpcenter.veeam.com/docs/vbr/em/em_saml.html)
+- [Veeam Help Center - Configuring SAML Authentication Settings](https://helpcenter.veeam.com/docs/vbr/em/veeam_backup_em_saml.html)
+- [Veeam Help Center - Accessing Enterprise Manager](https://helpcenter.veeam.com/docs/vbr/em/accessing_management_website.html)
