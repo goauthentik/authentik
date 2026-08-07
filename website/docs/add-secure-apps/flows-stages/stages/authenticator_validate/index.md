@@ -127,6 +127,14 @@ The order of selected hints matters. For example, selecting **Security key** bef
 
 If the user has multiple compatible authenticators, authentik lets them choose one. After a successful validation, the last-used authenticator is automatically preferred the next time this stage runs.
 
+### SMS delivery hints
+
+When an SMS device is validated, authentik shows where the code was sent: the destination phone number (masked for privacy) and, if configured, the delivery method.
+
+The delivery method is taken from the **Authenticator type name** of the [SMS Authenticator Setup stage](../authenticator_sms/index.md) that enrolled the device. Because every SMS device shares the `sms` device class, setting a distinct name on each SMS stage (for example `SMS` and `WhatsApp`) is the recommended way to differentiate delivery channels in the validation prompt.
+
+Phone numbers stored as a hash (when the setup stage uses **Verify only**) are not shown.
+
 ### WebAuthn authenticator type restrictions
 
 **WebAuthn device type restrictions** are an allowlist for already-enrolled WebAuthn authenticators. When no device types are selected, any enrolled WebAuthn authenticator that matches the stage's **Device classes** can be used. When one or more device types are selected, authentik only allows WebAuthn authentication from enrolled devices whose recorded device type matches one of the selected entries.
