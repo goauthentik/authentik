@@ -40,8 +40,12 @@ authentik
 ├── admin - Administrative tasks and APIs, no models (Version updates, Metrics, system tasks)
 ├── api - General API Configuration (Routes, Schema and general API utilities)
 ├── blueprints - Handle managed models and their state.
+├── brands - Branding and theming for tenants
+├── commands - Management commands for the server
+├── common - Shared logic and utilities
 ├── core - Core authentik functionality, central routes, core Models
 ├── crypto - Cryptography, currently used to generate and hold Certificates and Private Keys
+├── endpoints - Custom API endpoints and connectivity logic
 ├── enterprise - Enterprise features, which are source available but not open source
 ├── events - Event Log, middleware and signals to generate signals
 ├── flows - Flows, the FlowPlanner and the FlowExecutor, used for all flows for authentication, authorization, etc
@@ -61,6 +65,7 @@ authentik
 │   ├── radius - Provides a RADIUS server that authenticates using flows
 │   ├── saml - SAML2 provider
 │   └── scim - SCIM provider
+├── rbac - Role-Based Access Control
 ├── recovery - Generate keys to use in case you lock yourself out
 ├── root - Root Django application, contains global settings and routes
 ├── sources
@@ -113,13 +118,23 @@ This section guides you through submitting an enhancement suggestion for authent
 
 When you are creating an enhancement suggestion, please fill in [the template](https://github.com/goauthentik/authentik/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=), including the steps that you imagine you would take if the feature you're requesting existed.
 
+### Tooling
+
+To maintain a fast and consistent development experience across a polyglot codebase, we use the following tools:
+
+- **Python**: We use [uv](https://github.com/astral-sh/uv) for extremely fast dependency management and runtime execution.
+- **TypeScript**: We use [pnpm](https://pnpm.io/) for efficient workspace management.
+- **Rust**: We use [cargo nextest](https://nextest.rs/) for high-performance test execution.
+
+Prefer using the targets in the root `Makefile` (e.g., `make install`, `make test`) as they wire up these tools with the correct configurations.
+
 ### Your first code contribution
 
 #### Local development
 
 authentik can be run locally, although depending on which part you want to work on, different prerequisites are required.
 
-This is documented in the [developer docs](./setup/frontend-dev-environment.mdx).
+This is documented in the [developer docs](./setup/full-dev-environment.mdx) (for a full setup) or [frontend-dev-environment.mdx](./setup/frontend-dev-environment.mdx) (for UI work only).
 
 ### Help with the docs
 
@@ -175,7 +190,7 @@ Please follow these steps to have your contribution considered by the maintainer
 2. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
 3. Ensure your code has tests. While it is not always possible to test every single case, the majority of the code should be tested.
 
-While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
+While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request be ultimately accepted.
 
 ## Style guides
 
@@ -205,6 +220,14 @@ The required Python version is defined in the repository's [`pyproject.toml`](ht
 - Add meaningful docstrings when possible.
 - Ensure any database migrations work properly from the last stable version (this is checked via CI)
 - If your code changes central functions, make sure nothing else is broken.
+
+### Other Language style guides
+
+We strive for consistency across our polyglot codebase. Please follow these general guidelines for our other languages:
+
+- **Rust**: Follow standard Rust idioms. Code is formatted with `rustfmt`.
+- **Go**: Follow standard Go idioms. We use `golangci-lint` to ensure code quality.
+- **TypeScript**: Follow the project's TypeScript and Lit guidelines. Code is formatted with Prettier and linted with ESLint.
 
 ### Documentation style guide
 
