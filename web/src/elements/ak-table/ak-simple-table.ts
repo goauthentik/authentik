@@ -243,7 +243,7 @@ export class SimpleTable
     };
 
     protected renderRowGroups = (rowGroups: TableGroup[]): SlottedTemplateResult => {
-        return map(rowGroups, this.renderRowGroup);
+        return html`${map(rowGroups, this.renderRowGroup)}`;
     };
 
     protected renderBody(): SlottedTemplateResult {
