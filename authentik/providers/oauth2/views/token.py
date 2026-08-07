@@ -684,7 +684,7 @@ class TokenParams:
         if not target:
             LOGGER.warning("Audience does not match any provider", audience=audience)
             raise TokenExchangeError("invalid_target").with_cause("unknown_target")
-        # Targeting itself is the default behaviour, nothing to switch to.
+        # Targeting itself is the default behavior, nothing to switch to.
         if target.pk == self.provider.pk:
             return
         # The target must explicitly federate with the requesting provider.
