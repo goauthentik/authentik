@@ -42,7 +42,7 @@ To support the integration of Maintainerr with authentik, you need to create an 
         - Set **External host** to `https://maintainerr.company`.
         - Set **Internal host** to the URL that the authentik proxy outpost uses to reach Maintainerr.
             - If Maintainerr and the authentik proxy outpost are both running in the same Docker deployment, set the value to `http://<maintainerr_container_name>:6246`.
-            - If Maintainerr runs on a different server than the authentik proxy outpost, set the value to `http://maintainerr.company:6246`.
+            - If Maintainerr runs on a different server than the authentik proxy outpost, set the value to `http://<maintainerr_host>:6246`, using an address that resolves to Maintainerr itself rather than to the authentik proxy outpost.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
