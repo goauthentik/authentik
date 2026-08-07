@@ -1,5 +1,7 @@
 """Tenant utils"""
 
+from urllib.parse import urlsplit
+
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
 
@@ -31,3 +33,18 @@ def get_unique_identifier() -> str:
 def normalize_base_url(value: str | None) -> str:
     """Normalize a configured base URL: strip whitespace and trailing slashes."""
     return (value or "").strip().rstrip("/")
+
+
+def build_absolute_url(url: str) -> str:
+    """Make a relative URL absolute by prepending the current tenant's configured base URL.
+    URLs that already have a scheme or host, and any URL when no base URL is configured,
+    are returned unchanged."""
+    if not url:
+        return url
+    parsed = urlsplit(url)
+    if parsed.scheme or parsed.netloc:
+        return url
+    base_url = get_current_tenant(only=["base_url"]).base_url
+    if not base_url:
+        return url
+    return f"{base_url}/{url.lstrip('/')}"
