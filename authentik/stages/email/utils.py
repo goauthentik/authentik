@@ -1,29 +1,10 @@
 """email utils"""
 
-from email.mime.image import MIMEImage
-from functools import lru_cache
-from pathlib import Path
-
-from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.message import sanitize_address
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils import translation
-
-
-@lru_cache
-def logo_data() -> MIMEImage:
-    """Get logo as MIME Image for emails"""
-    path = Path("web/dist/assets/icons/icon_left_brand.png")
-    # When running tests, assets might not exist, so fallback to a different icon
-    if settings.TEST:
-        path = Path("web/authentik/sources/saml.png")
-    with open(path, "rb") as _logo_file:
-        logo = MIMEImage(_logo_file.read())
-    logo.add_header("Content-ID", "<logo>")
-    logo.add_header("Content-Disposition", "inline", filename="logo.png")
-    return logo
 
 
 def _sanitize_recipients(recipients: list[tuple[str, str]]) -> list[str]:
@@ -54,6 +35,13 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         sanitized_cc = _sanitize_recipients(cc) if cc else None
         sanitized_bcc = _sanitize_recipients(bcc) if bcc else None
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
+
+        if template_context is None:
+            template_context = {}
+
+        # Field that can be populated by the attach_image template tag
+        template_context["attachments"] = {}
+
         if not template_name:
             return
         with translation.override(language):
@@ -67,3 +55,4 @@ class TemplateEmailMessage(EmailMultiAlternatives):
                 pass
         self.mixed_subtype = "related"
         self.attach_alternative(html_content, "text/html")
+        self.template_context = template_context

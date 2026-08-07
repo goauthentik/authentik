@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
+from django.test import override_settings
 from django.urls import reverse
 
 from authentik.core.models import User
@@ -17,8 +18,10 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage
+from authentik.stages.email.tests import STATICFILES_DIRS
 
 
+@override_settings(STATICFILES_DIRS=STATICFILES_DIRS)
 class TestEmailStageSending(FlowTestCase):
     """Email tests"""
 
