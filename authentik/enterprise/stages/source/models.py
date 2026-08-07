@@ -1,10 +1,12 @@
 """Source stage models"""
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.sources.matcher import MatchFailureReason
 from authentik.flows.models import Stage
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -24,11 +26,11 @@ class SourceStage(Stage):
         ),
     )
 
-    resume_on_missing_match_property = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Resume the flow when source matching fails because a required property is missing."
-        ),
+    resume_on_match_failures = ArrayField(
+        models.TextField(choices=MatchFailureReason.choices),
+        default=list,
+        blank=True,
+        help_text=_("Source matching failure reasons for which the flow should resume."),
     )
 
     @property

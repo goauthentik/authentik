@@ -4,7 +4,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any
 
+from django.db import models
 from django.db.models import Q
+from django.utils.translation import gettext_lazy as _
 from structlog import get_logger
 
 from authentik.core.models import (
@@ -27,10 +29,10 @@ class Action(Enum):
     DENY = "deny"
 
 
-class MatchFailureReason(Enum):
+class MatchFailureReason(models.TextChoices):
     """Reason source matching could not determine an action."""
 
-    MISSING_PROPERTY = "missing_property"
+    MISSING_PROPERTY = "missing_property", _("Missing property")
 
 
 @dataclass(frozen=True)

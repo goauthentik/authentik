@@ -11,11 +11,12 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.core.models import SourceUserMatchingModes
 from authentik.core.sources.flow_manager import (
     PLAN_CONTEXT_SOURCE_MATCH_FAILURE,
-    PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY,
+    PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES,
     SESSION_KEY_OVERRIDE_FLOW_TOKEN,
     SESSION_KEY_SOURCE_FLOW_CONTEXT,
     SESSION_KEY_SOURCE_FLOW_STAGES,
 )
+from authentik.core.sources.matcher import MatchFailure, MatchFailureReason
 from authentik.core.tests.utils import RequestFactory, create_test_flow, create_test_user
 from authentik.enterprise.stages.source.models import SourceStage
 from authentik.enterprise.stages.source.stage import SourceStageFinal
@@ -32,6 +33,7 @@ from authentik.policies.denied import AccessDeniedResponse
 from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 from authentik.sources.saml.models import SAMLSource
+from authentik.sources.saml.processors.response import SAMLSourceFlowManager
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
@@ -50,28 +52,20 @@ class TestSourceStage(FlowTestCase):
             pre_authentication_flow=create_test_flow(),
         )
 
-    def create_oauth_source_plan(self, resume: bool):
-        """Create a suspended Source Stage plan for an OAuth source."""
-        source = OAuthSource.objects.create(
-            name=generate_id(),
-            slug=generate_id(),
-            provider_type="openidconnect",
-            authorization_url="",
-            profile_url="",
-            consumer_key="",
-            user_matching_mode=SourceUserMatchingModes.EMAIL_LINK,
-        )
+    def create_source_plan(self, source, resume_on_match_failures: list[str]):
+        """Create a suspended Source Stage plan for a source."""
         flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         stage = SourceStage.objects.create(
             name=generate_id(),
             source=source,
-            resume_on_missing_match_property=resume,
+            resume_on_match_failures=resume_on_match_failures,
         )
         binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=10)
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append(binding)
-        if resume:
-            plan.context[PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY] = {
+        if resume_on_match_failures:
+            plan.context[PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES] = {
+                "reasons": resume_on_match_failures,
                 "source": str(source.pk),
                 "stage": str(stage.pk),
             }
@@ -88,6 +82,21 @@ class TestSourceStage(FlowTestCase):
             PLAN_CONTEXT_IS_REDIRECTED: flow,
         }
         request.session.save()
+        return request, token
+
+    def create_oauth_source_plan(self, resume: bool):
+        """Create a suspended Source Stage plan for an OAuth source."""
+        source = OAuthSource.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider_type="openidconnect",
+            authorization_url="",
+            profile_url="",
+            consumer_key="",
+            user_matching_mode=SourceUserMatchingModes.EMAIL_LINK,
+        )
+        reasons = [MatchFailureReason.MISSING_PROPERTY] if resume else []
+        request, token = self.create_source_plan(source, reasons)
         return source, request, token
 
     def test_missing_match_property_resume(self):
@@ -118,7 +127,7 @@ class TestSourceStage(FlowTestCase):
             },
         )
         self.assertNotIn(
-            PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY,
+            PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES,
             restored_plan.context,
         )
         request.session.save()
@@ -173,6 +182,31 @@ class TestSourceStage(FlowTestCase):
         self.assertNotIn(SESSION_KEY_SOURCE_FLOW_STAGES, request.session)
         self.assertNotIn(SESSION_KEY_SOURCE_FLOW_CONTEXT, request.session)
 
+    def test_saml_missing_match_property_resume(self):
+        """SAML sources use the generic matching failure resume behavior."""
+        request, token = self.create_source_plan(self.source, [MatchFailureReason.MISSING_PROPERTY])
+        manager = SAMLSourceFlowManager.__new__(SAMLSourceFlowManager)
+        manager.source = self.source
+        manager.request = request
+        manager.policy_context = {"saml_response": b"<Response />"}
+
+        response = manager.handle_match_failure(
+            MatchFailure(reason=MatchFailureReason.MISSING_PROPERTY, property="email")
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(FlowToken.objects.filter(pk=token.pk).exists())
+        restored_plan: FlowPlan = request.session[SESSION_KEY_PLAN]
+        self.assertEqual(restored_plan.context["saml_response"], b"<Response />")
+        self.assertEqual(
+            restored_plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE],
+            {
+                "reason": "missing_property",
+                "property": "email",
+                "source": self.source.slug,
+            },
+        )
+
     def test_source_success(self):
         """Test"""
         user = create_test_user()
@@ -180,7 +214,7 @@ class TestSourceStage(FlowTestCase):
         stage = SourceStage.objects.create(
             name=generate_id(),
             source=self.source,
-            resume_on_missing_match_property=True,
+            resume_on_match_failures=[MatchFailureReason.MISSING_PROPERTY],
         )
         FlowStageBinding.objects.create(
             target=flow,
@@ -239,8 +273,12 @@ class TestSourceStage(FlowTestCase):
         ).first()
         self.assertIsNotNone(flow_token)
         self.assertEqual(
-            flow_token.plan.context[PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY],
-            {"source": str(self.source.pk), "stage": str(stage.pk)},
+            flow_token.plan.context[PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES],
+            {
+                "reasons": [MatchFailureReason.MISSING_PROPERTY],
+                "source": str(self.source.pk),
+                "stage": str(stage.pk),
+            },
         )
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]

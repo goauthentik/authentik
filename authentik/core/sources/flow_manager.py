@@ -48,8 +48,8 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
 PLAN_CONTEXT_SOURCE_MATCH_FAILURE = "goauthentik.io/sources/matching_failure"
-PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MISSING_PROPERTY = (
-    "goauthentik.io/sources/stage/resume_on_missing_match_property"
+PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES = (
+    "goauthentik.io/sources/stage/resume_on_match_failures"
 )
 SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
 SESSION_KEY_SOURCE_FLOW_CONTEXT = "authentik/flows/source_flow_context"
@@ -200,8 +200,42 @@ class SourceFlowManager:
         return self.error_handler(error)
 
     def handle_match_failure(self, failure: MatchFailure) -> HttpResponse | None:
-        """Optionally handle a structured source matching failure."""
-        return None
+        """Resume an opted-in Source Stage after a configured matching failure."""
+        session_token = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        token_pk = getattr(session_token, "pk", None)
+        if not token_pk:
+            return None
+        token = FlowToken.objects.including_expired().filter(pk=token_pk).first()
+        if not token:
+            clear_source_flow_session(self.request)
+            return None
+        if token.is_expired:
+            token.expire_action()
+            clear_source_flow_session(self.request)
+            return None
+        plan = token.plan
+        resume_config = plan.context.get(PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES)
+        current_stage = plan.bindings[0].stage if plan.bindings else None
+        if (
+            not isinstance(resume_config, dict)
+            or failure.reason.value not in resume_config.get("reasons", [])
+            or resume_config.get("source") != str(self.source.pk)
+            or resume_config.get("stage") != str(getattr(current_stage, "pk", None))
+            or getattr(current_stage, "source_id", None) != self.source.pk
+        ):
+            return None
+
+        plan.context.pop(PLAN_CONTEXT_SOURCE_STAGE_RESUME_ON_MATCH_FAILURES, None)
+        plan.context.update(self.policy_context)
+        plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE] = {
+            "reason": failure.reason.value,
+            "property": failure.property,
+            "source": self.source.slug,
+        }
+        plan.context[PLAN_CONTEXT_IS_RESTORED] = session_token
+        response = plan.to_redirect(self.request, token.flow)
+        token.delete()
+        return response
 
     def error_handler(self, error: Exception) -> HttpResponse:
         """Handle any errors by returning an access denied stage"""
