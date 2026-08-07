@@ -57,7 +57,7 @@ entries:
         except:
             return ''
       initial_value_expression: true
-      required: true
+      required: false
       type: email
       field_key: email
       label: Email
