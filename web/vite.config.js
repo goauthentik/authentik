@@ -40,6 +40,17 @@ export default defineConfig({
         ],
         projects: [
             {
+                // The root `tsconfig.json` excludes `src/**/*.test.ts`, so `vite:oxc`'s
+                // per-file tsconfig discovery bails with `[TSCONFIG_ERROR] Tsconfig not
+                // found` on co-located `src/**/*.unit.test.ts`. Disabling tsconfig
+                // discovery for this Node project lets oxc transform those files while
+                // leaving `lint:types` (`tsgo -p .`) and the root excludes untouched.
+                // `tsconfig` is forwarded to oxc's transform at runtime but is omitted
+                // from vite's `OxcOptions` type, so the assertion adds it back to keep
+                // `tsgo -p .` clean.
+                oxc: /** @type {import("vite").OxcOptions & { tsconfig: false }} */ ({
+                    tsconfig: false,
+                }),
                 test: {
                     include: ["./test/unit/**/*.{test,spec}.ts", "**/*.unit.{test,spec}.ts"],
                     name: "Unit Tests",
