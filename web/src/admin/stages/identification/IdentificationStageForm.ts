@@ -267,6 +267,21 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Passwordless button label")}
+                        name="passwordlessLabel"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.passwordlessLabel || "")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Override the default 'Use a security key' button text. Useful for non-WebAuthn passwordless flows like magic links.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Enrollment flow")}
                         name="enrollmentFlow"
                     >
