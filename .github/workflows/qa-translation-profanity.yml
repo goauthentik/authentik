@@ -1,0 +1,31 @@
+---
+# workflow_dispatch-only while the dictionary source is the LDNOOBW placeholder
+# (180+ false positives on existing Transifex translations). When the curated
+# `PROFANITY_DICT_BASE_URL` repo variable is swapped to the S3 mirror, re-enable
+# the `pull_request` trigger (paths-filter on locale/** + web/xliff/**) in the
+# same PR that introduces the variable.
+name: QA - Translation profanity
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  profanity-scan:
+    name: scan translations
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v5
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+        with:
+          python-version: "3.14"
+      - name: Self-test the scanner
+        run: python scripts/translation_profanity_check.py --self-test
+      - name: Scan translations
+        env:
+          # Operator-swappable: defaults to the public LDNOOBW raw URL; swap
+          # to the curated S3 URL by setting this repo variable.
+          PROFANITY_DICT_BASE_URL: ${{ vars.PROFANITY_DICT_BASE_URL }}
+        run: python scripts/translation_profanity_check.py --root .
