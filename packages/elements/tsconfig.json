@@ -1,0 +1,22 @@
+{
+    "extends": "@goauthentik/tsconfig",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "ignoreDeprecations": "6.0",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "types": ["node"],
+        "checkJs": true,
+        "allowJs": true,
+        "composite": true,
+        "resolveJsonModule": true,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "experimentalDecorators": true,
+        "useDefineForClassFields": false,
+        "target": "esnext",
+        "module": "preserve",
+        "moduleResolution": "bundler"
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["**/out/**/*"]
+}

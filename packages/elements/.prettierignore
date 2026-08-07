@@ -1,0 +1,28 @@
+# Prettier Ignorefile
+
+## Node
+node_modules
+
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml
+
+## Static Files
+**/LICENSE
+
+## Build asset directories
+coverage
+dist
+out
+
+## Storybook
+storybook-static/
+.storybook/css-import-maps*
+
+## Locales
+src/locale-codes.ts
+src/locales/
+
+## Vendored files
+*.min.js
+*.min.css

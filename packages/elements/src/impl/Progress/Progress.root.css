@@ -1,0 +1,36 @@
+:root {
+    --ak-c-progress--GridGap: var(--ak-global--space--xs);
+    --ak-c-progress--m-danger__bar--BackgroundColor: var(--ak-global--color--warning);
+    --ak-c-progress--m-indeterminate--GridGap: 0;
+    --ak-c-progress--m-inside__indicator--MinWidth: var(--ak-global--space--xl);
+    --ak-c-progress--m-inside__measure--Color: var(--ak-global--color--primary);
+    --ak-c-progress--m-inside__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-lg__bar--Height: var(--ak-global--space--lg);
+    --ak-c-progress--m-outside__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-sm__bar--Height: var(--ak-global--space--sm);
+    --ak-c-progress--m-sm__description--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-sm__measure--font-size: var(--ak-global--font-size--sm);
+    --ak-c-progress--m-success--m-inside__measure--Color: var(--ak-global--color--surface);
+    --ak-c-progress--m-success__bar--BackgroundColor: var(--ak-global--color--success);
+    --ak-c-progress--m-warning--m-inside__measure--Color: var(--ak-global--color--text--on-light-fill);
+    --ak-c-progress--m-warning__bar--BackgroundColor: var(--ak-global--color--warning);
+    --ak-c-progress--m-xs__bar--Height: min(2px, calc(var(--ak-global--space--md) / 8));
+    --ak-c-progress__bar--BackgroundColor: var(--ak-global--color--surface);
+    --ak-c-progress__bar--Height: var(--ak-global--space--md);
+    --ak-c-progress__bar--before--BackgroundColor: var(--ak-global--color--primary);
+    --ak-c-progress__bar--before--Opacity: 0.2;
+    --ak-c-progress__helper-text--MarginTop: var(
+        --ak-c-progress__helper-text--MarginTop,
+        calc(0.25rem - 1rem)
+    );
+    --ak-c-progress__indicator--BackgroundColor: var(--ak-c-progress__bar--before--BackgroundColor);
+    --ak-c-progress__indicator--Height: var(--ak-c-progress__bar--Height);
+    --ak-c-progress__measure--m-static-width--MinWidth: 4.5ch;
+    --ak-c-progress__status--Gap: var(--ak-global--space--sm);
+}
+
+html[data-theme="dark"] {
+    --ak-c-progress--m-inside__measure--Color: var(--ak-global--palette--black-900);
+    --ak-c-progress--m-success--m-inside__measure--Color: var(--ak-global--palette--black-900);
+    --ak-c-progress--m-warning--m-inside__measure--Color: var(--ak-global--palette--black-900);
+}

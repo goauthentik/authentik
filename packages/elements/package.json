@@ -1,0 +1,100 @@
+{
+    "name": "@goauthentik/elements",
+    "version": "1.0.0",
+    "description": "Web components for the Authentik Front-End and related projects",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/elements"
+    },
+    "scripts": {
+        "build": "run-p build:source build:styles",
+        "build:format": "prettier --write ./dist",
+        "build:source": "tsgo -p .",
+        "build:styles": "copyfiles --flat ./src/**/*.root.css ./dist/styles",
+        "build-storybook": "storybook build",
+        "check": "run-s lint-check lint-output",
+        "clean": "rimraf ./dist",
+        "lint": "eslint --fix .",
+        "lint:css": "eslint --max-warnings 0 --config eslint.css.mjs .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint-output": "run-s build:src build:assets lint:css",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "storybook": "storybook dev -p 6006",
+        "watch": "tsgo -p . --watch"
+    },
+    "type": "module",
+    "types": "./src/index.ts",
+    "exports": {
+        "./*": "./dist/*"
+    },
+    "imports": {
+        "#elements/*.js": "./src/*.js"
+    },
+    "dependencies": {
+        "@goauthentik/fonts": "link:../fonts",
+        "@goauthentik/theme": "link:../theme",
+        "@open-wc/lit-helpers": "^0.7.0",
+        "@storybook/addon-docs": "^10.5.6",
+        "@storybook/addon-links": "^10.5.6",
+        "@storybook/web-components": "^10.5.6",
+        "@storybook/web-components-vite": "^10.5.6",
+        "@styleframe/core": "^3.5.0",
+        "@styleframe/dtcg": "^1.1.0",
+        "@styleframe/theme": "^3.7.0",
+        "@styleframe/transpiler": "^3.3.0",
+        "copyfiles": "^2.4.1",
+        "lit": "^3.3.3",
+        "storybook": "^10.5.6",
+        "styleframe": "^3.7.0"
+    },
+    "devDependencies": {
+        "@chromatic-com/storybook": "^5.2.1",
+        "@eslint/css": "^1.3.0",
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@storybook/addon-a11y": "^10.5.6",
+        "@storybook/addon-vitest": "^10.5.6",
+        "@types/node": "catalog:",
+        "@typescript/native-preview": "7.0.0-dev.20260707.2",
+        "@vitest/browser-playwright": "4.1.10",
+        "@vitest/coverage-v8": "4.1.10",
+        "eslint": "catalog:",
+        "eslint-plugin-storybook": "^10.5.6",
+        "npm-run-all": "^4.1.5",
+        "playwright": "^1.62.1",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "rimraf": "^6.1.3",
+        "typescript": "catalog:",
+        "vitest": "4.1.10"
+    },
+    "files": [
+        "src/**/*",
+        "dist/**/*"
+    ],
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "ignore"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "ignore"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public",
+        "exports": {}
+    }
+}

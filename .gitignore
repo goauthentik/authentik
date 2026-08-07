@@ -46,6 +46,7 @@ lib64/
 parts/
 dist/
 out/
+.wireit/
 sdist/
 var/
 wheels/
@@ -244,6 +245,10 @@ source_docs/
 tests/openid_conformance/exports/*.zip
 compose.override.yml
 
-# Claude Local Instructions
+### Agent-generated metadata ###
+**/claude_export_*
+
+### Claude Local Instructions
 # https://code.claude.com/docs/en/memory#choose-where-to-put-claude-md-files
 CLAUDE.local.md
+
