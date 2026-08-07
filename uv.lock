@@ -442,7 +442,7 @@ dev = [
     { name = "black", specifier = "==26.5.1" },
     { name = "bpython", specifier = "==0.26" },
     { name = "colorama", specifier = "==0.4.6" },
-    { name = "constructs", specifier = "==10.7.2" },
+    { name = "constructs", specifier = "==10.8.0" },
     { name = "coverage", extras = ["toml"], specifier = "==7.15.3" },
     { name = "daphne", specifier = "==4.2.3" },
     { name = "debugpy", specifier = "==1.8.21" },
@@ -935,15 +935,15 @@ wheels = [
 
 [[package]]
 name = "constructs"
-version = "10.7.2"
+version = "10.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsii" },
     { name = "publication" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8b/27/b6eb45e1bdfc6cff9417207b2113dd498fa16367bb1304688a3cd914f473/constructs-10.7.2.tar.gz", hash = "sha256:477653592e18a317537dbadd1bcb404f72fc68390a8154dca4a13bd8a63f79de", size = 73680, upload-time = "2026-07-29T16:16:21.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/90/1f/04dd01e3eb3639f6de531f916767f61384a1dbf1580a557931117f39a609/constructs-10.8.0.tar.gz", hash = "sha256:8b6feb3f3b5169cd5074d119254c6b55ecf5d14014288ea262949d4365f707b8", size = 786614, upload-time = "2026-07-30T11:39:43.46Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/4e/e87f00caf786e1c252c77881806a3cdff2a6250fc6e9b19e6413b3dc1b88/constructs-10.7.2-py3-none-any.whl", hash = "sha256:9067cbc6315d92e47550d0a9be6e508366b5765990c8eeb25892cb070612f599", size = 71814, upload-time = "2026-07-29T16:16:19.78Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/6e/127ee47999e658228779bdaf652ee524236ae0248722e3137f41695f97bf/constructs-10.8.0-py3-none-any.whl", hash = "sha256:ad9ec081040f86207104528ee72e63618024755984924cf29e02609c41e37913", size = 784885, upload-time = "2026-07-30T11:39:41.546Z" },
 ]
 
 [[package]]
