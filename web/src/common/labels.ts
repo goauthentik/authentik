@@ -2,6 +2,13 @@
  * @file Contains various label maps for API enums and other values that we want to display in the UI.
  */
 
+import {
+    EventContext,
+    isContextWithModel,
+    isEventContextWithReason,
+    LoginFailedReason,
+} from "./events";
+
 import { MessageFormatter } from "#common/ui/locale/format";
 
 import {
@@ -10,6 +17,7 @@ import {
     DeviceClassesEnum,
     EventActions,
     IntentEnum,
+    ModelEnum,
     SeverityEnum,
     UserTypeEnum,
 } from "@goauthentik/api";
@@ -28,9 +36,30 @@ export function formatIntentLabel(intent: IntentEnum = IntentEnum.Api): string {
     return IntentLabelRecord[intent]();
 }
 
-export const EventActionLabelRecord: Record<EventActions, MessageFormatter<string>> = {
+const LoginFailedReasonRecord: Record<LoginFailedReason, MessageFormatter<string>> = {
+    [LoginFailedReason.IncorrectPassword]: () => msg("Incorrect password"),
+    [LoginFailedReason.AccountInactive]: () => msg("Account inactive"),
+    [LoginFailedReason.MFAInvalidOTP]: () => msg("Invalid OTP code"),
+    [LoginFailedReason.MFAWebAuthnFailed]: () => msg("WebAuthn assertion failed"),
+    [LoginFailedReason.MFADuoDenied]: () => msg("Duo denied access"),
+};
+
+export function formatEventContextReason(reason?: LoginFailedReason): string {
+    const formatter = reason ? LoginFailedReasonRecord[reason] : null;
+    return formatter?.() || msg("unknown");
+}
+
+export const EventActionLabelRecord: Record<
+    EventActions,
+    MessageFormatter<string, [context?: EventContext]>
+> = {
     [EventActions.Login]: () => msg("Login"),
-    [EventActions.LoginFailed]: () => msg("Failed login"),
+    [EventActions.LoginFailed]: (context?: EventContext) => {
+        if (!isEventContextWithReason(context)) {
+            return msg("Failed login");
+        }
+        return msg(str`Failed login: (${formatEventContextReason(context.reason)})`);
+    },
     [EventActions.Logout]: () => msg("Logout"),
     [EventActions.UserWrite]: () => msg("User was written to"),
     [EventActions.UserOffboarded]: () => msg("User was offboarded"),
@@ -54,9 +83,27 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.SystemException]: () => msg("General system exception"),
     [EventActions.ConfigurationError]: () => msg("Configuration error"),
     [EventActions.ConfigurationWarning]: () => msg("Configuration warning"),
-    [EventActions.ModelCreated]: () => msg("Model created"),
-    [EventActions.ModelUpdated]: () => msg("Model updated"),
-    [EventActions.ModelDeleted]: () => msg("Model deleted"),
+    [EventActions.ModelCreated]: (context?: EventContext) => {
+        if (!isContextWithModel(context)) {
+            return msg("Model created");
+        }
+
+        return msg(str`Model created (${context.model.model_name})`);
+    },
+    [EventActions.ModelUpdated]: (context?: EventContext) => {
+        if (!isContextWithModel(context)) {
+            return msg("Model updated");
+        }
+
+        return msg(str`Model updated (${context.model.model_name})`);
+    },
+    [EventActions.ModelDeleted]: (context?: EventContext) => {
+        if (!isContextWithModel(context)) {
+            return msg("Model deleted");
+        }
+
+        return msg(str`Model deleted (${context.model.model_name})`);
+    },
     [EventActions.EmailSent]: () => msg("Email sent"),
     [EventActions.UpdateAvailable]: () => msg("Update available"),
     [EventActions.ExportReady]: () => msg("Data export ready"),
@@ -72,10 +119,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
-export function actionToLabel(action?: EventActions): string {
+export function actionToLabel(action?: EventActions, context?: EventContext): string {
     const formatter = action ? EventActionLabelRecord[action] : null;
 
-    return formatter?.() || "";
+    return formatter?.(context) || "";
 }
 
 const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {
@@ -105,13 +152,19 @@ export function severityToLevel(severity?: SeverityEnum | null): string {
  * @todo Add verbose_name field to now vendored OTP devices
  * @todo We seem to have these constants in the `ModelEnum` object in lowercase.
  */
-export const deviceTypeToLabel = new Map<string, string>([
-    ["authentik_stages_authenticator_static.StaticDevice", msg("Static tokens")],
-    ["authentik_stages_authenticator_totp.TOTPDevice", msg("TOTP Device")],
-]);
+const DeviceTypeLabelRecord: Record<string, MessageFormatter<string, [context?: EventContext]>> = {
+    [ModelEnum.AuthentikStagesAuthenticatorStaticStaticdevice]: () => msg("Static Tokens"),
+    [ModelEnum.AuthentikStagesAuthenticatorTotpTotpdevice]: () => msg("TOTP Device"),
+};
 
-export const deviceTypeName = (device: Device) =>
-    deviceTypeToLabel.get(device.type) ?? device?.verboseName ?? "";
+export function formatDeviceTypeName(device: Device) {
+    const deviceType = device.type;
+    const normalizedKey = deviceType.toLowerCase();
+
+    const value = DeviceTypeLabelRecord[normalizedKey] || DeviceTypeLabelRecord[deviceType];
+
+    return value?.() ?? device?.verboseName ?? msg("Unknown device type");
+}
 
 export function formatDeviceChallengeMessage(deviceChallenge?: DeviceChallenge | null): string {
     switch (deviceChallenge?.deviceClass) {

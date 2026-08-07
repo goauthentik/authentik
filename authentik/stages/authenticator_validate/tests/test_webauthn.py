@@ -8,6 +8,7 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
@@ -649,3 +650,6 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 stage_view,
                 self.user,
             )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.MFA_WEBAUTHN_FAILED.value)
