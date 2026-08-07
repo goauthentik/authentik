@@ -56,28 +56,6 @@ def update_expires(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-    replaces = [
-        ("authentik_events", "0001_initial"),
-        ("authentik_events", "0002_auto_20200918_2116"),
-        ("authentik_events", "0003_auto_20200917_1155"),
-        ("authentik_events", "0004_auto_20200921_1829"),
-        ("authentik_events", "0005_auto_20201005_2139"),
-        ("authentik_events", "0006_auto_20201017_2024"),
-        ("authentik_events", "0007_auto_20201215_0939"),
-        ("authentik_events", "0008_auto_20201220_1651"),
-        ("authentik_events", "0009_auto_20201227_1210"),
-        ("authentik_events", "0010_notification_notificationtransport_notificationrule"),
-        ("authentik_events", "0011_notification_rules_default_v1"),
-        ("authentik_events", "0012_auto_20210202_1821"),
-        ("authentik_events", "0013_auto_20210209_1657"),
-        ("authentik_events", "0014_expiry"),
-        ("authentik_events", "0015_alter_event_action"),
-        ("authentik_events", "0016_add_tenant"),
-        ("authentik_events", "0017_alter_event_action"),
-        ("authentik_events", "0018_auto_20210911_2217"),
-        ("authentik_events", "0019_alter_notificationtransport_webhook_url"),
-    ]
-
     initial = True
 
     dependencies = [

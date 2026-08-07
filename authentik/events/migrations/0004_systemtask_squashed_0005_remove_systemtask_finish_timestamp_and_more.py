@@ -10,11 +10,6 @@ import authentik.core.models
 
 class Migration(migrations.Migration):
 
-    replaces = [
-        ("authentik_events", "0004_systemtask"),
-        ("authentik_events", "0005_remove_systemtask_finish_timestamp_and_more"),
-    ]
-
     dependencies = [
         ("authentik_events", "0003_rename_tenant_event_brand"),
     ]
