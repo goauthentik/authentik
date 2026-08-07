@@ -1,0 +1,27 @@
+# Per-language SHA256 pins for the curated profanity dictionary.
+#
+# Schema (one entry per line):
+#
+#     <dict_code>  <sha256-hex>          # optional reason / version note
+#
+# - <dict_code> is the dictionary-side language code (e.g. de, ja, zh —
+#   what the scanner derives via dict_code_for_locale, not the repo
+#   locale identifier). See LOCALE_DICT_OVERRIDES in the scanner.
+# - <sha256-hex> is the SHA256 of the dictionary file as fetched from
+#   PROFANITY_DICT_BASE_URL/<dict_code>.
+# - `#` comments and blank lines are ignored.
+#
+# A pinned dict is verified on every fetch; on mismatch the gate fails
+# with exit code 2 (DictPinError) — pin rotation is an operator action,
+# not a silent refresh. To rotate: confirm the new dict is intentional,
+# compute its SHA256 (`shasum -a 256`), bump the entry here, and commit
+# the change with a PR-reviewable reason.
+#
+# Empty body = no integrity check (matches the v3 default for the
+# LDNOOBW placeholder, where pinning against rolling upstream is not
+# useful). Pin entries should be added at S3-swap time:
+#
+#     de  abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789  # curated v1, 2026-xx-xx
+#     ja  …
+#
+# Until then this file stays empty.
