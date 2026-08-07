@@ -6,6 +6,8 @@ from base64 import b64decode, urlsafe_b64encode
 from binascii import Error
 from hashlib import sha256
 from hmac import compare_digest
+from re import error as RegexError
+from re import fullmatch
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlencode, urlparse, urlunparse
 
@@ -20,7 +22,12 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import BearerTokenError
 from authentik.providers.oauth2.id_token import hash_session_key
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 
 LOGGER = get_logger()
 
@@ -36,8 +43,35 @@ class TokenResponse(JsonResponse):
         self["Pragma"] = "no-cache"
 
 
-def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
-    """Add headers to permit CORS requests from allowed_origins, with or without credentials,
+def origin_matches_redirect_uri(origin: str, redirect: RedirectURI) -> bool:
+    """Check if an Origin header matches a configured redirect URI."""
+    received = urlparse(origin)
+    if redirect.matching_mode == RedirectURIMatchingMode.STRICT:
+        allowed = urlparse(redirect.url)
+        return (
+            received.scheme == allowed.scheme
+            and received.hostname == allowed.hostname
+            and received.port == allowed.port
+        )
+    if redirect.matching_mode == RedirectURIMatchingMode.REGEX:
+        path = urlparse(redirect.url).path
+        candidate = origin.rstrip("/")
+        if path:
+            candidate = f"{candidate}{path}"
+        try:
+            return fullmatch(redirect.url, candidate) is not None
+        except RegexError as exc:
+            LOGGER.warning(
+                "Failed to parse redirect URI regex for CORS",
+                exc=exc,
+                url=redirect.url,
+            )
+            return False
+    return False
+
+
+def cors_allow(request: HttpRequest, response: HttpResponse, *redirect_uris: RedirectURI):
+    """Add headers to permit CORS requests from redirect_uris, with or without credentials,
     with any headers."""
     origin = request.META.get("HTTP_ORIGIN")
     if not origin:
@@ -48,19 +82,15 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     # so for options requests we allow the calling origin without checking
     allowed = request.method == "OPTIONS"
     received_origin = urlparse(origin)
-    for allowed_origin in allowed_origins:
-        url = urlparse(allowed_origin)
-        if (
-            received_origin.scheme == url.scheme
-            and received_origin.hostname == url.hostname
-            and received_origin.port == url.port
-        ):
+    for redirect in redirect_uris:
+        if origin_matches_redirect_uri(origin, redirect):
             allowed = True
+            break
     if not allowed:
         LOGGER.warning(
             "CORS: Origin is not an allowed origin",
             requested=received_origin,
-            allowed=allowed_origins,
+            allowed=redirect_uris,
         )
         return response
 
