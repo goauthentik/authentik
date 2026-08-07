@@ -46521,6 +46521,11 @@ components:
           readOnly: true
         additional_scopes:
           type: string
+        additional_url_params:
+          type: string
+          title: Additional URL Parameters
+          description: Expression that returns a dictionary of additional parameters
+            to append to the authorization URL.
         type:
           allOf:
           - $ref: '#/components/schemas/SourceType'
@@ -46705,6 +46710,11 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        additional_url_params:
+          type: string
+          title: Additional URL Parameters
+          description: Expression that returns a dictionary of additional parameters
+            to append to the authorization URL.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
@@ -52381,6 +52391,11 @@ components:
           minLength: 1
         additional_scopes:
           type: string
+        additional_url_params:
+          type: string
+          title: Additional URL Parameters
+          description: Expression that returns a dictionary of additional parameters
+            to append to the authorization URL.
         oidc_well_known_url:
           type: string
         oidc_jwks_url:
