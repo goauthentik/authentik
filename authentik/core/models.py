@@ -132,6 +132,15 @@ class UserTypes(models.TextChoices):
     INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
+class UserStatus(models.TextChoices):
+    """Combined state of a user, as shown to administrators. Derived from the user and
+    their password, so there is no status to keep in sync."""
+
+    ACTIVE = "active", _("Active")
+    PASSWORD_LOCKED = "password_locked", _("Password locked")
+    DEACTIVATED = "deactivated", _("Deactivated")
+
+
 class AttributesMixin(models.Model):
     """Adds an attributes property to a model"""
 
@@ -570,6 +579,18 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             deprecation, message=message_event, cause=cause, replacement=replacement
         )
         return self.groups
+
+    @property
+    def composite_status(self) -> UserStatus:
+        """Combined state of this user, as shown to administrators."""
+        if not self.is_active:
+            return UserStatus.DEACTIVATED
+        try:
+            if self.password_device.locked:
+                return UserStatus.PASSWORD_LOCKED
+        except ObjectDoesNotExist:
+            pass
+        return UserStatus.ACTIVE
 
     @property
     def password(self) -> str:
