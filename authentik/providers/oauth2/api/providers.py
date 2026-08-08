@@ -22,6 +22,11 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
+from authentik.crypto.validators import (
+    JWE_ENCRYPTION_KEY_TYPES,
+    JWT_SIGNING_KEY_TYPES,
+    KeyTypeValidator,
+)
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -95,7 +100,11 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
+            "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
+        }
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):

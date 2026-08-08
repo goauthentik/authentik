@@ -33,7 +33,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.crypto.models import KeyType
+from authentik.crypto.validators import XML_SIGNING_KEY_TYPES, KeyTypeValidator
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLLogoutMethods, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -228,17 +228,6 @@ class SAMLProviderSerializer(ProviderSerializer):
                     )
                 )
 
-            key_type = signing_kp.key_type
-
-            if key_type and key_type not in [KeyType.RSA, KeyType.EC, KeyType.DSA]:
-                raise ValidationError(
-                    {
-                        "signing_kp": _(
-                            "Only RSA, EC, and DSA key types are supported for SAML signing."
-                        )
-                    }
-                )
-
         # Validate logout_method - backchannel is only available with POST SLS binding
         if (
             attrs.get("logout_method") == SAMLLogoutMethods.BACKCHANNEL
@@ -286,7 +275,10 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_post",
             "url_slo_redirect",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {
+            **ProviderSerializer.Meta.extra_kwargs,
+            "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
+        }
 
 
 class SAMLMetadataSerializer(PassiveSerializer):

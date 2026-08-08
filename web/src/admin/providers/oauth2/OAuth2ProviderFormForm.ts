@@ -27,6 +27,8 @@ import { ifPresent } from "#elements/utils/attributes";
 
 import { AKLabel } from "#components/ak-label";
 
+import { JWEEncryptionKeyTypes, JWTSigningKeyTypes } from "#admin/common/certificate-key-types";
+
 import {
     ClientTypeEnum,
     FlowDesignationEnum,
@@ -324,6 +326,7 @@ export function renderForm({
                         label=${msg("Signing Key")}
                         placeholder=${msg("Select a signing key...")}
                         certificate=${ifPresent(provider.signingKey)}
+                        .allowedKeyTypes=${JWTSigningKeyTypes}
                         singleton
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
@@ -442,6 +445,7 @@ export function renderForm({
                         label=${msg("Encryption Key")}
                         placeholder=${msg("Select an encryption key...")}
                         certificate=${ifPresent(provider.encryptionKey)}
+                        .allowedKeyTypes=${JWEEncryptionKeyTypes}
                     ></ak-crypto-certificate-search>
                     <p class="pf-c-form__helper-text">
                         ${msg(
