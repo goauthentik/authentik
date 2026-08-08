@@ -9,6 +9,7 @@ from re import error as RegexError
 from re import fullmatch
 from typing import Any
 from urllib.parse import urlparse
+from uuid import UUID
 
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
@@ -118,6 +119,7 @@ class TokenParams:
     dpop_jwk: dict | None = None
 
     requested_token_type: str | None = None
+    audience_provider: OAuth2Provider | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
@@ -152,9 +154,14 @@ class TokenParams:
             requested_token_type=request.POST.get("requested_token_type"),
         )
 
+    @property
+    def token_provider(self) -> OAuth2Provider:
+        """Provider the issued token is for: the `audience` target, else the client's own."""
+        return self.audience_provider or self.provider
+
     def __check_scopes(self):
         allowed_scope_names = set(
-            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+            ScopeMapping.objects.filter(provider__in=[self.token_provider]).values_list(
                 "scope_name", flat=True
             )
         )
@@ -250,6 +257,9 @@ class TokenParams:
                     client_id=self.provider.client_id,
                 )
                 raise TokenError("invalid_client").with_cause("invalid_secret")
+        if self.grant_type == GRANT_TYPE_TOKEN_EXCHANGE:
+            # Resolved before scopes, so they're clamped to the target provider's mappings
+            self.__resolve_audience(request)
         self.__check_scopes()
         if self.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:
             with start_span(
@@ -649,14 +659,44 @@ class TokenParams:
                 flow_name="device code",
             )
 
+    def __resolve_audience(self, request: HttpRequest):
+        """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
+        `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
+        refused with invalid_target (§2.2.2) rather than ignored."""
+        # RFC 8707 resource indicators are not implemented.
+        if request.POST.getlist("resource"):
+            LOGGER.warning("Resource indicators are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+        audiences = request.POST.getlist("audience")
+        if not audiences:
+            return
+        # Multi-provider tokens are not supported.
+        if len(audiences) > 1:
+            LOGGER.warning("Multiple audiences are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("multiple_audiences")
+        audience = audiences[0]
+        target = OAuth2Provider.objects.filter(client_id=audience).first()
+        if not target:
+            try:
+                pbm_uuid = UUID(audience)
+            except ValueError:
+                pbm_uuid = None
+            if pbm_uuid:
+                target = OAuth2Provider.objects.filter(application__pbm_uuid=pbm_uuid).first()
+        if not target:
+            LOGGER.warning("Audience does not match any provider", audience=audience)
+            raise TokenExchangeError("invalid_target").with_cause("unknown_target")
+        # Targeting itself is the default behavior, nothing to switch to.
+        if target.pk == self.provider.pk:
+            return
+        # The target must explicitly federate with the requesting provider.
+        if not target.jwt_federation_providers.filter(pk=self.provider.pk).exists():
+            LOGGER.warning("Audience does not federate with the requesting provider")
+            raise TokenExchangeError("invalid_target").with_cause("target_not_federated")
+        self.audience_provider = target
+
     def __post_init_token_exchange(self, request: HttpRequest):
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
-        # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
-        # requested target cannot be honored, so the parameters are refused rather than ignored.
-        if request.POST.getlist("audience") or request.POST.getlist("resource"):
-            LOGGER.warning("Token targeting is not supported")
-            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
-
         subject_token = request.POST.get("subject_token", "")
         subject_token_type = request.POST.get("subject_token_type", "")
         if not subject_token or not subject_token_type:
@@ -696,6 +736,14 @@ class TokenParams:
         if not provider:
             self.__create_user_from_jwt(token, app, source, request)
 
+        if self.audience_provider:
+            # An application is also required to give the issued token an `iss`
+            target_app = Application.objects.filter(provider=self.audience_provider).first()
+            if not target_app:
+                LOGGER.info("Audience provider has no application")
+                raise TokenExchangeError("invalid_target").with_cause("target_without_application")
+            self.__check_policy_access(target_app, request, oauth_jwt=token)
+
         self.__post_init_token_exchange_actor(request)
 
         method_args = {
@@ -703,6 +751,8 @@ class TokenParams:
             "subject_token_type": subject_token_type,
             "requested_token_type": self.requested_token_type,
         }
+        if self.audience_provider:
+            method_args["audience"] = self.audience_provider.client_id
         if source:
             method_args["source"] = source
         if provider:
@@ -1099,10 +1149,12 @@ class TokenView(View):
 
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        # Issued on the `audience` target, else on the client's own provider
+        provider = self.params.token_provider
         now = timezone.now()
-        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token_expiry = now + timedelta_from_string(provider.access_token_validity)
         access_token = AccessToken(
-            provider=self.provider,
+            provider=provider,
             user=self.params.user,
             actor=self.params.actor,
             expires=access_token_expiry,
@@ -1110,7 +1162,7 @@ class TokenView(View):
             auth_time=now,
         )
         access_token.id_token = IDToken.new(
-            self.provider,
+            provider,
             access_token,
             self.request,
         )
@@ -1124,6 +1176,6 @@ class TokenView(View):
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
-                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+                timedelta_from_string(provider.access_token_validity).total_seconds()
             ),
         }

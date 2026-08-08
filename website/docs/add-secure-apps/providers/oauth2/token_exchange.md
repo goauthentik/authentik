@@ -48,7 +48,7 @@ The response contains the following fields:
 - `expires_in`: The total seconds after which the issued token will expire
 - `scope`: The scopes granted to the issued token
 
-The issued token is a new access token for the requesting provider, carrying the identity of the user named by the subject token.
+The issued token is a new access token carrying the identity of the user named by the subject token. It is issued for the requesting provider, unless [`audience`](#audience) names a different one.
 
 ### Supported token types
 
@@ -61,16 +61,34 @@ authentik access tokens are themselves JWTs, so both identifiers refer to the sa
 
 Any other token type is rejected with `invalid_request`.
 
+### Audience
+
+By default the issued token is a token for the provider that performed the exchange. Set `audience` to receive a token for a different provider instead:
+
+```http
+audience=target_application_client_id
+```
+
+The value is either the target provider's `client_id`, or the `pbm_uuid` of the application the target provider is bound to. Only a single value is accepted; multi-provider tokens are not supported.
+
+The issued token is then a token of the target provider in every respect: signed by its signing key, with its issuer as `iss`, its `client_id` as `aud`, and its subject mode and scope mappings applied. The target provider's own endpoints (userinfo, introspection, revocation) accept it.
+
+Two conditions must both hold, or the request is rejected with `invalid_target`:
+
+- The target provider must list the requesting provider under **Federated OAuth2/OpenID Providers**. This is the target's explicit opt-in; without it, any client could mint tokens for any provider.
+- The target provider must be bound to an application.
+
+The user identified by the subject token must also pass that application's policy bindings, otherwise the request is rejected with `invalid_grant`.
+
 ### Unsupported parameters
 
 authentik rejects the following rather than ignoring them, so that a client is never led to believe a restriction was applied when it was not:
 
-- `actor_token` and `actor_token_type` are rejected with `invalid_request`, because delegation is not supported.
-- `audience` and `resource` are rejected with `invalid_target`, because the issued token cannot be scoped to a named target.
+- `resource` is rejected with `invalid_target`. Use `audience` to name a target.
 
 ### Scopes
 
-The scopes granted to the issued token are the requested `scope` values, reduced to those the requesting provider is configured to issue. If `scope` is omitted, the issued token is granted no scopes.
+The scopes granted to the issued token are the requested `scope` values, reduced to those the provider the token is issued for is configured to issue — the target provider when `audience` is set, otherwise the requesting provider. If `scope` is omitted, the issued token is granted no scopes.
 
 ### Configure token exchange
 
