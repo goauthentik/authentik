@@ -1,0 +1,94 @@
+<saml2p:Response xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol"
+                 Destination="https://sp.example.org:9443/source/saml/shibboleth-post/acs/"
+                 ID="_adb79a9617e21b18c2d5d51311b1ba15"
+                 InResponseTo="_84535c4a5bbe430db1a58632afd60f64"
+                 IssueInstant="2025-11-22T11:52:41.790Z"
+                 Version="2.0"
+                 >
+    <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">https://idp.example.org/idp/shibboleth</saml2:Issuer>
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:SignedInfo>
+            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+            <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+            <ds:Reference URI="#_adb79a9617e21b18c2d5d51311b1ba15">
+                <ds:Transforms>
+                    <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+                    <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+                </ds:Transforms>
+                <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+                <ds:DigestValue>v1ZejyRMDyf6r0jk/bs2i+xKy5PFZjarD2e1csZAdHA=</ds:DigestValue>
+            </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>M7k5oYZkXw7yZ9JroDqELUzhLerDGsYWqM85tQciB3YA15yRrWHHL5XbDmCWPUhEAzMuVKVKcsRYucTkPDpp6eIRy4jMcOD5YBZR82kP9yVhYxSRvA2c1ZB2Mt3Yenhkx2T7IwpqrOPaCxM8iFUCUpkU652eebDYkXKO56h2zMvyHmAzg3+PSSmd424QHaGFXKc/0+/Gh0KRaceA5kYnpxxFs2OhYnlFTKB8GPftz4Jx55Cjf2w3c9FV5wpcC68tRwv3STZuvJi16nDW6WMU3QCFLaoaZpat5iNVJIhz/eXmymAGoxoPBE74DL++T+obyFm/t+JmHe71i/XxTdr4V4KgY5cIgl32gfwiaFmFCk+esWWZMXUdbjD0PnQfMl3re/YcT1aNxv98obAL+14pAilCO4cTSGj/KH6XngDOkr10F9muGcCp/QPS0pJYuXcjg26D+LDoGrF528uQ+SXfZmCkoEbni3oI7sN857txTskYoy6aDW6cR/DeIy2n613G</ds:SignatureValue>
+        <ds:KeyInfo>
+            <ds:X509Data>
+                <ds:X509Certificate>MIIEJzCCAo+gAwIBAgIULkt8KW/m8IwdQ23HBongLnbONBUwDQYJKoZIhvcNAQELBQAwGjEYMBYG
+A1UEAwwPaWRwLmV4YW1wbGUub3JnMB4XDTI1MTAwODA4MjAzN1oXDTQ1MTAwODA4MjAzN1owGjEY
+MBYGA1UEAwwPaWRwLmV4YW1wbGUub3JnMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA
+luZ/lUn5ZZnuUGUMWSDzMNLOLCnS+vys2L7PYx50DqayRKTuV1IneHPHBfSp8+3SHDbSd6Ps1Bp+
+P9lhByIBf8daVMT3jlVqHte1lUGhLLrBwnvg8rd/TYHWT9gOxxOksRDzcbwVRvzXPy3YFZGN/QzT
+fpgeVG1kbxQ/74MG8oRcuqbuhe/mF9anAu59L8xhMn3CZQB4i02kQl/k45bdfNhVxwVc5roOBUZB
+GruoUf0JGUJpS72MtHWrnhgu6zBvUQxuLSdZWhvRD4wmalRGTkOxmU0iynE/4/Jghbjo7GPO5Nhe
+KjJFKoQKSbIjLsfmIN29+hds2t5oEhui//FQpUNGt3mDcE1wbVBG6YihPY9ziypt51rcuXOdrTsv
+Vht8jv9RVGJHVjqsWrjh49aFLXp43m6ML4DkZW1lFVeYU2XtQfTKxjPZDUF1haIQeCAyTofToUb1
+MuAiid6kWhoRHVj8uvyQ3RkgMp1GRAmubLU9P6YprTYb9W+gYj3HISadAgMBAAGjZTBjMB0GA1Ud
+DgQWBBTUfueUxuQucNVb9aVi05lSLuWGpTBCBgNVHREEOzA5gg9pZHAuZXhhbXBsZS5vcmeGJmh0
+dHBzOi8vaWRwLmV4YW1wbGUub3JnL2lkcC9zaGliYm9sZXRoMA0GCSqGSIb3DQEBCwUAA4IBgQCJ
+25bNYpyLkrtPf+kje1pJRZXbRXjOVbQ1CDevOFy9FBkgO4mL02jhpmQesQqKvzaZklA9YuMev6/X
+mL8wxa+5oVm9cSPh1eUiuhUq3PWvY+nXEy4vDbaGwGb6BK9IYDEZvCM52+1IyMenYmTM0AcUq3uq
+EipcTIMXC/EO818hvG+EEzdZRjb1mHrNAwZIgNuBmZKTkOXkcdFfcfXvYmBi7GxNrW0RfcRUI8xG
+F3yMhZriNl8vMaX8EsQuNY2wJNnRQozfHjp58TjatSbN8ltjK/dXq2dMog+y8thcADTCdWPcfYof
+Ka9ynWldilndxM03zO52McZbm7QT6Z2kWRyeabc3w44FaP5NbU8UQGVLQkXxqh8YJBVv/AnrMRRh
+WuE+eBb3Y0ssWRAc5XqTdNHgeRWtdt6AkntIK7SVlSrUXR2mkJMiVXATORX5/loDuLKKOswfPvtj
+37I6oQvrI/oLN8Klkhqp/putEHw8B3RY1Dnz5xrN1uk3Ue6m+FEjenQ=</ds:X509Certificate>
+            </ds:X509Data>
+        </ds:KeyInfo>
+    </ds:Signature>
+    <saml2p:Status>
+        <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success" />
+    </saml2p:Status>
+    <saml2:Assertion xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+                     ID="_6be4923c02a253c28d2b4bb4a302bd99"
+                     IssueInstant="2025-11-22T11:52:41.790Z"
+                     Version="2.0"
+                     >
+        <saml2:Issuer>https://idp.example.org/idp/shibboleth</saml2:Issuer>
+        <saml2:Subject>
+            <saml2:NameID xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+                          Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+                          NameQualifier="https://idp.example.org/idp/shibboleth"
+                          SPNameQualifier="https://sp.example.org/source/saml/shibboleth-post/metadata/"
+                          >_ef5783d83c0d4147212322815d7e4064</saml2:NameID>
+            <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+                <saml2:SubjectConfirmationData Address="192.168.65.1"
+                                               InResponseTo="_84535c4a5bbe430db1a58632afd60f64"
+                                               NotOnOrAfter="2025-11-22T11:57:41.875Z"
+                                               Recipient="https://sp.example.org:9443/source/saml/shibboleth-post/acs/"
+                                               />
+            </saml2:SubjectConfirmation>
+        </saml2:Subject>
+        <saml2:Conditions NotBefore="2025-11-22T11:52:41.790Z"
+                          NotOnOrAfter="2025-11-22T11:57:41.790Z"
+                          >
+            <saml2:AudienceRestriction>
+                <saml2:Audience>https://sp.example.org/source/saml/shibboleth-post/metadata/</saml2:Audience>
+            </saml2:AudienceRestriction>
+        </saml2:Conditions>
+        <saml2:AuthnStatement AuthnInstant="2025-11-22T11:47:55.035Z"
+                              SessionIndex="_e707e7a4d277deb4952e2683c18ff943"
+                              >
+            <saml2:SubjectLocality Address="192.168.65.1" />
+            <saml2:AuthnContext>
+                <saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml2:AuthnContextClassRef>
+            </saml2:AuthnContext>
+        </saml2:AuthnStatement>
+        <saml2:AttributeStatement>
+            <saml2:Attribute FriendlyName="schacHomeOrganization"
+                             Name="urn:oid:1.3.6.1.4.1.25178.1.2.9"
+                             NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                             >
+                <saml2:AttributeValue>example.org</saml2:AttributeValue>
+            </saml2:Attribute>
+        </saml2:AttributeStatement>
+    </saml2:Assertion>
+</saml2p:Response>
