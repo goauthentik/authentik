@@ -209,7 +209,11 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libpq5 libmaxminddb0 ca-certificates \
     libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
-    libltdl7 libxslt1.1 && \
+    libltdl7 libxslt1.1 \
+    # jemalloc, preloaded below to replace glibc malloc for every process in the image
+    libjemalloc2 && \
+    # Fail the build rather than degrade silently if the LD_PRELOAD soname can't be resolved
+    ldconfig -p | grep -q 'libjemalloc\.so\.2' && \
     apt-get purge -y curl libcurl4t64 && \
     pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
@@ -244,8 +248,12 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    GOFIPS=1 \
-    RUST_BACKTRACE=full
+    RUST_BACKTRACE=full \
+    LD_PRELOAD=libjemalloc.so.2 \
+    # background_thread lets jemalloc purge dirty pages while a process is idle, which is
+    # what actually returns memory to the OS between request bursts. Override wholesale
+    # with -e MALLOC_CONF=... to tune.
+    MALLOC_CONF=background_thread:true,metadata_thp:auto,dirty_decay_ms:10000,muzzy_decay_ms:10000
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
