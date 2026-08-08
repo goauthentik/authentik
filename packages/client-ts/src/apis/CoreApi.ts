@@ -353,6 +353,7 @@ export interface CoreGroupsListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    rolesByPk?: Array<string>;
     search?: string;
 }
 
@@ -3081,6 +3082,10 @@ export class CoreApi extends runtime.BaseAPI {
 
         if (requestParameters["pageSize"] != null) {
             queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["rolesByPk"] != null) {
+            queryParameters["roles_by_pk"] = requestParameters["rolesByPk"];
         }
 
         if (requestParameters["search"] != null) {

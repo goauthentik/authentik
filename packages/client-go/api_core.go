@@ -371,6 +371,7 @@ type ApiCoreGroupsListRequest struct {
 	ordering              *string
 	page                  *int32
 	pageSize              *int32
+	rolesByPk             *[]string
 	search                *string
 }
 
@@ -436,6 +437,11 @@ func (r ApiCoreGroupsListRequest) Page(page int32) ApiCoreGroupsListRequest {
 // Number of results to return per page.
 func (r ApiCoreGroupsListRequest) PageSize(pageSize int32) ApiCoreGroupsListRequest {
 	r.pageSize = &pageSize
+	return r
+}
+
+func (r ApiCoreGroupsListRequest) RolesByPk(rolesByPk []string) ApiCoreGroupsListRequest {
+	r.rolesByPk = &rolesByPk
 	return r
 }
 
@@ -553,6 +559,17 @@ func (a *CoreAPIService) CoreGroupsListExecute(r ApiCoreGroupsListRequest) (*Pag
 	}
 	if r.pageSize != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "page_size", r.pageSize, "form", "")
+	}
+	if r.rolesByPk != nil {
+		t := *r.rolesByPk
+		if reflect.TypeOf(t).Kind() == reflect.Slice {
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				parameterAddToHeaderOrQuery(localVarQueryParams, "roles_by_pk", s.Index(i).Interface(), "form", "multi")
+			}
+		} else {
+			parameterAddToHeaderOrQuery(localVarQueryParams, "roles_by_pk", t, "form", "multi")
+		}
 	}
 	if r.search != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "search", r.search, "form", "")
