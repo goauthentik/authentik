@@ -2714,13 +2714,18 @@ paths:
   /core/application_entitlements/:
     get:
       operationId: core_application_entitlements_list
-      description: ApplicationEntitlement Viewset
+      description: List application entitlements, optionally scoped to a user via
+        `for_user`.
       parameters:
       - in: query
         name: app
         schema:
           type: string
           format: uuid
+      - in: query
+        name: for_user
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -36319,11 +36324,21 @@ components:
         app:
           type: string
           format: uuid
+        app_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        app_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
         attributes:
           type: object
           additionalProperties: {}
       required:
       - app
+      - app_name
+      - app_slug
       - name
       - pbm_uuid
     ApplicationEntitlementRequest:
