@@ -57,6 +57,9 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         self.base_url = base_url
         self._config = self.get_service_provider_config()
 
+    def get_identifier(self, connection: TConnection) -> str:
+        return connection.scim_id
+
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
         if self.provider.dry_run and method.upper() not in SAFE_METHODS:
