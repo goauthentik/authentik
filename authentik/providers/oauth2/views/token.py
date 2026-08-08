@@ -573,10 +573,12 @@ class TokenParams:
             LOGGER.info("client_credentials grant for provider without application")
             raise TokenError("invalid_grant")
 
-        self.__check_policy_access(app, request, oauth_jwt=token)
+        # The federated user must be set before the policy check, otherwise the engine
+        # falls back to the anonymous user and any binding on the application denies.
         if provider:
             self.user = resolved_user
-        else:
+        self.__check_policy_access(app, request, oauth_jwt=token)
+        if not provider:
             self.__create_user_from_jwt(token, app, source, request)
 
         method_args = {
@@ -686,10 +688,12 @@ class TokenParams:
             LOGGER.info("token_exchange grant for provider without application")
             raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
 
-        self.__check_policy_access(app, request, oauth_jwt=token)
+        # The federated user must be set before the policy check, otherwise the engine
+        # falls back to the anonymous user and any binding on the application denies.
         if provider:
             self.user = resolved_user
-        else:
+        self.__check_policy_access(app, request, oauth_jwt=token)
+        if not provider:
             self.__create_user_from_jwt(token, app, source, request)
 
         self.__post_init_token_exchange_actor(request)
