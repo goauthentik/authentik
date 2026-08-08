@@ -16,6 +16,8 @@ import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -73,13 +75,26 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     async doAuth(): Promise<void> {
-        const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
-        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
-        PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
-            authWindow?.close();
-            this.plexToken = token;
-            this.loadServers();
-        });
+        // Opened before awaiting the pin: the click's user activation is gone by
+        // the time the pin request resolves, and the popup would be blocked.
+        const authWindow = popupCenterScreen("about:blank", "plex auth", 550, 700);
+        const clientId = this.instance?.clientId || "";
+        const authInfo = await PlexAPIClient.getPin(clientId);
+        if (authWindow && !authWindow.closed) {
+            authWindow.location.replace(authInfo.authUrl);
+        }
+        PlexAPIClient.pinPoll(clientId, authInfo.pin.id)
+            .then((token) => {
+                authWindow?.close();
+                this.plexToken = token;
+                this.loadServers();
+            })
+            .catch(async (error: unknown) => {
+                // Rejects when the pin expires unauthorized, which is where an
+                // unopened popup ends up too.
+                authWindow?.close();
+                await showAPIErrorMessage(error);
+            });
     }
 
     async loadServers(): Promise<void> {
