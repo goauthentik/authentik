@@ -596,10 +596,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
         if self._pending_password_hash is None:
             return
+        # A new password clears any lock, so a password reset is always a way back in.
+        state = {"password": self._pending_password_hash, "failed_attempts": 0, "locked_at": None}
         device, _ = PasswordDevice.objects.update_or_create(
-            user=self,
-            defaults={"password": self._pending_password_hash},
-            create_defaults={"password": self._pending_password_hash, "name": "Password"},
+            user=self, defaults=state, create_defaults=state | {"name": "Password"}
         )
         self.password_device = device
         self._pending_password_hash = None
