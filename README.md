@@ -40,7 +40,7 @@ When you contribute documentation, either to accompany a code change or as a sta
 
 ## Security
 
-Please see [SECURITY.md](SECURITY.md).
+Please see this [SECURITY.md](SECURITY.md).
 
 ## Adoption
 
