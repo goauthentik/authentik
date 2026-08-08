@@ -1,0 +1,42 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 2869.
+#	http://www.ietf.org/rfc/rfc2869.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Acct-Input-Gigawords			52	integer
+ATTRIBUTE	Acct-Output-Gigawords			53	integer
+
+ATTRIBUTE	Event-Timestamp				55	date
+
+ATTRIBUTE	ARAP-Password				70	octets[16]
+ATTRIBUTE	ARAP-Features				71	octets[14]
+ATTRIBUTE	ARAP-Zone-Access			72	integer
+ATTRIBUTE	ARAP-Security				73	integer
+ATTRIBUTE	ARAP-Security-Data			74	string
+ATTRIBUTE	Password-Retry				75	integer
+ATTRIBUTE	Prompt					76	integer
+ATTRIBUTE	Connect-Info				77	string
+ATTRIBUTE	Configuration-Token			78	string
+ATTRIBUTE	EAP-Message				79	octets concat
+ATTRIBUTE	Message-Authenticator			80	octets
+
+ATTRIBUTE	ARAP-Challenge-Response			84	octets[8]
+ATTRIBUTE	Acct-Interim-Interval			85	integer
+# 86: RFC 2867
+ATTRIBUTE	NAS-Port-Id				87	string
+ATTRIBUTE	Framed-Pool				88	string
+
+#	ARAP Zone Access
+
+VALUE	ARAP-Zone-Access		Default-Zone		1
+VALUE	ARAP-Zone-Access		Zone-Filter-Inclusive	2
+VALUE	ARAP-Zone-Access		Zone-Filter-Exclusive	4
+
+#	Prompt
+VALUE	Prompt				No-Echo			0
+VALUE	Prompt				Echo			1
