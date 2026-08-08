@@ -1,5 +1,6 @@
 """transport tests"""
 
+from json import loads
 from unittest.mock import PropertyMock, patch
 
 from django.core import mail
@@ -22,6 +23,7 @@ from authentik.events.models import (
 )
 from authentik.lib.generators import generate_id
 from authentik.stages.email.models import get_template_choices
+from authentik.tenants.utils import get_current_tenant
 
 
 class TestEventTransports(TestCase):
@@ -36,6 +38,25 @@ class TestEventTransports(TestCase):
             body="foo",
             event=self.event,
             user=self.user,
+        )
+
+    def set_base_url(self, value: str):
+        tenant = get_current_tenant()
+        tenant.base_url = value
+        tenant.save()
+
+    def notification_with_hyperlink(self, hyperlink: str) -> Notification:
+        event = Event.new("foo", "testing", hyperlink=hyperlink, hyperlink_label="Open").set_user(
+            self.user
+        )
+        event.save()
+        return Notification.objects.create(
+            severity=NotificationSeverity.ALERT,
+            body="foo",
+            event=event,
+            user=self.user,
+            hyperlink=event.hyperlink,
+            hyperlink_label=event.hyperlink_label,
         )
 
     def test_transport_webhook(self):
@@ -229,6 +250,102 @@ class TestEventTransports(TestCase):
             transport.send(self.notification)
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "[CUSTOM] custom_foo")
+
+    def test_transport_email_relative_hyperlink(self):
+        """Test email transport resolving a relative hyperlink against the base URL"""
+        self.set_base_url("https://authentik.company")
+        notification = self.notification_with_hyperlink("/if/admin/#/foo")
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(notification)
+            self.assertEqual(len(mail.outbox), 1)
+            html = mail.outbox[0].alternatives[0][0]
+            self.assertIn('href="https://authentik.company/if/admin/#/foo"', html)
+            self.assertNotIn('href="/if/admin/#/foo"', html)
+            self.assertIn("https://authentik.company/if/admin/#/foo", mail.outbox[0].body)
+            self.assertEqual(notification.hyperlink, "/if/admin/#/foo")
+
+    def test_transport_email_relative_hyperlink_no_base_url(self):
+        """Test email transport with a relative hyperlink and no base URL configured"""
+        self.set_base_url("")
+        notification = self.notification_with_hyperlink("/if/admin/#/foo")
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertIn('href="/if/admin/#/foo"', mail.outbox[0].alternatives[0][0])
+
+    def test_transport_email_absolute_hyperlink(self):
+        """Test email transport with an already absolute hyperlink"""
+        self.set_base_url("https://authentik.company")
+        notification = self.notification_with_hyperlink("https://files.example.com/export.csv")
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.EMAIL,
+        )
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            transport.send(notification)
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertIn(
+                'href="https://files.example.com/export.csv"', mail.outbox[0].alternatives[0][0]
+            )
+
+    def test_transport_webhook_slack_relative_hyperlink(self):
+        """Test slack webhook transport resolving a relative hyperlink from the event context"""
+        self.set_base_url("https://authentik.company")
+        notification = self.notification_with_hyperlink("/if/admin/#/foo")
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK_SLACK,
+            webhook_url="http://localhost:1234/test",
+        )
+        with Mocker() as mocker:
+            mocker.post("http://localhost:1234/test")
+            transport.send(notification)
+            self.assertEqual(mocker.call_count, 1)
+            fields = loads(mocker.request_history[0].body)["attachments"][0]["fields"]
+            self.assertIn(
+                {"title": "hyperlink", "value": "https://authentik.company/if/admin/#/foo"},
+                fields,
+            )
+
+    def test_transport_webhook_mapping_hyperlink(self):
+        """Test webhook transport mappings accessing the absolute hyperlink"""
+        self.set_base_url("https://authentik.company")
+        notification = self.notification_with_hyperlink("/if/admin/#/foo")
+        mapping_body = NotificationWebhookMapping.objects.create(
+            name=generate_id(), expression="""return {"link": notification.hyperlink_absolute}"""
+        )
+        transport: NotificationTransport = NotificationTransport.objects.create(
+            name=generate_id(),
+            mode=TransportMode.WEBHOOK,
+            webhook_url="http://localhost:1234/test",
+            webhook_mapping_body=mapping_body,
+        )
+        with Mocker() as mocker:
+            mocker.post("http://localhost:1234/test")
+            transport.send(notification)
+            self.assertEqual(mocker.call_count, 1)
+            self.assertJSONEqual(
+                mocker.request_history[0].body.decode(),
+                {"link": "https://authentik.company/if/admin/#/foo"},
+            )
+            self.assertEqual(notification.hyperlink, "/if/admin/#/foo")
 
     def test_transport_email_validation(self):
         """Test email transport template validation"""

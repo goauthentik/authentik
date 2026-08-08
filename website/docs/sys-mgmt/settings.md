@@ -16,7 +16,7 @@ While this setting is empty, authentik displays a warning in the Admin interface
 Set this to the scheme and host only, without a path. All of authentik is served under [`AUTHENTIK_WEB__PATH`](../install-config/configuration/configuration.mdx#authentik_web__path) (`/` by default), and that prefix is already part of every link authentik generates. So even when you serve authentik under a subpath, for example `AUTHENTIK_WEB__PATH=/authentik/`, the base URL stays `https://authentik.company`, and generated links resolve under `https://authentik.company/authentik/`.
 :::
 
-This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
+The base URL is used to make links absolute in [notifications](./events/notifications.md) that are delivered outside of authentik, for example over the email and webhook notification transports. While the setting is empty, those links remain relative and might not be usable from the notification's destination.
 
 ### Avatars
 
