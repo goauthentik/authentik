@@ -14,7 +14,6 @@ import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
-import { eventUuidSearch } from "#admin/events/eventSearch";
 import { EventGeo, renderEventUser } from "#admin/events/utils";
 
 import { Event, EventsApi, EventsEventsExportCreateRequest } from "@goauthentik/api";
@@ -82,8 +81,8 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 <ak-events-map
                     class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
                     .events=${this.data}
-                    @select-events=${(ev: CustomEvent<{ eventIds: string[] }>) => {
-                        this.search = eventUuidSearch(ev.detail.eventIds);
+                    @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
+                        this.search = `event_uuid = "${ev.detail.eventId}"`;
                         this.page = 1;
                         this.fetch();
                     }}

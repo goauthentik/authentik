@@ -109,7 +109,6 @@ export class BrandForm extends ModelForm<Brand, string> {
             brandingLogo = "",
             brandingFavicon = "",
             brandingCustomCss = "",
-            brandingMapTiles = "",
         } = this.instance ?? DefaultBrand;
 
         const defaultFlowBackground =
@@ -177,20 +176,6 @@ export class BrandForm extends ModelForm<Brand, string> {
                             "Default background used during flow execution. Can be overridden per flow.",
                         )}
                     ></ak-file-search-input>
-
-                    <ak-text-input
-                        name="brandingMapTiles"
-                        input-hint="code"
-                        placeholder="pmtiles://https://tiles.example.com/basemap.pmtiles"
-                        value=${brandingMapTiles}
-                        label=${msg("Map tiles", { id: "brand.map-tiles.label" })}
-                        autocomplete="off"
-                        spellcheck="false"
-                        help=${msg(
-                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.",
-                            { id: "brand.map-tiles.description" },
-                        )}
-                    ></ak-text-input>
 
                     <ak-form-element-horizontal name="brandingCustomCss">
                         ${AKLabel(
