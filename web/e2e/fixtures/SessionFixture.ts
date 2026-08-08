@@ -17,6 +17,11 @@ export interface LoginInit {
     page?: Page;
 }
 
+export interface CompletePasswordInit {
+    password?: string;
+    to?: URL | string;
+}
+
 export interface SessionFixtureInit extends PageFixtureInit {
     navigator: NavigatorFixture;
 }
@@ -127,6 +132,24 @@ export class SessionFixture extends PageFixture {
 
         await this.$passwordField.fill(password);
 
+        await this.$submitButton.click();
+
+        await this.navigator.waitForPathname(to);
+    }
+
+    /**
+     * Complete a password stage when identification was skipped
+     * (e.g. switching to a user that already has `pending_user` in the flow plan).
+     */
+    public async completePassword({
+        password = GOOD_PASSWORD,
+        to = SessionFixture.pathname,
+    }: CompletePasswordInit = {}): Promise<void> {
+        this.logger.info("Completing password stage...");
+
+        await this.$passwordStage.waitFor({ state: "visible" });
+
+        await this.$passwordField.fill(password);
         await this.$submitButton.click();
 
         await this.navigator.waitForPathname(to);
