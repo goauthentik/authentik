@@ -139,6 +139,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         verbose_name=_("SCIM Compatibility Mode"),
         help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
     )
+    flatten_nested_groups = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, members of nested child groups are included as direct members of "
+            "the parent group in the SCIM payload. Useful for SCIM endpoints that do not "
+            "support nested groups (AWS IAM Identity Center, Slack, etc.)."
+        ),
+    )
     service_provider_config_cache_timeout = models.TextField(
         default="hours=1",
         validators=[timedelta_string_validator],
