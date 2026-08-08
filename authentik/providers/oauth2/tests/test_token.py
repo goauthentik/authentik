@@ -20,7 +20,7 @@ from authentik.common.oauth.constants import (
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
     AccessToken,
@@ -33,8 +33,8 @@ from authentik.providers.oauth2.models import (
     ScopeMapping,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
+from authentik.providers.oauth2.token.router import parse_token_request
 from authentik.providers.oauth2.utils import extract_client_auth
-from authentik.providers.oauth2.views.token import TokenParams
 
 
 class TestToken(OAuthTestCase):
@@ -69,7 +69,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(cm.exception.cause, "grant_type_not_configured")
 
     def test_request_auth_code(self):
@@ -95,10 +95,10 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
-            TokenParams.parse(request, provider, provider.client_id, generate_key())
+            parse_token_request(request, provider, provider.client_id, generate_id())
 
     def test_request_auth_code_invalid(self):
         """test request param"""
@@ -120,7 +120,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError):
-            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
 
     def test_client_secret_non_ascii(self):
         """test non-ascii client_secret"""
@@ -143,7 +143,7 @@ class TestToken(OAuthTestCase):
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
         with self.assertRaises(TokenError) as cm:
-            TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(cm.exception.error, "invalid_client")
         self.assertEqual(cm.exception.cause, "invalid_secret")
 
@@ -173,7 +173,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = TokenParams.parse(request, provider, provider.client_id, provider.client_secret)
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
         self.assertEqual(params.provider, provider)
 
     def test_extract_client_auth_basic_auth_percent_decodes(self):
