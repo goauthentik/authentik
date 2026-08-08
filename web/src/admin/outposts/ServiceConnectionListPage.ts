@@ -11,6 +11,7 @@ import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import COrchestrateIcon from "@carbon/icons/svg/32/orchestrate.svg";
 
 import { aki } from "#common/api/client";
 
@@ -45,7 +46,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
         "Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.",
     );
 
-    public pageIcon = "pf-icon pf-icon-integration";
+    public pageIcon = COrchestrateIcon;
     protected override searchEnabled = true;
 
     public override checkbox = true;
