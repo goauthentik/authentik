@@ -91,6 +91,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'node') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      # pnpm can hang after installing (pnpm/pnpm#13617); bounded by the calling job's timeout-minutes.
       run: |
         pnpm install --frozen-lockfile
         pnpm --dir web install --frozen-lockfile
@@ -120,6 +121,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'runtime') && contains(inputs.dependencies, 'node') }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      # Same pnpm hang-after-install caveat as above (pnpm/pnpm#13617).
       run: pnpm --dir web install --frozen-lockfile
     - name: Generate config
       if: ${{ contains(inputs.dependencies, 'python') }}

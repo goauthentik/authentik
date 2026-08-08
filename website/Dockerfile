@@ -11,6 +11,13 @@ WORKDIR /work
 COPY --from=pnpm /opt/pnpm /opt/pnpm
 ENV PATH="/opt/pnpm:${PATH}"
 
+# `pnpm run` would otherwise spawn a nested `pnpm install` to re-verify
+# node_modules against the lockfile. The install layers below already
+# guarantee that, the re-verify mis-prunes workspace packages whose manifests
+# are bind-mounted only in the install layers, and the nested install is the
+# spot where pnpm's hang-after-install (pnpm/pnpm#13617) stalls image builds.
+ENV npm_config_verify_deps_before_run=false
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
@@ -18,6 +25,9 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/website/pnpm-lock.yaml,src=./website/pnpm-lock.yaml \
     node ./scripts/node/lint-runtime.mjs ./website
 
+# pnpm can intermittently hang after an install completes (pnpm/pnpm#13617);
+# a stalled build here is bounded by the CI job's timeout-minutes.
+#
 # Hoisted root install so `@goauthentik/docusaurus-config` resolves its own deps
 # (e.g. `deepmerge-ts`) from /work/node_modules during the docs build; its source
 # is bind-mounted read-only, so a per-package node_modules can't be written.

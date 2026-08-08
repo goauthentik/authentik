@@ -48,6 +48,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: pnpm install --frozen-lockfile
       - name: Get changed files
         id: changed-files

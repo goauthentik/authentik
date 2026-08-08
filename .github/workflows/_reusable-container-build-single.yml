@@ -49,6 +49,8 @@ jobs:
       contents: read
     name: "Build ${{ inputs.image-name }} on ${{ inputs.image-arch }}"
     runs-on: "${{ inputs.runs-on }}"
+    # Bounds a pnpm hang-after-install (pnpm/pnpm#13617) inside `docker build`.
+    timeout-minutes: 120
     outputs:
       image-digest: "${{ steps.build.outputs.digest }}"
       artifact-id: "${{ steps.upload.outputs.artifact-id }}"
