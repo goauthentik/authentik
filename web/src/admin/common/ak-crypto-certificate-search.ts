@@ -71,7 +71,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
      * When allowedKeyTypes is set, only certificates or keypairs with matching
      * key algorithms will be shown.
      * @attr
-     * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
+     * @example [KeyTypeEnum.RSA, KeyTypeEnum.EC]
      */
     @property({ type: Array, attribute: "allowed-key-types" })
     public allowedKeyTypes?: KeyTypeEnum[];

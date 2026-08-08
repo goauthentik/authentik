@@ -1,3 +1,5 @@
+import { openAPIEnumOptions } from "#common/api/enums";
+
 import {
     DigestAlgorithmEnum,
     KeyTypeEnum,
@@ -55,24 +57,20 @@ export function logoutMethodOptions(hasPostBinding: boolean) {
     ];
 }
 
-export const digestAlgorithmOptions = toOptions([
-    ["SHA1", DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1],
-    ["SHA256", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256, true],
-    ["SHA384", DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384],
-    ["SHA512", DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512],
-]);
+export const digestAlgorithmOptions = openAPIEnumOptions(
+    DigestAlgorithmEnum,
+    DigestAlgorithmEnum.SHA256,
+);
 
-export const signatureAlgorithmOptions = toOptions([
-    ["RSA-SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1],
-    ["RSA-SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256, true],
-    ["RSA-SHA384", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384],
-    ["RSA-SHA512", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512],
-    ["ECDSA-SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha1],
-    ["ECDSA-SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha256],
-    ["ECDSA-SHA384", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha384],
-    ["ECDSA-SHA512", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha512],
-    ["DSA-SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1],
-]);
+export const signatureAlgorithmOptions = openAPIEnumOptions(
+    SignatureAlgorithmEnum,
+    SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
+);
+
+/** SAML sources do not support ECDSA signatures. */
+export const samlSourceSignatureAlgorithmOptions = signatureAlgorithmOptions.filter(
+    (option) => !option.label.startsWith("ECDSA"),
+);
 
 export type HashAlgorithm = "SHA1" | "SHA256" | "SHA384" | "SHA512";
 
@@ -83,19 +81,19 @@ export const availableHashes: HashAlgorithm[] = ["SHA1", "SHA256", "SHA384", "SH
 export const SignatureFamilyByHashAlgorithm: Partial<
     Record<KeyTypeEnum, ReadonlyMap<HashAlgorithm, SignatureAlgorithmEnum>>
 > = {
-    [KeyTypeEnum.Rsa]: new Map([
+    [KeyTypeEnum.RSA]: new Map([
         ["SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1],
         ["SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256],
         ["SHA384", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384],
         ["SHA512", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512],
     ]),
-    [KeyTypeEnum.Ec]: new Map([
+    [KeyTypeEnum.EC]: new Map([
         ["SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha1],
         ["SHA256", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha256],
         ["SHA384", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha384],
         ["SHA512", SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMoreecdsaSha512],
     ]),
-    [KeyTypeEnum.Dsa]: new Map([["SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1]]),
+    [KeyTypeEnum.DSA]: new Map([["SHA1", SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1]]),
 };
 
 export function retrieveSignatureAlgorithm(
@@ -108,4 +106,4 @@ export function retrieveSignatureAlgorithm(
     return familyMap.get(algorithm) ?? null;
 }
 
-export const SAMLSupportedKeyTypes = [KeyTypeEnum.Rsa, KeyTypeEnum.Ec, KeyTypeEnum.Dsa];
+export const SAMLSupportedKeyTypes = [KeyTypeEnum.RSA, KeyTypeEnum.EC, KeyTypeEnum.DSA];

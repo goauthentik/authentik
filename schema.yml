@@ -36048,6 +36048,11 @@ components:
       - ed25519
       - ed448
       type: string
+      x-enum-varnames:
+      - RSA
+      - ECDSA
+      - Ed25519
+      - Ed448
     App:
       type: object
       description: Serialize Application info
@@ -38301,7 +38306,7 @@ components:
           readOnly: true
         key_type:
           allOf:
-          - $ref: '#/components/schemas/CertificateKeyPairKeyTypeEnum'
+          - $ref: '#/components/schemas/KeyTypeEnum'
           readOnly: true
           nullable: true
           description: Key algorithm type detected from the certificate's public key
@@ -38334,14 +38339,6 @@ components:
       - pk
       - private_key_available
       - private_key_download_url
-    CertificateKeyPairKeyTypeEnum:
-      enum:
-      - rsa
-      - ec
-      - dsa
-      - ed25519
-      - ed448
-      type: string
     CertificateKeyPairRequest:
       type: object
       description: CertificateKeyPair Serializer
@@ -38442,6 +38439,14 @@ components:
       - webex
       - vcenter
       type: string
+      x-enum-varnames:
+      - Default
+      - AWS
+      - Slack
+      - Salesforce
+      - GitLab
+      - Webex
+      - vCenter
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -39664,6 +39669,11 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#sha384
       - http://www.w3.org/2001/04/xmlenc#sha512
       type: string
+      x-enum-varnames:
+      - SHA1
+      - SHA256
+      - SHA384
+      - SHA512
     DigitsEnum:
       enum:
       - '6'
@@ -43713,13 +43723,19 @@ components:
       - realm
       - slug
     KeyTypeEnum:
-      type: string
       enum:
-      - dsa
+      - rsa
       - ec
+      - dsa
       - ed25519
       - ed448
-      - rsa
+      type: string
+      x-enum-varnames:
+      - RSA
+      - EC
+      - DSA
+      - Ed25519
+      - Ed448
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer

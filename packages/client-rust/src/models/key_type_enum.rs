@@ -12,33 +12,33 @@ use crate::models;
 
 ///
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum CertificateKeyPairKeyTypeEnum {
+pub enum KeyTypeEnum {
     #[serde(rename = "rsa")]
-    Rsa,
+    RSA,
     #[serde(rename = "ec")]
-    Ec,
+    EC,
     #[serde(rename = "dsa")]
-    Dsa,
+    DSA,
     #[serde(rename = "ed25519")]
     Ed25519,
     #[serde(rename = "ed448")]
     Ed448,
 }
 
-impl std::fmt::Display for CertificateKeyPairKeyTypeEnum {
+impl std::fmt::Display for KeyTypeEnum {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Rsa => write!(f, "rsa"),
-            Self::Ec => write!(f, "ec"),
-            Self::Dsa => write!(f, "dsa"),
+            Self::RSA => write!(f, "rsa"),
+            Self::EC => write!(f, "ec"),
+            Self::DSA => write!(f, "dsa"),
             Self::Ed25519 => write!(f, "ed25519"),
             Self::Ed448 => write!(f, "ed448"),
         }
     }
 }
 
-impl Default for CertificateKeyPairKeyTypeEnum {
-    fn default() -> CertificateKeyPairKeyTypeEnum {
-        Self::Rsa
+impl Default for KeyTypeEnum {
+    fn default() -> KeyTypeEnum {
+        Self::RSA
     }
 }

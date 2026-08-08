@@ -142,7 +142,7 @@ export function renderForm({
     errors ||= {};
 
     // Get available hash algorithms for the selected key type
-    const keyType = signingKeyType ?? KeyTypeEnum.Rsa;
+    const keyType = signingKeyType ?? KeyTypeEnum.RSA;
 
     return html` <ak-text-input
             name="name"

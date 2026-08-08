@@ -9,6 +9,7 @@ from enum import Enum
 from django.db.models import Choices
 from django.utils.translation import get_language
 from drf_spectacular.drainage import error, warn
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.hooks import postprocess_schema_enum_id_removal
 from drf_spectacular.plumbing import (
     ResolvedComponent,
@@ -20,7 +21,32 @@ from drf_spectacular.settings import spectacular_settings
 from inflection import camelize
 from structlog.stdlib import get_logger
 
+from authentik.lib.models import GeneratedEnum
+
 LOGGER = get_logger()
+
+
+def generated_enum_varnames() -> dict[tuple[str, ...], list[str]]:
+    """Client member names by choice values, for choice sets subclassing GeneratedEnum."""
+    return {
+        tuple(str(value) for value in enum.values): [str(label) for label in enum.labels]
+        for enum in GeneratedEnum.__subclasses__()
+    }
+
+
+class ChoiceFieldEnumExtension(OpenApiSerializerFieldExtension):
+    """Emit `x-enum-varnames` for choice sets that opted in via GeneratedEnum."""
+
+    target_class = "rest_framework.fields.ChoiceField"
+    match_subclasses = True
+    priority = -1
+
+    def map_serializer_field(self, auto_schema, direction):
+        schema = auto_schema._map_serializer_field(self.target, direction, bypass_extensions=True)
+        names = generated_enum_varnames().get(tuple(str(value) for value in self.target.choices))
+        if names:
+            schema.get("items", schema)["x-enum-varnames"] = names
+        return schema
 
 
 # See https://github.com/tfranzel/drf-spectacular/blob/master/drf_spectacular/hooks.py
@@ -170,9 +196,10 @@ def postprocess_schema_enums(result, generator, **kwargs):  # noqa: PLR0912, PLR
             enum_name = enum_name_mapping.get(prop_hash) or enum_name_mapping[prop_hash, prop_name]
 
             # split property into remaining property and enum component parts
-            enum_schema = {k: v for k, v in prop_schema.items() if k in ["type", "enum"]}
+            enum_keys = ["type", "enum", "x-enum-varnames"]
+            enum_schema = {k: v for k, v in prop_schema.items() if k in enum_keys}
             prop_schema = {
-                k: v for k, v in prop_schema.items() if k not in ["type", "enum", "x-spec-enum-id"]
+                k: v for k, v in prop_schema.items() if k not in [*enum_keys, "x-spec-enum-id"]
             }
 
             # separate actual description from name-value tuples
