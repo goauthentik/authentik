@@ -55214,6 +55214,7 @@ components:
       - github
       - gitlab
       - google
+      - instagram
       - mailcow
       - okta
       - patreon

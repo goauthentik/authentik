@@ -25,6 +25,7 @@ export const ProviderTypeEnum = {
     Github: "github",
     Gitlab: "gitlab",
     Google: "google",
+    Instagram: "instagram",
     Mailcow: "mailcow",
     Okta: "okta",
     Patreon: "patreon",
