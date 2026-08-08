@@ -1,15 +1,40 @@
 //! Backchannel (server-to-server) OAuth calls.
 
-use eyre::Result;
+use eyre::{Result, eyre};
 use jsonwebtoken::jwk::JwkSet;
-use reqwest::header::{HOST, HeaderName};
+use reqwest::{
+    Response,
+    header::{HOST, HeaderName},
+};
 use reqwest_middleware::{ClientWithMiddleware, RequestBuilder};
 use serde::Deserialize;
+use tracing::debug;
 use url::Url;
 
 use crate::outpost::proxy::claims::Claims;
 
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
+
+/// How much of an error response body to keep, in characters.
+const MAX_ERROR_BODY: usize = 512;
+
+/// Turn a non-success response into an error carrying its body.
+async fn check_status(response: Response) -> Result<Response> {
+    let status = response.status();
+    if !status.is_client_error() && !status.is_server_error() {
+        return Ok(response);
+    }
+
+    let url = response.url().clone();
+    let body = response.text().await.unwrap_or_default();
+    let body = body.trim();
+    if body.is_empty() {
+        return Err(eyre!("HTTP {status} from {url}, empty body"));
+    }
+    let kept: String = body.chars().take(MAX_ERROR_BODY).collect();
+    let ellipsis = if kept.len() < body.len() { "…" } else { "" };
+    Err(eyre!("HTTP {status} from {url}: {kept}{ellipsis}"))
+}
 
 /// The host and scheme to claim on backchannel requests.
 ///
@@ -83,13 +108,13 @@ pub(crate) async fn exchange_code(
     if let Some(host) = token_host {
         request = host.apply(request);
     }
-    let response = request.send().await?.error_for_status()?;
+    let response = check_status(request.send().await?).await?;
     Ok(response.json::<TokenResponse>().await?.access_token)
 }
 
 /// Fetch and parse the provider JWKS.
 pub(crate) async fn fetch_jwks(client: &ClientWithMiddleware, jwks_uri: &str) -> Result<JwkSet> {
-    let response = client.get(jwks_uri).send().await?.error_for_status()?;
+    let response = check_status(client.get(jwks_uri).send().await?).await?;
     Ok(response.json::<JwkSet>().await?)
 }
 
@@ -113,10 +138,13 @@ pub(crate) async fn client_credentials_token(
     if let Some(host) = token_host {
         request = host.apply(request);
     }
-    let response = request.send().await?;
-    if !response.status().is_success() {
-        return Ok(None);
-    }
+    let response = match check_status(request.send().await?).await {
+        Ok(response) => response,
+        Err(err) => {
+            debug!(?err, "client credentials grant failed");
+            return Ok(None);
+        }
+    };
     Ok(Some(response.json::<TokenResponse>().await?.id_token))
 }
 
@@ -137,10 +165,13 @@ pub(crate) async fn introspect_token(
     if let Some(host) = token_host {
         request = host.apply(request);
     }
-    let response = request.send().await?;
-    if !response.status().is_success() {
-        return Ok(None);
-    }
+    let response = match check_status(request.send().await?).await {
+        Ok(response) => response,
+        Err(err) => {
+            debug!(?err, "token introspection failed");
+            return Ok(None);
+        }
+    };
     let introspection = response.json::<IntrospectionResponse>().await?;
     if !introspection.active {
         return Ok(None);
