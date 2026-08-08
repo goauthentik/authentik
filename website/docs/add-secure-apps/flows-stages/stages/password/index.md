@@ -17,9 +17,29 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + app passwords**
     - **User database + LDAP password**
     - **User database + Kerberos password**
-- **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled.
+- **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled. This only ends the flow; the user can start again immediately.
+- **Failed attempts before lockout**: how many consecutive failed submissions lock the user's password. Set to `0` to never lock. Requires an enterprise license. See [Password lockout](#password-lockout).
 - **Allow show password**: show a button that reveals the entered password.
 - **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
+
+## Password lockout :ak-enterprise {#password-lockout}
+
+Set **Failed attempts before lockout** to a value above `0` to lock a user's password after that many consecutive failed attempts. A locked password is refused even when the correct password is submitted, so an attacker cannot keep guessing and a leaked password cannot be used until an administrator intervenes.
+
+The count is per user and survives across flows and sessions. It resets whenever the user authenticates successfully.
+
+Locking is deliberately invisible to the person at the login prompt: the flow reports the same "Invalid password" error it reports for a wrong password, so the response cannot be used to discover whether an account exists or has been locked. The lock itself is recorded as a `password_locked` event in the [event log](../../../../sys-mgmt/events/index.md).
+
+Users whose status is **Password locked** appear as such in the user list in the Admin interface. See [User status](../../../../users-sources/user/user_ref.mdx).
+
+### Unlock a password
+
+A locked password is restored in either of two ways:
+
+- An administrator opens the user in **Directory** > **Users** and selects **Unlock password**.
+- The password is changed, for example through a recovery flow or by an administrator setting a new one. A password reset is always a way back in.
+
+Both clear the failure count, and unlocking records a `password_unlocked` event.
 
 ## Flow integration
 
