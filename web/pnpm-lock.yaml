@@ -4977,10 +4977,6 @@ packages:
     resolution: {integrity: sha512-bjdr2xW1dBCMsMGGsUeqM4eFI60m94+szhxWys+B1ztIt6gWSfeGBdSVCIawezeHYLYn0j6zrsXdQS/JllBzww==}
     engines: {node: '>=6'}
 
-  minimatch@10.2.5:
-    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
-    engines: {node: 18 || 20 || >=22}
-
   minimatch@10.2.6:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
@@ -10335,7 +10331,7 @@ snapshots:
       immutable: 5.1.9
       is-builtin-module: 3.2.1
       log4js: 6.9.1(supports-color@10.2.2)
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       node-cache: 5.1.2
       optionator: 0.9.4
       prettier: 3.8.3
@@ -11744,10 +11740,6 @@ snapshots:
   minim@0.23.8:
     dependencies:
       lodash: 4.18.1
-
-  minimatch@10.2.5:
-    dependencies:
-      brace-expansion: 5.0.9
 
   minimatch@10.2.6:
     dependencies:
