@@ -1,4 +1,5 @@
 import "#admin/sources/ak-source-wizard";
+import "#admin/sources/bsky/BskySourceForm";
 import "#admin/sources/kerberos/KerberosSourceForm";
 import "#admin/sources/ldap/LDAPSourceForm";
 import "#admin/sources/oauth/OAuthSourceForm";

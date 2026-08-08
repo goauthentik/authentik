@@ -1,3 +1,4 @@
+import "#admin/sources/bsky/BskySourceViewPage";
 import "#admin/sources/kerberos/KerberosSourceViewPage";
 import "#admin/sources/ldap/LDAPSourceViewPage";
 import "#admin/sources/oauth/OAuthSourceViewPage";
@@ -68,6 +69,10 @@ export class SourceViewPage extends AKElement {
                 return html`<ak-source-telegram-view
                     sourceSlug=${this.source.slug}
                 ></ak-source-telegram-view>`;
+            case "ak-source-bsky-form":
+                return html`<ak-source-bsky-view
+                    sourceSlug=${this.source.slug}
+                ></ak-source-bsky-view>`;
             default:
                 return html`<p>Invalid source type ${this.source.component}</p>`;
         }

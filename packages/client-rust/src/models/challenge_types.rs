@@ -33,6 +33,8 @@ pub enum ChallengeTypes {
     AkStageAuthenticatorWebauthn(models::AuthenticatorWebAuthnChallenge),
     #[serde(rename = "ak-stage-autosubmit")]
     AkStageAutosubmit(models::AutosubmitChallenge),
+    #[serde(rename = "ak-source-bsky")]
+    AkSourceBsky(models::BskyAuthenticationChallenge),
     #[serde(rename = "ak-stage-captcha")]
     AkStageCaptcha(models::CaptchaChallenge),
     #[serde(rename = "ak-stage-consent")]

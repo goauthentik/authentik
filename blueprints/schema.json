@@ -3064,6 +3064,166 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_sources_bsky.bskysource"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysource_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysource"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysource"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_bsky.bskysourcepropertymapping"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysourcepropertymapping_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysourcepropertymapping"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.bskysourcepropertymapping"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_bsky.groupbskysourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.groupbskysourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.groupbskysourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.groupbskysourceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
+                            "const": "authentik_sources_bsky.userbskysourceconnection"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.userbskysourceconnection_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.userbskysourceconnection"
+                        },
+                        "identifiers": {
+                            "$ref": "#/$defs/model_authentik_sources_bsky.userbskysourceconnection"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_sources_kerberos.groupkerberossourceconnection"
                         },
                         "id": {
@@ -6242,6 +6402,22 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_sources_bsky.add_bskysource",
+                            "authentik_sources_bsky.add_bskysourcepropertymapping",
+                            "authentik_sources_bsky.add_groupbskysourceconnection",
+                            "authentik_sources_bsky.add_userbskysourceconnection",
+                            "authentik_sources_bsky.change_bskysource",
+                            "authentik_sources_bsky.change_bskysourcepropertymapping",
+                            "authentik_sources_bsky.change_groupbskysourceconnection",
+                            "authentik_sources_bsky.change_userbskysourceconnection",
+                            "authentik_sources_bsky.delete_bskysource",
+                            "authentik_sources_bsky.delete_bskysourcepropertymapping",
+                            "authentik_sources_bsky.delete_groupbskysourceconnection",
+                            "authentik_sources_bsky.delete_userbskysourceconnection",
+                            "authentik_sources_bsky.view_bskysource",
+                            "authentik_sources_bsky.view_bskysourcepropertymapping",
+                            "authentik_sources_bsky.view_groupbskysourceconnection",
+                            "authentik_sources_bsky.view_userbskysourceconnection",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -7636,6 +7812,22 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_sources_bsky.add_bskysource",
+                            "authentik_sources_bsky.add_bskysourcepropertymapping",
+                            "authentik_sources_bsky.add_groupbskysourceconnection",
+                            "authentik_sources_bsky.add_userbskysourceconnection",
+                            "authentik_sources_bsky.change_bskysource",
+                            "authentik_sources_bsky.change_bskysourcepropertymapping",
+                            "authentik_sources_bsky.change_groupbskysourceconnection",
+                            "authentik_sources_bsky.change_userbskysourceconnection",
+                            "authentik_sources_bsky.delete_bskysource",
+                            "authentik_sources_bsky.delete_bskysourcepropertymapping",
+                            "authentik_sources_bsky.delete_groupbskysourceconnection",
+                            "authentik_sources_bsky.delete_userbskysourceconnection",
+                            "authentik_sources_bsky.view_bskysource",
+                            "authentik_sources_bsky.view_bskysourcepropertymapping",
+                            "authentik_sources_bsky.view_groupbskysourceconnection",
+                            "authentik_sources_bsky.view_userbskysourceconnection",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -11086,6 +11278,7 @@
                         "authentik.providers.scim",
                         "authentik.rbac",
                         "authentik.recovery",
+                        "authentik.sources.bsky",
                         "authentik.sources.kerberos",
                         "authentik.sources.ldap",
                         "authentik.sources.oauth",
@@ -11199,6 +11392,10 @@
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
                         "authentik_rbac.initialpermissions",
+                        "authentik_sources_bsky.bskysource",
+                        "authentik_sources_bsky.bskysourcepropertymapping",
+                        "authentik_sources_bsky.userbskysourceconnection",
+                        "authentik_sources_bsky.groupbskysourceconnection",
                         "authentik_sources_kerberos.kerberossource",
                         "authentik_sources_kerberos.kerberossourcepropertymapping",
                         "authentik_sources_kerberos.userkerberossourceconnection",
@@ -14125,6 +14322,22 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_sources_bsky.add_bskysource",
+                            "authentik_sources_bsky.add_bskysourcepropertymapping",
+                            "authentik_sources_bsky.add_groupbskysourceconnection",
+                            "authentik_sources_bsky.add_userbskysourceconnection",
+                            "authentik_sources_bsky.change_bskysource",
+                            "authentik_sources_bsky.change_bskysourcepropertymapping",
+                            "authentik_sources_bsky.change_groupbskysourceconnection",
+                            "authentik_sources_bsky.change_userbskysourceconnection",
+                            "authentik_sources_bsky.delete_bskysource",
+                            "authentik_sources_bsky.delete_bskysourcepropertymapping",
+                            "authentik_sources_bsky.delete_groupbskysourceconnection",
+                            "authentik_sources_bsky.delete_userbskysourceconnection",
+                            "authentik_sources_bsky.view_bskysource",
+                            "authentik_sources_bsky.view_bskysourcepropertymapping",
+                            "authentik_sources_bsky.view_groupbskysourceconnection",
+                            "authentik_sources_bsky.view_userbskysourceconnection",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -14455,6 +14668,283 @@
                             "delete_role",
                             "unassign_role_permissions",
                             "view_role"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_bsky.bskysource": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "Source's display Name."
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Slug",
+                    "description": "Internal source name, used in URLs."
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "title": "Enabled"
+                },
+                "promoted": {
+                    "type": "boolean",
+                    "title": "Promoted",
+                    "description": "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon."
+                },
+                "authentication_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Authentication flow",
+                    "description": "Flow to use when authenticating existing users."
+                },
+                "enrollment_flow": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Enrollment flow",
+                    "description": "Flow to use when enrolling new users."
+                },
+                "user_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "User property mappings"
+                },
+                "group_property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": "Group property mappings"
+                },
+                "policy_engine_mode": {
+                    "type": "string",
+                    "enum": [
+                        "all",
+                        "any"
+                    ],
+                    "title": "Policy engine mode"
+                },
+                "user_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "email_link",
+                        "email_deny",
+                        "username_link",
+                        "username_deny"
+                    ],
+                    "title": "User matching mode",
+                    "description": "How the source determines if an existing user should be authenticated or a new user enrolled."
+                },
+                "user_path_template": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User path template"
+                },
+                "icon": {
+                    "type": "string",
+                    "title": "Icon"
+                },
+                "group_matching_mode": {
+                    "type": "string",
+                    "enum": [
+                        "identifier",
+                        "name_link",
+                        "name_deny"
+                    ],
+                    "title": "Group matching mode",
+                    "description": "How the source determines if an existing group should be used or a new group created."
+                },
+                "scope": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Scope"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_bsky.bskysource_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_bskysource",
+                            "change_bskysource",
+                            "delete_bskysource",
+                            "view_bskysource"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_bsky.bskysourcepropertymapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_bsky.bskysourcepropertymapping_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_bskysourcepropertymapping",
+                            "change_bskysourcepropertymapping",
+                            "delete_bskysourcepropertymapping",
+                            "view_bskysourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_bsky.groupbskysourceconnection": {
+            "type": "object",
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_bsky.groupbskysourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupbskysourceconnection",
+                            "change_groupbskysourceconnection",
+                            "delete_groupbskysourceconnection",
+                            "view_groupbskysourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_bsky.userbskysourceconnection": {
+            "type": "object",
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "access_token": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Access token"
+                },
+                "refresh_token": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "title": "Refresh token"
+                },
+                "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Expires"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_bsky.userbskysourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userbskysourceconnection",
+                            "change_userbskysourceconnection",
+                            "delete_userbskysourceconnection",
+                            "view_userbskysourceconnection"
                         ]
                     },
                     "user": {

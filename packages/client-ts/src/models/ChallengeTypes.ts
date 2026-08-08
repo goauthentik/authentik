@@ -56,6 +56,11 @@ import {
 } from "./AuthenticatorWebAuthnChallenge";
 import type { AutosubmitChallenge } from "./AutosubmitChallenge";
 import { AutosubmitChallengeFromJSONTyped, AutosubmitChallengeToJSON } from "./AutosubmitChallenge";
+import type { BskyAuthenticationChallenge } from "./BskyAuthenticationChallenge";
+import {
+    BskyAuthenticationChallengeFromJSONTyped,
+    BskyAuthenticationChallengeToJSON,
+} from "./BskyAuthenticationChallenge";
 import type { CaptchaChallenge } from "./CaptchaChallenge";
 import { CaptchaChallengeFromJSONTyped, CaptchaChallengeToJSON } from "./CaptchaChallenge";
 import type { ConsentChallenge } from "./ConsentChallenge";
@@ -131,6 +136,7 @@ export type ChallengeTypes =
     | ({ component: "ak-provider-oauth2-device-code" } & OAuthDeviceCodeChallenge)
     | ({ component: "ak-provider-oauth2-device-code-finish" } & OAuthDeviceCodeFinishChallenge)
     | ({ component: "ak-provider-saml-native-logout" } & NativeLogoutChallenge)
+    | ({ component: "ak-source-bsky" } & BskyAuthenticationChallenge)
     | ({ component: "ak-source-oauth-apple" } & AppleLoginChallenge)
     | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
     | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
@@ -185,6 +191,10 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-provider-saml-native-logout":
             return Object.assign({}, NativeLogoutChallengeFromJSONTyped(json, true), {
                 component: "ak-provider-saml-native-logout",
+            } as const);
+        case "ak-source-bsky":
+            return Object.assign({}, BskyAuthenticationChallengeFromJSONTyped(json, true), {
+                component: "ak-source-bsky",
             } as const);
         case "ak-source-oauth-apple":
             return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), {
@@ -322,6 +332,10 @@ export function ChallengeTypesToJSONTyped(
         case "ak-provider-saml-native-logout":
             return Object.assign({}, NativeLogoutChallengeToJSON(value), {
                 component: "ak-provider-saml-native-logout",
+            } as const);
+        case "ak-source-bsky":
+            return Object.assign({}, BskyAuthenticationChallengeToJSON(value), {
+                component: "ak-source-bsky",
             } as const);
         case "ak-source-oauth-apple":
             return Object.assign({}, AppleLoginChallengeToJSON(value), {

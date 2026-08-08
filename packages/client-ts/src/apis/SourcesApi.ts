@@ -13,7 +13,17 @@
  */
 
 import { type BindingTypeEnum } from "../models/BindingTypeEnum";
+import { type BskySource, BskySourceFromJSON } from "../models/BskySource";
+import { type BskySourceRequest, BskySourceRequestToJSON } from "../models/BskySourceRequest";
 import { type DigestAlgorithmEnum } from "../models/DigestAlgorithmEnum";
+import {
+    type GroupBskySourceConnection,
+    GroupBskySourceConnectionFromJSON,
+} from "../models/GroupBskySourceConnection";
+import {
+    type GroupBskySourceConnectionRequest,
+    GroupBskySourceConnectionRequestToJSON,
+} from "../models/GroupBskySourceConnectionRequest";
 import {
     type GroupKerberosSourceConnection,
     GroupKerberosSourceConnectionFromJSON,
@@ -83,6 +93,14 @@ import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPS
 import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource";
 import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest";
 import {
+    type PaginatedBskySourceList,
+    PaginatedBskySourceListFromJSON,
+} from "../models/PaginatedBskySourceList";
+import {
+    type PaginatedGroupBskySourceConnectionList,
+    PaginatedGroupBskySourceConnectionListFromJSON,
+} from "../models/PaginatedGroupBskySourceConnectionList";
+import {
     type PaginatedGroupKerberosSourceConnectionList,
     PaginatedGroupKerberosSourceConnectionListFromJSON,
 } from "../models/PaginatedGroupKerberosSourceConnectionList";
@@ -151,6 +169,10 @@ import {
     PaginatedTelegramSourceListFromJSON,
 } from "../models/PaginatedTelegramSourceList";
 import {
+    type PaginatedUserBskySourceConnectionList,
+    PaginatedUserBskySourceConnectionListFromJSON,
+} from "../models/PaginatedUserBskySourceConnectionList";
+import {
     type PaginatedUserKerberosSourceConnectionList,
     PaginatedUserKerberosSourceConnectionListFromJSON,
 } from "../models/PaginatedUserKerberosSourceConnectionList";
@@ -178,6 +200,14 @@ import {
     type PaginatedUserTelegramSourceConnectionList,
     PaginatedUserTelegramSourceConnectionListFromJSON,
 } from "../models/PaginatedUserTelegramSourceConnectionList";
+import {
+    type PatchedBskySourceRequest,
+    PatchedBskySourceRequestToJSON,
+} from "../models/PatchedBskySourceRequest";
+import {
+    type PatchedGroupBskySourceConnectionRequest,
+    PatchedGroupBskySourceConnectionRequestToJSON,
+} from "../models/PatchedGroupBskySourceConnectionRequest";
 import {
     type PatchedGroupKerberosSourceConnectionRequest,
     PatchedGroupKerberosSourceConnectionRequestToJSON,
@@ -243,6 +273,10 @@ import {
     PatchedTelegramSourceRequestToJSON,
 } from "../models/PatchedTelegramSourceRequest";
 import {
+    type PatchedUserBskySourceConnectionRequest,
+    PatchedUserBskySourceConnectionRequestToJSON,
+} from "../models/PatchedUserBskySourceConnectionRequest";
+import {
     type PatchedUserKerberosSourceConnectionRequest,
     PatchedUserKerberosSourceConnectionRequestToJSON,
 } from "../models/PatchedUserKerberosSourceConnectionRequest";
@@ -306,6 +340,14 @@ import {
 } from "../models/TelegramSourceRequest";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
+import {
+    type UserBskySourceConnection,
+    UserBskySourceConnectionFromJSON,
+} from "../models/UserBskySourceConnection";
+import {
+    type UserBskySourceConnectionRequest,
+    UserBskySourceConnectionRequestToJSON,
+} from "../models/UserBskySourceConnectionRequest";
 import {
     type UserKerberosSourceConnection,
     UserKerberosSourceConnectionFromJSON,
@@ -389,6 +431,45 @@ export interface SourcesAllUsedByListRequest {
     slug: string;
 }
 
+export interface SourcesBskyCreateRequest {
+    bskySourceRequest: BskySourceRequest;
+}
+
+export interface SourcesBskyDestroyRequest {
+    slug: string;
+}
+
+export interface SourcesBskyListRequest {
+    authenticationFlow?: string;
+    enabled?: boolean;
+    enrollmentFlow?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    pbmUuid?: string;
+    search?: string;
+    slug?: string;
+}
+
+export interface SourcesBskyPartialUpdateRequest {
+    slug: string;
+    patchedBskySourceRequest?: PatchedBskySourceRequest;
+}
+
+export interface SourcesBskyRetrieveRequest {
+    slug: string;
+}
+
+export interface SourcesBskyUpdateRequest {
+    slug: string;
+    bskySourceRequest: BskySourceRequest;
+}
+
+export interface SourcesBskyUsedByListRequest {
+    slug: string;
+}
+
 export interface SourcesGroupConnectionsAllDestroyRequest {
     id: number;
 }
@@ -417,6 +498,41 @@ export interface SourcesGroupConnectionsAllUpdateRequest {
 }
 
 export interface SourcesGroupConnectionsAllUsedByListRequest {
+    id: number;
+}
+
+export interface SourcesGroupConnectionsBskyCreateRequest {
+    groupBskySourceConnectionRequest: GroupBskySourceConnectionRequest;
+}
+
+export interface SourcesGroupConnectionsBskyDestroyRequest {
+    id: number;
+}
+
+export interface SourcesGroupConnectionsBskyListRequest {
+    group?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    sourceSlug?: string;
+}
+
+export interface SourcesGroupConnectionsBskyPartialUpdateRequest {
+    id: number;
+    patchedGroupBskySourceConnectionRequest?: PatchedGroupBskySourceConnectionRequest;
+}
+
+export interface SourcesGroupConnectionsBskyRetrieveRequest {
+    id: number;
+}
+
+export interface SourcesGroupConnectionsBskyUpdateRequest {
+    id: number;
+    groupBskySourceConnectionRequest: GroupBskySourceConnectionRequest;
+}
+
+export interface SourcesGroupConnectionsBskyUsedByListRequest {
     id: number;
 }
 
@@ -1104,6 +1220,41 @@ export interface SourcesUserConnectionsAllUsedByListRequest {
     id: number;
 }
 
+export interface SourcesUserConnectionsBskyCreateRequest {
+    userBskySourceConnectionRequest: UserBskySourceConnectionRequest;
+}
+
+export interface SourcesUserConnectionsBskyDestroyRequest {
+    id: number;
+}
+
+export interface SourcesUserConnectionsBskyListRequest {
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    sourceSlug?: string;
+    user?: number;
+}
+
+export interface SourcesUserConnectionsBskyPartialUpdateRequest {
+    id: number;
+    patchedUserBskySourceConnectionRequest?: PatchedUserBskySourceConnectionRequest;
+}
+
+export interface SourcesUserConnectionsBskyRetrieveRequest {
+    id: number;
+}
+
+export interface SourcesUserConnectionsBskyUpdateRequest {
+    id: number;
+    userBskySourceConnectionRequest: UserBskySourceConnectionRequest;
+}
+
+export interface SourcesUserConnectionsBskyUsedByListRequest {
+    id: number;
+}
+
 export interface SourcesUserConnectionsKerberosCreateRequest {
     userKerberosSourceConnectionRequest: UserKerberosSourceConnectionRequest;
 }
@@ -1690,6 +1841,481 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
+     * Creates request options for sourcesBskyCreate without sending the request
+     */
+    async sourcesBskyCreateRequestOpts(
+        requestParameters: SourcesBskyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bskySourceRequest"] == null) {
+            throw new runtime.RequiredError(
+                "bskySourceRequest",
+                'Required parameter "bskySourceRequest" was null or undefined when calling sourcesBskyCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BskySourceRequestToJSON(requestParameters["bskySourceRequest"]),
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyCreateRaw(
+        requestParameters: SourcesBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySource>> {
+        const requestOptions = await this.sourcesBskyCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BskySourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyCreate(
+        requestParameters: SourcesBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySource> {
+        const response = await this.sourcesBskyCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesBskyDestroy without sending the request
+     */
+    async sourcesBskyDestroyRequestOpts(
+        requestParameters: SourcesBskyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesBskyDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/{slug}/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyDestroyRaw(
+        requestParameters: SourcesBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.sourcesBskyDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyDestroy(
+        requestParameters: SourcesBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.sourcesBskyDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for sourcesBskyList without sending the request
+     */
+    async sourcesBskyListRequestOpts(
+        requestParameters: SourcesBskyListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["authenticationFlow"] != null) {
+            queryParameters["authentication_flow"] = requestParameters["authenticationFlow"];
+        }
+
+        if (requestParameters["enabled"] != null) {
+            queryParameters["enabled"] = requestParameters["enabled"];
+        }
+
+        if (requestParameters["enrollmentFlow"] != null) {
+            queryParameters["enrollment_flow"] = requestParameters["enrollmentFlow"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["pbmUuid"] != null) {
+            queryParameters["pbm_uuid"] = requestParameters["pbmUuid"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["slug"] != null) {
+            queryParameters["slug"] = requestParameters["slug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyListRaw(
+        requestParameters: SourcesBskyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedBskySourceList>> {
+        const requestOptions = await this.sourcesBskyListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedBskySourceListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyList(
+        requestParameters: SourcesBskyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedBskySourceList> {
+        const response = await this.sourcesBskyListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesBskyPartialUpdate without sending the request
+     */
+    async sourcesBskyPartialUpdateRequestOpts(
+        requestParameters: SourcesBskyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesBskyPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/{slug}/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedBskySourceRequestToJSON(requestParameters["patchedBskySourceRequest"]),
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyPartialUpdateRaw(
+        requestParameters: SourcesBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySource>> {
+        const requestOptions = await this.sourcesBskyPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BskySourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyPartialUpdate(
+        requestParameters: SourcesBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySource> {
+        const response = await this.sourcesBskyPartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesBskyRetrieve without sending the request
+     */
+    async sourcesBskyRetrieveRequestOpts(
+        requestParameters: SourcesBskyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesBskyRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/{slug}/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyRetrieveRaw(
+        requestParameters: SourcesBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySource>> {
+        const requestOptions = await this.sourcesBskyRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BskySourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyRetrieve(
+        requestParameters: SourcesBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySource> {
+        const response = await this.sourcesBskyRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesBskyUpdate without sending the request
+     */
+    async sourcesBskyUpdateRequestOpts(
+        requestParameters: SourcesBskyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesBskyUpdate().',
+            );
+        }
+
+        if (requestParameters["bskySourceRequest"] == null) {
+            throw new runtime.RequiredError(
+                "bskySourceRequest",
+                'Required parameter "bskySourceRequest" was null or undefined when calling sourcesBskyUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/{slug}/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BskySourceRequestToJSON(requestParameters["bskySourceRequest"]),
+        };
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyUpdateRaw(
+        requestParameters: SourcesBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySource>> {
+        const requestOptions = await this.sourcesBskyUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => BskySourceFromJSON(jsonValue));
+    }
+
+    /**
+     * Bsky source Viewset
+     */
+    async sourcesBskyUpdate(
+        requestParameters: SourcesBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySource> {
+        const response = await this.sourcesBskyUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesBskyUsedByList without sending the request
+     */
+    async sourcesBskyUsedByListRequestOpts(
+        requestParameters: SourcesBskyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["slug"] == null) {
+            throw new runtime.RequiredError(
+                "slug",
+                'Required parameter "slug" was null or undefined when calling sourcesBskyUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/bsky/{slug}/used_by/`;
+        urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesBskyUsedByListRaw(
+        requestParameters: SourcesBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.sourcesBskyUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesBskyUsedByList(
+        requestParameters: SourcesBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesBskyUsedByListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Creates request options for sourcesGroupConnectionsAllDestroy without sending the request
      */
     async sourcesGroupConnectionsAllDestroyRequestOpts(
@@ -2110,6 +2736,504 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.sourcesGroupConnectionsAllUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyCreate without sending the request
+     */
+    async sourcesGroupConnectionsBskyCreateRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["groupBskySourceConnectionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "groupBskySourceConnectionRequest",
+                'Required parameter "groupBskySourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsBskyCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GroupBskySourceConnectionRequestToJSON(
+                requestParameters["groupBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyCreateRaw(
+        requestParameters: SourcesGroupConnectionsBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyCreate(
+        requestParameters: SourcesGroupConnectionsBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupBskySourceConnection> {
+        const response = await this.sourcesGroupConnectionsBskyCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyDestroy without sending the request
+     */
+    async sourcesGroupConnectionsBskyDestroyRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsBskyDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyDestroyRaw(
+        requestParameters: SourcesGroupConnectionsBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyDestroy(
+        requestParameters: SourcesGroupConnectionsBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.sourcesGroupConnectionsBskyDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyList without sending the request
+     */
+    async sourcesGroupConnectionsBskyListRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["group"] != null) {
+            queryParameters["group"] = requestParameters["group"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyListRaw(
+        requestParameters: SourcesGroupConnectionsBskyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedGroupBskySourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGroupBskySourceConnectionListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyList(
+        requestParameters: SourcesGroupConnectionsBskyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedGroupBskySourceConnectionList> {
+        const response = await this.sourcesGroupConnectionsBskyListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyPartialUpdate without sending the request
+     */
+    async sourcesGroupConnectionsBskyPartialUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsBskyPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedGroupBskySourceConnectionRequestToJSON(
+                requestParameters["patchedGroupBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyPartialUpdateRaw(
+        requestParameters: SourcesGroupConnectionsBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyPartialUpdate(
+        requestParameters: SourcesGroupConnectionsBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupBskySourceConnection> {
+        const response = await this.sourcesGroupConnectionsBskyPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyRetrieve without sending the request
+     */
+    async sourcesGroupConnectionsBskyRetrieveRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsBskyRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyRetrieveRaw(
+        requestParameters: SourcesGroupConnectionsBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyRetrieve(
+        requestParameters: SourcesGroupConnectionsBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupBskySourceConnection> {
+        const response = await this.sourcesGroupConnectionsBskyRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyUpdate without sending the request
+     */
+    async sourcesGroupConnectionsBskyUpdateRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsBskyUpdate().',
+            );
+        }
+
+        if (requestParameters["groupBskySourceConnectionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "groupBskySourceConnectionRequest",
+                'Required parameter "groupBskySourceConnectionRequest" was null or undefined when calling sourcesGroupConnectionsBskyUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: GroupBskySourceConnectionRequestToJSON(
+                requestParameters["groupBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyUpdateRaw(
+        requestParameters: SourcesGroupConnectionsBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<GroupBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            GroupBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Group-source connection Viewset
+     */
+    async sourcesGroupConnectionsBskyUpdate(
+        requestParameters: SourcesGroupConnectionsBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<GroupBskySourceConnection> {
+        const response = await this.sourcesGroupConnectionsBskyUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesGroupConnectionsBskyUsedByList without sending the request
+     */
+    async sourcesGroupConnectionsBskyUsedByListRequestOpts(
+        requestParameters: SourcesGroupConnectionsBskyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesGroupConnectionsBskyUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/group_connections/bsky/{id}/used_by/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesGroupConnectionsBskyUsedByListRaw(
+        requestParameters: SourcesGroupConnectionsBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesGroupConnectionsBskyUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesGroupConnectionsBskyUsedByList(
+        requestParameters: SourcesGroupConnectionsBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesGroupConnectionsBskyUsedByListRaw(
             requestParameters,
             initOverrides,
         );
@@ -10628,6 +11752,504 @@ export class SourcesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.sourcesUserConnectionsAllUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyCreate without sending the request
+     */
+    async sourcesUserConnectionsBskyCreateRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["userBskySourceConnectionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userBskySourceConnectionRequest",
+                'Required parameter "userBskySourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsBskyCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserBskySourceConnectionRequestToJSON(
+                requestParameters["userBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyCreateRaw(
+        requestParameters: SourcesUserConnectionsBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyCreate(
+        requestParameters: SourcesUserConnectionsBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserBskySourceConnection> {
+        const response = await this.sourcesUserConnectionsBskyCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyDestroy without sending the request
+     */
+    async sourcesUserConnectionsBskyDestroyRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsBskyDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyDestroyRaw(
+        requestParameters: SourcesUserConnectionsBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyDestroy(
+        requestParameters: SourcesUserConnectionsBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.sourcesUserConnectionsBskyDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyList without sending the request
+     */
+    async sourcesUserConnectionsBskyListRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["sourceSlug"] != null) {
+            queryParameters["source__slug"] = requestParameters["sourceSlug"];
+        }
+
+        if (requestParameters["user"] != null) {
+            queryParameters["user"] = requestParameters["user"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyListRaw(
+        requestParameters: SourcesUserConnectionsBskyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedUserBskySourceConnectionList>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedUserBskySourceConnectionListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyList(
+        requestParameters: SourcesUserConnectionsBskyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedUserBskySourceConnectionList> {
+        const response = await this.sourcesUserConnectionsBskyListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyPartialUpdate without sending the request
+     */
+    async sourcesUserConnectionsBskyPartialUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsBskyPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedUserBskySourceConnectionRequestToJSON(
+                requestParameters["patchedUserBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyPartialUpdateRaw(
+        requestParameters: SourcesUserConnectionsBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyPartialUpdate(
+        requestParameters: SourcesUserConnectionsBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserBskySourceConnection> {
+        const response = await this.sourcesUserConnectionsBskyPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyRetrieve without sending the request
+     */
+    async sourcesUserConnectionsBskyRetrieveRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsBskyRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyRetrieveRaw(
+        requestParameters: SourcesUserConnectionsBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyRetrieve(
+        requestParameters: SourcesUserConnectionsBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserBskySourceConnection> {
+        const response = await this.sourcesUserConnectionsBskyRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyUpdate without sending the request
+     */
+    async sourcesUserConnectionsBskyUpdateRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsBskyUpdate().',
+            );
+        }
+
+        if (requestParameters["userBskySourceConnectionRequest"] == null) {
+            throw new runtime.RequiredError(
+                "userBskySourceConnectionRequest",
+                'Required parameter "userBskySourceConnectionRequest" was null or undefined when calling sourcesUserConnectionsBskyUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/{id}/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserBskySourceConnectionRequestToJSON(
+                requestParameters["userBskySourceConnectionRequest"],
+            ),
+        };
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyUpdateRaw(
+        requestParameters: SourcesUserConnectionsBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<UserBskySourceConnection>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            UserBskySourceConnectionFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * User-source connection Viewset
+     */
+    async sourcesUserConnectionsBskyUpdate(
+        requestParameters: SourcesUserConnectionsBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<UserBskySourceConnection> {
+        const response = await this.sourcesUserConnectionsBskyUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for sourcesUserConnectionsBskyUsedByList without sending the request
+     */
+    async sourcesUserConnectionsBskyUsedByListRequestOpts(
+        requestParameters: SourcesUserConnectionsBskyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["id"] == null) {
+            throw new runtime.RequiredError(
+                "id",
+                'Required parameter "id" was null or undefined when calling sourcesUserConnectionsBskyUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/sources/user_connections/bsky/{id}/used_by/`;
+        urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesUserConnectionsBskyUsedByListRaw(
+        requestParameters: SourcesUserConnectionsBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.sourcesUserConnectionsBskyUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async sourcesUserConnectionsBskyUsedByList(
+        requestParameters: SourcesUserConnectionsBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.sourcesUserConnectionsBskyUsedByListRaw(
             requestParameters,
             initOverrides,
         );

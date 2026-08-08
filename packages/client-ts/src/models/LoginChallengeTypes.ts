@@ -14,6 +14,11 @@
 
 import type { AppleLoginChallenge } from "./AppleLoginChallenge";
 import { AppleLoginChallengeFromJSONTyped, AppleLoginChallengeToJSON } from "./AppleLoginChallenge";
+import type { BskyAuthenticationChallenge } from "./BskyAuthenticationChallenge";
+import {
+    BskyAuthenticationChallengeFromJSONTyped,
+    BskyAuthenticationChallengeToJSON,
+} from "./BskyAuthenticationChallenge";
 import type { PlexAuthenticationChallenge } from "./PlexAuthenticationChallenge";
 import {
     PlexAuthenticationChallengeFromJSONTyped,
@@ -33,6 +38,7 @@ import {
  * @export
  */
 export type LoginChallengeTypes =
+    | ({ component: "ak-source-bsky" } & BskyAuthenticationChallenge)
     | ({ component: "ak-source-oauth-apple" } & AppleLoginChallenge)
     | ({ component: "ak-source-plex" } & PlexAuthenticationChallenge)
     | ({ component: "ak-source-telegram" } & TelegramLoginChallenge)
@@ -50,6 +56,10 @@ export function LoginChallengeTypesFromJSONTyped(
         return json;
     }
     switch (json["component"]) {
+        case "ak-source-bsky":
+            return Object.assign({}, BskyAuthenticationChallengeFromJSONTyped(json, true), {
+                component: "ak-source-bsky",
+            } as const);
         case "ak-source-oauth-apple":
             return Object.assign({}, AppleLoginChallengeFromJSONTyped(json, true), {
                 component: "ak-source-oauth-apple",
@@ -83,6 +93,10 @@ export function LoginChallengeTypesToJSONTyped(
         return value;
     }
     switch (value["component"]) {
+        case "ak-source-bsky":
+            return Object.assign({}, BskyAuthenticationChallengeToJSON(value), {
+                component: "ak-source-bsky",
+            } as const);
         case "ak-source-oauth-apple":
             return Object.assign({}, AppleLoginChallengeToJSON(value), {
                 component: "ak-source-oauth-apple",

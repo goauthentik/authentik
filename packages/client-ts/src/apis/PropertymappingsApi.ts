@@ -13,6 +13,14 @@
  */
 
 import {
+    type BskySourcePropertyMapping,
+    BskySourcePropertyMappingFromJSON,
+} from "../models/BskySourcePropertyMapping";
+import {
+    type BskySourcePropertyMappingRequest,
+    BskySourcePropertyMappingRequestToJSON,
+} from "../models/BskySourcePropertyMappingRequest";
+import {
     type GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderMappingFromJSON,
 } from "../models/GoogleWorkspaceProviderMapping";
@@ -60,6 +68,10 @@ import {
     type OAuthSourcePropertyMappingRequest,
     OAuthSourcePropertyMappingRequestToJSON,
 } from "../models/OAuthSourcePropertyMappingRequest";
+import {
+    type PaginatedBskySourcePropertyMappingList,
+    PaginatedBskySourcePropertyMappingListFromJSON,
+} from "../models/PaginatedBskySourcePropertyMappingList";
 import {
     type PaginatedGoogleWorkspaceProviderMappingList,
     PaginatedGoogleWorkspaceProviderMappingListFromJSON,
@@ -124,6 +136,10 @@ import {
     type PaginatedTelegramSourcePropertyMappingList,
     PaginatedTelegramSourcePropertyMappingListFromJSON,
 } from "../models/PaginatedTelegramSourcePropertyMappingList";
+import {
+    type PatchedBskySourcePropertyMappingRequest,
+    PatchedBskySourcePropertyMappingRequestToJSON,
+} from "../models/PatchedBskySourcePropertyMappingRequest";
 import {
     type PatchedGoogleWorkspaceProviderMappingRequest,
     PatchedGoogleWorkspaceProviderMappingRequestToJSON,
@@ -569,6 +585,42 @@ export interface PropertymappingsProviderScopeUpdateRequest {
 }
 
 export interface PropertymappingsProviderScopeUsedByListRequest {
+    pmUuid: string;
+}
+
+export interface PropertymappingsSourceBskyCreateRequest {
+    bskySourcePropertyMappingRequest: BskySourcePropertyMappingRequest;
+}
+
+export interface PropertymappingsSourceBskyDestroyRequest {
+    pmUuid: string;
+}
+
+export interface PropertymappingsSourceBskyListRequest {
+    managed?: Array<string>;
+    managedIsnull?: boolean;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
+
+export interface PropertymappingsSourceBskyPartialUpdateRequest {
+    pmUuid: string;
+    patchedBskySourcePropertyMappingRequest?: PatchedBskySourcePropertyMappingRequest;
+}
+
+export interface PropertymappingsSourceBskyRetrieveRequest {
+    pmUuid: string;
+}
+
+export interface PropertymappingsSourceBskyUpdateRequest {
+    pmUuid: string;
+    bskySourcePropertyMappingRequest: BskySourcePropertyMappingRequest;
+}
+
+export interface PropertymappingsSourceBskyUsedByListRequest {
     pmUuid: string;
 }
 
@@ -5365,6 +5417,523 @@ export class PropertymappingsApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<Array<UsedBy>> {
         const response = await this.propertymappingsProviderScopeUsedByListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyCreate without sending the request
+     */
+    async propertymappingsSourceBskyCreateRequestOpts(
+        requestParameters: PropertymappingsSourceBskyCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["bskySourcePropertyMappingRequest"] == null) {
+            throw new runtime.RequiredError(
+                "bskySourcePropertyMappingRequest",
+                'Required parameter "bskySourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceBskyCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BskySourcePropertyMappingRequestToJSON(
+                requestParameters["bskySourcePropertyMappingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyCreateRaw(
+        requestParameters: PropertymappingsSourceBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySourcePropertyMapping>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BskySourcePropertyMappingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyCreate(
+        requestParameters: PropertymappingsSourceBskyCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySourcePropertyMapping> {
+        const response = await this.propertymappingsSourceBskyCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyDestroy without sending the request
+     */
+    async propertymappingsSourceBskyDestroyRequestOpts(
+        requestParameters: PropertymappingsSourceBskyDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pmUuid",
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceBskyDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/{pm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pm_uuid}",
+            encodeURIComponent(String(requestParameters["pmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyDestroyRaw(
+        requestParameters: PropertymappingsSourceBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyDestroy(
+        requestParameters: PropertymappingsSourceBskyDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.propertymappingsSourceBskyDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyList without sending the request
+     */
+    async propertymappingsSourceBskyListRequestOpts(
+        requestParameters: PropertymappingsSourceBskyListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["managed"] != null) {
+            queryParameters["managed"] = requestParameters["managed"];
+        }
+
+        if (requestParameters["managedIsnull"] != null) {
+            queryParameters["managed__isnull"] = requestParameters["managedIsnull"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyListRaw(
+        requestParameters: PropertymappingsSourceBskyListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedBskySourcePropertyMappingList>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedBskySourcePropertyMappingListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyList(
+        requestParameters: PropertymappingsSourceBskyListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedBskySourcePropertyMappingList> {
+        const response = await this.propertymappingsSourceBskyListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyPartialUpdate without sending the request
+     */
+    async propertymappingsSourceBskyPartialUpdateRequestOpts(
+        requestParameters: PropertymappingsSourceBskyPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pmUuid",
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceBskyPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/{pm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pm_uuid}",
+            encodeURIComponent(String(requestParameters["pmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedBskySourcePropertyMappingRequestToJSON(
+                requestParameters["patchedBskySourcePropertyMappingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyPartialUpdateRaw(
+        requestParameters: PropertymappingsSourceBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySourcePropertyMapping>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyPartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BskySourcePropertyMappingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyPartialUpdate(
+        requestParameters: PropertymappingsSourceBskyPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySourcePropertyMapping> {
+        const response = await this.propertymappingsSourceBskyPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyRetrieve without sending the request
+     */
+    async propertymappingsSourceBskyRetrieveRequestOpts(
+        requestParameters: PropertymappingsSourceBskyRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pmUuid",
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceBskyRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/{pm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pm_uuid}",
+            encodeURIComponent(String(requestParameters["pmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyRetrieveRaw(
+        requestParameters: PropertymappingsSourceBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySourcePropertyMapping>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BskySourcePropertyMappingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyRetrieve(
+        requestParameters: PropertymappingsSourceBskyRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySourcePropertyMapping> {
+        const response = await this.propertymappingsSourceBskyRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyUpdate without sending the request
+     */
+    async propertymappingsSourceBskyUpdateRequestOpts(
+        requestParameters: PropertymappingsSourceBskyUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pmUuid",
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceBskyUpdate().',
+            );
+        }
+
+        if (requestParameters["bskySourcePropertyMappingRequest"] == null) {
+            throw new runtime.RequiredError(
+                "bskySourcePropertyMappingRequest",
+                'Required parameter "bskySourcePropertyMappingRequest" was null or undefined when calling propertymappingsSourceBskyUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/{pm_uuid}/`;
+        urlPath = urlPath.replace(
+            "{pm_uuid}",
+            encodeURIComponent(String(requestParameters["pmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: BskySourcePropertyMappingRequestToJSON(
+                requestParameters["bskySourcePropertyMappingRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyUpdateRaw(
+        requestParameters: PropertymappingsSourceBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<BskySourcePropertyMapping>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            BskySourcePropertyMappingFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Mixin to add a used_by endpoint to return a list of all objects using this object
+     */
+    async propertymappingsSourceBskyUpdate(
+        requestParameters: PropertymappingsSourceBskyUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<BskySourcePropertyMapping> {
+        const response = await this.propertymappingsSourceBskyUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for propertymappingsSourceBskyUsedByList without sending the request
+     */
+    async propertymappingsSourceBskyUsedByListRequestOpts(
+        requestParameters: PropertymappingsSourceBskyUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["pmUuid"] == null) {
+            throw new runtime.RequiredError(
+                "pmUuid",
+                'Required parameter "pmUuid" was null or undefined when calling propertymappingsSourceBskyUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/propertymappings/source/bsky/{pm_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{pm_uuid}",
+            encodeURIComponent(String(requestParameters["pmUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async propertymappingsSourceBskyUsedByListRaw(
+        requestParameters: PropertymappingsSourceBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.propertymappingsSourceBskyUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async propertymappingsSourceBskyUsedByList(
+        requestParameters: PropertymappingsSourceBskyUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.propertymappingsSourceBskyUsedByListRaw(
             requestParameters,
             initOverrides,
         );

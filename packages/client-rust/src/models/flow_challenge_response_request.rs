@@ -31,6 +31,8 @@ pub enum FlowChallengeResponseRequest {
     AkStageAuthenticatorWebauthn(models::AuthenticatorWebAuthnChallengeResponseRequest),
     #[serde(rename = "ak-stage-autosubmit")]
     AkStageAutosubmit(models::AutoSubmitChallengeResponseRequest),
+    #[serde(rename = "ak-source-bsky")]
+    AkSourceBsky(models::BskyAuthenticationChallengeResultRequest),
     #[serde(rename = "ak-stage-captcha")]
     AkStageCaptcha(models::CaptchaChallengeResponseRequest),
     #[serde(rename = "ak-stage-consent")]

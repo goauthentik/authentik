@@ -17,6 +17,8 @@ pub enum LoginChallengeTypes {
     XakFlowRedirect(models::RedirectChallenge),
     #[serde(rename = "ak-source-oauth-apple")]
     AkSourceOauthApple(models::AppleLoginChallenge),
+    #[serde(rename = "ak-source-bsky")]
+    AkSourceBsky(models::BskyAuthenticationChallenge),
     #[serde(rename = "ak-source-plex")]
     AkSourcePlex(models::PlexAuthenticationChallenge),
     #[serde(rename = "ak-source-telegram")]
