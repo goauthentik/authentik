@@ -90,6 +90,7 @@
 #region Sources
 /sources/*                                                  /users-sources/sources/:splat 301!
 /user-group-role/*                                          /users-sources/:splat 301!
+/sys-mgmt/service-accounts                                  /users-sources/account-types/service-accounts 301!
 #endregion
 
 #region Property Mappings
