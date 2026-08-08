@@ -93,10 +93,10 @@ impl Application {
             host_browser.as_ref(),
             embedded,
         );
-        let token_host = host_browser
-            .as_ref()
-            .or(authentik_host.as_ref())
-            .and_then(TokenHost::new);
+        // Derived from the host the issuer follows, never picked independently:
+        // the two have to agree on scheme and host or every token the core mints
+        // over the backchannel fails issuer verification.
+        let token_host = endpoint.browser_host.as_ref().and_then(TokenHost::new);
 
         // Embedded outposts persist sessions in PostgreSQL; others use the filesystem.
         #[cfg(feature = "core")]

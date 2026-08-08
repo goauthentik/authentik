@@ -12,6 +12,11 @@ pub(crate) struct OidcEndpoint {
     pub(crate) end_session_endpoint: String,
     pub(crate) jwks_uri: String,
     pub(crate) issuer: String,
+    /// The host the issuer was rewritten to, if it was rewritten at all.
+    ///
+    /// Backchannel token requests have to claim this host *and* scheme, or the
+    /// issuer the core mints won't match [`Self::issuer`].
+    pub(crate) browser_host: Option<Url>,
 }
 
 /// Rewrite the scheme and host (and port) of `raw` to match `base`, leaving the
@@ -49,6 +54,7 @@ impl OidcEndpoint {
             end_session_endpoint: oidc.end_session_endpoint.clone(),
             jwks_uri: oidc.jwks_uri.clone(),
             issuer: oidc.issuer.clone(),
+            browser_host: None,
         };
 
         let browser_host = if embedded {
@@ -69,6 +75,7 @@ impl OidcEndpoint {
         if embedded {
             ep.jwks_uri = update_url(&ep.jwks_uri, browser_host);
         }
+        ep.browser_host = Some(browser_host.clone());
 
         ep
     }
@@ -129,6 +136,8 @@ mod tests {
             ep.token_introspection,
             "https://test.goauthentik.io/application/o/introspect/"
         );
+        // Nothing was rewritten, so backchannel requests keep their own host.
+        assert!(ep.browser_host.is_none());
     }
 
     #[test]
@@ -153,6 +162,9 @@ mod tests {
             ep.issuer,
             "https://browser.test.goauthentik.io/application/o/test-app/"
         );
+        // The issuer follows `AUTHENTIK_HOST_BROWSER`, so the backchannel host
+        // has to as well.
+        assert_eq!(ep.browser_host.as_ref(), Some(&browser));
         assert_eq!(
             ep.jwks_uri,
             "https://test.goauthentik.io/application/o/test-app/jwks/"
@@ -192,5 +204,23 @@ mod tests {
             ep.token_introspection,
             "https://test.goauthentik.io/application/o/introspect/"
         );
+        assert_eq!(ep.browser_host.as_ref(), Some(&authentik_host));
+    }
+
+    #[test]
+    fn embedded_ignores_browser_host() {
+        // Embedded outposts rewrite the issuer to `authentik_host` and ignore
+        // `AUTHENTIK_HOST_BROWSER`. The backchannel host must follow the issuer,
+        // not `AUTHENTIK_HOST_BROWSER`: a scheme difference between the two makes
+        // every minted token fail issuer verification.
+        let authentik_host = url("https://authentik-host.test.goauthentik.io");
+        let browser = url("http://browser.test.goauthentik.io");
+        let ep = OidcEndpoint::new(&oidc(), Some(&authentik_host), Some(&browser), true);
+
+        assert_eq!(
+            ep.issuer,
+            "https://authentik-host.test.goauthentik.io/application/o/test-app/"
+        );
+        assert_eq!(ep.browser_host.as_ref(), Some(&authentik_host));
     }
 }

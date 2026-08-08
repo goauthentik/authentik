@@ -5,7 +5,7 @@ use std::{sync::Arc, time::Duration};
 use axum::http::{HeaderMap, header::AUTHORIZATION};
 use axum_extra::extract::cookie::Cookie;
 use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
-use eyre::{Result, eyre};
+use eyre::{Context as _, Result, eyre};
 use tracing::{Span, field, warn};
 
 use crate::outpost::proxy::{
@@ -129,7 +129,7 @@ impl Application {
             .id_token_signing_alg_values_supported
             .iter()
             .any(|alg| alg == "HS256");
-        if supports_hs256 {
+        let claims = if supports_hs256 {
             let client_secret = self
                 .provider
                 .client_secret
@@ -139,7 +139,15 @@ impl Application {
         } else {
             self.verify_rs256_cached(token, &self.endpoint.issuer, client_id)
                 .await
-        }
+        };
+        claims.with_context(|| {
+            format!(
+                "failed to verify token (expected issuer {:?}, token claims issuer {:?}, expected \
+                 audience {client_id:?})",
+                self.endpoint.issuer,
+                token::unverified_issuer(token),
+            )
+        })
     }
 
     /// Verify an RS256 token against the cached JWKS, refreshing it when the
