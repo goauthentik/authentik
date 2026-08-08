@@ -89,25 +89,55 @@ class EndpointViewSet(UsedByMixin, ModelViewSet):
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset
 
+    def _has_model_level_rbac_perm(self, user, endpoint: Endpoint) -> bool:
+        """Check if user has a model-level (non-guardian) RAC permission.
+
+        When a user has explicit model-level permissions, they should
+        be able to list endpoints for management even without application-level
+        access. Sensitive fields (e.g. settings) are already redacted by
+        EndpointSerializer.to_representation().
+        """
+        if user.has_perm("authentik_providers_rac.view_endpoint"):
+            return True
+        if user.has_perm("authentik_providers_rac.change_endpoint"):
+            return True
+        if user.has_perm("authentik_providers_rac.delete_endpoint"):
+            return True
+        if user.has_perm("authentik_providers_rac.add_endpoint"):
+            return True
+        return False
+
     def _get_allowed_endpoints(self, queryset: QuerySet) -> list[Endpoint]:
         endpoints = []
-        # An endpoint is only reachable through its provider's application, so it must
-        # not be listed to a user who has no access to that application - this mirrors
-        # the launch flow (PolicyAccessView.user_has_access). Endpoints have no policy
-        # bindings by default, so the per-endpoint check alone would let any caller see
-        # every endpoint.
-        application_access: dict[str, bool] = {}
         for endpoint in queryset:
+            # If the user has a model-level RBAC permission for RAC endpoints,
+            # include it in the list regardless of application access.
+            # The serializer's to_representation() will redact sensitive
+            # fields (e.g. connection credentials in "settings") for users
+            # without the per-instance view_endpoint permission.
+            # This keeps behavior consistent with the detail endpoint, which
+            # returns the full object (with redacted settings) regardless of
+            # application access.
+            if self._has_model_level_rbac_perm(self.request.user, endpoint):
+                endpoints.append(endpoint)
+                continue
+
+            # For users without model-level permissions (e.g. end-users), only
+            # show endpoints reachable through their application access. This
+            # mirrors the launch flow (PolicyAccessView.user_has_access).
+            # Endpoints have no policy bindings by default, so the per-endpoint
+            # check alone would let any caller see every endpoint.
             try:
                 application = endpoint.provider.application
             except Provider.application.RelatedObjectDoesNotExist:
                 continue
+            application_access: dict[str, bool] = {}
             if application.pk not in application_access:
                 app_engine = PolicyEngine(application, self.request.user, self.request)
                 app_engine.empty_result = AppAccessWithoutBindings.get()
                 app_engine.build()
                 application_access[application.pk] = app_engine.passing
-            if not application_access[application.pk]:
+            if not application_access.get(application.pk, False):
                 continue
             engine = PolicyEngine(endpoint, self.request.user, self.request)
             engine.build()
