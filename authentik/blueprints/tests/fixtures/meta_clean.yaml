@@ -1,0 +1,5 @@
+version: 1
+entries:
+  - model: authentik_blueprints.metacleanblueprint
+    attrs:
+      model_name: authentik_core.application
