@@ -46,8 +46,8 @@ catalogs:
       specifier: ^9.39.5
       version: 9.39.5
     prettier:
-      specifier: 3.8.3
-      version: 3.8.3
+      specifier: 3.9.6
+      version: 3.9.6
     prettier-plugin-packagejson:
       specifier: ^3.0.2
       version: 3.0.2
@@ -125,10 +125,10 @@ importers:
         version: 2.1.1
       prettier:
         specifier: 'catalog:'
-        version: 3.8.3
+        version: 3.9.6
       prettier-plugin-packagejson:
         specifier: 'catalog:'
-        version: 3.0.2(prettier@3.8.3)
+        version: 3.0.2(prettier@3.9.6)
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -6371,8 +6371,8 @@ packages:
       prettier:
         optional: true
 
-  prettier@3.8.3:
-    resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
+  prettier@3.9.6:
+    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -18340,13 +18340,13 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-packagejson@3.0.2(prettier@3.8.3):
+  prettier-plugin-packagejson@3.0.2(prettier@3.9.6):
     dependencies:
       sort-package-json: 3.7.1
     optionalDependencies:
-      prettier: 3.8.3
+      prettier: 3.9.6
 
-  prettier@3.8.3: {}
+  prettier@3.9.6: {}
 
   pretty-error@4.0.0:
     dependencies:
