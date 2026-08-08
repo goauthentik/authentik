@@ -28,6 +28,7 @@ from authentik.flows.planner import (
     PLAN_CONTEXT_IS_REDIRECTED,
     PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
+    FlowPlan,
     FlowPlanner,
     cache_key,
 )
@@ -316,6 +317,41 @@ class TestFlowPlanner(TestCase):
 
         plan.append_stage(in_memory_stage(TStageView))
         self.assertTrue(plan.requires_flow_executor(allowed_silent_types=[TStageView]))
+
+    def test_insert_plan(self):
+        """Test that insert_plan splices bindings and markers as immediate next stages"""
+        plan = FlowPlan(flow_pk=generate_id())
+        first = FlowStageBinding(stage=DummyStage(name="first"))
+        last = FlowStageBinding(stage=DummyStage(name="last"))
+        plan.append(first)
+        plan.append(last)
+
+        other = FlowPlan(flow_pk=generate_id())
+        inserted = FlowStageBinding(stage=DummyStage(name="inserted"))
+        marker = ReevaluateMarker(None)
+        other.append(inserted, marker)
+
+        plan.insert_plan(other)
+
+        self.assertEqual(plan.bindings, [first, inserted, last])
+        self.assertEqual(plan.markers[1], marker)
+        self.assertEqual(len(plan.bindings), len(plan.markers))
+
+    def test_check_authentication_disabled(self):
+        """Test that disabling check_authentication skips the authentication requirement"""
+        flow = create_test_flow()
+        flow.authentication = FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
+        request = self.request_factory.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+
+        with self.assertRaises(FlowNonApplicableException):
+            FlowPlanner(flow).plan(request)
+
+        planner = FlowPlanner(flow)
+        planner.allow_empty_flows = True
+        planner.check_authentication = False
+        planner.plan(request)
 
     def test_to_redirect_skip_policies(self):
         """Test to_redirect and skipping the flow executor
