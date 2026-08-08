@@ -81,7 +81,8 @@ class PromptChallengeResponse(ChallengeResponse):
         if not self.stage_instance:
             return
         # list() is called so we only load the fields once
-        fields = list(self.stage_instance.fields.all())
+        # Fields are ordered by their per-stage order (PromptStageField.order)
+        fields = list(self.stage_instance.fields.order_by("promptstagefield__order"))
         for field in fields:
             field: Prompt
             choices = field.get_choices(
@@ -108,7 +109,8 @@ class PromptChallengeResponse(ChallengeResponse):
                     MethodType(password_single_validator_factory(), self),
                 )
 
-        self.field_order = sorted(fields, key=lambda x: x.order)
+        # fields are already loaded in per-stage order above
+        self.field_order = fields
 
     def _validate_password_fields(self, *field_names):
         """Check if the value of all password fields match by merging them into a set
@@ -247,7 +249,9 @@ class PromptStageView(ChallengeStageView):
             yield {"label": str(label), "value": str(value)}
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
+        fields: list[Prompt] = list(
+            self.executor.current_stage.fields.order_by("promptstagefield__order")
+        )
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(

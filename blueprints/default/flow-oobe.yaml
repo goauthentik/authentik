@@ -135,9 +135,9 @@ entries:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
-    - !KeyOf prompt-field-base-url
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
+    - !KeyOf prompt-field-base-url
     validation_policies:
     - !KeyOf policy-default-oobe-base-url-valid
   id: stage-default-oobe-password

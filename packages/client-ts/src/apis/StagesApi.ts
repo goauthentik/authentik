@@ -1266,6 +1266,7 @@ export interface StagesPromptPromptsListRequest {
     ordering?: string;
     page?: number;
     pageSize?: number;
+    pks?: Array<string>;
     placeholder?: string;
     search?: string;
     type?: PromptTypeEnum;
@@ -1315,6 +1316,10 @@ export interface StagesPromptStagesListRequest {
 export interface StagesPromptStagesPartialUpdateRequest {
     stageUuid: string;
     patchedPromptStageRequest?: PatchedPromptStageRequest;
+}
+
+export interface StagesPromptStagesPreviewCreateRequest {
+    promptStageRequest: PromptStageRequest;
 }
 
 export interface StagesPromptStagesRetrieveRequest {
@@ -12836,6 +12841,10 @@ export class StagesApi extends runtime.BaseAPI {
             queryParameters["page_size"] = requestParameters["pageSize"];
         }
 
+        if (requestParameters["pks"] != null) {
+            queryParameters["pks"] = requestParameters["pks"];
+        }
+
         if (requestParameters["placeholder"] != null) {
             queryParameters["placeholder"] = requestParameters["placeholder"];
         }
@@ -13522,6 +13531,75 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<PromptStage> {
         const response = await this.stagesPromptStagesPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesPromptStagesPreviewCreate without sending the request
+     */
+    async stagesPromptStagesPreviewCreateRequestOpts(
+        requestParameters: StagesPromptStagesPreviewCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["promptStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "promptStageRequest",
+                'Required parameter "promptStageRequest" was null or undefined when calling stagesPromptStagesPreviewCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/prompt/stages/preview/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PromptStageRequestToJSON(requestParameters["promptStageRequest"]),
+        };
+    }
+
+    /**
+     * Preview the whole stage as a challenge, just like a flow would receive
+     */
+    async stagesPromptStagesPreviewCreateRaw(
+        requestParameters: StagesPromptStagesPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PromptChallenge>> {
+        const requestOptions =
+            await this.stagesPromptStagesPreviewCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PromptChallengeFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Preview the whole stage as a challenge, just like a flow would receive
+     */
+    async stagesPromptStagesPreviewCreate(
+        requestParameters: StagesPromptStagesPreviewCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PromptChallenge> {
+        const response = await this.stagesPromptStagesPreviewCreateRaw(
             requestParameters,
             initOverrides,
         );

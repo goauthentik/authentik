@@ -14,7 +14,13 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
-from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
+from authentik.stages.prompt.models import (
+    FieldTypes,
+    InlineFileField,
+    Prompt,
+    PromptStage,
+    PromptStageField,
+)
 from authentik.stages.prompt.stage import (
     PLAN_CONTEXT_PROMPT,
     PromptChallengeResponse,
@@ -688,6 +694,32 @@ class TestPromptStage(FlowTestCase):
         with self.assertRaises(ValueError):
             prompt.save()
 
+    def test_api_list_filter_pks(self):
+        """The `pks` filter returns exactly the requested prompts (by UUID)"""
+        first = Prompt.objects.create(
+            name=generate_id(), field_key="first", label="a", type=FieldTypes.TEXT
+        )
+        second = Prompt.objects.create(
+            name=generate_id(), field_key="second", label="b", type=FieldTypes.TEXT
+        )
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:prompt-list"),
+            data={"pks": [str(first.pk), str(second.pk)]},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        returned = {result["pk"] for result in response.json()["results"]}
+        self.assertEqual(returned, {str(first.pk), str(second.pk)})
+
+    def test_api_list_filter_pks_invalid(self):
+        """An invalid UUID in the `pks` filter is a clean 400, not a server error"""
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("authentik_api:prompt-list"),
+            data={"pks": ["not-a-uuid"]},
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_api_preview(self):
         """Test API preview"""
         self.client.force_login(self.user)
@@ -740,6 +772,105 @@ class TestPromptStage(FlowTestCase):
                 "sub_text": "test",
                 "order": 123,
             },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("non_field_errors", response.content.decode())
+
+    def test_per_stage_order(self):
+        """A prompt shared by two stages can be ordered differently in each stage"""
+        first = Prompt.objects.create(
+            name=generate_id(), field_key="first", label="a", type=FieldTypes.TEXT, order=0
+        )
+        second = Prompt.objects.create(
+            name=generate_id(), field_key="second", label="b", type=FieldTypes.TEXT, order=1
+        )
+        self.client.force_login(self.user)
+        # Stage A: first, then second
+        response = self.client.post(
+            reverse("authentik_api:promptstage-list"),
+            data={"name": generate_id(), "fields": [str(first.pk), str(second.pk)]},
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        stage_a = PromptStage.objects.get(pk=response.json()["pk"])
+        # Stage B: the same fields, reversed
+        response = self.client.post(
+            reverse("authentik_api:promptstage-list"),
+            data={"name": generate_id(), "fields": [str(second.pk), str(first.pk)]},
+        )
+        self.assertEqual(response.status_code, 201, response.content)
+        stage_b = PromptStage.objects.get(pk=response.json()["pk"])
+
+        def ordered_keys(stage: PromptStage) -> list[str]:
+            return [prompt.field_key for prompt in stage.fields.order_by("promptstagefield__order")]
+
+        self.assertEqual(ordered_keys(stage_a), ["first", "second"])
+        self.assertEqual(ordered_keys(stage_b), ["second", "first"])
+        # per-stage order is stored on the through model, not the shared prompt
+        self.assertEqual(
+            list(
+                PromptStageField.objects.filter(prompt_stage=stage_a)
+                .order_by("order")
+                .values_list("prompt__field_key", "order")
+            ),
+            [("first", 0), ("second", 1)],
+        )
+
+    def test_serializer_update_reorders(self):
+        """Updating a stage's fields rewrites the per-stage order from list position"""
+        first = Prompt.objects.create(
+            name=generate_id(), field_key="first", label="a", type=FieldTypes.TEXT
+        )
+        second = Prompt.objects.create(
+            name=generate_id(), field_key="second", label="b", type=FieldTypes.TEXT
+        )
+        stage = PromptStage.objects.create(name=generate_id())
+        PromptStageField.objects.create(prompt_stage=stage, prompt=first, order=0)
+        PromptStageField.objects.create(prompt_stage=stage, prompt=second, order=1)
+        self.client.force_login(self.user)
+        response = self.client.patch(
+            reverse("authentik_api:promptstage-detail", kwargs={"pk": stage.pk}),
+            data={"fields": [str(second.pk), str(first.pk)]},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(
+            [prompt.field_key for prompt in stage.fields.order_by("promptstagefield__order")],
+            ["second", "first"],
+        )
+
+    def test_stage_api_preview(self):
+        """Test the whole-stage API preview returns fields in submitted order"""
+        first = Prompt.objects.create(
+            name=generate_id(), field_key="first", label="a", type=FieldTypes.TEXT, order=5
+        )
+        second = Prompt.objects.create(
+            name=generate_id(), field_key="second", label="b", type=FieldTypes.TEXT, order=0
+        )
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:promptstage-preview"),
+            data={"fields": [str(first.pk), str(second.pk)]},
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        body = response.json()
+        self.assertEqual(body["component"], "ak-stage-prompt")
+        # order follows the submitted list, not the prompts' global order
+        self.assertEqual([field["field_key"] for field in body["fields"]], ["first", "second"])
+
+    def test_stage_api_preview_invalid_expression(self):
+        """Test the whole-stage API preview surfaces expression errors"""
+        broken = Prompt.objects.create(
+            name=generate_id(),
+            field_key="broken",
+            label="a",
+            type=FieldTypes.TEXT,
+            placeholder="return [",
+            placeholder_expression=True,
+        )
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("authentik_api:promptstage-preview"),
+            data={"fields": [str(broken.pk)]},
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("non_field_errors", response.content.decode())

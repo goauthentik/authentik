@@ -5,6 +5,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 
 import { IconEditButtonByTagName, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
@@ -97,7 +98,9 @@ export class StageListPage extends TablePage<Stage> {
                 })}
             </ul>`,
             html`<div class="ak-c-table__actions">
-                ${IconEditButtonByTagName(item.component, item.pk)}
+                ${IconEditButtonByTagName(item.component, item.pk, null, {
+                    size: item.component === "ak-stage-prompt-form" ? PFSize.XLarge : PFSize.Large,
+                })}
                 ${IconPermissionButton(item.name, {
                     model: item.metaModelName as ModelEnum,
                     objectPk: item.pk,

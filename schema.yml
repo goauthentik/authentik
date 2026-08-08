@@ -33173,6 +33173,15 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
+        name: pks
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: placeholder
         schema:
           type: string
@@ -33594,6 +33603,32 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/prompt/stages/preview/:
+    post:
+      operationId: stages_prompt_stages_preview_create
+      description: Preview the whole stage as a challenge, just like a flow would
+        receive
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptChallenge'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
