@@ -136,6 +136,8 @@ import {
     type InvitationStageRequest,
     InvitationStageRequestToJSON,
 } from "../models/InvitationStageRequest";
+import { type MessageStage, MessageStageFromJSON } from "../models/MessageStage";
+import { type MessageStageRequest, MessageStageRequestToJSON } from "../models/MessageStageRequest";
 import { type MutualTLSStage, MutualTLSStageFromJSON } from "../models/MutualTLSStage";
 import {
     type MutualTLSStageRequest,
@@ -215,6 +217,10 @@ import {
     type PaginatedInvitationStageList,
     PaginatedInvitationStageListFromJSON,
 } from "../models/PaginatedInvitationStageList";
+import {
+    type PaginatedMessageStageList,
+    PaginatedMessageStageListFromJSON,
+} from "../models/PaginatedMessageStageList";
 import {
     type PaginatedMutualTLSStageList,
     PaginatedMutualTLSStageListFromJSON,
@@ -337,6 +343,10 @@ import {
     type PatchedInvitationStageRequest,
     PatchedInvitationStageRequestToJSON,
 } from "../models/PatchedInvitationStageRequest";
+import {
+    type PatchedMessageStageRequest,
+    PatchedMessageStageRequestToJSON,
+} from "../models/PatchedMessageStageRequest";
 import {
     type PatchedMutualTLSStageRequest,
     PatchedMutualTLSStageRequestToJSON,
@@ -1172,6 +1182,44 @@ export interface StagesInvitationStagesUpdateRequest {
 }
 
 export interface StagesInvitationStagesUsedByListRequest {
+    stageUuid: string;
+}
+
+export interface StagesMessageCreateRequest {
+    messageStageRequest: MessageStageRequest;
+}
+
+export interface StagesMessageDestroyRequest {
+    stageUuid: string;
+}
+
+export interface StagesMessageListRequest {
+    buttonText?: string;
+    message?: string;
+    name?: string;
+    ordering?: string;
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    stageUuid?: string;
+    title?: string;
+}
+
+export interface StagesMessagePartialUpdateRequest {
+    stageUuid: string;
+    patchedMessageStageRequest?: PatchedMessageStageRequest;
+}
+
+export interface StagesMessageRetrieveRequest {
+    stageUuid: string;
+}
+
+export interface StagesMessageUpdateRequest {
+    stageUuid: string;
+    messageStageRequest: MessageStageRequest;
+}
+
+export interface StagesMessageUsedByListRequest {
     stageUuid: string;
 }
 
@@ -11678,6 +11726,500 @@ export class StagesApi extends runtime.BaseAPI {
             requestParameters,
             initOverrides,
         );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessageCreate without sending the request
+     */
+    async stagesMessageCreateRequestOpts(
+        requestParameters: StagesMessageCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["messageStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "messageStageRequest",
+                'Required parameter "messageStageRequest" was null or undefined when calling stagesMessageCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MessageStageRequestToJSON(requestParameters["messageStageRequest"]),
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageCreateRaw(
+        requestParameters: StagesMessageCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MessageStage>> {
+        const requestOptions = await this.stagesMessageCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MessageStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageCreate(
+        requestParameters: StagesMessageCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MessageStage> {
+        const response = await this.stagesMessageCreateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessageDestroy without sending the request
+     */
+    async stagesMessageDestroyRequestOpts(
+        requestParameters: StagesMessageDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMessageDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageDestroyRaw(
+        requestParameters: StagesMessageDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions = await this.stagesMessageDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageDestroy(
+        requestParameters: StagesMessageDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesMessageDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesMessageList without sending the request
+     */
+    async stagesMessageListRequestOpts(
+        requestParameters: StagesMessageListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["buttonText"] != null) {
+            queryParameters["button_text"] = requestParameters["buttonText"];
+        }
+
+        if (requestParameters["message"] != null) {
+            queryParameters["message"] = requestParameters["message"];
+        }
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        if (requestParameters["stageUuid"] != null) {
+            queryParameters["stage_uuid"] = requestParameters["stageUuid"];
+        }
+
+        if (requestParameters["title"] != null) {
+            queryParameters["title"] = requestParameters["title"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageListRaw(
+        requestParameters: StagesMessageListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedMessageStageList>> {
+        const requestOptions = await this.stagesMessageListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMessageStageListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageList(
+        requestParameters: StagesMessageListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedMessageStageList> {
+        const response = await this.stagesMessageListRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessagePartialUpdate without sending the request
+     */
+    async stagesMessagePartialUpdateRequestOpts(
+        requestParameters: StagesMessagePartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMessagePartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedMessageStageRequestToJSON(requestParameters["patchedMessageStageRequest"]),
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessagePartialUpdateRaw(
+        requestParameters: StagesMessagePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MessageStage>> {
+        const requestOptions = await this.stagesMessagePartialUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MessageStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessagePartialUpdate(
+        requestParameters: StagesMessagePartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MessageStage> {
+        const response = await this.stagesMessagePartialUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessageRetrieve without sending the request
+     */
+    async stagesMessageRetrieveRequestOpts(
+        requestParameters: StagesMessageRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMessageRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageRetrieveRaw(
+        requestParameters: StagesMessageRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MessageStage>> {
+        const requestOptions = await this.stagesMessageRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MessageStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageRetrieve(
+        requestParameters: StagesMessageRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MessageStage> {
+        const response = await this.stagesMessageRetrieveRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessageUpdate without sending the request
+     */
+    async stagesMessageUpdateRequestOpts(
+        requestParameters: StagesMessageUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMessageUpdate().',
+            );
+        }
+
+        if (requestParameters["messageStageRequest"] == null) {
+            throw new runtime.RequiredError(
+                "messageStageRequest",
+                'Required parameter "messageStageRequest" was null or undefined when calling stagesMessageUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/{stage_uuid}/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: MessageStageRequestToJSON(requestParameters["messageStageRequest"]),
+        };
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageUpdateRaw(
+        requestParameters: StagesMessageUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<MessageStage>> {
+        const requestOptions = await this.stagesMessageUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            MessageStageFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * MessageStage Viewset
+     */
+    async stagesMessageUpdate(
+        requestParameters: StagesMessageUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<MessageStage> {
+        const response = await this.stagesMessageUpdateRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesMessageUsedByList without sending the request
+     */
+    async stagesMessageUsedByListRequestOpts(
+        requestParameters: StagesMessageUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["stageUuid"] == null) {
+            throw new runtime.RequiredError(
+                "stageUuid",
+                'Required parameter "stageUuid" was null or undefined when calling stagesMessageUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/message/{stage_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{stage_uuid}",
+            encodeURIComponent(String(requestParameters["stageUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesMessageUsedByListRaw(
+        requestParameters: StagesMessageUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions = await this.stagesMessageUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesMessageUsedByList(
+        requestParameters: StagesMessageUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesMessageUsedByListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
