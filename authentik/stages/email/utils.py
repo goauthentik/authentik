@@ -45,7 +45,7 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         to: list[tuple[str, str]],
         cc: list[tuple[str, str]] | None = None,
         bcc: list[tuple[str, str]] | None = None,
-        template_name=None,
+        template_name: str | None = None,
         template_context=None,
         language="",
         **kwargs,
@@ -56,14 +56,19 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         super().__init__(to=sanitized_to, cc=sanitized_cc, bcc=sanitized_bcc, **kwargs)
         if not template_name:
             return
+
+        content = render_to_string(template_name, template_context)
         with translation.override(language):
-            html_content = render_to_string(template_name, template_context)
-            try:
-                text_content = render_to_string(
-                    template_name.replace("html", "txt"), template_context
-                )
-                self.body = text_content
-            except TemplateDoesNotExist:
-                pass
-        self.mixed_subtype = "related"
-        self.attach_alternative(html_content, "text/html")
+            if template_name.endswith(".html"):
+                try:
+                    text_content = render_to_string(
+                        template_name.removesuffix(".html") + ".txt", template_context
+                    )
+                    self.body = text_content
+                except TemplateDoesNotExist:
+                    pass
+
+                self.mixed_subtype = "related"
+                self.attach_alternative(content, "text/html")
+            else:
+                self.body = content
