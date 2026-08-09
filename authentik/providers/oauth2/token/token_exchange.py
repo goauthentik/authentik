@@ -56,10 +56,10 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.logger.info("token_exchange grant for provider without application")
             raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
 
-        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
         if federated_party.user:
             self.user = federated_party.user
-        else:
+        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
+        if not federated_party.user:
             self.user = self.create_user_from_jwt(federated_party, app, request)
 
         self.post_init_token_exchange_actor(request)

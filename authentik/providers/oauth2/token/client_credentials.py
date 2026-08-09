@@ -110,10 +110,10 @@ class ClientCredentialsTokenRequest(FederatedTokenRequest):
             self.logger.info("client_credentials grant for provider without application")
             raise TokenError("invalid_grant")
 
-        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
         if federated_party.user:
             self.user = federated_party.user
-        else:
+        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
+        if not federated_party.user:
             self.user = self.create_user_from_jwt(federated_party, app, request)
 
         method_args = {
