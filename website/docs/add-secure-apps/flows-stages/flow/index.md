@@ -5,7 +5,7 @@ sidebar_label: "Flows"
 
 Flows are a major component in authentik. In conjunction with [stages](../stages/index.md) and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
-There are over a dozen default, out-of-the-box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-flow) their own customized flow, using the Admin interface, Terraform, or via the API.
+There are over a dozen default, out-of-the-box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/default-flows.md) or if they want to [create](#create-a-flow) their own customized flow, using the Admin interface, Terraform, or via the API.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
@@ -55,7 +55,7 @@ To create a flow, follow these steps:
 
 After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/bindings.md) to the flow to further customize the user's log in and authentication process.
 
-To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../sys-mgmt/brands/index.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../customize/branding/index.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
 ## Flow configuration options
 
@@ -96,7 +96,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
-- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands/index.md#branding-settings). See [File picker values](../../../customize/file-picker.md).
+- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../customize/branding/index.md#branding-settings). See [File picker values](../../../customize/file-picker.md).
 
 ## Edit or delete a flow
 

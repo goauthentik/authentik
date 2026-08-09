@@ -1,8 +1,10 @@
 """Serializer for brands models"""
 
-from typing import Any
+from typing import Any, get_args
 
 from django.db import models
+from drf_spectacular.extensions import OpenApiSerializerFieldExtension
+from drf_spectacular.plumbing import build_basic_type, build_object_type
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -59,13 +61,16 @@ class BrandSerializer(ModelSerializer):
             "branding_favicon",
             "branding_custom_css",
             "branding_default_flow_background",
+            "branding_map_tiles",
             "flow_authentication",
+            "flow_user_switch",
             "flow_invalidation",
             "flow_recovery",
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
             "flow_lockdown",
+            "flow_request",
             "default_application",
             "web_certificate",
             "client_certificates",
@@ -91,6 +96,33 @@ def get_default_ui_footer_links():
     return get_current_tenant().footer_links
 
 
+class PublicFlagsField(FlagJSONField):
+    pass
+
+
+class FlagsJSONExtension(OpenApiSerializerFieldExtension):
+    """Generate API Schema for JSON fields as"""
+
+    target_class = "authentik.brands.api.PublicFlagsField"
+
+    def map_serializer_field(self, auto_schema, direction):
+        props = {}
+        # Public flags are always present; authenticated flags are only present for
+        # authenticated requests, so they are exposed in the schema but not required.
+        required = []
+        for visibility in ("public", "authenticated"):
+            for flag in Flag.available(visibility=visibility):
+                _flag = flag()
+                props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
+                if _flag.description:
+                    props[_flag.key]["description"] = _flag.description
+                if _flag.deprecated:
+                    props[_flag.key]["deprecated"] = _flag.deprecated
+                if visibility == "public":
+                    required.append(_flag.key)
+        return build_object_type(props, required=required)
+
+
 class CurrentBrandSerializer(PassiveSerializer):
     """Partial brand information for styling"""
 
@@ -101,6 +133,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     branding_favicon = CharField(source="branding_favicon_url")
     branding_favicon_themed_urls = ThemedUrlsSerializer(read_only=True, allow_null=True)
     branding_custom_css = CharField()
+    branding_map_tiles = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
@@ -114,21 +147,28 @@ class CurrentBrandSerializer(PassiveSerializer):
     )
 
     flow_authentication = CharField(source="flow_authentication.slug", required=False)
+    flow_user_switch = CharField(source="flow_user_switch.slug", required=False)
     flow_invalidation = CharField(source="flow_invalidation.slug", required=False)
     flow_recovery = CharField(source="flow_recovery.slug", required=False)
     flow_unenrollment = CharField(source="flow_unenrollment.slug", required=False)
     flow_user_settings = CharField(source="flow_user_settings.slug", required=False)
     flow_device_code = CharField(source="flow_device_code.slug", required=False)
     flow_lockdown = CharField(source="flow_lockdown.slug", required=False)
+    flow_request = CharField(source="flow_request.slug", required=False)
 
     default_locale = CharField(read_only=True)
     flags = SerializerMethodField()
 
-    @extend_schema_field(field=FlagJSONField)
+    @extend_schema_field(field=PublicFlagsField)
     def get_flags(self, _):
         values = {}
-        for flag in Flag.available(visibility="public"):
-            values[flag().key] = flag.get()
+        visibilities = ["public"]
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            visibilities.append("authenticated")
+        for visibility in visibilities:
+            for flag in Flag.available(visibility=visibility):
+                values[flag().key] = flag.get()
         return values
 
     def to_representation(self, instance: Brand) -> dict[str, Any]:
@@ -161,12 +201,14 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "branding_favicon",
         "branding_default_flow_background",
         "flow_authentication",
+        "flow_user_switch",
         "flow_invalidation",
         "flow_recovery",
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
         "flow_lockdown",
+        "flow_request",
         "web_certificate",
         "client_certificates",
     ]

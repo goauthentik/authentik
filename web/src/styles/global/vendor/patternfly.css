@@ -1,0 +1,11 @@
+/* Barrel file that imports the parts of Patternfly we're using with the
+ * document stylesheet.
+ */
+
+@import "#styles/global/vendor/patternfly-globals.css";
+@import "#styles/global/vendor/patternfly-themes.css";
+@import "#styles/global/vendor/patternfly-fa-icons.css";
+@import "#styles/global/vendor/patternfly-pf-icons.css";
+@import "@patternfly/patternfly/components/Spinner/spinner.css";
+@import "@patternfly/patternfly/components/Banner/banner.css";
+@import "#styles/authentik/components/Banner/banner.css";

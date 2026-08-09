@@ -5,11 +5,13 @@ import "#elements/forms/ModalForm";
 import "#components/tasks/ScheduleForm";
 import "#components/tasks/TaskList";
 import "#components/tasks/TaskStatus";
+import "#elements/table/ak-table-filter-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -63,12 +65,6 @@ export class ScheduleList extends Table<Schedule> {
         });
     }
 
-    #toggleShowOnlyStandalone = () => {
-        this.showOnlyStandalone = !this.showOnlyStandalone;
-        this.page = 1;
-        return this.fetch();
-    };
-
     protected override rowLabel(item: Schedule): string | null {
         return item.description ?? item.actorName ?? null;
     }
@@ -87,24 +83,19 @@ export class ScheduleList extends Table<Schedule> {
         }
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label class="pf-c-switch">
-                        <input
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${this.showOnlyStandalone}
-                            @change=${this.#toggleShowOnlyStandalone}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"> </i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label">
-                            ${msg("Show only standalone schedules")}
-                        </span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        { label: msg("Show only standalone schedules"), value: true },
+                        { label: msg("Show all schedules"), value: false },
+                    ]}
+                    group=${msg("Standalone")}
+                    .value=${this.showOnlyStandalone}
+                    @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
+                        this.showOnlyStandalone = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                    }}
+                ></ak-table-filter-select>
             </div>
         </div>`;
     }
