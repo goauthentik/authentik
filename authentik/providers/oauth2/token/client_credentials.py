@@ -23,11 +23,11 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.token.base import TokenRequest
+from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
-class ClientCredentialsTokenRequest(TokenRequest):
+class ClientCredentialsTokenRequest(FederatedTokenRequest):
 
     def parse(self, request: HttpRequest) -> None:
         super().parse(request)

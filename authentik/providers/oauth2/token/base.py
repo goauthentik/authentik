@@ -1,14 +1,11 @@
 from hmac import compare_digest
 from re import error as RegexError
 from re import fullmatch
-from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest
 from django.urls import reverse
-from django.utils import timezone
 from guardian.shortcuts import get_anonymous_user
-from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -21,29 +18,19 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import (
-    USER_ATTRIBUTE_EXPIRES,
-    USER_ATTRIBUTE_GENERATED,
-    USERNAME_MAX_LENGTH,
-    Actor,
     Application,
-    User,
-    UserTypes,
 )
-from authentik.core.sources.mapper import SourceMapper
-from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError
 from authentik.providers.oauth2.models import (
-    AccessToken,
     ClientType,
     OAuth2Provider,
     RedirectURIMatchingMode,
     ScopeMapping,
 )
 from authentik.providers.oauth2.utils import is_all_vschar, pkce_s256_challenge
-from authentik.sources.oauth.models import OAuthSource
 
 
 class TokenRequest:
@@ -57,11 +44,6 @@ class TokenRequest:
     code_verifier: str | None = None
     dpop_proof: str | None = None
     dpop_jwk: dict | None = None
-    # Set by the grants that resolve an identity; read by check_policy_access and the
-    # response builders, so it must exist on every request type.
-    user: User | None = None
-    actor: Actor | None = None
-    requested_token_type: str | None = None
 
     provider: OAuth2Provider
     logger: BoundLogger
@@ -223,117 +205,3 @@ class TokenRequest:
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
             raise TokenError("invalid_request")
-
-    def validate_jwt_from_source(
-        self, assertion: str
-    ) -> tuple[dict, OAuthSource] | tuple[None, None]:
-        # Fully decode the JWT without verifying the signature, so we can get access to
-        # the header.
-        # Get the Key ID from the header, and use that to optimize our source query to only find
-        # sources that have a JWK for that Key ID
-        # The Key ID doesn't have a fixed format, but must match between an issued JWT
-        # and whatever is returned by the JWKS endpoint
-        try:
-            decode_unvalidated = PyJWT().decode_complete(
-                assertion, options={"verify_signature": False}
-            )
-        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-            self.logger.warning("failed to parse JWT for kid lookup", exc=exc)
-            raise TokenError("invalid_grant") from None
-        expected_kid = decode_unvalidated["header"].get("kid")
-        fallback_alg = decode_unvalidated["header"].get("alg")
-        if not expected_kid or not fallback_alg:
-            return None, None
-        for source in self.provider.jwt_federation_sources.filter(
-            oidc_jwks__keys__contains=[{"kid": expected_kid}]
-        ):
-            self.logger.debug("verifying JWT with source", source=source.slug)
-            keys = source.oidc_jwks.get("keys", [])
-            for key in keys:
-                if key.get("kid") and key.get("kid") != expected_kid:
-                    continue
-                self.logger.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
-                try:
-                    parsed_key = PyJWK.from_dict(key).key
-                    token = decode(
-                        assertion,
-                        parsed_key,
-                        algorithms=[key.get("alg")] if "alg" in key else [fallback_alg],
-                        options={
-                            "verify_aud": False,
-                        },
-                    )
-                # AttributeError is raised when the configured JWK is a private key
-                # and not a public key
-                except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-                    self.logger.warning("failed to verify JWT", exc=exc, source=source.slug)
-                    continue
-                # Return on the first key that verifies, so the source reported back is the
-                # one that actually validated the JWT rather than the last one iterated.
-                # The caller feeds this source into create_user_from_jwt, where it selects
-                # the user path and property mappings.
-                self.logger.info("successfully verified JWT with source", source=source.slug)
-                return token, source
-        return None, None
-
-    def validate_jwt_from_provider(
-        self, assertion: str
-    ) -> tuple[dict, OAuth2Provider, User] | tuple[None, None, None]:
-        token = provider = resolved_user = _key = None
-        federated_token = AccessToken.objects.filter(
-            token=assertion, provider__in=self.provider.jwt_federation_providers.all()
-        ).first()
-        if federated_token:
-            _key, _alg = federated_token.provider.jwt_key
-            try:
-                token = decode(
-                    assertion,
-                    _key.public_key(),
-                    algorithms=[_alg],
-                    options={
-                        "verify_aud": False,
-                    },
-                )
-                provider = federated_token.provider
-                resolved_user = federated_token.user
-            except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-                self.logger.warning(
-                    "failed to verify JWT", exc=exc, provider=federated_token.provider.name
-                )
-
-        if token:
-            self.logger.info("successfully verified JWT with provider", provider=provider.name)
-        return token, provider, resolved_user
-
-    def create_user_from_jwt(
-        self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
-    ):
-        """Create user from JWT"""
-        with audit_ignore():
-            # Run the JWT payload through the core mapping engine
-            mapped = SourceMapper(source).build_object_properties(
-                User, request=request, info=token, oauth_userinfo=token
-            )
-
-            self.user, created = User.objects.update_or_create(
-                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
-                    :USERNAME_MAX_LENGTH
-                ],
-                defaults={
-                    "last_login": timezone.now(),
-                    "name": mapped.get(
-                        "name",
-                        f"Autogenerated user from application {app.name} (client credentials JWT)",
-                    ),
-                    "email": mapped.get("email", ""),
-                    "path": source.get_user_path(),
-                    "type": UserTypes.SERVICE_ACCOUNT,
-                    "attributes": mapped.get("attributes", {}),
-                },
-            )
-            self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
-            self.user.save()
-            exp = token.get("exp")
-            if created and exp:
-                self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
-                self.user.save()

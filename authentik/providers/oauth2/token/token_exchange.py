@@ -10,17 +10,15 @@ from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
-from authentik.providers.oauth2.token.client_credentials import ClientCredentialsTokenRequest
+from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
-class TokenExchangeTokenRequest(ClientCredentialsTokenRequest):
+class TokenExchangeTokenRequest(FederatedTokenRequest):
 
     def parse(self, request: HttpRequest) -> None:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
-        # Skip ClientCredentialsTokenRequest.parse's authentication sub-router: token exchange
-        # authenticates via subject_token, not via client credentials.
-        super(ClientCredentialsTokenRequest, self).parse(request)
+        super().parse(request)
         # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
         # requested target cannot be honored, so the parameters are refused rather than ignored.
         if request.POST.getlist("audience") or request.POST.getlist("resource"):
