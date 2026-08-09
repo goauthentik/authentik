@@ -3,6 +3,7 @@
 from typing import Any
 
 from django.apps import apps
+from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
@@ -117,7 +118,7 @@ class ProviderInfoView(View):
             "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,
-            "claims_supported": self.get_claims(provider),
+            "claims_supported": self.get_claims_cached(provider),
             "claims_parameter_supported": False,
             "code_challenge_methods_supported": [PKCE_METHOD_PLAIN, PKCE_METHOD_S256],
             "dpop_signing_alg_values_supported": sorted(DPOP_SUPPORTED_ALGS),
@@ -137,6 +138,16 @@ class ProviderInfoView(View):
         except OAuth2DynamicClientRegistration.DoesNotExist:
             pass
         return config
+
+    def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:
+        """Same as self.get_claims but cached to avoid re-evaluating property-mappings"""
+        key = f"authentik/providers/oauth2/provider_info/claims/{provider.pk}"
+        ttl_seconds = 60 * 60
+        claims = cache.get(key)
+        if not claims:
+            claims = self.get_claims(provider)
+            cache.set(key, claims, ttl_seconds)
+        return claims
 
     def get_claims(self, provider: OAuth2Provider) -> list[str]:
         """Get a list of supported claims based on configured scope mappings"""
