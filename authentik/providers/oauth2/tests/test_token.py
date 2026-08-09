@@ -122,6 +122,91 @@ class TestToken(OAuthTestCase):
         with self.assertRaises(TokenError):
             parse_token_request(request, provider, provider.client_id, provider.client_secret)
 
+    def test_redirect_uri_regex(self):
+        """test valid redirect URI (regex)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, ".+")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        user = create_test_admin_user()
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": code.code,
+                "redirect_uri": "http://foo.bar.baz",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        params = parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(params.provider, provider)
+
+    def test_invalid_redirect_uri_regex(self):
+        """test invalid redirect URI (regex not matching)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "http://local.invalid?")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://localhost",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        events = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
+        self.assertTrue(events.exists())
+        self.assertEqual(events.first().context["message"], "Invalid redirect URI used by provider")
+
+    def test_redirect_uri_invalid_regex(self):
+        """test invalid redirect URI (invalid regex)"""
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            grant_types=[GrantType.AUTHORIZATION_CODE],
+            # Invalid patterns are rejected by the API serializer, so they can only be
+            # configured through the ORM or a blueprint
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.REGEX, "+")],
+            signing_key=self.keypair,
+        )
+        header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
+        request = self.factory.post(
+            "/",
+            data={
+                "grant_type": GRANT_TYPE_AUTHORIZATION_CODE,
+                "code": "foo",
+                "redirect_uri": "http://localhost",
+            },
+            HTTP_AUTHORIZATION=f"Basic {header}",
+        )
+        with self.assertRaises(TokenError) as cm:
+            parse_token_request(request, provider, provider.client_id, provider.client_secret)
+        self.assertEqual(cm.exception.error, "invalid_client")
+        # The unparsable pattern is reported on its own, and the request then falls through
+        # to the regular no-match handling, so both events are emitted
+        messages = [
+            event.context["message"]
+            for event in Event.objects.filter(action=EventAction.CONFIGURATION_ERROR)
+        ]
+        self.assertIn("Invalid redirect_uri configured", messages)
+        self.assertIn("Invalid redirect URI used by provider", messages)
+
     def test_client_secret_non_ascii(self):
         """test non-ascii client_secret"""
         provider = OAuth2Provider.objects.create(
