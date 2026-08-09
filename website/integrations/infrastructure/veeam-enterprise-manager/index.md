@@ -25,11 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 You will need one or more existing groups in authentik to assign roles in Veeam Enterprise Manager.
 
-## authentik configuration
-
-To support the integration of Veeam Enterprise Manager with authentik, you need to download the Veeam Enterprise Manager service provider metadata and then create an application/provider pair in authentik.
-
-### Download the service provider metadata
+Before you configure authentik, download the Veeam Enterprise Manager service provider metadata:
 
 1. Log in to Veeam Enterprise Manager as an administrator.
 2. In the top-right corner, click **Configuration**.
@@ -37,9 +33,11 @@ To support the integration of Veeam Enterprise Manager with authentik, you need 
 4. Select **Enable SAML 2.0**.
 5. Click **Download** to save the service provider metadata XML file. You will upload this file to authentik in the next section.
 
-### Create an application and provider
+## authentik configuration
 
 <SAMLProvider20265Warning />
+
+To support the integration of Veeam Enterprise Manager with authentik, you need to create an application/provider pair in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
@@ -54,10 +52,12 @@ To support the integration of Veeam Enterprise Manager with authentik, you need 
 
 ## Veeam Enterprise Manager configuration
 
-1. Switch back to Veeam Enterprise Manager and reopen **Configuration** > **Settings** > **SAML Authentication**.
-2. Click **Import from File** and select the identity provider metadata XML file that you downloaded from authentik.
-3. Make sure that **Enable SAML 2.0** is still selected.
-4. Click **Save**.
+1. Log in to Veeam Enterprise Manager as an administrator.
+2. In the top-right corner, click **Configuration**.
+3. In the left sidebar, select **Settings**, then open the **SAML Authentication** tab.
+4. Click **Import from File** and select the identity provider metadata XML file that you downloaded from authentik.
+5. Make sure that **Enable SAML 2.0** is still selected.
+6. Click **Save**.
 
 ### Map authentik groups to Veeam Enterprise Manager roles
 
