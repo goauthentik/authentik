@@ -254,8 +254,8 @@ importers:
         specifier: ^7.1.5
         version: 7.1.5
       dompurify:
-        specifier: ^3.4.12
-        version: 3.4.12
+        specifier: ^3.4.13
+        version: 3.4.13
       esbuild:
         specifier: 'catalog:'
         version: 0.28.1
@@ -3531,8 +3531,13 @@ packages:
     resolution: {integrity: sha512-gYzvtM72ZtxQO0T048kd6HWSbbGCNOUwcnfQ01cqIJ4X2IYKFFHZ5mKvrQETcFXxsRObZulDaKmy//R7TPtsBg==}
     engines: {node: '>=20.19.0'}
 
+<<<<<<< HEAD
   dompurify@3.4.12:
     resolution: {integrity: sha512-zQvGet8Z2sWbQhCmfFz/T5QWH2oBmjnqK3qvOjaqaNLrLEF912WamU+ohnTp0TCep/MFVHpdJuCZEdFOdTnEFg==}
+=======
+  dompurify@3.4.13:
+    resolution: {integrity: sha512-2vmYIoqjze2d+kakP8S/nS5shfsl587kzwEjcGlTdiksUVgFHnFCsLYDVj/JNqJVOQZGSYBTmuycv0PodwmnMQ==}
+>>>>>>> e8d095514 (web: bump dompurify from 3.4.12 to 3.4.13 in /web (#24892))
 
   drange@1.1.1:
     resolution: {integrity: sha512-pYxfDYpued//QpnLIm4Avk7rsNtAtQkUES2cwAYSvD/wd2pKD71gN2Ebj3e7klzXwjocvE8c5vx/1fxwpqmSxA==}
@@ -9761,7 +9766,11 @@ snapshots:
     dependencies:
       domelementtype: 3.0.0
 
+<<<<<<< HEAD
   dompurify@3.4.12:
+=======
+  dompurify@3.4.13:
+>>>>>>> e8d095514 (web: bump dompurify from 3.4.12 to 3.4.13 in /web (#24892))
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 

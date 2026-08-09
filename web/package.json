@@ -145,7 +145,7 @@
         "country-flag-icons": "^1.6.20",
         "date-fns": "^4.4.0",
         "deepmerge-ts": "^7.1.5",
-        "dompurify": "^3.4.12",
+        "dompurify": "^3.4.13",
         "esbuild": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-lit": "^2.3.1",
