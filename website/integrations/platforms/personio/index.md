@@ -26,20 +26,18 @@ To set up SSO, you need either an Administrator role in Personio or an employee 
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
-
-<RedirectURI20265Note />
-
-To support the integration of Personio with authentik, you need to create an application/provider pair in authentik.
-
-### Copy the Personio callback URL
+Before you configure authentik, copy the Personio callback URL:
 
 1. Log in to Personio as an administrator.
 2. Navigate to **Settings** > **Security & integrations** > **Security & authentication**.
 3. From the list of login methods, go to **Open ID Connect (OIDC)** and click **Configure**.
 4. Under **Provider settings**, copy the **Callback URLs/Redirect URIs** value.
 
-### Create an application and provider
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Personio with authentik, you need to create an application/provider pair in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
