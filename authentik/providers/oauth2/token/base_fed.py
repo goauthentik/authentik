@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from typing import Any
 
 from django.http import HttpRequest
@@ -24,6 +25,23 @@ from authentik.providers.oauth2.token.base import TokenRequest
 from authentik.sources.oauth.models import OAuthSource
 
 
+@dataclass(frozen=True)
+class FederatedParty:
+    """Details about a _verified_ federation party"""
+
+    parsed_token: dict[str, Any]
+    party: OAuth2Provider | OAuthSource
+    user: User | None = field(default=None)
+
+    @property
+    def type(self) -> str:
+        if isinstance(self.party, OAuth2Provider):
+            return "provider"
+        if isinstance(self.party, OAuthSource):
+            return "source"
+        raise ValueError(f"Invalid party type {self.party}")
+
+
 class FederatedTokenRequest(TokenRequest):
     """Base class for token requests which involve federation, such as
     client_credentials or token exchange"""
@@ -34,9 +52,14 @@ class FederatedTokenRequest(TokenRequest):
     actor: Actor | None = None
     requested_token_type: str | None = None
 
-    def validate_jwt_from_source(
-        self, assertion: str
-    ) -> tuple[dict, OAuthSource] | tuple[None, None]:
+    def validate_jwt(self, assertion: str) -> FederatedParty | None:
+        if party := self.validate_jwt_from_source(assertion):
+            return party
+        elif party := self.validate_jwt_from_provider(assertion):
+            return party
+        return None
+
+    def validate_jwt_from_source(self, assertion: str) -> FederatedParty | None:
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
         # Get the Key ID from the header, and use that to optimize our source query to only find
@@ -53,7 +76,7 @@ class FederatedTokenRequest(TokenRequest):
         expected_kid = decode_unvalidated["header"].get("kid")
         fallback_alg = decode_unvalidated["header"].get("alg")
         if not expected_kid or not fallback_alg:
-            return None, None
+            return None
         for source in self.provider.jwt_federation_sources.filter(
             oidc_jwks__keys__contains=[{"kid": expected_kid}]
         ):
@@ -83,12 +106,10 @@ class FederatedTokenRequest(TokenRequest):
                 # The caller feeds this source into create_user_from_jwt, where it selects
                 # the user path and property mappings.
                 self.logger.info("successfully verified JWT with source", source=source.slug)
-                return token, source
-        return None, None
+                return FederatedParty(parsed_token=token, party=source)
+        return None
 
-    def validate_jwt_from_provider(
-        self, assertion: str
-    ) -> tuple[dict, OAuth2Provider, User] | tuple[None, None, None]:
+    def validate_jwt_from_provider(self, assertion: str) -> FederatedParty | None:
         token = provider = resolved_user = _key = None
         federated_token = AccessToken.objects.filter(
             token=assertion, provider__in=self.provider.jwt_federation_providers.all()
@@ -111,24 +132,27 @@ class FederatedTokenRequest(TokenRequest):
                     "failed to verify JWT", exc=exc, provider=federated_token.provider.name
                 )
 
-        if token:
-            self.logger.info("successfully verified JWT with provider", provider=provider.name)
-        return token, provider, resolved_user
+        if not token:
+            return None
+        self.logger.info("successfully verified JWT with provider", provider=provider.name)
+        return FederatedParty(parsed_token=token, party=provider, user=resolved_user)
 
     def create_user_from_jwt(
-        self, token: dict[str, Any], app: Application, source: OAuthSource, request: HttpRequest
-    ):
+        self, party: FederatedParty, app: Application, request: HttpRequest
+    ) -> User:
         """Create user from JWT"""
+        if not isinstance(party.party, OAuthSource):
+            raise ValueError("create_user_from_jwt can only be called with source as party")
         with audit_ignore():
             # Run the JWT payload through the core mapping engine
-            mapped = SourceMapper(source).build_object_properties(
-                User, request=request, info=token, oauth_userinfo=token
+            mapped = SourceMapper(party.party).build_object_properties(
+                User, request=request, info=party.parsed_token, oauth_userinfo=party.parsed_token
             )
 
-            self.user, created = User.objects.update_or_create(
-                username=mapped.get("username", f"{self.provider.name}-{token.get('sub')}")[
-                    :USERNAME_MAX_LENGTH
-                ],
+            user, created = User.objects.update_or_create(
+                username=mapped.get(
+                    "username", f"{self.provider.name}-{party.parsed_token.get('sub')}"
+                )[:USERNAME_MAX_LENGTH],
                 defaults={
                     "last_login": timezone.now(),
                     "name": mapped.get(
@@ -136,14 +160,15 @@ class FederatedTokenRequest(TokenRequest):
                         f"Autogenerated user from application {app.name} (client credentials JWT)",
                     ),
                     "email": mapped.get("email", ""),
-                    "path": source.get_user_path(),
+                    "path": party.party.get_user_path(),
                     "type": UserTypes.SERVICE_ACCOUNT,
                     "attributes": mapped.get("attributes", {}),
                 },
             )
-            self.user.attributes[USER_ATTRIBUTE_GENERATED] = True
-            self.user.save()
-            exp = token.get("exp")
+            user.attributes[USER_ATTRIBUTE_GENERATED] = True
+            user.save()
+            exp = party.parsed_token.get("exp")
             if created and exp:
-                self.user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
-                self.user.save()
+                user.attributes[USER_ATTRIBUTE_EXPIRES] = exp
+                user.save()
+            return user

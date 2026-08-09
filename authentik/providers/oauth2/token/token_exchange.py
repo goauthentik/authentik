@@ -43,11 +43,9 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
                 "unsupported_requested_token_type"
             )
 
-        provider = resolved_user = None
-        token, source = self.validate_jwt_from_source(subject_token)
-        if not token:
-            token, provider, resolved_user = self.validate_jwt_from_provider(subject_token)
-        if not token:
+        federated_party = self.validate_jwt(subject_token)
+
+        if not federated_party:
             # Expiry is enforced by PyJWT during signature verification, so an expired
             # subject token also lands here.
             self.logger.warning("No subject token could be verified")
@@ -58,23 +56,20 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             self.logger.info("token_exchange grant for provider without application")
             raise TokenExchangeError("invalid_grant").with_cause("provider_without_application")
 
-        self.check_policy_access(app, request, oauth_jwt=token)
-        if provider:
-            self.user = resolved_user
+        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
+        if federated_party.user:
+            self.user = federated_party.user
         else:
-            self.create_user_from_jwt(token, app, source, request)
+            self.user = self.create_user_from_jwt(federated_party, app, request)
 
         self.post_init_token_exchange_actor(request)
 
         method_args = {
-            "jwt": token,
+            "jwt": federated_party.parsed_token,
             "subject_token_type": subject_token_type,
             "requested_token_type": self.requested_token_type,
+            federated_party.type: federated_party.party,
         }
-        if source:
-            method_args["source"] = source
-        if provider:
-            method_args["provider"] = provider
         Event.new(
             action=EventAction.LOGIN,
             **{
@@ -124,12 +119,12 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             # for subject_token.
             # Only the provider-federation path applies -- Actors are authentik-internal
             # service accounts, never externally-sourced identities, so the source/JWKS
-            # path (__validate_jwt_from_source) does not apply here.
-            token, _provider, resolved_user = self.validate_jwt_from_provider(actor_token)
-            if not token:
+            # path (validate_jwt_from_source) does not apply here.
+            federated_party = self.validate_jwt_from_provider(actor_token)
+            if not federated_party:
                 self.logger.warning("Actor token not found")
                 raise TokenExchangeError("invalid_grant").with_cause("actor_token_not_verified")
-            actor = Actor.objects.filter(pk=resolved_user.pk).first()
+            actor = Actor.objects.filter(pk=federated_party.user.pk).first()
             if not actor:
                 self.logger.warning("Actor is not controlled by the verified subject")
                 raise TokenExchangeError("invalid_grant").with_cause("actor_not_controlled")

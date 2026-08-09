@@ -92,18 +92,14 @@ class ClientCredentialsTokenRequest(FederatedTokenRequest):
             self.logger.warning("Missing client assertion")
             raise TokenError("invalid_grant")
 
-        provider = resolved_user = None
+        federated_party = self.validate_jwt(assertion)
 
-        token, source = self.validate_jwt_from_source(assertion)
-        if not token:
-            token, provider, resolved_user = self.validate_jwt_from_provider(assertion)
-
-        if not token:
+        if not federated_party:
             self.logger.warning("No token could be verified")
             raise TokenError("invalid_grant")
 
-        if "exp" in token:
-            exp = datetime.fromtimestamp(token["exp"])
+        if "exp" in federated_party.parsed_token:
+            exp = datetime.fromtimestamp(federated_party.parsed_token["exp"])
             # Non-timezone aware check since we assume `exp` is in UTC
             if datetime.now() >= exp:
                 self.logger.info("JWT token expired")
@@ -114,19 +110,16 @@ class ClientCredentialsTokenRequest(FederatedTokenRequest):
             self.logger.info("client_credentials grant for provider without application")
             raise TokenError("invalid_grant")
 
-        self.check_policy_access(app, request, oauth_jwt=token)
-        if provider:
-            self.user = resolved_user
+        self.check_policy_access(app, request, oauth_jwt=federated_party.parsed_token)
+        if federated_party.user:
+            self.user = federated_party.user
         else:
-            self.create_user_from_jwt(token, app, source, request)
+            self.user = self.create_user_from_jwt(federated_party, app, request)
 
         method_args = {
-            "jwt": token,
+            "jwt": federated_party.parsed_token,
+            federated_party.type: federated_party.party,
         }
-        if source:
-            method_args["source"] = source
-        if provider:
-            method_args["provider"] = provider
         Event.new(
             action=EventAction.LOGIN,
             **{
