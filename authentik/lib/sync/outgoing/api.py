@@ -1,6 +1,6 @@
 from django.db.models import Model
 from dramatiq.actor import Actor
-from dramatiq.results.errors import ResultFailure
+from dramatiq.results.errors import ResultError
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
@@ -119,7 +119,11 @@ class OutgoingSyncProviderStatusMixin:
         )
         try:
             msg.get_result(block=True)
-        except ResultFailure:
+        # ResultFailure: the task ran and raised; its logs are the useful output.
+        # ResultTimeout/ResultMissing: the task is queued but hasn't reported yet.
+        # Neither is a server fault, so report whatever the task has logged so far
+        # rather than letting the error escape as a 500.
+        except ResultError:
             pass
         task: Task = msg.options["task"]
         task.refresh_from_db()
