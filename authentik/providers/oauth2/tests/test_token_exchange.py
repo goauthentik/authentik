@@ -476,6 +476,45 @@ class TestTokenExchange(OAuthTestCase):
         self.assertEqual(jwt["preferred_username"], self.user.username)
         self.assertNotIn("act", jwt)
 
+    def test_successful_with_group_binding(self):
+        """test that policies are evaluated as the subject, not anonymously"""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+        PolicyBinding.objects.create(group=group, target=self.app, order=0)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_denied_with_group_binding(self):
+        """test that a subject outside the bound group is still denied"""
+        group = Group.objects.create(name=generate_id())
+        PolicyBinding.objects.create(group=group, target=self.app, order=0)
+
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_TOKEN_EXCHANGE,
+                "scope": SCOPES,
+                "client_id": self.provider.client_id,
+                "client_secret": self.provider.client_secret,
+                "subject_token": self.subject_token,
+                "subject_token_type": TOKEN_TYPE_URI_ACCESS_TOKEN,
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        body = loads(response.content.decode())
+        self.assertEqual(body["error"], "invalid_grant")
+
     def test_successful_requested_jwt(self):
         """test that requesting a JWT yields the same artifact, reported as a JWT"""
         response = self.client.post(
