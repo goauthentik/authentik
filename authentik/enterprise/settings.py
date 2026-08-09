@@ -1,6 +1,7 @@
 """Enterprise additional settings"""
 
 TENANT_APPS = [
+    "authentik.enterprise.agents",
     "authentik.enterprise.audit",
     "authentik.enterprise.endpoints.connectors.agent",
     "authentik.enterprise.endpoints.connectors.fleet",
@@ -9,11 +10,13 @@ TENANT_APPS = [
     "authentik.enterprise.policies.unique_password",
     "authentik.enterprise.providers.google_workspace",
     "authentik.enterprise.providers.microsoft_entra",
+    "authentik.enterprise.providers.oauth2",
     "authentik.enterprise.providers.radius",
     "authentik.enterprise.providers.scim",
     "authentik.enterprise.providers.ssf",
     "authentik.enterprise.providers.ws_federation",
     "authentik.enterprise.reports",
+    "authentik.enterprise.requests",
     "authentik.enterprise.stages.account_lockdown",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
     "authentik.enterprise.stages.mtls",

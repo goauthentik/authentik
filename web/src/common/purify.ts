@@ -112,6 +112,15 @@ export const DOM_PURIFY_STRICT = {
 } as const satisfies DOMPurifyConfig;
 
 /**
+ * DOMPurify configuration for relaxed sanitization.
+ *
+ * This configuration allows text nodes and <br> tags.
+ */
+export const DOM_PURIFY_RELAXED = {
+    ALLOWED_TAGS: ["#text", "br"],
+} as const satisfies DOMPurifyConfig;
+
+/**
  * Render untrusted HTML to a string without escaping it.
  *
  * @returns {string} The rendered HTML string.
