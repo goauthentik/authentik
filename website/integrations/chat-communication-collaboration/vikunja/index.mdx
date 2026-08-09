@@ -69,6 +69,7 @@ auth:
                 authurl: https://authentik.company/application/o/<application_slug>/
                 clientid: <Client ID from authentik>
                 clientsecret: <Client Secret from authentik>
+                scope: openid email profile
 ```
 
 To require SSO for all users, disable local authentication:
@@ -90,6 +91,7 @@ VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME="authentik Login"
 VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL=https://authentik.company/application/o/<application_slug>/
 VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID=<Client ID from authentik>
 VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET=<Client Secret from authentik>
+VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_SCOPE=openid email profile
 ```
 
 When using environment variables for providers, define the provider key in `config.yml`:
