@@ -19,6 +19,7 @@ import (
 // LoginChallengeTypes - struct for LoginChallengeTypes
 type LoginChallengeTypes struct {
 	AppleLoginChallenge         *AppleLoginChallenge
+	BskyAuthenticationChallenge *BskyAuthenticationChallenge
 	PlexAuthenticationChallenge *PlexAuthenticationChallenge
 	RedirectChallenge           *RedirectChallenge
 	TelegramLoginChallenge      *TelegramLoginChallenge
@@ -28,6 +29,13 @@ type LoginChallengeTypes struct {
 func AppleLoginChallengeAsLoginChallengeTypes(v *AppleLoginChallenge) LoginChallengeTypes {
 	return LoginChallengeTypes{
 		AppleLoginChallenge: v,
+	}
+}
+
+// BskyAuthenticationChallengeAsLoginChallengeTypes is a convenience function that returns BskyAuthenticationChallenge wrapped in LoginChallengeTypes
+func BskyAuthenticationChallengeAsLoginChallengeTypes(v *BskyAuthenticationChallenge) LoginChallengeTypes {
+	return LoginChallengeTypes{
+		BskyAuthenticationChallenge: v,
 	}
 }
 
@@ -60,6 +68,18 @@ func (dst *LoginChallengeTypes) UnmarshalJSON(data []byte) error {
 	err = newStrictDecoder(data).Decode(&jsonDict)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal JSON into map for the discriminator lookup")
+	}
+
+	// check if the discriminator value is 'ak-source-bsky'
+	if jsonDict["component"] == "ak-source-bsky" {
+		// try to unmarshal JSON data into BskyAuthenticationChallenge
+		err = json.Unmarshal(data, &dst.BskyAuthenticationChallenge)
+		if err == nil {
+			return nil // data stored in dst.BskyAuthenticationChallenge, return on the first match
+		} else {
+			dst.BskyAuthenticationChallenge = nil
+			return fmt.Errorf("failed to unmarshal LoginChallengeTypes as BskyAuthenticationChallenge: %s", err.Error())
+		}
 	}
 
 	// check if the discriminator value is 'ak-source-oauth-apple'
@@ -119,6 +139,10 @@ func (src LoginChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AppleLoginChallenge)
 	}
 
+	if src.BskyAuthenticationChallenge != nil {
+		return json.Marshal(&src.BskyAuthenticationChallenge)
+	}
+
 	if src.PlexAuthenticationChallenge != nil {
 		return json.Marshal(&src.PlexAuthenticationChallenge)
 	}
@@ -143,6 +167,10 @@ func (obj *LoginChallengeTypes) GetActualInstance() interface{} {
 		return obj.AppleLoginChallenge
 	}
 
+	if obj.BskyAuthenticationChallenge != nil {
+		return obj.BskyAuthenticationChallenge
+	}
+
 	if obj.PlexAuthenticationChallenge != nil {
 		return obj.PlexAuthenticationChallenge
 	}
@@ -163,6 +191,10 @@ func (obj *LoginChallengeTypes) GetActualInstance() interface{} {
 func (obj LoginChallengeTypes) GetActualInstanceValue() interface{} {
 	if obj.AppleLoginChallenge != nil {
 		return *obj.AppleLoginChallenge
+	}
+
+	if obj.BskyAuthenticationChallenge != nil {
+		return *obj.BskyAuthenticationChallenge
 	}
 
 	if obj.PlexAuthenticationChallenge != nil {

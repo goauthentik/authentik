@@ -27,6 +27,7 @@ type FlowChallengeResponseRequest struct {
 	AuthenticatorValidationChallengeResponseRequest *AuthenticatorValidationChallengeResponseRequest
 	AuthenticatorWebAuthnChallengeResponseRequest   *AuthenticatorWebAuthnChallengeResponseRequest
 	AutoSubmitChallengeResponseRequest              *AutoSubmitChallengeResponseRequest
+	BskyAuthenticationChallengeResultRequest        *BskyAuthenticationChallengeResultRequest
 	CaptchaChallengeResponseRequest                 *CaptchaChallengeResponseRequest
 	ConsentChallengeResponseRequest                 *ConsentChallengeResponseRequest
 	DummyChallengeResponseRequest                   *DummyChallengeResponseRequest
@@ -106,6 +107,13 @@ func AuthenticatorWebAuthnChallengeResponseRequestAsFlowChallengeResponseRequest
 func AutoSubmitChallengeResponseRequestAsFlowChallengeResponseRequest(v *AutoSubmitChallengeResponseRequest) FlowChallengeResponseRequest {
 	return FlowChallengeResponseRequest{
 		AutoSubmitChallengeResponseRequest: v,
+	}
+}
+
+// BskyAuthenticationChallengeResultRequestAsFlowChallengeResponseRequest is a convenience function that returns BskyAuthenticationChallengeResultRequest wrapped in FlowChallengeResponseRequest
+func BskyAuthenticationChallengeResultRequestAsFlowChallengeResponseRequest(v *BskyAuthenticationChallengeResultRequest) FlowChallengeResponseRequest {
+	return FlowChallengeResponseRequest{
+		BskyAuthenticationChallengeResultRequest: v,
 	}
 }
 
@@ -283,6 +291,18 @@ func (dst *FlowChallengeResponseRequest) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.NativeLogoutChallengeResponseRequest = nil
 			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as NativeLogoutChallengeResponseRequest: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'ak-source-bsky'
+	if jsonDict["component"] == "ak-source-bsky" {
+		// try to unmarshal JSON data into BskyAuthenticationChallengeResultRequest
+		err = json.Unmarshal(data, &dst.BskyAuthenticationChallengeResultRequest)
+		if err == nil {
+			return nil // data stored in dst.BskyAuthenticationChallengeResultRequest, return on the first match
+		} else {
+			dst.BskyAuthenticationChallengeResultRequest = nil
+			return fmt.Errorf("failed to unmarshal FlowChallengeResponseRequest as BskyAuthenticationChallengeResultRequest: %s", err.Error())
 		}
 	}
 
@@ -591,6 +611,10 @@ func (src FlowChallengeResponseRequest) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AutoSubmitChallengeResponseRequest)
 	}
 
+	if src.BskyAuthenticationChallengeResultRequest != nil {
+		return json.Marshal(&src.BskyAuthenticationChallengeResultRequest)
+	}
+
 	if src.CaptchaChallengeResponseRequest != nil {
 		return json.Marshal(&src.CaptchaChallengeResponseRequest)
 	}
@@ -703,6 +727,10 @@ func (obj *FlowChallengeResponseRequest) GetActualInstance() interface{} {
 		return obj.AutoSubmitChallengeResponseRequest
 	}
 
+	if obj.BskyAuthenticationChallengeResultRequest != nil {
+		return obj.BskyAuthenticationChallengeResultRequest
+	}
+
 	if obj.CaptchaChallengeResponseRequest != nil {
 		return obj.CaptchaChallengeResponseRequest
 	}
@@ -811,6 +839,10 @@ func (obj FlowChallengeResponseRequest) GetActualInstanceValue() interface{} {
 
 	if obj.AutoSubmitChallengeResponseRequest != nil {
 		return *obj.AutoSubmitChallengeResponseRequest
+	}
+
+	if obj.BskyAuthenticationChallengeResultRequest != nil {
+		return *obj.BskyAuthenticationChallengeResultRequest
 	}
 
 	if obj.CaptchaChallengeResponseRequest != nil {

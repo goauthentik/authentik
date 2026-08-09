@@ -6,6 +6,7 @@ import "#admin/property-mappings/PropertyMappingProviderRadiusForm";
 import "#admin/property-mappings/PropertyMappingProviderSAMLForm";
 import "#admin/property-mappings/PropertyMappingProviderSCIMForm";
 import "#admin/property-mappings/PropertyMappingProviderScopeForm";
+import "#admin/property-mappings/PropertyMappingSourceBskyForm";
 import "#admin/property-mappings/PropertyMappingSourceKerberosForm";
 import "#admin/property-mappings/PropertyMappingSourceLDAPForm";
 import "#admin/property-mappings/PropertyMappingSourceOAuthForm";

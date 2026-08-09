@@ -28,6 +28,7 @@ type ChallengeTypes struct {
 	AuthenticatorValidationChallenge *AuthenticatorValidationChallenge
 	AuthenticatorWebAuthnChallenge   *AuthenticatorWebAuthnChallenge
 	AutosubmitChallenge              *AutosubmitChallenge
+	BskyAuthenticationChallenge      *BskyAuthenticationChallenge
 	CaptchaChallenge                 *CaptchaChallenge
 	ConsentChallenge                 *ConsentChallenge
 	DummyChallenge                   *DummyChallenge
@@ -117,6 +118,13 @@ func AuthenticatorWebAuthnChallengeAsChallengeTypes(v *AuthenticatorWebAuthnChal
 func AutosubmitChallengeAsChallengeTypes(v *AutosubmitChallenge) ChallengeTypes {
 	return ChallengeTypes{
 		AutosubmitChallenge: v,
+	}
+}
+
+// BskyAuthenticationChallengeAsChallengeTypes is a convenience function that returns BskyAuthenticationChallenge wrapped in ChallengeTypes
+func BskyAuthenticationChallengeAsChallengeTypes(v *BskyAuthenticationChallenge) ChallengeTypes {
+	return ChallengeTypes{
+		BskyAuthenticationChallenge: v,
 	}
 }
 
@@ -315,6 +323,18 @@ func (dst *ChallengeTypes) UnmarshalJSON(data []byte) error {
 		} else {
 			dst.NativeLogoutChallenge = nil
 			return fmt.Errorf("failed to unmarshal ChallengeTypes as NativeLogoutChallenge: %s", err.Error())
+		}
+	}
+
+	// check if the discriminator value is 'ak-source-bsky'
+	if jsonDict["component"] == "ak-source-bsky" {
+		// try to unmarshal JSON data into BskyAuthenticationChallenge
+		err = json.Unmarshal(data, &dst.BskyAuthenticationChallenge)
+		if err == nil {
+			return nil // data stored in dst.BskyAuthenticationChallenge, return on the first match
+		} else {
+			dst.BskyAuthenticationChallenge = nil
+			return fmt.Errorf("failed to unmarshal ChallengeTypes as BskyAuthenticationChallenge: %s", err.Error())
 		}
 	}
 
@@ -675,6 +695,10 @@ func (src ChallengeTypes) MarshalJSON() ([]byte, error) {
 		return json.Marshal(&src.AutosubmitChallenge)
 	}
 
+	if src.BskyAuthenticationChallenge != nil {
+		return json.Marshal(&src.BskyAuthenticationChallenge)
+	}
+
 	if src.CaptchaChallenge != nil {
 		return json.Marshal(&src.CaptchaChallenge)
 	}
@@ -803,6 +827,10 @@ func (obj *ChallengeTypes) GetActualInstance() interface{} {
 		return obj.AutosubmitChallenge
 	}
 
+	if obj.BskyAuthenticationChallenge != nil {
+		return obj.BskyAuthenticationChallenge
+	}
+
 	if obj.CaptchaChallenge != nil {
 		return obj.CaptchaChallenge
 	}
@@ -927,6 +955,10 @@ func (obj ChallengeTypes) GetActualInstanceValue() interface{} {
 
 	if obj.AutosubmitChallenge != nil {
 		return *obj.AutosubmitChallenge
+	}
+
+	if obj.BskyAuthenticationChallenge != nil {
+		return *obj.BskyAuthenticationChallenge
 	}
 
 	if obj.CaptchaChallenge != nil {

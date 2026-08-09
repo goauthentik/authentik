@@ -15816,6 +15816,214 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /propertymappings/source/bsky/:
+    get:
+      operationId: propertymappings_source_bsky_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: managed__isnull
+        schema:
+          type: boolean
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBskySourcePropertyMappingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: propertymappings_source_bsky_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BskySourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySourcePropertyMapping'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /propertymappings/source/bsky/{pm_uuid}/:
+    get:
+      operationId: propertymappings_source_bsky_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this bsky source property mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySourcePropertyMapping'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: propertymappings_source_bsky_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this bsky source property mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BskySourcePropertyMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySourcePropertyMapping'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: propertymappings_source_bsky_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this bsky source property mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBskySourcePropertyMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySourcePropertyMapping'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: propertymappings_source_bsky_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this bsky source property mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /propertymappings/source/bsky/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_source_bsky_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this bsky source property mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /propertymappings/source/kerberos/:
     get:
       operationId: propertymappings_source_kerberos_list
@@ -23453,6 +23661,214 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /sources/bsky/:
+    get:
+      operationId: sources_bsky_list
+      description: Bsky source Viewset
+      parameters:
+      - in: query
+        name: authentication_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: enabled
+        schema:
+          type: boolean
+      - in: query
+        name: enrollment_flow
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBskySourceList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: sources_bsky_create
+      description: Bsky source Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BskySourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySource'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/bsky/{slug}/:
+    get:
+      operationId: sources_bsky_retrieve
+      description: Bsky source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySource'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: sources_bsky_update
+      description: Bsky source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BskySourceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySource'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: sources_bsky_partial_update
+      description: Bsky source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBskySourceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BskySource'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: sources_bsky_destroy
+      description: Bsky source Viewset
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/bsky/{slug}/used_by/:
+    get:
+      operationId: sources_bsky_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /sources/group_connections/all/:
     get:
       operationId: sources_group_connections_all_list
@@ -23604,6 +24020,204 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/group_connections/bsky/:
+    get:
+      operationId: sources_group_connections_bsky_list
+      description: Group-source connection Viewset
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupBskySourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: sources_group_connections_bsky_create
+      description: Group-source connection Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupBskySourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/group_connections/bsky/{id}/:
+    get:
+      operationId: sources_group_connections_bsky_retrieve
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Bluesky Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: sources_group_connections_bsky_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Bluesky Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupBskySourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: sources_group_connections_bsky_partial_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Bluesky Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupBskySourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: sources_group_connections_bsky_destroy
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Bluesky Source
+          Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/group_connections/bsky/{id}/used_by/:
+    get:
+      operationId: sources_group_connections_bsky_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Group Bluesky Source
+          Connection.
         required: true
       tags:
       - sources
@@ -27315,6 +27929,198 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this user source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/user_connections/bsky/:
+    get:
+      operationId: sources_user_connections_bsky_list
+      description: User-source connection Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserBskySourceConnectionList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: sources_user_connections_bsky_create
+      description: User-source connection Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBskySourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/user_connections/bsky/{id}/:
+    get:
+      operationId: sources_user_connections_bsky_retrieve
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Bluesky Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: sources_user_connections_bsky_update
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Bluesky Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserBskySourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: sources_user_connections_bsky_partial_update
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Bluesky Source Connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserBskySourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBskySourceConnection'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: sources_user_connections_bsky_destroy
+      description: User-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Bluesky Source Connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /sources/user_connections/bsky/{id}/used_by/:
+    get:
+      operationId: sources_user_connections_bsky_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User Bluesky Source Connection.
         required: true
       tags:
       - sources
@@ -36092,6 +36898,7 @@ components:
       - authentik.providers.scim
       - authentik.rbac
       - authentik.recovery
+      - authentik.sources.bsky
       - authentik.sources.kerberos
       - authentik.sources.ldap
       - authentik.sources.oauth
@@ -38052,6 +38859,272 @@ components:
           additionalProperties: {}
       required:
       - domain
+    BskyAuthenticationChallenge:
+      type: object
+      description: Challenge shown to the user in identification stage
+      properties:
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-source-bsky
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        slug:
+          type: string
+      required:
+      - slug
+    BskyAuthenticationChallengeResultRequest:
+      type: object
+      description: Pseudo class for bsky response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-source-bsky
+        handle:
+          type: string
+          minLength: 1
+      required:
+      - handle
+    BskySource:
+      type: object
+      description: Bsky Source Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pbm uuid
+        name:
+          type: string
+          description: Source's display Name.
+        slug:
+          type: string
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+          readOnly: true
+        user_path_template:
+          type: string
+        icon:
+          type: string
+        icon_url:
+          type: string
+          nullable: true
+          readOnly: true
+        icon_themed_urls:
+          allOf:
+          - $ref: '#/components/schemas/ThemedUrls'
+          readOnly: true
+          nullable: true
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        scope:
+          type: string
+      required:
+      - component
+      - icon_themed_urls
+      - icon_url
+      - managed
+      - meta_model_name
+      - name
+      - pk
+      - slug
+      - verbose_name
+      - verbose_name_plural
+    BskySourcePropertyMapping:
+      type: object
+      description: PropertyMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    BskySourcePropertyMappingRequest:
+      type: object
+      description: PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    BskySourceRequest:
+      type: object
+      description: Bsky Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        scope:
+          type: string
+          minLength: 1
+      required:
+      - name
+      - slug
     BulkDeleteSessionResponse:
       type: object
       properties:
@@ -38374,6 +39447,7 @@ components:
       - $ref: '#/components/schemas/AuthenticatorValidationChallenge'
       - $ref: '#/components/schemas/AuthenticatorWebAuthnChallenge'
       - $ref: '#/components/schemas/AutosubmitChallenge'
+      - $ref: '#/components/schemas/BskyAuthenticationChallenge'
       - $ref: '#/components/schemas/CaptchaChallenge'
       - $ref: '#/components/schemas/ConsentChallenge'
       - $ref: '#/components/schemas/DummyChallenge'
@@ -38407,6 +39481,7 @@ components:
           ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallenge'
           ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallenge'
           ak-stage-autosubmit: '#/components/schemas/AutosubmitChallenge'
+          ak-source-bsky: '#/components/schemas/BskyAuthenticationChallenge'
           ak-stage-captcha: '#/components/schemas/CaptchaChallenge'
           ak-stage-consent: '#/components/schemas/ConsentChallenge'
           ak-stage-dummy: '#/components/schemas/DummyChallenge'
@@ -41280,6 +42355,7 @@ components:
       - $ref: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
       - $ref: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+      - $ref: '#/components/schemas/BskyAuthenticationChallengeResultRequest'
       - $ref: '#/components/schemas/CaptchaChallengeResponseRequest'
       - $ref: '#/components/schemas/ConsentChallengeResponseRequest'
       - $ref: '#/components/schemas/DummyChallengeResponseRequest'
@@ -41309,6 +42385,7 @@ components:
           ak-stage-authenticator-validate: '#/components/schemas/AuthenticatorValidationChallengeResponseRequest'
           ak-stage-authenticator-webauthn: '#/components/schemas/AuthenticatorWebAuthnChallengeResponseRequest'
           ak-stage-autosubmit: '#/components/schemas/AutoSubmitChallengeResponseRequest'
+          ak-source-bsky: '#/components/schemas/BskyAuthenticationChallengeResultRequest'
           ak-stage-captcha: '#/components/schemas/CaptchaChallengeResponseRequest'
           ak-stage-consent: '#/components/schemas/ConsentChallengeResponseRequest'
           ak-stage-dummy: '#/components/schemas/DummyChallengeResponseRequest'
@@ -42432,6 +43509,56 @@ components:
       - pk
       - roles_obj
       - users_obj
+    GroupBskySourceConnection:
+      type: object
+      description: Group Source Connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+    GroupBskySourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - identifier
+      - source
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
@@ -44934,6 +46061,7 @@ components:
       oneOf:
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/AppleLoginChallenge'
+      - $ref: '#/components/schemas/BskyAuthenticationChallenge'
       - $ref: '#/components/schemas/PlexAuthenticationChallenge'
       - $ref: '#/components/schemas/TelegramLoginChallenge'
       discriminator:
@@ -44941,6 +46069,7 @@ components:
         mapping:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
+          ak-source-bsky: '#/components/schemas/BskyAuthenticationChallenge'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
           ak-source-telegram: '#/components/schemas/TelegramLoginChallenge'
     LoginSource:
@@ -45385,6 +46514,10 @@ components:
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
       - authentik_rbac.initialpermissions
+      - authentik_sources_bsky.bskysource
+      - authentik_sources_bsky.bskysourcepropertymapping
+      - authentik_sources_bsky.userbskysourceconnection
+      - authentik_sources_bsky.groupbskysourceconnection
       - authentik_sources_kerberos.kerberossource
       - authentik_sources_kerberos.kerberossourcepropertymapping
       - authentik_sources_kerberos.userkerberossourceconnection
@@ -47366,6 +48499,36 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedBskySourceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BskySource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedBskySourcePropertyMappingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/BskySourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedCaptchaStageList:
       type: object
       properties:
@@ -47900,6 +49063,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GrantRequest'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedGroupBskySourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupBskySourceConnection'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -49331,6 +50509,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedUserBskySourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserBskySourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedUserConsentList:
       type: object
       properties:
@@ -50586,6 +51779,84 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+    PatchedBskySourcePropertyMappingRequest:
+      type: object
+      description: PropertyMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PatchedBskySourceRequest:
+      type: object
+      description: Bsky Source Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Source's display Name.
+        slug:
+          type: string
+          minLength: 1
+          description: Internal source name, used in URLs.
+          pattern: ^[-a-zA-Z0-9_]+$
+        enabled:
+          type: boolean
+        promoted:
+          type: boolean
+          description: When enabled, this source will be displayed as a prominent
+            button on the login page, instead of a small icon.
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when authenticating existing users.
+        enrollment_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow to use when enrolling new users.
+        user_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        group_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        user_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/UserMatchingModeEnum'
+          description: How the source determines if an existing user should be authenticated
+            or a new user enrolled.
+        user_path_template:
+          type: string
+          minLength: 1
+        icon:
+          type: string
+        group_matching_mode:
+          allOf:
+          - $ref: '#/components/schemas/GroupMatchingModeEnum'
+          description: How the source determines if an existing group should be used
+            or a new group created.
+        scope:
+          type: string
+          minLength: 1
     PatchedCaptchaStageRequest:
       type: object
       description: CaptchaStage Serializer
@@ -51294,6 +52565,16 @@ components:
           additionalProperties: {}
         status:
           $ref: '#/components/schemas/RequestStatus'
+    PatchedGroupBskySourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: Group Source Connection
@@ -53905,6 +55186,27 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Number of passwords to check against.
+    PatchedUserBskySourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        access_token:
+          type: string
+          writeOnly: true
+          minLength: 1
+        refresh_token:
+          type: string
+          writeOnly: true
+          nullable: true
+        expires:
+          type: string
+          format: date-time
     PatchedUserDeleteStageRequest:
       type: object
       description: UserDeleteStage Serializer
@@ -60454,6 +61756,70 @@ components:
       - username
       - email
       type: string
+    UserBskySourceConnection:
+      type: object
+      description: User source connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        user:
+          type: integer
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+      required:
+      - created
+      - identifier
+      - last_updated
+      - pk
+      - source
+      - source_obj
+      - user
+    UserBskySourceConnectionRequest:
+      type: object
+      description: User source connection
+      properties:
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+        access_token:
+          type: string
+          writeOnly: true
+          minLength: 1
+        refresh_token:
+          type: string
+          writeOnly: true
+          nullable: true
+        expires:
+          type: string
+          format: date-time
+      required:
+      - access_token
+      - identifier
+      - source
     UserConsent:
       type: object
       description: UserConsent Serializer

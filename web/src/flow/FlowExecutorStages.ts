@@ -6,6 +6,7 @@
  */
 
 import "#flow/sources/apple/AppleLoginInit";
+import "#flow/sources/bsky/BskyLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/sources/telegram/TelegramLogin";
 import "#flow/stages/FlowErrorStage";
@@ -81,6 +82,10 @@ export const StageEntries: readonly StageEntry[] = [
     {
         stage: "ak-source-oauth-apple",
         tag: "ak-flow-source-oauth-apple",
+    },
+    {
+        stage: "ak-source-bsky",
+        tag: "ak-flow-source-bsky",
     },
     {
         stage: "ak-source-plex",
