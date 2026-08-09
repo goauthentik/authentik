@@ -22,6 +22,14 @@ class PostSourceStage(StageView):
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         connection.user = user
         linked = connection.pk is None
+        if linked:
+            existing = type(connection).objects.filter(
+                user=connection.user, source=connection.source
+            ).first()
+            if existing:
+                connection = existing
+                linked = False
+                self.executor.plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = connection
         connection.save()
         if linked:
             Event.new(
