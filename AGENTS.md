@@ -152,7 +152,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 | Concern         | Tooling                                                                  |
 | --------------- | ------------------------------------------------------------------------ |
-| Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
+| Core server     | Python 3.15rc1, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
 | Datastore       | PostgreSQL (multi-tenant via `django-tenants`) + Redis                   |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
