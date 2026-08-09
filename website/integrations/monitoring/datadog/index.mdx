@@ -1,0 +1,91 @@
+---
+title: Integrate with Datadog
+sidebar_label: Datadog
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Datadog?
+
+> Datadog is a monitoring and analytics platform for cloud-scale applications. It provides monitoring of servers, databases, tools, and services through a SaaS-based data analytics platform.
+>
+> -- https://www.datadoghq.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+If SAML is not available for your Datadog account, contact Datadog support to enable it.
+
+:::info Datadog sites
+Datadog has multiple regional sites. This guide uses the default US1 site (`app.datadoghq.com`). If your Datadog organization uses a different site, replace `app.datadoghq.com` with the appropriate hostname:
+
+| Site    | Hostname          |
+| ------- | ----------------- |
+| US1     | app.datadoghq.com |
+| US3     | us3.datadoghq.com |
+| US5     | us5.datadoghq.com |
+| EU1     | app.datadoghq.eu  |
+| AP1     | ap1.datadoghq.com |
+| AP2     | ap2.datadoghq.com |
+| US1-FED | app.ddog-gov.com  |
+
+:::
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Datadog with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** value because it can be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://app.datadoghq.com/account/saml/assertion`.
+        - Set the **Audience** to `https://app.datadoghq.com/account/saml/metadata.xml`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the provider metadata
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
+
+## Datadog configuration
+
+1. Log in to Datadog as an administrator.
+2. Hover over your email address in the bottom-left corner of the sidebar and click **Organization Settings**.
+3. Navigate to **Login Methods**. Under **SAML**, click **Configure**, then click **Add SAML**.
+    - **Name**: enter a descriptive name (e.g. `authentik`).
+    - **IdP Metadata**: upload the authentik metadata file that you downloaded in the previous section.
+    - **Identity Provider (IdP) Initiated Login**: enable this if users should launch Datadog from the authentik Application Dashboard.
+4. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Datadog, log out, open Datadog, and click **Using Single Sign-On?**. Enter your email address and click **Next**. You should be redirected to authentik, and after you authenticate, you will be redirected back to Datadog.
+
+:::info SP-initiated email verification
+When logging in via SP-initiated login, Datadog may send a one-time email verification code. This is normal security behavior.
+:::
+
+## Resources
+
+- [Datadog Docs - Configuring Single Sign-On With SAML](https://docs.datadoghq.com/account_management/saml/configuration/)
+- [Datadog Docs - Single Sign On With SAML](https://docs.datadoghq.com/account_management/saml/)
+- [Datadog Docs - Datadog Site](https://docs.datadoghq.com/getting_started/site/)

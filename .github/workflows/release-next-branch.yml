@@ -1,0 +1,22 @@
+---
+name: Release - Update next branch
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # every day at noon
+  workflow_dispatch:
+
+permissions:
+  # Needed to be able to push to the next branch
+  contents: write
+
+jobs:
+  update-next:
+    runs-on: ubuntu-latest
+    environment: internal-production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          ref: main
+      - run: |
+          git push origin --force main:next

@@ -1,0 +1,81 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Login with conditional Captcha
+entries:
+  - identifiers:
+      slug: default-authentication-flow
+    id: flow
+    model: authentik_flows.flow
+    attrs:
+      name: Default Authentication Flow
+      title: Welcome to authentik!
+      designation: authentication
+      authentication: require_unauthenticated
+  - identifiers:
+      name: default-authentication-login
+    id: default-authentication-login
+    model: authentik_stages_user_login.userloginstage
+  - identifiers:
+      name: default-authentication-flow-captcha
+    id: default-authentication-flow-captcha
+    model: authentik_stages_captcha.captchastage
+    attrs:
+      public_key: 6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+      private_key: 6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+  - identifiers:
+      name: default-authentication-identification
+    id: default-authentication-identification
+    model: authentik_stages_identification.identificationstage
+    attrs:
+      user_fields:
+        - email
+        - username
+      template: stages/identification/login.html
+  - identifiers:
+      name: default-authentication-password
+    id: default-authentication-password
+    model: authentik_stages_password.passwordstage
+    attrs:
+      backends:
+        - authentik.core.auth.InbuiltBackend
+        - authentik.core.auth.TokenBackend
+        - authentik.sources.ldap.auth.LDAPBackend
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-identification
+      order: 10
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-password
+      order: 20
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-flow-captcha
+      order: 30
+    id: flow-binding-captcha
+    model: authentik_flows.flowstagebinding
+    attrs:
+      evaluate_on_plan: false
+      re_evaluate_policies: true
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-login
+      order: 100
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      name: default-authentication-flow-conditional-captcha
+    id: default-authentication-flow-conditional-captcha
+    model: authentik_policies_reputation.reputationpolicy
+    attrs:
+      check_ip: true
+      check_username: true
+      threshold: -5
+  - identifiers:
+      policy: !KeyOf default-authentication-flow-conditional-captcha
+      target: !KeyOf flow-binding-captcha
+      order: 0
+    model: authentik_policies.policybinding

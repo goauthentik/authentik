@@ -1,0 +1,306 @@
+{
+    "name": "@goauthentik/web",
+    "version": "2026.11.0-rc1",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
+        "build-locales": "node scripts/build-locales.mjs",
+        "build-proxy": "wireit",
+        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "lit-localize extract",
+        "format": "wireit",
+        "lint": "eslint --fix .",
+        "lint:imports": "knip --config scripts/knip.config.ts",
+        "lint:types": "wireit",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lit-analyse": "wireit",
+        "precommit": "wireit",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
+        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "vitest",
+        "test:e2e": "playwright test",
+        "tsc": "wireit",
+        "watch": "run-s build-locales bundler:watch"
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./styles/*": "./src/styles/*",
+        "./elements/*": "./src/elements/*",
+        "./common/*": "./src/common/*",
+        "./components/*": "./src/components/*",
+        "./flow/*": "./src/flow/*",
+        "./locales/*": "./src/locales/*",
+        "./user/*": "./src/user/*",
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "imports": {
+        "#styles/*.css": "./src/styles/*.css",
+        "#styles/*": "./src/styles/*.js",
+        "#common/*": "./src/common/*.js",
+        "#elements/dialogs": "./src/elements/dialogs/index.js",
+        "#elements/*.css": "./src/elements/*.css",
+        "#elements/*": "./src/elements/*.js",
+        "#components/*.css": "./src/components/*.css",
+        "#components/*": "./src/components/*.js",
+        "#user/*.css": "./src/user/*.css",
+        "#user/*": "./src/user/*.js",
+        "#admin/*.css": "./src/admin/*.css",
+        "#admin/*": "./src/admin/*.js",
+        "#flow/*.css": "./src/flow/*.css",
+        "#flow/*": "./src/flow/*.js",
+        "#locales/*": "./src/locales/*.js",
+        "#stories/*": "./src/stories/*.js",
+        "#tests/*": "./tests/*.js",
+        "#e2e": "./e2e/index.ts",
+        "#e2e/*": "./e2e/*.ts",
+        "#types/*": "./types/*/index.d.ts",
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "dependencies": {
+        "@codemirror/lang-css": "^6.3.1",
+        "@codemirror/lang-html": "^6.4.11",
+        "@codemirror/lang-javascript": "^6.2.5",
+        "@codemirror/lang-python": "^6.2.1",
+        "@codemirror/lang-xml": "^6.1.0",
+        "@codemirror/legacy-modes": "^6.5.3",
+        "@codemirror/theme-one-dark": "^6.1.3",
+        "@eslint/js": "catalog:",
+        "@formatjs/intl-listformat": "^8.3.13",
+        "@fortawesome/fontawesome-free": "^7.3.1",
+        "@goauthentik/api": "link:packages/client-ts",
+        "@goauthentik/brand-assets": "^2.0.0",
+        "@goauthentik/core": "workspace:*",
+        "@goauthentik/esbuild-plugin-live-reload": "^2.0.3",
+        "@goauthentik/eslint-config": "^2.0.3",
+        "@goauthentik/fonts": "link:../packages/fonts",
+        "@goauthentik/prettier-config": "^3.5.0",
+        "@goauthentik/tsconfig": "^1.0.9",
+        "@hcaptcha/types": "^1.2.0",
+        "@lit/context": "^1.1.6",
+        "@lit/localize": "^0.12.2",
+        "@lit/localize-tools": "^0.8.2",
+        "@lit/reactive-element": "^2.1.2",
+        "@lit/task": "^1.0.3",
+        "@mdx-js/mdx": "^3.1.1",
+        "@mermaid-js/layout-elk": "^0.2.2",
+        "@mrmarble/djangoql-completion": "^0.8.3",
+        "@open-wc/lit-helpers": "^0.7.0",
+        "@patternfly/elements": "^4.4.0",
+        "@patternfly/patternfly": "^4.224.5",
+        "@playwright/test": "catalog:",
+        "@protomaps/basemaps": "^5.7.2",
+        "@sentry/browser": "^10.69.0",
+        "@storybook/addon-docs": "^10.5.6",
+        "@storybook/addon-links": "^10.5.6",
+        "@storybook/web-components": "^10.5.6",
+        "@storybook/web-components-vite": "^10.5.6",
+        "@types/codemirror": "^5.60.17",
+        "@types/grecaptcha": "^3.0.9",
+        "@types/guacamole-common-js": "^1.5.5",
+        "@types/node": "catalog:",
+        "@types/react": "^19.2.17",
+        "@types/react-dom": "^19.2.3",
+        "@typescript-eslint/eslint-plugin": "catalog:",
+        "@typescript-eslint/parser": "catalog:",
+        "@typescript-eslint/utils": "catalog:",
+        "@typescript/native-preview": "7.0.0-dev.20260707.2",
+        "@vitest/browser": "catalog:",
+        "@vitest/browser-playwright": "catalog:",
+        "@webcomponents/webcomponentsjs": "^2.8.0",
+        "base64-js": "^1.5.1",
+        "change-case": "^5.4.4",
+        "chart.js": "^4.5.1",
+        "chartjs-adapter-date-fns": "^3.0.0",
+        "codemirror": "^6.0.2",
+        "core-js": "^3.49.0",
+        "country-flag-icons": "^1.6.20",
+        "date-fns": "^4.4.0",
+        "deepmerge-ts": "^7.1.5",
+        "dompurify": "^3.4.12",
+        "esbuild": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-lit": "^2.3.1",
+        "eslint-plugin-wc": "^3.1.0",
+        "fuse.js": "^7.4.2",
+        "globals": "^17.8.0",
+        "guacamole-common-js": "^1.5.0",
+        "h3-js": "^4.5.0",
+        "hastscript": "^9.0.1",
+        "knip": "^6.29.0",
+        "lex": "workspace:*",
+        "lit": "^3.3.3",
+        "lit-analyzer": "^2.0.3",
+        "lit-element": "^4.2.2",
+        "lit-html": "^3.3.3",
+        "maplibre-gl": "^5.24.0",
+        "md-front-matter": "^1.0.4",
+        "mermaid": "^11.16.1",
+        "node-domexception": "workspace:*",
+        "npm-run-all": "^4.1.5",
+        "pino": "^10.3.1",
+        "pino-pretty": "^13.1.3",
+        "playwright": "catalog:",
+        "pmtiles": "^4.4.1",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "pseudolocale": "^2.2.0",
+        "rapidoc": "^9.3.8",
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8",
+        "rehype-highlight": "^7.0.2",
+        "rehype-mermaid": "^3.0.0",
+        "rehype-parse": "^9.0.1",
+        "rehype-stringify": "^10.0.1",
+        "remark-directive": "^4.0.0",
+        "remark-frontmatter": "^5.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-mdx-frontmatter": "^5.2.0",
+        "storybook": "^10.5.6",
+        "style-mod": "^4.1.3",
+        "stylelint": "^17.14.1",
+        "trusted-types": "^2.0.0",
+        "ts-pattern": "^5.9.0",
+        "turnstile-types": "^1.2.3",
+        "type-fest": "^5.8.0",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "unist-util-visit": "^5.1.0",
+        "vite": "catalog:",
+        "vitest": "catalog:",
+        "webcomponent-qr-code": "^2.0.0",
+        "wireit": "^0.14.13",
+        "yaml": "^2.9.0"
+    },
+    "optionalDependencies": {
+        "@esbuild/darwin-arm64": "^0.28.1",
+        "@esbuild/linux-arm64": "^0.28.1",
+        "@esbuild/linux-x64": "^0.28.1",
+        "@goauthentik/prettier-config-dev": "link:../packages/prettier-config",
+        "@rollup/rollup-darwin-arm64": "^4.62.4",
+        "@rollup/rollup-linux-arm64-gnu": "^4.62.4",
+        "@rollup/rollup-linux-x64-gnu": "^4.62.4"
+    },
+    "wireit": {
+        "build": {
+            "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "dependencies": [
+                "build-locales"
+            ],
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts",
+                "icons/**/*"
+            ],
+            "output": [
+                "./dist/admin/**",
+                "./dist/user/**",
+                "./dist/flow/**",
+                "./dist/standalone/api-browser/**",
+                "./dist/standalone/loading/**",
+                "./dist/enterprise/**",
+                "./dist/poly-*.js",
+                "./dist/poly-*.js.map",
+                "./dist/styles/**"
+            ],
+            "#comment": [
+                "`pnpm run build` and `pnpm run watch` are the most common ",
+                "commands you should be using when working on the front end",
+                "The files and output spec here expect you to use `pnpm run build --watch` ",
+                "instead of `pnpm run watch`. The former is more comprehensive, but ",
+                "the latter is faster."
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build-proxy": {
+            "command": "node scripts/build-web.mjs --styles-only",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lint:components": {
+            "command": "lit-analyzer src"
+        },
+        "lint:types": {
+            "command": "tsc -p .",
+            "dependencies": [
+                "build-locales"
+            ]
+        },
+        "lit-analyse": {
+            "command": "lit-analyzer src"
+        },
+        "locales:repair": {
+            "command": "prettier --write ./src/locale-codes.ts"
+        },
+        "precommit": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint",
+                "lint:types",
+                "lint:components"
+            ]
+        },
+        "storybook:build": {
+            "command": "storybook build",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            }
+        },
+        "tsc": {
+            "command": "tsgo -p .",
+            "dependencies": [
+                "build-locales"
+            ]
+        }
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=11.20.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        }
+    },
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+    "prettier": "./prettier.config.mjs"
+}

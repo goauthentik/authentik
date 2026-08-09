@@ -1,0 +1,99 @@
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+
+import { aki } from "#common/api/client";
+
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { ModelEnum, PoliciesApi, Reputation } from "@goauthentik/api";
+
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
+
+@customElement("ak-policy-reputation-list")
+export class ReputationListPage extends TablePage<Reputation> {
+    protected override searchEnabled = true;
+
+    public override pageTitle = msg("Reputation scores");
+    public override pageDescription = msg(
+        "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
+    );
+    public override pageIcon = "fa fa-ban";
+    public override order = "identifier";
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a reputation by identifier or IP...");
+
+    protected override async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
+        return aki(PoliciesApi).policiesReputationScoresList({
+            ...(await this.defaultEndpointConfig()),
+        });
+    }
+
+    protected override rowLabel(item: Reputation): string | null {
+        return item.identifier ?? null;
+    }
+
+    protected columns: TableColumn[] = [
+        [msg("Identifier"), "identifier"],
+        [msg("IP"), "ip"],
+        [msg("Score"), "score"],
+        [msg("Updated"), "updated"],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            object-label=${msg("Reputation")}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Reputation) => {
+                return aki(PoliciesApi).policiesReputationScoresUsedByList({
+                    reputationUuid: item.pk || "",
+                });
+            }}
+            .delete=${(item: Reputation) => {
+                return aki(PoliciesApi).policiesReputationScoresDestroy({
+                    reputationUuid: item.pk || "",
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected override row(item: Reputation): SlottedTemplateResult[] {
+        return [
+            item.identifier,
+            html`${item.ipGeoData?.country
+                ? html` ${getUnicodeFlagIcon(item.ipGeoData.country)} `
+                : nothing}
+            ${item.ip}`,
+            html`${item.score}`,
+            Timestamp(item.updated),
+            html`
+                <ak-rbac-object-permission-modal
+                    model=${ModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    objectPk=${item.pk || ""}
+                >
+                </ak-rbac-object-permission-modal>
+            `,
+        ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-reputation-list": ReputationListPage;
+    }
+}

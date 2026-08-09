@@ -1,0 +1,115 @@
+"""WSFederationProvider API Views"""
+
+from django.http import HttpRequest
+from django.urls import reverse
+from rest_framework.fields import CharField, SerializerMethodField, URLField
+
+from authentik.common.saml.constants import DEFAULT_ISSUER
+from authentik.core.api.providers import ProviderSerializer
+from authentik.core.models import Provider
+from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.enterprise.providers.ws_federation.models import WSFederationProvider
+from authentik.enterprise.providers.ws_federation.processors.metadata import MetadataProcessor
+from authentik.providers.saml.api.providers import SAMLProviderSerializer, SAMLProviderViewSet
+
+
+class WSFederationProviderSerializer(EnterpriseRequiredMixin, SAMLProviderSerializer):
+    """WSFederationProvider Serializer"""
+
+    reply_url = URLField(source="acs_url")
+    wtrealm = CharField(source="audience")
+    url_wsfed = SerializerMethodField()
+    url_issuer = SerializerMethodField()
+
+    def get_url_download_metadata(self, instance: WSFederationProvider) -> str:
+        """Get metadata download URL"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_api:wsfederationprovider-metadata",
+                    kwargs={
+                        "pk": instance.pk,
+                    },
+                )
+                + "?download"
+            )
+
+    def get_url_wsfed(self, instance: WSFederationProvider) -> str:
+        """Get WS-Fed url"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:wsfed-app-specific",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return ""
+
+    def get_url_issuer(self, instance: WSFederationProvider) -> str:
+        """Get Issuer/EntityID URL"""
+        if instance.issuer_override:
+            return instance.issuer_override
+        if "request" not in self._context:
+            return DEFAULT_ISSUER
+        request: HttpRequest = self._context["request"]._request
+        try:
+            return request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_ws_federation:metadata-download",
+                    kwargs={"application_slug": instance.application.slug},
+                )
+            )
+        except Provider.application.RelatedObjectDoesNotExist:
+            return DEFAULT_ISSUER
+
+    class Meta(SAMLProviderSerializer.Meta):
+        model = WSFederationProvider
+        fields = ProviderSerializer.Meta.fields + [
+            "reply_url",
+            "wtrealm",
+            "assertion_valid_not_before",
+            "assertion_valid_not_on_or_after",
+            "session_valid_not_on_or_after",
+            "property_mappings",
+            "name_id_mapping",
+            "authn_context_class_ref_mapping",
+            "saml_version",
+            "digest_algorithm",
+            "signature_algorithm",
+            "signing_kp",
+            "encryption_kp",
+            "sign_assertion",
+            "sign_logout_request",
+            "default_name_id_policy",
+            "url_download_metadata",
+            "url_wsfed",
+            "url_issuer",
+        ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+
+
+class WSFederationProviderViewSet(SAMLProviderViewSet):
+    """WSFederationProvider Viewset"""
+
+    queryset = WSFederationProvider.objects.all()
+    serializer_class = WSFederationProviderSerializer
+    filterset_fields = "__all__"
+    ordering = ["name"]
+    search_fields = ["name"]
+
+    metadata_generator_class = MetadataProcessor
+    import_metadata = None

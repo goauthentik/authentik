@@ -1,0 +1,76 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Two-factor Login
+entries:
+  - identifiers:
+      slug: default-authentication-flow
+    model: authentik_flows.flow
+    id: flow
+    attrs:
+      name: Default Authentication Flow
+      title: Welcome to authentik!
+      designation: authentication
+      authentication: require_unauthenticated
+  - identifiers:
+      name: test-not-app-password
+    id: test-not-app-password
+    model: authentik_policies_expression.expressionpolicy
+    attrs:
+      expression: |
+        return context.get("auth_method") != "app_password"
+  - identifiers:
+      name: default-authentication-login
+    id: default-authentication-login
+    model: authentik_stages_user_login.userloginstage
+  - identifiers:
+      name: default-authentication-identification
+    id: default-authentication-identification
+    model: authentik_stages_identification.identificationstage
+    attrs:
+      user_fields:
+        - email
+        - username
+      template: stages/identification/login.html
+  - identifiers:
+      name: default-authentication-mfa-validation
+    id: default-authentication-mfa-validation
+    model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+  - identifiers:
+      name: default-authentication-password
+    id: default-authentication-password
+    model: authentik_stages_password.passwordstage
+    attrs:
+      backends:
+        - authentik.core.auth.InbuiltBackend
+        - authentik.core.auth.TokenBackend
+        - authentik.sources.ldap.auth.LDAPBackend
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-identification
+      order: 10
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-password
+      order: 20
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-mfa-validation
+      order: 30
+    model: authentik_flows.flowstagebinding
+    id: flow-binding-mfa
+    attrs:
+      re_evaluate_policies: true
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-authentication-login
+      order: 100
+    model: authentik_flows.flowstagebinding
+  - identifiers:
+      policy: !KeyOf test-not-app-password
+      target: !KeyOf flow-binding-mfa
+      order: 0
+    model: authentik_policies.policybinding

@@ -1,0 +1,85 @@
+"""Token revocation endpoint"""
+
+from dataclasses import dataclass
+
+from django.db.models import Q
+from django.http import Http404, HttpRequest, HttpResponse
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from structlog.stdlib import get_logger
+
+from authentik.providers.oauth2.errors import TokenRevocationError
+from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.utils import (
+    TokenResponse,
+    authenticate_provider,
+    provider_from_request,
+)
+
+LOGGER = get_logger()
+
+
+@dataclass(slots=True)
+class TokenRevocationParams:
+    """Parameters for Token Revocation"""
+
+    token: RefreshToken | AccessToken
+    provider: OAuth2Provider
+
+    @staticmethod
+    def from_request(request: HttpRequest) -> TokenRevocationParams:
+        """Extract required Parameters from HTTP Request"""
+        raw_token = request.POST.get("token")
+
+        provider, _, _ = provider_from_request(request)
+        if provider and provider.client_type == ClientType.CONFIDENTIAL:
+            provider = authenticate_provider(request)
+        if not provider:
+            raise TokenRevocationError("invalid_client")
+        # By default clients can only revoke their own tokens
+        query = Q(provider=provider, token=raw_token)
+        if provider.client_type == ClientType.CONFIDENTIAL:
+            provider = authenticate_provider(request)
+            if not provider:
+                raise TokenRevocationError("invalid_client")
+            # If the request is authenticated by a confidential provider, it can also
+            # revoke federated tokens
+            query = Q(
+                Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
+                token=raw_token,
+            )
+
+        access_token = AccessToken.objects.filter(query).first()
+        if access_token:
+            return TokenRevocationParams(access_token, provider)
+        refresh_token = RefreshToken.objects.filter(query).first()
+        if refresh_token:
+            return TokenRevocationParams(refresh_token, provider)
+        LOGGER.debug("Token does not exist", token=raw_token)
+        raise Http404
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class TokenRevokeView(View):
+    """Token revoke endpoint
+    https://datatracker.ietf.org/doc/html/rfc7009"""
+
+    token: RefreshToken
+    params: TokenRevocationParams
+    provider: OAuth2Provider
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        """Revocation handler"""
+        try:
+            self.params = TokenRevocationParams.from_request(request)
+
+            self.params.token.delete()
+
+            return TokenResponse(data={}, status=200)
+        except TokenRevocationError as exc:
+            return TokenResponse(exc.create_dict(request), status=401)
+        except Http404:
+            # Token not found should return a HTTP 200
+            # https://datatracker.ietf.org/doc/html/rfc7009#section-2.2
+            return TokenResponse(data={}, status=200)

@@ -1,0 +1,312 @@
+package application
+
+import (
+	"context"
+	"crypto/sha256"
+	"crypto/tls"
+	"encoding/gob"
+	"encoding/hex"
+	"fmt"
+	"html/template"
+	"net/http"
+	"net/url"
+	"path"
+	"regexp"
+	"strings"
+	"time"
+
+	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	"github.com/jellydator/ttlcache/v3"
+	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxyv2/hs256"
+	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/outpost/proxyv2/templates"
+	"goauthentik.io/internal/outpost/proxyv2/types"
+	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
+	"golang.org/x/oauth2"
+)
+
+type Application struct {
+	Host                 string
+	Cert                 *tls.Certificate
+	UnauthenticatedRegex []*regexp.Regexp
+
+	endpoint      OIDCEndpoint
+	oauthConfig   oauth2.Config
+	tokenVerifier *oidc.IDTokenVerifier
+	outpostName   string
+	sessionName   string
+
+	sessions             sessions.Store
+	proxyConfig          api.ProxyOutpostConfig
+	httpClient           *http.Client
+	publicHostHTTPClient *http.Client
+
+	log *log.Entry
+	mux *mux.Router
+	ak  *ak.APIController
+	srv Server
+
+	errorTemplates  *template.Template
+	authHeaderCache *ttlcache.Cache[string, types.Claims]
+
+	isEmbedded bool
+}
+
+type Server interface {
+	API() *ak.APIController
+	Apps() []*Application
+	CryptoStore() *ak.CryptoStore
+	SessionBackend() string
+}
+
+func init() {
+	gob.Register(types.Claims{})
+}
+
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, oldApp *Application) (*Application, error) {
+	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
+
+	externalHost, err := url.Parse(p.ExternalHost)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL, skipping provider")
+	}
+
+	var ks oidc.KeySet
+	if contains(p.OidcConfiguration.IdTokenSigningAlgValuesSupported, "HS256") {
+		ks = hs256.NewKeySet(*p.ClientSecret)
+	} else {
+		ctx := context.WithValue(context.Background(), oauth2.HTTPClient, c)
+		ks = oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
+	}
+
+	redirectUri, _ := url.Parse(p.ExternalHost)
+	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
+	redirectUri.RawQuery = url.Values{
+		CallbackSignature: []string{"true"},
+	}.Encode()
+
+	isEmbedded := server.API().IsEmbedded()
+	// Configure an OpenID Connect aware OAuth2 client.
+	endpoint := GetOIDCEndpoint(
+		p,
+		server.API().Outpost.Config["authentik_host"].(string),
+		isEmbedded,
+	)
+
+	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
+		ClientID:             *p.ClientId,
+		SupportedSigningAlgs: []string{"RS256", "HS256"},
+	})
+
+	oauth2Config := oauth2.Config{
+		ClientID:     *p.ClientId,
+		ClientSecret: *p.ClientSecret,
+		RedirectURL:  redirectUri.String(),
+		Endpoint:     endpoint.Endpoint,
+		Scopes:       p.ScopesToRequest,
+	}
+	mux := mux.NewRouter()
+
+	// Save cookie name, based on hashed client ID
+	hs := sha256.Sum256([]byte(*p.ClientId))
+	bs := hex.EncodeToString(hs[:])
+	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
+
+	// When HOST_BROWSER is set, use that as Host header for token requests to make the issuer match
+	// otherwise we use the internally configured authentik_host
+	tokenEndpointHost := server.API().Outpost.Config["authentik_host"].(string)
+	if config.Get().AuthentikHostBrowser != "" {
+		tokenEndpointHost = config.Get().AuthentikHostBrowser
+	}
+	publicHTTPClient := web.NewHostInterceptor(c, tokenEndpointHost)
+
+	a := &Application{
+		Host:                 externalHost.Host,
+		log:                  muxLogger,
+		outpostName:          server.API().Outpost.Name,
+		sessionName:          sessionName,
+		endpoint:             endpoint,
+		oauthConfig:          oauth2Config,
+		tokenVerifier:        verifier,
+		proxyConfig:          p,
+		httpClient:           c,
+		publicHostHTTPClient: publicHTTPClient,
+		mux:                  mux,
+		errorTemplates:       templates.GetTemplates(),
+		ak:                   server.API(),
+		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, types.Claims]()),
+		srv:                  server,
+		isEmbedded:           isEmbedded,
+	}
+	go a.authHeaderCache.Start()
+	if oldApp != nil && oldApp.sessions != nil {
+		a.sessions = oldApp.sessions
+		muxLogger.Debug("reusing existing session store")
+	} else {
+		sess, err := a.getStore(p, externalHost)
+		if err != nil {
+			return nil, err
+		}
+		a.sessions = sess
+	}
+	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
+		c := a.getClaimsFromSession(nil, r)
+		if c == nil {
+			return l
+		}
+		if c.PreferredUsername != "" {
+			return l.WithField("user", c.PreferredUsername)
+		}
+		return l.WithField("user", c.Sub)
+	}))
+	mux.Use(func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+			c := a.getClaimsFromSession(nil, r)
+			user := ""
+			if c != nil {
+				user = c.PreferredUsername
+				hub := sentry.GetHubFromContext(r.Context())
+				if hub == nil {
+					hub = sentry.CurrentHub()
+				}
+				hub.Scope().SetUser(sentry.User{
+					Username:  user,
+					ID:        c.Sub,
+					IPAddress: r.RemoteAddr,
+				})
+			}
+			before := time.Now()
+			inner.ServeHTTP(rw, r)
+			elapsed := time.Since(before)
+			metrics.Requests.With(prometheus.Labels{
+				"outpost_name": a.outpostName,
+				"type":         "app",
+				"method":       r.Method,
+				"host":         web.GetHost(r),
+			}).Observe(float64(elapsed) / float64(time.Second))
+		})
+	})
+	if server.API().GlobalConfig.ErrorReporting.Enabled {
+		mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	}
+	mux.Use(func(inner http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
+				a.log.Debug("handling OAuth Callback from querystring signature")
+				a.handleAuthCallback(w, r)
+			} else if strings.EqualFold(r.URL.Query().Get(LogoutSignature), "true") {
+				a.log.Debug("handling OAuth Logout from querystring signature")
+				a.handleSignOut(w, r)
+			} else {
+				inner.ServeHTTP(w, r)
+			}
+		})
+	})
+
+	mux.HandleFunc("/outpost.goauthentik.io/start", func(w http.ResponseWriter, r *http.Request) {
+		fwd := ""
+		// This should only really be hit for nginx forward_auth
+		// as for that the auth start redirect URL is generated by the
+		// reverse proxy, and as such we won't have a request we just
+		// denied to reference for final URL
+		rd, ok := a.checkRedirectParam(r)
+		if ok {
+			a.log.WithField("rd", rd).Trace("Setting redirect")
+			fwd = rd
+		}
+		a.handleAuthStart(w, r, fwd)
+	})
+	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
+	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
+	switch *p.Mode {
+	case api.PROXYMODE_PROXY:
+		err = a.configureProxy()
+	case api.PROXYMODE_FORWARD_SINGLE:
+		fallthrough
+	case api.PROXYMODE_FORWARD_DOMAIN:
+		err = a.configureForward()
+	}
+	if err != nil {
+		return nil, fmt.Errorf("failed to configure application mode: %w", err)
+	}
+
+	if kp := p.Certificate.Get(); kp != nil {
+		err := server.CryptoStore().AddKeypair(*kp)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initially fetch certificate: %w", err)
+		}
+		a.Cert = server.CryptoStore().Get(*kp)
+	}
+
+	if *p.SkipPathRegex != "" {
+		a.UnauthenticatedRegex = make([]*regexp.Regexp, 0)
+		for regex := range strings.SplitSeq(*p.SkipPathRegex, "\n") {
+			re, err := regexp.Compile(regex)
+			if err != nil {
+				// TODO: maybe create event for this?
+				a.log.WithError(err).Warning("failed to compile SkipPathRegex")
+				continue
+			}
+			a.UnauthenticatedRegex = append(a.UnauthenticatedRegex, re)
+		}
+	}
+	return a, nil
+}
+
+func (a *Application) Mode() api.ProxyMode {
+	return *a.proxyConfig.Mode
+}
+
+func (a *Application) ShouldHandleURL(r *http.Request) bool {
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io") {
+		return true
+	}
+	if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
+		return true
+	}
+	if strings.EqualFold(r.URL.Query().Get(LogoutSignature), "true") {
+		return true
+	}
+	return false
+}
+
+func (a *Application) ProxyConfig() api.ProxyOutpostConfig {
+	return a.proxyConfig
+}
+
+func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	a.mux.ServeHTTP(rw, r)
+}
+
+func (a *Application) Stop() {
+	a.authHeaderCache.Stop()
+}
+
+func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
+	redirect := a.endpoint.EndSessionEndpoint
+	cc := a.getClaimsFromSession(rw, r)
+	if cc == nil {
+		a.redirectToStart(rw, r)
+		return
+	}
+	uv := url.Values{
+		"id_token_hint": []string{cc.RawToken},
+	}
+	redirect += "?" + uv.Encode()
+	err := a.Logout(r.Context(), func(c types.Claims) bool {
+		return c.Sub == cc.Sub
+	})
+	if err != nil {
+		a.log.WithError(err).Warning("failed to logout of other sessions")
+	}
+	http.Redirect(rw, r, redirect, http.StatusFound)
+}

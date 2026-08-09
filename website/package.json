@@ -1,0 +1,66 @@
+{
+    "name": "@goauthentik/docs",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "pnpm --filter \"./docs\" run build",
+        "build:api": "pnpm --filter \"./api\" run build",
+        "build:integrations": "pnpm --filter \"./integrations\" run build",
+        "check-types": "tsc -b",
+        "docusaurus": "docusaurus",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "start": "pnpm --filter \"./docs\" run start",
+        "test": "node --test"
+    },
+    "dependencies": {
+        "@eslint/js": "catalog:",
+        "@goauthentik/brand-assets": "^2.0.0",
+        "@goauthentik/docusaurus-theme": "workspace:*",
+        "@goauthentik/eslint-config": "link:../packages/eslint-config",
+        "@goauthentik/prettier-config": "link:../packages/prettier-config",
+        "@goauthentik/tsconfig": "link:../packages/tsconfig",
+        "@types/node": "catalog:",
+        "deepmerge-ts": "^7.1.5",
+        "escape-string-regexp": "^5.0.0",
+        "eslint": "catalog:",
+        "netlify-plugin-cache": "^1.0.3",
+        "netlify-redirect-parser": "^14.4.0",
+        "npm-run-all": "^4.1.5",
+        "postman-code-generators": "2.1.1",
+        "prettier": "catalog:",
+        "prettier-plugin-packagejson": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
+    },
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "2.1.7",
+        "@rspack/binding-linux-arm64-gnu": "2.1.7",
+        "@rspack/binding-linux-x64-gnu": "2.1.7",
+        "@swc/core-darwin-arm64": "1.15.47",
+        "@swc/core-linux-arm64-gnu": "1.15.47",
+        "@swc/core-linux-x64-gnu": "1.15.47",
+        "@swc/html-darwin-arm64": "1.15.47",
+        "@swc/html-linux-arm64-gnu": "1.15.47",
+        "@swc/html-linux-x64-gnu": "1.15.47",
+        "lightningcss-darwin-arm64": "1.33.0",
+        "lightningcss-linux-arm64-gnu": "1.33.0",
+        "lightningcss-linux-x64-gnu": "1.33.0"
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=11.20.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "error",
+            "version": ">=24"
+        }
+    },
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
+    "prettier": "@goauthentik/prettier-config"
+}

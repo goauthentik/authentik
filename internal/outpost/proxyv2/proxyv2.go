@@ -1,0 +1,229 @@
+package proxyv2
+
+import (
+	"context"
+	"crypto/tls"
+	"errors"
+	"net"
+	"net/http"
+	"strings"
+	"sync"
+
+	sentryhttp "github.com/getsentry/sentry-go/http"
+	"github.com/gorilla/mux"
+	"github.com/pires/go-proxyproto"
+	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/crypto"
+	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/proxyv2/application"
+	"goauthentik.io/internal/utils"
+	sentryutils "goauthentik.io/internal/utils/sentry"
+	"goauthentik.io/internal/utils/web"
+	api "goauthentik.io/packages/client-go"
+)
+
+type ProxyServer struct {
+	defaultCert tls.Certificate
+	stop        chan struct{} // channel for waiting shutdown
+
+	cryptoStore *ak.CryptoStore
+	apps        map[string]*application.Application
+	log         *log.Entry
+	mux         *mux.Router
+	akAPI       *ak.APIController
+}
+
+func NewProxyServer(ac *ak.APIController) ak.Outpost {
+	l := log.WithField("logger", "authentik.outpost.proxyv2")
+	defaultCert, err := crypto.GenerateSelfSignedCert()
+	if err != nil {
+		l.Fatal(err)
+	}
+
+	rootMux := mux.NewRouter()
+	rootMux.Use(func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(rw, r)
+			rw.Header().Set("X-Powered-By", "authentik_proxy2")
+		})
+	})
+
+	globalMux := rootMux.NewRoute().Subrouter()
+	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
+	if ac.GlobalConfig.ErrorReporting.Enabled {
+		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	}
+	if ac.IsEmbedded() {
+		l.Info("using PostgreSQL session backend")
+	} else {
+		l.Info("using filesystem session backend")
+	}
+	s := &ProxyServer{
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoAPI),
+		apps:        make(map[string]*application.Application),
+		log:         l,
+		mux:         rootMux,
+		akAPI:       ac,
+		defaultCert: defaultCert,
+	}
+	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
+	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
+	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
+	ac.AddEventHandler(s.handleWSMessage)
+	return s
+}
+
+func (ps *ProxyServer) HandleHost(rw http.ResponseWriter, r *http.Request) bool {
+	// Always handle requests for outpost paths that should answer regardless of hostname
+	if strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/ping") ||
+		strings.HasPrefix(r.URL.Path, "/outpost.goauthentik.io/static") {
+		ps.mux.ServeHTTP(rw, r)
+		return true
+	}
+	// lookup app by hostname
+	a, _ := ps.lookupApp(r)
+	if a == nil {
+		return false
+	}
+	// check if the app should handle this URL, or is setup in proxy mode
+	if a.ShouldHandleURL(r) || a.Mode() == api.PROXYMODE_PROXY {
+		ps.mux.ServeHTTP(rw, r)
+		return true
+	}
+	return false
+}
+
+func (ps *ProxyServer) Type() string {
+	return "proxy"
+}
+
+func (ps *ProxyServer) TimerFlowCacheExpiry(context.Context) {}
+
+func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
+	app, ok := ps.apps[serverName]
+	if !ok {
+		ps.log.WithField("server-name", serverName).Debug("failed to get certificate for ServerName")
+		return nil
+	}
+	if app.Cert == nil {
+		ps.log.WithField("server-name", serverName).Debug("app does not have a certificate")
+		return nil
+	}
+	return app.Cert
+}
+
+func (ps *ProxyServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
+	sn := info.ServerName
+	if sn == "" {
+		return &ps.defaultCert, nil
+	}
+	appCert := ps.GetCertificate(sn)
+	if appCert == nil {
+		return &ps.defaultCert, nil
+	}
+	return appCert, nil
+}
+
+// ServeHTTP constructs a net.Listener and starts handling HTTP requests
+func (ps *ProxyServer) ServeHTTP(listen string) {
+	listener, err := net.Listen("tcp", listen)
+	if err != nil {
+		ps.log.WithField("listen", listen).WithError(err).Warning("Failed to listen")
+		return
+	}
+	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
+
+	ps.log.WithField("listen", listen).Info("Starting HTTP server")
+	ps.serve(proxyListener)
+	ps.log.WithField("listen", listen).Info("Stopping HTTP server")
+}
+
+// ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
+func (ps *ProxyServer) ServeHTTPS(listen string) {
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.GetCertificate = ps.getCertificates
+
+	ln, err := net.Listen("tcp", listen)
+	if err != nil {
+		ps.log.WithError(err).Warning("Failed to listen (TLS)")
+		return
+	}
+	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
+
+	tlsListener := tls.NewListener(proxyListener, tlsConfig)
+	ps.log.WithField("listen", listen).Info("Starting HTTPS server")
+	ps.serve(tlsListener)
+	ps.log.WithField("listen", listen).Info("Stopping HTTPS server")
+}
+
+func (ps *ProxyServer) Start() error {
+	listenHttp := config.Get().Listen.HTTP
+	listenHttps := config.Get().Listen.HTTPS
+	listenMetrics := config.Get().Listen.Metrics
+	metricsRouter := ak.MetricsRouter()
+	wg := sync.WaitGroup{}
+	wg.Add(len(listenHttp) + len(listenHttps) + 1 + len(listenMetrics))
+	for _, listen := range listenHttp {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTP(listen)
+		}()
+	}
+	for _, listen := range listenHttps {
+		go func() {
+			defer wg.Done()
+			ps.ServeHTTPS(listen)
+		}()
+	}
+	go func() {
+		defer wg.Done()
+		ak.RunMetricsUnix(metricsRouter)
+	}()
+	for _, listen := range listenMetrics {
+		go func() {
+			defer wg.Done()
+			ak.RunMetricsServer(listen, metricsRouter)
+		}()
+	}
+	return nil
+}
+
+func (ps *ProxyServer) Stop() error {
+	return nil
+}
+
+func (ps *ProxyServer) serve(listener net.Listener) {
+	srv := web.Server(ps.mux)
+
+	// See https://golang.org/pkg/net/http/#Server.Shutdown
+	idleConnsClosed := make(chan struct{})
+	go func() {
+		<-ps.stop // wait notification for stopping server
+
+		// We received an interrupt signal, shut down.
+		if err := srv.Shutdown(context.Background()); err != nil {
+			// Error from closing listeners, or context timeout:
+			ps.log.WithError(err).Info("HTTP server Shutdown")
+		}
+		close(idleConnsClosed)
+	}()
+
+	err := srv.Serve(listener)
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
+		ps.log.Errorf("ERROR: http.Serve() - %s", err)
+	}
+	<-idleConnsClosed
+}

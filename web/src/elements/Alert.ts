@@ -1,0 +1,107 @@
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult, type Spread } from "#elements/types";
+
+import { spread } from "@open-wc/lit-helpers";
+
+import { css, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+
+import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+
+export enum Level {
+    Warning = "pf-m-warning",
+    Info = "pf-m-info",
+    Success = "pf-m-success",
+    Danger = "pf-m-danger",
+}
+
+export const levelNames = ["warning", "info", "success", "danger"];
+export type Levels = (typeof levelNames)[number];
+
+export interface IAlert {
+    inline?: boolean;
+    plain?: boolean;
+    icon?: string;
+    level?: string;
+}
+
+/**
+ * @class Alert
+ * @element ak-alert
+ *
+ * Alerts are in-page elements intended to draw the user's attention and alert them to important
+ * details. Alerts are used alongside form elements to warn users of potential mistakes they can
+ * make, as well as in in-line documentation.
+ */
+@customElement("ak-alert")
+export class AKAlert extends AKElement implements IAlert {
+    /**
+     * Whether or not to display the entire component's contents in-line or not.
+     *
+     * @attr
+     */
+    @property({ type: Boolean })
+    public inline?: boolean;
+
+    @property({ type: Boolean })
+    public plain?: boolean;
+
+    /**
+     * Method of determining severity
+     *
+     * @attr
+     */
+    @property()
+    level: Level | Levels = Level.Warning;
+
+    /**
+     * Icon to display
+     *
+     * @attr
+     */
+    @property()
+    public icon = "fa-exclamation-circle";
+
+    static styles = [
+        PFAlert,
+        css`
+            p {
+                margin: 0;
+            }
+        `,
+    ];
+
+    get classmap() {
+        const level = levelNames.includes(this.level)
+            ? `pf-m-${this.level}`
+            : (this.level as string);
+
+        return {
+            "pf-c-alert": true,
+            "pf-m-inline": !!this.inline,
+            "pf-m-plain": !!this.plain,
+            [level]: true,
+        };
+    }
+
+    render() {
+        return html`<div class="${classMap(this.classmap)}" part="container">
+            <div class="pf-c-alert__icon">
+                <i aria-hidden="true" class="fas ${this.icon}"></i>
+            </div>
+            <div class="pf-c-alert__title"><slot></slot></div>
+        </div>`;
+    }
+}
+
+export function akAlert(properties: IAlert, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-alert ${spread(properties as Spread)}>${message}</ak-alert>`;
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-alert": AKAlert;
+    }
+}

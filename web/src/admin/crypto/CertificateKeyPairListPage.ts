@@ -1,0 +1,210 @@
+import "#admin/crypto/CertificateGenerateForm";
+import "#admin/crypto/CertificateKeyPairForm";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { aki } from "#common/api/client";
+
+import { ModalInvokerButton } from "#elements/dialogs";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { CryptoCertificateGenerateForm } from "#admin/crypto/CertificateGenerateForm";
+import { CryptoCertificateForm } from "#admin/crypto/CertificateKeyPairForm";
+
+import { CertificateKeyPair, CryptoApi, ModelEnum } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+
+@customElement("ak-crypto-certificate-list")
+export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
+    static styles: CSSResult[] = [...super.styles, PFDescriptionList];
+
+    public override expandable = true;
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+    public override searchPlaceholder = msg("Search for a certificate or key name...");
+
+    protected override searchEnabled = true;
+
+    public pageTitle = msg("Certificate-Key Pairs");
+    public pageDescription = msg(
+        "Import certificates of external providers or create certificates to sign requests with.",
+    );
+    public pageIcon = "pf-icon pf-icon-key";
+
+    public override order = "name";
+
+    async apiEndpoint(): Promise<PaginatedResponse<CertificateKeyPair>> {
+        return aki(CryptoApi).cryptoCertificatekeypairsList({
+            ...(await this.defaultEndpointConfig()),
+        });
+    }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Private key available?")],
+        [msg("Expiry date")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        const count = this.selectedElements.length;
+        return html`<ak-forms-delete-bulk
+            object-label=${count === 1 ? msg("Certificate-Key Pair") : msg("Certificate-Key Pairs")}
+            .objects=${this.selectedElements}
+            .metadata=${(item: CertificateKeyPair) => {
+                return [
+                    { key: msg("Name"), value: item.name },
+                    { key: msg("Expiry"), value: item.certExpiry?.toLocaleString() },
+                ];
+            }}
+            .usedBy=${(item: CertificateKeyPair) => {
+                return aki(CryptoApi).cryptoCertificatekeypairsUsedByList({
+                    kpUuid: item.pk,
+                });
+            }}
+            .delete=${(item: CertificateKeyPair) => {
+                return aki(CryptoApi).cryptoCertificatekeypairsDestroy({
+                    kpUuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected override row(item: CertificateKeyPair): SlottedTemplateResult[] {
+        let managedSubText = msg("Managed by authentik");
+        if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
+            managedSubText = msg("Managed by authentik (Discovered)");
+        }
+        let color = PFColor.Green;
+        if (item.certExpiry) {
+            const now = new Date();
+            const inAMonth = new Date();
+            inAMonth.setDate(inAMonth.getDate() + 30);
+            if (item.certExpiry <= inAMonth) {
+                color = PFColor.Orange;
+            }
+            if (item.certExpiry <= now) {
+                color = PFColor.Red;
+            }
+        }
+        return [
+            html`<div>${item.name}</div>
+                ${item.managed ? html`<small>${managedSubText}</small>` : nothing}`,
+            html`<ak-status-label
+                type="info"
+                ?good=${item.privateKeyAvailable}
+                good-label=${msg(str`Yes (${item.keyType?.toUpperCase()})`)}
+            >
+            </ak-status-label>`,
+            html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
+            html`<div>
+                <ak-forms-modal>
+                    <span slot="submit">${msg("Save Changes")}</span>
+                    <span slot="header">${msg("Update Certificate-Key Pair")}</span>
+                    <ak-crypto-certificate-form slot="form" .instancePk=${item.pk}>
+                    </ak-crypto-certificate-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit" aria-hidden="true"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${ModelEnum.AuthentikCryptoCertificatekeypair}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
+            </div>`,
+        ];
+    }
+
+    protected override renderExpanded(item: CertificateKeyPair): SlottedTemplateResult {
+        return html`<dl class="pf-c-description-list pf-m-horizontal">
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("Certificate Fingerprint (SHA1)")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.fingerprintSha1}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("Certificate Fingerprint (SHA256)")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.fingerprintSha256}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Certificate Subject")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">${item.certSubject}</div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("Download")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <a
+                            class="pf-c-button pf-m-secondary"
+                            target="_blank"
+                            href=${item.certificateDownloadUrl}
+                        >
+                            ${msg("Download Certificate")}
+                        </a>
+                        ${item.privateKeyAvailable
+                            ? html`<a
+                                  class="pf-c-button pf-m-secondary"
+                                  target="_blank"
+                                  href=${item.privateKeyDownloadUrl}
+                              >
+                                  ${msg("Download Private key")}
+                              </a>`
+                            : nothing}
+                    </div>
+                </dd>
+            </div>
+        </dl>`;
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return [
+            ModalInvokerButton(CryptoCertificateForm),
+            ModalInvokerButton(CryptoCertificateGenerateForm, null, {
+                kind: "secondary",
+            }),
+        ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-crypto-certificate-list": CertificateKeyPairListPage;
+    }
+}

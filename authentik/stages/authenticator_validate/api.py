@@ -1,0 +1,56 @@
+"""AuthenticatorValidateStage API Views"""
+
+from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ModelViewSet
+
+from authentik.core.api.used_by import UsedByMixin
+from authentik.flows.api.stages import StageSerializer
+from authentik.flows.models import NotConfiguredAction
+from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage
+from authentik.stages.authenticator_webauthn.api.device_types import WebAuthnDeviceTypeSerializer
+
+
+class AuthenticatorValidateStageSerializer(StageSerializer):
+    """AuthenticatorValidateStage Serializer"""
+
+    webauthn_allowed_device_types_obj = WebAuthnDeviceTypeSerializer(
+        source="webauthn_allowed_device_types", many=True, read_only=True
+    )
+
+    def validate_not_configured_action(self, value):
+        """Ensure that a configuration stage is set when not_configured_action is configure"""
+        configuration_stages = self.initial_data.get("configuration_stages", None)
+        if value == NotConfiguredAction.CONFIGURE:
+            if not configuration_stages or len(configuration_stages) < 1:
+                raise ValidationError(
+                    'When "Not configured action" is set to "Configure", '
+                    "you must set a configuration stage."
+                )
+        return value
+
+    class Meta:
+        model = AuthenticatorValidateStage
+        fields = StageSerializer.Meta.fields + [
+            "not_configured_action",
+            "device_classes",
+            "configuration_stages",
+            "last_auth_threshold",
+            "webauthn_user_verification",
+            "webauthn_hints",
+            "webauthn_allowed_device_types",
+            "webauthn_allowed_device_types_obj",
+            "email_otp_throttling_factor",
+            "sms_otp_throttling_factor",
+            "totp_otp_throttling_factor",
+            "static_otp_throttling_factor",
+        ]
+
+
+class AuthenticatorValidateStageViewSet(UsedByMixin, ModelViewSet):
+    """AuthenticatorValidateStage Viewset"""
+
+    queryset = AuthenticatorValidateStage.objects.all()
+    serializer_class = AuthenticatorValidateStageSerializer
+    filterset_fields = ["name", "not_configured_action", "configuration_stages"]
+    ordering = ["name"]
+    search_fields = ["name"]

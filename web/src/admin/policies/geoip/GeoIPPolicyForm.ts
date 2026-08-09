@@ -1,0 +1,203 @@
+import "#components/ak-switch-input";
+import "#elements/ak-dual-select/index";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+
+import { countryCache } from "./CountryCache.js";
+
+import { aki } from "#common/api/client";
+
+import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
+
+import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
+
+import { GeoIPPolicy, GeoIPPolicyCountriesObjInner, PoliciesApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement } from "lit/decorators.js";
+
+function countryToPair(country: GeoIPPolicyCountriesObjInner): DualSelectPair {
+    return [country.code, country.name, country.name];
+}
+
+@customElement("ak-policy-geoip-form")
+export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
+    loadInstance(pk: string): Promise<GeoIPPolicy> {
+        return aki(PoliciesApi).policiesGeoipRetrieve({
+            policyUuid: pk,
+        });
+    }
+
+    async send(data: GeoIPPolicy): Promise<GeoIPPolicy> {
+        if (data.asns?.toString() === "") {
+            data.asns = [];
+        } else {
+            data.asns = (data.asns as unknown as string).split(",").map(Number);
+        }
+
+        if (this.instance) {
+            return aki(PoliciesApi).policiesGeoipUpdate({
+                policyUuid: this.instance.pk || "",
+                geoIPPolicyRequest: data,
+            });
+        }
+        return aki(PoliciesApi).policiesGeoipCreate({
+            geoIPPolicyRequest: data,
+        });
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html`<span>
+                ${msg(
+                    "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
+                )}
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+                <input
+                    type="text"
+                    value="${this.instance?.name ?? ""}"
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element-horizontal>
+            <ak-switch-input
+                name="executionLogging"
+                label=${msg("Execution logging")}
+                ?checked=${this.instance?.executionLogging ?? false}
+                help=${msg(
+                    "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-form-group label="${msg("Distance settings")}">
+                <div class="pf-c-form">
+                    <ak-switch-input
+                        name="checkHistoryDistance"
+                        label=${msg("Check historical distance of logins")}
+                        ?checked=${this.instance?.checkHistoryDistance ?? false}
+                        help=${msg(
+                            "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Maximum distance")}
+                        name="historyMaxDistanceKm"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${this.instance?.historyMaxDistanceKm ?? 100}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Maximum distance a login attempt is allowed from in kilometers.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Distance tolerance")}
+                        name="distanceToleranceKm"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${this.instance?.distanceToleranceKm ?? 50}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Tolerance in checking for distances in kilometers.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Historical Login Count")}
+                        name="historyLoginCount"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${this.instance?.historyLoginCount ?? 5}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Amount of previous login events to check against.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="checkImpossibleTravel"
+                        label=${msg("Check impossible travel")}
+                        ?checked=${this.instance?.checkImpossibleTravel ?? true}
+                        help=${msg(
+                            "When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Impossible travel tolerance")}
+                        name="impossibleToleranceKm"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${this.instance?.impossibleToleranceKm ?? 50}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Tolerance in checking for distances in kilometers.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Static rule settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
+                        <input
+                            type="text"
+                            value="${this.instance?.asns?.join(",") ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Countries")} name="countries">
+                        <ak-dual-select-provider
+                            .provider=${(page: number, search?: string): Promise<DataProvision> => {
+                                return countryCache
+                                    .getCountries()
+                                    .then((results) => {
+                                        if (!search) return results;
+
+                                        return results.filter((result) =>
+                                            result.name
+                                                .toLowerCase()
+                                                .includes(search.toLowerCase()),
+                                        );
+                                    })
+                                    .then((results) => ({
+                                        options: results.map(countryToPair),
+                                    }));
+                            }}
+                            .selected=${(this.instance?.countriesObj ?? []).map(countryToPair)}
+                            available-label="${msg("Available Countries")}"
+                            selected-label="${msg("Selected Countries")}"
+                        >
+                        </ak-dual-select-provider>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-geoip-form": GeoIPPolicyForm;
+    }
+}

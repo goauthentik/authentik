@@ -1,0 +1,93 @@
+import "#elements/forms/HorizontalFormElement";
+
+import { aki } from "#common/api/client";
+import { SentryIgnoredError } from "#common/sentry/index";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { AuthenticatorsApi, Device } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+@customElement("ak-user-mfa-form")
+export class MFADeviceForm extends ModelForm<Device, string> {
+    @property()
+    deviceType!: string;
+
+    async loadInstance(pk: string): Promise<Device> {
+        const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
+        return devices.filter((device) => {
+            return device.pk === pk && device.type === this.deviceType;
+        })[0];
+    }
+
+    getSuccessMessage(): string {
+        return msg("Successfully updated device.");
+    }
+
+    async send(device: Device): Promise<Device> {
+        switch (this.instance?.type) {
+            case "authentik_stages_authenticator_duo.DuoDevice":
+                await aki(AuthenticatorsApi).authenticatorsDuoUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    duoDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_email.EmailDevice":
+                await aki(AuthenticatorsApi).authenticatorsEmailUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    emailDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_sms.SMSDevice":
+                await aki(AuthenticatorsApi).authenticatorsSmsUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    sMSDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_totp.TOTPDevice":
+                await aki(AuthenticatorsApi).authenticatorsTotpUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    tOTPDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_static.StaticDevice":
+                await aki(AuthenticatorsApi).authenticatorsStaticUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    staticDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
+                await aki(AuthenticatorsApi).authenticatorsWebauthnUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    webAuthnDeviceRequest: device,
+                });
+                break;
+            default:
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be edited`),
+                );
+        }
+        return device;
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <input
+                type="text"
+                value="${ifDefined(this.instance?.name)}"
+                class="pf-c-form-control"
+                required
+            />
+        </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-mfa-form": MFADeviceForm;
+    }
+}

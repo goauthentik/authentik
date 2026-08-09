@@ -1,0 +1,12 @@
+version: 1
+metadata:
+  name: Default - Source pre-authentication flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: Pre-Authentication
+    title: Pre-authentication
+    authentication: none
+  identifiers:
+    slug: default-source-pre-authentication
+  model: authentik_flows.flow

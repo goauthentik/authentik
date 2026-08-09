@@ -1,0 +1,28 @@
+---
+title: Integrations overview
+sidebar_label: Overview
+sidebar_position: 1
+---
+
+## What is an integration?
+
+An integration is how authentik connects to third-party applications, directories, and other identity providers.
+Integrations can cover application access, source authentication, directory synchronization, provisioning, and operational workflows such as log forwarding.
+
+### Applications
+
+Applications include vendor tools such as Google Workspace, GitHub, Slack, or AWS. These applications can be integrated with authentik to provide single sign-on, provisioning, policy-based access, or other workflow-specific connections.
+
+If you want to integrate an application that isn't listed, authentik can be configured to work with most applications that support authentication protocols such as [SAML](/docs/add-secure-apps/providers/saml), [OAuth and OpenID Connect](/docs/add-secure-apps/providers/oauth2).
+
+To learn more, refer to the [Applications](./applications.mdx) page.
+
+### Federated and social sources
+
+Sources let authentik use external user credentials for authentication. Supported source integrations include federated directories like Active Directory and social logins such as Facebook and Twitter. These integrations support all major protocols, including [LDAP](/docs/users-sources/sources/protocols/ldap), [SCIM](/docs/users-sources/sources/protocols/scim), [SAML](/docs/users-sources/sources/protocols/saml), and [OAuth and OpenID Connect](/docs/users-sources/sources/protocols/oauth).
+
+To learn more, refer to the [Sources](/docs/users-sources/sources) page.
+
+### Operational integrations
+
+Operational integrations connect authentik to systems that support administration, monitoring, compliance, and automation. These guides can include log forwarding, machine-to-machine identity, or product-specific configuration that is not limited to user authentication.

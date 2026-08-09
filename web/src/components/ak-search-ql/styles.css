@@ -1,0 +1,62 @@
+.ql.pf-c-form-control {
+    --input-height: 2.25em;
+
+    height: var(--input-height);
+    min-height: var(--input-height);
+    max-height: calc(var(--input-height) * 6);
+    resize: vertical;
+    outline: none;
+}
+
+.pf-c-search-input[aria-expanded="true"] {
+    .ql.pf-c-form-control {
+        --pf-c-form-control--BorderBottomColor: var(--pf-c-form-control--focus--BorderBottomColor);
+    }
+    .pf-c-search-input__text::after {
+        --pf-c-search-input__text--after--BorderBottomWidth: var(
+            --pf-c-search-input__text--focus-within--after--BorderBottomWidth
+        );
+        --pf-c-search-input__text--after--BorderBottomColor: var(
+            --pf-c-search-input__text--focus-within--after--BorderBottomColor
+        );
+    }
+}
+
+.selected {
+    background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
+}
+
+.pf-c-search-input__menu-list {
+    user-select: none;
+}
+
+:host([theme="dark"]) {
+    .pf-c-search-input__menu {
+        --pf-c-search-input__menu--BackgroundColor: var(--pf-global--BackgroundColor--300);
+    }
+
+    .pf-c-search-input__menu-item {
+        --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
+    }
+
+    .pf-c-search-input__menu-item:hover {
+        --pf-c-search-input__menu-item--BackgroundColor: var(--ak-dark-background-lighter);
+    }
+
+    .pf-c-search-input__menu-list-item.selected {
+        --pf-c-search-input__menu-item--hover--BackgroundColor: var(--ak-dark-background-light);
+    }
+}
+
+.pf-c-search-input__menu {
+    position: fixed;
+    min-width: 0;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+@media not (prefers-contrast: more) {
+    .pf-c-search-input__text::before {
+        border: none;
+    }
+}

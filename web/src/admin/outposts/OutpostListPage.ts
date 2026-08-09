@@ -1,0 +1,151 @@
+import "#admin/outposts/OutpostForm";
+import "#admin/outposts/OutpostHealthSimple";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { aki } from "#common/api/client";
+
+import { IconEditButton } from "#elements/dialogs";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { OutpostForm } from "#admin/outposts/OutpostForm";
+import { embeddedOutpostManaged, outpostTypeToLabel } from "#admin/outposts/utils";
+
+import { Outpost, OutpostHealth, OutpostsApi } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+@customElement("ak-outpost-list")
+export class OutpostListPage extends TablePage<Outpost> {
+    protected override searchEnabled = true;
+
+    public override searchPlaceholder = msg(
+        "Search outposts by name, type or assigned integration...",
+    );
+    public override pageTitle = msg("Outposts");
+    public override pageDescription = msg(
+        "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+    );
+
+    public override pageIcon = "pf-icon pf-icon-zone";
+
+    protected async apiEndpoint(): Promise<PaginatedResponse<Outpost>> {
+        const outposts = await aki(OutpostsApi).outpostsInstancesList(
+            await this.defaultEndpointConfig(),
+        );
+
+        return Promise.all(
+            outposts.results.map((outpost) => {
+                return aki(OutpostsApi)
+                    .outpostsInstancesHealthList({
+                        uuid: outpost.pk,
+                    })
+                    .then((health) => {
+                        this.health[outpost.pk] = health;
+                    });
+            }),
+        ).then(() => outposts);
+    }
+
+    @state()
+    protected health: Record<string, OutpostHealth[]> = {};
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Type"), "type"],
+        [msg("Providers")],
+        [msg("Integration"), "service_connection__name"],
+        [msg("Health and Version")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    @property({ type: String })
+    public order = "name";
+
+    protected renderItemProviders(item: Outpost) {
+        if (item.providers.length < 1) {
+            return html`-`;
+        }
+        return html`<ul>
+            ${item.providersObj?.map((p) => {
+                return html`<li>
+                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                </li>`;
+            })}
+        </ul>`;
+    }
+
+    protected row(item: Outpost): SlottedTemplateResult[] {
+        return [
+            html`<a href="#/outpost/outposts/${item.pk}"
+                ><div>${item.name}</div>
+                ${(item.config.authentik_host ?? "") === ""
+                    ? html`<ak-label color=${PFColor.Orange} compact>
+                          ${msg(
+                              "Warning: authentik Domain is not configured, authentication will not work.",
+                          )}
+                      </ak-label>`
+                    : html`<ak-label color=${PFColor.Green} compact>
+                          ${msg(str`Logging in via ${item.config.authentik_host}.`)}
+                      </ak-label>`}</a
+            >`,
+            html`${outpostTypeToLabel(item.type)}`,
+            this.renderItemProviders(item),
+            html`${item.serviceConnectionObj?.name || msg("No integration active")}`,
+            html`<ak-outpost-health-simple
+                outpost-id=${ifPresent(item.pk)}
+            ></ak-outpost-health-simple>`,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(OutpostForm, item.pk, item.name, {
+                    embedded: item.managed === embeddedOutpostManaged,
+                })}
+            </div>`,
+        ];
+    }
+
+    protected override renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+
+        return html`<ak-forms-delete-bulk
+            object-label=${msg("Outpost(s)")}
+            .objects=${this.selectedElements}
+            .usedBy=${(item: Outpost) => {
+                return aki(OutpostsApi).outpostsInstancesUsedByList({
+                    uuid: item.pk,
+                });
+            }}
+            .delete=${(item: Outpost) => {
+                return aki(OutpostsApi).outpostsInstancesDestroy({
+                    uuid: item.pk,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected override renderObjectCreate(): TemplateResult {
+        return html`<button ${OutpostForm.asModalInvoker()} class="pf-c-button pf-m-primary">
+            ${msg("New Outpost")}
+        </button>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-list": OutpostListPage;
+    }
+}

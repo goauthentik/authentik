@@ -1,0 +1,231 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+# dictionary.cisco
+#
+#		Accounting VSAs originally by
+#		"Marcelo M. Sosa Lugones" <marcelo@sosa.com.ar>
+#
+# Version:	$Id$
+#
+#  For documentation on Cisco RADIUS attributes, see:
+#
+# http://www.cisco.com/univercd/cc/td/doc/product/access/acs_serv/vapp_dev/vsaig3.htm
+#
+#  For general documentation on Cisco RADIUS configuration, see:
+#
+# http://www.cisco.com/en/US/partner/tech/tk583/tk547/tsd_technology_support_sub-protocol_home.html
+#
+
+VENDOR		Cisco				9
+
+#
+#	Standard attribute
+#
+BEGIN-VENDOR	Cisco
+
+ATTRIBUTE	AVPair					1	string
+ATTRIBUTE	NAS-Port				2	string
+
+#
+#  T.37 Store-and-Forward attributes.
+#
+ATTRIBUTE	Fax-Account-Id-Origin			3	string
+ATTRIBUTE	Fax-Msg-Id				4	string
+ATTRIBUTE	Fax-Pages				5	string
+ATTRIBUTE	Fax-Coverpage-Flag			6	string
+ATTRIBUTE	Fax-Modem-Time				7	string
+ATTRIBUTE	Fax-Connect-Speed			8	string
+ATTRIBUTE	Fax-Recipient-Count			9	string
+ATTRIBUTE	Fax-Process-Abort-Flag			10	string
+ATTRIBUTE	Fax-Dsn-Address				11	string
+ATTRIBUTE	Fax-Dsn-Flag				12	string
+ATTRIBUTE	Fax-Mdn-Address				13	string
+ATTRIBUTE	Fax-Mdn-Flag				14	string
+ATTRIBUTE	Fax-Auth-Status				15	string
+ATTRIBUTE	Email-Server-Address			16	string
+ATTRIBUTE	Email-Server-Ack-Flag			17	string
+ATTRIBUTE	Gateway-Id				18	string
+ATTRIBUTE	Call-Type				19	string
+ATTRIBUTE	Port-Used				20	string
+ATTRIBUTE	Abort-Cause				21	string
+
+#
+#  Voice over IP attributes.
+#
+ATTRIBUTE	h323-remote-address			23	string
+ATTRIBUTE	h323-conf-id				24	string
+ATTRIBUTE	h323-setup-time				25	string
+ATTRIBUTE	h323-call-origin			26	string
+ATTRIBUTE	h323-call-type				27	string
+ATTRIBUTE	h323-connect-time			28	string
+ATTRIBUTE	h323-disconnect-time			29	string
+ATTRIBUTE	h323-disconnect-cause			30	string
+ATTRIBUTE	h323-voice-quality			31	string
+ATTRIBUTE	h323-gw-id				33	string
+ATTRIBUTE	h323-incoming-conf-id			35	string
+
+ATTRIBUTE	Policy-Up				37	string
+ATTRIBUTE	Policy-Down				38	string
+
+ATTRIBUTE	Relay-Information-Option		46	string
+ATTRIBUTE	DHCP-User-Class				47	string
+ATTRIBUTE	DHCP-Vendor-Class			48	string
+
+ATTRIBUTE	DHCP-Relay-GiAddr			50	string
+ATTRIBUTE	Service-Name				51	string
+ATTRIBUTE	Parent-Session-Id			52	string
+
+ATTRIBUTE	Sub-QoS-Pol-In				55	string
+ATTRIBUTE	Sub-QoS-Pol-Out				56	string
+ATTRIBUTE	In-ACL					57	string
+ATTRIBUTE	Out-ACL					58	string
+ATTRIBUTE	Sub-PBR-Policy-In			59	string
+ATTRIBUTE	Sub-Activate-Service			60	string
+ATTRIBUTE	IPv6-In-ACL				61	string
+ATTRIBUTE	IPv6-Out-ACL				62	string
+ATTRIBUTE	Sub-Deactivate-Service			63	string
+
+ATTRIBUTE	DHCP-Subscriber-Id			65	string
+ATTRIBUTE	DHCPv6-Link-Address			66	string
+
+ATTRIBUTE	sip-conf-id				100	string
+ATTRIBUTE	h323-credit-amount			101	string
+ATTRIBUTE	h323-credit-time			102	string
+ATTRIBUTE	h323-return-code			103	string
+ATTRIBUTE	h323-prompt-id				104	string
+ATTRIBUTE	h323-time-and-day			105	string
+ATTRIBUTE	h323-redirect-number			106	string
+ATTRIBUTE	h323-preferred-lang			107	string
+ATTRIBUTE	h323-redirect-ip-address		108	string
+ATTRIBUTE	h323-billing-model			109	string
+ATTRIBUTE	h323-currency				110	string
+ATTRIBUTE	subscriber				111	string
+ATTRIBUTE	gw-rxd-cdn				112	string
+ATTRIBUTE	gw-final-xlated-cdn			113	string
+ATTRIBUTE	remote-media-address			114	string
+ATTRIBUTE	release-source				115	string
+ATTRIBUTE	gw-rxd-cgn				116	string
+ATTRIBUTE	gw-final-xlated-cgn			117	string
+
+# SIP Attributes
+ATTRIBUTE	call-id					141	string
+ATTRIBUTE	session-protocol			142	string
+ATTRIBUTE	method					143	string
+ATTRIBUTE	prev-hop-via				144	string
+ATTRIBUTE	prev-hop-ip				145	string
+ATTRIBUTE	incoming-req-uri			146	string
+ATTRIBUTE	outgoing-req-uri			147	string
+ATTRIBUTE	next-hop-ip				148	string
+ATTRIBUTE	next-hop-dn				149	string
+ATTRIBUTE	sip-hdr					150	string
+ATTRIBUTE	dsp-id					151	string
+
+#
+#	Extra attributes sent by the Cisco, if you configure
+#	"radius-server vsa accounting" (requires IOS11.2+).
+#
+ATTRIBUTE	Multilink-ID				187	integer
+ATTRIBUTE	Num-In-Multilink			188	integer
+ATTRIBUTE	Pre-Input-Octets			190	integer
+ATTRIBUTE	Pre-Output-Octets			191	integer
+ATTRIBUTE	Pre-Input-Packets			192	integer
+ATTRIBUTE	Pre-Output-Packets			193	integer
+ATTRIBUTE	Maximum-Time				194	integer
+ATTRIBUTE	Disconnect-Cause			195	integer
+ATTRIBUTE	Data-Rate				197	integer
+ATTRIBUTE	PreSession-Time				198	integer
+ATTRIBUTE	PW-Lifetime				208	integer
+ATTRIBUTE	IP-Direct				209	integer
+ATTRIBUTE	PPP-VJ-Slot-Comp			210	integer
+ATTRIBUTE	PPP-Async-Map				212	integer
+ATTRIBUTE	IP-Pool-Definition			217	string
+ATTRIBUTE	Assign-IP-Pool				218	integer
+ATTRIBUTE	Route-IP				228	integer
+ATTRIBUTE	Link-Compression			233	integer
+ATTRIBUTE	Target-Util				234	integer
+ATTRIBUTE	Maximum-Channels			235	integer
+ATTRIBUTE	Data-Filter				242	integer
+ATTRIBUTE	Call-Filter				243	integer
+ATTRIBUTE	Idle-Limit				244	integer
+ATTRIBUTE	Subscriber-Password			249	string
+ATTRIBUTE	Account-Info				250	string
+ATTRIBUTE	Service-Info				251	string
+ATTRIBUTE	Command-Code				252	string
+ATTRIBUTE	Control-Info				253	string
+ATTRIBUTE	Xmit-Rate				255	integer
+
+VALUE	Disconnect-Cause		No-Reason		0
+VALUE	Disconnect-Cause		No-Disconnect		1
+VALUE	Disconnect-Cause		Unknown			2
+VALUE	Disconnect-Cause		Call-Disconnect		3
+VALUE	Disconnect-Cause		CLID-Authentication-Failure 4
+VALUE	Disconnect-Cause		No-Modem-Available	9
+VALUE	Disconnect-Cause		No-Carrier		10
+VALUE	Disconnect-Cause		Lost-Carrier		11
+VALUE	Disconnect-Cause		No-Detected-Result-Codes 12
+VALUE	Disconnect-Cause		User-Ends-Session	20
+VALUE	Disconnect-Cause		Idle-Timeout		21
+VALUE	Disconnect-Cause		Exit-Telnet-Session	22
+VALUE	Disconnect-Cause		No-Remote-IP-Addr	23
+VALUE	Disconnect-Cause		Exit-Raw-TCP		24
+VALUE	Disconnect-Cause		Password-Fail		25
+VALUE	Disconnect-Cause		Raw-TCP-Disabled	26
+VALUE	Disconnect-Cause		Control-C-Detected	27
+VALUE	Disconnect-Cause		EXEC-Program-Destroyed	28
+VALUE	Disconnect-Cause		Close-Virtual-Connection 29
+VALUE	Disconnect-Cause		End-Virtual-Connection	30
+VALUE	Disconnect-Cause		Exit-Rlogin		31
+VALUE	Disconnect-Cause		Invalid-Rlogin-Option	32
+VALUE	Disconnect-Cause		Insufficient-Resources	33
+VALUE	Disconnect-Cause		Timeout-PPP-LCP		40
+VALUE	Disconnect-Cause		Failed-PPP-LCP-Negotiation 41
+VALUE	Disconnect-Cause		Failed-PPP-PAP-Auth-Fail 42
+VALUE	Disconnect-Cause		Failed-PPP-CHAP-Auth	43
+VALUE	Disconnect-Cause		Failed-PPP-Remote-Auth	44
+VALUE	Disconnect-Cause		PPP-Remote-Terminate	45
+VALUE	Disconnect-Cause		PPP-Closed-Event	46
+VALUE	Disconnect-Cause		NCP-Closed-PPP		47
+VALUE	Disconnect-Cause		MP-Error-PPP		48
+VALUE	Disconnect-Cause		PPP-Maximum-Channels	49
+VALUE	Disconnect-Cause		Tables-Full		50
+VALUE	Disconnect-Cause		Resources-Full		51
+VALUE	Disconnect-Cause		Invalid-IP-Address	52
+VALUE	Disconnect-Cause		Bad-Hostname		53
+VALUE	Disconnect-Cause		Bad-Port		54
+VALUE	Disconnect-Cause		Reset-TCP		60
+VALUE	Disconnect-Cause		TCP-Connection-Refused	61
+VALUE	Disconnect-Cause		Timeout-TCP		62
+VALUE	Disconnect-Cause		Foreign-Host-Close-TCP	63
+VALUE	Disconnect-Cause		TCP-Network-Unreachable	64
+VALUE	Disconnect-Cause		TCP-Host-Unreachable	65
+VALUE	Disconnect-Cause		TCP-Network-Admin-Unreachable 66
+VALUE	Disconnect-Cause		TCP-Port-Unreachable	67
+VALUE	Disconnect-Cause		Session-Timeout		100
+VALUE	Disconnect-Cause		Session-Failed-Security	101
+VALUE	Disconnect-Cause		Session-End-Callback	102
+VALUE	Disconnect-Cause		Invalid-Protocol	120
+VALUE	Disconnect-Cause		RADIUS-Disconnect	150
+VALUE	Disconnect-Cause		Local-Admin-Disconnect	151
+VALUE	Disconnect-Cause		SNMP-Disconnect		152
+VALUE	Disconnect-Cause		V110-Retries		160
+VALUE	Disconnect-Cause		PPP-Authentication-Timeout 170
+VALUE	Disconnect-Cause		Local-Hangup		180
+VALUE	Disconnect-Cause		Remote-Hangup		185
+VALUE	Disconnect-Cause		T1-Quiesced		190
+VALUE	Disconnect-Cause		Call-Duration		195
+VALUE	Disconnect-Cause		VPN-User-Disconnect	600
+VALUE	Disconnect-Cause		VPN-Carrier-Loss	601
+VALUE	Disconnect-Cause		VPN-No-Resources	602
+VALUE	Disconnect-Cause		VPN-Bad-Control-Packet	603
+VALUE	Disconnect-Cause		VPN-Admin-Disconnect	604
+VALUE	Disconnect-Cause		VPN-Tunnel-Shut		605
+VALUE	Disconnect-Cause		VPN-Local-Disconnect	606
+VALUE	Disconnect-Cause		VPN-Session-Limit	607
+VALUE	Disconnect-Cause		VPN-Call-Redirect	608
+
+END-VENDOR	Cisco
+
+ALIAS		Cisco					Vendor-Specific.Cisco

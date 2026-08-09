@@ -1,0 +1,51 @@
+"""LDAP Source tests"""
+
+from unittest.mock import MagicMock, patch
+
+from django.test import TestCase
+
+from authentik.core.models import User
+from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.password import LDAPPasswordChanger
+from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
+
+LDAP_CONNECTION_PATCH = MagicMock(return_value=mock_ad_connection())
+
+
+class LDAPPasswordTests(TestCase):
+    """LDAP Password tests"""
+
+    def setUp(self):
+        self.source = LDAPSource.objects.create(
+            name="ldap",
+            slug="ldap",
+            base_dn="dc=t,dc=goauthentik,dc=io",
+            additional_user_dn="",
+            additional_group_dn="",
+        )
+        self.source.user_property_mappings.set(LDAPSourcePropertyMapping.objects.all())
+        self.source.save()
+
+    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
+    def test_password_complexity(self):
+        """Test password without user"""
+        pwc = LDAPPasswordChanger(self.source)
+        self.assertFalse(pwc.ad_password_complexity("test"))  # 1 category
+        self.assertFalse(pwc.ad_password_complexity("test1"))  # 2 categories
+        self.assertTrue(pwc.ad_password_complexity("test1!"))  # 2 categories
+
+    @patch("authentik.sources.ldap.models.LDAPSource.connection", LDAP_CONNECTION_PATCH)
+    def test_password_complexity_user(self):
+        """test password with user"""
+        pwc = LDAPPasswordChanger(self.source)
+        user = User.objects.create(
+            username="test",
+            attributes={
+                "distinguishedName": "CN=Erin M. Hagens,OU=ak-test,DC=t,DC=goauthentik,DC=io"
+            },
+        )
+        self.assertFalse(pwc.ad_password_complexity("test", user))  # 1 category
+        self.assertFalse(pwc.ad_password_complexity("test1", user))  # 2 categories
+        self.assertTrue(pwc.ad_password_complexity("test1!", user))  # 2 categories
+        self.assertFalse(pwc.ad_password_complexity("erin!qewrqewr", user))  # displayName token
+        self.assertFalse(pwc.ad_password_complexity("hagens!qewrqewr", user))  # displayName token

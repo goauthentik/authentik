@@ -1,0 +1,20 @@
+.table td {
+    text-align: center;
+    font-weight: bold;
+
+    &:first-child {
+        text-align: right;
+        width: 13ch;
+    }
+
+    &:not(:first-child) {
+        width: 10ch;
+    }
+
+    &[data-supported="true"] {
+        color: var(--ifm-color-success-dark);
+    }
+    &[data-supported="false"] {
+        color: var(--ifm-color-danger-dark);
+    }
+}

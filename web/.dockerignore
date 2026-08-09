@@ -1,0 +1,5 @@
+env
+static
+htmlcov
+*.env.yml
+**/node_modules

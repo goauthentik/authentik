@@ -1,0 +1,76 @@
+package group
+
+import (
+	"strconv"
+
+	"beryju.io/ldap"
+
+	"goauthentik.io/internal/outpost/ldap/constants"
+	"goauthentik.io/internal/outpost/ldap/server"
+	"goauthentik.io/internal/outpost/ldap/utils"
+	api "goauthentik.io/packages/client-go"
+)
+
+type LDAPGroup struct {
+	DN             string
+	CN             string
+	Uid            string
+	GidNumber      string
+	Member         []string
+	MemberOf       []string
+	IsSuperuser    bool
+	IsVirtualGroup bool
+	Attributes     map[string]any
+}
+
+func (lg *LDAPGroup) Entry() *ldap.Entry {
+	attrs := utils.AttributesToLDAP(lg.Attributes, func(key string) string {
+		return utils.AttributeKeySanitize(key)
+	}, func(value []string) []string {
+		return value
+	})
+
+	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup, constants.OCPosixGroup}
+	if lg.IsVirtualGroup {
+		objectClass = append(objectClass, constants.OCAKVirtualGroup)
+	}
+
+	attrs = utils.EnsureAttributes(attrs, map[string][]string{
+		"ak-superuser":   {strconv.FormatBool(lg.IsSuperuser)},
+		"objectClass":    objectClass,
+		"member":         lg.Member,
+		"memberOf":       lg.MemberOf,
+		"cn":             {lg.CN},
+		"uid":            {lg.Uid},
+		"sAMAccountName": {lg.CN},
+		"gidNumber":      {lg.GidNumber},
+	})
+	return &ldap.Entry{DN: lg.DN, Attributes: attrs}
+}
+
+func FromAPIGroup(g api.Group, si server.LDAPServerInstance) *LDAPGroup {
+	return &LDAPGroup{
+		DN:             si.GetGroupDN(g.Name),
+		CN:             g.Name,
+		Uid:            string(g.Pk),
+		GidNumber:      si.GetGroupGidNumber(g),
+		Member:         si.MembersForGroup(g),
+		MemberOf:       si.MemberOfForGroup(g),
+		IsVirtualGroup: false,
+		IsSuperuser:    *g.IsSuperuser,
+		Attributes:     g.Attributes,
+	}
+}
+
+func FromAPIUser(u api.User, si server.LDAPServerInstance) *LDAPGroup {
+	return &LDAPGroup{
+		DN:             si.GetVirtualGroupDN(u.Username),
+		CN:             u.Username,
+		Uid:            u.Uid,
+		GidNumber:      si.GetUserGidNumber(u),
+		Member:         []string{si.GetUserDN(u.Username)},
+		IsVirtualGroup: true,
+		IsSuperuser:    false,
+		Attributes:     nil,
+	}
+}

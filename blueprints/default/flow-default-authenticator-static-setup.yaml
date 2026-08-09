@@ -1,0 +1,26 @@
+version: 1
+metadata:
+  name: Default - Static MFA setup flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: default-authenticator-static-setup
+    title: Setup Static OTP Tokens
+    authentication: require_authenticated
+  identifiers:
+    slug: default-authenticator-static-setup
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    configure_flow: !KeyOf flow
+    token_count: 6
+    friendly_name: Static tokens
+  identifiers:
+    name: default-authenticator-static-setup
+  id: default-authenticator-static-setup
+  model: authentik_stages_authenticator_static.authenticatorstaticstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-authenticator-static-setup
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

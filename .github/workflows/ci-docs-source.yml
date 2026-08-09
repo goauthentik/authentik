@@ -1,0 +1,37 @@
+---
+name: CI - Source code docs
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  publish-source-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: generate docs
+        run: |
+          uv run make migrate
+          uv run ak build_source_docs
+      - uses: nwtgck/actions-netlify@d22a32a27c918fe470bbc562e984f80ec48c2668 # v4.0.0
+        id: netlify
+        with:
+          publish-dir: "./source_docs"
+          production-deploy: true
+          enable-commit-comment: false
+          enable-pull-request-comment: false
+          enable-commit-status: false
+          enable-github-deployment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59

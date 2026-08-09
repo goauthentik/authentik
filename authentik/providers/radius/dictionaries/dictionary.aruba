@@ -1,0 +1,132 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Version: $Id$
+#
+VENDOR		Aruba				14823
+BEGIN-VENDOR	Aruba
+
+ATTRIBUTE	User-Role				1	string
+ATTRIBUTE	User-Vlan				2	integer
+ATTRIBUTE	Priv-Admin-User				3	integer
+ATTRIBUTE	Admin-Role				4	string
+ATTRIBUTE	Essid-Name				5	string
+ATTRIBUTE	Location-Id				6	string
+ATTRIBUTE	Port-Identifier				7	string
+ATTRIBUTE	MMS-User-Template			8	string
+ATTRIBUTE	Named-User-Vlan				9	string
+ATTRIBUTE	AP-Group				10	string
+
+ATTRIBUTE	Framed-IPv6-Address			11	string
+ATTRIBUTE	Device-Type				12	string
+ATTRIBUTE	No-DHCP-Fingerprint			14	integer
+ATTRIBUTE	Mdps-Device-Udid			15	string
+ATTRIBUTE	Mdps-Device-Imei			16	string
+ATTRIBUTE	Mdps-Device-Iccid			17	string
+ATTRIBUTE	Mdps-Max-Devices			18	integer
+ATTRIBUTE	Mdps-Device-Name			19	string
+ATTRIBUTE	Mdps-Device-Product			20	string
+
+ATTRIBUTE	Mdps-Device-Version			21	string
+ATTRIBUTE	Mdps-Device-Serial			22	string
+ATTRIBUTE	CPPM-Role				23	string
+ATTRIBUTE	AirGroup-User-Name			24	string
+ATTRIBUTE	AirGroup-Shared-User			25	string
+ATTRIBUTE	AirGroup-Shared-Role			26	string
+ATTRIBUTE	AirGroup-Device-Type			27	integer
+ATTRIBUTE	Auth-Survivability			28	string
+ATTRIBUTE	AS-User-Name				29	string
+ATTRIBUTE	AS-Credential-Hash			30	string
+
+ATTRIBUTE	WorkSpace-App-Name			31	string
+ATTRIBUTE	Mdps-Provisioning-Settings		32	string
+ATTRIBUTE	Mdps-Device-Profile			33	string
+ATTRIBUTE	AP-IP-Address				34	ipaddr
+ATTRIBUTE	AirGroup-Shared-Group			35	string
+ATTRIBUTE	User-Group				36	string
+ATTRIBUTE	Network-SSO-Token			37	string
+ATTRIBUTE	AirGroup-Version			38	integer
+ATTRIBUTE	Auth-SurvMethod				39	integer
+ATTRIBUTE	Port-Bounce-Host			40	integer
+
+ATTRIBUTE	Calea-Server-Ip				41	ipaddr
+ATTRIBUTE	Admin-Path				42	string
+ATTRIBUTE	Captive-Portal-URL			43	string
+ATTRIBUTE	MPSK-Passphrase				44	octets encrypt=2
+ATTRIBUTE	ACL-Server-Query-Info			45	string
+ATTRIBUTE	Command-String				46	string
+ATTRIBUTE	Network-Profile				47	string
+ATTRIBUTE	Admin-Device-Group			48	string
+ATTRIBUTE	PoE-Priority				49	integer
+ATTRIBUTE	Port-Auth-Mode				50	integer
+
+ATTRIBUTE	NAS-Filter-Rule				51	string
+ATTRIBUTE	QoS-Trust-Mode				52	integer
+ATTRIBUTE	UBT-Gateway-Role			53	string
+ATTRIBUTE	Gateway-Zone				54	string
+
+ATTRIBUTE	DPP-Bootstrapping-Key-SHA256		55	string
+ATTRIBUTE	DPP-Bootstrapping-Net-Access-Key-SHA256	56	string
+ATTRIBUTE	DPP-Bootstrapping-Key-B64		57	string
+
+ATTRIBUTE	STP-Admin-Edge-Port			58	integer
+
+ATTRIBUTE	UBT-Gateway-CPPM-Role			59	string
+
+ATTRIBUTE	AP-MAC-Address				60	string
+ATTRIBUTE	Device-MAC-Address			61	string
+
+ATTRIBUTE	MPSK-Key-Name				62	string
+
+ATTRIBUTE	Device-Traffic-Class			63	integer
+
+ATTRIBUTE	PVLAN-Port-Type				64	integer
+ATTRIBUTE	Network-Test				65	integer
+ATTRIBUTE	MPSK-Lookup-Info			66	string encrypt=1
+ATTRIBUTE	AVPair					67	string
+ATTRIBUTE	DPP-Service-Type			68	integer
+
+ATTRIBUTE	User-Mgmt-Interface			69	string
+
+ATTRIBUTE	Poe-Allocate-By-Method			70	integer
+
+ATTRIBUTE	DPP-AKMs				71	string
+ATTRIBUTE	DPP-Passphrase				72	string encrypt=2
+
+VALUE	AirGroup-Device-Type		Personal-Device		1
+VALUE	AirGroup-Device-Type		Shared-Device		2
+VALUE	AirGroup-Device-Type		Deleted-Device		3
+
+VALUE	AirGroup-Version		AirGroup-v1		1
+VALUE	AirGroup-Version		AirGroup-v2		2
+
+VALUE	PoE-Priority			Critical		0
+VALUE	PoE-Priority			High			1
+VALUE	PoE-Priority			Low			2
+
+VALUE	Port-Auth-Mode			Infrastructure-Mode	1
+VALUE	Port-Auth-Mode			Client-Mode		2
+VALUE	Port-Auth-Mode			Multi-Domain-Mode	3
+
+VALUE	QoS-Trust-Mode			DSCP			0
+VALUE	QoS-Trust-Mode			QoS			1
+VALUE	QoS-Trust-Mode			None			2
+
+VALUE	STP-Admin-Edge-Port		Disable			0
+VALUE	STP-Admin-Edge-Port		Enable			1
+
+VALUE	PVLAN-Port-Type			None			0
+VALUE	PVLAN-Port-Type			Promiscuous		1
+VALUE	PVLAN-Port-Type			Secondary		2
+
+VALUE	DPP-Service-Type		DDP-Boostrap-Authorization 1
+VALUE	DPP-Service-Type		DDP-Identity-Update	2
+VALUE	DPP-Service-Type		DDP-Net-Access		3
+
+VALUE	PoE-Allocate-By-Method		Class			1
+VALUE	PoE-Allocate-By-Method		Usage			2
+
+END-VENDOR Aruba
+ALIAS		Aruba					Vendor-Specific.Aruba

@@ -1,0 +1,15 @@
+# Ignore artifacts:
+build
+out
+coverage
+.docusaurus
+help
+static
+scripts/docsmg/target/
+
+## Node
+node_modules
+
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml

@@ -1,0 +1,115 @@
+---
+name: CI - Outpost
+
+on:
+  push:
+    branches:
+      - main
+      - next
+      - version-*
+  pull_request:
+    branches:
+      - main
+      - version-*
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: "${{ !startsWith(github.ref, 'refs/heads/version-') && github.ref != 'refs/heads/main' && github.ref != 'refs/heads/next' }}"
+
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
+jobs:
+  lint-golint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+      - name: Prepare and generate API
+        run: |
+          # Create folder structure for go embeds
+          mkdir -p web/dist
+          mkdir -p website/help
+          touch web/dist/test website/help/test
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
+        with:
+          version: latest
+          args: --timeout 5000s --verbose
+          skip-cache: true
+  test-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: prepare database
+        run: |
+          uv run make migrate
+      - name: Go unittests
+        run: |
+          go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
+  ci-outpost-mark:
+    if: always()
+    needs:
+      - lint-golint
+      - test-unittest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+  build-binary:
+    timeout-minutes: 120
+    needs:
+      - ci-outpost-mark
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        type:
+          - proxy
+          - ldap
+          - radius
+          - rac
+        goos: [linux]
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - name: Pin pnpm store directory
+        run: |
+          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
+          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
+        with:
+          node-version-file: package.json
+          cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir web install --frozen-lockfile
+      - name: Build web
+        run: pnpm --dir web run build-proxy
+      - name: Build outpost
+        run: |
+          set -x
+          export GOOS=${{ matrix.goos }}
+          export GOARCH=${{ matrix.goarch }}
+          export CGO_ENABLED=0
+          go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}

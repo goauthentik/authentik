@@ -1,0 +1,55 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1>
+      {% blocktrans %}
+      You're Invited!
+      {% endblocktrans %}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+          {% blocktrans %}
+          You have been invited to join {{ host }}. Click the button below to get started.
+          {% endblocktrans %}
+        </td>
+      </tr>
+      {% if expires %}
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 10px 0; color: #212124; font-size: 12px;">
+          {% blocktrans with expires=expires|naturaltime %}
+          This invitation expires {{ expires }}.
+          {% endblocktrans %}
+        </td>
+      </tr>
+      {% endif %}
+      <tr>
+        <td align="center" class="btn btn-primary">
+          <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank">{% trans 'Accept Invitation' %}</a>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% blocktrans %}
+    If you cannot click the button above, please copy and paste the following URL into your browser:
+    {% endblocktrans %}
+    <br>
+    <a href="{{ url }}" rel="noopener noreferrer" target="_blank">{{ url }}</a>
+  </td>
+</tr>
+{% endblock %}

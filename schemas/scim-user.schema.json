@@ -1,0 +1,372 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "title": "User",
+  "description": "User Account",
+  "type": "object",
+  "properties": {
+    "userName": {
+      "description": "Unique identifier for the User, typically used by the user to directly authenticate to the service provider.  Each User MUST include a non-empty userName value.  This identifier MUST be unique across the service provider's entire set of Users.  REQUIRED.",
+      "type": "string"
+    },
+    "name": {
+      "description": "The components of the user's real name.  Providers MAY return just the full name as a single string in the formatted sub-attribute, or they MAY return just the individual component attributes using the other sub-attributes, or they MAY return both.  If both variants are returned, they SHOULD be describing the same name, with the formatted name indicating how the component attributes should be combined.",
+      "type": "object",
+      "properties": {
+        "formatted": {
+          "description": "The full name, including all middle names, titles, and suffixes as appropriate, formatted for display (e.g., 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        },
+        "familyName": {
+          "description": "The family name of the User, or last name in most Western languages (e.g., 'Jensen' given the full name 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        },
+        "givenName": {
+          "description": "The given name of the User, or first name in most Western languages (e.g., 'Barbara' given the full name 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        },
+        "middleName": {
+          "description": "The middle name(s) of the User (e.g., 'Jane' given the full name 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        },
+        "honorificPrefix": {
+          "description": "The honorific prefix(es) of the User, or title in most Western languages (e.g., 'Ms.' given the full name 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        },
+        "honorificSuffix": {
+          "description": "The honorific suffix(es) of the User, or suffix in most Western languages (e.g., 'III' given the full name 'Ms. Barbara J Jensen, III').",
+          "type": "string"
+        }
+      }
+    },
+    "displayName": {
+      "description": "The name of the User, suitable for display to end-users.  The name SHOULD be the full name of the User being described, if known.",
+      "type": "string"
+    },
+    "nickName": {
+      "description": "The casual way to address the user in real life, e.g., 'Bob' or 'Bobby' instead of 'Robert'.  This attribute SHOULD NOT be used to represent a User's username (e.g., 'bjensen' or 'mpepperidge').",
+      "type": "string"
+    },
+    "profileUrl": {
+      "description": "A fully qualified URL pointing to a page representing the User's online profile.",
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "description": "The user's title, such as \"Vice President.\"",
+      "type": "string"
+    },
+    "userType": {
+      "description": "Used to identify the relationship between the organization and the user.  Typical values used might be 'Contractor', 'Employee', 'Intern', 'Temp', 'External', and 'Unknown', but any value may be used.",
+      "type": "string"
+    },
+    "preferredLanguage": {
+      "description": "Indicates the User's preferred written or spoken language.  Generally used for selecting a localized user interface; e.g., 'en_US' specifies the language English and country US.",
+      "type": "string"
+    },
+    "locale": {
+      "description": "Used to indicate the User's default location for purposes of localizing items such as currency, date time format, or numerical representations.",
+      "type": "string"
+    },
+    "timezone": {
+      "description": "The User's time zone in the 'Olson' time zone database format, e.g., 'America/Los_Angeles'.",
+      "type": "string"
+    },
+    "active": {
+      "description": "A Boolean value indicating the User's administrative status.",
+      "type": "boolean"
+    },
+    "password": {
+      "description": "The User's cleartext password.  This attribute is intended to be used as a means to specify an initial password when creating a new User or to reset an existing User's password.",
+      "type": "string",
+      "writeOnly": true
+    },
+    "emails": {
+      "description": "Email addresses for the user.  The value SHOULD be canonicalized by the service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. Canonical type values of 'work', 'home', and 'other'.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "Email addresses for the user.  The value SHOULD be canonicalized by the service provider, e.g., 'bjensen@example.com' instead of 'bjensen@EXAMPLE.COM'. Canonical type values of 'work', 'home', and 'other'.",
+            "type": "string",
+            "format": "email"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, e.g., 'work' or 'home'.",
+            "type": "string",
+            "enum": [
+              "work",
+              "home",
+              "other"
+            ]
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred mailing address or primary email address.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "phoneNumbers": {
+      "description": "Phone numbers for the User.  The value SHOULD be canonicalized by the service provider according to the format specified in RFC 3966, e.g., 'tel:+1-201-555-0123'. Canonical type values of 'work', 'home', 'mobile', 'fax', 'pager', and 'other'.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "Phone number of the User.",
+            "type": "string"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, e.g., 'work', 'home', 'mobile'.",
+            "type": "string",
+            "enum": [
+              "work",
+              "home",
+              "mobile",
+              "fax",
+              "pager",
+              "other"
+            ]
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred phone number or primary phone number.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ims": {
+      "description": "Instant messaging addresses for the User.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "Instant messaging address for the User.",
+            "type": "string"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, e.g., 'aim', 'gtalk', 'xmpp'.",
+            "type": "string",
+            "enum": [
+              "aim",
+              "gtalk",
+              "icq",
+              "xmpp",
+              "msn",
+              "skype",
+              "qq",
+              "yahoo"
+            ]
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred messenger or primary messenger.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "photos": {
+      "description": "URLs of photos of the User.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "URL of a photo of the User.",
+            "type": "string",
+            "format": "uri"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, i.e., 'photo' or 'thumbnail'.",
+            "type": "string",
+            "enum": [
+              "photo",
+              "thumbnail"
+            ]
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred photo or thumbnail.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "addresses": {
+      "description": "A physical mailing address for this User. Canonical type values of 'work', 'home', and 'other'.  This attribute is a complex type with the following sub-attributes.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "formatted": {
+            "description": "The full mailing address, formatted for display or use with a mailing label.  This attribute MAY contain newlines.",
+            "type": "string"
+          },
+          "streetAddress": {
+            "description": "The full street address component, which may include house number, street name, P.O. box, and multi-line extended street address information.  This attribute MAY contain newlines.",
+            "type": "string"
+          },
+          "locality": {
+            "description": "The city or locality component.",
+            "type": "string"
+          },
+          "region": {
+            "description": "The state or region component.",
+            "type": "string"
+          },
+          "postalCode": {
+            "description": "The zip code or postal code component.",
+            "type": "string"
+          },
+          "country": {
+            "description": "The country name component.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, e.g., 'work' or 'home'.",
+            "type": "string",
+            "enum": [
+              "work",
+              "home",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "groups": {
+      "description": "A list of groups to which the user belongs, either through direct membership, through nested groups, or dynamically calculated.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "The identifier of the User's group.",
+            "type": "string",
+            "readOnly": true
+          },
+          "$ref": {
+            "description": "The URI of the corresponding 'Group' resource to which the user belongs.",
+            "type": "string",
+            "format": "uri",
+            "readOnly": true
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string",
+            "readOnly": true
+          },
+          "type": {
+            "description": "A label indicating the attribute's function, e.g., 'direct' or 'indirect'.",
+            "type": "string",
+            "enum": [
+              "direct",
+              "indirect"
+            ],
+            "readOnly": true
+          }
+        },
+        "readOnly": true
+      },
+      "readOnly": true
+    },
+    "entitlements": {
+      "description": "A list of entitlements for the User that represent a thing the User has.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "The value of an entitlement.",
+            "type": "string"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function.",
+            "type": "string"
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "roles": {
+      "description": "A list of roles for the User that collectively represent who the User is, e.g., 'Student', 'Faculty'.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "The value of a role.",
+            "type": "string"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function.",
+            "type": "string"
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "x509Certificates": {
+      "description": "A list of certificates issued to the User.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "The value of an X.509 certificate.",
+            "type": "string",
+            "contentEncoding": "base64",
+            "contentMediaType": "application/octet-stream"
+          },
+          "display": {
+            "description": "A human-readable name, primarily used for display purposes.  READ-ONLY.",
+            "type": "string"
+          },
+          "type": {
+            "description": "A label indicating the attribute's function.",
+            "type": "string"
+          },
+          "primary": {
+            "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute.  The primary attribute value 'true' MUST appear no more than once.",
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "userName"
+  ]
+}

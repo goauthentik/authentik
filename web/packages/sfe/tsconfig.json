@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "rootDir": ".",
+        "moduleResolution": "bundler",
+        "module": "preserve",
+        "noEmit": true,
+        "outDir": "out",
+        "types": [],
+        "lib": ["DOM", "ES2015", "ES2017"]
+    }
+}

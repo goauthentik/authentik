@@ -1,0 +1,53 @@
+import { BaseTaskButton } from "./BaseTaskButton.js";
+
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { customElement, property } from "lit/decorators.js";
+
+/**
+ * A button associated with an event handler for loading data. Takes an asynchronous function as its
+ * only property.
+ *
+ * @element ak-spinner-button
+ *
+ * @slot - The label for the button
+ *
+ * @fires ak-button-click - When the button is first clicked.
+ * @fires ak-button-success - When the async process succeeds
+ * @fires ak-button-failure - When the async process fails
+ * @fires ak-button-reset - When the button is reset after the async process completes
+ */
+
+@customElement("ak-spinner-button")
+export class SpinnerButton extends BaseTaskButton<unknown> {
+    /**
+     * The command to run when the button is pressed. Must return a promise. We don't do anything
+     * with that promise other than check if it's a resolve or reject, and rethrow the event after.
+     *
+     * @attr
+     */
+    @property({ type: Object, attribute: false })
+    public callAction?: () => Promise<unknown>;
+
+    public override async onError(error: unknown): Promise<void> {
+        super.onError(error);
+
+        const parsedError = await parseAPIResponseError(error);
+
+        showMessage({
+            level: MessageLevel.error,
+            message: pluckErrorDetail(parsedError),
+        });
+    }
+}
+
+export default SpinnerButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner-button": SpinnerButton;
+    }
+}

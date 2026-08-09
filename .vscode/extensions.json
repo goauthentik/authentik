@@ -1,0 +1,22 @@
+{
+    "recommendations": [
+        "bashmish.es6-string-css",
+        "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+        "charliermarsh.ruff",
+        "dbaeumer.vscode-eslint",
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
+        "github.vscode-github-actions",
+        "golang.go",
+        "Gruntfuggly.todo-tree",
+        "mechatroner.rainbow-csv",
+        "ms-python.black-formatter",
+        "ms-python.black-formatter",
+        "ms-python.debugpy",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "redhat.vscode-yaml",
+        "Tobermory.es6-string-html",
+        "unifiedjs.vscode-mdx"
+    ]
+}

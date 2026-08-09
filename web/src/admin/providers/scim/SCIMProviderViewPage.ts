@@ -1,0 +1,341 @@
+/**
+ * @file Display details for a SCIM provider: Overview, changelog, provisioned users, provisioned groups, and permissions
+ */
+
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/scim/SCIMProviderForm";
+import "#admin/providers/scim/SCIMProviderGroupList";
+import "#admin/providers/scim/SCIMProviderUserList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/rbac/ObjectPermissionModal";
+import "#components/ak-status-label";
+import "#admin/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/ak-mdx/index";
+import "#elements/buttons/ActionButton/index";
+import "#elements/buttons/ModalButton";
+import "#components/sync/SyncStatusCard";
+import "#elements/timestamp/ak-timestamp";
+
+import { aki } from "#common/api/client";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { SlottedTemplateResult } from "#elements/types";
+
+import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
+import { taskCard } from "#components/tasks/taskCard";
+
+import {
+    ModelEnum,
+    ProvidersApi,
+    SCIMAuthenticationModeEnum,
+    SCIMProvider,
+} from "@goauthentik/api";
+
+import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
+
+import { msg } from "@lit/localize";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFForm from "@patternfly/patternfly/components/Form/form.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
+
+const PROVIDER_TYPE = ModelEnum.AuthentikProvidersScimScimprovider;
+
+@customElement("ak-provider-scim-view")
+export class SCIMProviderViewPage extends AKElement {
+    @property({ type: Number })
+    providerID?: number;
+
+    @state()
+    provider?: SCIMProvider;
+
+    static styles: CSSResult[] = [
+        PFButton,
+        PFBanner,
+        PFForm,
+        PFFormControl,
+        PFStack,
+        PFList,
+        PFGrid,
+        PFPage,
+        PFContent,
+        PFCard,
+        PFDescriptionList,
+    ];
+
+    constructor() {
+        super();
+        this.addEventListener(EVENT_REFRESH, () => {
+            if (!this.provider?.pk) return;
+            this.providerID = this.provider?.pk;
+        });
+    }
+
+    fetchProvider(id: number) {
+        aki(ProvidersApi)
+            .providersScimRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
+    render(): SlottedTemplateResult {
+        if (!this.provider) {
+            return nothing;
+        }
+
+        return html`<main part="main">
+            <ak-tabs part="tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Overview")}"
+                >
+                    ${this.renderTabOverview()}
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-changelog"
+                    id="page-changelog"
+                    aria-label="${msg("Changelog")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-object-changelog
+                            targetModelPk=${this.provider?.pk || ""}
+                            targetModelName=${this.provider?.metaModelName || ""}
+                        >
+                        </ak-object-changelog>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-users"
+                    id="page-users"
+                    aria-label="${msg("Provisioned Users")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-scim-users-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-scim-users-list>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Provisioned Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-provider-scim-groups-list
+                            providerId=${this.provider.pk}
+                        ></ak-provider-scim-groups-list>
+                    </div>
+                </div>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${ModelEnum.AuthentikProvidersScimScimprovider}
+                    objectPk=${this.provider.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
+    }
+
+    renderSyncStatusExtra() {
+        if (
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.Oauth &&
+            this.provider?.authMode !== SCIMAuthenticationModeEnum.OauthInteractive
+        )
+            return nothing;
+        return html`
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text"
+                        >${msg("OAuth Token last updated")}</span
+                    >
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider?.authOauthTokenLastUpdated}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+            <div class="pf-c-description-list__group">
+                <dt class="pf-c-description-list__term">
+                    <span class="pf-c-description-list__text">${msg("OAuth Token expires")}</span>
+                </dt>
+                <dd class="pf-c-description-list__description">
+                    <div class="pf-c-description-list__text">
+                        <ak-timestamp
+                            .timestamp=${this.provider?.authOauthTokenExpires}
+                        ></ak-timestamp>
+                    </div>
+                </dd>
+            </div>
+        `;
+    }
+
+    renderTabOverview(): SlottedTemplateResult {
+        if (!this.provider) {
+            return nothing;
+        }
+
+        return html` ${!this.provider?.assignedBackchannelApplicationName
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${msg(
+                          "Warning: Provider is not assigned to an application as backchannel provider.",
+                      )}
+                  </div>`
+                : nothing}
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                >
+                    <div class="pf-c-card__title">${msg("Info")}</div>
+                    <div class="pf-c-card__body">
+                        ${renderDescriptionList([
+                            [msg("Name"), this.provider.name],
+                            [
+                                msg("Assigned to application"),
+                                html`<ak-provider-related-application
+                                    mode="backchannel"
+                                    .provider=${this.provider}
+                                ></ak-provider-related-application>`,
+                            ],
+                            [
+                                msg("Dry-run"),
+                                html`<ak-status-label
+                                    ?good=${!this.provider.dryRun}
+                                    type="info"
+                                    good-label=${msg("No")}
+                                    bad-label=${msg("Yes")}
+                                ></ak-status-label>`,
+                            ],
+                            [msg("URL"), this.provider.url],
+                            [
+                                msg("Service Provider Config cache timeout"),
+                                this.provider.serviceProviderConfigCacheTimeout,
+                            ],
+                            [
+                                msg("Related actions"),
+                                html`<ak-forms-modal>
+                                    <span slot="submit">${msg("Save Changes")}</span>
+                                    <span slot="header">${msg("Update SCIM Provider")}</span>
+                                    <ak-provider-scim-form
+                                        slot="form"
+                                        .instancePk=${this.provider.pk}
+                                    >
+                                    </ak-provider-scim-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-primary pf-m-block"
+                                    >
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>`,
+                            ],
+                        ])}
+                    </div>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl">
+                    ${this.provider.authMode === SCIMAuthenticationModeEnum.OauthInteractive
+                        ? html`
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__body">
+                                      ${renderDescriptionList(
+                                          [
+                                              [
+                                                  msg("OAuth Status"),
+                                                  html`<ak-status-label
+                                                          ?good=${this.provider
+                                                              .authOauthTokenLastUpdated !== null}
+                                                          good-label=${msg("Authenticated")}
+                                                          bad-label=${msg("No token saved")}
+                                                      ></ak-status-label>
+                                                      <a
+                                                          class="pf-c-button pf-m-primary"
+                                                          href=${this.provider?.authOauthUrlStart ||
+                                                          ""}
+                                                          target="_blank"
+                                                          >${msg("(Re-)authenticate")}</a
+                                                      >`,
+                                              ],
+                                              [
+                                                  msg("OAuth Callback URL"),
+                                                  html`<input
+                                                      class="pf-c-form-control"
+                                                      readonly
+                                                      type="text"
+                                                      value="${this.provider.authOauthUrlCallback ||
+                                                      ""}"
+                                                  />`,
+                                              ],
+                                          ],
+                                          { horizontal: true },
+                                      )}
+                                  </div>
+                              </div>
+                          `
+                        : nothing}
+                    <ak-sync-status-card
+                        .fetch=${() => {
+                            return aki(ProvidersApi).providersScimSyncStatusRetrieve({
+                                id: this.provider?.pk || 0,
+                            });
+                        }}
+                    >
+                        ${this.renderSyncStatusExtra()}
+                    </ak-sync-status-card>
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    ${scheduleCard(PROVIDER_TYPE, this.provider.pk)}
+                </div>
+                <div class="pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    ${taskCard(PROVIDER_TYPE, this.provider.pk)}
+                </div>
+                <div
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                >
+                    <div class="pf-c-card__body">
+                        <ak-mdx .url=${MDSCIMProvider}></ak-mdx>
+                    </div>
+                </div>
+            </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-scim-view": SCIMProviderViewPage;
+    }
+}

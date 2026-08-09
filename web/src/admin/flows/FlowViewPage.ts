@@ -1,0 +1,264 @@
+import "#admin/flows/BoundStagesList";
+import "#admin/flows/FlowDiagram";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ak-rbac-object-permission-page";
+import "#admin/events/ObjectChangelog";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
+import { isResponseErrorLike } from "#common/errors/network";
+
+import { AKElement } from "#elements/Base";
+import { modalInvoker } from "#elements/dialogs";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { setPageDetails } from "#components/ak-page-navbar";
+import renderDescriptionList from "#components/DescriptionList";
+
+import { FlowForm } from "#admin/flows/FlowForm";
+import { DesignationToLabel } from "#admin/flows/utils";
+
+import { Flow, FlowsApi, ModelEnum } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFPage from "@patternfly/patternfly/components/Page/page.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+@customElement("ak-flow-view")
+export class FlowViewPage extends AKElement {
+    @property({ type: String })
+    flowSlug?: string;
+
+    @state()
+    flow!: Flow;
+
+    static styles: CSSResult[] = [
+        PFPage,
+        PFDescriptionList,
+        PFButton,
+        PFCard,
+        PFContent,
+        PFGrid,
+        css`
+            img.pf-icon {
+                max-height: 24px;
+            }
+            ak-tabs {
+                height: 100%;
+            }
+        `,
+    ];
+
+    fetchFlow(slug: string) {
+        aki(FlowsApi)
+            .flowsInstancesRetrieve({ slug })
+            .then((flow) => {
+                this.flow = flow;
+            });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowSlug") && this.flowSlug) {
+            this.fetchFlow(this.flowSlug);
+        }
+    }
+
+    render(): SlottedTemplateResult {
+        if (!this.flow) {
+            return nothing;
+        }
+        return html`<main part="main">
+            <ak-tabs exportparts="container:tabs">
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-overview"
+                    id="page-overview"
+                    aria-label="${msg("Flow Overview")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Flow Info")}</div>
+                            <div class="pf-c-card__body">
+                                ${renderDescriptionList([
+                                    [msg("Name"), html`${this.flow.name}`],
+                                    [msg("Slug"), html`<code>${this.flow.slug}</code>`],
+                                    [
+                                        msg("Designation"),
+                                        html`${DesignationToLabel(this.flow.designation)}`,
+                                    ],
+                                    [
+                                        msg("Related actions"),
+                                        html`<button
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                ${modalInvoker(FlowForm, {
+                                                    instancePk: this.flow.slug,
+                                                })}
+                                            >
+                                                ${msg("Edit")}
+                                            </button>
+                                            <a
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                href=${this.flow.exportUrl}
+                                            >
+                                                ${msg("Export")}
+                                            </a>`,
+                                    ],
+                                    [
+                                        msg("Execute flow"),
+                                        html`<button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" normally`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-primary"
+                                                @click=${() => {
+                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                    window.open(finalURL, "_blank");
+                                                }}
+                                            >
+                                                ${msg("Normal")}
+                                            </button>
+                                            <button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" as current user`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                @click=${() => {
+                                                    aki(FlowsApi)
+                                                        .flowsInstancesExecuteRetrieve({
+                                                            slug: this.flow.slug,
+                                                        })
+                                                        .then((link) => {
+                                                            const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
+                                                            window.open(finalURL, "_blank");
+                                                        });
+                                                }}
+                                            >
+                                                ${msg("Current user")}
+                                            </button>
+                                            <button
+                                                aria-label=${msg(
+                                                    str`Execute "${this.flow.name}" with inspector`,
+                                                )}
+                                                class="pf-c-button pf-m-block pf-m-secondary"
+                                                @click=${() => {
+                                                    aki(FlowsApi)
+                                                        .flowsInstancesExecuteRetrieve({
+                                                            slug: this.flow.slug,
+                                                        })
+                                                        .then((link) => {
+                                                            const finalURL = `${link.link}?${encodeURI(`inspector=open&next=/#${window.location.hash}`)}`;
+                                                            window.open(finalURL, "_blank");
+                                                        })
+                                                        .catch(async (error: unknown) => {
+                                                            if (isResponseErrorLike(error)) {
+                                                                // This request can return a HTTP 400 when a flow
+                                                                // is not applicable.
+                                                                window.open(
+                                                                    error.response.url,
+                                                                    "_blank",
+                                                                );
+                                                            }
+                                                        });
+                                                }}
+                                            >
+                                                ${msg("Use inspector")}
+                                            </button>`,
+                                    ],
+                                ])}
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Diagram")}</div>
+                            <div class="pf-c-card__body">
+                                <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
+                            </div>
+                        </div>
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        >
+                            <div class="pf-c-card__title">${msg("Changelog")}</div>
+                            <ak-object-changelog
+                                targetModelPk=${this.flow.pk || ""}
+                                targetModelName=${ModelEnum.AuthentikFlowsFlow}
+                            >
+                            </ak-object-changelog>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-stage-bindings"
+                    id="page-stage-bindings"
+                    aria-label="${msg("Stage Bindings")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-bound-stages-list target=${this.flow.pk}> </ak-bound-stages-list>
+                    </div>
+                </div>
+                <div
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-policy-bindings"
+                    id="page-policy-bindings"
+                    aria-label="${msg("Policy / Group / User Bindings")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">
+                            ${msg("These bindings control which users can access this flow.")}
+                        </div>
+                        <ak-bound-policies-list
+                            .target=${this.flow.policybindingmodelPtrId}
+                            .policyEngineMode=${this.flow.policyEngineMode}
+                        >
+                        </ak-bound-policies-list>
+                    </div>
+                </div>
+                <ak-rbac-object-permission-page
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-permissions"
+                    id="page-permissions"
+                    aria-label="${msg("Permissions")}"
+                    model=${ModelEnum.AuthentikFlowsFlow}
+                    objectPk=${this.flow.pk}
+                ></ak-rbac-object-permission-page>
+            </ak-tabs>
+        </main>`;
+    }
+
+    updated(changed: PropertyValues<this>) {
+        super.updated(changed);
+
+        if (changed.has("flow")) {
+            setPageDetails({
+                icon: "pf-icon pf-icon-process-automation",
+                header: this.flow?.name,
+                description: this.flow?.title,
+            });
+        }
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-view": FlowViewPage;
+    }
+}

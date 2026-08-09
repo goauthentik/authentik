@@ -1,0 +1,25 @@
+{
+    "name": "@goauthentik/lifecycle-aws",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "aws-cfn": "cross-env CI=false cdk synth --version-reporting=false > template.yaml"
+    },
+    "devDependencies": {
+        "aws-cdk": "^2.1129.0",
+        "cross-env": "^10.1.0"
+    },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=11.20.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        }
+    },
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
+}

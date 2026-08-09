@@ -1,0 +1,139 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig",
+  "title": "Service Provider Configuration",
+  "description": "Schema for representing the service provider's configuration",
+  "type": "object",
+  "properties": {
+    "documentationUri": {
+      "description": "An HTTP-addressable URL pointing to the service provider's human-consumable help documentation.",
+      "type": "string",
+      "format": "uri",
+      "readOnly": true
+    },
+    "patch": {
+      "description": "A complex type that specifies PATCH configuration options.",
+      "type": "object",
+      "properties": {
+        "supported": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "supported"
+      ],
+      "readOnly": true
+    },
+    "bulk": {
+      "description": "A complex type that specifies bulk configuration options.",
+      "type": "object",
+      "properties": {
+        "supported": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "supported"
+      ],
+      "readOnly": true
+    },
+    "filter": {
+      "description": "A complex type that specifies FILTER options.",
+      "type": "object",
+      "properties": {
+        "supported": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "boolean",
+          "readOnly": true
+        },
+        "maxResults": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "integer",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "supported"
+      ],
+      "readOnly": true
+    },
+    "changePassword": {
+      "description": "A complex type that specifies configuration options related to changing a password.",
+      "type": "object",
+      "properties": {
+        "supported": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "supported"
+      ],
+      "readOnly": true
+    },
+    "sort": {
+      "description": "A complex type that specifies sort result options.",
+      "type": "object",
+      "properties": {
+        "supported": {
+          "description": "A Boolean value specifying whether or not the operation is supported.",
+          "type": "boolean",
+          "readOnly": true
+        }
+      },
+      "required": [
+        "supported"
+      ],
+      "readOnly": true
+    },
+    "authenticationSchemes": {
+      "description": "A complex type that specifies supported authentication scheme properties.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The common authentication scheme name, e.g., HTTP Basic.",
+            "type": "string",
+            "readOnly": true
+          },
+          "description": {
+            "description": "A description of the authentication scheme.",
+            "type": "string",
+            "readOnly": true
+          },
+          "specUri": {
+            "description": "An HTTP-addressable URL pointing to the authentication scheme's specification.",
+            "type": "string",
+            "format": "uri",
+            "readOnly": true
+          },
+          "documentationUri": {
+            "description": "An HTTP-addressable URL pointing to the authentication scheme's usage documentation.",
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "name",
+          "description"
+        ],
+        "readOnly": true
+      },
+      "readOnly": true
+    }
+  },
+  "required": [
+    "patch",
+    "bulk",
+    "filter",
+    "changePassword",
+    "sort",
+    "authenticationSchemes"
+  ]
+}

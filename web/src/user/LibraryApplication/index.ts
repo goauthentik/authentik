@@ -1,0 +1,142 @@
+import "#elements/AppIcon";
+import "#user/LibraryApplication/RACLaunchEndpointModal";
+
+import { PFSize } from "#common/enums";
+
+import { modalInvoker } from "#elements/dialogs";
+import { LitFC } from "#elements/types";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { CardHeader } from "#user/LibraryApplication/CardHeader";
+import { CardMenu } from "#user/LibraryApplication/CardMenu";
+import { RACLaunchEndpointLaunch } from "#user/LibraryApplication/RACLaunchEndpointModal";
+
+import { Application } from "@goauthentik/api";
+
+import { spread } from "@open-wc/lit-helpers";
+import { kebabCase } from "change-case";
+import type { HTMLAttributes } from "react";
+
+import { msg, str } from "@lit/localize";
+import { html, nothing } from "lit";
+import { classMap } from "lit/directives/class-map.js";
+import { ref, RefOrCallback } from "lit/directives/ref.js";
+import { styleMap } from "lit/directives/style-map.js";
+
+const RAC_LAUNCH_URL = "goauthentik.io://providers/rac/launch";
+
+export interface AKLibraryAppProps extends HTMLAttributes<HTMLDivElement> {
+    application?: Application;
+    editURL?: string | URL | null;
+    background?: string | null;
+    targetRef?: RefOrCallback | null;
+    onAppClick?: (app: Application) => Promise<void>;
+}
+
+export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
+    application,
+    editURL,
+    background,
+    className = "",
+    targetRef,
+    onAppClick,
+    ...props
+}) => {
+    if (!application) {
+        return html`<ak-spinner></ak-spinner>`;
+    }
+
+    const classes = {
+        [className]: className.length,
+    };
+
+    const dataID = kebabCase(application.name);
+
+    const cardID = `app-${application.pk}`;
+    const titleID = `${cardID}-title`;
+    const descriptionID = `${cardID}-description`;
+    const cardHeader = CardHeader({
+        application,
+        id: titleID,
+    });
+
+    const rac = application.launchUrl === RAC_LAUNCH_URL;
+    const primaryRef = targetRef ? ref(targetRef) : nothing;
+
+    const extendedProps = {
+        "aria-label": msg(str`Open "${application.name}"`, {
+            id: "library.application.card.aria-label",
+            desc: "Screen reader label for the application card",
+        }),
+        "tabindex": "0",
+        "class": "card-header-aspect-wrapper",
+        "title": ifPresent(application.name),
+        "id": cardID,
+        ...props,
+    };
+
+    let main = html`<a
+        ${primaryRef}
+        href=${ifPresent(application.launchUrl)}
+        target=${ifPresent(application.openInNewTab, "_blank")}
+        aria-describedby=${descriptionID}
+        ${spread(extendedProps)}
+        >${cardHeader}</a
+    >`;
+    if (rac) {
+        main = html`<div
+            ${primaryRef}
+            role="button"
+            aria-describedby=${descriptionID}
+            ${modalInvoker(RACLaunchEndpointLaunch, { app: application })}
+            ${spread(extendedProps)}
+        >
+            ${cardHeader}
+        </div>`;
+    }
+    // onAppClick intentionally takes precedence over the RAC launcher: in the
+    // requestable-browse context a card click means "request access", not "launch".
+    if (onAppClick) {
+        const activate = () => {
+            onAppClick(application);
+        };
+        main = html`<div
+            ${primaryRef}
+            role="button"
+            aria-describedby=${descriptionID}
+            @click=${activate}
+            @keydown=${(event: KeyboardEvent) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    activate();
+                }
+            }}
+            ${spread(extendedProps)}
+        >
+            ${cardHeader}
+        </div>`;
+    }
+
+    return html`<div
+        part="card-wrapper"
+        data-application-name=${ifPresent(dataID)}
+        style=${styleMap({ background: background || null })}
+    >
+        <div part="card" class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}">
+            <ak-app-icon
+                exportparts="icon:card-header-icon"
+                size=${PFSize.Large}
+                name=${application.name}
+                icon=${ifPresent(application.metaIconUrl)}
+                .iconThemedUrls=${application.metaIconThemedUrls}
+            ></ak-app-icon>
+            ${main}
+            ${CardMenu({
+                application,
+                cardID,
+                descriptionID,
+                editURL,
+            })}
+        </div>
+    </div>`;
+};

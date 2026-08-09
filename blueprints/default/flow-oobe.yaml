@@ -1,0 +1,195 @@
+metadata:
+  labels:
+    blueprints.goauthentik.io/system-oobe: "true"
+    blueprints.goauthentik.io/system: "true"
+  name: Default - Out-of-box-experience flow
+version: 1
+entries:
+- attrs:
+    denied_action: message_continue
+    designation: stage_configuration
+    name: default-oobe-setup
+    title: Welcome to authentik!
+  id: flow
+  identifiers:
+    slug: initial-setup
+  model: authentik_flows.flow
+- attrs:
+    order: 100
+    initial_value:
+      Welcome to authentik! Please set a password and email address for the default admin
+      user, akadmin.
+    placeholder_expression: false
+    required: true
+    type: static
+    field_key: oobe-header-text
+    label: oobe-header-text
+  id: prompt-field-header
+  identifiers:
+    name: initial-setup-field-header
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 101
+    placeholder: Admin email
+    placeholder_expression: false
+    required: true
+    type: email
+    field_key: email
+    label: Email
+  id: prompt-field-email
+  identifiers:
+    name: initial-setup-field-email
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 300
+    placeholder: Password
+    placeholder_expression: false
+    required: true
+    type: password
+    field_key: password
+    label: Password
+  id: prompt-field-password
+  identifiers:
+    name: initial-setup-field-password
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 301
+    placeholder: Password (repeat)
+    placeholder_expression: false
+    required: true
+    type: password
+    field_key: password_repeat
+    label: Password (repeat)
+  id: prompt-field-password-repeat
+  identifiers:
+    name: initial-setup-field-password-repeat
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 400
+    label: Base URL
+    sub_text: "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik)."
+    field_key: base_url
+    type: text
+    required: true
+    placeholder: https://authentik.company
+    placeholder_expression: false
+    initial_value_expression: true
+    initial_value: |
+      return request.http_request.build_absolute_uri("/").rstrip("/")
+  id: prompt-field-base-url
+  identifiers:
+    name: initial-setup-field-base-url
+  model: authentik_stages_prompt.prompt
+- attrs:
+    expression: |
+      # This policy sets the user for the currently running flow
+      # by injecting "pending_user"
+      akadmin = ak_user_by(username="akadmin")
+      context["flow_plan"].context["pending_user"] = akadmin
+      return True
+  id: policy-default-oobe-prefill-user
+  identifiers:
+    name: default-oobe-prefill-user
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      # This policy ensures that the setup flow can only be
+      # executed when the admin user doesn't have a password set
+      akadmin = ak_user_by(username="akadmin")
+      # Ensure flow was started correctly
+      started_by = context.get("goauthentik.io/core/setup/started-by")
+      if started_by != "setup":
+          setup_url = request.http_request.build_absolute_uri("/")
+          ak_message(f"Access the authentik setup by navigating to {setup_url}")
+          return False
+      return akadmin is None or not akadmin.has_usable_password()
+  id: policy-default-oobe-password-usable
+  identifiers:
+    name: default-oobe-password-usable
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      # Validate the base URL entered during setup
+      from django.core.exceptions import ValidationError
+      from django.core.validators import URLValidator
+
+      base_url = ((request.context.get("prompt_data") or {}).get("base_url") or "").strip()
+      # Empty is handled by the field's own `required` flag; only check non-empty values.
+      if not base_url:
+          return True
+      try:
+          URLValidator()(base_url)
+      except ValidationError:
+          ak_message("Enter a valid URL, for example https://authentik.company")
+          return False
+      return True
+  id: policy-default-oobe-base-url-valid
+  identifiers:
+    name: default-oobe-base-url-valid
+  model: authentik_policies_expression.expressionpolicy
+- state: absent
+  identifiers:
+    name: default-oobe-flow-set-authentication
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    fields:
+    - !KeyOf prompt-field-header
+    - !KeyOf prompt-field-email
+    - !KeyOf prompt-field-base-url
+    - !KeyOf prompt-field-password
+    - !KeyOf prompt-field-password-repeat
+    validation_policies:
+    - !KeyOf policy-default-oobe-base-url-valid
+  id: stage-default-oobe-password
+  identifiers:
+    name: stage-default-oobe-password
+  model: authentik_stages_prompt.promptstage
+- id: stage-default-authentication-login
+  identifiers:
+    name: default-authentication-login
+  model: authentik_stages_user_login.userloginstage
+- id: stage-default-password-change-write
+  identifiers:
+    name: default-password-change-write
+  model: authentik_stages_user_write.userwritestage
+  attrs:
+    user_creation_mode: never_create
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    re_evaluate_policies: false
+  identifiers:
+    order: 10
+    stage: !KeyOf stage-default-oobe-password
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    re_evaluate_policies: true
+  id: binding-password-write
+  identifiers:
+    order: 20
+    stage: !KeyOf stage-default-password-change-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    re_evaluate_policies: false
+  id: binding-login
+  identifiers:
+    order: 100
+    stage: !KeyOf stage-default-authentication-login
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-password-usable
+    target: !KeyOf flow
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-prefill-user
+    target: !KeyOf binding-password-write
+  model: authentik_policies.policybinding

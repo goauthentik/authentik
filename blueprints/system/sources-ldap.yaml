@@ -1,0 +1,108 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - LDAP Source - Mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/default-dn-path
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default LDAP Mapping: DN to User Path"
+      expression: |
+        path_elements = []
+        for pair in dn.split(","):
+            attr, _, value = pair.partition("=")
+            # Ignore elements from the Root DSE and the canonical name of the object
+            if attr.lower() in ["cn", "dc"]:
+                continue
+            path_elements.append(value)
+        path_elements.reverse()
+
+        path = source.get_user_path()
+        if len(path_elements) > 0:
+            path = f"{path}/{'/'.join(path_elements)}"
+        return {
+            "path": path
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/default-name
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default LDAP Mapping: Name"
+      expression: |
+        return {
+            "name": ldap.get("name"),
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/default-mail
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default LDAP Mapping: mail"
+      expression: |
+        return {
+            "email": ldap.get("mail"),
+        }
+  # ActiveDirectory-specific mappings
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/ms-samaccountname
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default Active Directory Mapping: sAMAccountName"
+      expression: |
+        return {
+            "username": ldap.get("sAMAccountName"),
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/ms-userprincipalname
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default Active Directory Mapping: userPrincipalName"
+      object_field: "attributes.upn"
+      expression: |
+        return {
+            "attributes": {
+                "upn": list_flatten(ldap.get("userPrincipalName")),
+            },
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/ms-givenName
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default Active Directory Mapping: givenName"
+      expression: |
+        return {
+            "attributes": {
+                "givenName": list_flatten(ldap.get("givenName")),
+            },
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/ms-sn
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default Active Directory Mapping: sn"
+      expression: |
+        return {
+            "attributes": {
+                "sn": list_flatten(ldap.get("sn")),
+            },
+        }
+  # OpenLDAP specific mappings
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/openldap-uid
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default OpenLDAP Mapping: uid"
+      expression: |
+        return {
+            "username": ldap.get("uid"),
+        }
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/openldap-cn
+    model: authentik_sources_ldap.ldapsourcepropertymapping
+    attrs:
+      name: "authentik default OpenLDAP Mapping: cn"
+      expression: |
+        return {
+            "name": ldap.get("cn"),
+        }

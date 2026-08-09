@@ -1,0 +1,15 @@
+{% extends "base/skeleton.html" %}
+
+{% load authentik_core %}
+
+{% block title %}
+API Browser - {{ brand.branding_title }}
+{% endblock %}
+
+{% block head %}
+<script src="{% versioned_script 'dist/standalone/api-browser/index-%v.js' %}" type="module"></script>
+{% endblock %}
+
+{% block body %}
+<ak-api-browser schemaPath="{{ path }}"></ak-api-browser>
+{% endblock %}

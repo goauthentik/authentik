@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question
+    url: https://github.com/goauthentik/authentik/discussions
+    about: Please ask questions via GitHub Discussions rather than creating issues.
+  - name: authentik Discord
+    url: https://discord.com/invite/jg33eMhnj6
+    about: For community support, visit our Discord server.

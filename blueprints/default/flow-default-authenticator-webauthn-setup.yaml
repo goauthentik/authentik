@@ -1,0 +1,25 @@
+version: 1
+metadata:
+  name: Default - WebAuthn MFA setup flow
+entries:
+- attrs:
+    designation: stage_configuration
+    name: default-authenticator-webauthn-setup
+    title: Setup WebAuthn
+    authentication: require_authenticated
+  identifiers:
+    slug: default-authenticator-webauthn-setup
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    configure_flow: !KeyOf flow
+    friendly_name: WebAuthn device
+  identifiers:
+    name: default-authenticator-webauthn-setup
+  id: default-authenticator-webauthn-setup
+  model: authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-authenticator-webauthn-setup
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

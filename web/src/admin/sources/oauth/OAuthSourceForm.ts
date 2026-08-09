@@ -1,0 +1,527 @@
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
+import "#components/ak-radio-input";
+import "#components/ak-secret-textarea-input";
+import "#components/ak-slug-input";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/index";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
+
+import { aki } from "#common/api/client";
+
+import { SlottedTemplateResult } from "#elements/types";
+import { ifPreviousValue } from "#elements/utils/properties";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
+
+import {
+    AuthorizationCodeAuthMethodEnum,
+    FlowDesignationEnum,
+    GroupMatchingModeEnum,
+    OAuthSource,
+    OAuthSourceRequest,
+    PKCEMethodEnum,
+    ProviderTypeEnum,
+    SourcesApi,
+    SourceType,
+    UsageEnum,
+    UserMatchingModeEnum,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+const authorizationCodeAuthMethodOptions = [
+    {
+        label: msg("HTTP Basic Auth"),
+        value: AuthorizationCodeAuthMethodEnum.BasicAuth,
+        default: true,
+    },
+    {
+        label: msg("Include the client ID and secret as request parameters"),
+        value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
+
+const pkceMethodOptions = [
+    {
+        label: msg("None"),
+        value: PKCEMethodEnum.None,
+        default: true,
+    },
+    {
+        label: msg("Plain"),
+        value: PKCEMethodEnum.Plain,
+    },
+    {
+        label: msg("S256"),
+        value: PKCEMethodEnum.S256,
+    },
+];
+
+@customElement("ak-source-oauth-form")
+export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
+    @property({ attribute: false, useDefault: true, hasChanged: ifPreviousValue })
+    public providerType: SourceType | null = null;
+
+    @property({ attribute: "model-name", useDefault: true, hasChanged: ifPreviousValue })
+    public modelName: string | null = null;
+
+    //#region Lifecycle
+
+    protected async loadInstance(pk: string): Promise<OAuthSource> {
+        const source = await aki(SourcesApi).sourcesOauthRetrieve({
+            slug: pk,
+        });
+        this.providerType = source.type;
+        return source;
+    }
+
+    protected load(): Promise<void> {
+        if (!this.modelName) return Promise.resolve();
+
+        return this.fetchProviderType(this.modelName);
+    }
+
+    protected async send(data: OAuthSource): Promise<OAuthSource> {
+        data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
+
+        if (this.instance) {
+            return aki(SourcesApi).sourcesOauthPartialUpdate({
+                slug: this.instance.slug,
+                patchedOAuthSourceRequest: data,
+            });
+        }
+
+        return aki(SourcesApi).sourcesOauthCreate({
+            oAuthSourceRequest: data as unknown as OAuthSourceRequest,
+        });
+    }
+
+    protected fetchProviderType(modelName: string): Promise<void> {
+        return aki(SourcesApi)
+            .sourcesOauthSourceTypesList({
+                name: modelName?.replace("oauthsource", ""),
+            })
+            .then((type) => {
+                this.providerType = type[0];
+            });
+    }
+
+    //#endregion
+
+    //#region Render
+
+    protected renderUrlOptions(): SlottedTemplateResult {
+        if (!this.providerType?.urlsCustomizable) {
+            return nothing;
+        }
+
+        return html`<ak-form-group open label="${msg("URL settings")}">
+            <div class="pf-c-form">
+                <ak-form-element-horizontal
+                    label=${msg("Authorization URL")}
+                    name="authorizationUrl"
+                >
+                    <input
+                        type="text"
+                        value="${this.instance?.authorizationUrl ??
+                        this.providerType.authorizationUrl ??
+                        ""}"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <p class="pf-c-form__helper-text">
+                        ${msg("URL the user is redirect to to consent the authorization.")}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
+                    <input
+                        type="url"
+                        value="${this.instance?.accessTokenUrl ??
+                        this.providerType.accessTokenUrl ??
+                        ""}"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <p class="pf-c-form__helper-text">
+                        ${msg("URL used by authentik to retrieve tokens.")}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
+                    <input
+                        type="url"
+                        value="${this.instance?.profileUrl ?? this.providerType.profileUrl ?? ""}"
+                        class="pf-c-form-control pf-m-monospace"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <p class="pf-c-form__helper-text">
+                        ${msg("URL used by authentik to get user information.")}
+                    </p>
+                </ak-form-element-horizontal>
+                ${this.providerType.requestTokenUrl
+                    ? html`<ak-form-element-horizontal
+                          label=${msg("Request token URL")}
+                          name="requestTokenUrl"
+                      >
+                          <input
+                              type="url"
+                              value="${this.instance?.requestTokenUrl ?? ""}"
+                              class="pf-c-form-control pf-m-monospace"
+                              autocomplete="off"
+                          />
+                          <p class="pf-c-form__helper-text">
+                              ${msg(
+                                  "URL used to request the initial token. This URL is only required for OAuth 1.",
+                              )}
+                          </p>
+                      </ak-form-element-horizontal> `
+                    : nothing}
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcWellKnownUrl !== ""
+                    ? html`<ak-form-element-horizontal
+                          label=${msg("OIDC Well-known URL")}
+                          name="oidcWellKnownUrl"
+                      >
+                          <input
+                              type="url"
+                              value="${this.instance?.oidcWellKnownUrl ??
+                              this.providerType.oidcWellKnownUrl ??
+                              ""}"
+                              class="pf-c-form-control pf-m-monospace"
+                              autocomplete="off"
+                              spellcheck="false"
+                          />
+                          <p class="pf-c-form__helper-text">
+                              ${msg(
+                                  "OIDC well-known configuration URL. Can be used to automatically configure the URLs above.",
+                              )}
+                          </p>
+                      </ak-form-element-horizontal>`
+                    : nothing}
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect ||
+                this.providerType.oidcJwksUrl !== ""
+                    ? html`<ak-form-element-horizontal
+                              label=${msg("OIDC JWKS URL")}
+                              name="oidcJwksUrl"
+                          >
+                              <input
+                                  type="url"
+                                  value="${this.instance?.oidcJwksUrl ??
+                                  this.providerType.oidcJwksUrl ??
+                                  ""}"
+                                  class="pf-c-form-control pf-m-monospace"
+                                  autocomplete="off"
+                                  spellcheck="false"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "JSON Web Key URL. Keys from the URL will be used to validate JWTs from this source.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
+                          <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
+                              <ak-codemirror
+                                  mode="javascript"
+                                  value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
+                              >
+                              </ak-codemirror>
+                              <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
+                          </ak-form-element-horizontal>`
+                    : nothing}
+                <ak-radio-input
+                    label=${msg("PKCE Method")}
+                    name="pkce"
+                    required
+                    .options=${pkceMethodOptions}
+                    .value=${this.instance?.pkce}
+                    help=${msg("Configure Proof Key for Code Exchange for this source.")}
+                >
+                </ak-radio-input>
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect
+                    ? html`<ak-radio-input
+                          label=${msg("Authorization code authentication method")}
+                          name="authorizationCodeAuthMethod"
+                          required
+                          .options=${authorizationCodeAuthMethodOptions}
+                          .value=${this.instance?.authorizationCodeAuthMethod}
+                          help=${msg(
+                              "How to perform authentication during an authorization_code token request flow",
+                          )}
+                      >
+                      </ak-radio-input>`
+                    : nothing}
+            </div>
+        </ak-form-group>`;
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-slug-input
+                name="slug"
+                placeholder=${msg("e.g. my-oauth-source")}
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("User matching mode")}
+                required
+                name="userMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${UserMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                required
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                />
+                <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
+            </ak-form-element-horizontal>
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${UsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
+
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Consumer key")}
+                        required
+                        name="consumerKey"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.consumerKey)}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
+                    </ak-form-element-horizontal>
+                    <ak-secret-textarea-input
+                        label=${msg("Consumer secret")}
+                        name="consumerSecret"
+                        input-hint="code"
+                        help=${msg("Also known as Client Secret.")}
+                        ?required=${!this.instance}
+                        ?revealed=${!this.instance}
+                    ></ak-secret-textarea-input>
+                    <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
+                        <input
+                            type="text"
+                            value="${this.instance?.additionalScopes ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Additional scopes to be passed to the OAuth Provider, separated by space. To replace existing scopes, prefix with *.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            ${this.renderUrlOptions()}
+            <ak-form-group open label="${msg("OAuth Attribute mapping")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Authentication Flow")}
+                        name="authenticationFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when authenticating existing users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Enrollment flow")}
+                        name="enrollmentFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when enrolling new users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        required
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>`;
+    }
+
+    //#endregion
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-oauth-form": OAuthSourceForm;
+    }
+}

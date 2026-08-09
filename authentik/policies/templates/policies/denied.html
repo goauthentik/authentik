@@ -1,0 +1,80 @@
+{% extends 'login/base_full.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{% trans 'Permission denied' %} - {{ brand.branding_title }}
+{% endblock %}
+
+{% block card_title %}
+{% trans 'Permission denied' %}
+{% endblock %}
+
+{% block card %}
+<div class="pf-c-form">
+    {% if user.is_authenticated %}
+        <div class="pf-c-form__group">
+            <div class="form-control-static">
+                <div class="avatar">
+                    <img class="pf-c-avatar" src="{{ user.avatar }}" alt="{% trans "User's avatar" %}" />
+                    {{ user.username }}
+                </div>
+                <div slot="link">
+                    <a href="{{ cancel }}">{% trans "Not you?" %}</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="pf-c-form__group">
+        <p>
+            <i class="pf-icon pf-icon-error-circle-o pf-u-font-size-2xl" role="img" aria-label="{% trans 'Error' %}"></i>
+            {% trans 'Request has been denied.' %}
+        </p>
+        {% if error %}
+        <hr>
+        <p>
+            {{ error }}
+        </p>
+        {% endif %}
+        {% if policy_result %}
+            <hr>
+            {% if policy_result.messages %}
+            <em>{% trans 'Messages:' %}</em>
+            <ul class="pf-c-list">
+                {% for message in policy_result.messages %}
+                <li>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% if policy_result.source_results %}
+            <em>{% trans 'Explanation:' %}</em>
+            <ul class="pf-c-list">
+                {% for source_result in policy_result.source_results %}
+                <li>
+                    {% blocktrans with name=source_result.source_binding result=source_result.passing %}
+                    Policy binding '{{ name }}' returned result '{{ result }}'
+                    {% endblocktrans %}
+                    {% if source_result.messages %}
+                    <ul class="pf-c-list">
+                        {% for message in source_result.messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="pf-c-form__group">
+        <a id="ak-back-home" href="{% url 'authentik_core:root-redirect' %}" class="pf-c-button pf-m-primary pf-m-block">
+            {% trans 'Go home' %}
+        </a>
+    </div>
+</div>
+{% endblock %}

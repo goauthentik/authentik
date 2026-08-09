@@ -1,0 +1,22 @@
+version: 1
+metadata:
+  name: Default - Invalidation flow
+entries:
+- attrs:
+    designation: invalidation
+    name: Logout
+    title: Default Invalidation Flow
+    authentication: none
+  identifiers:
+    slug: default-invalidation-flow
+  model: authentik_flows.flow
+  id: flow
+- identifiers:
+    name: default-invalidation-logout
+  id: default-invalidation-logout
+  model: authentik_stages_user_logout.userlogoutstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-invalidation-logout
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

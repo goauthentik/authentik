@@ -1,0 +1,88 @@
+---
+title: Integrate with Planka
+sidebar_label: Planka
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+
+## What is Planka?
+
+> Planka is an open-source, Trello-like application with a Kanban board system, used for project management.
+>
+> -- https://planka.app/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `planka.company` is the FQDN of the Planka installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Planka with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, optional UI settings, and note the application **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://planka.company/oidc-callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create role groups _(optional)_
+
+Planka can set user roles from the OIDC `groups` claim. To provision users with Planka administrative or project owner permissions, create corresponding groups in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (for example, `planka-admin` or `planka-project-owner`) and click **Create**.
+4. Click the name of the newly created group, and then switch to the **Users** tab.
+5. Click **Add existing user**, select the user who requires the corresponding Planka role, and click **Add**.
+
+## Planka configuration
+
+Add the following required environment variables to your Planka deployment:
+
+```env title=".env"
+BASE_URL=https://planka.company
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client Secret from authentik>
+```
+
+To assign Planka roles from authentik group membership, add the relevant role mappings:
+
+```env title=".env"
+OIDC_ADMIN_ROLES=planka-admin
+OIDC_PROJECT_OWNER_ROLES=planka-project-owner
+```
+
+To enforce SSO and disable local authentication, add the following environment variable:
+
+```env title=".env"
+OIDC_ENFORCED=true
+```
+
+Restart Planka after applying the environment variable changes.
+
+## Configuration verification
+
+To verify the integration with Planka, log out and attempt to log back in using the **Log in with SSO** button. You should be redirected to authentik, and then redirected back to the Planka dashboard.
+
+## Resources
+
+- [Planka Docs - OIDC (OpenID Connect)](https://docs.planka.cloud/docs/configuration/oidc)

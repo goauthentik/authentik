@@ -1,0 +1,137 @@
+---
+title: Integrate with Directus
+sidebar_label: Directus
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Directus?
+
+> Directus connects to a database and provides REST and GraphQL APIs, a no-code interface, and a native MCP server.
+>
+> -- https://directus.io/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `directus.company` is the FQDN of a self-hosted Directus installation.
+- `<project_url>.directus.app` is the URL of a Directus Cloud project.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Directus SSO requirements
+Directus SSO requires a Team or Enterprise license, or an Open Innovation Grant. You can configure SSO directly on a self-hosted deployment. Directus Customer Success must configure SSO for an Enterprise Cloud project.
+:::
+
+Before you begin, log in to Directus as an administrator. Navigate to **Settings** > **User Roles**, open the role that SSO users should receive, and note the role ID from the browser URL.
+
+Choose your Directus deployment below.
+
+<Tabs
+  defaultValue="self-hosted"
+  values={[
+    { label: "Self-hosted Directus", value: "self-hosted" },
+    { label: "Directus Cloud", value: "cloud" },
+  ]}
+>
+  <TabItem value="self-hosted">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of self-hosted Directus with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://directus.company/auth/login/authentik/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(recommended)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users can access Directus and be registered automatically.
+3. Click **Submit** to save the new application and provider.
+
+## Directus configuration
+
+The configuration enables automatic registration for users who can access the authentik application. Directus assigns those users the role that you specify.
+
+1. Add the following environment variables to the Directus configuration. Replace `<Directus role ID>` with the role ID that you noted during preparation.
+
+    ```env title=".env"
+    PUBLIC_URL="https://directus.company"
+    AUTH_PROVIDERS="authentik"
+    AUTH_AUTHENTIK_DRIVER="openid"
+    AUTH_AUTHENTIK_CLIENT_ID="<Client ID from authentik>"
+    AUTH_AUTHENTIK_CLIENT_SECRET="<Client Secret from authentik>"
+    AUTH_AUTHENTIK_ISSUER_URL="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
+    AUTH_AUTHENTIK_ALLOW_PUBLIC_REGISTRATION="true"
+    AUTH_AUTHENTIK_DEFAULT_ROLE_ID="<Directus role ID>"
+    ```
+
+    If Directus already uses other SSO providers, add `authentik` to the comma-separated `AUTH_PROVIDERS` value instead of replacing the existing providers.
+
+2. Restart Directus to apply the configuration.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with self-hosted Directus, open Directus and click **Log in with authentik**. You should be redirected to authentik and returned to Directus after authentication.
+
+  </TabItem>
+  <TabItem value="cloud">
+
+## authentik configuration
+
+<RedirectURI20265Note />
+
+To support the integration of Directus Cloud with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://<project_url>.directus.app/auth/login/authentik/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(recommended)_: create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to control which users can access Directus and be registered automatically.
+3. Click **Submit** to save the new application and provider.
+
+## Directus configuration
+
+Contact Directus Customer Success and ask them to configure OpenID Connect SSO for the Enterprise Cloud project with the following values:
+
+- **Provider name**: `authentik`
+- **Client ID**: Client ID from authentik
+- **Client secret**: Client Secret from authentik
+- **Issuer URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+- **Automatic registration**: enabled
+- **Default role ID**: the Directus role ID that you noted during preparation
+
+If the Cloud project already uses other SSO providers, ask Directus Customer Success to add authentik without replacing the existing providers.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Directus Cloud, open Directus and click **Log in with authentik**. You should be redirected to authentik and returned to Directus after authentication.
+
+  </TabItem>
+</Tabs>
+
+## Resources
+
+- [Directus documentation - Auth and SSO configuration](https://directus.com/docs/configuration/auth-sso)
+- [Directus documentation - Single Sign-On](https://directus.com/docs/guides/auth/sso)
+- [Directus documentation - Create a Cloud project](https://directus.com/docs/cloud/projects/create)
+- [Directus pricing - SSO availability](https://directus.com/pricing)

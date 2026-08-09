@@ -1,0 +1,137 @@
+---
+title: Integrate with Cursor
+sidebar_label: Cursor
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Cursor?
+
+> Cursor is an AI coding agent and code editor built to help developers write, edit, and understand code.
+>
+> -- https://cursor.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.company` is the email domain that you verify in Cursor.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::info Cursor requirements
+Cursor SSO requires a Cursor Team or Enterprise plan and admin access to the Cursor organization. Cursor also requires domain verification for the email domains that use SSO; domain verification is outside the scope of this integration guide.
+:::
+
+## authentik configuration
+
+To support the integration of Cursor with authentik, you need to create SAML property mappings and an application/provider pair.
+
+### Create property mappings
+
+Create SAML property mappings for the attributes that Cursor expects from the identity provider.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
+    - **ID mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `id`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return str(request.user.uuid)
+            ```
+    - **Email mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `email`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.email
+            ```
+    - **First name mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `firstName`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.name.split(" ", 1)[0] if request.user.name else request.user.username
+            ```
+    - **Last name mapping:**
+        - **Name**: choose a descriptive name.
+        - **SAML Attribute Name**: `lastName`
+        - **Friendly Name**: leave blank.
+        - **Expression**:
+            ```python
+            return request.user.name.rsplit(" ", 1)[-1] if " " in request.user.name else " "
+            ```
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Add the property mappings that you created earlier.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Copy the metadata URL
+
+1. Navigate to **Applications** > **Providers** and click the name of the SAML provider that you created.
+2. Under **Related objects** > **Metadata**, click **Copy download URL**. This metadata URL is required in the Cursor setup flow.
+
+## Cursor configuration
+
+1. Log in to the [Cursor dashboard settings](https://www.cursor.com/dashboard/settings) as an organization administrator.
+2. Find and expand the **Single Sign-On (SSO)** section.
+3. Click **SSO Provider Connection settings** and follow the setup wizard.
+4. Create a new SAML connection and copy the following Cursor service provider values. These values are required in the next section:
+    - **ACS URL**
+    - **SP Entity ID**
+5. When Cursor asks for identity provider information, use the authentik metadata URL that you copied earlier.
+6. Configure the SAML attributes as follows:
+    - `id` to the user ID field.
+    - `email` to the email field.
+    - `firstName` to the first name field.
+    - `lastName` to the last name field.
+7. Keep the Cursor setup flow open.
+
+### Update the authentik provider
+
+1. Return to the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the SAML provider that you created earlier.
+3. Under **Protocol settings**, set the following values:
+    - **ACS URL**: set to the **ACS URL** value from Cursor.
+    - **Audience**: set to the **SP Entity ID** value from Cursor.
+4. Click **Update** to save the provider.
+
+### Test and enable SSO
+
+1. Return to the Cursor setup flow.
+2. Run the SSO test. Cursor should redirect you to authentik for authentication and then back to Cursor.
+3. After the test succeeds, complete the setup flow.
+4. Verify `example.company` from the Cursor **Domain verification settings** page if you have not already done so.
+5. Configure SSO enforcement from the Cursor admin dashboard.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Cursor, log out of Cursor and sign in with an email address from the verified SSO domain. You should be redirected to authentik and, after authenticating, returned to Cursor.
+
+## Resources
+
+- [Cursor Docs - SSO](https://cursor.com/docs/account/teams/sso)
+- [WorkOS Docs - SAML](https://workos.com/docs/integrations/saml)
+- [WorkOS Docs - Just-In-Time User Provisioning](https://workos.com/docs/sso/jit-provisioning)

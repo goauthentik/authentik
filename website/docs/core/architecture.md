@@ -1,0 +1,49 @@
+---
+title: Architecture
+---
+
+authentik consists of a handful of components, most of which are required for a functioning setup.
+
+```mermaid
+graph LR
+    user(User) --> ak_server(authentik Server)
+    ak_server --> ak_server_core(authentik Server Core)
+    ak_server --> ak_outpost(Embedded outpost)
+    ak_server_core --> db(PostgreSQL)
+    ak_worker(Background Worker) --> db(PostgreSQL)
+```
+
+### Server
+
+The server container consists of two sub-components, the actual server itself and the embedded outpost. Incoming requests to the server container(s) are routed by a lightweight router to either the _Core_ server or the embedded outpost. This router also handles requests for any static assets such as JavaScript and CSS files.
+
+#### Core
+
+The core sub-component handles most of authentik's logic, such as API requests, flow executions, any kind of SSO requests, etc.
+
+#### Embedded outpost
+
+Similar to [other outposts](../add-secure-apps/outposts/index.mdx), this outpost allows using [Proxy providers](../add-secure-apps/providers/proxy/index.md) without deploying a separate outpost.
+
+#### Persistence
+
+- `/data` is used to store uploaded files (icons, flow backgrounds, etc.) and CSV reports. If not mounted, authentik will allow you to use external URLs for icons and other media fields instead of uploading files. See [Files](../customize/files.md) and [File picker values](../customize/file-picker.md) for more information.
+
+### Worker
+
+This container executes background tasks, such as sending emails, the event notification system, and everything you can see on the _System Tasks_ page in the Admin interface.
+
+#### Persistence
+
+- `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but if you use authentik without a reverse proxy, this can be used, for example, for the [Let's Encrypt integration](../sys-mgmt/certificates.md#lets-encrypt-integration).
+- `/templates` is used for [custom email templates](../add-secure-apps/flows-stages/stages/email/index.md#custom-templates), and as with the others is fully optional.
+
+### PostgreSQL
+
+authentik uses PostgreSQL to store all of its configuration and other data (excluding uploaded files).
+
+#### Persistence
+
+- `/var/lib/postgresql/data` is used to store the PostgreSQL database
+
+On Kubernetes, with the default Helm chart and using the packaged PostgreSQL sub-chart, persistent data is stored in a PVC.

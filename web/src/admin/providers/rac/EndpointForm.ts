@@ -1,0 +1,143 @@
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-number-input";
+import "#elements/CodeMirror";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
+
+import { aki } from "#common/api/client";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { Endpoint, EndpointAuthModeEnum, ProtocolEnum, RacApi } from "@goauthentik/api";
+
+import YAML from "yaml";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+@customElement("ak-rac-endpoint-form")
+export class EndpointForm extends ModelForm<Endpoint, string> {
+    public static override verboseName = msg("RAC Endpoint");
+    public static override verboseNamePlural = msg("RAC Endpoints");
+
+    @property({ type: Number })
+    public providerID: number | null = null;
+
+    protected override loadInstance(pk: string): Promise<Endpoint> {
+        return aki(RacApi).racEndpointsRetrieve({
+            pbmUuid: pk,
+        });
+    }
+
+    public override getSuccessMessage(): string {
+        return this.instance
+            ? msg("Successfully updated endpoint.")
+            : msg("Successfully created endpoint.");
+    }
+
+    public override async send(data: Endpoint): Promise<Endpoint> {
+        data.authMode = EndpointAuthModeEnum.Prompt;
+        if (!this.instance) {
+            data.provider = this.providerID || 0;
+        } else {
+            data.provider = this.instance.provider;
+        }
+        if (this.instance) {
+            return aki(RacApi).racEndpointsPartialUpdate({
+                pbmUuid: this.instance.pk || "",
+                patchedEndpointRequest: data,
+            });
+        }
+        return aki(RacApi).racEndpointsCreate({
+            endpointRequest: data,
+        });
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
+        return html`<ak-text-input
+                label=${msg("Endpoint Name")}
+                name="name"
+                required
+                value="${ifDefined(this.instance?.name)}"
+                placeholder=${msg("Type a name for this endpoint...")}
+                spellcheck="false"
+                ?autofocus=${!this.instance}
+            >
+            </ak-text-input>
+
+            <ak-radio-input
+                label=${msg("Protocol")}
+                name="protocol"
+                required
+                .options=${[
+                    {
+                        label: msg("RDP"),
+                        value: ProtocolEnum.Rdp,
+                    },
+                    {
+                        label: msg("SSH"),
+                        value: ProtocolEnum.Ssh,
+                    },
+                    {
+                        label: msg("VNC"),
+                        value: ProtocolEnum.Vnc,
+                    },
+                ]}
+                .value=${this.instance?.protocol}
+            >
+            </ak-radio-input>
+            <ak-text-input
+                label=${msg("Host")}
+                name="host"
+                required
+                value="${ifDefined(this.instance?.host)}"
+                input-hint="code"
+                help=${msg("Hostname/IP to connect to. Optionally specify the port.")}
+                placeholder=${msg("e.g. myserver.example.com, 10.0.0.1:22")}
+            >
+            </ak-text-input>
+            <ak-number-input
+                label=${msg("Maximum concurrent connections")}
+                name="maximumConnections"
+                required
+                value="${this.instance?.maximumConnections ?? 1}"
+                help=${msg(
+                    "Maximum concurrent allowed connections to this endpoint. Can be set to -1 to disable the limit.",
+                )}
+            >
+            </ak-number-input>
+            <ak-form-element-horizontal label=${msg("Property mappings")} name="propertyMappings">
+                <ak-dual-select-dynamic-selected
+                    .provider=${propertyMappingsProvider}
+                    .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
+                    available-label="${msg("Available User Property Mappings")}"
+                    selected-label="${msg("Selected User Property Mappings")}"
+                ></ak-dual-select-dynamic-selected>
+            </ak-form-element-horizontal>
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                        <ak-codemirror
+                            mode="yaml"
+                            value="${YAML.stringify(this.instance?.settings ?? {})}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-endpoint-form": EndpointForm;
+    }
+}

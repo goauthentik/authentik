@@ -1,0 +1,24 @@
+version: 1
+metadata:
+  name: Default - Provider authorization flow (explicit consent)
+entries:
+- attrs:
+    designation: authorization
+    name: Authorize Application
+    title: Redirecting to %(app)s
+    authentication: require_authenticated
+  identifiers:
+    slug: default-provider-authorization-explicit-consent
+  model: authentik_flows.flow
+  id: flow
+- id: default-provider-authorization-consent
+  attrs:
+    mode: expiring
+  identifiers:
+    name: default-provider-authorization-consent
+  model: authentik_stages_consent.consentstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-provider-authorization-consent
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding

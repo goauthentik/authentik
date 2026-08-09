@@ -1,0 +1,163 @@
+---
+title: Integrate with Zendesk
+sidebar_label: Zendesk
+support_level: community
+---
+
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+## What is Zendesk?
+
+> Zendesk is a customer service platform for support, sales, and customer engagement workflows.
+>
+> -- https://www.zendesk.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `company.zendesk.com` is the FQDN of your Zendesk company portal.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+Zendesk can use OpenID Connect (OIDC) or SAML for SSO. Zendesk identifies SSO users by email address, so make sure that users who sign in with authentik have an email address that matches their Zendesk user.
+
+<Tabs
+defaultValue="oidc"
+values={[
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
+]}
+>
+<TabItem value="oidc">
+
+## authentik configuration OIDC
+
+<RedirectURI20265Note />
+
+To support the integration of Zendesk with authentik over OIDC, create an application/provider pair in authentik and then create an OIDC SSO configuration in Zendesk.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://company.zendesk.com/access/oidc/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+## Zendesk configuration OIDC
+
+### Create an OIDC SSO configuration
+
+1. Log in to Zendesk as an administrator.
+2. In the Admin Center, click **Account** in the sidebar, then navigate to **Security** > **Single sign-on**.
+3. Click **Create SSO configuration**, then select **OpenID Connect**.
+4. Configure the OIDC SSO configuration:
+    - **Configuration name**: `authentik`
+    - **Client ID**: `<Client ID from authentik>`
+    - **Client secret**: `<Client Secret from authentik>`
+    - **Scopes**: `openid profile email`
+    - Enable **Turn on auto discovery**.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/`
+    - **Authentication Mode**: `PKCE`
+    - Enable **Show button when users sign in**.
+    - **Button name**: `authentik`
+5. Click **Save**.
+
+### Assign the SSO configuration
+
+Zendesk SSO configurations are inactive until they are assigned to team members, end users, or both.
+
+1. Open the security settings for the users who should authenticate with authentik:
+    - For team members, click **Account** in the sidebar, then navigate to **Security** > **Team member authentication**.
+    - For end users, click **Account** in the sidebar, then navigate to **Security** > **End user authentication**.
+2. Select **External authentication** to show the SSO configuration options.
+3. Select the `authentik` SSO configuration.
+4. Select how users sign in:
+    - Select **Let them choose** to show the **Continue with authentik** button on the Zendesk sign-in page.
+    - Select **Redirect to SSO** to require users to use SSO. If **Primary SSO** is shown, select `authentik`.
+5. Click **Save**.
+
+</TabItem>
+<TabItem value="saml">
+
+## authentik configuration SAML
+
+<SAMLProvider20265Warning />
+
+To support the integration of Zendesk with authentik over SAML, create an application/provider pair in authentik and then create a SAML SSO configuration in Zendesk.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://company.zendesk.com/access/saml`.
+        - Set the **Audience** to `company.zendesk.com`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+3. Click **Submit** to save the new application and provider.
+
+### Copy the certificate fingerprint
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and expand the certificate that you selected for the Zendesk SAML provider.
+3. Copy the **Certificate Fingerprint (SHA256)** value.
+
+## Zendesk configuration SAML
+
+### Create a SAML SSO configuration
+
+1. Log in to Zendesk as an administrator.
+2. In the Admin Center, click **Account** in the sidebar, then navigate to **Security** > **Single sign-on**.
+3. Click **Create SSO configuration**, then select **SAML**.
+4. Configure the SAML SSO configuration:
+    - **Configuration name**: `authentik`
+    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Certificate fingerprint**: paste the **Certificate Fingerprint (SHA256)** value from authentik.
+    - Enable **Show button when users sign in**.
+    - **Button name**: `authentik`
+5. Click **Save**.
+
+### Assign the SSO configuration
+
+Zendesk SSO configurations are inactive until they are assigned to team members, end users, or both.
+
+1. Open the security settings for the users who should authenticate with authentik:
+    - For team members, click **Account** in the sidebar, then navigate to **Security** > **Team member authentication**.
+    - For end users, click **Account** in the sidebar, then navigate to **Security** > **End user authentication**.
+2. Select **External authentication** to show the SSO configuration options.
+3. Select the `authentik` SSO configuration.
+4. Select how users sign in:
+    - Select **Let them choose** to show the **Continue with authentik** button on the Zendesk sign-in page.
+    - Select **Redirect to SSO** to require users to use SSO. If **Primary SSO** is shown, select `authentik`.
+5. Click **Save**.
+
+</TabItem>
+</Tabs>
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Zendesk, log out and open Zendesk. If you configured Zendesk to let users choose how they sign in, click **Continue with authentik**. You should be redirected to authentik to log in, and then redirected back to Zendesk.
+
+## Resources
+
+- [Zendesk Help - Setting up single sign-on with OpenID Connect (OIDC)](https://support.zendesk.com/hc/en-us/articles/7957465432474-Setting-up-single-sign-on-with-OpenID-Connect-OIDC)
+- [Zendesk Help - Enabling SAML single sign-on](https://support.zendesk.com/hc/en-us/articles/4408887505690-Enabling-SAML-single-sign-on)
+- [Zendesk Help - Managing single sign-on (SSO) configurations](https://support.zendesk.com/hc/en-us/articles/4408882188570-Managing-single-sign-on-SSO-configurations)
+- [Zendesk Help - Giving users different ways to sign into Zendesk](https://support.zendesk.com/hc/en-us/articles/5380943678106-Giving-users-different-ways-to-sign-into-Zendesk)

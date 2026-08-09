@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:ietf:params:scim:schemas:core:2.0:ResourceType",
+  "title": "ResourceType",
+  "description": "Specifies the schema that describes a SCIM resource type",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The resource type's server unique id. May be the same as the 'name' attribute.",
+      "type": "string",
+      "readOnly": true
+    },
+    "name": {
+      "description": "The resource type name.  When applicable, service providers MUST specify the name, e.g., 'User'.",
+      "type": "string",
+      "readOnly": true
+    },
+    "description": {
+      "description": "The resource type's human-readable description.  When applicable, service providers MUST specify the description.",
+      "type": "string",
+      "readOnly": true
+    },
+    "endpoint": {
+      "description": "The resource type's HTTP-addressable endpoint relative to the Base URL, e.g., '/Users'.",
+      "type": "string",
+      "format": "uri-reference",
+      "readOnly": true
+    },
+    "schema": {
+      "description": "The resource type's primary/base schema URI.",
+      "type": "string",
+      "format": "uri",
+      "readOnly": true
+    },
+    "schemaExtensions": {
+      "description": "A list of URIs of the resource type's schema extensions.",
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "schema": {
+              "description": "The URI of a schema extension.",
+              "type": "string",
+              "format": "uri",
+              "readOnly": true
+            },
+            "required": {
+              "description": "A Boolean value that specifies whether or not the schema extension is required for the resource type.  If true, a resource of this type MUST include this schema extension and also include any attributes declared as required in this schema extension. If false, a resource of this type MAY omit this schema extension.",
+              "type": "boolean",
+              "readOnly": true
+            }
+          },
+          "required": [
+            "schema",
+            "required"
+          ],
+          "additionalProperties": true
+        }
+      ],
+      "additionalItems": false,
+      "readOnly": true
+    }
+  },
+  "required": [
+    "name",
+    "endpoint",
+    "schema",
+    "schemaExtensions"
+  ],
+  "additionalProperties": true
+}

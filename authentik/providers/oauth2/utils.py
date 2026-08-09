@@ -1,0 +1,308 @@
+"""OAuth2/OpenID Utils"""
+
+import re
+import uuid
+from base64 import b64decode, urlsafe_b64encode
+from binascii import Error
+from hashlib import sha256
+from hmac import compare_digest
+from typing import Any
+from urllib.parse import parse_qs, unquote, urlencode, urlparse, urlunparse
+
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http.response import HttpResponseRedirect
+from django.utils.cache import patch_vary_headers
+from django.utils.timezone import now
+from structlog.stdlib import get_logger
+
+from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
+from authentik.events.models import Event, EventAction
+from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.errors import BearerTokenError
+from authentik.providers.oauth2.id_token import hash_session_key
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
+
+LOGGER = get_logger()
+
+
+class TokenResponse(JsonResponse):
+    """JSON Response with headers that it should never be cached
+
+    https://openid.net/specs/openid-connect-core-1_0.html#TokenResponse"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self["Cache-Control"] = "no-store"
+        self["Pragma"] = "no-cache"
+
+
+def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: str):
+    """Add headers to permit CORS requests from allowed_origins, with or without credentials,
+    with any headers."""
+    origin = request.META.get("HTTP_ORIGIN")
+    if not origin:
+        return response
+
+    # OPTIONS requests don't have an authorization header -> hence
+    # we can't extract the provider this request is for
+    # so for options requests we allow the calling origin without checking
+    allowed = request.method == "OPTIONS"
+    received_origin = urlparse(origin)
+    for allowed_origin in allowed_origins:
+        url = urlparse(allowed_origin)
+        if (
+            received_origin.scheme == url.scheme
+            and received_origin.hostname == url.hostname
+            and received_origin.port == url.port
+        ):
+            allowed = True
+    if not allowed:
+        LOGGER.warning(
+            "CORS: Origin is not an allowed origin",
+            requested=received_origin,
+            allowed=allowed_origins,
+        )
+        return response
+
+    # From the CORS spec: The string "*" cannot be used for a resource that supports credentials.
+    response["Access-Control-Allow-Origin"] = origin
+    patch_vary_headers(response, ["Origin"])
+    response["Access-Control-Allow-Credentials"] = "true"
+
+    if request.method == "OPTIONS":
+        if "HTTP_ACCESS_CONTROL_REQUEST_HEADERS" in request.META:
+            response["Access-Control-Allow-Headers"] = request.META[
+                "HTTP_ACCESS_CONTROL_REQUEST_HEADERS"
+            ]
+        response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+
+    return response
+
+
+def pkce_s256_challenge(verifier: str) -> str:
+    """Convert PKCE verifier to S256 challenge"""
+    return (
+        urlsafe_b64encode(sha256(verifier.encode("ascii")).digest())
+        .decode("utf-8")
+        .replace("=", "")
+    )
+
+
+def extract_access_token(request: HttpRequest) -> str | None:
+    """
+    Get the access token using Authorization Request Header Field method.
+    Or try getting via GET.
+    See: http://tools.ietf.org/html/rfc6750#section-2.1
+
+    Return a string.
+    """
+    auth_header = request.META.get("HTTP_AUTHORIZATION", "")
+
+    if re.compile(r"^[Bb]earer\s{1}.+$").match(auth_header):
+        return auth_header.split()[1]
+    if "access_token" in request.POST:
+        return request.POST.get("access_token")
+    if "access_token" in request.GET:
+        return request.GET.get("access_token")
+    return None
+
+
+def extract_client_auth(request: HttpRequest) -> tuple[str, str]:
+    """
+    Get client credentials using HTTP Basic Authentication method.
+    Or try getting parameters via POST.
+    See: http://tools.ietf.org/html/rfc6750#section-2.1
+
+    Return a tuple `(client_id, client_secret)`.
+    """
+    auth_header = request.META.get("HTTP_AUTHORIZATION", "")
+
+    if re.compile(r"^Basic\s{1}.+$").match(auth_header):
+        b64_user_pass = auth_header.split()[1]
+        try:
+            user_pass = b64decode(b64_user_pass).decode("utf-8").partition(":")
+            client_id, _, client_secret = user_pass
+            # RFC 6749 requires client credentials in Basic auth to be form-encoded first.
+            # We only percent-decode here so raw `+` characters keep their previous meaning.
+            client_id = unquote(client_id)
+            client_secret = unquote(client_secret)
+        except ValueError, Error:
+            client_id = client_secret = ""  # nosec
+    else:
+        client_id = request.POST.get("client_id", "")
+        client_secret = request.POST.get("client_secret", "")
+
+    return (client_id, client_secret)
+
+
+def protected_resource_view(scopes: list[str]):
+    """View decorator. The client accesses protected resources by presenting the
+    access token to the resource server.
+
+    https://datatracker.ietf.org/doc/html/rfc6749#section-7
+
+    This decorator also injects the token into `kwargs`"""
+
+    def wrapper(view):
+        def view_wrapper(request: HttpRequest, *args, **kwargs):
+            if request.method == "OPTIONS":
+                return view(request, *args, **kwargs)
+            try:
+                access_token = extract_access_token(request)
+                if not access_token:
+                    LOGGER.debug("No token passed")
+                    raise BearerTokenError("invalid_token")
+
+                token = AccessToken.objects.filter(token=access_token).first()
+                if not token:
+                    LOGGER.debug("Token does not exist", access_token=access_token)
+                    raise BearerTokenError("invalid_token")
+
+                if token.is_expired:
+                    LOGGER.debug("Token has expired", access_token=access_token)
+                    raise BearerTokenError("invalid_token")
+
+                if token.revoked:
+                    LOGGER.warning("Revoked token was used", access_token=access_token)
+                    Event.new(
+                        action=EventAction.SUSPICIOUS_REQUEST,
+                        message="Revoked access token was used",
+                        token=token,
+                        provider=token.provider,
+                    ).from_http(request, user=token.user)
+                    raise BearerTokenError("invalid_token")
+
+                if not set(scopes).issubset(set(token.scope)):
+                    LOGGER.warning(
+                        "Scope mismatch.",
+                        required=set(scopes),
+                        token_has=set(token.scope),
+                    )
+                    raise BearerTokenError("insufficient_scope")
+            except BearerTokenError as error:
+                response = HttpResponse(status=error.status)
+                response["WWW-Authenticate"] = (
+                    f'error="{error.code}", error_description="{error.description}"'
+                )
+                return response
+            kwargs["token"] = token
+            CTX_AUTH_VIA.set("oauth_token")
+            response = view(request, *args, **kwargs)
+            response.ak_context = {}
+            response.ak_context[KEY_USER] = token.user.username
+            return response
+
+        return view_wrapper
+
+    return wrapper
+
+
+def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
+    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
+    client_id, client_secret = extract_client_auth(request)
+    if client_id == client_secret == "":
+        return None, "", ""
+    provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
+    return provider, client_id, client_secret
+
+
+def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
+    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+    provider, client_id, client_secret = provider_from_request(request)
+    if not provider:
+        return None
+    if not compare_digest(client_id, provider.client_id) or not compare_digest(
+        client_secret, provider.client_secret
+    ):
+        LOGGER.debug("(basic) Provider for basic auth does not exist")
+        return None
+    CTX_AUTH_VIA.set("oauth_client_secret")
+    return provider
+
+
+class HttpResponseRedirectScheme(HttpResponseRedirect):
+    """HTTP Response to redirect, can be to a non-http scheme"""
+
+    def __init__(
+        self,
+        redirect_to: str,
+        *args: Any,
+        allowed_schemes: list[str] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
+        super().__init__(redirect_to, *args, **kwargs)
+
+
+def create_logout_token(
+    provider: OAuth2Provider,
+    iss: str,
+    sub: str | None = None,
+    session_key: str | None = None,
+) -> str:
+    """Create a logout token for Back-Channel Logout
+
+    As per https://openid.net/specs/openid-connect-backchannel-1_0.html
+    """
+
+    LOGGER.debug("Creating logout token", provider=provider, sub=sub)
+
+    _now = now()
+    # Create the logout token payload
+    payload = {
+        "iss": str(iss),
+        "aud": provider.client_id,
+        "iat": int(_now.timestamp()),
+        "exp": int((_now + timedelta_from_string(provider.access_token_validity)).timestamp()),
+        "jti": str(uuid.uuid4()),
+        "events": {
+            "http://schemas.openid.net/event/backchannel-logout": {},
+        },
+    }
+
+    # Add either sub or sid (or both)
+    if sub:
+        payload["sub"] = sub
+    if session_key:
+        payload["sid"] = hash_session_key(session_key)
+    # Encode the token
+    return provider.encode(payload, jwt_type="logout+jwt")
+
+
+def build_frontchannel_logout_url(
+    provider: OAuth2Provider,
+    request: HttpRequest,
+    session_key: str | None = None,
+) -> str | None:
+    """Build frontchannel logout URL with iss and sid parameters.
+
+    Returns None if provider doesn't have a logout_uri configured.
+    """
+    if not provider.logout_uri:
+        return None
+
+    parsed_url = urlparse(provider.logout_uri)
+
+    query_params = {"iss": provider.get_issuer(request)}
+    if session_key:
+        query_params["sid"] = hash_session_key(session_key)
+
+    # Preserve existing query params
+    if parsed_url.query:
+        existing_params = parse_qs(parsed_url.query, keep_blank_values=True)
+        for key, value in existing_params.items():
+            if key not in query_params:
+                query_params[key] = value[0] if len(value) == 1 else value
+
+    parsed_url = parsed_url._replace(query=urlencode(query_params))
+    return urlunparse(parsed_url)
+
+
+VSCHAR_START = 0x20
+VSCHAR_END = 0x7E
+
+
+def is_all_vschar(s: str) -> bool:
+    """Ensure a string is fully VSCHAR, defined by the OAuth2 RFC
+    https://datatracker.ietf.org/doc/html/rfc6749#appendix-A"""
+    return all(VSCHAR_START <= ord(c) <= VSCHAR_END for c in s)

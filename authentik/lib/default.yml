@@ -1,0 +1,210 @@
+# authentik configuration
+#
+# https://docs.goauthentik.io/docs/install-config/configuration/
+#
+# To override the settings in this file, run the following command from the repository root:
+#
+# ```shell
+# make gen-dev-config
+# ```
+#
+# You may edit the generated file to override the configuration below.
+#
+# When making modifying the default configuration file,
+# ensure that the corresponding documentation is updated to match.
+#
+# @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
+
+postgresql:
+  host: localhost
+  name: authentik
+  user: authentik
+  port: 5432
+  password: "env://POSTGRES_PASSWORD"
+  sslmode: disable
+  conn_max_age: 0
+  conn_health_checks: false
+  use_pool: False
+  test:
+    name: test_authentik
+  default_schema: public
+  read_replicas: {}
+  # For example
+  # 0:
+  #   host: replica1.example.com
+
+listen:
+  http:
+    - "[::]:9000"
+  https:
+    - "[::]:9443"
+  ldap:
+    - "[::]:3389"
+  ldaps:
+    - "[::]:6636"
+  radius:
+    - "[::]:1812"
+  metrics:
+    - "[::]:9300"
+  debug: 0.0.0.0:9900
+  debug_py: 0.0.0.0:9901
+  # debug_tokio: "[::]:6669"
+  trusted_proxy_cidrs:
+    - 127.0.0.0/8
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - fe80::/10
+    - ::1/128
+
+http_timeout: 30
+
+cache:
+  # url: ""
+  timeout: 300
+  timeout_flows: 300
+  timeout_policies: 300
+
+# channel:
+#   url: ""
+
+debug: false
+debugger: false
+
+log_level: info
+log:
+  http_headers:
+    - User-Agent
+  rust_log:
+    "console_subscriber": info
+    "h2": info
+    "hyper_util": warn
+    "mio": info
+    "notify": info
+    "reqwest": info
+    "runtime": info
+    "rustls": info
+    "sqlx": info
+    "sqlx_postgres": info
+    "tokio": info
+    "tungstenite": info
+
+sessions:
+  unauthenticated_age: days=1
+  user_switching_age: days=365
+
+error_reporting:
+  enabled: false
+  sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@authentik.error-reporting.a7k.io/4504163677503489
+  environment: customer
+  send_pii: false
+  sample_rate: 0.1
+
+# Global email settings
+email:
+  host: localhost
+  port: 25
+  username: ""
+  password: ""
+  use_tls: false
+  use_ssl: false
+  timeout: 10
+  from: authentik@localhost
+  template_dir: /templates
+
+throttle:
+  providers:
+    oauth2:
+      device: 20/hour
+  default: 1000/second
+
+outposts:
+  # Placeholders:
+  # %(type)s: Outpost type; proxy, ldap, etc
+  # %(version)s: Current version; 2021.4.1
+  # %(build_hash)s: Build hash if you're running a beta version
+  container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  discover: true
+  disable_embedded_outpost: false
+
+ldap:
+  task_timeout_hours: 2
+  page_size: 50
+  tls:
+    ciphers: null
+
+sources:
+  kerberos:
+    task_timeout_hours: 2
+
+reputation:
+  expiry: 86400
+
+cookie_domain: null
+disable_update_check: false
+disable_startup_analytics: false
+events:
+  context_processors:
+    geoip: "/geoip/GeoLite2-City.mmdb"
+    asn: "/geoip/GeoLite2-ASN.mmdb"
+compliance:
+  fips:
+    enabled: false
+
+cert_discovery_dir: /certs
+
+tenants:
+  enabled: false
+  api_key: ""
+
+blueprints_dir: /blueprints
+
+web:
+  workers: 2
+  threads: 4
+  base_url: ""
+  path: /
+  timeout_http_read_header: 5s
+  timeout_http_read: 30s
+  timeout_http_write: 60s
+  timeout_http_idle: 120s
+
+worker:
+  processes: 1
+  threads: 2
+  consumer_listen_timeout: "seconds=30"
+  task_max_retries: 5
+  task_default_time_limit: "minutes=10"
+  task_purge_interval: "days=1"
+  task_expiration: "days=30"
+  scheduler_interval: "seconds=60"
+
+storage:
+  backend: file # or s3
+  file:
+    path: ./data
+    url_expiry: "minutes=15"
+  s3:
+    # How to talk to s3
+    # region: "us-east-1"
+    # use_ssl: True
+    # endpoint: "https://s3.us-east-1.amazonaws.com"
+    # signature_version: "s3v4"
+    # access_key: ""
+    # secret_key: ""
+    # bucket_name: "authentik-data"
+    # How to render file URLs
+    # custom_domain: null
+    secure_urls: True
+    url_expiry: "minutes=15"
+  # Usage based settings. Same schema as global settings, overrides global settings
+  # media:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}
+  # reports:
+  #   backend: file # or s3
+  #   file: {}
+  #   s3: {}
+
+skip_migrations: false

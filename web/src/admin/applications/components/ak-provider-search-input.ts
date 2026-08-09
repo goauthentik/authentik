@@ -1,0 +1,132 @@
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+
+import { aki } from "#common/api/client";
+import { groupBy } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { ifPresent } from "#elements/utils/attributes";
+
+import { AKLabel } from "#components/ak-label";
+
+import { IDGenerator } from "#packages/core/id";
+
+import { Provider, ProvidersAllListRequest, ProvidersApi } from "@goauthentik/api";
+
+import { msg } from "@lit/localize/init/install";
+import { html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+const renderElement = (item: Provider) => item.name;
+const renderValue = (item: Provider | null) => item?.pk ?? "";
+const doGroupBy = (items: Provider[]) => groupBy(items, (item) => item.verboseName);
+
+@customElement("ak-provider-search-input")
+export class AkProviderInput extends AKElement {
+    // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
+    // we're not actually using that and, for the meantime, we need the form handlers to be able to
+    // find the children of this component.
+    //
+    // TODO: This abstraction is wrong; it's putting *more* layers in as a way of managing the
+    // visual clutter and legibility issues of ak-form-elemental-horizontal and patternfly in
+    // general.
+    protected createRenderRoot() {
+        return this;
+    }
+
+    //#region Properties
+
+    @property({ type: String })
+    name!: string;
+
+    @property({ type: String })
+    label: string | null = null;
+
+    @property({ type: Number })
+    value?: number;
+
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
+
+    @property({ type: Boolean })
+    required = false;
+
+    @property({ type: Boolean })
+    blankable = false;
+
+    @property({ type: String })
+    help: string | null = null;
+
+    /**
+     * A unique ID to associate with the input and label.
+     * @property
+     */
+    @property({ type: String, reflect: false })
+    public fieldID?: string = IDGenerator.elementID().toString();
+
+    //#endregion
+
+    #selected = (item: Provider) => {
+        return typeof this.value === "number" && this.value === item.pk;
+    };
+
+    #fetch = async (query?: string) => {
+        const args: ProvidersAllListRequest = {
+            ordering: "name",
+        };
+        const api = aki(ProvidersApi);
+        if (query !== undefined) {
+            args.search = query;
+        }
+        const items = await api.providersAllList(args);
+        const results = items.results;
+
+        // Ensure any current selected value is present in the displayed list.
+        if (!(this.value && !results.find((r) => r.pk === this.value))) {
+            return results;
+        }
+        const single = await api.providersAllRetrieve({ id: this.value });
+        return [single, ...results];
+    };
+
+    render() {
+        const readOnlyValue = this.readOnly && typeof this.value === "number";
+
+        return html`<ak-form-element-horizontal name=${this.name}>
+            ${AKLabel(
+                {
+                    slot: "label",
+                    className: "pf-c-form__group-label",
+                    htmlFor: this.fieldID,
+                    required: this.required,
+                },
+                this.label,
+            )}
+            ${readOnlyValue
+                ? html`<input type="hidden" name=${this.name} value=${this.value ?? ""} />`
+                : nothing}
+            <ak-search-select
+                label=${ifPresent(this.label)}
+                .fieldID=${this.fieldID}
+                .selected=${this.#selected}
+                .fetchObjects=${this.#fetch}
+                .renderElement=${renderElement}
+                .value=${renderValue}
+                .groupBy=${doGroupBy}
+                ?blankable=${readOnlyValue ? false : !!this.blankable}
+                ?readonly=${this.readOnly}
+                name=${ifDefined(readOnlyValue ? undefined : this.name)}
+                placeholder=${msg("Search for a provider...")}
+            >
+            </ak-search-select>
+            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
+        </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-search-input": AkProviderInput;
+    }
+}

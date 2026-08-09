@@ -1,0 +1,278 @@
+import "#admin/enterprise/EnterpriseLicenseForm";
+import "#admin/enterprise/EnterpriseStatusCard";
+import "#admin/rbac/ObjectPermissionModal";
+import "#elements/Spinner";
+import "#elements/buttons/SpinnerButton/index";
+import "#elements/cards/AggregateCard";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { aki } from "#common/api/client";
+import { docLink } from "#common/global";
+
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EnterpriseLicenseForm } from "#admin/enterprise/EnterpriseLicenseForm";
+
+import {
+    EnterpriseApi,
+    License,
+    LicenseForecast,
+    LicenseSummary,
+    LicenseSummaryStatusEnum,
+    ModelEnum,
+} from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { css, CSSResult, html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+@customElement("ak-enterprise-license-list")
+export class EnterpriseLicenseListPage extends TablePage<License> {
+    public static styles: CSSResult[] = [
+        ...super.styles,
+        PFGrid,
+        PFBanner,
+        PFFormControl,
+        PFButton,
+        PFCard,
+        css`
+            .pf-m-no-padding-bottom {
+                padding-bottom: 0;
+            }
+            .install-id {
+                word-break: break-all;
+            }
+        `,
+    ];
+
+    public override checkbox = true;
+    public override clearOnRefresh = true;
+
+    protected override searchEnabled = true;
+    public override pageTitle = msg("Licenses");
+    public override pageDescription = msg("Manage enterprise licenses");
+    public override pageIcon = "pf-icon pf-icon-key";
+    public override searchPlaceholder = msg("Search for a license by name...");
+    public override order = "name";
+
+    @state()
+    protected forecast?: LicenseForecast;
+
+    @state()
+    protected summary?: LicenseSummary;
+
+    @state()
+    protected installID?: string;
+
+    async apiEndpoint(): Promise<PaginatedResponse<License>> {
+        this.forecast = await aki(EnterpriseApi).enterpriseLicenseForecastRetrieve();
+        this.summary = await aki(EnterpriseApi).enterpriseLicenseSummaryRetrieve({
+            cached: false,
+        });
+        this.installID = (await aki(EnterpriseApi).enterpriseLicenseInstallIdRetrieve()).installId;
+        return aki(EnterpriseApi).enterpriseLicenseList(await this.defaultEndpointConfig());
+    }
+
+    protected columns: TableColumn[] = [
+        [msg("Name"), "name"],
+        [msg("Users")],
+        [msg("Expiry date")],
+        [msg("Actions"), null, msg("Row Actions")],
+    ];
+
+    // TODO: Make this more generic, maybe automatically get the plural name
+    // of the object to use in the renderEmpty
+    protected override renderEmpty(inner?: SlottedTemplateResult): SlottedTemplateResult {
+        return super.renderEmpty(html`
+            ${inner
+                ? inner
+                : html`<ak-empty-state icon=${this.pageIcon}
+                      ><span>${msg("No licenses found.")}</span>
+                      <div slot="body">
+                          ${this.searchEnabled ? this.renderEmptyClearSearch() : nothing}
+                      </div>
+                      <div slot="primary">${this.renderObjectCreate()}</div>
+                  </ak-empty-state>`}
+        `);
+    }
+
+    protected override renderToolbarSelected(): SlottedTemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            object-label=${msg("License(s)")}
+            .objects=${this.selectedElements}
+            .metadata=${(item: License) => {
+                return [
+                    { key: msg("Name"), value: item.name },
+                    { key: msg("Expiry"), value: item.expiry?.toLocaleString() },
+                ];
+            }}
+            .usedBy=${(item: License) => {
+                return aki(EnterpriseApi).enterpriseLicenseUsedByList({
+                    licenseUuid: item.licenseUuid,
+                });
+            }}
+            .delete=${(item: License) => {
+                return aki(EnterpriseApi).enterpriseLicenseDestroy({
+                    licenseUuid: item.licenseUuid,
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    protected override renderSectionBefore(): SlottedTemplateResult {
+        const {
+            externalUsers = 0,
+            internalUsers = 0,
+            forecastedExternalUsers = 0,
+            forecastedInternalUsers = 0,
+        } = this.forecast || {};
+
+        const totalInternalUserEstimate = internalUsers + forecastedInternalUsers;
+        const totalExternalUserEstimate = externalUsers + forecastedExternalUsers;
+
+        return html`
+            <section class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <div
+                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
+                >
+                    ${this.renderGetLicenseCard()}
+                    <ak-aggregate-card
+                        role="status"
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        label=${msg("Forecast internal users")}
+                        subtext=${msg(
+                            str`Estimated user count one year from now based on ${internalUsers} current internal users and ${forecastedInternalUsers} forecasted internal users.`,
+                        )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalInternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
+                    >
+                    <ak-aggregate-card
+                        role="status"
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        label=${msg("Forecast external users")}
+                        subtext=${msg(
+                            str`Estimated user count one year from now based on ${externalUsers} current external users and ${forecastedExternalUsers} forecasted external users.`,
+                        )}
+                        ><span aria-label=${msg("Approximately")}>&#8776;</span
+                        >${totalExternalUserEstimate}&nbsp;&nbsp;</ak-aggregate-card
+                    >
+                    <ak-aggregate-card
+                        role="status"
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        label=${msg("Expiry")}
+                        subtext=${msg("Cumulative license expiry")}
+                        >${this.summary &&
+                        this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                            ? Timestamp(this.summary.latestValid)
+                            : html`<span aria-label=${msg("No expiry")}
+                                  >-</span
+                              >`}</ak-aggregate-card
+                    >
+                </div>
+            </section>
+            <section class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <ak-enterprise-status-card
+                    .summary=${this.summary}
+                    .forecast=${this.forecast}
+                ></ak-enterprise-status-card>
+            </section>
+        `;
+    }
+
+    row(item: License): SlottedTemplateResult[] {
+        let color = PFColor.Green;
+        if (item.expiry) {
+            const now = new Date();
+            const inAMonth = new Date();
+            inAMonth.setDate(inAMonth.getDate() + 30);
+            if (item.expiry <= inAMonth) {
+                color = PFColor.Orange;
+            }
+            if (item.expiry <= now) {
+                color = PFColor.Red;
+            }
+        }
+        return [
+            html`<div>${item.name}</div>`,
+            html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
+                <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
+            html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
+            html`<div class="ak-c-table__actions">
+                ${IconEditButton(EnterpriseLicenseForm, item.licenseUuid, item.name)}
+
+                <ak-rbac-object-permission-modal
+                    model=${ModelEnum.AuthentikEnterpriseLicense}
+                    objectPk=${item.licenseUuid}
+                >
+                </ak-rbac-object-permission-modal>
+            </div>`,
+        ];
+    }
+
+    protected renderGetLicenseCard() {
+        const renderSpinner = () =>
+            html` <div class="pf-c-card__body">
+                <ak-spinner></ak-spinner>
+            </div>`;
+
+        const installURL = (installID: string) =>
+            [
+                "https://customers.goauthentik.io/from_authentik/purchase/?install_id=",
+                encodeURIComponent(installID),
+                "&authentik_url=",
+                encodeURI(window.location.origin),
+            ].join("");
+
+        const renderCard = (installID: string) => html`
+            <div class="pf-c-card__title">${msg("Your Install ID")}</div>
+            <div class="pf-c-card__body install-id pf-m-monospace">${installID}</div>
+            <div class="pf-c-card__body">
+                <a
+                    target="_blank"
+                    href="${installURL(installID)}"
+                    class="pf-c-button pf-m-primary pf-m-block"
+                    >${msg("Go to Customer Portal")}</a
+                >
+            </div>
+            <div class="pf-c-card__body">
+                <a target="_blank" href=${docLink("/enterprise/get-started")}
+                    >${msg("Learn more")}</a
+                >
+            </div>
+        `;
+
+        return html`<div class="pf-l-grid__item pf-c-card">
+            ${this.installID ? renderCard(this.installID) : renderSpinner()}
+        </div> `;
+    }
+
+    protected override renderObjectCreate(): SlottedTemplateResult {
+        return ModalInvokerButton(EnterpriseLicenseForm);
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-enterprise-license-list": EnterpriseLicenseListPage;
+    }
+}

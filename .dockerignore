@@ -1,0 +1,13 @@
+htmlcov
+*.env.yml
+node_modules
+**/node_modules
+dist/**
+build/**
+build_docs/**
+*Dockerfile
+**/*Dockerfile
+blueprints/local
+.git
+.venv
+target

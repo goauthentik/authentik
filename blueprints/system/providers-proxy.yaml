@@ -1,0 +1,22 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Proxy Provider - Scopes
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/proxy/scope-proxy
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: Proxy outpost"
+      scope_name: ak_proxy
+      description: authentik Proxy - User information
+      expression: |
+        # This mapping is used by the authentik proxy. It passes extra user attributes,
+        # which are used for example for the HTTP-Basic Authentication mapping.
+        return {
+            "ak_proxy": {
+                "user_attributes": request.user.group_attributes(request),
+                "is_superuser": request.user.is_superuser,
+            }
+        }

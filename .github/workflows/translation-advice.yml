@@ -1,0 +1,40 @@
+---
+name: Translation - Post advice
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "!**"
+      - "locale/**"
+      - "!locale/en/**"
+      - "web/xliff/**"
+
+permissions:
+  # Permission to write comment
+  pull-requests: write
+
+jobs:
+  post-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find Comment
+        uses: peter-evans/find-comment@b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad # v4
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: authentik translations instructions
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ### authentik translations instructions
+
+            Thanks for your pull request!
+
+            authentik translations are handled using [Transifex](https://explore.transifex.com/authentik/authentik/). Please edit translations over there and they'll be included automatically.

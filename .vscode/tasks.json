@@ -1,0 +1,68 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "authentik/core: make",
+            "command": "uv",
+            "args": ["run", "make", "lint-fix", "lint"],
+            "presentation": {
+                "panel": "new"
+            },
+            "group": "test"
+        },
+        {
+            "label": "authentik/core: run",
+            "command": "uv",
+            "args": ["run", "ak", "server"],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            }
+        },
+        {
+            "label": "authentik/web: make",
+            "command": "make",
+            "args": ["web"],
+            "group": "build"
+        },
+        {
+            "label": "authentik/web: watch",
+            "command": "make",
+            "args": ["web-watch"],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            }
+        },
+        {
+            "label": "authentik: install",
+            "command": "make",
+            "args": ["install", "-j4"],
+            "group": "build"
+        },
+        {
+            "label": "authentik/docs: make",
+            "command": "make",
+            "args": ["docs"],
+            "group": "build"
+        },
+        {
+            "label": "authentik/docs: watch",
+            "command": "make",
+            "args": ["docs-watch"],
+            "group": "build",
+            "presentation": {
+                "panel": "dedicated",
+                "group": "running"
+            }
+        },
+        {
+            "label": "authentik/api: generate",
+            "command": "uv",
+            "args": ["run", "make", "gen"],
+            "group": "build"
+        }
+    ]
+}

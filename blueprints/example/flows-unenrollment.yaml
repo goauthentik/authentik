@@ -1,0 +1,25 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - User deletion
+entries:
+  - identifiers:
+      slug: default-unenrollment-flow
+    model: authentik_flows.flow
+    id: flow
+    attrs:
+      name: Default unenrollment flow
+      title: Delete your account
+      designation: unenrollment
+      authentication: require_authenticated
+  - identifiers:
+      name: default-unenrollment-user-delete
+    id: default-unenrollment-user-delete
+    model: authentik_stages_user_delete.userdeletestage
+    attrs: {}
+  - identifiers:
+      target: !KeyOf flow
+      stage: !KeyOf default-unenrollment-user-delete
+      order: 10
+    model: authentik_flows.flowstagebinding

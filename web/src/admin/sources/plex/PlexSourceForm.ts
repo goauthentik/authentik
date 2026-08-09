@@ -1,0 +1,365 @@
+import "#elements/forms/Radio";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
+import "#components/ak-file-search-input";
+import "#components/ak-slug-input";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/index";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
+
+import { aki } from "#common/api/client";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
+import { ascii_letters, digits, randomString } from "#common/utils";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
+
+import {
+    FlowDesignationEnum,
+    GroupMatchingModeEnum,
+    PlexSource,
+    SourcesApi,
+    UsageEnum,
+    UserMatchingModeEnum,
+} from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, TemplateResult } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+@customElement("ak-source-plex-form")
+export class PlexSourceForm extends BaseSourceForm<PlexSource> {
+    async loadInstance(pk: string): Promise<PlexSource> {
+        const source = await aki(SourcesApi).sourcesPlexRetrieve({
+            slug: pk,
+        });
+        this.plexToken = source.plexToken;
+        this.loadServers();
+        return source;
+    }
+
+    @property()
+    plexToken?: string;
+
+    @property({ attribute: false })
+    plexResources?: PlexResource[];
+
+    public override createDefaultInstance(): PlexSource {
+        return {
+            clientId: randomString(40, ascii_letters + digits),
+        } as PlexSource;
+    }
+
+    async send(data: PlexSource): Promise<PlexSource> {
+        data.plexToken = this.plexToken || "";
+        if (this.instance?.pk) {
+            return aki(SourcesApi).sourcesPlexUpdate({
+                slug: this.instance.slug,
+                plexSourceRequest: data,
+            });
+        }
+
+        return aki(SourcesApi).sourcesPlexCreate({
+            plexSourceRequest: data,
+        });
+    }
+
+    async doAuth(): Promise<void> {
+        const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");
+        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        PlexAPIClient.pinPoll(this.instance?.clientId || "", authInfo.pin.id).then((token) => {
+            authWindow?.close();
+            this.plexToken = token;
+            this.loadServers();
+        });
+    }
+
+    async loadServers(): Promise<void> {
+        if (!this.plexToken) {
+            return;
+        }
+        this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
+    }
+
+    renderSettings(): TemplateResult {
+        if (!this.plexToken) {
+            return html` <button
+                class="pf-c-button pf-m-primary"
+                type="button"
+                @click=${() => {
+                    this.doAuth();
+                }}
+            >
+                ${msg("Load servers")}
+            </button>`;
+        }
+        return html` <button
+                class="pf-c-button pf-m-secondary"
+                type="button"
+                @click=${() => {
+                    this.doAuth();
+                }}
+            >
+                ${msg("Re-authenticate with Plex")}
+            </button>
+            <ak-switch-input
+                name="allowFriends"
+                label=${msg(
+                    "Allow friends to authenticate via Plex, even if you don't share any servers",
+                )}
+                ?checked=${this.instance?.allowFriends ?? true}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("Allowed servers")}
+                required
+                name="allowedServers"
+            >
+                <select class="pf-c-form-control" multiple>
+                    ${this.plexResources?.map((r) => {
+                        const selected = Array.from(this.instance?.allowedServers || []).some(
+                            (server) => {
+                                return server === r.clientIdentifier;
+                            },
+                        );
+                        return html`<option value=${r.clientIdentifier} ?selected=${selected}>
+                            ${r.name}
+                        </option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Select which server a user has to be a member of to be allowed to authenticate.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>`;
+    }
+
+    protected override renderForm(): TemplateResult {
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
+            <ak-slug-input
+                name="slug"
+                placeholder=${msg("e.g. my-plex-source")}
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                input-hint="code"
+            ></ak-slug-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
+            <ak-switch-input
+                name="promoted"
+                label=${msg("Promoted")}
+                ?checked=${this.instance?.promoted ?? false}
+                help=${msg(
+                    "When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.",
+                )}
+            ></ak-switch-input>
+            <ak-form-element-horizontal
+                label=${msg("User matching mode")}
+                required
+                name="userMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${UserMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.EmailDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.EmailDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.EmailDeny)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameLink}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameLink}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameLink)}
+                    </option>
+                    <option
+                        value=${UserMatchingModeEnum.UsernameDeny}
+                        ?selected=${this.instance?.userMatchingMode ===
+                        UserMatchingModeEnum.UsernameDeny}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.UsernameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Group matching mode")}
+                required
+                name="groupMatchingMode"
+            >
+                <select class="pf-c-form-control">
+                    <option
+                        value=${GroupMatchingModeEnum.Identifier}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.Identifier}
+                    >
+                        ${UserMatchingModeToLabel(UserMatchingModeEnum.Identifier)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameLink}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameLink}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameLink)}
+                    </option>
+                    <option
+                        value=${GroupMatchingModeEnum.NameDeny}
+                        ?selected=${this.instance?.groupMatchingMode ===
+                        GroupMatchingModeEnum.NameDeny}
+                    >
+                        ${GroupMatchingModeToLabel(GroupMatchingModeEnum.NameDeny)}
+                    </option>
+                </select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
+                <input
+                    type="text"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
+            </ak-form-element-horizontal>
+            <ak-file-search-input
+                name="icon"
+                label=${msg("Icon")}
+                .value=${this.instance?.icon}
+                .usage=${UsageEnum.Media}
+                blankable
+                help=${iconHelperText}
+            ></ak-file-search-input>
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
+                        <input
+                            type="text"
+                            value="${this.instance?.clientId ?? ""}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
+                    ${this.renderSettings()}
+                </div>
+            </ak-form-group>
+            <ak-form-group label="${msg("Flow settings")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Authentication Flow")}
+                        name="authenticationFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when authenticating existing users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Enrollment flow")}
+                        name="enrollmentFlow"
+                    >
+                        <ak-source-flow-search
+                            flowType=${FlowDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
+                        ></ak-source-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow to use when enrolling new users.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group open label="${msg("Plex Attribute mapping")}">
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User Property Mappings")}
+                        name="userPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.userPropertyMappings,
+                            )}
+                            available-label="${msg("Available User Property Mappings")}"
+                            selected-label="${msg("Selected User Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for user creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Group Property Mappings")}
+                        name="groupPropertyMappings"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.groupPropertyMappings,
+                            )}
+                            available-label="${msg("Available Group Property Mappings")}"
+                            selected-label="${msg("Selected Group Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Property mappings for group creation.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group label=${msg("Advanced settings")}>
+                <div class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("Policy engine mode")}
+                        required
+                        name="policyEngineMode"
+                    >
+                        <ak-radio
+                            .options=${policyEngineModes}
+                            .value=${this.instance?.policyEngineMode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-plex-form": PlexSourceForm;
+    }
+}

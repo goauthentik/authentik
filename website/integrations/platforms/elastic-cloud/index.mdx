@@ -1,0 +1,186 @@
+---
+title: Integrate with Elastic Cloud
+sidebar_label: Elastic Cloud
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Elastic Cloud?
+
+> Elastic Cloud is a hosted service for Elasticsearch and Kibana.
+>
+> -- https://www.elastic.co/cloud
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.com` is a domain you control for Elastic Cloud login.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::caution Elastic Cloud requirements
+Elastic Cloud SAML SSO requires an Enterprise subscription and at least one claimed domain. Users can only authenticate if their email address matches a claimed domain.
+:::
+
+## authentik configuration
+
+To support the integration of Elastic Cloud with authentik, create SAML property mappings, an application/provider pair, and application entitlements for the role-mapping values that Elastic Cloud should receive.
+
+### Create property mappings
+
+You first need to create property mappings to provide the specific SAML attribute names that Elastic Cloud expects.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create the following **SAML Provider Property Mapping** entries:
+    - **Email Mapping (required):**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `email`
+        - **Expression**:
+            ```python
+            return request.user.email
+            ```
+
+    - **First name mapping (optional):**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `firstName`
+        - **Expression**:
+            ```python
+            name = request.user.name.strip()
+            return name.split(" ", 1)[0] if name else ""
+            ```
+
+    - **Last name mapping (optional):**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `lastName`
+        - **Expression**:
+            ```python
+            name = request.user.name.strip()
+            return name.rsplit(" ", 1)[1] if " " in name else ""
+            ```
+
+    - **Groups mapping (optional, required for role mappings):**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: `groups`
+        - **Expression**:
+            ```python
+            for entitlement in request.user.app_entitlements(provider.application):
+                yield entitlement.name
+            ```
+
+### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** as it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://temp.temp`. You will replace this after Elastic Cloud provides the real ACS URL.
+        - Set the **Audience** to `https://temp.temp`. You will replace this after Elastic Cloud provides the real service provider entity ID.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **NameID Property Mapping** to `authentik default SAML Mapping: Email`.
+            - Add the property mappings that you created earlier to **Selected User Property Mappings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Create application entitlements for Elastic role mappings
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to define the values that authentik sends in the `groups` SAML attribute for this Elastic Cloud application.
+
+1. Open the Elastic Cloud application that you just created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create one entitlement for each Elastic Cloud role-mapping value that you want to send, such as `elastic-org-owners`.
+4. Bind the appropriate users or groups to each entitlement.
+
+:::tip Elastic role names
+For this integration, each entitlement name should exactly match the value that you want Elastic Cloud to evaluate in the `groups` SAML attribute. This keeps Elastic-specific authorization scoped to the Elastic Cloud application instead of relying on global authentik group names.
+:::
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click on the name of the SAML provider you created in the previous section.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate file will be required in the next section.
+
+## Elastic Cloud configuration
+
+To support the integration of authentik with Elastic Cloud, you need to claim your email domain and configure/enforce SSO in Elastic Cloud.
+
+### Claim your email domain
+
+1. Log in to Elastic Cloud as an Organization owner.
+2. Open your organization's **Security** tab.
+3. Under **Domains**, click **Add domain** and enter `example.com`.
+4. Complete Elastic's DNS verification flow, then return to Elastic Cloud and click **Verify and add domain**.
+
+:::info Domain verification
+The exact DNS change is outside the scope of this guide. Follow the verification record shown in Elastic Cloud for your domain.
+:::
+
+### Configure SSO
+
+1. Log in to Elastic Cloud as an Organization owner.
+2. Open your organization's **Security** tab.
+3. Under **User authentication**, click **Configure SSO**.
+4. Configure the following settings:
+    - **Identity Provider Entity ID**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **Identity Provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Public x509 certificate**: Paste the contents of the authentik signing certificate in PEM format.
+    - **Login identifier prefix**: the custom value used for the Elastic Cloud SSO login URL. Use lowercase letters, numbers, and hyphens.
+5. Click **Update configuration**.
+6. Note the following values provided by Elastic:
+    - **SSO Login URL**: the Elastic Cloud SSO login URL for organization members.
+    - **Service provider Entity ID**: the identifier your IdP uses to validate SAML requests.
+    - **Service provider ACS URL**: the URL that receives SAML assertions from the IdP (also called the SSO or ACS URL).
+    - **Metadata URL**: the URL your IdP can use to retrieve Elastic Cloud metadata.
+
+### Update the authentik provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and open the SAML provider you created earlier.
+3. Update the provider with the Elastic values:
+    - **ACS URL**: set to the Elastic **Service provider ACS URL**.
+    - **Audience**: set to the Elastic **Service provider Entity ID**.
+4. Click **Update** to save the provider.
+5. Navigate to **Applications** > **Applications**, open the application you created earlier, and set **Launch URL** to the Elastic **SSO Login URL**.
+
+### Enforce SAML SSO _(optional)_
+
+1. Confirm that SSO works by opening the Elastic **SSO Login URL** in a private browsing session and signing in with authentik.
+2. Return to Elastic Cloud as an Organization owner.
+3. Open your organization's **Security** tab.
+4. Under **User authentication**, click **Edit**.
+5. Toggle **Enforce SAML SSO**.
+
+### Configure role mappings
+
+Elastic Cloud requires the first role mapping in a SAML SSO configuration to include the **Organization owner** role. Make sure that the `groups` SAML attribute mapping is enabled in authentik.
+
+1. In Elastic Cloud, under **Role mappings**, click **Create role mapping**.
+2. Add a unique name for the role mapping, such as `Organization Owner`.
+3. Click **Add roles** and select **Organization owner**.
+4. In **Mapping rules**, select **Any are true** or **All are true**.
+5. Add the exact entitlement name that authentik sends in the `groups` attribute, such as `elastic-org-owners`.
+6. Click **Run test** and verify that the SAML response grants Organization owner access.
+7. Click **Save**.
+
+Elastic Cloud requires the **Organization owner** role to be mapped to a value present in the SAML `groups` attribute before the role mapping can be saved.
+
+:::caution IdP-initiated sign-in is not supported
+Elastic Cloud does not support IdP-initiated SSO. Use the Elastic **SSO login URL** to start sign-in.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Elastic Cloud, open the integration from authentik or use the Elastic **SSO Login URL**. You should be redirected to authentik and, after authenticating, returned to Elastic Cloud with access to the organization.
+
+## Resources
+
+- [Elastic Cloud Docs - Configure Elastic Cloud SAML single sign-on](https://www.elastic.co/docs/deploy-manage/users-roles/cloud-organization/configure-saml-authentication)
