@@ -22437,6 +22437,10 @@ paths:
       operationId: requests_grant_requests_list
       parameters:
       - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
         name: created_by
         schema:
           type: integer
@@ -22585,11 +22589,47 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/agent/:
+    post:
+      operationId: requests_grant_requests_agent_create
+      description: |-
+        Delegate access an agent's owner already holds to the agent, time-boxed. Unlike
+        `create` this persists the request directly instead of returning a flow link -- an agent
+        authenticates with an API token and has no browser to run a flow in, so no justification
+        is ever collected. That is why the agent may only ask for what its owner already has:
+        the owner's approval is then the whole decision, and no reviewer is asked to judge a
+        request with nothing in it. The returned `fulfill_url` is what the agent hands to its
+        owner so they can act on it.
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentGrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGrantRequestCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /requests/grant-requests/pending_review/:
     get:
       operationId: requests_grant_requests_pending_review_list
       description: List pending grant requests the current user is eligible to review.
       parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
       - in: query
         name: created_by
         schema:
@@ -35927,6 +35967,37 @@ components:
       required:
       - agent
       - token
+    AgentGrantRequestCreateRequest:
+      type: object
+      description: |-
+        Body for an agent requesting access for itself. Deliberately narrower than
+        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
+        derived from the granting rules and capped by the agent's own lifetime.
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    AgentGrantRequestCreated:
+      type: object
+      description: |-
+        Response to an agent's access request: the request it created, plus the URL to hand to
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+        `fulfill_url` is what its owner opens to approve or deny.
+      properties:
+        grant_request:
+          allOf:
+          - $ref: '#/components/schemas/GrantRequest'
+          readOnly: true
+        fulfill_url:
+          type: string
+          readOnly: true
+      required:
+      - fulfill_url
+      - grant_request
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -36133,7 +36204,6 @@ components:
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
-      - authentik.enterprise.providers.oauth2
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
@@ -42294,6 +42364,10 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+        agent_owner:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
         is_active:
           type: boolean
           readOnly: true
@@ -42320,6 +42394,7 @@ components:
           type: string
           format: uuid
       required:
+      - agent_owner
       - created
       - created_by
       - is_active

@@ -274,6 +274,18 @@ importers:
         specifier: 'catalog:'
         version: 8.65.0(eslint@9.39.5(jiti@1.21.7))(typescript@6.0.3)
 
+  packages/fonts:
+    devDependencies:
+      '@goauthentik/prettier-config':
+        specifier: link:../prettier-config
+        version: link:../prettier-config
+      prettier:
+        specifier: 'catalog:'
+        version: 3.8.3
+      prettier-plugin-packagejson:
+        specifier: 'catalog:'
+        version: 3.0.2(prettier@3.8.3)
+
   packages/geo:
     dependencies:
       h3-js:

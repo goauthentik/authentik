@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 00:31+0000\n"
+"POT-Creation-Date: 2026-08-06 00:27+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Igor Dobrača <id.public@rovinj.net>, 2026\n"
 "Language-Team: Croatian (Croatia) (https://app.transifex.com/authentik/teams/119923/hr_HR/)\n"
@@ -1036,6 +1036,26 @@ msgstr "Faze krajnje točke"
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
 msgstr "Sinkronizirajte krajnje točke."
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr "Agente možete kreirati samo za sebe."
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr "Samostalno stvaranje agenata nije omogućeno."
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr "Agent"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr "Agenti"
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
+msgstr "Dodavanje korisnika agenta (samouslužno)"
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."

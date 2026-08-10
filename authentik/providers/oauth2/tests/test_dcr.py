@@ -47,7 +47,7 @@ class TestDynamicClientRegistration(TestCase):
             override_authorization_flow=self.flow,
         )
         self.register_url = reverse(
-            "authentik_enterprise_providers_oauth2:dynamic-client-registration",
+            "authentik_providers_oauth2:dynamic-client-registration",
             kwargs={"application_slug": self.app.slug},
         )
 
@@ -335,7 +335,7 @@ class TestDynamicClientRegistration(TestCase):
         )
         response = self.client.post(
             reverse(
-                "authentik_enterprise_providers_oauth2:dynamic-client-registration",
+                "authentik_providers_oauth2:dynamic-client-registration",
                 kwargs={"application_slug": app2.slug},
             ),
             json.dumps({"redirect_uris": ["https://x.com/cb"]}),
