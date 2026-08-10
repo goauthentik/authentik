@@ -666,7 +666,7 @@ class Notification(SerializerModel):
         """The hyperlink resolved against the tenant's configured base URL, for use
         outside of the authentik UI where relative URLs do not resolve"""
         if not self.hyperlink:
-            return self.hyperlink
+            return None
         return build_absolute_url(self.hyperlink)
 
     @property
