@@ -756,6 +756,7 @@ export * from "./RequestRuleChildBindingRequest";
 export * from "./RequestRuleRequest";
 export * from "./RequestStatus";
 export * from "./RequestableTarget";
+export * from "./ResumeOnMatchFailuresEnum";
 export * from "./Review";
 export * from "./ReviewRequest";
 export * from "./Role";
