@@ -36,6 +36,10 @@ from authentik.providers.oauth2.utils import cors_allow
 LOGGER = get_logger()
 
 
+def claims_cache_key(provider: OAuth2Provider) -> str:
+    return f"authentik/providers/oauth2/provider_info/claims/{provider.pk}"
+
+
 class ProviderInfoView(View):
     """OpenID-compliant Provider Info"""
 
@@ -139,7 +143,7 @@ class ProviderInfoView(View):
 
     def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:
         """Same as self.get_claims but cached to avoid re-evaluating property-mappings"""
-        key = f"authentik/providers/oauth2/provider_info/claims/{provider.pk}"
+        key = claims_cache_key(provider)
         ttl_seconds = 60 * 60
         claims = cache.get(key)
         if not claims:
