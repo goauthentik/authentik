@@ -48,7 +48,7 @@ The response contains the following fields:
 - `expires_in`: The total seconds after which the issued token will expire
 - `scope`: The scopes granted to the issued token
 
-The issued token is a new access token carrying the identity of the user named by the subject token. It is issued for the requesting provider, unless [`audience`](#audience) names a different one.
+The issued token is a new access token carrying the identity of the user named by the subject token. It is issued for the requesting provider, unless [`audience`](#audience) names a different app/provider.
 
 ### Supported token types
 
@@ -63,7 +63,7 @@ Any other token type is rejected with `invalid_request`.
 
 ### Audience
 
-By default the issued token is a token for the provider that performed the exchange. Set `audience` to receive a token for a different provider instead:
+By default the issued token is for the provider that performed the exchange. Set `audience` to receive a token for a different provider instead:
 
 ```http
 audience=target_application_client_id
@@ -88,7 +88,7 @@ authentik rejects the following rather than ignoring them, so that a client is n
 
 ### Scopes
 
-The scopes granted to the issued token are the requested `scope` values, reduced to those the provider the token is issued for is configured to issue — the target provider when `audience` is set, otherwise the requesting provider. If `scope` is omitted, the issued token is granted no scopes.
+The scopes granted to the issued token are the requested `scope` values, reduced to those the provider for which the token is issued for - the target provider when `audience` is set, otherwise the requesting provider. If `scope` is omitted, the issued token is granted no scopes.
 
 ### Configure token exchange
 
