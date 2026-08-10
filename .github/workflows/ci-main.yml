@@ -507,7 +507,7 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
+      - uses: regclient/actions/regctl-installer@78eb729dbdb4ef6480e85ff697b4410e22112583
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
       # Docker login is required for attestations
