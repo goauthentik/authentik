@@ -27,7 +27,7 @@ dependencies = [
   "django-tenants==3.10.2",
   "django==5.2.17",
   "djangoql==0.19.1",
-  "djangorestframework==3.17.1",
+  "djangorestframework==3.17.2",
   "docker==7.2.0",
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",
@@ -53,6 +53,7 @@ dependencies = [
   "pydantic==2.13.4",
   "pyjwt==2.13.0",
   "pyrad==2.5.4",
+  "pyroscope-io==1.2.1",
   "python-kadmin-rs==0.7.2",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
@@ -76,13 +77,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-  "aws-cdk-lib==2.262.2",
+  "aws-cdk-lib==2.263.0",
   "bandit==1.9.4",
   "black==26.5.1",
   "bpython==0.26",
   "colorama==0.4.6",
-  "constructs==10.8.0",
-  "coverage[toml]==7.15.3",
+  "constructs==10.8.1",
+  "coverage[toml]==7.15.4",
   "daphne==4.2.3",
   "debugpy==1.8.21",
   "django-stubs[compatible-mypy]==6.0.7",

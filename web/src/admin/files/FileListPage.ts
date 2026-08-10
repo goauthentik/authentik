@@ -10,7 +10,6 @@ import { docLink } from "#common/global";
 
 import { ModalInvokerButton } from "#elements/dialogs";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -20,7 +19,7 @@ import { FileUploadForm } from "#admin/files/FileUploadForm";
 import { AdminApi, CapabilitiesEnum, FileList, UsageEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, PropertyValues, TemplateResult } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export type FileListItem = Pick<FileList, "name" | "url" | "mimeType">;
@@ -40,14 +39,6 @@ export class FileListPage extends WithCapabilitiesConfig(TablePage<FileListItem>
 
     @property({ type: String, useDefault: true })
     public order: FileListOrderKey = "name";
-
-    public override firstUpdated(changed: PropertyValues<this>): void {
-        super.firstUpdated(changed);
-
-        if (getURLParam("upload", false) && this.can(CapabilitiesEnum.CanSaveMedia)) {
-            FileUploadForm.showModal();
-        }
-    }
 
     async apiEndpoint(): Promise<PaginatedResponse<FileListItem>> {
         const api = aki(AdminApi);

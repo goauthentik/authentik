@@ -34,7 +34,7 @@
         "@docusaurus/theme-common": "catalog:",
         "@docusaurus/utils": "catalog:",
         "@goauthentik/docusaurus-config": "link:../../packages/docusaurus-config",
-        "@types/semver": "^7.7.1",
+        "@types/semver": "^7.8.0",
         "clsx": "^2.1.1",
         "fast-glob": "^3.3.3",
         "remark-directive": "^4.0.0",
