@@ -1,6 +1,6 @@
 """Tenant utils"""
 
-from urllib.parse import urlsplit
+from urllib.parse import urljoin
 
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
@@ -35,16 +35,12 @@ def normalize_base_url(value: str | None) -> str:
     return (value or "").strip().rstrip("/")
 
 
-def build_absolute_url(url: str) -> str:
-    """Make a relative URL absolute by prepending the current tenant's configured base URL.
-    URLs that already have a scheme or host, and any URL when no base URL is configured,
-    are returned unchanged."""
+def apply_base_url(url: str) -> str:
+    """Make a relative URL absolute by resolving it against the current tenant's configured
+    base URL. Absolute URLs, and any URL when no base URL is configured, are returned
+    unchanged. Expects server-relative URLs as emitted by `reverse()`, which already carry
+    the `web.path` prefix all of authentik's URLs are mounted under."""
     if not url:
         return url
-    parsed = urlsplit(url)
-    if parsed.scheme or parsed.netloc:
-        return url
     base_url = get_current_tenant(only=["base_url"]).base_url
-    if not base_url:
-        return url
-    return f"{base_url}/{url.lstrip('/')}"
+    return urljoin(base_url, url)

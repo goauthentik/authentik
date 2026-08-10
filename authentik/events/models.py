@@ -55,7 +55,7 @@ from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import build_absolute_url, get_current_tenant
+from authentik.tenants.utils import apply_base_url, get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -517,9 +517,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
                 if len(fields) >= DISCORD_FIELD_LIMIT:
                     continue
+                field = {"title": key[:256], "value": value[:1024]}
                 if key == "hyperlink":
-                    value = build_absolute_url(value)  # noqa: PLW2901
-                fields.append({"title": key[:256], "value": value[:1024]})
+                    field["value"] = apply_base_url(value)[:1024]
+                fields.append(field)
         body = {
             "username": "authentik",
             "icon_url": "https://goauthentik.io/img/icon.png",
@@ -606,7 +607,7 @@ class NotificationTransport(TasksModel, SerializerModel):
                     continue
                 context["key_value"][key] = value
                 if key == "hyperlink":
-                    context["key_value"][key] = value = build_absolute_url(value) 
+                    context["key_value"][key] = apply_base_url(value)
         else:
             context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
@@ -667,7 +668,7 @@ class Notification(SerializerModel):
         outside of the authentik UI where relative URLs do not resolve"""
         if not self.hyperlink:
             return None
-        return build_absolute_url(self.hyperlink)
+        return apply_base_url(self.hyperlink)
 
     @property
     def serializer(self) -> type[Serializer]:
