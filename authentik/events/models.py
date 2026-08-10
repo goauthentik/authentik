@@ -604,9 +604,9 @@ class NotificationTransport(TasksModel, SerializerModel):
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
-                if key == "hyperlink":
-                    value = build_absolute_url(value)  # noqa: PLW2901
                 context["key_value"][key] = value
+                if key == "hyperlink":
+                    context["key_value"][key] = value = build_absolute_url(value) 
         else:
             context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
