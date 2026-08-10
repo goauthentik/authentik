@@ -2,7 +2,6 @@
 
 from typing import Any
 
-from django.apps import apps
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
@@ -128,13 +127,12 @@ class ProviderInfoView(View):
             config["id_token_encryption_enc_values_supported"] = ["A256CBC-HS512"]
         try:
             _ = provider.dcr_configuration
-            if apps.get_app_config("authentik_enterprise").enabled():
-                config["registration_endpoint"] = self.request.build_absolute_uri(
-                    reverse(
-                        "authentik_enterprise_providers_oauth2:dynamic-client-registration",
-                        kwargs={"application_slug": provider.application.slug},
-                    )
+            config["registration_endpoint"] = self.request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
+                    kwargs={"application_slug": provider.application.slug},
                 )
+            )
         except OAuth2DynamicClientRegistration.DoesNotExist:
             pass
         return config
