@@ -7,7 +7,7 @@ from authentik.common.oauth.constants import (
     OAUTH2_BINDING,
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
 )
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
@@ -128,9 +128,13 @@ def user_deactivated(sender, instance: User, **_):
 
 
 @receiver(post_save, sender=ScopeMapping)
-def scope_mapping_post_save_cache(sender, instance: ScopeMapping, **_):
+@receiver(post_save, sender=ProviderPropertyMapping)
+def scope_mapping_post_save_cache(sender, instance: ScopeMapping | ProviderPropertyMapping, **_):
     """Clean up provider config claims cache"""
     keys = []
-    for provider in instance.provider_set.all():
-        keys.append(claims_cache_key(provider))
+    if isinstance(instance, ScopeMapping):
+        for provider in instance.provider_set.all():
+            keys.append(claims_cache_key(provider))
+    if isinstance(instance, ProviderPropertyMapping):
+        keys.append(claims_cache_key(instance.provider))
     cache.delete_many(keys)
