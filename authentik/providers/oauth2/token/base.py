@@ -46,6 +46,7 @@ class TokenRequest:
     dpop_jwk: dict | None = None
 
     provider: OAuth2Provider
+    audience_provider: OAuth2Provider | None = None
     logger: BoundLogger
 
     def __init__(self, provider: OAuth2Provider, client_id: str, client_secret: str):
@@ -53,6 +54,11 @@ class TokenRequest:
         self.logger = get_logger().bind(provider=provider.name)
         self.client_id = client_id
         self.client_secret = client_secret
+
+    @property
+    def token_provider(self) -> OAuth2Provider:
+        """Provider the issued token is for: the `audience` target, else the client's own."""
+        return self.audience_provider or self.provider
 
     def parse(self, request: HttpRequest) -> None:
         self.redirect_uri = request.POST.get("redirect_uri", "")
@@ -88,11 +94,17 @@ class TokenRequest:
                     client_id=self.provider.client_id,
                 )
                 raise TokenError("invalid_client").with_cause("invalid_secret")
+        # Resolved before scopes, so they're clamped to the target provider's mappings
+        self.resolve_audience(request)
         self.check_scopes()
+
+    def resolve_audience(self, request: HttpRequest) -> None:
+        """Resolve the provider the issued token is for. Only token exchange supports
+        targeting a provider other than the client's own."""
 
     def check_scopes(self):
         allowed_scope_names = set(
-            ScopeMapping.objects.filter(provider__in=[self.provider]).values_list(
+            ScopeMapping.objects.filter(provider__in=[self.token_provider]).values_list(
                 "scope_name", flat=True
             )
         )

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.http import HttpRequest
 
 from authentik.common.oauth.constants import (
@@ -10,21 +12,52 @@ from authentik.core.models import Actor, Application, Token, TokenIntents
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.providers.oauth2.errors import TokenExchangeError
+from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.oauth2.token.base_fed import FederatedTokenRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class TokenExchangeTokenRequest(FederatedTokenRequest):
 
+    def resolve_audience(self, request: HttpRequest) -> None:
+        """RFC 8693 §2.1 `audience`: the provider the issued token is for, named by its
+        `client_id` or by its application's `pbm_uuid`. Targets that cannot be honored are
+        refused with invalid_target (§2.2.2) rather than ignored."""
+        # RFC 8707 resource indicators are not implemented.
+        if request.POST.getlist("resource"):
+            self.logger.warning("Resource indicators are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
+        audiences = request.POST.getlist("audience")
+        if not audiences:
+            return
+        # Multi-provider tokens are not supported.
+        if len(audiences) > 1:
+            self.logger.warning("Multiple audiences are not supported")
+            raise TokenExchangeError("invalid_target").with_cause("multiple_audiences")
+        audience = audiences[0]
+        target = OAuth2Provider.objects.filter(client_id=audience).first()
+        if not target:
+            try:
+                pbm_uuid = UUID(audience)
+            except ValueError:
+                pbm_uuid = None
+            if pbm_uuid:
+                target = OAuth2Provider.objects.filter(application__pbm_uuid=pbm_uuid).first()
+        if not target:
+            self.logger.warning("Audience does not match any provider", audience=audience)
+            raise TokenExchangeError("invalid_target").with_cause("unknown_target")
+        # Targeting itself is the default behavior, nothing to switch to.
+        if target.pk == self.provider.pk:
+            return
+        # The target must explicitly federate with the requesting provider.
+        if not target.jwt_federation_providers.filter(pk=self.provider.pk).exists():
+            self.logger.warning("Audience does not federate with the requesting provider")
+            raise TokenExchangeError("invalid_target").with_cause("target_not_federated")
+        self.audience_provider = target
+
     def parse(self, request: HttpRequest) -> None:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.1"""
         super().parse(request)
-        # Token targeting is not implemented. RFC 8693 §2.2.2 requires invalid_target when the
-        # requested target cannot be honored, so the parameters are refused rather than ignored.
-        if request.POST.getlist("audience") or request.POST.getlist("resource"):
-            self.logger.warning("Token targeting is not supported")
-            raise TokenExchangeError("invalid_target").with_cause("target_unsupported")
-
         subject_token = request.POST.get("subject_token", "")
         subject_token_type = request.POST.get("subject_token_type", "")
         if not subject_token or not subject_token_type:
@@ -62,6 +95,14 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
         if not federated_party.user:
             self.user = self.create_user_from_jwt(federated_party, app, request)
 
+        if self.audience_provider:
+            # An application is also required to give the issued token an `iss`
+            target_app = Application.objects.filter(provider=self.audience_provider).first()
+            if not target_app:
+                self.logger.info("Audience provider has no application")
+                raise TokenExchangeError("invalid_target").with_cause("target_without_application")
+            self.check_policy_access(target_app, request, oauth_jwt=federated_party.parsed_token)
+
         self.post_init_token_exchange_actor(request)
 
         method_args = {
@@ -70,6 +111,8 @@ class TokenExchangeTokenRequest(FederatedTokenRequest):
             "requested_token_type": self.requested_token_type,
             federated_party.type: federated_party.party,
         }
+        if self.audience_provider:
+            method_args["audience"] = self.audience_provider.client_id
         Event.new(
             action=EventAction.LOGIN,
             **{
