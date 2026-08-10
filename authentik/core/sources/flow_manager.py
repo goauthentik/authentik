@@ -10,19 +10,10 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import (
-    Group,
-    GroupSourceConnection,
-    Source,
-    User,
-    UserSourceConnection,
-)
+from authentik.core.models import Group, GroupSourceConnection, Source, User, UserSourceConnection
 from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.matcher import Action, SourceMatcher
-from authentik.core.sources.stage import (
-    PLAN_CONTEXT_SOURCES_CONNECTION,
-    PostSourceStage,
-)
+from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION, PostSourceStage
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow, FlowToken, Stage, in_memory_stage
@@ -101,9 +92,7 @@ class SourceFlowManager:
             self.source, self.user_connection_type, self.group_connection_type
         )
         self.request = request
-        self.identifier = identifier
         self.user_info = user_info
-        self._logger = get_logger().bind(source=source, identifier=identifier)
         self.policy_context = policy_context
 
         self.user_properties = self.mapper.build_object_properties(
@@ -120,6 +109,13 @@ class SourceFlowManager:
             for group_id in self.user_properties.setdefault("groups", [])
         }
         del self.user_properties["groups"]
+
+        if "id" in self.user_properties:
+            self.identifier = str(self.user_properties["id"])
+        else:
+            self.identifier = identifier
+
+        self._logger = get_logger().bind(source=source, identifier=self.identifier)
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
