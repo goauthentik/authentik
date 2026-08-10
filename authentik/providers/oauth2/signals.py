@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -14,9 +15,11 @@ from authentik.providers.oauth2.models import (
     DeviceToken,
     OAuth2LogoutMethod,
     RefreshToken,
+    ScopeMapping,
 )
 from authentik.providers.oauth2.tasks import backchannel_logout_notification_dispatch
 from authentik.providers.oauth2.utils import build_frontchannel_logout_url
+from authentik.providers.oauth2.views.provider import claims_cache_key
 from authentik.stages.user_logout.models import UserLogoutStage
 from authentik.stages.user_logout.stage import flow_pre_user_logout
 
@@ -122,3 +125,12 @@ def user_deactivated(sender, instance: User, **_):
     AccessToken.objects.including_expired().filter(user=instance).delete()
     RefreshToken.objects.including_expired().filter(user=instance).delete()
     DeviceToken.objects.including_expired().filter(user=instance).delete()
+
+
+@receiver(post_save, sender=ScopeMapping)
+def scope_mapping_post_save_cache(sender, instance: ScopeMapping, **_):
+    """Clean up provider config claims cache"""
+    keys = []
+    for provider in instance.provider_set.all():
+        keys.append(claims_cache_key(provider))
+    cache.delete_many(keys)

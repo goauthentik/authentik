@@ -1,6 +1,5 @@
 """authentik OAuth2 OpenID well-known views"""
 
-from hashlib import sha256
 from typing import Any
 
 from django.apps import apps
@@ -36,6 +35,10 @@ from authentik.providers.oauth2.models import (
 from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
+
+
+def claims_cache_key(provider: OAuth2Provider) -> str:
+    return f"authentik/providers/oauth2/provider_info/claims/{provider.pk}"
 
 
 class ProviderInfoView(View):
@@ -142,15 +145,7 @@ class ProviderInfoView(View):
 
     def get_claims_cached(self, provider: OAuth2Provider) -> list[str]:
         """Same as self.get_claims but cached to avoid re-evaluating property-mappings"""
-        claims_hash = sha256(
-            ",".join(
-                str(pk)
-                for pk in ScopeMapping.objects.filter(provider=provider)
-                .order_by("scope_name")
-                .values_list("pk", flat=True)
-            ).encode()
-        ).hexdigest()
-        key = f"authentik/providers/oauth2/provider_info/claims/{provider.pk}/{claims_hash}"
+        key = claims_cache_key(provider)
         ttl_seconds = 60 * 60
         claims = cache.get(key)
         if not claims:
