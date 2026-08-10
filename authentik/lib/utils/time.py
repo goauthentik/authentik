@@ -44,6 +44,12 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
     return datetime.timedelta(**kwargs)
 
 
+def timedelta_to_string(delta: datetime.timedelta) -> str:
+    """Render a `datetime.timedelta` back into a string `timedelta_from_string` can parse.
+    Always normalizes to seconds, so the round-trip is exact rather than pretty."""
+    return f"seconds={delta.total_seconds()}"
+
+
 def fqdn_rand(task: str, stop: int = 60) -> int:
     """Get a random number within max based on the FQDN and task name"""
     entropy = f"{getfqdn()}:{task}"
