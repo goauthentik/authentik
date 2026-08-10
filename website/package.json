@@ -37,9 +37,9 @@
         "typescript-eslint": "catalog:"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "2.1.7",
-        "@rspack/binding-linux-arm64-gnu": "2.1.7",
-        "@rspack/binding-linux-x64-gnu": "2.1.7",
+        "@rspack/binding-darwin-arm64": "2.1.8",
+        "@rspack/binding-linux-arm64-gnu": "2.1.8",
+        "@rspack/binding-linux-x64-gnu": "2.1.8",
         "@swc/core-darwin-arm64": "1.15.47",
         "@swc/core-linux-arm64-gnu": "1.15.47",
         "@swc/core-linux-x64-gnu": "1.15.47",
