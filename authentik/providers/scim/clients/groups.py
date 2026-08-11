@@ -112,11 +112,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
-                groups = self._request(
-                    "GET",
-                    f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
+                groups = self.lower_case_keys(
+                    self._request(
+                        "GET",
+                        f"/Groups?{urlencode({'filter': f'displayName eq "{group.name}"'})}",
+                    )
                 )
-                groups_res = groups.get("Resources", [])
+                groups_res = groups.get("resources", [])
                 if len(groups_res) < 1:
                     raise exc
                 connection = SCIMProviderGroup.objects.create(
@@ -397,21 +399,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         )
 
     def discover(self):
-        res = self._request("GET", "/Groups")
-        seen_items = 0
-        expected_items = int(res["totalResults"])
-        while True:
-            for group in res["Resources"]:
-                try:
-                    self._discover_group_single(group)
-                except ValidationError:
-                    self.logger.warning(
-                        "failed to discover group", scim_group=group.get("externalId")
-                    )
-                seen_items += 1
-            if seen_items >= expected_items:
-                break
-            res = self._request("GET", f"/Groups?startIndex={seen_items + 1}")
+        for group in self.paginate_resources("/Groups"):
+            try:
+                self._discover_group_single(group)
+            except ValidationError:
+                self.logger.warning("failed to discover group", scim_group=group.get("externalId"))
 
     def _discover_group_single(self, group: dict):
         scim_group = SCIMGroupSchema.model_validate(group)

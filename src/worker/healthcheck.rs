@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use ak_axum::{error::Result, router::wrap_router};
+use ak_axum::{
+    error::Result,
+    router::{make_request_body_limit_layer, wrap_router},
+};
 use ak_common::db;
 use axum::{Router, extract::State, http::StatusCode, routing::any};
 use tracing::{instrument, warn};
@@ -63,10 +66,11 @@ async fn fallback() -> StatusCode {
 pub(super) fn build_router(workers: Arc<Workers>) -> Router {
     wrap_router(
         Router::new()
-            .route("/-/heath/ready/", any(health_ready))
-            .route("/-/heath/live/", any(health_live))
+            .route("/-/health/ready/", any(health_ready))
+            .route("/-/health/live/", any(health_live))
             .fallback(fallback)
             .with_state(workers),
         true,
     )
+    .layer(make_request_body_limit_layer())
 }

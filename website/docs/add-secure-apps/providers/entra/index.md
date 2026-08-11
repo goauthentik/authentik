@@ -10,6 +10,8 @@ The Entra ID provider allows you to integrate with your Entra ID tenant. It supp
 - For instructions on configuring your Entra ID tenant in prepation for creating an Entra ID provider, refer to [Configure Entra ID](./configure-entra.md).
 - For instructions on creating an Entra ID provider, refer to [Create an Entra ID provider](./create-entra-provider.md).
 
+If you also want to authenticate to Entra ID using authentik credentials, refer to our [Microsoft 365 SAML](/integrations/platforms/microsoft-saml/index.md) or [Microsoft 365 WS-Federation](/integrations/platforms/microsoft-ws-federation/index.md) integrations guides.
+
 ## Discovery
 
 Upon creating the Entra ID provider, it will run a discovery task to query your Entra ID tenant for all users and groups, and attempt to match them with their respective counterparts in authentik.
