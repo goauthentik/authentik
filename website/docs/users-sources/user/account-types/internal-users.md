@@ -8,7 +8,7 @@ Internal users are accounts for people who need access to authentik's full user 
 
 An internal user account can access the authentik application dashboard, open the user settings menu through the authentik user interface, and authenticate to multiple applications from the application dashboard.
 
-For an overview of all account types, see [Account types](./).
+For an overview of all account types, see [Account types](./index.mdx).
 
 For information on creating and managing internal users, see [Managing users](../user_basic_operations.md).
 

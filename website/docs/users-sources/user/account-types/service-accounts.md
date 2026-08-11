@@ -8,7 +8,7 @@ Service accounts are specialized user accounts for machine-to-machine authentica
 
 Common examples include LDAP bind users, automation that calls the authentik API, SCIM or outpost-related integrations, and third-party applications that need a stable credential.
 
-For an overview of all account types, see [Account types](./).
+For an overview of all account types, see [Account types](./index.mdx).
 
 ## Types of service accounts
 
