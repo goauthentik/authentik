@@ -44,10 +44,10 @@ Users who are not the parent can manage an agent only if they have the required 
 
 You can create an agent account in two ways:
 
-- [**User interface (Self-service)**](#user-interface-self-service): Internal users with the required permissions can create their own agents in the User interface.
-- [**authentik API**](#authentik-api): Agents can be created programmatically via the authentik API.
+- [**User interface (Self-service)**](#create-an-agent-via-the-user-interface-self-service): Internal users with the required permissions can create their own agents in the User interface.
+- [**authentik API**](#create-an-agent-via-the-authentik-api): Agents can be created programmatically via the authentik API.
 
-### User interface (Self-Service)
+### Create an agent via the user interface (self-service)
 
 An authenticated user with the required roles can create an agent for themselves. Self-service agents have the following properties:
 
@@ -57,17 +57,16 @@ An authenticated user with the required roles can create an agent for themselves
 - The agent always uses [`NONE` policy behavior](#policy-behavior) and copies no access from its parent.
 - Request values for `expiring`, `expires`, and `policy_behavior` are ignored.
 
-#### Create an agent via the user interface
-
 To create an agent:
 
 1. Log in to authentik as a user with the required roles and open the user interface.
 2. Open the **Agents** page and click **Create Agent**.
-3. Optionally provide a **Label** for the agent and click **Create**.
+3. Optionally enter a **Label** for the agent and click **Create**.
 4. The token for the agent is displayed. Securely store this token because it will not be displayed again.
-   This token can now be used to authenticate as the agent.
 
-### authentik API
+This token can now be used to authenticate as the agent.
+
+### Create an agent via the authentik API
 
 Create an agent account with the authentik API:
 
@@ -87,9 +86,7 @@ The request body can contain the following fields:
 
 The `parent` field is optional when an authenticated user creates an agent for themselves. An administrator or a user with the `Can add Agent` role can specify another user as the parent.
 
-#### Create an agent via the authentik API
-
-Here is an example of a API request to create an agent account:
+Here is an example of an API request to create an agent account:
 
 ```bash
 curl \
@@ -103,7 +100,7 @@ curl \
     "expires": "2027-01-01T00:00:00Z",
     "policy_behavior": "MIRROR"
   }' \
-  https://authentik.example.com/api/v3/agents/agents/
+  https://authentik.company/api/v3/agents/agents/
 ```
 
 The response contains the agent and the generated API token:
@@ -112,7 +109,7 @@ The response contains the agent and the generated API token:
 {
     "agent": {
         "pk": 456,
-        "username": "agent-<generated-id>",
+        "username": "<parent-username>-agent-<generated-id>",
         "name": "automation-agent",
         "expiring": true,
         "expires": "2027-01-01T00:00:00Z",
@@ -120,7 +117,7 @@ The response contains the agent and the generated API token:
             "pk": 123
         },
         "policy_behavior": "MIRROR",
-        "token_identifier": "agent-<generated-id>"
+        "token_identifier": "<parent-username>-agent-<generated-id>"
     },
     "token": "<agent-token>"
 }
@@ -132,7 +129,7 @@ The token value is returned when the agent is created. Store it securely before 
 
 ## Policy behavior
 
-An agent can inherit policy access from its parent in one of three ways. The policy behavior is selected when the agent is created and cannot be changed later.
+An agent can inherit policy access from its parent in one of three ways. You select the policy behavior when you create the agent; you cannot change it afterwards.
 
 ### Mirror the parent
 
