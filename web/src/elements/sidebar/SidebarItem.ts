@@ -2,6 +2,7 @@ import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
+import { toAdminInterface, toCurrentInterface } from "#elements/router/core/interfaces";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import Styles from "#elements/sidebar/SidebarItem.css";
@@ -220,7 +221,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
     }
 
     renderEnterpriseRequired() {
-        return html`<a href="#/enterprise/licenses" class="pf-c-nav__link">
+        return html`<a href=${toAdminInterface("enterprise/licenses")} class="pf-c-nav__link">
             ${this.label}
             <span class="pf-c-nav__enterprise-notice">${msg("Enterprise only")}</span>
         </a>`;
@@ -235,7 +236,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
             <a
                 part="link ${this.current ? "current" : ""}"
                 id="sidebar-nav-link-${this.path}"
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                href="${this.isAbsoluteLink ? (this.path ?? "") : toCurrentInterface(this.path ?? "")}"
                 class="pf-c-nav__link ${this.current ? "pf-m-current" : ""}"
                 aria-current=${ifPresent(this.current ? "page" : undefined)}
             >

@@ -3,6 +3,8 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
 
+import { toCurrentInterface } from "#elements/router/core/interfaces";
+
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
@@ -169,7 +171,7 @@ export class AKPageNavbar
             [this.brandingLogo, this.brandingLogoThemedUrls, this.activeTheme],
             () =>
                 html`<aside role="presentation" class="brand">
-                    <a aria-label="${msg("Home")}" href="#/">
+                    <a aria-label="${msg("Home")}" href=${toCurrentInterface()}>
                         <div class="logo">
                             ${ThemedImage({
                                 src: this.brandingLogo,

@@ -1,6 +1,8 @@
 import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
 import { actionToLabel } from "#common/labels";
+
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { MessageLevel } from "#common/messages";
 import { isGuest } from "#common/users";
 import { AKNotificationEvent } from "#common/ws/events";
@@ -125,7 +127,7 @@ export class NotificationsContextController extends ReactiveContextController<No
                 ? html`<br /><a href=${notification.hyperlink}>${notification.hyperlinkLabel}</a>`
                 : nothing}
             ${notification.event
-                ? html`<br /><a href="#/events/log/${notification.event.pk}"
+                ? html`<br /><a href=${toAdminInterface(`events/log/${notification.event.pk}`)}
                           >${msg("View details...")}</a
                       >`
                 : nothing}`,
