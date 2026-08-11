@@ -5,16 +5,15 @@ support_level: authentik
 ---
 
 import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 ## What is GitLab?
 
-> GitLab is a complete DevOps platform with features for version control, CI/CD, issue tracking, and collaboration, facilitating efficient software development and deployment workflows.
+> GitLab is a DevSecOps platform for source code management, CI/CD, issue tracking, and software delivery workflows.
 >
-> -- https://about.gitlab.com/what-is-gitlab/
-
-:::info
-In case something goes wrong with the configuration or you need to log in as admin, you can use the URL `https://gitlab.company/users/sign_in?auto_sign_in=false` to log in using the built-in authentication.
-:::
+> -- https://about.gitlab.com/
 
 ## Preparation
 
@@ -23,16 +22,19 @@ The following placeholders are used in this guide:
 - `gitlab.company` is the FQDN of the GitLab installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+If you enable GitLab's `omniauth_auto_sign_in_with_provider` setting later, GitLab redirects every sign-in attempt to authentik. To use GitLab built-in authentication, open `https://gitlab.company/users/sign_in?auto_sign_in=false`.
+
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Configuration methods
+## authentik configuration
 
-There are two ways to configure single sign-on for GitLab. You can configure it via SAML authentication or via OpenID Connect.
+GitLab supports single sign-on with SAML or OpenID Connect (OIDC). Choose one method and follow the matching tab in the GitLab configuration section.
 
-import TabItem from "@theme/TabItem";
-import Tabs from "@theme/Tabs";
+## GitLab configuration
+
+Apply the GitLab configuration for the SSO method that you configured in authentik.
 
 <Tabs
     defaultValue="saml"
@@ -43,113 +45,109 @@ import Tabs from "@theme/Tabs";
 >
     <TabItem value="saml">
 
-## authentik configuration
+### Configure SAML authentication
 
-<RedirectURI20265Note />
+#### Create an application and provider
 
-To support the integration of GitLab with authentik, you need to create an application/provider pair in authentik.
+<SAMLProvider20265Warning />
 
-### Create an application and provider in authentik
-
-1. Log in to authentik as an admin and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application**.
-    - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
-    - **Choose a Provider type**: Select **SAML Provider**.
-    - **Configure the Provider**:
-        - Set the **ACS URL** to `https://gitlab.company/users/auth/saml/callback`.
-        - Set the **Audience** to `https://gitlab.company`.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set **ACS URL** to `https://gitlab.company/users/auth/saml/callback`.
+        - Set **Audience** to `https://gitlab.company`.
         - Under **Advanced protocol settings**, select an available **Signing certificate**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
 3. Click **Submit** to save the new application and provider.
+4. Navigate to **System** > **Certificates** and expand the certificate that you selected for the SAML provider. Take note of the **Certificate Fingerprint (SHA1)** because it will be required later.
 
-### GitLab configuration
+#### Configure GitLab
 
-Paste the following block in your `/etc/gitlab/gitlab.rb` file:
+Edit the GitLab configuration file and add the following configuration:
 
-```ruby
+```ruby title="/etc/gitlab/gitlab.rb"
 gitlab_rails['omniauth_enabled'] = true
 gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
 gitlab_rails['omniauth_sync_email_from_provider'] = 'saml'
 gitlab_rails['omniauth_sync_profile_from_provider'] = ['saml']
 gitlab_rails['omniauth_sync_profile_attributes'] = ['email']
-gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'
 gitlab_rails['omniauth_block_auto_created_users'] = false
 gitlab_rails['omniauth_auto_link_saml_user'] = true
 gitlab_rails['omniauth_providers'] = [
   {
     name: 'saml',
+    label: 'authentik',
     args: {
       assertion_consumer_service_url: 'https://gitlab.company/users/auth/saml/callback',
-      # Shown when navigating to certificates in authentik
-      idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
+      idp_cert_fingerprint: '<Certificate Fingerprint (SHA1) from authentik>',
       idp_sso_target_url: 'https://authentik.company/application/saml/<application_slug>/',
       issuer: 'https://gitlab.company',
       name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
       attribute_statements: {
         email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
-        first_name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+        name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
         nickname: ['http://schemas.goauthentik.io/2021/02/saml/username']
       }
-    },
-    label: 'authentik'
+    }
   }
 ]
 ```
 
-Run `gitlab-ctl reconfigure` or restart the container after making changes.
+Run `gitlab-ctl reconfigure` for a Linux package installation, or restart the container after making changes.
 
-</TabItem>
+    </TabItem>
+    <TabItem value="oidc">
 
-<TabItem value="oidc">
+### Configure OIDC authentication
 
-## authentik configuration
+#### Create an application and provider
 
-To support the integration of GitLab with authentik, you need to create an application/provider pair in authentik.
-
-### Create an application and provider in authentik
+<RedirectURI20265Note />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://gitlab.company/users/auth/openid_connect/callback`.
-    - Select any available signing key.
-    - Under **Advanced protocol settings**, set the **Subject mode** to `Based on the User's Email`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Take note of the **Client ID** and **Client Secret** because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with the value `https://gitlab.company/users/auth/openid_connect/callback`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**, set **Subject mode** to **Based on the User's Email**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### GitLab configuration
+#### Configure GitLab
 
-Paste the following block in your `/etc/gitlab/gitlab.rb` file:
+Edit the GitLab configuration file and add the following configuration:
 
-```ruby
+```ruby title="/etc/gitlab/gitlab.rb"
+gitlab_rails['omniauth_enabled'] = true
 gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
 gitlab_rails['omniauth_sync_email_from_provider'] = 'openid_connect'
 gitlab_rails['omniauth_sync_profile_from_provider'] = ['openid_connect']
 gitlab_rails['omniauth_sync_profile_attributes'] = ['email']
-gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'openid_connect'
 gitlab_rails['omniauth_block_auto_created_users'] = false
 gitlab_rails['omniauth_auto_link_user'] = ['openid_connect']
 gitlab_rails['omniauth_providers'] = [
   {
     name: 'openid_connect',
-    label: 'My Company OIDC Login',
+    label: 'authentik',
     args: {
       name: 'openid_connect',
-      scope: ['openid','profile','email'],
+      scope: ['openid', 'profile', 'email'],
       response_type: 'code',
       issuer: 'https://authentik.company/application/o/<application_slug>/',
       discovery: true,
       client_auth_method: 'query',
       uid_field: 'preferred_username',
-      send_scope_to_token_endpoint: 'true',
       pkce: true,
       client_options: {
-        identifier: '${OIDC_CLIENT_ID}',
-        secret: '${OIDC_CLIENT_SECRET}',
+        identifier: '<Client ID from authentik>',
+        secret: '<Client Secret from authentik>',
         redirect_uri: 'https://gitlab.company/users/auth/openid_connect/callback'
       }
     }
@@ -157,31 +155,41 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-For further GitLab provider arguments, check the [GitLab docs](https://docs.gitlab.com/ee/integration/openid_connect_provider.html).
+Run `gitlab-ctl reconfigure` for a Linux package installation, or restart the container after making changes.
 
-</TabItem>
+    </TabItem>
+
 </Tabs>
 
-## SCIM provisioning _(optional)_
+### Configure SCIM provisioning _(optional)_
 
-GitLab self-managed instances expose SCIM endpoints for user and group provisioning when SCIM is enabled in GitLab. Use the SCIM API endpoint URL and token shown in GitLab's SCIM configuration.
+GitLab SCIM for self-managed instances requires GitLab Premium or Ultimate and SAML single sign-on. GitLab SCIM supports user provisioning, but not group provisioning.
 
-### Create a SCIM provider
+1. In GitLab, open the Admin area.
+2. Navigate to **Settings** > **General**.
+3. Expand **SCIM Token** and click **Generate a SCIM token**.
+4. Take note of the **SCIM API endpoint URL** and **Your SCIM token** values because they will be required in authentik.
+5. In authentik, navigate to **Applications** > **Providers** and click **Create**.
+6. Select **SCIM Provider** as the provider type and click **Next**.
+7. Enter the following values:
+    - **Name**: choose a descriptive name.
+    - **URL**: paste the SCIM API endpoint URL from GitLab.
+    - **Token**: paste the SCIM token from GitLab.
+    - **Compatibility Mode**: select **GitLab**.
+    - **Group Property Mappings**: remove all selected mappings.
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click **Create**.
-3. Select **SCIM Provider** as the provider type and click **Next**.
-4. Enter the following values:
-    - **Name**: Choose a descriptive name.
-    - **URL**: Paste the SCIM API endpoint URL from GitLab.
-    - **Token**: Paste the SCIM token from GitLab.
-    - **Compatibility Mode**: Select **GitLab**.
-5. Click **Finish** to save the provider.
+8. Click **Finish** to save the provider.
+9. Navigate to **Applications** > **Applications** and select your GitLab application.
+10. Click **Edit**.
+11. In the **Backchannel Providers** field, select the SCIM provider that you created.
+12. Click **Update** to save the application.
 
-### Add the SCIM provider to your application
+## Configuration verification
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and select your GitLab application.
-3. Click **Edit**.
-4. In the **Backchannel Providers** field, select the SCIM provider you created.
-5. Click **Update** to save the application.
+To confirm that authentik is properly configured with GitLab, open GitLab and select the authentik sign-in option. After successful authentication, you are redirected back to GitLab and signed in.
+
+## Resources
+
+- [GitLab Docs - SAML SSO for GitLab Self-Managed](https://docs.gitlab.com/integration/saml/)
+- [GitLab Docs - Use OpenID Connect as an authentication provider](https://docs.gitlab.com/administration/auth/oidc/)
+- [GitLab Docs - Configure SCIM for GitLab Self-Managed or GitLab Dedicated](https://docs.gitlab.com/administration/settings/scim_setup/)

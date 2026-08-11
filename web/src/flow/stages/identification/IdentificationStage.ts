@@ -320,6 +320,7 @@ export class IdentificationStage extends BaseStage<
             .errors=${challenge.responseErrors?.password}
             ?allow-show-password=${allowShowPassword}
             prefill=${PasswordManagerPrefill.password ?? ""}
+            required
         ></ak-flow-input-password> `;
     }
 

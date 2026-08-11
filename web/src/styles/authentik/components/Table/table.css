@@ -1,6 +1,11 @@
 .pf-c-table {
     --pf-c-table__sort__button__text--Color: var(--pf-global--Color--100);
     --pf-c-table__button--hover--Color: var(--pf-global--link--Color--hover);
+
+    tbody > tr > * {
+        overflow-wrap: anywhere;
+        word-break: break-all;
+    }
 }
 
 .pf-c-toolbar {

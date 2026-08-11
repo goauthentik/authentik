@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-30 14:39+0000\n"
+"POT-Creation-Date: 2026-08-07 01:11+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Azharul Haque, 2026\n"
 "Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
@@ -129,6 +129,11 @@ msgstr "পাথ অথবা কনটেন্ট এর যেকোনো �
 msgid "User lacks permission to create {model}"
 msgstr "{model} তৈরি করার অনুমতি ব্যবহারকারীর নেই"
 
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "Invalid blueprint file: {exc}"
+msgstr "অবৈধ ব্লুপ্রিন্ট ফাইল: {exc}"
+
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
 msgstr "authentik দ্বারা পরিচালিত"
@@ -186,6 +191,21 @@ msgid ""
 msgstr ""
 "এই ব্র্যান্ড সক্রিয় করে এমন ডোমেইন। এটি একটি সুপারসেট হতে পারে, যেমন `aa.b`"
 " এবং `ba.b`-এর জন্য `a.b`।"
+
+#: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ"
+" templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
+msgstr ""
+"ইভেন্টস ম্যাপে ব্যবহৃত ভেক্টর টাইল সোর্সের জন্য URL টেমপ্লেট। এটি {z}, {x} "
+"এবং {y} প্লেসহোল্ডারসহ XYZ টেমপ্লেট, অথবা pmtiles:// আর্কাইভ URL সমর্থন করে।"
+" খালি রাখা হলে, ফ্রন্টএন্ড বিল্ট-ইন hexworld বেসম্যাপ ব্যবহার করবে। এই "
+"ভ্যালুটি অননুমোদিত ক্লায়েন্টদের কাছে পাঠানো ব্র্যান্ড তথ্যের অংশ; তাই এতে "
+"কোনো API কী বা অন্য কোনো ক্রেডেনশিয়াল যুক্ত করা যাবে না।"
 
 #: authentik/brands/models.py
 msgid ""
@@ -310,6 +330,10 @@ msgid "Can't modify internal service account users"
 msgstr "ইন্টারনাল সার্ভিস অ্যাকাউন্ট ব্যবহারকারীদের পরিবর্তন করা যাবে না"
 
 #: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "এই ফিল্ডটি আবশ্যক।"
+
+#: authentik/core/api/users.py
 msgid "filter: failed to parse JSON"
 msgstr "filter: JSON পার্স করতে ব্যর্থ হয়েছে"
 
@@ -344,10 +368,6 @@ msgstr "ব্যবহারকারীর কোনো ইমেইল ঠি
 #: authentik/core/api/users.py
 msgid "Email stage not found."
 msgstr "ইমেইল স্টেজ খুঁজে পাওয়া যায়নি।"
-
-#: authentik/core/api/users.py
-msgid "This field is required."
-msgstr "এই ফিল্ডটি আবশ্যক।"
 
 #: authentik/core/apps.py
 msgid "Applications with no policies bound can be accessed by any user."
@@ -656,6 +676,14 @@ msgid "Sessions"
 msgstr "সেশনসমূহ"
 
 #: authentik/core/models.py
+msgid "User Switching Session"
+msgstr "ব্যবহারকারী পরিবর্তন সেশন"
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr "ব্যবহারকারী পরিবর্তন সেশনসমূহ"
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "প্রমাণীকৃত সেশন"
 
@@ -686,6 +714,30 @@ msgstr "অবজেক্ট অ্যাট্রিবিউট"
 #: authentik/core/models.py
 msgid "Object Attributes"
 msgstr "অবজেক্ট অ্যাট্রিবিউটসমূহ"
+
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr "মিরর পলিসি ইঞ্জিন"
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr "নীতি বাইন্ডিং কপি করুন"
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr "কোনো পলিসি বাইন্ডিং ইনহেরিট করবেন না"
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr "অ্যাক্টর"
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr "অ্যাক্টরসমূহ"
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
+msgstr "পলিসির আচরণ তৈরির পর পরিবর্তন করা যাবে না।"
 
 #: authentik/core/sources/flow_manager.py
 #, python-brace-format
@@ -756,6 +808,14 @@ msgstr "আপনি %(application)s-এ সাইন ইন করতে যা
 #: authentik/core/views/interface.py
 msgid "Interface can only be accessed by internal users."
 msgstr "ইন্টারফেসটি শুধুমাত্র ইন্টারনাল ব্যবহারকারীরা অ্যাক্সেস করতে পারবেন।"
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr "ব্যবহারকারী পরিবর্তন নিষ্ক্রিয় করা আছে।"
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
+msgstr "ব্যবহারকারী পরিবর্তন নিষ্ক্রিয়"
 
 #: authentik/crypto/api.py
 msgid "Subject-alt name"
@@ -990,6 +1050,30 @@ msgstr "এন্ডপয়েন্ট স্টেজসমূহ"
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
 msgstr "এন্ডপয়েন্ট সিঙ্ক করুন।"
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr "আপনি শুধুমাত্র নিজের জন্য এজেন্ট তৈরি করতে পারবেন।"
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr "সেলফ-সার্ভিস এজেন্ট তৈরির সুবিধা সক্রিয় নেই।"
+
+#: authentik/enterprise/agents/api.py
+msgid "Only internal user accounts can create agents."
+msgstr "শুধুমাত্র অভ্যন্তরীণ ব্যবহারকারী অ্যাকাউন্ট এজেন্ট তৈরি করতে পারবে।"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr "এজেন্ট"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr "এজেন্টসমূহ"
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
+msgstr "একটি এজেন্ট ব্যবহারকারী যোগ করুন (সেলফ-সার্ভিস)"
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
@@ -1588,97 +1672,101 @@ msgstr "ডেটা এক্সপোর্ট তৈরি করুন।"
 
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
-msgstr ""
+msgstr "যে কেউ অনুমোদন করতে পারেন এমন সবাই"
 
 #: authentik/enterprise/requests/models.py
 msgid "Only individually-selected reviewers"
-msgstr ""
+msgstr "শুধুমাত্র পৃথকভাবে নির্বাচিত পর্যালোচক"
 
 #: authentik/enterprise/requests/models.py
 msgid "A random subset of size min_reviewers, from everyone who can approve"
-msgstr ""
+msgstr "অনুমোদনে সক্ষম সবার মধ্য থেকে min_reviewers সংখ্যক এলোমেলো উপসেট"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Child Binding"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল চাইল্ড বাইন্ডিং"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Child Bindings"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল চাইল্ড বাইন্ডিংসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid ""
 "How long a request against this binding stays pending before it "
 "automatically lapses if not approved or denied."
 msgstr ""
+"এই বাইন্ডিং-এর বিপরীতে করা কোনো অনুরোধ, অনুমোদিত বা প্রত্যাখ্যাত না হলে, "
+"স্বয়ংক্রিয়ভাবে মেয়াদোত্তীর্ণ হওয়ার আগে কতক্ষণ অমীমাংসিত অবস্থায় থাকবে।"
 
 #: authentik/enterprise/requests/models.py
 msgid "The maximum duration a grant approved against this binding can last."
 msgstr ""
+"এই বাইন্ডিং-এর বিপরীতে অনুমোদিত কোনো গ্র্যান্ট সর্বোচ্চ কতক্ষণ স্থায়ী থাকতে"
+" পারবে তার সময়সীমা।"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Binding"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল বাইন্ডিং"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Bindings"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল বাইন্ডিংসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rules"
-msgstr ""
+msgstr "রিকোয়েস্ট রুলসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Notification Transport"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল নোটিফিকেশন ট্রান্সপোর্ট"
 
 #: authentik/enterprise/requests/models.py
 msgid "Request Rule Notification Transports"
-msgstr ""
+msgstr "রিকোয়েস্ট রুল নোটিফিকেশন ট্রান্সপোর্টসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Request"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Requests"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্টসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid "Can create a grant request"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট তৈরি করতে পারবেন"
 
 #: authentik/enterprise/requests/models.py
 msgid "Can fulfill (approve/deny) a grant request"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট পূরণ (অনুমোদন/প্রত্যাখ্যান) করতে পারবেন"
 
 #: authentik/enterprise/requests/models.py
 msgid "Can revoke a grant request"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট প্রত্যাহার করতে পারবেন"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Request Target"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট টার্গেট"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Request Targets"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট টার্গেটসমূহ"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Request Approval"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট অনুমোদন"
 
 #: authentik/enterprise/requests/models.py
 msgid "Grant Request Approvals"
-msgstr ""
+msgstr "গ্র্যান্ট রিকোয়েস্ট অনুমোদনসমূহ"
 
 #: authentik/enterprise/requests/tasks.py
 msgid "Send access-request review notification."
-msgstr ""
+msgstr "অ্যাক্সেস-রিকোয়েস্ট পর্যালোচনা নোটিফিকেশন পাঠান।"
 
 #: authentik/enterprise/stages/account_lockdown/api.py
 msgid "User to lock. If omitted, locks the current user (self-service)."
@@ -2196,6 +2284,14 @@ msgstr "একটি একক টাস্কে সিঙ্ক করা অ�
 #: authentik/lib/sync/outgoing/models.py
 msgid "Timeout for synchronization of a single page"
 msgstr "একটি একক পৃষ্ঠার সিঙ্ক্রোনাইজেশনের জন্য টাইমআউট"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
+msgstr ""
+"সক্রিয় থাকলে, authentik রিমোট সিস্টেমে বিদ্যমান রিসোর্স খুঁজে বের করার "
+"চেষ্টা করবে।"
 
 #: authentik/lib/sync/outgoing/models.py
 msgid ""
@@ -2978,79 +3074,85 @@ msgstr "OAuth2 রিফ্রেশ টোকেনসমূহ"
 
 #: authentik/providers/oauth2/models.py
 msgid "Provider"
-msgstr ""
+msgstr "প্রোভাইডার"
 
 #: authentik/providers/oauth2/models.py
 msgid "Default application group"
-msgstr ""
+msgstr "ডিফল্ট অ্যাপ্লিকেশন গ্রুপ"
 
 #: authentik/providers/oauth2/models.py
 msgid "Group to assign to automatically created applications."
 msgstr ""
+"স্বয়ংক্রিয়ভাবে তৈরি হওয়া অ্যাপ্লিকেশনগুলোতে নির্ধারণ করার জন্য গ্রুপ।"
 
 #: authentik/providers/oauth2/models.py
 msgid "Override authorization flow"
-msgstr ""
+msgstr "অথোরাইজেশন ফ্লো ওভাররাইড করুন"
 
 #: authentik/providers/oauth2/models.py
 msgid "Authorization flow applied to dynamically registered clients."
 msgstr ""
+"ডায়নামিকভাবে নিবন্ধিত ক্লায়েন্টদের ক্ষেত্রে প্রযোজ্য অথোরাইজেশন ফ্লো।"
 
 #: authentik/providers/oauth2/models.py
 msgid "Override invalidation flow"
-msgstr ""
+msgstr "ইনভ্যালিডেশন ফ্লো ওভাররাইড করুন"
 
 #: authentik/providers/oauth2/models.py
 msgid "Override property mappings"
-msgstr ""
+msgstr "প্রোপার্টি ম্যাপিং ওভাররাইড করুন"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope mappings applied to dynamically registered clients."
-msgstr ""
+msgstr "ডায়নামিকভাবে নিবন্ধিত ক্লায়েন্টদের ক্ষেত্রে প্রযোজ্য স্কোপ ম্যাপিং।"
 
 #: authentik/providers/oauth2/models.py
 msgid "Access token validity"
-msgstr ""
+msgstr "অ্যাক্সেস টোকেন বৈধতা"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Maximum access token validity for registered clients (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
+"নিবন্ধিত ক্লায়েন্টদের জন্য সর্বোচ্চ অ্যাক্সেস টোকেন বৈধতা (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
 
 #: authentik/providers/oauth2/models.py
 msgid "Refresh token validity"
-msgstr ""
+msgstr "রিফ্রেশ টোকেন বৈধতা"
 
 #: authentik/providers/oauth2/models.py
 msgid ""
 "Maximum refresh token validity for registered clients (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
+"নিবন্ধিত ক্লায়েন্টদের জন্য সর্বোচ্চ রিফ্রেশ টোকেন বৈধতা (ফরম্যাট: "
+"hours=1;minutes=2;seconds=3)।"
 
 #: authentik/providers/oauth2/models.py
 msgid "Allowed grant types"
-msgstr ""
+msgstr "অনুমোদিত গ্র্যান্ট টাইপ"
 
 #: authentik/providers/oauth2/models.py
 msgid "If empty, all grant types are allowed."
-msgstr ""
+msgstr "খালি থাকলে, সব গ্র্যান্ট টাইপ অনুমোদিত হবে।"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Dynamic Client Registration"
-msgstr ""
+msgstr "OAuth2 ডায়নামিক ক্লায়েন্ট রেজিস্ট্রেশন"
 
 #: authentik/providers/oauth2/models.py
 msgid "OAuth2 Dynamic Client Registrations"
-msgstr ""
+msgstr "OAuth2 ডায়নামিক ক্লায়েন্ট রেজিস্ট্রেশনসমূহ"
 
 #: authentik/providers/oauth2/models.py
 msgid "Dynamic Client Registration Property Mapping"
-msgstr ""
+msgstr "ডায়নামিক ক্লায়েন্ট রেজিস্ট্রেশন প্রোপার্টি ম্যাপিং"
 
 #: authentik/providers/oauth2/models.py
 msgid "Dynamic Client Registration Property Mappings"
-msgstr ""
+msgstr "ডায়নামিক ক্লায়েন্ট রেজিস্ট্রেশন প্রোপার্টি ম্যাপিংসমূহ"
 
 #: authentik/providers/oauth2/tasks.py
 msgid "Send a back-channel logout request to the registered client"
@@ -4892,12 +4994,6 @@ msgid "No (allowed) MFA authenticator configured."
 msgstr "কোনো (অনুমোদিত) MFA অথেন্টিকেটর কনফিগার করা নেই।"
 
 #: authentik/stages/authenticator_webauthn/models.py
-msgid "When enabled, a given device can only be registered once."
-msgstr ""
-"সক্রিয় করা থাকলে, একটি নির্দিষ্ট ডিভাইস শুধুমাত্র একবার নিবন্ধন করা যেতে "
-"পারে।"
-
-#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr "WebAuthn অথেন্টিকেটর সেটআপ স্টেজ"
 
@@ -5696,6 +5792,10 @@ msgstr "ইউজার লগইন স্টেজসমূহ"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "লগইন করার জন্য কোনো অপেক্ষমাণ ব্যবহারকারী নেই।"
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
+msgstr "নির্বাচিত সেশনটি আর উপলব্ধ নেই। অনুগ্রহ করে আবার চেষ্টা করুন।"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
