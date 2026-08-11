@@ -4,6 +4,7 @@ import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";
 import { ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { ApplicationForm } from "#admin/applications/ApplicationForm";
@@ -27,13 +28,19 @@ export class RelatedApplicationButton extends AKElement {
 
     protected override render(): SlottedTemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
-            return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
+            return html`<a
+                href=${toAdminInterface(
+                    `core/applications/${this.provider.assignedApplicationSlug}`,
+                )}
+            >
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
-                href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
+                href=${toAdminInterface(
+                    `core/applications/${this.provider.assignedBackchannelApplicationSlug}`,
+                )}
             >
                 ${this.provider.assignedBackchannelApplicationName}
             </a>`;
