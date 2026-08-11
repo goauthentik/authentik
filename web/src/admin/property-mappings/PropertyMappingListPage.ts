@@ -25,7 +25,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -56,7 +56,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     public override order = "name";
 
     @state()
-    protected hideManaged = getURLParam<boolean>("hideManaged", true);
+    protected hideManaged = getSearchParam<boolean>("hideManaged", true);
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return aki(PropertymappingsApi).propertymappingsAllList({
@@ -145,7 +145,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                         this.hideManaged = ev.detail.value;
                         this.page = 1;
                         this.fetch();
-                        updateURLParams({
+                        updateSearchParams({
                             hideManaged: this.hideManaged,
                         });
                     }}
