@@ -1,6 +1,5 @@
 ---
 title: Agent accounts
-sidebar_label: Agent accounts
 sidebar_position: 4
 ---
 

@@ -1,6 +1,5 @@
 ---
 title: Service accounts
-sidebar_label: Service accounts
 sidebar_position: 3
 ---
 

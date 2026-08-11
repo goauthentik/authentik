@@ -1,14 +1,11 @@
 ---
 title: External users
-sidebar_label: External users
 sidebar_position: 2
 ---
 
 External users are accounts for people who need access to an application but not to the authentik application dashboard.
 
-Unlike [internal users](./internal-users.md), external users typically authenticate to a single default application.
-
-External users cannot access the application dashboard. They therefore do not have access to the user settings page via the user interface. They can however access the user settings page through a direct URL.
+External users cannot access the application dashboard. They therefore do not have access to the user settings page via the user interface. They can however change their password and perform other changes via direct links to the appropriate flow.
 
 For an overview of all account types, see [Account types](./index.mdx).
 
@@ -18,17 +15,13 @@ For information on creating and managing external users, see [Managing users](..
 
 External users typically authenticate to a single default application. After successful authentication, authentik redirects them to the application configured for the authentication request or to the brand's default application.
 
-Configure a default application for [brands](../../../customize/branding/index.md#external-user-settings) used by external users. Without a default application, an external user who authenticates without requesting a specific application cannot continue to an application.
+Configure a default application for [brands](../../../customize/branding/index.md#external-user-settings) used by external users. Without a default application, an external user who signs in without requesting a specific application receives an access-denied page.
 
 ## Access user settings
 
 External users cannot access the user settings menu through the application dashboard because they do not have access to the dashboard.
 
-To allow an external user to access their settings, direct them to the user settings URL:
-
-```text
-https://authentik.company/if/user/#/settings
-```
+To allow an external user to change their password, enroll an MFA device, or perform other changes that are usually accessed via user settings, you must direct them to the appropriate flow.
 
 ## When to use external users
 

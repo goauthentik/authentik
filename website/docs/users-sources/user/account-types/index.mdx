@@ -1,22 +1,22 @@
 ---
 title: Account types
-description: "The different types of accounts in authentik"
-sidebar_position: 0
+description: "Choose between internal users, external users, service accounts, and agent accounts."
+sidebar_position: 2
 ---
 
-authentik supports several account types for representing people and machine identities. The account type determines how an account is created, how it authenticates, and how it is used.
+authentik supports several account types that represent people and machine identities. The account type determines how an account is created, how it authenticates, and how it is used.
 
 The available account types are:
 
-- [**Internal users**](./internal-users.md): Human users whose accounts are created and managed in authentik.
-- [**External users**](./external-users.md): Human users whose accounts or authentication are managed by an external source.
-- [**Service accounts**](./service-accounts.md): Machine identities created by an administrator for integrations and automation.
-- [**Internal service accounts**](./service-accounts.md): Machine identities created and managed by authentik for internal components.
-- [**Agent accounts**](./agent-accounts.md): Service accounts that act on behalf of a parent user.
+- [**Internal users**](./internal-users.md): human users whose accounts are created and managed in authentik.
+- [**External users**](./external-users.md): human users who typically authenticate to a single application and cannot access the authentik application dashboard.
+- [**Service accounts**](./service-accounts.md): machine identities created by an administrator for integrations and automation.
+- [**Internal service accounts**](./service-accounts.md): machine identities created and managed by authentik for internal components. They can not be created by administrators.
+- [**Agent accounts**](./agent-accounts.md): service accounts that act on behalf of a parent user.
 
-## Choosing an account type
+## Choose an account type
 
-Use the following guidelines when creating an account:
+Use the following table to choose an account type:
 
 | Requirement                                                                | Account type                             |
 | -------------------------------------------------------------------------- | ---------------------------------------- |
