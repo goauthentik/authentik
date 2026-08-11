@@ -202,7 +202,7 @@ Treat an agent token as a credential. Store it in a secret manager or another pr
 An API token is created automatically for every agent. The token has the following properties:
 
 - It is associated with the agent user.
-- It is expiring.
+- It always expires.
 - It uses the default token duration.
 - Its identifier is the generated agent username.
 
@@ -211,6 +211,7 @@ The agent's expiration and the token's expiration are separate:
 - A self-service agent always expires using the default token duration.
 - An administrator-provisioned agent can be configured to expire or not expire.
 - The API token created for an agent always expires using the default token duration.
+- On expiry the token is deleted and not rotated unlike the other service accoung tokens.
 
 Users with the `authentik_core.view_token_key` permission can retrieve the token value after creation. To revoke an agent token, delete the token. Deleting the agent also deletes its token.
 
