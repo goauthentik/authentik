@@ -188,10 +188,10 @@ class SourceFlowManager:
                 if action == Action.ENROLL:
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
-            if action == Action.DENY and self.matcher.failure:
-                response = self.handle_match_failure(self.matcher.failure)
-                if response:
-                    return response
+        except MatchFailure as exc:
+            response = self.handle_match_failure(exc)
+            if response:
+                return response
         except FlowNonApplicableException as exc:
             self._logger.warning("Flow non applicable", exc=exc)
             return self.error_handler(exc)
