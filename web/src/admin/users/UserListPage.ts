@@ -25,6 +25,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
@@ -307,7 +308,7 @@ export class UserListPage extends WithLicenseSummary(
                 alt=${msg(str`Avatar for ${displayName}`)}
             />`,
             html`<a
-                href="#/identity/users/${item.pk}"
+                href=${toAdminInterface(`identity/users/${item.pk}`)}
                 aria-label=${msg(str`View details for ${displayName}`)}
             >
                 <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>
