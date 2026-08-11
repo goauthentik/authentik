@@ -131,19 +131,17 @@ The token value is returned when the agent is created. Store it securely before 
 
 An agent can inherit policy access from its parent in one of three ways. You select the policy behavior when you create the agent; you cannot change it afterwards.
 
-### Mirror the parent
+### Mirror the parent (`MIRROR`)
 
 `MIRROR` evaluates the agent as its parent user.
 
 - The agent follows the parent's current policy access.
-- Changes to the parent's access are reflected when the agent is evaluated.
-- The agent can use access that the parent has through policy evaluation.
 
 Use `MIRROR` when an agent must follow the parent's current access.
 
-### Copy the parent's policy bindings
+### Copy the parent's policy bindings (`COPY`)
 
-`COPY` copies the parent's policy bindings when the agent is created.
+`COPY` copies the parent's policy bindings when the agent is created. Only bindings referencing the parent as a user are copied. Access the parent derives from group membership is not copied.
 
 - The agent receives a snapshot of the parent's policy bindings.
 - Later changes to the parent's policy bindings do not update the copied bindings.
@@ -151,7 +149,7 @@ Use `MIRROR` when an agent must follow the parent's current access.
 
 Use `COPY` when an agent needs a stable snapshot of the parent's policy bindings.
 
-### Do not inherit policies
+### Do not inherit policies (`NONE`)
 
 `NONE` does not copy or mirror the parent's policy bindings.
 
@@ -190,7 +188,7 @@ For example:
 ```bash
 curl \
   --header "Authorization: Bearer <agent-token>" \
-  https://authentik.example.com/api/v3/core/users/me/
+  https://authentik.company/api/v3/core/users/me/
 ```
 
 The request is authenticated as the agent. authentik evaluates the agent's access according to its policy behavior and assigned permissions.
