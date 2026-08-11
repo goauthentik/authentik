@@ -58,7 +58,7 @@ test.describe("Feature name", () => {
         const { click } = pointer;
 
         await test.step("Authenticate", async () => {
-            await session.login({ to: "/if/admin/#/core/providers" });
+            await session.login({ to: "/if/admin/core/providers" });
         });
 
         const dialog = page.getByRole("dialog", { name: "New Provider Wizard" });
