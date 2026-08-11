@@ -45,10 +45,7 @@ export class LibraryPageApplicationEmptyList
     public admin = false;
 
     #renderNewAppButton() {
-        // The admin interface is still hash-routed: keep the legacy hash format.
-        // The admin flip's shim will translate it, so this URL never breaks.
-        const params = encodeURIComponent(JSON.stringify({ createWizard: true }));
-        const href = `${toAdminInterface()}#/core/applications;${params}`;
+        const href = toAdminInterface("core/applications", { "create-wizard": "application" });
 
         return html`
             <div class="pf-u-pt-lg">
