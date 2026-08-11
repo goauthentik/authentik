@@ -1,11 +1,13 @@
+import { Comparator } from "#common/collections";
 import { dateToUTC } from "#common/temporal";
 
-import { AKElement } from "#elements/Base";
 import { isControlElement } from "#elements/ControlElement";
 import { isFormField } from "#elements/forms/form-associated-element";
 import { isNamedElement, NamedElement } from "#elements/utils/inputs";
 
 import { deepmerge } from "deepmerge-ts";
+
+import type { LitElement } from "lit";
 
 function isIgnored<T extends Element>(element: T) {
     if (!(element instanceof HTMLElement)) return false;
@@ -43,23 +45,31 @@ function assignValue(
 }
 
 /**
+ * Sort elements by their specificity, the more precise the key (more dots)
+ * the later it gets serialized, to ensure it has a higher priority than general
+ * fields (such as attributes vs attributes.foo.bar)
+ */
+const specificityComparator: Comparator<Element> = (a, b) => {
+    if (!isNamedElement(a) || !isNamedElement(b)) {
+        return -1;
+    }
+
+    return a.name.split(".").length - b.name.split(".").length;
+};
+
+/**
  * Convert the elements of the form to JSON.
  *
+ * Note that this triggers {@linkcode LitElement.requestUpdate} on all elements.
  */
-export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AKElement>): T {
+export function serializeForm<T = Record<string, unknown>>(elements: Iterable<LitElement>): T {
     const json: Record<string, unknown> = {};
 
     Array.from(elements)
-        .sort((a, b) => {
-            // Sort elements by their specificity, the more precise the key (more dots)
-            // the later it gets serialized, to ensure it has a higher priority than general
-            // fields (such as attributes vs attributes.foo.bar)
-            if (!isNamedElement(a) || !isNamedElement(b)) {
-                return -1;
-            }
-            return a.name.split(".").length - b.name.split(".").length;
-        })
+        .sort(specificityComparator)
         .forEach((element) => {
+            // TODO: Either see if we can remove this, or pass in specific in parameters
+            // to ensure a specific updates.
             element.requestUpdate();
 
             if (element.hidden) return;
