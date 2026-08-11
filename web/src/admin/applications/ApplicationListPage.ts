@@ -12,7 +12,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { WithBrandConfig } from "#elements/mixins/branding";
-import { getURLParam } from "#elements/router/RouteMatch";
+import { getSearchParam } from "#elements/router/core/search-params";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -71,9 +71,9 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     public override firstUpdated(changed: PropertyValues<this>): void {
         super.firstUpdated(changed);
 
-        if (getURLParam("createWizard", false)) {
+        if (getSearchParam<string>("create-wizard", "") === "application") {
             AKApplicationWizard.showModal();
-        } else if (getURLParam("createForm", false)) {
+        } else if (getSearchParam<string>("create-form", "") === "application") {
             ApplicationForm.showModal();
         }
     }
