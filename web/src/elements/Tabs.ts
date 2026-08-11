@@ -7,7 +7,7 @@ import {
     PaletteCommandDefinitionInit,
 } from "#elements/commands/shared";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
-import { getURLParams, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParams, updateSearchParams } from "#elements/router/core/search-params";
 import Styles from "#elements/Tabs.css" with { type: "bundled-text" };
 import { ifPresent } from "#elements/utils/attributes";
 import { isFocusable } from "#elements/utils/focus";
@@ -101,7 +101,7 @@ export class Tabs extends AKElement {
         this.addEventListener("focus", this.#delegateFocusListener);
 
         if (!this.activeTabName) {
-            const params = getURLParams();
+            const params = getSearchParams();
             const tabParam = params[this.pageIdentifier];
 
             if (
@@ -162,7 +162,7 @@ export class Tabs extends AKElement {
         // to both reduce URL length and ensure that tests do not have to deal with
         // unnecessary URL parameters.
 
-        updateURLParams({
+        updateSearchParams({
             [this.pageIdentifier]: nextTabName === firstTab ? null : nextTabName,
         });
 
