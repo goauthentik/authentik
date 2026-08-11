@@ -42,7 +42,7 @@
                 {
                     "type": "array",
                     "items": {
-                        "$ref": "#/$defs/blueprint_entry"
+                        "$ref": "#/definitions/blueprint_entry"
                     }
                 },
                 {
@@ -50,14 +50,14 @@
                     "additionalProperties": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/$defs/blueprint_entry"
+                            "$ref": "#/definitions/blueprint_entry"
                         }
                     }
                 }
             ]
         }
     },
-    "$defs": {
+    "definitions": {
         "blueprint_entry": {
             "oneOf": [
                 {
@@ -90,13 +90,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_blueprints.blueprintinstance_permissions"
+                            "$ref": "#/definitions/model_authentik_blueprints.blueprintinstance_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_blueprints.blueprintinstance"
+                            "$ref": "#/definitions/model_authentik_blueprints.blueprintinstance"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_blueprints.blueprintinstance"
+                            "$ref": "#/definitions/model_authentik_blueprints.blueprintinstance"
                         }
                     }
                 },
@@ -129,10 +129,10 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint_permissions"
+                            "$ref": "#/definitions/model_authentik_blueprints.metaapplyblueprint_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
+                            "$ref": "#/definitions/model_authentik_blueprints.metaapplyblueprint"
                         }
                     }
                 },
@@ -166,13 +166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_brands.brand_permissions"
+                            "$ref": "#/definitions/model_authentik_brands.brand_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_brands.brand"
+                            "$ref": "#/definitions/model_authentik_brands.brand"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_brands.brand"
+                            "$ref": "#/definitions/model_authentik_brands.brand"
                         }
                     }
                 },
@@ -206,13 +206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.actor_permissions"
+                            "$ref": "#/definitions/model_authentik_core.actor_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.actor"
+                            "$ref": "#/definitions/model_authentik_core.actor"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.actor"
+                            "$ref": "#/definitions/model_authentik_core.actor"
                         }
                     }
                 },
@@ -246,13 +246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.application_permissions"
+                            "$ref": "#/definitions/model_authentik_core.application_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.application"
+                            "$ref": "#/definitions/model_authentik_core.application"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.application"
+                            "$ref": "#/definitions/model_authentik_core.application"
                         }
                     }
                 },
@@ -286,13 +286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.applicationentitlement_permissions"
+                            "$ref": "#/definitions/model_authentik_core.applicationentitlement_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.applicationentitlement"
+                            "$ref": "#/definitions/model_authentik_core.applicationentitlement"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.applicationentitlement"
+                            "$ref": "#/definitions/model_authentik_core.applicationentitlement"
                         }
                     }
                 },
@@ -326,13 +326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.group_permissions"
+                            "$ref": "#/definitions/model_authentik_core.group_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.group"
+                            "$ref": "#/definitions/model_authentik_core.group"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.group"
+                            "$ref": "#/definitions/model_authentik_core.group"
                         }
                     }
                 },
@@ -366,13 +366,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.objectattribute_permissions"
+                            "$ref": "#/definitions/model_authentik_core.objectattribute_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.objectattribute"
+                            "$ref": "#/definitions/model_authentik_core.objectattribute"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.objectattribute"
+                            "$ref": "#/definitions/model_authentik_core.objectattribute"
                         }
                     }
                 },
@@ -406,13 +406,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.token_permissions"
+                            "$ref": "#/definitions/model_authentik_core.token_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.token"
+                            "$ref": "#/definitions/model_authentik_core.token"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.token"
+                            "$ref": "#/definitions/model_authentik_core.token"
                         }
                     }
                 },
@@ -446,13 +446,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_core.user_permissions"
+                            "$ref": "#/definitions/model_authentik_core.user_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_core.user"
+                            "$ref": "#/definitions/model_authentik_core.user"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_core.user"
+                            "$ref": "#/definitions/model_authentik_core.user"
                         }
                     }
                 },
@@ -486,13 +486,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypair_permissions"
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypair_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypair"
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypair"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_crypto.certificatekeypair"
+                            "$ref": "#/definitions/model_authentik_crypto.certificatekeypair"
                         }
                     }
                 },
@@ -526,13 +526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentconnector_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentconnector"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentconnector"
                         }
                     }
                 },
@@ -566,13 +566,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.agentdeviceuserbinding"
                         }
                     }
                 },
@@ -606,13 +606,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.enrollmenttoken_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.enrollmenttoken"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_agent.enrollmenttoken"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_agent.enrollmenttoken"
                         }
                     }
                 },
@@ -646,13 +646,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceaccessgroup_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceaccessgroup"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceaccessgroup"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceaccessgroup"
                         }
                     }
                 },
@@ -686,13 +686,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceuserbinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceuserbinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints.deviceuserbinding"
+                            "$ref": "#/definitions/model_authentik_endpoints.deviceuserbinding"
                         }
                     }
                 },
@@ -726,13 +726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints.endpointstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage"
+                            "$ref": "#/definitions/model_authentik_endpoints.endpointstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints.endpointstage"
+                            "$ref": "#/definitions/model_authentik_endpoints.endpointstage"
                         }
                     }
                 },
@@ -766,13 +766,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_agents.agent_permissions"
+                            "$ref": "#/definitions/model_authentik_agents.agent_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_agents.agent"
+                            "$ref": "#/definitions/model_authentik_agents.agent"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_agents.agent"
+                            "$ref": "#/definitions/model_authentik_agents.agent"
                         }
                     }
                 },
@@ -806,13 +806,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_fleet.fleetconnector_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_fleet.fleetconnector"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_fleet.fleetconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_fleet.fleetconnector"
                         }
                     }
                 },
@@ -846,13 +846,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_google_chrome.googlechromeconnector"
                         }
                     }
                 },
@@ -886,13 +886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding_permissions"
+                            "$ref": "#/definitions/model_authentik_lifecycle.useroffboarding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                            "$ref": "#/definitions/model_authentik_lifecycle.useroffboarding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.useroffboarding"
+                            "$ref": "#/definitions/model_authentik_lifecycle.useroffboarding"
                         }
                     }
                 },
@@ -926,13 +926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration_permissions"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecycleiteration_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecycleiteration"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecycleiteration"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecycleiteration"
                         }
                     }
                 },
@@ -966,13 +966,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule_permissions"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecyclerule_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecyclerule"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.lifecyclerule"
+                            "$ref": "#/definitions/model_authentik_lifecycle.lifecyclerule"
                         }
                     }
                 },
@@ -1006,13 +1006,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.review_permissions"
+                            "$ref": "#/definitions/model_authentik_lifecycle.review_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.review"
+                            "$ref": "#/definitions/model_authentik_lifecycle.review"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_lifecycle.review"
+                            "$ref": "#/definitions/model_authentik_lifecycle.review"
                         }
                     }
                 },
@@ -1046,13 +1046,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_enterprise.license_permissions"
+                            "$ref": "#/definitions/model_authentik_enterprise.license_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_enterprise.license"
+                            "$ref": "#/definitions/model_authentik_enterprise.license"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_enterprise.license"
+                            "$ref": "#/definitions/model_authentik_enterprise.license"
                         }
                     }
                 },
@@ -1086,13 +1086,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_unique_password.uniquepasswordpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_unique_password.uniquepasswordpolicy"
                         }
                     }
                 },
@@ -1126,13 +1126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovider"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovider"
                         }
                     }
                 },
@@ -1166,13 +1166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovidermapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
+                            "$ref": "#/definitions/model_authentik_providers_google_workspace.googleworkspaceprovidermapping"
                         }
                     }
                 },
@@ -1206,13 +1206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovider"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovider"
                         }
                     }
                 },
@@ -1246,13 +1246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
+                            "$ref": "#/definitions/model_authentik_providers_microsoft_entra.microsoftentraprovidermapping"
                         }
                     }
                 },
@@ -1286,13 +1286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_ssf.ssfprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ssf.ssfprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_ssf.ssfprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ssf.ssfprovider"
                         }
                     }
                 },
@@ -1326,13 +1326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_ws_federation.wsfederationprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ws_federation.wsfederationprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_ws_federation.wsfederationprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ws_federation.wsfederationprovider"
                         }
                     }
                 },
@@ -1366,13 +1366,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_reports.dataexport_permissions"
+                            "$ref": "#/definitions/model_authentik_reports.dataexport_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_reports.dataexport"
+                            "$ref": "#/definitions/model_authentik_reports.dataexport"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_reports.dataexport"
+                            "$ref": "#/definitions/model_authentik_reports.dataexport"
                         }
                     }
                 },
@@ -1406,13 +1406,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_requests.grantrequest_permissions"
+                            "$ref": "#/definitions/model_authentik_requests.grantrequest_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_requests.grantrequest"
+                            "$ref": "#/definitions/model_authentik_requests.grantrequest"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_requests.grantrequest"
+                            "$ref": "#/definitions/model_authentik_requests.grantrequest"
                         }
                     }
                 },
@@ -1446,13 +1446,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrule_permissions"
+                            "$ref": "#/definitions/model_authentik_requests.requestrule_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrule"
+                            "$ref": "#/definitions/model_authentik_requests.requestrule"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrule"
+                            "$ref": "#/definitions/model_authentik_requests.requestrule"
                         }
                     }
                 },
@@ -1486,13 +1486,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding_permissions"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulebinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulebinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulebinding"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulebinding"
                         }
                     }
                 },
@@ -1526,13 +1526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding_permissions"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulechildbinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulechildbinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_requests.requestrulechildbinding"
+                            "$ref": "#/definitions/model_authentik_requests.requestrulechildbinding"
                         }
                     }
                 },
@@ -1566,13 +1566,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_account_lockdown.accountlockdownstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                            "$ref": "#/definitions/model_authentik_stages_account_lockdown.accountlockdownstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_account_lockdown.accountlockdownstage"
+                            "$ref": "#/definitions/model_authentik_stages_account_lockdown.accountlockdownstage"
                         }
                     }
                 },
@@ -1606,13 +1606,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
                         }
                     }
                 },
@@ -1646,13 +1646,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_mtls.mutualtlsstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
+                            "$ref": "#/definitions/model_authentik_stages_mtls.mutualtlsstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
+                            "$ref": "#/definitions/model_authentik_stages_mtls.mutualtlsstage"
                         }
                     }
                 },
@@ -1686,13 +1686,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_source.sourcestage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_source.sourcestage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_source.sourcestage"
+                            "$ref": "#/definitions/model_authentik_stages_source.sourcestage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_source.sourcestage"
+                            "$ref": "#/definitions/model_authentik_stages_source.sourcestage"
                         }
                     }
                 },
@@ -1726,13 +1726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_events.event_permissions"
+                            "$ref": "#/definitions/model_authentik_events.event_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_events.event"
+                            "$ref": "#/definitions/model_authentik_events.event"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_events.event"
+                            "$ref": "#/definitions/model_authentik_events.event"
                         }
                     }
                 },
@@ -1766,13 +1766,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_events.notification_permissions"
+                            "$ref": "#/definitions/model_authentik_events.notification_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_events.notification"
+                            "$ref": "#/definitions/model_authentik_events.notification"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_events.notification"
+                            "$ref": "#/definitions/model_authentik_events.notification"
                         }
                     }
                 },
@@ -1806,13 +1806,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_events.notificationrule_permissions"
+                            "$ref": "#/definitions/model_authentik_events.notificationrule_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_events.notificationrule"
+                            "$ref": "#/definitions/model_authentik_events.notificationrule"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_events.notificationrule"
+                            "$ref": "#/definitions/model_authentik_events.notificationrule"
                         }
                     }
                 },
@@ -1846,13 +1846,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_events.notificationtransport_permissions"
+                            "$ref": "#/definitions/model_authentik_events.notificationtransport_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_events.notificationtransport"
+                            "$ref": "#/definitions/model_authentik_events.notificationtransport"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_events.notificationtransport"
+                            "$ref": "#/definitions/model_authentik_events.notificationtransport"
                         }
                     }
                 },
@@ -1886,13 +1886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping_permissions"
+                            "$ref": "#/definitions/model_authentik_events.notificationwebhookmapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
+                            "$ref": "#/definitions/model_authentik_events.notificationwebhookmapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_events.notificationwebhookmapping"
+                            "$ref": "#/definitions/model_authentik_events.notificationwebhookmapping"
                         }
                     }
                 },
@@ -1926,13 +1926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_flows.flow_permissions"
+                            "$ref": "#/definitions/model_authentik_flows.flow_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_flows.flow"
+                            "$ref": "#/definitions/model_authentik_flows.flow"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_flows.flow"
+                            "$ref": "#/definitions/model_authentik_flows.flow"
                         }
                     }
                 },
@@ -1966,13 +1966,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_flows.flowstagebinding_permissions"
+                            "$ref": "#/definitions/model_authentik_flows.flowstagebinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_flows.flowstagebinding"
+                            "$ref": "#/definitions/model_authentik_flows.flowstagebinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_flows.flowstagebinding"
+                            "$ref": "#/definitions/model_authentik_flows.flowstagebinding"
                         }
                     }
                 },
@@ -2006,13 +2006,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_outposts.dockerserviceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_outposts.dockerserviceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_outposts.dockerserviceconnection"
+                            "$ref": "#/definitions/model_authentik_outposts.dockerserviceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_outposts.dockerserviceconnection"
+                            "$ref": "#/definitions/model_authentik_outposts.dockerserviceconnection"
                         }
                     }
                 },
@@ -2046,13 +2046,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_outposts.kubernetesserviceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_outposts.kubernetesserviceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_outposts.kubernetesserviceconnection"
+                            "$ref": "#/definitions/model_authentik_outposts.kubernetesserviceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_outposts.kubernetesserviceconnection"
+                            "$ref": "#/definitions/model_authentik_outposts.kubernetesserviceconnection"
                         }
                     }
                 },
@@ -2086,13 +2086,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_outposts.outpost_permissions"
+                            "$ref": "#/definitions/model_authentik_outposts.outpost_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_outposts.outpost"
+                            "$ref": "#/definitions/model_authentik_outposts.outpost"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_outposts.outpost"
+                            "$ref": "#/definitions/model_authentik_outposts.outpost"
                         }
                     }
                 },
@@ -2126,13 +2126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_dummy.dummypolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_dummy.dummypolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_dummy.dummypolicy"
+                            "$ref": "#/definitions/model_authentik_policies_dummy.dummypolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_dummy.dummypolicy"
+                            "$ref": "#/definitions/model_authentik_policies_dummy.dummypolicy"
                         }
                     }
                 },
@@ -2166,13 +2166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_event_matcher.eventmatcherpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_event_matcher.eventmatcherpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_event_matcher.eventmatcherpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_event_matcher.eventmatcherpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_event_matcher.eventmatcherpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_event_matcher.eventmatcherpolicy"
                         }
                     }
                 },
@@ -2206,13 +2206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_expiry.passwordexpirypolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_expiry.passwordexpirypolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_expiry.passwordexpirypolicy"
+                            "$ref": "#/definitions/model_authentik_policies_expiry.passwordexpirypolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_expiry.passwordexpirypolicy"
+                            "$ref": "#/definitions/model_authentik_policies_expiry.passwordexpirypolicy"
                         }
                     }
                 },
@@ -2246,13 +2246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_expression.expressionpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_expression.expressionpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_expression.expressionpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_expression.expressionpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_expression.expressionpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_expression.expressionpolicy"
                         }
                     }
                 },
@@ -2286,13 +2286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_geoip.geoippolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_geoip.geoippolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_geoip.geoippolicy"
+                            "$ref": "#/definitions/model_authentik_policies_geoip.geoippolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_geoip.geoippolicy"
+                            "$ref": "#/definitions/model_authentik_policies_geoip.geoippolicy"
                         }
                     }
                 },
@@ -2326,13 +2326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies.policybinding_permissions"
+                            "$ref": "#/definitions/model_authentik_policies.policybinding_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies.policybinding"
+                            "$ref": "#/definitions/model_authentik_policies.policybinding"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies.policybinding"
+                            "$ref": "#/definitions/model_authentik_policies.policybinding"
                         }
                     }
                 },
@@ -2366,13 +2366,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_password.passwordpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_password.passwordpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_password.passwordpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_password.passwordpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_password.passwordpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_password.passwordpolicy"
                         }
                     }
                 },
@@ -2406,13 +2406,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_policies_reputation.reputationpolicy_permissions"
+                            "$ref": "#/definitions/model_authentik_policies_reputation.reputationpolicy_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_policies_reputation.reputationpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_reputation.reputationpolicy"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_policies_reputation.reputationpolicy"
+                            "$ref": "#/definitions/model_authentik_policies_reputation.reputationpolicy"
                         }
                     }
                 },
@@ -2446,13 +2446,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_ldap.ldapprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_ldap.ldapprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_ldap.ldapprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ldap.ldapprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_ldap.ldapprovider"
+                            "$ref": "#/definitions/model_authentik_providers_ldap.ldapprovider"
                         }
                     }
                 },
@@ -2486,13 +2486,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2dynamicclientregistration_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2dynamicclientregistration"
                         }
                     }
                 },
@@ -2526,13 +2526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2provider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2provider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2provider"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2provider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.oauth2provider"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.oauth2provider"
                         }
                     }
                 },
@@ -2566,13 +2566,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.scopemapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.scopemapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.scopemapping"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.scopemapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_oauth2.scopemapping"
+                            "$ref": "#/definitions/model_authentik_providers_oauth2.scopemapping"
                         }
                     }
                 },
@@ -2606,13 +2606,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_proxy.proxyprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_proxy.proxyprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_proxy.proxyprovider"
+                            "$ref": "#/definitions/model_authentik_providers_proxy.proxyprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_proxy.proxyprovider"
+                            "$ref": "#/definitions/model_authentik_providers_proxy.proxyprovider"
                         }
                     }
                 },
@@ -2646,13 +2646,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.endpoint_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.endpoint"
+                            "$ref": "#/definitions/model_authentik_providers_rac.endpoint"
                         }
                     }
                 },
@@ -2686,13 +2686,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racpropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racpropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racpropertymapping"
                         }
                     }
                 },
@@ -2726,13 +2726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_rac.racprovider"
+                            "$ref": "#/definitions/model_authentik_providers_rac.racprovider"
                         }
                     }
                 },
@@ -2766,13 +2766,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusprovider"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusprovider"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusprovider"
                         }
                     }
                 },
@@ -2806,13 +2806,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusproviderpropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusproviderpropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusproviderpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusproviderpropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_radius.radiusproviderpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_radius.radiusproviderpropertymapping"
                         }
                     }
                 },
@@ -2846,13 +2846,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlpropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlpropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlpropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlpropertymapping"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlpropertymapping"
                         }
                     }
                 },
@@ -2886,13 +2886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlprovider"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_saml.samlprovider"
+                            "$ref": "#/definitions/model_authentik_providers_saml.samlprovider"
                         }
                     }
                 },
@@ -2926,13 +2926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimmapping_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimmapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimmapping"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimmapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimmapping"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimmapping"
                         }
                     }
                 },
@@ -2966,13 +2966,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimprovider_permissions"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimprovider_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimprovider"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimprovider"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_providers_scim.scimprovider"
+                            "$ref": "#/definitions/model_authentik_providers_scim.scimprovider"
                         }
                     }
                 },
@@ -3006,13 +3006,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_rbac.initialpermissions_permissions"
+                            "$ref": "#/definitions/model_authentik_rbac.initialpermissions_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            "$ref": "#/definitions/model_authentik_rbac.initialpermissions"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            "$ref": "#/definitions/model_authentik_rbac.initialpermissions"
                         }
                     }
                 },
@@ -3046,13 +3046,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_rbac.role_permissions"
+                            "$ref": "#/definitions/model_authentik_rbac.role_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_rbac.role"
+                            "$ref": "#/definitions/model_authentik_rbac.role"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_rbac.role"
+                            "$ref": "#/definitions/model_authentik_rbac.role"
                         }
                     }
                 },
@@ -3086,13 +3086,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.groupkerberossourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.groupkerberossourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.groupkerberossourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.groupkerberossourceconnection"
                         }
                     }
                 },
@@ -3126,13 +3126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossource"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossource"
                         }
                     }
                 },
@@ -3166,13 +3166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.kerberossourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.kerberossourcepropertymapping"
                         }
                     }
                 },
@@ -3206,13 +3206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.userkerberossourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.userkerberossourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_kerberos.userkerberossourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_kerberos.userkerberossourceconnection"
                         }
                     }
                 },
@@ -3246,13 +3246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.groupldapsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.groupldapsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.groupldapsourceconnection"
                         }
                     }
                 },
@@ -3286,13 +3286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsource"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsource"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsource"
                         }
                     }
                 },
@@ -3326,13 +3326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.ldapsourcepropertymapping"
                         }
                     }
                 },
@@ -3366,13 +3366,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.userldapsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.userldapsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_ldap.userldapsourceconnection"
                         }
                     }
                 },
@@ -3406,13 +3406,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.groupoauthsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.groupoauthsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.groupoauthsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.groupoauthsourceconnection"
                         }
                     }
                 },
@@ -3446,13 +3446,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsource"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsource"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsource"
                         }
                     }
                 },
@@ -3486,13 +3486,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.oauthsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.oauthsourcepropertymapping"
                         }
                     }
                 },
@@ -3526,13 +3526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.useroauthsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.useroauthsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.useroauthsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.useroauthsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_oauth.useroauthsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_oauth.useroauthsourceconnection"
                         }
                     }
                 },
@@ -3566,13 +3566,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_plex.groupplexsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_plex.groupplexsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.groupplexsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_plex.groupplexsourceconnection"
                         }
                     }
                 },
@@ -3606,13 +3606,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsource"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsource"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsource"
                         }
                     }
                 },
@@ -3646,13 +3646,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.plexsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_plex.plexsourcepropertymapping"
                         }
                     }
                 },
@@ -3686,13 +3686,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_plex.userplexsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_plex.userplexsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_plex.userplexsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_plex.userplexsourceconnection"
                         }
                     }
                 },
@@ -3726,13 +3726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_saml.groupsamlsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_saml.groupsamlsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.groupsamlsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_saml.groupsamlsourceconnection"
                         }
                     }
                 },
@@ -3766,13 +3766,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsource"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsource"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsource"
                         }
                     }
                 },
@@ -3806,13 +3806,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.samlsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_saml.samlsourcepropertymapping"
                         }
                     }
                 },
@@ -3846,13 +3846,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.usersamlsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_saml.usersamlsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.usersamlsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_saml.usersamlsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_saml.usersamlsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_saml.usersamlsourceconnection"
                         }
                     }
                 },
@@ -3886,13 +3886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsource"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsource"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsource"
                         }
                     }
                 },
@@ -3926,13 +3926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_scim.scimsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_scim.scimsourcepropertymapping"
                         }
                     }
                 },
@@ -3966,13 +3966,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.grouptelegramsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.grouptelegramsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.grouptelegramsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.grouptelegramsourceconnection"
                         }
                     }
                 },
@@ -4006,13 +4006,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsource_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsource"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsource"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsource"
                         }
                     }
                 },
@@ -4046,13 +4046,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsourcepropertymapping_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsourcepropertymapping"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.telegramsourcepropertymapping"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.telegramsourcepropertymapping"
                         }
                     }
                 },
@@ -4086,13 +4086,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection_permissions"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.usertelegramsourceconnection_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.usertelegramsourceconnection"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_sources_telegram.usertelegramsourceconnection"
+                            "$ref": "#/definitions/model_authentik_sources_telegram.usertelegramsourceconnection"
                         }
                     }
                 },
@@ -4126,13 +4126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.authenticatorduostage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.authenticatorduostage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.authenticatorduostage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.authenticatorduostage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.authenticatorduostage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.authenticatorduostage"
                         }
                     }
                 },
@@ -4166,13 +4166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.duodevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.duodevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.duodevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.duodevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_duo.duodevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_duo.duodevice"
                         }
                     }
                 },
@@ -4206,13 +4206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.authenticatoremailstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.authenticatoremailstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.authenticatoremailstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.authenticatoremailstage"
                         }
                     }
                 },
@@ -4246,13 +4246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.emaildevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.emaildevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_email.emaildevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_email.emaildevice"
                         }
                     }
                 },
@@ -4286,13 +4286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.authenticatorsmsstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.authenticatorsmsstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.authenticatorsmsstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.authenticatorsmsstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.authenticatorsmsstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.authenticatorsmsstage"
                         }
                     }
                 },
@@ -4326,13 +4326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.smsdevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.smsdevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.smsdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.smsdevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_sms.smsdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_sms.smsdevice"
                         }
                     }
                 },
@@ -4366,13 +4366,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.authenticatorstaticstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.authenticatorstaticstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.authenticatorstaticstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.authenticatorstaticstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.authenticatorstaticstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.authenticatorstaticstage"
                         }
                     }
                 },
@@ -4406,13 +4406,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.staticdevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.staticdevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_static.staticdevice"
                         }
                     }
                 },
@@ -4446,13 +4446,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.authenticatortotpstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.authenticatortotpstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.authenticatortotpstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.authenticatortotpstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.authenticatortotpstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.authenticatortotpstage"
                         }
                     }
                 },
@@ -4486,13 +4486,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.totpdevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.totpdevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_totp.totpdevice"
                         }
                     }
                 },
@@ -4526,13 +4526,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_validate.authenticatorvalidatestage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_validate.authenticatorvalidatestage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_validate.authenticatorvalidatestage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_validate.authenticatorvalidatestage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_validate.authenticatorvalidatestage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_validate.authenticatorvalidatestage"
                         }
                     }
                 },
@@ -4566,13 +4566,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.authenticatorwebauthnstage"
                         }
                     }
                 },
@@ -4606,13 +4606,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.webauthndevice_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthndevice_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.webauthndevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthndevice"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_authenticator_webauthn.webauthndevice"
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthndevice"
                         }
                     }
                 },
@@ -4646,13 +4646,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_captcha.captchastage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_captcha.captchastage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_captcha.captchastage"
+                            "$ref": "#/definitions/model_authentik_stages_captcha.captchastage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_captcha.captchastage"
+                            "$ref": "#/definitions/model_authentik_stages_captcha.captchastage"
                         }
                     }
                 },
@@ -4686,13 +4686,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.consentstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_consent.consentstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.consentstage"
+                            "$ref": "#/definitions/model_authentik_stages_consent.consentstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_consent.consentstage"
+                            "$ref": "#/definitions/model_authentik_stages_consent.consentstage"
                         }
                     }
                 },
@@ -4726,13 +4726,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_deny.denystage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_deny.denystage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_deny.denystage"
+                            "$ref": "#/definitions/model_authentik_stages_deny.denystage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_deny.denystage"
+                            "$ref": "#/definitions/model_authentik_stages_deny.denystage"
                         }
                     }
                 },
@@ -4766,13 +4766,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_dummy.dummystage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_dummy.dummystage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_dummy.dummystage"
+                            "$ref": "#/definitions/model_authentik_stages_dummy.dummystage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_dummy.dummystage"
+                            "$ref": "#/definitions/model_authentik_stages_dummy.dummystage"
                         }
                     }
                 },
@@ -4806,13 +4806,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_email.emailstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_email.emailstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_email.emailstage"
+                            "$ref": "#/definitions/model_authentik_stages_email.emailstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_email.emailstage"
+                            "$ref": "#/definitions/model_authentik_stages_email.emailstage"
                         }
                     }
                 },
@@ -4846,13 +4846,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_identification.identificationstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_identification.identificationstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_identification.identificationstage"
+                            "$ref": "#/definitions/model_authentik_stages_identification.identificationstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_identification.identificationstage"
+                            "$ref": "#/definitions/model_authentik_stages_identification.identificationstage"
                         }
                     }
                 },
@@ -4886,13 +4886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitation_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitation_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitation"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitation"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitation"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitation"
                         }
                     }
                 },
@@ -4926,13 +4926,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitationstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitationstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitationstage"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitationstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_invitation.invitationstage"
+                            "$ref": "#/definitions/model_authentik_stages_invitation.invitationstage"
                         }
                     }
                 },
@@ -4966,13 +4966,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_password.passwordstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_password.passwordstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_password.passwordstage"
+                            "$ref": "#/definitions/model_authentik_stages_password.passwordstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_password.passwordstage"
+                            "$ref": "#/definitions/model_authentik_stages_password.passwordstage"
                         }
                     }
                 },
@@ -5006,13 +5006,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.prompt_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.prompt_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.prompt"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.prompt"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.prompt"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.prompt"
                         }
                     }
                 },
@@ -5046,13 +5046,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.promptstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.promptstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.promptstage"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.promptstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_prompt.promptstage"
+                            "$ref": "#/definitions/model_authentik_stages_prompt.promptstage"
                         }
                     }
                 },
@@ -5086,13 +5086,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_redirect.redirectstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage"
+                            "$ref": "#/definitions/model_authentik_stages_redirect.redirectstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_redirect.redirectstage"
+                            "$ref": "#/definitions/model_authentik_stages_redirect.redirectstage"
                         }
                     }
                 },
@@ -5126,13 +5126,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_user_delete.userdeletestage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_user_delete.userdeletestage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_user_delete.userdeletestage"
+                            "$ref": "#/definitions/model_authentik_stages_user_delete.userdeletestage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_user_delete.userdeletestage"
+                            "$ref": "#/definitions/model_authentik_stages_user_delete.userdeletestage"
                         }
                     }
                 },
@@ -5166,13 +5166,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_user_login.userloginstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_user_login.userloginstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_user_login.userloginstage"
+                            "$ref": "#/definitions/model_authentik_stages_user_login.userloginstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_user_login.userloginstage"
+                            "$ref": "#/definitions/model_authentik_stages_user_login.userloginstage"
                         }
                     }
                 },
@@ -5206,13 +5206,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_user_logout.userlogoutstage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_user_logout.userlogoutstage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_user_logout.userlogoutstage"
+                            "$ref": "#/definitions/model_authentik_stages_user_logout.userlogoutstage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_user_logout.userlogoutstage"
+                            "$ref": "#/definitions/model_authentik_stages_user_logout.userlogoutstage"
                         }
                     }
                 },
@@ -5246,13 +5246,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_stages_user_write.userwritestage_permissions"
+                            "$ref": "#/definitions/model_authentik_stages_user_write.userwritestage_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_stages_user_write.userwritestage"
+                            "$ref": "#/definitions/model_authentik_stages_user_write.userwritestage"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_stages_user_write.userwritestage"
+                            "$ref": "#/definitions/model_authentik_stages_user_write.userwritestage"
                         }
                     }
                 },
@@ -5286,13 +5286,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule_permissions"
+                            "$ref": "#/definitions/model_authentik_tasks_schedules.schedule_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                            "$ref": "#/definitions/model_authentik_tasks_schedules.schedule"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                            "$ref": "#/definitions/model_authentik_tasks_schedules.schedule"
                         }
                     }
                 },
@@ -5326,13 +5326,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_tenants.domain_permissions"
+                            "$ref": "#/definitions/model_authentik_tenants.domain_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_tenants.domain"
+                            "$ref": "#/definitions/model_authentik_tenants.domain"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_tenants.domain"
+                            "$ref": "#/definitions/model_authentik_tenants.domain"
                         }
                     }
                 }
