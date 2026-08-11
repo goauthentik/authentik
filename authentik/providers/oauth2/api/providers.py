@@ -108,6 +108,7 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     provider_info = CharField(read_only=True)
     logout = CharField(read_only=True)
     jwks = CharField(read_only=True)
+    dcr_registration = CharField(read_only=True, allow_null=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
@@ -181,6 +182,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             data["jwks"] = request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["dcr_registration"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

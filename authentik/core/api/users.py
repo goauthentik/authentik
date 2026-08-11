@@ -6,9 +6,11 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
@@ -64,6 +66,7 @@ from authentik.api.search.fields import (
 from authentik.api.validation import validate
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
+from authentik.core import user_switching
 from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -88,6 +91,7 @@ from authentik.core.models import (
     UserTypes,
     default_token_duration,
 )
+from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -361,6 +365,7 @@ class UserSelfSerializer(ModelSerializer):
     """User Serializer for information a user can retrieve about themselves"""
 
     is_superuser = BooleanField(read_only=True)
+    is_current = SerializerMethodField()
     avatar = SerializerMethodField()
     groups = SerializerMethodField()
     roles = SerializerMethodField()
@@ -371,6 +376,10 @@ class UserSelfSerializer(ModelSerializer):
     def get_avatar(self, user: User) -> str:
         """User's avatar, either a http/https URL or a data URI"""
         return get_avatar(user, self.context.get("request"))
+
+    def get_is_current(self, _: User) -> bool:
+        """Return whether this user owns the current browser session."""
+        return self.context.get("is_current", False)
 
     @extend_schema_field(
         ListSerializer(
@@ -430,6 +439,7 @@ class UserSelfSerializer(ModelSerializer):
             "name",
             "is_active",
             "is_superuser",
+            "is_current",
             "groups",
             "roles",
             "email",
@@ -445,6 +455,31 @@ class UserSelfSerializer(ModelSerializer):
         }
 
 
+class UserSwitchAction(models.TextChoices):
+    """Actions supported by the user switch endpoint."""
+
+    ADD = "add"
+    SWITCH = "switch"
+
+
+class UserSwitchSerializer(PassiveSerializer):
+    """Request to add or switch users in the current browser."""
+
+    action = ChoiceField(choices=UserSwitchAction.choices, default=UserSwitchAction.SWITCH)
+    user_pk = IntegerField(required=False)
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs["action"] == UserSwitchAction.SWITCH and "user_pk" not in attrs:
+            raise ValidationError({"user_pk": _("This field is required.")})
+        return attrs
+
+
+class UserSwitchResponseSerializer(PassiveSerializer):
+    """Redirect returned after planning a user switch."""
+
+    redirect = CharField(read_only=True)
+
+
 class SessionUserSerializer(PassiveSerializer):
     """Response for the /user/me endpoint, returns the currently active user (as `user` property)
     and, if this user is being impersonated, the original user in the `original` property.
@@ -452,6 +487,7 @@ class SessionUserSerializer(PassiveSerializer):
 
     user = UserSelfSerializer()
     original = UserSelfSerializer(required=False)
+    users = UserSelfSerializer(many=True)
 
 
 class UserPasswordSetSerializer(PassiveSerializer):
@@ -655,6 +691,31 @@ class UserViewSet(
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @extend_schema(
+        parameters=[OpenApiParameter("next", str, required=False)],
+        request=UserSwitchSerializer,
+        responses={200: UserSwitchResponseSerializer},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        permission_classes=[IsAuthenticated],
+        pagination_class=None,
+        filter_backends=[],
+    )
+    @validate(UserSwitchSerializer)
+    def switch(self, request: Request, body: UserSwitchSerializer) -> HttpResponse | Response:
+        """Start browser user switching."""
+        user_pk = (
+            None
+            if body.validated_data["action"] == UserSwitchAction.ADD
+            else body.validated_data["user_pk"]
+        )
+        response = start_user_switch_flow(request._request, user_pk)
+        if isinstance(response, HttpResponseRedirect):
+            return Response({"redirect": response.url})
+        return response
+
     def _create_recovery_link(
         self, token_duration: str | None, for_email=False
     ) -> tuple[str, Token]:
@@ -800,14 +861,34 @@ class UserViewSet(
     )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
-        context = {"request": request}
+        context = {"request": request, "is_current": True}
+        users = []
+        user_switching_token = getattr(request._request, "user_switching_token", None)
+        if request.user.is_authenticated and user_switching_token:
+            sessions = (
+                user_switching.live_sessions(user_switching_token)
+                .exclude(user_id=request.user.pk)
+                .select_related("session", "user")
+                .order_by("user_id", "-session__last_used")
+                .distinct("user_id")
+            )
+            users = [
+                UserSelfSerializer(
+                    instance=authenticated_session.user,
+                    context={"request": request},
+                ).data
+                for authenticated_session in sessions
+            ]
         serializer = SessionUserSerializer(
-            data={"user": UserSelfSerializer(instance=request.user, context=context).data}
+            data={
+                "user": UserSelfSerializer(instance=request.user, context=context).data,
+                "users": users,
+            }
         )
         if SESSION_KEY_IMPERSONATE_USER in request._request.session:
             serializer.initial_data["original"] = UserSelfSerializer(
                 instance=request._request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER],
-                context=context,
+                context={"request": request},
             ).data
         self.request.session.modified = True
         return Response(serializer.initial_data)

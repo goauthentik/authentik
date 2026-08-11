@@ -27,4 +27,6 @@
 /chat-communication-collaboration/mattermost-team-edition          /chat-communication-collaboration/mattermost 301!
 /chat-communication-collaboration/mattermost-team-edition/         /chat-communication-collaboration/mattermost/ 301!
 
-/networking/cloudflare-access                                       /security/cloudflare-access 301!
+/networking/cloudflare-access                                      /security/cloudflare-access 301!
+
+/platforms/microsoft                                               /platforms/microsoft-saml 301!

@@ -64,12 +64,12 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@3d7d7cd5ac7f994c1892ae0c06165095b9139094 # v2
+      uses: taiki-e/install-action@6c6fd71fe4fb72c3697d269963d0e15df8adedad # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm
       if: ${{ contains(inputs.dependencies, 'node') }}
-      uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       with:
         package_json_file: ${{ inputs.working-directory }}package.json
     - name: Pin pnpm store directory
