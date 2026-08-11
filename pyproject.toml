@@ -54,7 +54,7 @@ dependencies = [
   "pyjwt==2.13.0",
   "pyrad==2.5.4",
   "pyroscope-io==1.2.1",
-  "python-kadmin-rs==0.7.2",
+  "python-kadmin-rs==0.7.3",
   "pyyaml==6.0.3",
   "requests-oauthlib==2.0.0",
   "scim2-filter-parser==0.7.0",
