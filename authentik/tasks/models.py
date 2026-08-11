@@ -76,9 +76,6 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 name="update_aggregated_status",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.Before,
-                # Logs live in TaskLog (see 0005_tasklog), so the status of a finished task
-                # is aggregated from its log rows. The table is referenced unqualified so
-                # that it resolves through the search path to the current tenant's schema.
                 func=f"""
                     IF NEW.state != '{TaskState.DONE.value}' THEN
                         NEW.aggregated_status := NEW.state;
