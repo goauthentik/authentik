@@ -7,6 +7,7 @@ import "#admin/providers/ssf/StreamTable";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/CodeMirror";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
@@ -152,7 +153,7 @@ export class SSFProviderViewPage extends AKElement {
                                       ${this.provider.oidcAuthProvidersObj.map((provider) => {
                                           return html`
                                               <li>
-                                                  <a href="#/core/providers/${provider.pk}">
+                                                  <a href=${toAdminInterface(`core/providers/${provider.pk}`)}>
                                                       ${provider.name}
                                                   </a>
                                               </li>

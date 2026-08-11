@@ -2,6 +2,7 @@ import "#admin/rbac/ObjectPermissionModal";
 import "#admin/stages/invitation/InvitationForm";
 import "#admin/stages/invitation/InvitationListLink";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -116,7 +117,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                       `
                     : null}`,
             html`<div>
-                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                    <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}>${item.createdBy.username}</a>
                 </div>
                 <small>${item.createdBy.name}</small>`,
             item.expires?.toLocaleString() || msg("-"),

@@ -5,6 +5,7 @@ import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
 import { PaginatedResponse, RowType, Table, TableColumn, Timestamp } from "#elements/table/Table";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventGeo, renderEventUser } from "#admin/events/utils";
@@ -46,7 +47,7 @@ export abstract class SimpleEventTable extends Table<Event> {
 
     row(item: EventWithContext): RowType[] {
         return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
+            html`<div><a href=${toAdminInterface(`events/log/${item.pk}`)}>${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             renderEventUser(item),
             [Timestamp(item.created), { style: "white-space: nowrap;" }],

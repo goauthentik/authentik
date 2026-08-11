@@ -9,6 +9,7 @@ import "#admin/users/UserResetEmailForm";
 import "#admin/users/UserRecoveryLinkForm";
 import "#components/ak-status-label";
 import "#elements/TreeView";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -307,7 +308,7 @@ export class UserListPage extends WithLicenseSummary(
                 alt=${msg(str`Avatar for ${displayName}`)}
             />`,
             html`<a
-                href="#/identity/users/${item.pk}"
+                href=${toAdminInterface(`identity/users/${item.pk}`)}
                 aria-label=${msg(str`View details for ${displayName}`)}
             >
                 <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>

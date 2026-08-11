@@ -5,6 +5,7 @@ import "#admin/sources/oauth/OAuthSourceForm";
 import "#admin/sources/plex/PlexSourceForm";
 import "#admin/sources/saml/SAMLSourceForm";
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -81,7 +82,7 @@ export class SourceListPage extends TablePage<Source> {
         }
 
         return [
-            html`<a href="#/core/sources/${item.slug}">
+            html`<a href=${toAdminInterface(`core/sources/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.enabled
                     ? nothing

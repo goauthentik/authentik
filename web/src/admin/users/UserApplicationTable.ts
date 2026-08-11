@@ -1,4 +1,5 @@
 import "#elements/AppIcon";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -41,13 +42,13 @@ export class UserApplicationTable extends Table<Application> {
     row(item: Application): SlottedTemplateResult[] {
         return [
             html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIconUrl)}></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             html`${item.group || msg("-")}`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,

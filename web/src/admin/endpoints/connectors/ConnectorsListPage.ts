@@ -3,6 +3,7 @@ import "#admin/endpoints/connectors/agent/AgentConnectorForm";
 import "#admin/endpoints/connectors/fleet/FleetConnectorForm";
 import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorForm";
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
@@ -47,7 +48,7 @@ export class ConnectorsListPage extends TablePage<Connector> {
 
     protected override row(item: Connector): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/connectors/${item.connectorUuid}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`endpoints/connectors/${item.connectorUuid}`)}>${item.name}</a>`,
             item.verboseName,
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.connectorUuid, item.verboseName)}

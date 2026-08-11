@@ -1,6 +1,7 @@
 import "#admin/flows/FlowForm";
 import "#admin/blueprints/BlueprintImportForm";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
@@ -87,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+            html`<a href=${toAdminInterface(`flow/flows/${item.slug}`)} class="pf-m-block">
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,

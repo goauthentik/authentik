@@ -1,4 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
@@ -85,7 +86,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
 
     row(item: SCIMProviderUser): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

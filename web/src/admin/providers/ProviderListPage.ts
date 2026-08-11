@@ -11,6 +11,7 @@ import "#admin/providers/scim/SCIMProviderForm";
 import "#admin/providers/ssf/SSFProviderFormPage";
 import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -88,7 +89,7 @@ export class ProviderListPage extends TablePage<Provider> {
         if (item.assignedApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application ")}
-                <a href="#/core/applications/${item.assignedApplicationSlug}"
+                <a href=${toAdminInterface(`core/applications/${item.assignedApplicationSlug}`)}
                     >${item.assignedApplicationName}</a
                 >`;
         }
@@ -96,7 +97,7 @@ export class ProviderListPage extends TablePage<Provider> {
         if (item.assignedBackchannelApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success" aria-hidden="true"></i>
                 ${msg("Assigned to application (backchannel) ")}
-                <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
+                <a href=${toAdminInterface(`core/applications/${item.assignedBackchannelApplicationSlug}`)}
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
@@ -107,7 +108,7 @@ export class ProviderListPage extends TablePage<Provider> {
 
     override row(item: Provider): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.pk}`)}>${item.name}</a>`,
             this.#rowApp(item),
             item.verboseName,
             html`<div class="ak-c-table__actions">

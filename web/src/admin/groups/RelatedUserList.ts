@@ -7,6 +7,7 @@ import "#admin/users/UserPasswordForm";
 import "#admin/users/UserResetEmailForm";
 import "#components/ak-status-label";
 import "#elements/buttons/ActionButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/buttons/Dropdown";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
@@ -273,7 +274,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const showImpersonate = this.canImpersonate && item.pk !== this.currentUser?.pk;
 
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.pk}`)}>
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,

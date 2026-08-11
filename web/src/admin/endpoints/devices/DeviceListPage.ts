@@ -1,4 +1,5 @@
 import "#elements/cards/AggregateCard";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#admin/endpoints/devices/DeviceAddHowTo";
 
@@ -125,7 +126,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/devices/${item.deviceUuid}">
+            html`<a href=${toAdminInterface(`endpoints/devices/${item.deviceUuid}`)}>
                 <div>${item.facts.data.network?.hostname || item.name}</div>
             </a>`,
             html`${item.facts.data.os?.name} ${item.facts.data.os?.version}`,

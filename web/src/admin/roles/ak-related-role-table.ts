@@ -2,6 +2,7 @@ import "#admin/roles/ak-role-form";
 import "#admin/users/ak-user-role-table";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
@@ -230,7 +231,7 @@ export class RelatedRoleTable extends Table<Role> {
         const inheritedTooltip = this.targetGroup
             ? msg("Inherited from parent group")
             : msg("Inherited from group");
-        const nameCell = html`<a href="#/identity/roles/${item.pk}">${item.name}</a> ${inherited
+        const nameCell = html`<a href=${toAdminInterface(`identity/roles/${item.pk}`)}>${item.name}</a> ${inherited
                 ? html`<pf-tooltip position="top" content=${inheritedTooltip}>
                       <span class="pf-c-label pf-m-outline pf-m-cyan">
                           <span class="pf-c-label__content">&nbsp;${msg("Inherited")}</span>

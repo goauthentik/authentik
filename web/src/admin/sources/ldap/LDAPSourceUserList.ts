@@ -1,4 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceUserForm";
 
@@ -78,7 +79,7 @@ export class LDAPSourceUserList extends Table<UserLDAPSourceConnection> {
 
     row(item: UserLDAPSourceConnection): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/users/${item.userObj.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.userObj.pk}`)}>
                 <div>${item.userObj.username}</div>
                 <small>${item.userObj.name}</small>
             </a>`,

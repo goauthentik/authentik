@@ -1,4 +1,5 @@
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "#admin/sources/ldap/LDAPSourceGroupForm";
 
@@ -72,7 +73,7 @@ export class LDAPSourceGroupList extends Table<GroupLDAPSourceConnection> {
 
     row(item: GroupLDAPSourceConnection): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.groupObj.pk}">
+            html`<a href=${toAdminInterface(`identity/groups/${item.groupObj.pk}`)}>
                 <div>${item.groupObj.name}</div>
             </a>`,
             html`<code>${item.identifier}</code>`,

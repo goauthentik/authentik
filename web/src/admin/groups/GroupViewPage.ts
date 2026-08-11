@@ -6,6 +6,7 @@ import "#admin/lifecycle/ObjectLifecyclePage";
 import "#components/ak-status-label";
 import "#admin/events/ObjectChangelog";
 import "#elements/CodeMirror";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
@@ -116,7 +117,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                             : html`<ul class="pf-c-list">
                                                   ${this.group.rolesObj.map((role) => {
                                                       return html`<li>
-                                                          <a href=${`#/identity/roles/${role.pk}`}
+                                                          <a href=${toAdminInterface(`identity/roles/${role.pk}`)}
                                                               >${role.name}
                                                           </a>
                                                       </li>`;
@@ -125,7 +126,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                       (role) => {
                                                           return html`<li>
                                                               <a
-                                                                  href=${`#/identity/roles/${role.pk}`}
+                                                                  href=${toAdminInterface(`identity/roles/${role.pk}`)}
                                                                   >${role.name}
                                                               </a>
                                                               <pf-tooltip

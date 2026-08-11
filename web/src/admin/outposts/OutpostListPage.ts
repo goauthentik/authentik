@@ -1,6 +1,7 @@
 import "#admin/outposts/OutpostForm";
 import "#admin/outposts/OutpostHealthSimple";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -80,7 +81,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>
-                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                    <a href=${toAdminInterface(`core/providers/${p.pk}`)}>${p.name}</a>
                 </li>`;
             })}
         </ul>`;
@@ -88,7 +89,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     protected row(item: Outpost): SlottedTemplateResult[] {
         return [
-            html`<a href="#/outpost/outposts/${item.pk}"
+            html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
                 ${(item.config.authentik_host ?? "") === ""
                     ? html`<ak-label color=${PFColor.Orange} compact>

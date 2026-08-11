@@ -1,5 +1,6 @@
 import "#admin/rbac/ak-rbac-role-object-permission-form";
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -111,7 +112,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     protected override row(item: RoleAssignedObjectPermission): SlottedTemplateResult[] {
-        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
+        const baseRow = [html` <a href=${toAdminInterface(`identity/roles/${item.rolePk}`)}>${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const assignedToModel = item.modelPermissions.some(
                 (uperm) => uperm.codename === perm.codename,

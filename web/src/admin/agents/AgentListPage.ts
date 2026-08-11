@@ -1,5 +1,6 @@
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
@@ -65,7 +66,7 @@ export class AgentListPage extends TablePage<Agent> {
             html`<div>${item.username}</div>
                 <small>${item.name}</small>`,
             item.parent
-                ? html`<a href="#/identity/users/${item.parent.pk}">
+                ? html`<a href=${toAdminInterface(`identity/users/${item.parent.pk}`)}>
                       <div>${item.parent.username}</div>
                       <small>${item.parent.name}</small>
                   </a>`

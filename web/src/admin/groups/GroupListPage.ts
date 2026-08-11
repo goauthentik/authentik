@@ -1,6 +1,7 @@
 import "#admin/groups/ak-group-form";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -78,7 +79,7 @@ export class GroupListPage extends TablePage<Group> {
     protected row(item: Group): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/groups/${item.pk}"
+                href=${toAdminInterface(`identity/groups/${item.pk}`)}
                 aria-label=${msg(str`View details of group "${item.name}"`)}
                 >${item.name}</a
             >`,

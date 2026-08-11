@@ -1,5 +1,6 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#elements/forms/ConfirmationForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
@@ -131,13 +132,13 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 icon=${ifPresent(item.metaIconUrl)}
                 .iconThemedUrls=${item.metaIconThemedUrls}
             ></ak-app-icon>`,
-            html`<a href="#/core/applications/${item.slug}">
+            html`<a href=${toAdminInterface(`core/applications/${item.slug}`)}>
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
             </a>`,
             item.group ? html`${item.group}` : html`<span aria-label="None">${msg("-")}</span>`,
             item.provider
-                ? html`<a href="#/core/providers/${item.providerObj?.pk}">
+                ? html`<a href=${toAdminInterface(`core/providers/${item.providerObj?.pk}`)}>
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,

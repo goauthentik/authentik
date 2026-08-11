@@ -1,6 +1,7 @@
 import "#admin/stages/register";
 import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -90,7 +91,7 @@ export class StageListPage extends TablePage<Stage> {
             html`<ul class="pf-c-list">
                 ${item.flowSet?.map((flow) => {
                     return html`<li>
-                        <a href="#/flow/flows/${flow.slug}">
+                        <a href=${toAdminInterface(`flow/flows/${flow.slug}`)}>
                             <code>${flow.slug}</code>
                         </a>
                     </li>`;

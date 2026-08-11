@@ -1,6 +1,7 @@
 import "#admin/users/ak-user-group-table";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/HorizontalFormElement";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -157,7 +158,7 @@ export class RelatedGroupList extends Table<Group> {
 
     row(item: Group): SlottedTemplateResult[] {
         return [
-            html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
+            html`<a href=${toAdminInterface(`identity/groups/${item.pk}`)}>${item.name}</a>`,
             html`<ak-status-label type="neutral" ?good=${item.isSuperuser}></ak-status-label>`,
             html`<button
                 class="pf-c-button pf-m-plain"

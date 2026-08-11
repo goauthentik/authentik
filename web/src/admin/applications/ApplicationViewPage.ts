@@ -8,6 +8,7 @@ import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
 import "#elements/AppIcon";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
@@ -162,7 +163,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             msg("Provider"),
                             this.application.providerObj
                                 ? html` <a
-                                      href="#/core/providers/${this.application.providerObj?.pk}"
+                                      href=${toAdminInterface(`core/providers/${this.application.providerObj?.pk}`)}
                                   >
                                       ${this.application.providerObj?.name}
                                       (${this.application.providerObj?.verboseName})
@@ -176,7 +177,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                       ${this.application.backchannelProvidersObj.map((provider) => {
                                           return html`
                                               <li>
-                                                  <a href="#/core/providers/${provider.pk}">
+                                                  <a href=${toAdminInterface(`core/providers/${provider.pk}`)}>
                                                       ${provider.name} (${provider.verboseName})
                                                   </a>
                                               </li>

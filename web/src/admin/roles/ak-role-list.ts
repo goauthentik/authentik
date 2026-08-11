@@ -1,5 +1,6 @@
 import "#admin/roles/ak-role-form";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -86,7 +87,7 @@ export class RoleListPage extends TablePage<Role> {
     row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/roles/${item.pk}"
+                href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 aria-label=${msg(str`View details of role "${item.name}"`)}
                 >${item.name}</a
             >`,

@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { aki } from "#common/api/client";
 import { PaginatedResponse } from "#common/api/responses";
@@ -121,7 +122,7 @@ export class AccessRequestListPage extends TablePage<GrantRequest> {
 
     protected row(item: GrantRequest): RowType[] {
         return [
-            html`<a href="#/identity/users/${item.createdBy.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}>
                 <div>${item.createdBy.username}</div>
                 <small>${item.createdBy.name}</small>
             </a>`,

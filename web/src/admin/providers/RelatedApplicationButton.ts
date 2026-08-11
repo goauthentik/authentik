@@ -1,5 +1,6 @@
 import "#admin/applications/ApplicationForm";
 import "#elements/Spinner";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/ModalForm";
 
 import { AKElement } from "#elements/Base";
@@ -27,13 +28,13 @@ export class RelatedApplicationButton extends AKElement {
 
     protected override render(): SlottedTemplateResult {
         if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
-            return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
+            return html`<a href=${toAdminInterface(`core/applications/${this.provider.assignedApplicationSlug}`)}>
                 ${this.provider.assignedApplicationName}
             </a>`;
         }
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
             return html`<a
-                href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
+                href=${toAdminInterface(`core/applications/${this.provider.assignedBackchannelApplicationSlug}`)}
             >
                 ${this.provider.assignedBackchannelApplicationName}
             </a>`;

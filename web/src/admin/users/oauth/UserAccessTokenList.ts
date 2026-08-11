@@ -1,5 +1,6 @@
 import "#components/ak-status-label";
 import "#elements/chips/Chip";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/chips/ChipGroup";
 import "#elements/forms/DeleteBulkForm";
 
@@ -82,7 +83,7 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
 
     row(item: TokenModel): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
+            html`<a href=${toAdminInterface(`core/providers/${item.provider?.pk}`)}> ${item.provider?.name} </a>`,
             html`<ak-status-label
                 type="warning"
                 ?good=${!item.revoked}

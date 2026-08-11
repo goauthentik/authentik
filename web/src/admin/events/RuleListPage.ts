@@ -7,6 +7,7 @@ import "#admin/policies/BoundPoliciesList";
 import "#admin/rbac/ObjectPermissionModal";
 import "#components/ak-status-label";
 import "#elements/buttons/SpinnerButton/index";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -91,7 +92,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
             html`${item.name}`,
             html`${severityToLabel(item.severity)}`,
             html`${item.destinationGroupObj
-                ? html`<a href="#/identity/groups/${item.destinationGroupObj.pk}"
+                ? html`<a href=${toAdminInterface(`identity/groups/${item.destinationGroupObj.pk}`)}
                       >${item.destinationGroupObj.name}</a
                   >`
                 : msg("-")}`,
