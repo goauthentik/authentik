@@ -12,6 +12,7 @@ import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
 import { IconEditButton, modalInvoker, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -87,7 +88,7 @@ export class FlowListPage extends TablePage<Flow> {
 
     row(item: Flow): SlottedTemplateResult[] {
         return [
-            html`<a href="#/flow/flows/${item.slug}" class="pf-m-block">
+            html`<a href=${toAdminInterface(`flow/flows/${item.slug}`)} class="pf-m-block">
                     <code>${item.slug}</code>
                 </a>
                 <small>${item.title}</small>`,
