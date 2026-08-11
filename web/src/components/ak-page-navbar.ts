@@ -7,6 +7,7 @@ import { resolveThemedUrl } from "#common/theme";
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
+import { toCurrentInterface } from "#elements/router/core/interfaces";
 import { isAdminRoute } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
@@ -180,7 +181,7 @@ export class AKPageNavbar
             [this.brandingLogo, this.brandingLogoThemedUrls, this.activeTheme],
             () =>
                 html`<aside role="presentation" class="brand">
-                    <a aria-label="${msg("Home")}" href="#/">
+                    <a aria-label="${msg("Home")}" href=${toCurrentInterface()}>
                         <div class="logo">
                             ${ThemedImage({
                                 src: this.brandingLogo,
