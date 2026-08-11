@@ -7,8 +7,10 @@ from typing import Any
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.utils.text import slugify
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.api.authentication import validate_auth
@@ -42,11 +44,9 @@ def _dcr_error(error: str, description: str, status: int = 400) -> JsonResponse:
     return JsonResponse({"error": error, "error_description": description}, status=status)
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class DynamicClientRegistrationView(View):
-    """RFC 7591 Dynamic Client Registration endpoint.
-
-    POST /application/o/<application_slug>/register/
-    """
+    """RFC 7591 Dynamic Client Registration endpoint."""
 
     dcr: OAuth2DynamicClientRegistration
     application: Application
