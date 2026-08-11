@@ -35,25 +35,13 @@ class MatchFailureReason(models.TextChoices):
     MISSING_PROPERTY = "missing_property", _("Missing property")
 
 
-class MatchFailure(Exception):
+@dataclass(frozen=True)
+class MatchFailure:
     """Details about a source matching failure."""
 
     reason: MatchFailureReason
     property: str
     source_slug: str
-
-    def __init__(self, reason: MatchFailureReason, property: str, source_slug: str) -> None:
-        self.reason = reason
-        self.property = property
-        self.source_slug = source_slug
-
-    def __str__(self):
-        return (
-            f"Failed to match property {self.property}: {self.reason} (source {self.source_slug})"
-        )
-
-    def __repr__(self):
-        return super().__str__()
 
 
 @dataclass
@@ -73,6 +61,7 @@ class SourceMatcher:
         self.source = source
         self.user_connection_type = user_connection_type
         self.group_connection_type = group_connection_type
+        self.failure: MatchFailure | None = None
         self._logger = get_logger().bind(source=self.source)
 
     def get_action(
@@ -114,12 +103,15 @@ class SourceMatcher:
             property = matchable_property.property
             if matching_mode in [matchable_property.link_mode, matchable_property.deny_mode]:
                 if not properties.get(property, None):
+                    self.failure = MatchFailure(
+                        reason=MatchFailureReason.MISSING_PROPERTY,
+                        property=property,
+                        source_slug=self.source.slug,
+                    )
                     self._logger.warning(
                         "Refusing to use none property", identifier=identifier, property=property
                     )
-                    raise MatchFailure(
-                        MatchFailureReason.MISSING_PROPERTY, property, source_slug=self.source.slug
-                    )
+                    return Action.DENY, None
                 query_args = {
                     f"{property}__exact": properties[property],
                 }
