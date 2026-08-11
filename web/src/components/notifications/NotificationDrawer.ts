@@ -3,13 +3,13 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { isAPIResultReady } from "#common/api/responses";
 import { pluckErrorDetail } from "#common/errors/network";
-import { globalAK } from "#common/global";
 import { actionToLabel, severityToLevel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 
 import { AKElement } from "#elements/Base";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { WithSession } from "#elements/mixins/session";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -68,8 +68,6 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
         `,
     ];
 
-    #APIBase = globalAK().api.base;
-
     //#region Rendering
 
     protected renderHyperlink(item: Notification) {
@@ -103,7 +101,7 @@ export class NotificationDrawer extends WithNotifications(WithSession(AKElement)
                 html`
                     <a
                         class="pf-c-dropdown__toggle pf-m-plain"
-                        href="${this.#APIBase}if/admin/#/events/log/${item.event?.pk}"
+                        href=${toAdminInterface(`events/log/${item.event?.pk}`)}
                         aria-label=${msg(str`View details for ${label}`)}
                     >
                         <pf-tooltip position="top" content=${msg("Show details")}>
