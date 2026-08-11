@@ -26,7 +26,7 @@ The application dashboard displays the applications available to the user. Users
 
 Unlike [external users](./external-users.md), internal users do not need to be directed to the settings page through a separate link. They can navigate to it from the application dashboard.
 
-Internal users can also acess the user settings page directly at:
+Internal users can also access the user settings page directly at:
 
 ```text
 https://authentik.company/if/user/#/settings

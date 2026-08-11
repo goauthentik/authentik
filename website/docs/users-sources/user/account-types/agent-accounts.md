@@ -43,7 +43,7 @@ Users who are not the parent can manage an agent only if they have the required 
 Agent accounts can be created in two ways:
 
 1. [**User interface (Self-service)**](#user-interface-self-service): Users with the required permissions can create their own agents via the user interface.
-2. [**authentik API**](#authentik-api): Agents can be created programatically via the authentik API.
+2. [**authentik API**](#authentik-api): Agents can be created programmatically via the authentik API.
 
 ### User interface (Self-Service)
 
