@@ -90,6 +90,17 @@ const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
+    /**
+     * Anchor `[dir]` at the monorepo root rather than letting ESBuild infer it
+     * from the entry points.
+     *
+     * Assets pulled from a workspace package outside `web/` (the RedHat faces in
+     * `@goauthentik/fonts`) would otherwise resolve to a `..` segment, which
+     * ESBuild sanitizes to `_.._`. Go's `//go:embed dist/*` in `static_outpost.go`
+     * silently skips any path segment starting with `_`, so those fonts would be
+     * missing from the embedded outpost build.
+     */
+    outbase: MonoRepoRoot,
     outdir: DistDirectory,
     bundle: true,
     write: true,

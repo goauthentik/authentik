@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 00:31+0000\n"
+"POT-Creation-Date: 2026-08-07 01:11+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Azharul Haque, 2026\n"
 "Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
@@ -128,6 +128,11 @@ msgstr "পাথ অথবা কনটেন্ট এর যেকোনো �
 #, python-brace-format
 msgid "User lacks permission to create {model}"
 msgstr "{model} তৈরি করার অনুমতি ব্যবহারকারীর নেই"
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "Invalid blueprint file: {exc}"
+msgstr "অবৈধ ব্লুপ্রিন্ট ফাইল: {exc}"
 
 #: authentik/blueprints/models.py
 msgid "Managed by authentik"
@@ -1045,6 +1050,30 @@ msgstr "এন্ডপয়েন্ট স্টেজসমূহ"
 #: authentik/endpoints/tasks.py
 msgid "Sync endpoints."
 msgstr "এন্ডপয়েন্ট সিঙ্ক করুন।"
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr "আপনি শুধুমাত্র নিজের জন্য এজেন্ট তৈরি করতে পারবেন।"
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr "সেলফ-সার্ভিস এজেন্ট তৈরির সুবিধা সক্রিয় নেই।"
+
+#: authentik/enterprise/agents/api.py
+msgid "Only internal user accounts can create agents."
+msgstr "শুধুমাত্র অভ্যন্তরীণ ব্যবহারকারী অ্যাকাউন্ট এজেন্ট তৈরি করতে পারবে।"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr "এজেন্ট"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr "এজেন্টসমূহ"
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
+msgstr "একটি এজেন্ট ব্যবহারকারী যোগ করুন (সেলফ-সার্ভিস)"
 
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
