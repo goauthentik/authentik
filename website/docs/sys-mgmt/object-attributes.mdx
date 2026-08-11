@@ -79,18 +79,18 @@ Disabling a definition removes the field from forms and stops Regex and uniquene
 **Example**: SAML property mapping:
 
 ```python
-return user.attributes.get("given_name", user.name)
+return ak_obj_attr(request.user, "given_name", user.name)
 ```
 
 **Example**: Nested attribute value in an OAuth2 scope mapping:
 
 ```python
 return {
-    "locale": user.attributes.get("settings", {}).get("locale", "en-US"),
+    "locale": ak_obj_attr(request.user, "settings.locale", "en-US")
 }
 ```
 
-Always use `.get()` with a fallback. An object attribute definition does not guarantee that every object has a value for that key.
+Always use `ak_obj_attr()` with a fallback (e.g., "en-US"). An object attribute definition does not guarantee that every object has a value for that key.
 
 ## Validation
 
@@ -104,6 +104,6 @@ Creating an object attribute definition does not validate values already stored 
 
 ## Considerations and limitations
 
-- Array values are not currently supported. Only Text, Number, or Boolean values are supported. Support for array values is tracked in [this issue](https://github.com/goauthentik/authentik/issues/24250).
+- Array values are not currently supported for object attributes, whether set through the UI, blueprints, or direct API calls to the affected objects. Only Text, Number, or Boolean values are supported. Support for array values is tracked in [this issue](https://github.com/goauthentik/authentik/issues/24250).
 - Definitions are metadata. They do not create database constraints and do not migrate existing values.
 - Validation is applied on save, not retroactively.
