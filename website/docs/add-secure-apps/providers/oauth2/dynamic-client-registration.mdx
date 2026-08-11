@@ -2,7 +2,6 @@
 title: Dynamic Client Registration (DCR)
 description: "Allow authorized clients to dynamically register OAuth2/OIDC applications in authentik"
 sidebar_label: Dynamic Client Registration (DCR)
-authentik_enterprise: true
 authentik_version: "2026.8"
 ---
 
@@ -17,14 +16,12 @@ authentik implements dynamic client registration as defined by:
 - [OpenID Connect Dynamic Client Registration 1.0](https://openid.net/specs/openid-connect-registration-1_0.html)
 - [RFC 7591: OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591)
 
-authentik's DCR implementation does not provide RFC 7592 client-management endpoints for dynamically updating or deleting a client with a registration access token.
-
 ## Requirements and limitations
 
-- The user associated with the access token must be authorized by the applicable policies and bindings.
+- The user associated with the access token must be authorized by the policies and bindings on the application that the parent provider belongs to.
 - DCR creates a new application and provider for every successful registration.
 - Configuration is not inherited dynamically from the parent provider. Settings from the parent provider are copied to a dynamically created provider when it is created. Subsequent changes to the parent provider do not automatically update providers that were already created through DCR.
-- The registration implementation does not provide RFC 7592 client-management endpoints for dynamically updating or deleting a client with a registration access token.
+- authentik's DCR implementation does not provide RFC 7592 client-management endpoints for dynamically updating or deleting a client with a registration access token.
 - Dynamically registered application and provider pairs remain stored until an administrator deletes them or an external automation process deletes them using authentik's APIs.
 
 ## Configure DCR
@@ -38,8 +35,8 @@ To enable DCR on an OAuth2/OIDC provider:
 3. Open the **Dynamic Client Registration** tab, click **Enable Dynamic Client Registration**, and set the following fields:
     - **Default application group** _(optional)_: Assign newly created dynamic applications to an application group, to group them in the application dashboard.
     - **Override authorization flow** _(optional)_: Specify an authorization flow instead for dynamic applications rather than inheriting the parent provider's.
-    - **Override invalidation flow** _(optional)_: Specify an invalidation flow instead for dynamic applications rather than inheriting the parent provider's.
-    - **Override property mappings**: Specify a set of scope mappings for the dynamically generated provider rather than inheriting the parent provider's.
+    - **Override invalidation flow** _(optional)_: Specify an invalidation flow instead for dynamic applications rather than copying the parent provider's.
+    - **Override property mappings**: Specify a set of scope mappings for the dynamically generated provider rather than copying the parent provider's.
     - Under **Advanced settings**:
         - **Access token validity**: Set the maximum validity period for access tokens.
         - **Refresh token validity**: Set the maximum validity period for refresh tokens.
@@ -184,7 +181,7 @@ For a confidential client, the response includes the generated client secret:
     "redirect_uris": ["https://app.example.com/callback"],
     "grant_types": ["authorization_code", "refresh_token"],
     "response_types": ["code"],
-    "scope": "openid profile email",
+    "scope": "openid profile email offline_access",
     "token_endpoint_auth_method": "client_secret_basic"
 }
 ```
@@ -238,3 +235,4 @@ DCR can create applications without an administrator manually reviewing each req
 - Use exact redirect URIs wherever possible.
 - Protect DCR access tokens like administrative credentials.
 - Monitor registration volume and remove unused registrations.
+- Optionally set a policy on applications that checks whether a given request is a DCR request and apply stricter limits.
