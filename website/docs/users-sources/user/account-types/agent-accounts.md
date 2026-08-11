@@ -61,7 +61,13 @@ When the setting is enabled, an authenticated user can create an agent for thems
 
 #### Create an agent via the user interface
 
-[TODO] Add instructions for doing this from user ui and admin ui
+To create an agent:
+
+1. Log in to authentik as a user with the required permissions and open the user interface.
+2. Open the **Agents** page and click **Create Agent**.
+3. Optionally provide a **Label** for the agent and click **Create**.
+4. The token for the agent is displayed. Securely store this token because it will not be displayed again.
+   This token can now be used to authenticate as the agent.
 
 ### authentik API
 
@@ -217,7 +223,7 @@ Users with the `authentik_core.view_token_key` permission can retrieve the token
 
 Agent tokens are managed in the same token system as other authentik tokens. See [Service accounts](./) for general token-management information.
 
-[TODO] How can user retrieve token from UI
+Users can retrieve their agents' tokens from the **Agents** page by clicking the **Copy token** icon next to the agent.
 
 ## Manage agent accounts
 
@@ -250,8 +256,6 @@ Deleting an agent deletes its associated API token. Requests authenticated with 
 
 Deleting the parent user does not delete the agent. The agent remains as a parentless service account.
 
-[TODO] Confirm that there's no automatic handling of parentless agent accounts
-
 ## Audit events
 
 Actions performed by an agent are attributed to the agent's parent user in audit events/
@@ -264,8 +268,6 @@ Agent audit data identifies:
 A regular service account that is not an agent does not receive parent-user attribution.
 
 Review [Events](../events/) when investigating agent activity or validating that an integration has the expected access.
-
-[TODO] Give example of event
 
 ## Troubleshooting
 
