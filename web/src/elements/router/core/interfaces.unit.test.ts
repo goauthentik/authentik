@@ -2,6 +2,7 @@ import { initRouter, resetRouterConfig } from "./config.js";
 import {
     formatInterfacePrefix,
     toAdminInterface,
+    toCurrentInterface,
     toFlowInterface,
     toUserInterface,
 } from "./interfaces.js";
@@ -34,6 +35,12 @@ describe("interface href builders", () => {
             initRouter({ base: "/", interfaceName: "user" });
 
             expect(toUserInterface()).toBe("/if/user/");
+        });
+
+        it("builds a URL into the currently-configured interface", () => {
+            initRouter({ base: "/", interfaceName: "admin" });
+
+            expect(toCurrentInterface("identity/users")).toBe("/if/admin/identity/users");
         });
 
         it("builds a flow URL with a trailing slash", () => {
