@@ -15,7 +15,7 @@ authentik has three service account types:
 
 - **User-created service accounts**: accounts created by administrators for external systems or automation. These accounts appear under **Directory** > **Users** with the `Service account` user type.
 - **Internal service accounts**: accounts created and managed by authentik for internal components, such as outpost communication. These accounts cannot be created manually, converted to another user type, or edited like regular users.
-- **Agent accounts**: accounts that act on behalf of a parent user. See [Agent accounts](./agent-accounts.md)
+- **Agent accounts**: accounts that act on behalf of a parent user. See [Agent accounts](./agent-accounts.md).
 
 ## How service accounts work
 

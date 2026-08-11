@@ -27,9 +27,9 @@ To allow an external user to change their password, enroll an MFA device, or per
 
 Use an external user account for:
 
-- Customers or other users in a B2C deployment.
+- Customers or other users in a buisness-to-consumer (B2C) deployment.
 - External consultants, contractors, or volunteers.
 - Users who need access to a single application.
 - Users who should not see the application dashboard or other available applications.
 
-Use an [internal user](./internal-users.md) when the user needs to access the application dashboard, launch multiple applications, or access their user settings from the application dashboard.
+Use an [internal user](./internal-users.md) when someone needs access to the application dashboard to launch multiple applications or manage their user settings from the user interface.

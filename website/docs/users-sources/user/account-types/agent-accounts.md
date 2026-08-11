@@ -1,11 +1,17 @@
 ---
 title: Agent accounts
 sidebar_position: 4
+authentik_enterprise: true
+authentik_version: "2026.8"
 ---
 
 Agent accounts are service accounts that act on behalf of a parent user when calling the authentik API. Use them for automation, integrations, and other machine identities that need delegated access.
 
 For an overview of all account types, see [Account types](./index.mdx).
+
+:::Agent accounts vs the authentik Agent
+Agent accounts are completely separate from the authentik Agent. The authentik Agent is a deployable component on Windows, Linux, and macOS devices for device integration with authentik. For more information, see [authentik Agent](../../../endpoint-devices/authentik-agent/index.mdx).
+:::
 
 ## About agent accounts
 
