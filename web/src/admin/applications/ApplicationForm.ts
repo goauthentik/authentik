@@ -19,7 +19,8 @@ import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import { navigate } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { navigate } from "#elements/router/core/navigation";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
@@ -86,7 +87,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         if (currentSlug && currentSlug !== nextSlug) {
             this.instancePk = nextSlug;
-            navigate(`/core/applications/${nextSlug}`);
+            navigate(toAdminInterface(`core/applications/${nextSlug}`));
         }
 
         return app;
