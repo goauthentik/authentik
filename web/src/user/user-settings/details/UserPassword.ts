@@ -1,7 +1,7 @@
 import { AndNext } from "#common/api/config";
-import { globalAK } from "#common/global";
 
 import { AKElement } from "#elements/Base";
+import { toUserInterface } from "#elements/router/core/interfaces";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, TemplateResult } from "lit";
@@ -28,7 +28,7 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
+                        toUserInterface("settings", { page: "page-details" }),
                     )}"
                     class="pf-c-button pf-m-primary"
                 >
