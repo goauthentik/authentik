@@ -1,4 +1,4 @@
-import { Comparator } from "#common/collections";
+import type { Comparator } from "#common/collections";
 import { dateToUTC } from "#common/temporal";
 
 import { isControlElement } from "#elements/ControlElement";
