@@ -17,6 +17,7 @@ import { EVENT_REFRESH } from "#common/constants";
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { setPageDetails } from "#components/ak-page-navbar";
@@ -116,7 +117,10 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                             : html`<ul class="pf-c-list">
                                                   ${this.group.rolesObj.map((role) => {
                                                       return html`<li>
-                                                          <a href=${`#/identity/roles/${role.pk}`}
+                                                          <a
+                                                              href=${toAdminInterface(
+                                                                  `identity/roles/${role.pk}`,
+                                                              )}
                                                               >${role.name}
                                                           </a>
                                                       </li>`;
@@ -125,7 +129,9 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
                                                       (role) => {
                                                           return html`<li>
                                                               <a
-                                                                  href=${`#/identity/roles/${role.pk}`}
+                                                                  href=${toAdminInterface(
+                                                                      `identity/roles/${role.pk}`,
+                                                                  )}
                                                                   >${role.name}
                                                               </a>
                                                               <pf-tooltip

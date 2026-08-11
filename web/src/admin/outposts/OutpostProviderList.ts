@@ -3,6 +3,7 @@ import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { StaticTable } from "#elements/table/StaticTable";
 import { TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -24,11 +25,13 @@ export class OutpostsProviderList extends StaticTable<Provider> {
 
     row(item: Provider): SlottedTemplateResult[] {
         return [
-            html`<a href="#/core/providers/${item.pk}">
+            html`<a href=${toAdminInterface(`core/providers/${item.pk}`)}>
                 <div>${item.name}</div>
             </a>`,
             item.assignedApplicationName
-                ? html`<a href="#/core/applications/${item.assignedApplicationSlug}">
+                ? html`<a
+                      href=${toAdminInterface(`core/applications/${item.assignedApplicationSlug}`)}
+                  >
                       <div>${item.assignedApplicationName}</div>
                   </a>`
                 : nothing,
