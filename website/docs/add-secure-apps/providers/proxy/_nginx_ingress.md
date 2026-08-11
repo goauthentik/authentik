@@ -37,12 +37,16 @@ metadata:
         nginx.ingress.kubernetes.io/auth-url: |-
             http://ak-outpost-example.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
         # If you're using domain-level auth, use the authentication URL instead of the application URL
+        # Use the application host configured as the proxy provider's External host instead of a request-derived
+        # host variable. This ensures that the host remains available for HTTP/3 requests and preserves configured ports.
         nginx.ingress.kubernetes.io/auth-signin: |-
-            https://app.company/outpost.goauthentik.io/start?rd=$scheme://$host$escaped_request_uri
+            https://app.company/outpost.goauthentik.io/start?rd=$scheme://app.company$escaped_request_uri
         nginx.ingress.kubernetes.io/auth-response-headers: |-
             Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-entitlements,X-authentik-email,X-authentik-name,X-authentik-uid
             # Add the 'authorization' header to auth-response-headers if you need proxy providers which
             # send a custom HTTP-Basic Authentication header based on values from authentik
         nginx.ingress.kubernetes.io/auth-snippet: |
-            proxy_set_header X-Forwarded-Host $http_host;
+            # These values must match the proxy provider's External host, including any non-standard port.
+            proxy_set_header X-Original-URL $scheme://app.company$request_uri;
+            proxy_set_header X-Forwarded-Host app.company;
 ```
