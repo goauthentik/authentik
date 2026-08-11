@@ -213,13 +213,11 @@ The agent's expiration and the token's expiration are separate:
 - The API token created for an agent always expires using the default token duration.
 - On expiry the token is deleted and not rotated unlike the other service accoung tokens.
 
-Users with the `authentik_core.view_token_key` permission can retrieve the token value after creation. To revoke an agent token, delete the token. Deleting the agent also deletes its token.
+Agent tokens are managed in the same token system as other authentik tokens. See [Service accounts](./service-accounts.md) for general token-management information.
 
-Agent tokens are managed in the same token system as other authentik tokens. See [Service accounts](./) for general token-management information.
+Users with the `Can view token` permission can retrieve their agents' tokens from the **Agents** page by clicking the **Copy token** icon next to the agent.
 
-Users can retrieve their agents' tokens from the **Agents** page by clicking the **Copy token** icon next to the agent.
-
-## Manage agent accounts
+## Agent API operations
 
 The agent API supports the following operations:
 
