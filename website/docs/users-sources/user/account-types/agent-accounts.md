@@ -15,7 +15,7 @@ Agent accounts are completely separate from the authentik Agent. The authentik A
 
 ## About agent accounts
 
-An agent account is a machine identity with:
+An agent account is a non-human identity with:
 
 - A generated username.
 - A parent user.
@@ -129,7 +129,7 @@ The token value is returned when the agent is created. Store it securely before 
 
 ## Policy behavior
 
-An agent can inherit policy access from its parent in one of three ways. You select the policy behavior when you create the agent; you cannot change it afterwards.
+An agent can inherit policy access from its parent in one of three ways. You select the policy behavior when you create the agent; you cannot change it afterwards. For [self-service agents](#create-an-agent-via-the-user-interface-self-service), policy behavior is not configurable and defaults to `NONE`.
 
 ### Mirror the parent (`MIRROR`)
 
@@ -162,7 +162,7 @@ Use `NONE` when an agent must have independent policy access.
 Use `MIRROR` unless you specifically need a policy snapshot or independent policy access. `COPY` does not automatically update subsequent changes to the parent user's policy bindings.
 :::
 
-## Grant access to an agent
+## Grant access for an agent
 
 Agent accounts start with no special access beyond their ability to authenticate. Grant access through the same mechanisms used for other service accounts and users:
 
@@ -191,7 +191,7 @@ curl \
   https://authentik.company/api/v3/core/users/me/
 ```
 
-The request is authenticated as the agent. authentik evaluates the agent's access according to its policy behavior and assigned permissions.
+The request is authenticated as the agent. authentik authorizes the request using the agent's assigned permissions and any endpoint-specific or object-level access checks. The agent’s policy behavior does not apply to direct API endpoint access.
 
 :::warning Handling agent tokens
 Treat an agent token as a credential. Store it in a secret manager or another protected secret store. Do not commit it to source control or include it in logs.
@@ -257,7 +257,7 @@ Agent audit data identifies:
 - The actor as an agent.
 - The user on whose behalf the agent acted.
 
-Service accounts without a parent user are attributed to themselves. 
+Service accounts without a parent user are attributed to themselves.
 
 Review [Events](../../../sys-mgmt/events/index.md) when investigating agent activity or validating that an integration has the expected access.
 
