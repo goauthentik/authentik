@@ -4,44 +4,6 @@ import pgtrigger.compiler
 import pgtrigger.migrations
 from django.db import migrations
 
-# Number of tasks to re-aggregate per statement
-BATCH_SIZE = 1000
-
-
-def backfill_aggregated_status(apps, schema_editor):
-    """Recompute aggregated_status for finished tasks that logged a warning or an error.
-
-    Until the trigger above was updated, those tasks were left on `done`, as their logs
-    are no longer stored in the `_messages` field the old trigger read. Updating a row is
-    enough to make the new trigger recompute it, so the query only needs to select the
-    affected tasks. Rows drop out of the selection once updated, which ends the loop.
-    """
-    with schema_editor.connection.cursor() as cursor:
-        while True:
-            cursor.execute(
-                """
-                UPDATE authentik_tasks_task
-                SET aggregated_status = aggregated_status
-                WHERE message_id IN (
-                    SELECT task.message_id
-                    FROM authentik_tasks_task task
-                    WHERE task.state = 'done'
-                      AND task.aggregated_status = 'done'
-                      AND EXISTS (
-                          SELECT 1
-                          FROM authentik_tasks_tasklog log
-                          WHERE log.task_id = task.message_id
-                            AND NOT log.previous
-                            AND log.log_level IN ('warning', 'error')
-                      )
-                    LIMIT %s
-                )
-                """,
-                [BATCH_SIZE],
-            )
-            if cursor.rowcount < BATCH_SIZE:
-                break
-
 
 class Migration(migrations.Migration):
 
@@ -68,5 +30,4 @@ class Migration(migrations.Migration):
                 ),
             ),
         ),
-        migrations.RunPython(backfill_aggregated_status, migrations.RunPython.noop),
     ]
