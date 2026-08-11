@@ -12,7 +12,7 @@ test.describe("Invitation form", () => {
         invitationNames.set(testId, `invite-${seed}`);
 
         await test.step("Authenticate", () =>
-            session.login({ to: "/if/admin/#/flow/stages/invitations" }));
+            session.login({ to: "/if/admin/flow/stages/invitations" }));
     });
 
     test.afterEach("Verify invitation was created", async ({ form }, { testId }) => {

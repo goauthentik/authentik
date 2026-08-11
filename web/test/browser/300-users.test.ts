@@ -21,7 +21,7 @@ test.describe("Users", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/users",
+                to: "/if/admin/identity/users",
             });
         });
     });
@@ -134,7 +134,7 @@ test.describe("Impersonation", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/users",
+                to: "/if/admin/identity/users",
             });
         });
     });

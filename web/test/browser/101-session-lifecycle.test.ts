@@ -25,7 +25,7 @@ test.describe("Session Lifecycle", () => {
 
             await test.step("Authenticate", async () =>
                 session.login({
-                    to: "/if/admin/#/flow/stages",
+                    to: "/if/admin/flow/stages",
                     page,
                 }));
 
