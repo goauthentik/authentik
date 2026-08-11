@@ -14,7 +14,7 @@ import { EVENT_REFRESH } from "#common/constants";
 
 import type { Replacer } from "#elements/ak-mdx/index";
 import { AKElement } from "#elements/Base";
-import { getURLParam } from "#elements/router/RouteMatch";
+import { getSearchParam } from "#elements/router/core/search-params";
 import { formatSlug } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -151,7 +151,7 @@ export class ProxyProviderViewPage extends AKElement {
             (input: string): string => {
                 // The generated config is pretty unreliable currently so
                 // put it behind a flag
-                if (!getURLParam("generatedConfig", false)) {
+                if (!getSearchParam("generatedConfig", false)) {
                     return input;
                 }
                 if (!this.provider) {
