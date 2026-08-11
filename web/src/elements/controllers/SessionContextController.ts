@@ -1,6 +1,5 @@
 import { aki } from "#common/api/client";
 import { type APIResult, isAPIResultReady } from "#common/api/responses";
-import { globalAK } from "#common/global";
 import { applyThemeChoice, formatColorScheme } from "#common/theme";
 import { createUIConfig, DefaultUIConfig } from "#common/ui/config";
 import { autoDetectLanguage } from "#common/ui/locale/utils";
@@ -12,6 +11,7 @@ import {
     PaletteCommandNamespace,
 } from "#elements/commands/shared";
 import { ReactiveContextController } from "#elements/controllers/ReactiveContextController";
+import { toAdminInterface, toUserInterface } from "#elements/router/core/interfaces";
 import { AKConfigMixin, kAKConfig } from "#elements/mixins/config";
 import { kAKLocale, type LocaleMixin } from "#elements/mixins/locale";
 import {
@@ -115,7 +115,6 @@ export class SessionContextController extends ReactiveContextController<APIResul
             return;
         }
 
-        const base = globalAK().api.base;
         const group = msg("Session");
         const weight = 0.5;
 
@@ -128,7 +127,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/user/#/settings`);
+                    window.location.assign(toUserInterface("settings"));
                 },
             },
         ];
@@ -168,7 +167,7 @@ export class SessionContextController extends ReactiveContextController<APIResul
                 group,
                 weight,
                 action: () => {
-                    window.location.assign(`${base}if/admin/`);
+                    window.location.assign(toAdminInterface());
                 },
             });
         }
