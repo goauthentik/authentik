@@ -1,7 +1,7 @@
-import { docLink, globalAK } from "#common/global";
+import { docLink } from "#common/global";
 
 import { AKElement } from "#elements/Base";
-import { paramURL } from "#elements/router/RouterOutlet";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -45,15 +45,14 @@ export class LibraryPageApplicationEmptyList
     public admin = false;
 
     #renderNewAppButton() {
-        const href = paramURL("/core/applications", {
-            createWizard: true,
-        });
+        // The admin interface is still hash-routed: keep the legacy hash format.
+        // The admin flip's shim will translate it, so this URL never breaks.
+        const params = encodeURIComponent(JSON.stringify({ createWizard: true }));
+        const href = `${toAdminInterface()}#/core/applications;${params}`;
+
         return html`
             <div class="pf-u-pt-lg">
-                <a
-                    aria-disabled="false"
-                    class="cta pf-c-button pf-m-secondary"
-                    href="${globalAK().api.base}if/admin/${href}"
+                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
