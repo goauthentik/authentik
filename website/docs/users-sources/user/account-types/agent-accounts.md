@@ -257,7 +257,7 @@ Agent audit data identifies:
 - The actor as an agent.
 - The user on whose behalf the agent acted.
 
-A regular service account that is not an agent does not receive parent-user attribution.
+Service accounts without a parent user are attributed to themselves. 
 
 Review [Events](../../../sys-mgmt/events/index.md) when investigating agent activity or validating that an integration has the expected access.
 
