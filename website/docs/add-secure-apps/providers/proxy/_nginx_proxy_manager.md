@@ -58,7 +58,7 @@ location /outpost.goauthentik.io {
     # Note: ensure the Host header matches your external authentik URL:
     proxy_set_header        Host $host;
 
-    proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
+    proxy_set_header        X-Original-URL $scheme://$host$request_uri;
     add_header              Set-Cookie $auth_cookie;
     auth_request_set        $auth_cookie $upstream_http_set_cookie;
     proxy_pass_request_body off;
@@ -70,8 +70,8 @@ location /outpost.goauthentik.io {
 location @goauthentik_proxy_signin {
     internal;
     add_header Set-Cookie $auth_cookie;
-    return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+    return 302 /outpost.goauthentik.io/start?rd=$scheme://$host$request_uri;
     # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
-    # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+    # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$host$request_uri;
 }
 ```
