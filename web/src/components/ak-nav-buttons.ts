@@ -132,7 +132,7 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
             <a
                 class="pf-c-button pf-m-plain"
                 type="button"
-                href="${globalAK().api.base}if/user/#/settings"
+                href="${globalAK().api.base}if/user/settings"
                 aria-label=${msg("Settings")}
             >
                 <pf-tooltip position="top" content=${msg("Settings")}>
