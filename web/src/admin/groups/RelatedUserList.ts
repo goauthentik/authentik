@@ -21,6 +21,7 @@ import { IconEditButton, renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -273,7 +274,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
         const showImpersonate = this.canImpersonate && item.pk !== this.currentUser?.pk;
 
         return [
-            html`<a href="#/identity/users/${item.pk}">
+            html`<a href=${toAdminInterface(`identity/users/${item.pk}`)}>
                 <div>${item.username}</div>
                 <small>${item.name}</small>
             </a>`,

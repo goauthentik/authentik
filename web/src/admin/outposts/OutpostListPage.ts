@@ -9,6 +9,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -80,7 +81,7 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`<ul>
             ${item.providersObj?.map((p) => {
                 return html`<li>
-                    <a href="#/core/providers/${p.pk}">${p.name}</a>
+                    <a href=${toAdminInterface(`core/providers/${p.pk}`)}>${p.name}</a>
                 </li>`;
             })}
         </ul>`;
@@ -88,7 +89,7 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     protected row(item: Outpost): SlottedTemplateResult[] {
         return [
-            html`<a href="#/outpost/outposts/${item.pk}"
+            html`<a href=${toAdminInterface(`outpost/outposts/${item.pk}`)}
                 ><div>${item.name}</div>
                 ${(item.config.authentik_host ?? "") === ""
                     ? html`<ak-label color=${PFColor.Orange} compact>

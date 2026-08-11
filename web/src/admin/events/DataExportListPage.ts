@@ -10,6 +10,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { aki } from "#common/api/client";
 
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -79,7 +80,7 @@ export class DataExportListPage extends TablePage<DataExport> {
     row(item: DataExport): SlottedTemplateResult[] {
         return [
             html`${item.contentType.verboseNamePlural}`,
-            html`<a href="#/identity/users/${item.requestedBy.pk}"
+            html`<a href=${toAdminInterface(`identity/users/${item.requestedBy.pk}`)}
                 >${item.requestedBy.username}</a
             >`,
             Timestamp(item.requestedOn),
@@ -124,8 +125,8 @@ export class DataExportListPage extends TablePage<DataExport> {
                 ><span
                     >${msg(
                         html`To create a data export, navigate to
-                            <a href="#/identity/users">Directory > Users</a> or to
-                            <a href="#/events/log">Events > Logs</a>.`,
+                            <a href=${toAdminInterface("identity/users")}>Directory > Users</a> or
+                            to <a href=${toAdminInterface("events/log")}>Events > Logs</a>.`,
                     )}</span
                 >
             </ak-empty-state>`,

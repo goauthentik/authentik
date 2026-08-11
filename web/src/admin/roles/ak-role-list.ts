@@ -8,6 +8,7 @@ import "#elements/table/ak-table-filter-select";
 import { aki } from "#common/api/client";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
@@ -86,7 +87,7 @@ export class RoleListPage extends TablePage<Role> {
     row(item: Role): SlottedTemplateResult[] {
         return [
             html`<a
-                href="#/identity/roles/${item.pk}"
+                href=${toAdminInterface(`identity/roles/${item.pk}`)}
                 aria-label=${msg(str`View details of role "${item.name}"`)}
                 >${item.name}</a
             >`,

@@ -19,6 +19,7 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { AKElement } from "#elements/Base";
 import { modalInvoker } from "#elements/dialogs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 
 import { setPageDetails } from "#components/ak-page-navbar";
 import renderDescriptionList from "#components/DescriptionList";
@@ -162,7 +163,9 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                             msg("Provider"),
                             this.application.providerObj
                                 ? html` <a
-                                      href="#/core/providers/${this.application.providerObj?.pk}"
+                                      href=${toAdminInterface(
+                                          `core/providers/${this.application.providerObj?.pk}`,
+                                      )}
                                   >
                                       ${this.application.providerObj?.name}
                                       (${this.application.providerObj?.verboseName})
@@ -176,7 +179,11 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                                       ${this.application.backchannelProvidersObj.map((provider) => {
                                           return html`
                                               <li>
-                                                  <a href="#/core/providers/${provider.pk}">
+                                                  <a
+                                                      href=${toAdminInterface(
+                                                          `core/providers/${provider.pk}`,
+                                                      )}
+                                                  >
                                                       ${provider.name} (${provider.verboseName})
                                                   </a>
                                               </li>
