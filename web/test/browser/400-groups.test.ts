@@ -23,7 +23,7 @@ test.describe("Groups", () => {
 
         await test.step("Authenticate", async () => {
             await session.login({
-                to: "/if/admin/#/identity/groups",
+                to: "/if/admin/identity/groups",
             });
         });
     });
@@ -268,7 +268,7 @@ test.describe("Groups", () => {
         });
 
         await test.step("Navigate to admin user", async () => {
-            await navigator.navigate("/if/admin/#/identity/users");
+            await navigator.navigate("/if/admin/identity/users");
 
             const $adminUser = await search(adminUsername);
 
