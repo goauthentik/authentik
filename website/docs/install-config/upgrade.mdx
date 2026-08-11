@@ -4,6 +4,19 @@ title: Upgrade authentik
 
 Upgrading to the latest version of authentik, whether a new major release or a patch, involves running a few commands to pull down the latest images and then restarting the servers and databases.
 
+## Get notified about new releases
+
+Once an hour, authentik checks for a newer stable release and creates an [`update_available`](../sys-mgmt/events/event-actions.md#update_available) event when it finds one. The built-in `default-notify-update` [notification rule](../sys-mgmt/events/notifications.md) sends that event to the **authentik Admins** group through two default [transports](../sys-mgmt/events/transports.md): `default-local-transport`, which shows a notification in the Admin interface, and `default-email-transport`, which emails the group once [global email settings](./email.mdx) are configured. To deliver release notifications somewhere else, such as a chat channel, add a webhook transport to that rule.
+
+The check is an outbound connection to `version.goauthentik.io`, so it does not run when [`AUTHENTIK_DISABLE_UPDATE_CHECK`](./configuration/configuration.mdx#authentik_disable_update_check) is set, which [air-gapped deployments](./air-gapped.mdx) are expected to do.
+
+To follow releases outside of authentik:
+
+- On the [goauthentik/authentik](https://github.com/goauthentik/authentik) repository, click **Watch**, select **Custom**, and then select **Releases**.
+- Subscribe to https://github.com/goauthentik/authentik/releases.atom in an RSS or Atom reader.
+
+Each version is documented in the [Release Notes](../../releases/), which list new features, fixes, and any breaking changes or manual steps that the upgrade requires.
+
 ## Important considerations
 
 :::danger
