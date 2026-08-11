@@ -3,7 +3,7 @@
  */
 
 /**
- * A comparision function for sorting elements in a collection.
+ * A comparison function for sorting elements in a collection.
  *
  * @param a The first element to compare.
  * @param b The second element to compare.
