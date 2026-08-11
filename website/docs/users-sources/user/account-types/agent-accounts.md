@@ -23,20 +23,19 @@ Agents are service accounts for authorization purposes. You can grant them acces
 
 For general information about service accounts, see [Service accounts](./service-accounts.md).
 
-## Permissions to manage agent accounts
+## Roles to manage agent accounts
 
-The following permissions control a user's ability to create, view, change, and delete agent accounts:
+The following roles control a user's ability to create, view, change, and delete agent accounts:
 
-- `authentik_agents.add_agent`
-- `authentik_agents.view_agent`
-- `authentik_agents.change_agent`
-- `authentik_agents.delete_agent`
+- Can add Agent
+- Can change Agent
+- Can delete Agent
+- Can view Agent
+- Add an agent user (self-service)
 
 The parent user receives managed permissions to view, change, and delete an agent when the agent is created.
 
 Users who are not the parent can manage an agent only if they have the required object or global permissions.
-
-[TODO] This section needs updating based on RBAC changes for self service
 
 ## Agent account creation
 
@@ -47,11 +46,7 @@ Agent accounts can be created in two ways:
 
 ### User interface (Self-Service)
 
-Self-service agent account creation is controlled by the `enterprise_agent_allow_any` tenant setting which is disabled by default.
-
-[TODO] How to enable the setting and exact UI term
-
-When the setting is enabled, an authenticated user can create an agent for themselves. Self-service agents have the following properties:
+An authenticated user with the required roles can create an agent for themselves. Self-service agents have the following properties:
 
 - The parent is always the authenticated user. A user cannot create an agent for another user through self-service creation.
 - The agent always expires.
@@ -63,7 +58,7 @@ When the setting is enabled, an authenticated user can create an agent for thems
 
 To create an agent:
 
-1. Log in to authentik as a user with the required permissions and open the user interface.
+1. Log in to authentik as a user with the required roles and open the user interface.
 2. Open the **Agents** page and click **Create Agent**.
 3. Optionally provide a **Label** for the agent and click **Create**.
 4. The token for the agent is displayed. Securely store this token because it will not be displayed again.
@@ -87,7 +82,7 @@ The request body can contain the following fields:
 | `expires`         | No       | The expiration date and time for the agent account.                                                                    |
 | `policy_behavior` | No       | How the agent inherits policy access from its parent. The default is `MIRROR`. See [Policy behavior](#policy-behavior) |
 
-The `parent` field is optional when an authenticated user creates an agent for themselves. An administrator or a user with the `authentik_agents.add_agent` permission can specify another user as the parent.
+The `parent` field is optional when an authenticated user creates an agent for themselves. An administrator or a user with the `Can add Agent` role can specify another user as the parent.
 
 #### Create an agent via the authentik API
 
