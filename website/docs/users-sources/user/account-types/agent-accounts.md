@@ -232,17 +232,17 @@ The agent API supports the following operations:
 
 See the [API reference](https://api.goauthentik.io/) for the complete request and response schemas.
 
-## Update an agent
+### Update an agent
 
-You can update the agent's normal user fields, such as its name, email address, attributes, and active status.
+You can update the agent's standard user fields, such as its name, email address, attributes, and active status.
 
-The following fields are read-only after creation:
+The following fields are read-only after creation so a PUT must omit them:
 
 - `parent`
 - `policy_behavior`
 - `token_identifier`
 
-## Delete an agent
+### Delete an agent
 
 Deleting an agent deletes its associated API token. Requests authenticated with that token fail after the agent is deleted.
 
@@ -267,10 +267,9 @@ Review [Events](../../../sys-mgmt/events/index.md) when investigating agent acti
 
 Check the following:
 
-- `enterprise_agent_allow_any` is enabled.
 - The request creates the agent for the authenticated user.
 - The authenticated user is not attempting to set another user as the parent.
-- The authenticated user has `authentik_agents.add_agent` if self-service creation is disabled.
+- `authentik_agents.add_agent` bypasses every self-service restriction, including creating an agent for another user.
 
 ### An agent cannot access an application
 
