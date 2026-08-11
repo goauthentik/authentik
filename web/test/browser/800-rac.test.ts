@@ -38,7 +38,7 @@ test.describe("RAC", () => {
         const { click } = pointer;
 
         await test.step("Authenticate", async () => {
-            await session.login({ to: "/if/admin/#/core/providers" });
+            await session.login({ to: "/if/admin/core/providers" });
         });
 
         //#region Create RAC provider via the wizard
@@ -118,7 +118,7 @@ test.describe("RAC", () => {
         //#region Attach the provider to an application
 
         await test.step("Navigate to applications", async () => {
-            await navigator.navigate("/if/admin/#/core/applications");
+            await navigator.navigate("/if/admin/core/applications");
         });
 
         const appDialog = page.getByRole("dialog", { name: "New Application" });
