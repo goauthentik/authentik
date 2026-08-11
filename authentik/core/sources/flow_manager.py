@@ -317,7 +317,7 @@ class SourceFlowManager:
             reverse(
                 "authentik_core:if-user",
             )
-            + "#/settings;page-sources"
+            + "settings?page=page-sources"
         )
 
     def handle_enroll(
