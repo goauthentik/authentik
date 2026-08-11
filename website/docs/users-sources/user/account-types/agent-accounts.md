@@ -7,7 +7,7 @@ authentik_version: "2026.8"
 
 Agent accounts are service accounts that act on behalf of a parent user when calling the authentik API. Use them for automation, integrations, and other machine identities that need delegated access.
 
-For an overview of all account types, see [Account types](./index.mdx).
+For an overview of all account types, see [Account types](./index.mdx). For general information about service accounts, see [Service accounts](./service-accounts.md).
 
 :::Agent accounts vs the authentik Agent
 Agent accounts are completely separate from the authentik Agent. The authentik Agent is a deployable component on Windows, Linux, and macOS devices for device integration with authentik. For more information, see [authentik Agent](../../../endpoint-devices/authentik-agent/index.mdx).
@@ -24,13 +24,11 @@ An agent account is a machine identity with:
 - A configurable policy inheritance behavior.
 - Audit events that identify the parent user.
 
-Agents are service accounts for authorization purposes. You can grant them access through groups, roles, object permissions, application bindings, and policies.
+For authorization, authentik treats an agent like any other service account. You can grant them access through groups, roles, object permissions, application bindings, and policies.
 
-For general information about service accounts, see [Service accounts](./service-accounts.md).
+## Permissions for managing agent accounts
 
-## Roles to manage agent accounts
-
-The following roles control a user's ability to create, view, change, and delete agent accounts:
+The following permissions control a user's ability to create, view, change, and delete agent accounts:
 
 - Can add Agent
 - Can change Agent
@@ -38,16 +36,16 @@ The following roles control a user's ability to create, view, change, and delete
 - Can view Agent
 - Add an agent user (self-service)
 
-The parent user receives managed permissions to view, change, and delete an agent when the agent is created.
+When an agent is created, authentik automatically grants the parent user permission to view, change, and delete it.
 
 Users who are not the parent can manage an agent only if they have the required object or global permissions.
 
-## Agent account creation
+## Create an agent account
 
-Agent accounts can be created in two ways:
+You can create an agent account in two ways:
 
-1. [**User interface (Self-service)**](#user-interface-self-service): Users with the required permissions can create their own agents via the user interface.
-2. [**authentik API**](#authentik-api): Agents can be created programmatically via the authentik API.
+- [**User interface (Self-service)**](#user-interface-self-service): Internal users with the required permissions can create their own agents in the User interface.
+- [**authentik API**](#authentik-api): Agents can be created programmatically via the authentik API.
 
 ### User interface (Self-Service)
 
@@ -55,8 +53,8 @@ An authenticated user with the required roles can create an agent for themselves
 
 - The parent is always the authenticated user. A user cannot create an agent for another user through self-service creation.
 - The agent always expires.
-- The agent uses the default token duration.
-- The agent always uses [`MIRROR` policy behavior](#policy-behavior).
+- The agent uses the default token duration of the authentik deployment.
+- The agent always uses [`NONE` policy behavior](#policy-behavior) and copies no access from its parent.
 - Request values for `expiring`, `expires`, and `policy_behavior` are ignored.
 
 #### Create an agent via the user interface
