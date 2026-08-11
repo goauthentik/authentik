@@ -24,19 +24,19 @@ Access requests provide:
 
 ## Terminology
 
-| Term                 | Description                                                                                                                  |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Access request       | A request from a specific user for access to an application. A request can be pending, approved, denied, or expired.         |
-| Request rule         | A configuration that determines whether a request flow is used, who reviews requests, and how reviewers are notified.        |
-| Request rule binding | A binding between a request rule and a requestable application. It also determines which users or groups can request access. |
-| Reviewer             | A user or group authorized to approve or deny an access request.                                                             |
-| Expiry               | The period for which access granted through an approved request remains valid.                                               |
+| Term                 | Description                                                                                                                                                             |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Access request       | A request from a specific user for access to an application. A request can be pending, approved, denied, or expired.                                                    |
+| Request rule         | A configuration that determines which request flow is used, who reviews requests, and how reviewers are notified. If no request flow is set, falls back to brand value. |
+| Request rule binding | A binding between a request rule and a requestable application. It also determines which users or groups can request access.                                            |
+| Reviewer             | A user or group authorized to approve or deny an access request.                                                                                                        |
+| Expiry               | The period for which access granted through an approved request remains valid.                                                                                          |
 
 ## Access request lifecycle
 
-1. A user logs in to authentik, opens the **Discover** page, and selects a requestable application.
-2. authentik runs the configured request flow, if any, to collect required information such as a justification.
-3. authentik creates the access request and evaluates it against the request rules bound to the selected application.
+1. A user logs in to authentik, opens the **Discover** page, and selects a requestable application, and optionally selects an application entitlement.
+2. authentik creates the access request and evaluates it against the request rules bound to the selected application.
+3. authentik runs the configured request flow, if any, to collect required information such as a justification.
 4. The assigned reviewers are notified based on the request rule's configuration, and the request appears in their pending-request queue.
 5. A reviewer approves or denies the request. Requesters cannot approve their own requests.
 6. If approved, authentik grants access to the application and starts the expiry timer.
@@ -50,16 +50,14 @@ Request rules are bound to an application, which makes the application requestab
 
 ## Request flows
 
-Submitting a request can optionally execute a request flow. Use this to collect a justification, require re-authentication or MFA before elevation, or run policies against the requester.
+Submitting a request executes a request flow. Use this to collect a justification, require re-authentication or MFA before elevation, or run policies against the requester.
 
 Configure a **Request flow** on either:
 
 - The request rule itself.
 - As a default for the [brand](../../customize/branding/index.md). Used as a fallback when the request rule does not have specify a request flow.
 
-authentik includes a `default-request` flow that is empty. This flow can be configured with any required stages and policies.
-
-**[VERIFY/TODO]** more info on ideas for request flow
+authentik includes a `default-request` flow that is empty. This flow can be configured with any required stages and policies. Any prompt data entered by a requester during a request flow is shown to the reviewer in the **Requester notes** field. Request flows can be left empty if you don't require user interaction.
 
 ## Configure access requests
 
@@ -129,13 +127,15 @@ Users can view their pending access requests under the **My Requests** tab on th
 
 ### Approving and denying access requests
 
-Reviewers see pending requests on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **For My Review** tab. The requester, the requested application, and the time since the request was made are listed. Reviewers click the **Review** button and can approve or deny the request, and optionally add **Notes** before clicking the **Submit** button.
+Reviewers see pending requests on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **For My Review** tab. The requester, the requested application, and the time since the request was made are listed.
 
-**[VERIFY/TODO]** more info on **Notes**
+Reviewers click the **Review** button and can approve or deny the request, and optionally add **Notes** before clicking the **Submit** button. Reviewers also see any prompt data that a requester entered in the request flow, in the **Requester notes** field.
 
-### Admin interfac
+### Admin interface
 
-**[VERIFY/TODO]** more info on interacting with access requests via admin interface
+Administrators can view all access requests via the access requests page (**Applications** > **Access Requests**). Each row represents an access request and shows the request's: requester, creation date and time, requested application, and status. Each access request can be expanded by clicking its chevron (**>**) to show **Requester data**. This is all the prompt data that the requester entered during the request flow, for example a justification for why the require access.
+
+If the administrator account is set as a reviewer in the associated request rule, they can click **Fulfill** and approve or deny the access request.
 
 ## Events and auditing
 
@@ -149,7 +149,6 @@ See [Events](../../sys-mgmt/events/index.md) and [Notifications](../../sys-mgmt/
 - Approved access is time-bound; plan expiry durations so that they match how long the work actually takes, or users will re-request frequently.
 - Request rules depend on policies. A misconfigured policy can leave requests with no eligible reviewer.
 - **[VERIFY/TODO]** behavior when a request rule or application is deleted while requests are pending.
-- **[VERIFY/TODO]** behavior when an approved user is deactivated before expiry.
 
 ## Troubleshooting
 
