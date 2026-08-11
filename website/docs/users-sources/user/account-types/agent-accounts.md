@@ -175,7 +175,7 @@ Agent accounts start with no special access beyond their ability to authenticate
 - Configure policies.
 - Use the agent's policy behavior to inherit access from its parent.
 
-For more information, see [Manage permissions](../../users-sources/access-control/manage_permissions/).
+For more information, see [Manage permissions](../../access-control/manage_permissions.md).
 
 ## Authenticate with an agent token
 
@@ -253,7 +253,7 @@ Deleting the parent user does not delete the agent. The agent remains as a paren
 
 ## Audit events
 
-Actions performed by an agent are attributed to the agent's parent user in audit events/
+Actions performed by an agent are attributed to the agent's parent user in audit events.
 
 Agent audit data identifies:
 
@@ -262,7 +262,7 @@ Agent audit data identifies:
 
 A regular service account that is not an agent does not receive parent-user attribution.
 
-Review [Events](../events/) when investigating agent activity or validating that an integration has the expected access.
+Review [Events](../../../sys-mgmt/events/index.md) when investigating agent activity or validating that an integration has the expected access.
 
 ## Troubleshooting
 
