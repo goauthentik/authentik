@@ -154,4 +154,37 @@ test.describe("User interface routing", () => {
             ).toBe("/if/admin/");
         });
     });
+
+    test("User nav-tabs navigate within the interface via pushState", async ({
+        session,
+        navigator,
+        page,
+    }) => {
+        await test.step("Authenticate to the library", async () => {
+            await session.login({ to: LIBRARY_PATHNAME });
+        });
+
+        const navLinks = page.locator("ak-nav-tabs a.pf-c-nav__link");
+
+        // The user nav-tab bar only renders with more than one entry, and the
+        // extra entries (Discover/Agents) are enterprise + capability gated, so
+        // skip where they are unavailable rather than assert against a lone tab.
+        test.skip(
+            (await navLinks.count()) < 2,
+            "Requires more than one user nav item (Discover/Agents are enterprise-gated).",
+        );
+
+        await test.step("A secondary nav-tab navigates same-document", async () => {
+            const secondary = navLinks.nth(1);
+            const href = await secondary.getAttribute("href");
+
+            await secondary.click();
+            await navigator.waitForPathname(new URL(href!, page.url()).pathname);
+
+            expect(
+                await documentLoadPathname(page),
+                "Secondary nav-tab navigation stayed same-document",
+            ).toBe(LIBRARY_PATHNAME);
+        });
+    });
 });
