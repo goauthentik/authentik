@@ -36120,14 +36120,12 @@ components:
           minLength: 1
         user_secure_enclave_key:
           type: string
-          minLength: 1
+          default: ''
         enclave_key_id:
           type: string
-          minLength: 1
+          default: ''
       required:
-      - enclave_key_id
       - user_auth
-      - user_secure_enclave_key
     AgentRequest:
       type: object
       description: |-

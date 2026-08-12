@@ -1,5 +1,9 @@
+from base64 import b64decode, b64encode
 from typing import Any
 
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import Encoding, load_pem_private_key
+from cryptography.x509 import load_pem_x509_certificate
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -14,16 +18,19 @@ from authentik.common.oauth.constants import TOKEN_TYPE
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
+from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
+from authentik.endpoints.connectors.agent.auth import agent_auth_issue_token
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     AgentDeviceConnection,
     AgentDeviceUserBinding,
     AppleIndependentSecureEnclave,
     AppleNonce,
+    AppleUserKey,
     DeviceAuthenticationToken,
 )
-from authentik.enterprise.endpoints.connectors.agent.http import JWEResponse
+from authentik.enterprise.endpoints.connectors.agent.http import KEY_RESPONSE_TYPE, JWEResponse
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -43,6 +50,8 @@ from authentik.stages.password.stage import authenticate
 LOGGER = get_logger()
 # Seeded by blueprints/default/flow-endpoints-agent-psso-password.yaml
 PSSO_PASSWORD_FLOW_SLUG = "endpoints-agent-psso-password"
+LOGIN_REQUEST_TYPE = "platformsso-login-request+jwt"
+KEY_REQUEST_TYPE = "platformsso-key-request+jwt"
 
 
 class InvalidCredentials(Exception):
@@ -123,6 +132,31 @@ class TokenView(View):
         )
         return handler()
 
+    def log_unhandled_request_type(self, assertion: str, header: dict[str, Any]) -> None:
+        """Describe a Platform SSO request this endpoint does not implement.
+
+        macOS posts more than login and key requests here, and an unimplemented type would
+        otherwise leave nothing behind but a 400. Records the claim names only."""
+        typ = header.get("typ")
+        if typ in (LOGIN_REQUEST_TYPE, KEY_REQUEST_TYPE):
+            return
+        try:
+            decoded = decode(
+                assertion,
+                self.device_connection.apple_signing_key,
+                algorithms=["ES256"],
+                issuer=str(self.connector.pk),
+                options={"verify_aud": False, "verify_exp": False},
+            )
+        except PyJWTError as exc:
+            LOGGER.warning("Unhandled Platform SSO request type, undecodable", typ=typ, exc=exc)
+            return
+        LOGGER.warning(
+            "Unhandled Platform SSO request type",
+            typ=typ,
+            request_claims=sorted(decoded.keys()),
+        )
+
     def validate_request_token(self, assertion: str) -> dict[str, Any] | None:
         # Decode without validation to get header
         header = get_unverified_header(assertion)
@@ -149,13 +183,23 @@ class TokenView(View):
         if not self.device_connection.apple_signing_key:
             LOGGER.warning("Failed to issue token for device, no apple_signing_key")
             raise ValidationError("Invalid request")
+        self.log_unhandled_request_type(assertion, header)
+        # Key requests carry no aud claim. Apple's own table marks it required, but neither
+        # the client nor the sample messages `app-sso platform -m` prints include one, so
+        # requiring it here would reject every key request. The signature, issuer, nonce and
+        # expiry checks below still apply.
+        audience_options = (
+            {"options": {"verify_aud": False}}
+            if header.get("typ") == KEY_REQUEST_TYPE
+            else {"audience": expected_aud}
+        )
         # Properly decode the JWT with the key from the device
         decoded = decode(
             assertion,
             self.device_connection.apple_signing_key,
             algorithms=["ES256"],
-            audience=expected_aud,
             issuer=str(self.connector.pk),
+            **audience_options,
         )
         self.remote_nonce = decoded.get("nonce")
 
@@ -241,6 +285,181 @@ class TokenView(View):
             algorithm=JWTAlgorithms.from_private_key(kp.private_key),
         )
 
+    def issue_refresh_token(self, user: User) -> DeviceAuthenticationToken:
+        """Mint the refresh token a login response hands back.
+
+        The token has to be signed and stored, not just recorded as a row: macOS keeps it
+        and presents it on every key request and refresh, and Platform SSO 2.0 treats it as
+        the authorisation for both. Creating the row without a token yields an empty
+        refresh_token, which the client dutifully echoes back and nothing can verify."""
+        auth_token = DeviceAuthenticationToken.objects.create(
+            device=self.device_connection.device,
+            connector=self.connector,
+            user=user,
+            device_token=self.nonce.device_token,
+        )
+        token, expires = agent_auth_issue_token(
+            self.device_connection.device,
+            self.connector,
+            user,
+            jti=str(auth_token.identifier),
+        )
+        if not token or not expires:
+            LOGGER.warning("Failed to issue Platform SSO refresh token")
+            raise ValidationError("Invalid request")
+        auth_token.token = token
+        auth_token.expires = expires
+        auth_token.expiring = True
+        auth_token.save()
+        return auth_token
+
+    def authenticated_key_request_user(self) -> User:
+        """Resolve and authorise the user behind a key request.
+
+        A key request proves possession of the device signing key and of a refresh token
+        issued to that device, which is what authorises minting or using an unlock key. The
+        refresh token is checked against the device rather than trusted from the claim, so a
+        token issued for one device cannot provision a key on another."""
+        refresh_token = self.jwt_request.get("refresh_token")
+        if not refresh_token:
+            LOGGER.warning("Key request carries no refresh token")
+            raise ValidationError("Invalid request")
+        auth_token = DeviceAuthenticationToken.objects.filter(
+            token=refresh_token,
+            device=self.device_connection.device,
+            connector=self.connector,
+        ).first()
+        if not auth_token or not auth_token.user:
+            LOGGER.warning("Key request refresh token is not valid for this device")
+            raise ValidationError("Invalid request")
+        if auth_token.is_expired:
+            LOGGER.warning("Key request refresh token has expired")
+            raise ValidationError("Invalid request")
+        return auth_token.user
+
+    def key_request_username(self) -> str:
+        username = self.jwt_request.get("username") or self.jwt_request.get("sub")
+        if not username:
+            LOGGER.warning(
+                "Key request carries no username", request_claims=sorted(self.jwt_request.keys())
+            )
+            raise ValidationError("Invalid request")
+        return username
+
+    def key_response(self, body: dict) -> JWEResponse:
+        now_ts = int(self.now.timestamp())
+        return JWEResponse(
+            {
+                # Apple specifies a five minute window for both key responses.
+                "exp": now_ts + 300,
+                "iat": now_ts,
+                **body,
+            },
+            device=self.device_connection,
+            apv=self.jwt_request["jwe_crypto"]["apv"],
+            response_type=KEY_RESPONSE_TYPE,
+        )
+
+    def handle_v2_0_urn_ietf_params_oauth_grant_type_jwt_bearer(self):
+        """Platform SSO 2.0 key service.
+
+        Both the key request and the key exchange arrive as this grant with the same JWT
+        type, and are told apart by their request_type claim."""
+        request_type = self.jwt_request.get("request_type")
+        if request_type == "key_request":
+            return self.handle_key_request()
+        if request_type == "key_exchange":
+            return self.handle_key_exchange()
+        LOGGER.warning(
+            "Unsupported Platform SSO key request type",
+            request_type=request_type,
+            request_claims=sorted(self.jwt_request.keys()),
+        )
+        raise ValidationError("Invalid request")
+
+    def handle_key_request(self):
+        """Provision the key macOS binds to the user's account.
+
+        Apple requires the public half to come back inside a certificate so that keychain
+        operations can find it. The key is minted once per device, login name and purpose:
+        re-provisioning on a repeat request would invalidate the key bag the previous one
+        unlocked."""
+        user = self.authenticated_key_request_user()
+        username = self.key_request_username()
+        key_purpose = self.jwt_request.get("key_purpose", "user_unlock")
+        key = AppleUserKey.objects.filter(
+            device_connection=self.device_connection,
+            username=username,
+            key_purpose=key_purpose,
+        ).first()
+        if not key:
+            builder = CertificateBuilder(f"Platform SSO {key_purpose} {username}")
+            builder.alg = PrivateKeyAlg.ECDSA
+            builder.build(validity_days=365)
+            key = AppleUserKey.objects.create(
+                device_connection=self.device_connection,
+                username=username,
+                key_purpose=key_purpose,
+                certificate=builder.certificate,
+                private_key=builder.private_key,
+            )
+            LOGGER.info(
+                "Provisioned Platform SSO key",
+                user=user,
+                username=username,
+                key_purpose=key_purpose,
+            )
+        certificate = load_pem_x509_certificate(key.certificate.encode())
+        return self.key_response(
+            {
+                "certificate": b64encode(certificate.public_bytes(Encoding.DER)).decode(),
+                "key_context": key.key_context,
+            }
+        )
+
+    def handle_key_exchange(self):
+        """Complete a Diffie-Hellman exchange against the provisioned key.
+
+        macOS sends its own public key and expects the raw shared secret back, which it uses
+        to unlock the user's key bag. This runs while the user waits at the login window, so
+        it does no more work than the exchange itself."""
+        self.authenticated_key_request_user()
+        username = self.key_request_username()
+        key_purpose = self.jwt_request.get("key_purpose", "user_unlock")
+        key = AppleUserKey.objects.filter(
+            device_connection=self.device_connection,
+            username=username,
+            key_purpose=key_purpose,
+        ).first()
+        if not key:
+            LOGGER.warning(
+                "Key exchange for a key that was never provisioned",
+                username=username,
+                key_purpose=key_purpose,
+            )
+            raise ValidationError("Invalid request")
+        other_publickey = self.jwt_request.get("other_publickey")
+        if not other_publickey:
+            LOGGER.warning("Key exchange carries no other_publickey")
+            raise ValidationError("Invalid request")
+        try:
+            # The peer key is an ANSI X9.63 point (0x04 || X || Y), the same encoding the
+            # device signing and encryption keys use.
+            peer_key = ec.EllipticCurvePublicKey.from_encoded_point(
+                ec.SECP256R1(), b64decode(other_publickey)
+            )
+            private_key = load_pem_private_key(key.private_key.encode(), password=None)
+            shared_secret = private_key.exchange(ec.ECDH(), peer_key)
+        except (ValueError, TypeError) as exc:
+            LOGGER.warning("Key exchange failed", exc=exc)
+            raise ValidationError("Invalid request") from None
+        return self.key_response(
+            {
+                "key": b64encode(shared_secret).decode(),
+                "key_context": key.key_context,
+            }
+        )
+
     def handle_v1_0_password(self):
         """Apple Platform SSO password login.
 
@@ -285,12 +504,7 @@ class TokenView(View):
             LOGGER.info("Platform SSO password login failed")
             raise InvalidCredentials
         id_token = self.create_id_token(authenticated)
-        auth_token = DeviceAuthenticationToken.objects.create(
-            device=self.device_connection.device,
-            connector=self.connector,
-            user=authenticated,
-            device_token=self.nonce.device_token,
-        )
+        auth_token = self.issue_refresh_token(authenticated)
         return JWEResponse(
             {
                 "refresh_token": auth_token.token,
@@ -320,12 +534,7 @@ class TokenView(View):
             LOGGER.warning("failed to validate inner assertion", exc=exc)
             raise ValidationError("Invalid request") from None
         id_token = self.create_id_token(user.user)
-        auth_token = DeviceAuthenticationToken.objects.create(
-            device=self.device_connection.device,
-            connector=self.connector,
-            user=user.user,
-            device_token=self.nonce.device_token,
-        )
+        auth_token = self.issue_refresh_token(user.user)
         return JWEResponse(
             {
                 "refresh_token": auth_token.token,

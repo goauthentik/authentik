@@ -337,6 +337,41 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
         verbose_name_plural = _("Apple Nonces")
 
 
+class AppleUserKey(models.Model):
+    """A key provisioned for a Platform SSO key purpose.
+
+    Platform SSO 2.0 asks the IdP to mint an EC P-256 key after user registration and hand
+    back its public half in a certificate, so that macOS keychain operations can find it.
+    The Mac then performs Diffie-Hellman against it to unlock the user's key bag, which is
+    what binds the account -- without it registration never leaves NeedsBinding.
+
+    The key is per device connection and login name rather than per authentik user: the
+    request identifies the user only by the name macOS logs in with, which is the same name
+    the local account uses."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
+    device_connection = models.ForeignKey(AgentDeviceConnection, on_delete=models.CASCADE)
+    username = models.TextField()
+    # Only "user_unlock" exists today; stored so a second purpose does not silently reuse
+    # the same key.
+    key_purpose = models.TextField(default="user_unlock")
+    certificate = models.TextField()
+    private_key = models.TextField()
+    # Opaque server-side state Apple lets the IdP round-trip with the key. Kept because the
+    # client echoes it back on every key exchange, so it is a place to version key material
+    # without re-provisioning.
+    key_context = models.TextField(blank=True, default="")
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Apple User Key")
+        verbose_name_plural = _("Apple User Keys")
+        unique_together = (("device_connection", "username", "key_purpose"),)
+
+    def __str__(self) -> str:
+        return f"Apple User Key {self.key_purpose} for {self.username}"
+
+
 class AppleIndependentSecureEnclave(Authenticator):
     """A device-independent secure enclave key, used by Tap-to-login"""
 
