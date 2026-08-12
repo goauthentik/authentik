@@ -886,13 +886,13 @@
                             }
                         },
                         "permissions": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector_permissions"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector_permissions"
                         },
                         "attrs": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector"
                         },
                         "identifiers": {
-                            "$ref": "#/$defs/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector"
+                            "$ref": "#/definitions/model_authentik_endpoints_connectors_microsoft_intune.microsoftintuneconnector"
                         }
                     }
                 },
