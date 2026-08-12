@@ -11,6 +11,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { flowMessages } from "#flow/messages";
 import type { StageHost } from "#flow/types";
 
 import {
@@ -47,6 +48,12 @@ export class UserSettingsFlowExecutor
         const previousValue = this.#challenge;
 
         this.#challenge = value;
+
+        // Messages ride along with the challenge they were queued during, and the server
+        // considers them delivered once sent, so each challenge is shown exactly once.
+        for (const message of flowMessages(value?.messages)) {
+            showMessage(message);
+        }
 
         this.requestUpdate("challenge", previousValue);
     }
