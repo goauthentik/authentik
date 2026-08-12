@@ -90,13 +90,16 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            const signOutLink = page.getByRole("link", { name: "Sign out" });
+            // Sign out lives inside the ak-user-switcher dropdown.
+            await page.getByRole("button", { name: "Switch user" }).click();
 
-            await expect(signOutLink, "Sign out link is visible").toBeVisible();
+            const signOutLink = page.getByRole("menuitem", { name: "Sign out current user" });
+
+            await expect(signOutLink, "Sign out menuitem is visible").toBeVisible();
 
             await signOutLink.click();
 
-            await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
+            await navigator.waitForPathname("/if/flow/default-authentication-flow/");
             await session.$identificationStage.waitFor({ state: "visible" });
 
             const passwordEmbedded = await session.$passwordField.isVisible();
