@@ -1,5 +1,6 @@
 import Styles from "./ak-modal.css";
 import DialogStyles from "./dialog.css";
+import { resolveModalCloseURL } from "./modal-url.js";
 
 import { PFSize } from "#common/enums";
 
@@ -138,6 +139,21 @@ export class AKModal extends AKElement implements TransclusionParentElement {
     public cancelButtonLabel: string | null = null;
 
     /**
+     * Search parameters that represent this modal's own state.
+     *
+     * This is the seam for deep-linkable modals: a modal reads these on open to
+     * initialize itself (e.g. `?type=oauth2` to preselect a wizard type), and
+     * they are removed from the URL when the modal closes — so opening a modal
+     * from a URL never strands a parameter or causes it to re-open on reload.
+     *
+     * Parameters written by arbitrary slotted content (e.g. a paginated table's
+     * page/search params) do NOT need to be declared here — on close they are
+     * reverted to their pre-open values regardless.
+     */
+    @property({ attribute: false })
+    public searchParams: string[] = [];
+
+    /**
      * An optional aria-label formatter.
      */
     public formatARIALabel?(): string;
@@ -172,9 +188,45 @@ export class AKModal extends AKElement implements TransclusionParentElement {
             return;
         }
 
+        // Snapshot the page URL so any search parameters the modal's content
+        // writes while open (e.g. a paginated table's page/search params) can be
+        // discarded on close.
+        this.#urlOnOpen = window.location.href;
+
         dialogElement.showModal();
 
+        // The native `close` event fires however the dialog is dismissed (close
+        // button, Cancel, Escape, `method="dialog"`), so it is the one reliable
+        // place to restore the URL.
+        dialogElement.addEventListener("close", this.#restoreListener, { once: true });
+
         dialogElement.classList.add("ak-c-dialog--m-fade-in");
+    }
+
+    /**
+     * The page URL captured when the modal opened, restored on close.
+     */
+    #urlOnOpen: string | null = null;
+
+    #restoreListener = () => this.#cleanUpModalURL();
+
+    /**
+     * Restore the URL captured when the modal opened, discarding search
+     * parameters the modal's content wrote while open. Only restores when the
+     * path is unchanged, so a modal that navigated away is left untouched.
+     */
+    #cleanUpModalURL() {
+        const urlOnOpen = this.#urlOnOpen;
+
+        this.#urlOnOpen = null;
+
+        if (urlOnOpen === null) return;
+
+        const target = resolveModalCloseURL(urlOnOpen, window.location.href, this.searchParams);
+
+        if (target !== null) {
+            history.replaceState(history.state, "", target);
+        }
     }
 
     /**
