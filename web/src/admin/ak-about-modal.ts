@@ -1,4 +1,4 @@
-import "#elements/ak-progress-bar";
+import "#elements/Progress";
 
 import { aki } from "#common/api/client";
 import { globalAK } from "#common/global";
@@ -165,12 +165,11 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(AKModal)) {
     protected renderLoadingBar(): SlottedTemplateResult {
         return until(
             this.refreshPromise?.then(() => null),
-            html`<ak-progress-bar
-                part="loading-bar"
-                indeterminate
-                ?inert=${!!this.systemInfo && !!this.version}
+            html`<ak-progress
+                part="loading"
+                variant="indeterminate"
                 label=${msg("Loading")}
-            ></ak-progress-bar>`,
+            ></ak-progress>`,
         );
     }
 

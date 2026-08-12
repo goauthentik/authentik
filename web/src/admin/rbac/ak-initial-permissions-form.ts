@@ -43,28 +43,26 @@ export class InitialPermissionsForm extends ModelForm<InitialPermissions, string
 
     public override size = PFSize.XLarge;
 
-    loadInstance(pk: string): Promise<InitialPermissions> {
-        return aki(RbacApi).rbacInitialPermissionsRetrieve({
-            id: Number(pk),
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(RbacApi).rbacInitialPermissionsRetrieve({
+                id: Number(pk),
+            }),
+        create: (initialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsCreate({
+                initialPermissionsRequest,
+            }),
+        update: (pk: string, patchedInitialPermissionsRequest: InitialPermissions) =>
+            aki(RbacApi).rbacInitialPermissionsPartialUpdate({
+                id: Number(pk),
+                patchedInitialPermissionsRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated initial permissions.")
             : msg("Successfully created initial permissions.");
-    }
-
-    async send(data: InitialPermissions): Promise<InitialPermissions> {
-        if (this.instance?.pk) {
-            return aki(RbacApi).rbacInitialPermissionsPartialUpdate({
-                id: this.instance.pk,
-                patchedInitialPermissionsRequest: data,
-            });
-        }
-        return aki(RbacApi).rbacInitialPermissionsCreate({
-            initialPermissionsRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

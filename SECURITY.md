@@ -20,7 +20,7 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version   | Supported |
 | --------- | --------- |
-| 2025.2.x  | ✅        |
+| 2026.2.x  | ✅        |
 | 2026.5.x  | ✅        |
 
 ## Reporting a Vulnerability

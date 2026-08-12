@@ -8,7 +8,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate using their Google credentials by configuring Google Cloud as a federated identity provider via OAuth 2.0.
+This source lets users authenticate with their Google credentials by configuring Google Cloud as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 To integrate Google with authentik, you need to create a new project and OAuth credentials in the Google Developer Console.
 
 1. Log in to the [Google Developer Console](https://console.developers.google.com/).
-2. Click on **GLogin** in the top left and then **New Project**.
+2. Click the project selector in the top bar, and then click **New Project**.
 
 ![](./googledeveloper1.png)
 
@@ -36,7 +36,7 @@ To integrate Google with authentik, you need to create a new project and OAuth c
 
 ![](./googledeveloper2.png)
 
-7. On the right side, click on **Configure Consent Screen**.
+7. On the right side, click **Configure Consent Screen**.
 
 ![](./googledeveloper3.png)
 

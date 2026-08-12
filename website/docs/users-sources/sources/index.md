@@ -1,8 +1,10 @@
 ---
 title: Sources
+sidebar_position: 5
+sidebar_label: "Federated and Social Sources"
 ---
 
-Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, Twitter, or GitHub.
+Sources allow you to connect authentik to an external user directory. Sources can also be used with social login providers such as Facebook, X, or GitHub.
 
 ## Find your source
 
@@ -19,7 +21,7 @@ Several source types also expose an **Icon** field that uses the shared file pic
 
 ## Add sources to default login page
 
-To have sources show on the default login screen you will need to add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
+To show sources on the default login screen, add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows**.

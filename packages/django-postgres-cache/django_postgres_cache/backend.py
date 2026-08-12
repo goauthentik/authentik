@@ -32,11 +32,11 @@ class DatabaseCache(BaseCache):
         return pickle.loads(base64.b64decode(encoded_value.encode()))  # nosec
 
     def _make_expiry(self, timeout: float | None) -> datetime:
+        tz = UTC if settings.USE_TZ else None
         timeout = self.get_backend_timeout(timeout)
         if timeout is None:
-            exp = datetime.max
+            exp = datetime.max.replace(tzinfo=tz)
         else:
-            tz = UTC if settings.USE_TZ else None
             exp = datetime.fromtimestamp(timeout, tz=tz)
         exp = exp.replace(microsecond=0)
         return exp

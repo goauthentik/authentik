@@ -7,7 +7,7 @@ tags:
     - twitter
 ---
 
-Allows users to authenticate using their X credentials by configuring X as a federated identity provider via OAuth2.
+This source lets users authenticate with their X credentials by configuring X as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 
 ## X configuration
 
-To integrate X with authentik you will need to create an OAuth application in the X Developer Portal.
+To integrate X with authentik, create an OAuth application in the X Developer Portal.
 
 1. Log in to the [X Developer Portal](https://developer.twitter.com/).
 2. Navigate to **Projects & Apps** > **Overview**.
@@ -39,20 +39,24 @@ To support the integration of X with authentik, you need to create a Twitter OAu
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
     - **Select type**: select **Twitter OAuth Source** as the source type.
-    - **Create OAuth Source**: provide a name, a slug which must match the slug used in the X `Callback URI / Redirect URL` field (e.g. `x`), and set the following required configurations:
+    - **Create OAuth Source**: provide a name, a slug that must match the slug used in the X `Callback URI / Redirect URL` field (e.g. `x`), and set the following required configurations:
         - **Protocol settings**
             - **Consumer Key**: Enter the Client ID from the X Developer Portal.
             - **Consumer Secret**: Enter the Client Secret from the X Developer Portal.
             - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish**.
 
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 
 :::info Embed new source in flow :ak-enterprise
 For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
 :::
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.md) for more information.
 
 ## Resources
 

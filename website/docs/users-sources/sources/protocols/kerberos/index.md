@@ -11,7 +11,7 @@ This source allows users to enroll themselves with an existing Kerberos identity
 The following placeholders are used in this guide:
 
 - `REALM.COMPANY` is the Kerberos realm.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
 
 Examples are shown for an MIT Krb5 KDC system; you might need to adapt them for your Kerberos installation.
 

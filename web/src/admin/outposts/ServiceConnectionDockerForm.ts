@@ -16,28 +16,26 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
-    loadInstance(pk: string): Promise<DockerServiceConnection> {
-        return aki(OutpostsApi).outpostsServiceConnectionsDockerRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerRetrieve({
+                uuid,
+            }),
+        create: (dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
+                dockerServiceConnectionRequest,
+            }),
+        update: (uuid: string, dockerServiceConnectionRequest: DockerServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsDockerUpdate({
+                uuid,
+                dockerServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
-    }
-
-    async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
-        if (this.instance) {
-            return aki(OutpostsApi).outpostsServiceConnectionsDockerUpdate({
-                uuid: this.instance.pk || "",
-                dockerServiceConnectionRequest: data,
-            });
-        }
-        return aki(OutpostsApi).outpostsServiceConnectionsDockerCreate({
-            dockerServiceConnectionRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

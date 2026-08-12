@@ -7,7 +7,7 @@ tags:
     - saml
 ---
 
-Allows users to authenticate using their Keycloak credentials by configuring Keycloak as a federated identity provider via SAML.
+This source lets users authenticate with their Keycloak credentials by configuring Keycloak as a federated identity provider with SAML.
 
 ## Preparation
 
@@ -15,7 +15,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `keycloak.company` is the FQDN of the Keycloak installation.
-- `keycloak-slug` is the slug you will assign to the SAML source in authentik (e.g., `keycloak`).
+- `keycloak-slug` is the slug to assign to the SAML source in authentik (for example, `keycloak`).
 
 ## Export certificates
 

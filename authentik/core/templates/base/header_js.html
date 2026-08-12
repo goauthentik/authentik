@@ -16,18 +16,14 @@
             relBase: "{{ base_url_rel }}",
         },
     };
-    window.addEventListener("DOMContentLoaded", function () {
-        {% for message in messages %}
-        window.dispatchEvent(
-            new CustomEvent("ak-message", {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    level: "{{ message.tags|escapejs }}",
-                    message: "{{ message.message|escapejs }}",
-                },
-            }),
-        );
-        {% endfor %}
-    });
 </script>
+
+<script data-id="authentik-messages" type="application/json">
+  [{% for message in messages %}
+    {
+        "level": "{{ message.tags|escapejs }}",
+        "message": "{{ message.message|escapejs }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}]
+</script>
+
