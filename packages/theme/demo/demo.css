@@ -58,7 +58,7 @@ a:visited {
     outline-offset: var(--ak-global--border-width--md);
 }
 
-/* ---------- masthead ---------- */
+/* #region Masthead */
 
 .masthead {
     position: sticky;
@@ -123,7 +123,9 @@ a:visited {
     border-bottom-color: var(--ak-global--color--accent);
 }
 
-/* ---------- segmented theme control ---------- */
+/* #endregion */
+
+/* #region Segmented theme control */
 
 .segmented {
     display: inline-flex;
@@ -157,7 +159,9 @@ a:visited {
     color: var(--ak-global--color--text);
 }
 
-/* ---------- layout ---------- */
+/* #endregion */
+
+/* #region Layout */
 
 main {
     max-width: var(--demo-page-max);
@@ -223,7 +227,9 @@ section {
     gap: var(--ak-global--space--md);
 }
 
-/* ---------- overview / audit ---------- */
+/* #endregion */
+
+/* #region Overview / audit */
 
 .stats {
     display: grid;
@@ -275,7 +281,9 @@ section {
     padding-left: var(--ak-global--space--lg);
 }
 
-/* ---------- color ---------- */
+/* #endregion */
+
+/* #region Color */
 
 .swatch {
     border: var(--ak-global--border-width--sm) solid var(--demo-hairline);
@@ -364,7 +372,9 @@ section {
     border-color: currentcolor;
 }
 
-/* ---------- typography ---------- */
+/* #endregion */
+
+/* #region Typography */
 .specimen {
     border: var(--ak-global--border-width--sm) solid var(--demo-hairline);
     border-radius: var(--ak-global--radius--sm);
@@ -450,7 +460,9 @@ section {
     gap: var(--ak-global--space--md);
 }
 
-/* ---------- spacing ---------- */
+/* #endregion */
+
+/* #region Spacing */
 
 .bars {
     display: grid;
@@ -466,7 +478,9 @@ section {
     min-width: 1px;
 }
 
-/* ---------- shape ---------- */
+/* #endregion */
+
+/* #region Shape */
 
 .shape-chip {
     display: flex;
@@ -491,7 +505,9 @@ section {
     border-color: var(--ak-global--color--border--strong);
 }
 
-/* ---------- surfaces & shadow ---------- */
+/* #endregion */
+
+/* #region Surfaces & shadow */
 
 .surfaces {
     display: grid;
@@ -526,7 +542,9 @@ section {
     gap: 0.15rem;
 }
 
-/* ---------- motion ---------- */
+/* #endregion */
+
+/* #region Motion */
 
 .motion-track {
     background: var(--ak-global--color--surface--muted);
@@ -549,7 +567,9 @@ section {
     transform: translateX(calc(100cqw - 2.5rem));
 }
 
-/* ---------- z-index ---------- */
+/* #endregion */
+
+/* #region Z-index */
 
 .zstack {
     position: relative;
@@ -574,7 +594,9 @@ section {
     gap: 0.15rem;
 }
 
-/* ---------- icons ---------- */
+/* #endregion */
+
+/* #region Icons */
 
 .icons {
     display: grid;
@@ -628,7 +650,9 @@ section {
     font-weight: 900; /* the only weight PatternFly 4 bundles */
 }
 
-/* ---------- footer ---------- */
+/* #endregion */
+
+/* #region Footer */
 
 footer {
     max-width: var(--demo-page-max);
