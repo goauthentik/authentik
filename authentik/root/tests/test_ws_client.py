@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 from asgiref.sync import sync_to_async
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
@@ -14,20 +12,15 @@ from authentik.events.models import (
     NotificationTransport,
     TransportMode,
 )
-from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.lib.generators import generate_id
 from authentik.root import websocket
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.user_login.stage import COOKIE_NAME_KNOWN_DEVICE
-from authentik.tenants.utils import get_current_tenant
 
 
 class TestClientWS(TransactionTestCase):
 
     def setUp(self):
-        tenant = get_current_tenant()
-        tenant.flags[RefreshOtherFlowsAfterAuthentication().key] = True
-        tenant.save()
         self.user = create_test_user()
 
     async def _alogin_cookie(self, user, **kwargs):
@@ -59,27 +52,6 @@ class TestClientWS(TransactionTestCase):
 
         await communicator.receive_nothing()
         await communicator.receive_json_from()
-        await communicator.disconnect()
-
-    async def test_tab_refresh(self):
-        dev_id = generate_id()
-        communicator = WebsocketCommunicator(
-            URLRouter(websocket.websocket_urlpatterns),
-            "/ws/client/",
-            headers=[(b"cookie", f"{COOKIE_NAME_KNOWN_DEVICE}={dev_id}".encode())],
-        )
-        connected, _ = await communicator.connect()
-        self.assertTrue(connected)
-
-        with patch("authentik.flows.apps.RefreshOtherFlowsAfterAuthentication.get") as flag:
-            flag.return_value = True
-            await self._alogin_cookie(self.user, **{COOKIE_NAME_KNOWN_DEVICE: dev_id})
-
-        evt = await communicator.receive_json_from()
-        self.assertEqual(
-            evt, {"message_type": "session.authenticated", "type": "event.session.authenticated"}
-        )
-
         await communicator.disconnect()
 
     async def test_notification(self):

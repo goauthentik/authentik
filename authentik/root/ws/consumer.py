@@ -67,10 +67,6 @@ class MessageConsumer(JsonWebsocketConsumer):
         """Event handler which is called by Messages Storage backend"""
         self.send_json(event)
 
-    def event_session_authenticated(self, event: dict):
-        """Event handler post user authentication"""
-        self.send_json({"message_type": "session.authenticated", **event})
-
     def event_notification(self, event: dict):
         """Event handler for new notifications"""
         self.send_json({"message_type": "notification.new", **event})
