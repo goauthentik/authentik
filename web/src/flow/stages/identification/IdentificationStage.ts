@@ -265,6 +265,13 @@ export class IdentificationStage extends BaseStage<
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
+
+        const passwordField = this.passwordFieldRef.value;
+
+        if (passwordField) {
+            passwordField.focus();
+            passwordField.select();
+        }
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
