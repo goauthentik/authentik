@@ -62,7 +62,9 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "apple_psso_unlock_policy",
             "apple_psso_filevault_policy",
             "apple_psso_login_frequency",
-            "apple_psso_require_biometrics",
+            "apple_psso_biometric_requirement",
+            "apple_psso_biometric_password_fallback",
+            "apple_psso_biometric_reuse_during_unlock",
         ]
 
 

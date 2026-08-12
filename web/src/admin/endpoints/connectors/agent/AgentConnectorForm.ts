@@ -24,6 +24,7 @@ import {
 import {
     AgentConnector,
     AgentConnectorRequest,
+    ApplePssoBiometricRequirementEnum,
     ApplePssoFilevaultPolicyEnum,
     EndpointsApi,
     FlowDesignationEnum,
@@ -59,6 +60,20 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     }
 
     renderForm() {
+        const pssoBiometricOptions = [
+            {
+                label: msg("None (no biometric required)"),
+                value: ApplePssoBiometricRequirementEnum.None,
+            },
+            {
+                label: msg("Touch ID or Apple Watch, invalidated if enrolment changes"),
+                value: ApplePssoBiometricRequirementEnum.CurrentSet,
+            },
+            {
+                label: msg("Touch ID or Apple Watch, any enrolment"),
+                value: ApplePssoBiometricRequirementEnum.Any,
+            },
+        ];
         const pssoPolicyOptions = [
             {
                 label: msg("None (silent background token only)"),
@@ -260,12 +275,31 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "Maximum interval, in seconds, before a full re-authentication is required. Apple default is 64800 (18 hours); minimum is 3600 (1 hour).",
                         )}
                     ></ak-number-input>
-                    <ak-switch-input
-                        name="applePssoRequireBiometrics"
-                        label=${msg("Require Touch ID")}
-                        ?checked=${this.instance?.applePssoRequireBiometrics ?? false}
+                    <ak-radio-input
+                        name="applePssoBiometricRequirement"
+                        label=${msg("Biometric requirement")}
+                        .options=${pssoBiometricOptions}
+                        .value=${this.instance?.applePssoBiometricRequirement ??
+                        ApplePssoBiometricRequirementEnum.None}
                         help=${msg(
-                            "Require Touch ID (or Apple Watch) whenever the Secure Enclave key is used. Requires native agent support.",
+                            "Which biometric, if any, is required to use the Secure Enclave key. Requires native agent support.",
+                        )}
+                    ></ak-radio-input>
+                    <ak-switch-input
+                        name="applePssoBiometricPasswordFallback"
+                        label=${msg("Allow password fallback")}
+                        ?checked=${this.instance?.applePssoBiometricPasswordFallback ?? true}
+                        help=${msg(
+                            "Prompt for the authentik password when Touch ID is cancelled, fails, or was never enrolled. Turning this off will lock out users on Macs with no Touch ID hardware.",
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="applePssoBiometricReuseDuringUnlock"
+                        label=${msg("Reuse Touch ID from unlock")}
+                        ?checked=${this.instance?.applePssoBiometricReuseDuringUnlock ?? false}
+                        help=${msg(
+                            "Reuse the Touch ID presented when unlocking the Mac instead of prompting again.",
                         )}
                     >
                     </ak-switch-input>

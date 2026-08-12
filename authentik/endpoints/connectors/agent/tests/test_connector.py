@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
     ApplePSSOAuthenticationPolicy,
+    ApplePSSOBiometricRequirement,
     EnrollmentToken,
 )
 from authentik.endpoints.facts import OSFamily
@@ -48,6 +49,41 @@ class TestAgentConnector(APITestCase):
         self.assertNotIn("UnlockPolicy", psso)
         self.assertNotIn("FileVaultPolicy", psso)
         self.assertEqual(psso["LoginFrequency"], 64800)
+
+    def test_biometric_policies_default_off(self):
+        """No requirement means no policy at all. The modifiers are deliberately ignored:
+        PasswordFallback on its own would demand nothing while looking like it demands
+        something, so the agent must be told to leave the OptionSet untouched."""
+        self.assertEqual(self.connector.apple_psso_biometric_policies, [])
+        self.connector.apple_psso_biometric_reuse_during_unlock = True
+        self.assertEqual(self.connector.apple_psso_biometric_policies, [])
+
+    def test_biometric_policies_password_fallback_is_default(self):
+        """Selecting a requirement must carry the password fallback with it. Without it a
+        user whose Touch ID is cancelled, failing, or never enrolled — every Mac with no
+        Touch ID hardware — cannot use the key at all."""
+        self.connector.apple_psso_biometric_requirement = (
+            ApplePSSOBiometricRequirement.CURRENT_SET
+        )
+        self.assertEqual(
+            self.connector.apple_psso_biometric_policies,
+            ["touch_id_or_watch_current_set", "password_fallback"],
+        )
+
+    def test_biometric_policies_all_options(self):
+        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
+        self.connector.apple_psso_biometric_reuse_during_unlock = True
+        self.assertEqual(
+            self.connector.apple_psso_biometric_policies,
+            ["touch_id_or_watch_any", "password_fallback", "reuse_during_unlock"],
+        )
+
+    def test_biometric_policies_fallback_can_be_disabled(self):
+        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
+        self.connector.apple_psso_biometric_password_fallback = False
+        self.assertEqual(
+            self.connector.apple_psso_biometric_policies, ["touch_id_or_watch_any"]
+        )
 
     def test_generate_mdm_macos_psso_policies(self):
         """Configured Apple Platform SSO policies must appear in the generated profile as

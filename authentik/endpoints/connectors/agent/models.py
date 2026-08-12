@@ -40,6 +40,17 @@ class ApplePSSOAuthenticationPolicy(models.TextChoices):
     REQUIRE = "require", _("Require authentication")
 
 
+class ApplePSSOBiometricRequirement(models.TextChoices):
+    """Which biometric, if any, is required to use the user Secure Enclave key. Maps to the
+    mutually exclusive members of
+    ASAuthorizationProviderExtensionLoginConfiguration.UserSecureEnclaveKeyBiometricPolicy.
+    macOS only."""
+
+    NONE = "none", _("None (no biometric required)")
+    CURRENT_SET = "current_set", _("Touch ID or Apple Watch, invalidated if enrolment changes")
+    ANY = "any", _("Touch ID or Apple Watch, any enrolment")
+
+
 class AgentConnector(Connector):
     """Configure authentication and add device compliance using the authentik Agent."""
 
@@ -90,10 +101,44 @@ class AgentConnector(Connector):
     # Apple Platform SSO maximum interval (seconds) before a full re-authentication is
     # required. Maps to LoginFrequency; Apple's default is 64800 (18 hours), minimum 3600.
     apple_psso_login_frequency = models.PositiveIntegerField(default=64800)
-    # Require Touch ID (or Apple Watch) whenever the user Secure Enclave key is used. Maps to
+    # Biometric requirement for the user Secure Enclave key. Together these map to
     # ASAuthorizationProviderExtensionLoginConfiguration.userSecureEnclaveKeyBiometricPolicy,
-    # which is set by the native agent's PSSO extension (macOS only, UserSecureEnclaveKey).
-    apple_psso_require_biometrics = models.BooleanField(default=False)
+    # an OptionSet applied by the native agent's PSSO extension (macOS only,
+    # UserSecureEnclaveKey). Apple's option set has one requirement plus two independent
+    # modifiers, so it is modelled here as a choice plus two booleans rather than a flag.
+    apple_psso_biometric_requirement = models.TextField(
+        choices=ApplePSSOBiometricRequirement.choices,
+        default=ApplePSSOBiometricRequirement.NONE,
+    )
+    # Maps to PasswordFallback. Defaults on: without it a user whose Touch ID is cancelled,
+    # failing, or never enrolled has no way to use the key at all — and Apple's guidance is
+    # explicit that if neither biometrics nor web-based authentication is available, the
+    # user cannot log in. Macs without Touch ID hardware are the common case.
+    apple_psso_biometric_password_fallback = models.BooleanField(default=True)
+    # Maps to ReuseDuringUnlock: reuse the Touch ID presented at unlock rather than
+    # prompting again.
+    apple_psso_biometric_reuse_during_unlock = models.BooleanField(default=False)
+
+    @property
+    def apple_psso_biometric_policies(self) -> list[str]:
+        """Flattens the biometric settings into the list the agent applies as Apple's
+        UserSecureEnclaveKeyBiometricPolicy OptionSet.
+
+        Modifiers are meaningless on their own — PasswordFallback with no requirement is a
+        policy that demands nothing while reading like it demands something — so an unset
+        requirement yields an empty list and the agent leaves the property untouched."""
+        requirement = {
+            ApplePSSOBiometricRequirement.CURRENT_SET: "touch_id_or_watch_current_set",
+            ApplePSSOBiometricRequirement.ANY: "touch_id_or_watch_any",
+        }.get(self.apple_psso_biometric_requirement)
+        if requirement is None:
+            return []
+        policies = [requirement]
+        if self.apple_psso_biometric_password_fallback:
+            policies.append("password_fallback")
+        if self.apple_psso_biometric_reuse_during_unlock:
+            policies.append("reuse_during_unlock")
+        return policies
 
     @property
     def icon_url(self):
