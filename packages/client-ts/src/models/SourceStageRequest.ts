@@ -12,6 +12,12 @@
  * Do not edit the class manually.
  */
 
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import {
+    ResumeOnMatchFailuresEnumFromJSON,
+    ResumeOnMatchFailuresEnumToJSON,
+} from "./ResumeOnMatchFailuresEnum";
+
 /**
  * SourceStage Serializer
  * @export
@@ -36,6 +42,12 @@ export interface SourceStageRequest {
      * @memberof SourceStageRequest
      */
     resumeTimeout?: string;
+    /**
+     * Source matching failure reasons for which the flow should resume.
+     * @type {Array<ResumeOnMatchFailuresEnum>}
+     * @memberof SourceStageRequest
+     */
+    resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }
 
 /**
@@ -62,6 +74,12 @@ export function SourceStageRequestFromJSONTyped(
         name: json["name"],
         source: json["source"],
         resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
+        resumeOnMatchFailures:
+            json["resume_on_match_failures"] == null
+                ? undefined
+                : (json["resume_on_match_failures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumFromJSON,
+                  ),
     };
 }
 
@@ -81,5 +99,11 @@ export function SourceStageRequestToJSONTyped(
         name: value["name"],
         source: value["source"],
         resume_timeout: value["resumeTimeout"],
+        resume_on_match_failures:
+            value["resumeOnMatchFailures"] == null
+                ? undefined
+                : (value["resumeOnMatchFailures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumToJSON,
+                  ),
     };
 }

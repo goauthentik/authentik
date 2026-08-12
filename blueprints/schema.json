@@ -10064,6 +10064,18 @@
                     "minLength": 1,
                     "title": "Resume timeout",
                     "description": "Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)"
+                },
+                "resume_on_match_failures": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "missing_property"
+                        ],
+                        "title": "Resume on match failures"
+                    },
+                    "title": "Resume on match failures",
+                    "description": "Source matching failure reasons for which the flow should resume."
                 }
             },
             "required": []
