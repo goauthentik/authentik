@@ -57,6 +57,9 @@ class TestAppleRegister(APITestCase):
                 "jwks_endpoint": "http://testserver/endpoints/agent/psso/jwks/",
                 "nonce_endpoint": "http://testserver/endpoints/agent/psso/nonce/",
                 "token_endpoint": "http://testserver/endpoints/agent/psso/token/",
+                # Empty by default: the connector requires no biometric, and a modifier
+                # without a requirement is not a policy.
+                "biometric_policies": [],
             },
         )
 

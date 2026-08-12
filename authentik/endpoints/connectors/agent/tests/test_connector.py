@@ -62,9 +62,7 @@ class TestAgentConnector(APITestCase):
         """Selecting a requirement must carry the password fallback with it. Without it a
         user whose Touch ID is cancelled, failing, or never enrolled — every Mac with no
         Touch ID hardware — cannot use the key at all."""
-        self.connector.apple_psso_biometric_requirement = (
-            ApplePSSOBiometricRequirement.CURRENT_SET
-        )
+        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.CURRENT_SET
         self.assertEqual(
             self.connector.apple_psso_biometric_policies,
             ["touch_id_or_watch_current_set", "password_fallback"],
@@ -81,9 +79,7 @@ class TestAgentConnector(APITestCase):
     def test_biometric_policies_fallback_can_be_disabled(self):
         self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
         self.connector.apple_psso_biometric_password_fallback = False
-        self.assertEqual(
-            self.connector.apple_psso_biometric_policies, ["touch_id_or_watch_any"]
-        )
+        self.assertEqual(self.connector.apple_psso_biometric_policies, ["touch_id_or_watch_any"])
 
     def test_generate_mdm_macos_psso_policies(self):
         """Configured Apple Platform SSO policies must appear in the generated profile as
