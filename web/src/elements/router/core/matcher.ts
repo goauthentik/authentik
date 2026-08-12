@@ -49,3 +49,25 @@ export function matchRoute<R extends RoutePatternLike>(
 
     return null;
 }
+
+/**
+ * Whether two matches resolve to the same rendered view: the same route with the
+ * same path parameters. {@linkcode matchRoute} returns a fresh object every call,
+ * so a search-param-only navigation (a tab, a table filter) yields an equal-but-
+ * new match — comparing structurally lets a consumer skip re-rendering it.
+ */
+export function sameRouteMatch<R extends RoutePatternLike>(
+    a: RouteMatch<R> | null,
+    b: RouteMatch<R> | null,
+): boolean {
+    if (a === b) return true;
+    if (a === null || b === null) return false;
+    if (a.route !== b.route) return false;
+
+    const aKeys = Object.keys(a.parameters);
+    const bKeys = Object.keys(b.parameters);
+
+    if (aKeys.length !== bKeys.length) return false;
+
+    return aKeys.every((key) => a.parameters[key] === b.parameters[key]);
+}

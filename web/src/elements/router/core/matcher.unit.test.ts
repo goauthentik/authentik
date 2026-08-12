@@ -1,4 +1,4 @@
-import { matchRoute, type RoutePatternLike } from "./matcher.js";
+import { matchRoute, type RoutePatternLike, sameRouteMatch } from "./matcher.js";
 
 import { describe, expect, it } from "vitest";
 
@@ -33,5 +33,39 @@ describe("matchRoute", () => {
 
     it("returns null when nothing matches", () => {
         expect(matchRoute("/nope", [route("/users/:id")])).toBeNull();
+    });
+});
+
+describe("sameRouteMatch", () => {
+    const users = route("/users/:id");
+    const groups = route("/groups/:id");
+
+    it("treats two null matches as the same", () => {
+        expect(sameRouteMatch(null, null)).toBe(true);
+    });
+
+    it("treats null vs a match as different", () => {
+        expect(sameRouteMatch(null, matchRoute("/users/42", [users]))).toBe(false);
+    });
+
+    it("is true for fresh matches of the same route and params (a search-only change)", () => {
+        expect(
+            sameRouteMatch(matchRoute("/users/42", [users]), matchRoute("/users/42", [users])),
+        ).toBe(true);
+    });
+
+    it("is false when the path parameters differ", () => {
+        expect(
+            sameRouteMatch(matchRoute("/users/1", [users]), matchRoute("/users/2", [users])),
+        ).toBe(false);
+    });
+
+    it("is false when the matched route differs", () => {
+        expect(
+            sameRouteMatch(
+                matchRoute("/users/1", [users, groups]),
+                matchRoute("/groups/1", [users, groups]),
+            ),
+        ).toBe(false);
     });
 });
