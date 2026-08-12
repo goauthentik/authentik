@@ -44,4 +44,4 @@ class AuthenticatorEndpointStageView(ChallengeStageView):
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         challenge = self._get_challenge()
         challenge.is_valid()
-        return HttpChallengeResponse(challenge)
+        return HttpChallengeResponse(challenge, self.request)

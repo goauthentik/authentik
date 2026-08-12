@@ -15,6 +15,8 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * Base login challenge for Identification stage
@@ -40,6 +42,12 @@ export interface TelegramLoginChallenge {
      * @memberof TelegramLoginChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {Array<FlowMessage>}
+     * @memberof TelegramLoginChallenge
+     */
+    messages?: Array<FlowMessage>;
     /**
      * Telegram bot username
      * @type {string}
@@ -91,6 +99,10 @@ export function TelegramLoginChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         botUsername: json["bot_username"],
         requestMessageAccess: json["request_message_access"],
     };
@@ -112,6 +124,10 @@ export function TelegramLoginChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         bot_username: value["botUsername"],
         request_message_access: value["requestMessageAccess"],
     };

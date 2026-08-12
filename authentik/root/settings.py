@@ -193,6 +193,7 @@ SPECTACULAR_SETTINGS = {
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
+        "FlowMessageLevelEnum": "authentik.flows.challenge.FLOW_MESSAGE_LEVELS",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
         "OffboardingActionEnum": (

@@ -75,4 +75,4 @@ class NativeLogoutStageView(NativeLogoutStageViewBase):
         if challenge.initial_data.get("is_complete"):
             return self.executor.stage_ok()
 
-        return HttpChallengeResponse(challenge)
+        return HttpChallengeResponse(challenge, self.request)

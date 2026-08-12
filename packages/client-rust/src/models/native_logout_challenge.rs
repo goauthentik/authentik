@@ -19,6 +19,8 @@ pub struct NativeLogoutChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<models::FlowMessage>>,
     #[serde(rename = "provider_name", skip_serializing_if = "Option::is_none")]
     pub provider_name: Option<String>,
     #[serde(rename = "is_complete", skip_serializing_if = "Option::is_none")]
@@ -44,6 +46,7 @@ impl NativeLogoutChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
+            messages: None,
             provider_name: None,
             is_complete: None,
             post_url: None,

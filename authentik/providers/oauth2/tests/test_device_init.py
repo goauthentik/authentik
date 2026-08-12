@@ -94,6 +94,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                     "layout": "stacked",
                     "title": self.device_flow.title,
                 },
+                "messages": [],
             },
         )
 

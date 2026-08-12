@@ -24,6 +24,7 @@ type SessionEndChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	PendingUser          string                    `json:"pending_user"`
 	PendingUserAvatar    string                    `json:"pending_user_avatar"`
 	ApplicationName      *string                   `json:"application_name,omitempty"`
@@ -154,6 +155,38 @@ func (o *SessionEndChallenge) HasResponseErrors() bool {
 // SetResponseErrors gets a reference to the given map[string][]ErrorDetail and assigns it to the ResponseErrors field.
 func (o *SessionEndChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
+}
+
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *SessionEndChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SessionEndChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *SessionEndChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *SessionEndChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
 }
 
 // GetPendingUser returns the PendingUser field value
@@ -375,6 +408,9 @@ func (o SessionEndChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 	toSerialize["pending_user"] = o.PendingUser
 	toSerialize["pending_user_avatar"] = o.PendingUserAvatar
 	if !IsNil(o.ApplicationName) {
@@ -438,6 +474,7 @@ func (o *SessionEndChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "pending_user")
 		delete(additionalProperties, "pending_user_avatar")
 		delete(additionalProperties, "application_name")

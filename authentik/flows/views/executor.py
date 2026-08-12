@@ -258,7 +258,7 @@ class FlowExecutorView(APIView):
             ).with_exception(exc).from_http(self.request)
         challenge = FlowErrorChallenge(self.request, exc)
         challenge.is_valid(raise_exception=True)
-        return to_stage_response(self.request, HttpChallengeResponse(challenge))
+        return to_stage_response(self.request, HttpChallengeResponse(challenge, self.request))
 
     @extend_schema(
         responses={
@@ -576,7 +576,8 @@ def to_stage_response(
                     "to": str(redirect_url),
                     "final_redirect": final_redirect,
                 }
-            )
+            ),
+            request,
         )
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
@@ -584,7 +585,8 @@ def to_stage_response(
                 {
                     "body": source.render().content.decode("utf-8"),
                 }
-            )
+            ),
+            request,
         )
     # Check for actual HttpResponse (without isinstance as we don't want to check inheritance)
     if source.__class__ == HttpResponse:
@@ -593,7 +595,8 @@ def to_stage_response(
                 {
                     "body": source.content.decode("utf-8"),
                 }
-            )
+            ),
+            request,
         )
     return source
 

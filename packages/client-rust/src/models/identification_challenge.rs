@@ -19,6 +19,8 @@ pub struct IdentificationChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<models::FlowMessage>>,
     #[serde(rename = "user_fields", deserialize_with = "Option::deserialize")]
     pub user_fields: Option<Vec<String>>,
     #[serde(
@@ -87,6 +89,7 @@ impl IdentificationChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
+            messages: None,
             user_fields,
             pending_user_identifier: None,
             password_fields,

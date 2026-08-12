@@ -24,6 +24,7 @@ type ShellChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	Body                 string                    `json:"body"`
 	AdditionalProperties map[string]interface{}
 }
@@ -148,6 +149,38 @@ func (o *ShellChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *ShellChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ShellChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *ShellChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *ShellChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 // GetBody returns the Body field value
 func (o *ShellChallenge) GetBody() string {
 	if o == nil {
@@ -190,6 +223,9 @@ func (o ShellChallenge) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
+	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
 	}
 	toSerialize["body"] = o.Body
 
@@ -238,6 +274,7 @@ func (o *ShellChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "body")
 		o.AdditionalProperties = additionalProperties
 	}

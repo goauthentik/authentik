@@ -23,6 +23,7 @@ type IframeLogoutChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	LogoutUrls           []LogoutURL               `json:"logout_urls,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -146,6 +147,38 @@ func (o *IframeLogoutChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *IframeLogoutChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IframeLogoutChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *IframeLogoutChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *IframeLogoutChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 // GetLogoutUrls returns the LogoutUrls field value if set, zero value otherwise.
 func (o *IframeLogoutChallenge) GetLogoutUrls() []LogoutURL {
 	if o == nil || IsNil(o.LogoutUrls) {
@@ -197,6 +230,9 @@ func (o IframeLogoutChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 	if !IsNil(o.LogoutUrls) {
 		toSerialize["logout_urls"] = o.LogoutUrls
 	}
@@ -225,6 +261,7 @@ func (o *IframeLogoutChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "logout_urls")
 		o.AdditionalProperties = additionalProperties
 	}

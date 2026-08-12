@@ -17,6 +17,8 @@ import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./Contextu
 import type { DeviceChallenge } from "./DeviceChallenge";
 import { DeviceChallengeFromJSON, DeviceChallengeToJSON } from "./DeviceChallenge";
 import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 import type { SelectableStage } from "./SelectableStage";
 import { SelectableStageFromJSON, SelectableStageToJSON } from "./SelectableStage";
 
@@ -44,6 +46,12 @@ export interface AuthenticatorValidationChallenge {
      * @memberof AuthenticatorValidationChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {Array<FlowMessage>}
+     * @memberof AuthenticatorValidationChallenge
+     */
+    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -125,6 +133,10 @@ export function AuthenticatorValidationChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         pendingUser: json["pending_user"],
         pendingUserAvatar: json["pending_user_avatar"],
         deviceChallenges: (json["device_challenges"] as Array<any>).map(DeviceChallengeFromJSON),
@@ -152,6 +164,10 @@ export function AuthenticatorValidationChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         pending_user: value["pendingUser"],
         pending_user_avatar: value["pendingUserAvatar"],
         device_challenges: (value["deviceChallenges"] as Array<any>).map(DeviceChallengeToJSON),

@@ -24,6 +24,7 @@ type FlowErrorChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	RequestId            string                    `json:"request_id"`
 	Error                *string                   `json:"error,omitempty"`
 	Traceback            *string                   `json:"traceback,omitempty"`
@@ -150,6 +151,38 @@ func (o *FlowErrorChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *FlowErrorChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FlowErrorChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *FlowErrorChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *FlowErrorChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 // GetRequestId returns the RequestId field value
 func (o *FlowErrorChallenge) GetRequestId() string {
 	if o == nil {
@@ -257,6 +290,9 @@ func (o FlowErrorChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 	toSerialize["request_id"] = o.RequestId
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
@@ -310,6 +346,7 @@ func (o *FlowErrorChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "request_id")
 		delete(additionalProperties, "error")
 		delete(additionalProperties, "traceback")

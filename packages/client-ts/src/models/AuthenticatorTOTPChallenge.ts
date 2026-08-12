@@ -15,6 +15,8 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * TOTP Setup challenge
@@ -40,6 +42,12 @@ export interface AuthenticatorTOTPChallenge {
      * @memberof AuthenticatorTOTPChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {Array<FlowMessage>}
+     * @memberof AuthenticatorTOTPChallenge
+     */
+    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -106,6 +114,10 @@ export function AuthenticatorTOTPChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         pendingUser: json["pending_user"],
         pendingUserAvatar: json["pending_user_avatar"],
         configUrl: json["config_url"],
@@ -128,6 +140,10 @@ export function AuthenticatorTOTPChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         pending_user: value["pendingUser"],
         pending_user_avatar: value["pendingUserAvatar"],
         config_url: value["configUrl"],

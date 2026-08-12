@@ -19,6 +19,8 @@ pub struct FrameChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<models::FlowMessage>>,
     #[serde(rename = "url")]
     pub url: String,
     #[serde(rename = "loading_overlay", skip_serializing_if = "Option::is_none")]
@@ -34,6 +36,7 @@ impl FrameChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
+            messages: None,
             url,
             loading_overlay: None,
             loading_text,

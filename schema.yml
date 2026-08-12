@@ -35600,6 +35600,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -36287,6 +36291,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         client_id:
           type: string
         scope:
@@ -36647,6 +36655,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -36801,6 +36813,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37052,6 +37068,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37211,6 +37231,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37327,6 +37351,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37580,6 +37608,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37633,6 +37665,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -37801,6 +37837,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         url:
           type: string
         attrs:
@@ -38170,6 +38210,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -38633,6 +38677,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -39920,6 +39968,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         name:
           type: string
       required:
@@ -40120,6 +40172,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
     EmailChallengeResponseRequest:
       type: object
       description: |-
@@ -40376,6 +40432,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         challenge:
           type: string
         challenge_idle_timeout:
@@ -41434,6 +41494,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         request_id:
           type: string
         error:
@@ -41492,6 +41556,25 @@ components:
       - sidebar_right
       - sidebar_left_frame_background
       - sidebar_right_frame_background
+      type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
       type: string
     FlowRequest:
       type: object
@@ -41718,6 +41801,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         url:
           type: string
         loading_overlay:
@@ -42956,6 +43043,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         user_fields:
           type: array
           items:
@@ -43223,6 +43314,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         logout_urls:
           type: array
           items:
@@ -45644,6 +45739,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         provider_name:
           type: string
         is_complete:
@@ -46443,6 +46542,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
     OAuthDeviceCodeChallengeResponseRequest:
       type: object
       description: Response that includes the user-entered device code
@@ -46471,6 +46574,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
     OAuthDeviceCodeFinishChallengeResponseRequest:
       type: object
       description: Response that device has been authenticated and tab can be closed
@@ -49772,6 +49879,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -54356,6 +54467,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         client_id:
           type: string
         slug:
@@ -54931,6 +55046,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         fields:
           type: array
           items:
@@ -56140,6 +56259,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         to:
           type: string
         final_redirect:
@@ -58766,6 +58889,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:
@@ -58999,6 +59126,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         body:
           type: string
       required:
@@ -59737,6 +59868,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         bot_username:
           type: string
           description: Telegram bot username
@@ -60741,6 +60876,10 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
         pending_user:
           type: string
         pending_user_avatar:

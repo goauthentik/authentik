@@ -24,6 +24,7 @@ type FrameChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	Url                  string                    `json:"url"`
 	LoadingOverlay       *bool                     `json:"loading_overlay,omitempty"`
 	LoadingText          string                    `json:"loading_text"`
@@ -155,6 +156,38 @@ func (o *FrameChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *FrameChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FrameChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *FrameChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *FrameChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 // GetUrl returns the Url field value
 func (o *FrameChallenge) GetUrl() string {
 	if o == nil {
@@ -254,6 +287,9 @@ func (o FrameChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 	toSerialize["url"] = o.Url
 	if !IsNil(o.LoadingOverlay) {
 		toSerialize["loading_overlay"] = o.LoadingOverlay
@@ -306,6 +342,7 @@ func (o *FrameChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "url")
 		delete(additionalProperties, "loading_overlay")
 		delete(additionalProperties, "loading_text")

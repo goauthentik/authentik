@@ -20,6 +20,8 @@ pub struct AppleLoginChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<models::FlowMessage>>,
     #[serde(rename = "client_id")]
     pub client_id: String,
     #[serde(rename = "scope")]
@@ -42,6 +44,7 @@ impl AppleLoginChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
+            messages: None,
             client_id,
             scope,
             redirect_uri,

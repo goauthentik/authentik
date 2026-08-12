@@ -598,6 +598,7 @@ class TestAuthorize(OAuthTestCase):
                     "expires_in": "3600",
                     "state": state,
                 },
+                "messages": [],
             },
         )
         self.validate_jwt(token, provider)
@@ -643,6 +644,7 @@ class TestAuthorize(OAuthTestCase):
                     "code": code.code,
                     "state": state,
                 },
+                "messages": [],
             },
         )
 

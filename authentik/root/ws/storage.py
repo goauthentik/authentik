@@ -7,7 +7,6 @@ from django.contrib.messages.storage.session import SessionStorage
 from django.core.cache import cache
 from django.http.request import HttpRequest
 
-SESSION_KEY = "_messages"
 CACHE_PREFIX = "goauthentik.io/root/messages_"
 
 

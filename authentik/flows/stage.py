@@ -106,7 +106,7 @@ class ChallengeStageView(StageView):
                 errors=challenge.errors,
                 challenge=challenge.data,
             )
-        return HttpChallengeResponse(challenge)
+        return HttpChallengeResponse(challenge, self.request)
 
     def post(self, request: Request, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
@@ -255,7 +255,7 @@ class ChallengeStageView(StageView):
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,
             )
-        return HttpChallengeResponse(challenge_response)
+        return HttpChallengeResponse(challenge_response, self.request)
 
 
 class AccessDeniedStage(ChallengeStageView):
@@ -295,7 +295,7 @@ class RedirectStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        return HttpChallengeResponse(self.get_challenge())
+        return HttpChallengeResponse(self.get_challenge(), self.request)
 
 
 class SessionEndStage(ChallengeStageView):

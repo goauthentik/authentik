@@ -15,6 +15,8 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 import type { LogoutURL } from "./LogoutURL";
 import { LogoutURLFromJSON, LogoutURLToJSON } from "./LogoutURL";
 
@@ -42,6 +44,12 @@ export interface IframeLogoutChallenge {
      * @memberof IframeLogoutChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {Array<FlowMessage>}
+     * @memberof IframeLogoutChallenge
+     */
+    messages?: Array<FlowMessage>;
     /**
      *
      * @type {Array<LogoutURL>}
@@ -73,6 +81,10 @@ export function IframeLogoutChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         logoutUrls:
             json["logout_urls"] == null
                 ? undefined
@@ -96,6 +108,10 @@ export function IframeLogoutChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         logout_urls:
             value["logoutUrls"] == null
                 ? undefined

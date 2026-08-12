@@ -24,6 +24,7 @@ type EndpointAgentChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
+	Messages             []FlowMessage             `json:"messages,omitempty"`
 	Challenge            string                    `json:"challenge"`
 	ChallengeIdleTimeout int32                     `json:"challenge_idle_timeout"`
 	AdditionalProperties map[string]interface{}
@@ -150,6 +151,38 @@ func (o *EndpointAgentChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *EndpointAgentChallenge) GetMessages() []FlowMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []FlowMessage
+		return ret
+	}
+	return o.Messages
+}
+
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EndpointAgentChallenge) GetMessagesOk() ([]FlowMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
+
+// HasMessages returns a boolean if a field has been set.
+func (o *EndpointAgentChallenge) HasMessages() bool {
+	if o != nil && !IsNil(o.Messages) {
+		return true
+	}
+
+	return false
+}
+
+// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
+func (o *EndpointAgentChallenge) SetMessages(v []FlowMessage) {
+	o.Messages = v
+}
+
 // GetChallenge returns the Challenge field value
 func (o *EndpointAgentChallenge) GetChallenge() string {
 	if o == nil {
@@ -217,6 +250,9 @@ func (o EndpointAgentChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
+	if !IsNil(o.Messages) {
+		toSerialize["messages"] = o.Messages
+	}
 	toSerialize["challenge"] = o.Challenge
 	toSerialize["challenge_idle_timeout"] = o.ChallengeIdleTimeout
 
@@ -266,6 +302,7 @@ func (o *EndpointAgentChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
+		delete(additionalProperties, "messages")
 		delete(additionalProperties, "challenge")
 		delete(additionalProperties, "challenge_idle_timeout")
 		o.AdditionalProperties = additionalProperties

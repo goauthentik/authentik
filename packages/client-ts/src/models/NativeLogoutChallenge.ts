@@ -15,6 +15,8 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
+import type { FlowMessage } from "./FlowMessage";
+import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 import type { SAMLBindingsEnum } from "./SAMLBindingsEnum";
 import { SAMLBindingsEnumFromJSON, SAMLBindingsEnumToJSON } from "./SAMLBindingsEnum";
 
@@ -42,6 +44,12 @@ export interface NativeLogoutChallenge {
      * @memberof NativeLogoutChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
+    /**
+     *
+     * @type {Array<FlowMessage>}
+     * @memberof NativeLogoutChallenge
+     */
+    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -115,6 +123,10 @@ export function NativeLogoutChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
+        messages:
+            json["messages"] == null
+                ? undefined
+                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         providerName: json["provider_name"] == null ? undefined : json["provider_name"],
         isComplete: json["is_complete"] == null ? undefined : json["is_complete"],
         postUrl: json["post_url"] == null ? undefined : json["post_url"],
@@ -145,6 +157,10 @@ export function NativeLogoutChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
+        messages:
+            value["messages"] == null
+                ? undefined
+                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         provider_name: value["providerName"],
         is_complete: value["isComplete"],
         post_url: value["postUrl"],
