@@ -5,12 +5,23 @@ from msgraph.generated.models.managed_device import ManagedDevice
 from msgraph.graph_service_client import GraphServiceClient
 
 from authentik.endpoints.controller import BaseController, Capabilities
+from authentik.endpoints.facts import OSFamily
 from authentik.endpoints.models import Device, DeviceConnection
 from authentik.enterprise.endpoints.connectors.microsoft_intune.models import (
     MicrosoftIntuneConnector,
 )
 from authentik.enterprise.providers.microsoft_entra.clients.base import entity_as_dict
 from authentik.policies.utils import delete_none_values
+
+_OS_FAMILY_MAP: dict[str, OSFamily] = {
+    "windows": OSFamily.windows,
+    "ios": OSFamily.iOS,
+    "macos": OSFamily.macOS,
+    "mac os x": OSFamily.macOS,
+    "android": OSFamily.android,
+    "linux": OSFamily.linux,
+    "chromeos": OSFamily.linux,
+}
 
 
 class MicrosoftIntuneController(BaseController):
@@ -49,12 +60,20 @@ class MicrosoftIntuneController(BaseController):
                 break
             devices = run(client.device_management.managed_devices.with_url(next_link).get())
 
+    @staticmethod
+    def _os_family(operating_system: str | None) -> OSFamily:
+        if not operating_system:
+            return OSFamily.other
+        return _OS_FAMILY_MAP.get(operating_system.lower(), OSFamily.other)
+
     def map_device_data(self, device: ManagedDevice) -> dict[str, Any]:
+        os_family = self._os_family(device.operating_system)
         return {
             "os": delete_none_values(
                 {
                     "version": device.os_version,
                     "name": device.operating_system,
+                    "family": os_family,
                 }
             ),
             "disks": [],
