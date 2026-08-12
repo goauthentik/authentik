@@ -142,7 +142,7 @@ class UserInterface extends WithLicenseSummary(
 
         const backgroundStyles = this.uiConfig.theme.background;
 
-        const navItems = [{ label: msg("Applications"), link: "/library" }];
+        const navItems = [{ label: msg("Applications"), link: toUserInterface("library") }];
         // Requests are an enterprise feature, can be disabled for the user interface
         // and are only shown when the admin has configured at least one request rule
         // We can't easily check if this user actually has something they can request,
@@ -152,14 +152,14 @@ class UserInterface extends WithLicenseSummary(
             this.uiConfig.enabledFeatures.requests &&
             this.can(CapabilitiesEnum.CanRequest)
         ) {
-            navItems.push({ label: msg("Discover"), link: "/requests" });
+            navItems.push({ label: msg("Discover"), link: toUserInterface("requests") });
         }
         if (
             this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
             this.uiConfig.enabledFeatures.agents &&
             this.can(CapabilitiesEnum.CanAgentSelfService)
         ) {
-            navItems.push({ label: msg("Agents"), link: "/agents" });
+            navItems.push({ label: msg("Agents"), link: toUserInterface("agents") });
         }
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
