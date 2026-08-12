@@ -72,7 +72,18 @@ class TokenView(View):
         )
         handler = getattr(self, handler_func, None)
         if not handler:
-            LOGGER.debug("Handler not found", handler=handler_func)
+            # Notably this is where Apple's password fallback lands: macOS applies
+            # PasswordFallback and prompts for the authentik password, but there is
+            # no handle_v1_0_password, so the login fails with no useful signal.
+            # Log the claim names (never the values) so the request shape can be
+            # established without having to reproduce with a debugger attached.
+            LOGGER.warning(
+                "No handler for Platform SSO grant",
+                handler=handler_func,
+                version=version,
+                grant_type=grant_type,
+                request_claims=sorted(self.jwt_request.keys()),
+            )
             return HttpResponse(status=400)
         LOGGER.debug("sending to handler", handler=handler_func)
         return handler()
@@ -81,7 +92,10 @@ class TokenView(View):
         # Decode without validation to get header
         header = get_unverified_header(assertion)
         LOGGER.debug("token header", header=header)
-        expected_kid = header["kid"]
+        expected_kid = header.get("kid")
+        if not expected_kid:
+            LOGGER.warning("Request token carries no key ID", header=header)
+            return None
 
         self.device_connection = (
             AgentDeviceConnection.objects.filter(apple_sign_key_id=expected_kid)
@@ -111,7 +125,11 @@ class TokenView(View):
         self.remote_nonce = decoded.get("nonce")
 
         # Check that the nonce hasn't been used before
-        nonce = AppleNonce.objects.filter(nonce=decoded["request_nonce"]).first()
+        request_nonce = decoded.get("request_nonce")
+        if not request_nonce:
+            LOGGER.warning("Request token carries no request_nonce", claims=sorted(decoded.keys()))
+            raise ValidationError("Invalid request")
+        nonce = AppleNonce.objects.filter(nonce=request_nonce).first()
         if not nonce:
             raise ValidationError("Invalid nonce")
         self.nonce = nonce
