@@ -24,6 +24,7 @@ export * from "./AppleChallengeResponseRequest";
 export * from "./AppleIndependentSecureEnclave";
 export * from "./AppleIndependentSecureEnclaveRequest";
 export * from "./AppleLoginChallenge";
+export * from "./ApplePssoAuthenticationMethodEnum";
 export * from "./ApplePssoBiometricRequirementEnum";
 export * from "./ApplePssoFilevaultPolicyEnum";
 export * from "./Application";

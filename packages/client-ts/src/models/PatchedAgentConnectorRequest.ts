@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplePssoAuthenticationMethodEnum } from "./ApplePssoAuthenticationMethodEnum";
+import {
+    ApplePssoAuthenticationMethodEnumFromJSON,
+    ApplePssoAuthenticationMethodEnumToJSON,
+} from "./ApplePssoAuthenticationMethodEnum";
 import type { ApplePssoBiometricRequirementEnum } from "./ApplePssoBiometricRequirementEnum";
 import {
     ApplePssoBiometricRequirementEnumFromJSON,
@@ -115,6 +120,36 @@ export interface PatchedAgentConnectorRequest {
     jwtFederationProviders?: Array<number>;
     /**
      *
+     * @type {ApplePssoAuthenticationMethodEnum}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoAuthenticationMethod?: ApplePssoAuthenticationMethodEnum;
+    /**
+     *
+     * @type {number}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoAuthenticationGracePeriod?: number;
+    /**
+     *
+     * @type {number}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoOfflineGracePeriod?: number;
+    /**
+     *
+     * @type {Array<string>}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoNonPlatformSsoAccounts?: Array<string>;
+    /**
+     *
+     * @type {boolean}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoEnableCreateUserAtLogin?: boolean;
+    /**
+     *
      * @type {ApplePssoFilevaultPolicyEnum}
      * @memberof PatchedAgentConnectorRequest
      */
@@ -211,6 +246,28 @@ export function PatchedAgentConnectorRequestFromJSONTyped(
                 : json["challenge_trigger_check_in"],
         jwtFederationProviders:
             json["jwt_federation_providers"] == null ? undefined : json["jwt_federation_providers"],
+        applePssoAuthenticationMethod:
+            json["apple_psso_authentication_method"] == null
+                ? undefined
+                : ApplePssoAuthenticationMethodEnumFromJSON(
+                      json["apple_psso_authentication_method"],
+                  ),
+        applePssoAuthenticationGracePeriod:
+            json["apple_psso_authentication_grace_period"] == null
+                ? undefined
+                : json["apple_psso_authentication_grace_period"],
+        applePssoOfflineGracePeriod:
+            json["apple_psso_offline_grace_period"] == null
+                ? undefined
+                : json["apple_psso_offline_grace_period"],
+        applePssoNonPlatformSsoAccounts:
+            json["apple_psso_non_platform_sso_accounts"] == null
+                ? undefined
+                : json["apple_psso_non_platform_sso_accounts"],
+        applePssoEnableCreateUserAtLogin:
+            json["apple_psso_enable_create_user_at_login"] == null
+                ? undefined
+                : json["apple_psso_enable_create_user_at_login"],
         applePssoLoginPolicy:
             json["apple_psso_login_policy"] == null
                 ? undefined
@@ -271,6 +328,13 @@ export function PatchedAgentConnectorRequestToJSONTyped(
         challenge_idle_timeout: value["challengeIdleTimeout"],
         challenge_trigger_check_in: value["challengeTriggerCheckIn"],
         jwt_federation_providers: value["jwtFederationProviders"],
+        apple_psso_authentication_method: ApplePssoAuthenticationMethodEnumToJSON(
+            value["applePssoAuthenticationMethod"],
+        ),
+        apple_psso_authentication_grace_period: value["applePssoAuthenticationGracePeriod"],
+        apple_psso_offline_grace_period: value["applePssoOfflineGracePeriod"],
+        apple_psso_non_platform_sso_accounts: value["applePssoNonPlatformSsoAccounts"],
+        apple_psso_enable_create_user_at_login: value["applePssoEnableCreateUserAtLogin"],
         apple_psso_login_policy: ApplePssoFilevaultPolicyEnumToJSON(value["applePssoLoginPolicy"]),
         apple_psso_unlock_policy: ApplePssoFilevaultPolicyEnumToJSON(
             value["applePssoUnlockPolicy"],

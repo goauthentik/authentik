@@ -8103,6 +8103,39 @@
                     },
                     "title": "Jwt federation providers"
                 },
+                "apple_psso_authentication_method": {
+                    "type": "string",
+                    "enum": [
+                        "user_secure_enclave_key",
+                        "password"
+                    ],
+                    "title": "Apple psso authentication method"
+                },
+                "apple_psso_authentication_grace_period": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso authentication grace period"
+                },
+                "apple_psso_offline_grace_period": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso offline grace period"
+                },
+                "apple_psso_non_platform_sso_accounts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Apple psso non platform sso accounts"
+                    },
+                    "title": "Apple psso non platform sso accounts"
+                },
+                "apple_psso_enable_create_user_at_login": {
+                    "type": "boolean",
+                    "title": "Apple psso enable create user at login"
+                },
                 "apple_psso_login_policy": {
                     "type": "string",
                     "enum": [

@@ -35878,6 +35878,22 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_authentication_method:
+          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
+        apple_psso_authentication_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_offline_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_non_platform_sso_accounts:
+          type: array
+          items:
+            type: string
+        apple_psso_enable_create_user_at_login:
+          type: boolean
         apple_psso_login_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:
@@ -35947,6 +35963,23 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_authentication_method:
+          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
+        apple_psso_authentication_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_offline_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_non_platform_sso_accounts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        apple_psso_enable_create_user_at_login:
+          type: boolean
         apple_psso_login_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:
@@ -36331,6 +36364,11 @@ components:
       - redirect_uri
       - scope
       - state
+    ApplePssoAuthenticationMethodEnum:
+      enum:
+      - user_secure_enclave_key
+      - password
+      type: string
     ApplePssoBiometricRequirementEnum:
       enum:
       - none
@@ -50225,6 +50263,23 @@ components:
           type: array
           items:
             type: integer
+        apple_psso_authentication_method:
+          $ref: '#/components/schemas/ApplePssoAuthenticationMethodEnum'
+        apple_psso_authentication_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_offline_grace_period:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        apple_psso_non_platform_sso_accounts:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        apple_psso_enable_create_user_at_login:
+          type: boolean
         apple_psso_login_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:

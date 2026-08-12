@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
@@ -38,6 +39,16 @@ class ApplePSSOAuthenticationPolicy(models.TextChoices):
     NONE = "none", _("None (silent background token only)")
     ATTEMPT = "attempt", _("Attempt authentication (enforced only when online)")
     REQUIRE = "require", _("Require authentication")
+
+
+class ApplePSSOAuthenticationMethod(models.TextChoices):
+    """How the user proves who they are at the macOS login window. Maps to the
+    AuthenticationMethod key of the com.apple.extensiblesso payload. Apple models this as a
+    single mode rather than a primary with fallbacks, and it decides which of the settings
+    below macOS actually reads, so the two groups are mutually exclusive. macOS only."""
+
+    USER_SECURE_ENCLAVE_KEY = "user_secure_enclave_key", _("User Secure Enclave key")
+    PASSWORD = "password", _("Password")
 
 
 class ApplePSSOBiometricRequirement(models.TextChoices):
@@ -82,6 +93,14 @@ class AgentConnector(Connector):
     )
     challenge_trigger_check_in = models.BooleanField(default=False)
 
+    # Selects which Platform SSO mode the generated profile asks for, and with it which of
+    # the settings below macOS reads: the biometric options apply to the Secure Enclave key
+    # mode, the login/unlock/FileVault policies to the password mode.
+    apple_psso_authentication_method = models.TextField(
+        choices=ApplePSSOAuthenticationMethod.choices,
+        default=ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY,
+    )
+
     # Apple Platform SSO (macOS) login-window behaviour. These map to the LoginPolicy,
     # UnlockPolicy and FileVaultPolicy keys of the generated com.apple.extensiblesso
     # payload and only affect macOS devices. When left at "none" the key is omitted and
@@ -101,6 +120,28 @@ class AgentConnector(Connector):
     # Apple Platform SSO maximum interval (seconds) before a full re-authentication is
     # required. Maps to LoginFrequency; Apple's default is 64800 (18 hours), minimum 3600.
     apple_psso_login_frequency = models.PositiveIntegerField(default=64800)
+
+    # Escape hatches for the policies above. Each policy is an array holding an enforcement
+    # mode plus optional modifiers, and the two grace periods are opted into by adding
+    # AllowAuthenticationGracePeriod / AllowOfflineGracePeriod to that array alongside a
+    # top-level duration. Both are modelled here as a single duration, with the modifier
+    # added automatically when it is non-zero: a duration without its flag is silently
+    # ignored by macOS, and the flag without a duration is rejected.
+    # Seconds after a policy lands during which unregistered local accounts can still log
+    # in. Zero disables the grace period entirely.
+    apple_psso_authentication_grace_period = models.PositiveIntegerField(default=0)
+    # Seconds after the last successful Platform SSO login that the local account password
+    # keeps working offline. Zero disables the grace period entirely.
+    apple_psso_offline_grace_period = models.PositiveIntegerField(default=0)
+    # Local accounts exempt from the login/unlock/FileVault policies, which also stops them
+    # being prompted to register. Maps to NonPlatformSSOAccounts. A break-glass admin
+    # account belongs here: without one, a policy of RequireAuthentication applies to every
+    # account on the Mac with no way back in if authentik is unreachable.
+    apple_psso_non_platform_sso_accounts = ArrayField(models.TextField(), default=list, blank=True)
+    # Maps to EnableCreateUserAtLogin, which Apple supports for the password and smart card
+    # methods only. Lets a user with no local account sign in at the login window and have
+    # one created. Requires UseSharedDeviceKeys, which the generated profile always sets.
+    apple_psso_enable_create_user_at_login = models.BooleanField(default=False)
     # Biometric requirement for the user Secure Enclave key. Together these map to
     # ASAuthorizationProviderExtensionLoginConfiguration.userSecureEnclaveKeyBiometricPolicy,
     # an OptionSet applied by the native agent's PSSO extension (macOS only,
@@ -126,7 +167,14 @@ class AgentConnector(Connector):
 
         Modifiers are meaningless on their own — PasswordFallback with no requirement is a
         policy that demands nothing while reading like it demands something — so an unset
-        requirement yields an empty list and the agent leaves the property untouched."""
+        requirement yields an empty list and the agent leaves the property untouched. The
+        same holds for the password mode, where there is no user Secure Enclave key for a
+        biometric to guard."""
+        if (
+            self.apple_psso_authentication_method
+            != ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY
+        ):
+            return []
         requirement = {
             ApplePSSOBiometricRequirement.CURRENT_SET: "touch_id_or_watch_current_set",
             ApplePSSOBiometricRequirement.ANY: "touch_id_or_watch_any",

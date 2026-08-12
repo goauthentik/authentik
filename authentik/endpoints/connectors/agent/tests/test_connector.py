@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase
 
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
+    ApplePSSOAuthenticationMethod,
     ApplePSSOAuthenticationPolicy,
     ApplePSSOBiometricRequirement,
     EnrollmentToken,
@@ -85,6 +86,7 @@ class TestAgentConnector(APITestCase):
         """Configured Apple Platform SSO policies must appear in the generated profile as
         arrays of policy strings (matching ee/psso/example.mobileconfig); policies left at
         their default must be omitted so Platform SSO keeps its passive behaviour."""
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
         self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
         self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
         self.connector.apple_psso_login_frequency = 7200
@@ -99,6 +101,126 @@ class TestAgentConnector(APITestCase):
         self.assertEqual(psso["LoginFrequency"], 7200)
         # filevault left at the default "none" -> key omitted entirely
         self.assertNotIn("FileVaultPolicy", psso)
+
+    def test_generate_mdm_macos_authentication_method_default(self):
+        """The Secure Enclave key mode stays the default, so existing enrollments keep the
+        behaviour they had before the method was configurable."""
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["AuthenticationMethod"], "UserSecureEnclaveKey")
+
+    def test_generate_mdm_macos_authentication_method_password(self):
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["AuthenticationMethod"], "Password")
+
+    def test_generate_mdm_macos_policies_omitted_in_secure_enclave_mode(self):
+        """Apple documents the login/unlock/FileVault policies as applying only to the
+        password method, so configuring them in Secure Enclave key mode must not write keys
+        macOS will ignore."""
+        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso_filevault_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertNotIn("LoginPolicy", psso)
+        self.assertNotIn("UnlockPolicy", psso)
+        self.assertNotIn("FileVaultPolicy", psso)
+
+    def test_biometric_policies_omitted_in_password_mode(self):
+        """There is no user Secure Enclave key in password mode, so a biometric policy
+        guarding it would be meaningless."""
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso_biometric_requirement = ApplePSSOBiometricRequirement.ANY
+        self.assertEqual(self.connector.apple_psso_biometric_policies, [])
+
+    def test_generate_mdm_macos_grace_periods(self):
+        """The grace periods are modifiers inside each policy array, not standalone keys, so
+        the flag has to travel with every policy being enforced alongside the duration."""
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
+        self.connector.apple_psso_authentication_grace_period = 3600
+        self.connector.apple_psso_offline_grace_period = 7200
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(
+            psso["LoginPolicy"],
+            ["RequireAuthentication", "AllowAuthenticationGracePeriod", "AllowOfflineGracePeriod"],
+        )
+        self.assertEqual(
+            psso["UnlockPolicy"],
+            ["AttemptAuthentication", "AllowAuthenticationGracePeriod", "AllowOfflineGracePeriod"],
+        )
+        self.assertEqual(psso["AuthenticationGracePeriod"], 3600)
+        self.assertEqual(psso["OfflineGracePeriod"], 7200)
+        # filevault left at "none" -> no policy to modify, so the key stays absent
+        self.assertNotIn("FileVaultPolicy", psso)
+
+    def test_generate_mdm_macos_grace_period_without_policy(self):
+        """A duration with no policy to attach to would be inert, so neither the flag nor
+        the duration is written."""
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso_authentication_grace_period = 3600
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertNotIn("AuthenticationGracePeriod", psso)
+
+    def test_generate_mdm_macos_exempt_accounts_and_user_creation(self):
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso_non_platform_sso_accounts = ["breakglass", "localadmin"]
+        self.connector.apple_psso_enable_create_user_at_login = True
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["NonPlatformSSOAccounts"], ["breakglass", "localadmin"])
+        self.assertTrue(psso["EnableCreateUserAtLogin"])
+
+    def test_generate_mdm_macos_password_only_keys_omitted_in_secure_enclave_mode(self):
+        """Every one of these is documented as password-method behaviour, so none of them
+        may leak into a Secure Enclave key profile."""
+        self.connector.apple_psso_non_platform_sso_accounts = ["breakglass"]
+        self.connector.apple_psso_enable_create_user_at_login = True
+        self.connector.apple_psso_authentication_grace_period = 3600
+        self.connector.apple_psso_offline_grace_period = 7200
+        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        for key in (
+            "NonPlatformSSOAccounts",
+            "EnableCreateUserAtLogin",
+            "AuthenticationGracePeriod",
+            "OfflineGracePeriod",
+            "LoginPolicy",
+        ):
+            self.assertNotIn(key, psso)
 
     def test_generate_mdm_windows(self):
         request = self.factory.get("/")

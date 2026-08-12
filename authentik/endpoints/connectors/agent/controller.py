@@ -9,6 +9,7 @@ from rest_framework.fields import CharField
 from authentik.core.api.utils import PassiveSerializer
 from authentik.endpoints.connectors.agent.models import (
     AgentConnector,
+    ApplePSSOAuthenticationMethod,
     ApplePSSOAuthenticationPolicy,
     EnrollmentToken,
 )
@@ -92,16 +93,40 @@ class AgentConnectorController(BaseController[AgentConnector]):
             }
         )
 
+    def _psso_authentication_method(self) -> str:
+        return {
+            ApplePSSOAuthenticationMethod.PASSWORD: "Password",
+            ApplePSSOAuthenticationMethod.USER_SECURE_ENCLAVE_KEY: "UserSecureEnclaveKey",
+        }[self.connector.apple_psso_authentication_method]
+
     def _psso_login_policies(self) -> dict:
         """Build the LoginPolicy/UnlockPolicy/FileVaultPolicy keys of the Platform SSO
         payload from the connector configuration. Each is an array of policy strings (see
         the reference ee/psso/example.mobileconfig); the key is omitted entirely when the
         policy is left at "none" so Platform SSO keeps its passive, background-token-only
-        behaviour."""
+        behaviour.
+
+        Apple documents all three as applying only when AuthenticationMethod is Password,
+        so they are omitted in Secure Enclave key mode rather than written and ignored.
+
+        Each array holds the enforcement mode followed by any modifiers. The grace periods
+        are modifiers rather than standalone keys, so they are appended to every policy that
+        is actually being enforced; a policy left at "none" stays absent entirely, and a
+        grace period attached to nothing would do nothing."""
+        if (
+            self.connector.apple_psso_authentication_method
+            != ApplePSSOAuthenticationMethod.PASSWORD
+        ):
+            return {}
         mapping = {
             ApplePSSOAuthenticationPolicy.ATTEMPT: "AttemptAuthentication",
             ApplePSSOAuthenticationPolicy.REQUIRE: "RequireAuthentication",
         }
+        modifiers = []
+        if self.connector.apple_psso_authentication_grace_period:
+            modifiers.append("AllowAuthenticationGracePeriod")
+        if self.connector.apple_psso_offline_grace_period:
+            modifiers.append("AllowOfflineGracePeriod")
         policies = {}
         for field, payload_key in (
             ("apple_psso_login_policy", "LoginPolicy"),
@@ -110,7 +135,18 @@ class AgentConnectorController(BaseController[AgentConnector]):
         ):
             value = mapping.get(getattr(self.connector, field))
             if value:
-                policies[payload_key] = [value]
+                policies[payload_key] = [value, *modifiers]
+        if policies:
+            if self.connector.apple_psso_authentication_grace_period:
+                policies["AuthenticationGracePeriod"] = (
+                    self.connector.apple_psso_authentication_grace_period
+                )
+            if self.connector.apple_psso_offline_grace_period:
+                policies["OfflineGracePeriod"] = self.connector.apple_psso_offline_grace_period
+        if self.connector.apple_psso_non_platform_sso_accounts:
+            policies["NonPlatformSSOAccounts"] = self.connector.apple_psso_non_platform_sso_accounts
+        if self.connector.apple_psso_enable_create_user_at_login:
+            policies["EnableCreateUserAtLogin"] = True
         return policies
 
     def _generate_mdm_config_macos(
@@ -161,7 +197,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PlatformSSO": {
                             "AccountDisplayName": "authentik",
                             "AllowDeviceIdentifiersInAttestation": True,
-                            "AuthenticationMethod": "UserSecureEnclaveKey",
+                            "AuthenticationMethod": self._psso_authentication_method(),
                             "EnableAuthorization": True,
                             "UseSharedDeviceKeys": True,
                             "LoginFrequency": self.connector.apple_psso_login_frequency,
