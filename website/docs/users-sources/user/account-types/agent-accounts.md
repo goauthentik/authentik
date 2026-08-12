@@ -9,8 +9,8 @@ Agent accounts are service accounts that act on behalf of a parent user when cal
 
 For an overview of all account types, see [Account types](./index.mdx). For general information about service accounts, see [Service accounts](./service-accounts.md).
 
-:::Agent accounts vs the authentik Agent
-Agent accounts are completely separate from the authentik Agent. The authentik Agent is a deployable component on Windows, Linux, and macOS devices for device integration with authentik. For more information, see [authentik Agent](../../../endpoint-devices/authentik-agent/index.mdx).
+:::info Agent accounts vs the authentik Agent
+Agent accounts are separate from the authentik Agent. The authentik Agent is a deployable component on Windows, Linux, and macOS devices for device integration with authentik. For more information, see [authentik Agent](../../../endpoint-devices/authentik-agent/index.mdx).
 :::
 
 ## About agent accounts
@@ -39,6 +39,10 @@ The following permissions control a user's ability to create, view, change, and 
 When an agent is created, authentik automatically grants the parent user permission to view, change, and delete it.
 
 Users who are not the parent can manage an agent only if they have the required object or global permissions.
+
+:::warning Self-service permission
+The add agent permission disables access to self-service, even if the user also has the self-service permission.
+:::
 
 ## Create an agent account
 
@@ -269,7 +273,7 @@ Check the following:
 
 - The request creates the agent for the authenticated user.
 - The authenticated user is not attempting to set another user as the parent.
-- `authentik_agents.add_agent` bypasses every self-service restriction, including creating an agent for another user.
+- The add agent permission disables access to self-service, even if the user also has the self-service permission.
 
 ### An agent cannot access an application
 
