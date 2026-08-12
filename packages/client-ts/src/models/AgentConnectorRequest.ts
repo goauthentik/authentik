@@ -12,6 +12,11 @@
  * Do not edit the class manually.
  */
 
+import type { ApplePssoBiometricRequirementEnum } from "./ApplePssoBiometricRequirementEnum";
+import {
+    ApplePssoBiometricRequirementEnumFromJSON,
+    ApplePssoBiometricRequirementEnumToJSON,
+} from "./ApplePssoBiometricRequirementEnum";
 import type { ApplePssoFilevaultPolicyEnum } from "./ApplePssoFilevaultPolicyEnum";
 import {
     ApplePssoFilevaultPolicyEnumFromJSON,
@@ -134,10 +139,22 @@ export interface AgentConnectorRequest {
     applePssoLoginFrequency?: number;
     /**
      *
+     * @type {ApplePssoBiometricRequirementEnum}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoBiometricRequirement?: ApplePssoBiometricRequirementEnum;
+    /**
+     *
      * @type {boolean}
      * @memberof AgentConnectorRequest
      */
-    applePssoRequireBiometrics?: boolean;
+    applePssoBiometricPasswordFallback?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof AgentConnectorRequest
+     */
+    applePssoBiometricReuseDuringUnlock?: boolean;
 }
 
 /**
@@ -209,10 +226,20 @@ export function AgentConnectorRequestFromJSONTyped(
             json["apple_psso_login_frequency"] == null
                 ? undefined
                 : json["apple_psso_login_frequency"],
-        applePssoRequireBiometrics:
-            json["apple_psso_require_biometrics"] == null
+        applePssoBiometricRequirement:
+            json["apple_psso_biometric_requirement"] == null
                 ? undefined
-                : json["apple_psso_require_biometrics"],
+                : ApplePssoBiometricRequirementEnumFromJSON(
+                      json["apple_psso_biometric_requirement"],
+                  ),
+        applePssoBiometricPasswordFallback:
+            json["apple_psso_biometric_password_fallback"] == null
+                ? undefined
+                : json["apple_psso_biometric_password_fallback"],
+        applePssoBiometricReuseDuringUnlock:
+            json["apple_psso_biometric_reuse_during_unlock"] == null
+                ? undefined
+                : json["apple_psso_biometric_reuse_during_unlock"],
     };
 }
 
@@ -251,6 +278,10 @@ export function AgentConnectorRequestToJSONTyped(
             value["applePssoFilevaultPolicy"],
         ),
         apple_psso_login_frequency: value["applePssoLoginFrequency"],
-        apple_psso_require_biometrics: value["applePssoRequireBiometrics"],
+        apple_psso_biometric_requirement: ApplePssoBiometricRequirementEnumToJSON(
+            value["applePssoBiometricRequirement"],
+        ),
+        apple_psso_biometric_password_fallback: value["applePssoBiometricPasswordFallback"],
+        apple_psso_biometric_reuse_during_unlock: value["applePssoBiometricReuseDuringUnlock"],
     };
 }

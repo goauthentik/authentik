@@ -56,10 +56,10 @@ export interface AgentPSSODeviceRegistrationResponse {
     nonceEndpoint: string;
     /**
      *
-     * @type {boolean}
+     * @type {Array<string>}
      * @memberof AgentPSSODeviceRegistrationResponse
      */
-    requireBiometrics: boolean;
+    biometricPolicies?: Array<string>;
 }
 
 /**
@@ -98,13 +98,6 @@ export function instanceOfAgentPSSODeviceRegistrationResponse(
             (value as Record<string, any>)["nonce_endpoint"] === undefined)
     )
         return false;
-    if (
-        (!("requireBiometrics" in (value as Record<string, any>)) &&
-            !("require_biometrics" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["requireBiometrics"] === undefined &&
-            (value as Record<string, any>)["require_biometrics"] === undefined)
-    )
-        return false;
     return true;
 }
 
@@ -128,7 +121,8 @@ export function AgentPSSODeviceRegistrationResponseFromJSONTyped(
         jwksEndpoint: json["jwks_endpoint"],
         audience: json["audience"],
         nonceEndpoint: json["nonce_endpoint"],
-        requireBiometrics: json["require_biometrics"],
+        biometricPolicies:
+            json["biometric_policies"] == null ? undefined : json["biometric_policies"],
     };
 }
 
@@ -153,6 +147,6 @@ export function AgentPSSODeviceRegistrationResponseToJSONTyped(
         jwks_endpoint: value["jwksEndpoint"],
         audience: value["audience"],
         nonce_endpoint: value["nonceEndpoint"],
-        require_biometrics: value["requireBiometrics"],
+        biometric_policies: value["biometricPolicies"],
     };
 }

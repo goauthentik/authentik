@@ -35848,7 +35848,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        apple_psso_require_biometrics:
+        apple_psso_biometric_requirement:
+          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
+        apple_psso_biometric_password_fallback:
+          type: boolean
+        apple_psso_biometric_reuse_during_unlock:
           type: boolean
       required:
       - component
@@ -35913,7 +35917,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        apple_psso_require_biometrics:
+        apple_psso_biometric_requirement:
+          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
+        apple_psso_biometric_password_fallback:
+          type: boolean
+        apple_psso_biometric_reuse_during_unlock:
           type: boolean
       required:
       - name
@@ -35988,15 +35996,16 @@ components:
           type: string
         nonce_endpoint:
           type: string
-        require_biometrics:
-          type: boolean
+        biometric_policies:
+          type: array
+          items:
+            type: string
       required:
       - audience
       - client_id
       - issuer
       - jwks_endpoint
       - nonce_endpoint
-      - require_biometrics
       - token_endpoint
     AgentPSSOUserRegistrationRequest:
       type: object
@@ -36252,6 +36261,12 @@ components:
       - redirect_uri
       - scope
       - state
+    ApplePssoBiometricRequirementEnum:
+      enum:
+      - none
+      - current_set
+      - any
+      type: string
     ApplePssoFilevaultPolicyEnum:
       enum:
       - none
@@ -50145,7 +50160,11 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-        apple_psso_require_biometrics:
+        apple_psso_biometric_requirement:
+          $ref: '#/components/schemas/ApplePssoBiometricRequirementEnum'
+        apple_psso_biometric_password_fallback:
+          type: boolean
+        apple_psso_biometric_reuse_during_unlock:
           type: boolean
     PatchedAgentRequest:
       type: object

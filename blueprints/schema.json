@@ -8136,9 +8136,22 @@
                     "maximum": 2147483647,
                     "title": "Apple psso login frequency"
                 },
-                "apple_psso_require_biometrics": {
+                "apple_psso_biometric_requirement": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "current_set",
+                        "any"
+                    ],
+                    "title": "Apple psso biometric requirement"
+                },
+                "apple_psso_biometric_password_fallback": {
                     "type": "boolean",
-                    "title": "Apple psso require biometrics"
+                    "title": "Apple psso biometric password fallback"
+                },
+                "apple_psso_biometric_reuse_during_unlock": {
+                    "type": "boolean",
+                    "title": "Apple psso biometric reuse during unlock"
                 }
             },
             "required": []
