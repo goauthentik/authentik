@@ -166,45 +166,37 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return self.patch_compare_users(group)
         try:
             if self._config.patch.supported:
-                return self._update_patch(group, scim_group, connection)
-            return self._update_put(group, scim_group, connection)
+                return self._update_patch(group, payload, connection)
+            return self._update_put(group, payload, connection)
         except NotFoundSyncException:
             # Resource missing is handled by self.write, which will re-create the group
             raise
 
-    def _update_patch(
-        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
-    ):
+    def _update_patch(self, group: Group, payload: dict[str, Any], connection: SCIMProviderGroup):
         """Apply provider-specific PATCH requests"""
         match connection.provider.compatibility_mode:
             case SCIMCompatibilityMode.AWS:
-                self._update_patch_aws(group, scim_group, connection)
+                self._update_patch_aws(payload, connection)
             case _:
-                self._update_patch_general(group, scim_group, connection)
+                self._update_patch_general(payload, connection)
         return self.patch_compare_users(group)
 
-    def _update_patch_aws(
-        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
-    ):
+    def _update_patch_aws(self, payload: dict[str, Any], connection: SCIMProviderGroup):
         """Run PATCH requests for supported attributes"""
-        group_dict = scim_group.model_dump(mode="json", exclude_unset=True)
         self._patch_chunked(
             connection.scim_id,
             *[
                 PatchOperation(
                     op=PatchOp.replace,
                     path=attr,
-                    value=group_dict[attr],
+                    value=payload[attr],
                 )
                 for attr in ("displayName", "externalId")
             ],
         )
 
-    def _update_patch_general(
-        self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
-    ):
+    def _update_patch_general(self, payload: dict[str, Any], connection: SCIMProviderGroup):
         """Update a group via PATCH request"""
-        payload = scim_group.model_dump(mode="json", exclude_unset=True)
         # Patch group's attributes instead of replacing it and re-adding users if we can
         value = {key: value for key, value in payload.items() if key != "id"}
         response = self._request(
@@ -236,9 +228,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         connection.attributes = payload | response
         connection.save()
 
-    def _update_put(self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup):
+    def _update_put(self, group: Group, payload: dict[str, Any], connection: SCIMProviderGroup):
         """Update a group via PUT request"""
-        payload = scim_group.model_dump(mode="json", exclude_unset=True)
         try:
             response = self._request("PUT", f"/Groups/{connection.scim_id}", json=payload)
             self._record_written_state(connection, payload, response)
@@ -246,7 +237,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         except SCIMRequestException, ObjectExistsSyncException:
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
-            return self._update_patch(group, scim_group, connection)
+            return self._update_patch(group, payload, connection)
 
     def update_group(self, group: Group, action: Direction, users_set: set[int]):
         """Update a group, either using PUT to replace it or PATCH if supported"""
