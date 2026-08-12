@@ -12290,6 +12290,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
         placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
   <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
 </trans-unit>
+<trans-unit id="sdcded316146a0b76">
+  <source>Object Attributes are in preview.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
