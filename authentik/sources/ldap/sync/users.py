@@ -12,7 +12,7 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import User
 from authentik.core.sources.mapper import SourceMapper
-from authentik.core.sources.matcher import Action, MatchFailure
+from authentik.core.sources.matcher import Action
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_dict
@@ -56,7 +56,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self, page_data: list) -> int:  # noqa: PLR0915
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
             self._task.info("User syncing is disabled for this Source")
@@ -92,11 +92,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
-                try:
-                    action, connection = self.matcher.get_user_action(uniq, defaults)
-                except MatchFailure as exc:
-                    self._logger.warning("Matcher failure", exc=exc)
-                    continue
+                action, connection = self.matcher.get_user_action(uniq, defaults)
                 created = False
                 if action == Action.ENROLL:
                     # Legacy fallback, in case the user only has an `ldap_uniq` attribute set, but

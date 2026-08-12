@@ -158,11 +158,7 @@ class SourceFlowManager:
                 return Action.AUTH, existing
             return Action.LINK, new_connection
 
-        try:
-            action, connection = self.matcher.get_user_action(self.identifier, self.user_properties)
-        except MatchFailure as exc:
-            self._logger.warning("Matcher failure", exc=exc)
-            return Action.DENY, None
+        action, connection = self.matcher.get_user_action(self.identifier, self.user_properties)
         if connection:
             connection = self.update_user_connection(connection, **kwargs)
         return action, connection
