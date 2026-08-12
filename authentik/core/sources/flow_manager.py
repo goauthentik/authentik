@@ -1,5 +1,6 @@
 """Source decision helper"""
 
+from dataclasses import dataclass
 from typing import Any
 
 from django.contrib import messages
@@ -18,7 +19,7 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.core.sources.mapper import SourceMapper
-from authentik.core.sources.matcher import Action, SourceMatcher
+from authentik.core.sources.matcher import Action, MatchFailure, MatchFailureReason, SourceMatcher
 from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
@@ -47,9 +48,29 @@ from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 LOGGER = get_logger()
 
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
+PLAN_CONTEXT_SOURCE_MATCH_FAILURE = "goauthentik.io/core/sources/matching_failure"
+PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG = "goauthentik.io/core/sources/match_failure_config"
 SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
 SESSION_KEY_SOURCE_FLOW_CONTEXT = "authentik/flows/source_flow_context"
 SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
+
+
+def clear_source_flow_session(request: HttpRequest) -> None:
+    """Clear state used to return from a source flow."""
+    for key in (
+        SESSION_KEY_OVERRIDE_FLOW_TOKEN,
+        SESSION_KEY_SOURCE_FLOW_CONTEXT,
+        SESSION_KEY_SOURCE_FLOW_STAGES,
+    ):
+        request.session.pop(key, None)
+
+
+@dataclass(frozen=True)
+class MatchFailureConfig:
+
+    reasons: list[MatchFailureReason]
+    source_pk: str
+    stage_pk: str | None
 
 
 class MessageStage(StageView):
@@ -167,6 +188,10 @@ class SourceFlowManager:
                 if action == Action.ENROLL:
                     self._logger.debug("Handling enrollment of new user")
                     return self.handle_enroll(connection)
+            if action == Action.DENY and self.matcher.failure:
+                response = self.handle_match_failure(self.matcher.failure)
+                if response:
+                    return response
         except FlowNonApplicableException as exc:
             self._logger.warning("Flow non applicable", exc=exc)
             return self.error_handler(exc)
@@ -180,6 +205,43 @@ class SourceFlowManager:
             ),
         )
         return self.error_handler(error)
+
+    def handle_match_failure(self, failure: MatchFailure) -> HttpResponse | None:
+        """Resume an opted-in Source Stage after a configured matching failure."""
+        session_token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+        if not session_token:
+            return None
+        try:
+            session_token.refresh_from_db()
+        except FlowToken.DoesNotExist:
+            clear_source_flow_session(self.request)
+            return None
+        if session_token.is_expired:
+            session_token.expire_action()
+            clear_source_flow_session(self.request)
+            return None
+        plan = session_token.plan
+        resume_config: MatchFailureConfig | None = plan.context.get(
+            PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG
+        )
+        current_stage = plan.bindings[0].stage if plan.bindings else None
+        if not resume_config or not current_stage:
+            return None
+        if (
+            failure.reason not in resume_config.reasons
+            or resume_config.source_pk != str(self.source.pk)
+            or resume_config.stage_pk != str(current_stage.pk)
+            or getattr(current_stage, "source_id", None) != self.source.pk
+        ):
+            return None
+
+        plan.context.pop(PLAN_CONTEXT_SOURCE_MATCH_FAILURE_CONFIG, None)
+        plan.context.update(self.policy_context)
+        plan.context[PLAN_CONTEXT_SOURCE_MATCH_FAILURE] = failure
+        plan.context[PLAN_CONTEXT_IS_RESTORED] = session_token
+        response = plan.to_redirect(self.request, session_token.flow)
+        session_token.delete()
+        return response
 
     def error_handler(self, error: Exception) -> HttpResponse:
         """Handle any errors by returning an access denied stage"""

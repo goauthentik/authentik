@@ -67,9 +67,11 @@ class FleetController(BaseController[DBC]):
                     params={
                         "order_key": "hardware_serial",
                         "page": page,
-                        "per_page": 50,
+                        # Small page size as Fleet's API response, with the populate fields below
+                        # can be quite large and eat a lot of memory
+                        "per_page": 1,
                         "device_mapping": "true",
-                        "populate_software": "true",
+                        "populate_software": "without_vulnerability_details",
                         "populate_users": "true",
                         "populate_policies": "true",
                     },
