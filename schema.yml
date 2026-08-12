@@ -38541,6 +38541,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -38576,6 +38577,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}

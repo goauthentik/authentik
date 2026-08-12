@@ -70,7 +70,7 @@ export interface EndpointDevice {
      * @type {DeviceFactSnapshot}
      * @memberof EndpointDevice
      */
-    readonly facts: DeviceFactSnapshot;
+    readonly facts: DeviceFactSnapshot | null;
     /**
      *
      * @type {{ [key: string]: any; }}
