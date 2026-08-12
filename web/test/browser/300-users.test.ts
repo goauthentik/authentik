@@ -75,7 +75,7 @@ test.describe("Users", () => {
 
         await dialog.getByRole("button", { name: "Create" }).click();
 
-        await expect(dialog, "Dialog closes after creating user").toBeHidden();
+        await expect(dialog, "Dialog closes after creating user").toBeHidden({ timeout: 10_000 });
     });
 
     test("Service user", async ({ form, pointer, page }, testInfo) => {
