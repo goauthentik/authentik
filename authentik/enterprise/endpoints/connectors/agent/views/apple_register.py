@@ -90,8 +90,12 @@ class RegisterUserView(APIView):
         """Register Apple device user via Platform SSO"""
 
         user_auth = CharField()
-        user_secure_enclave_key = CharField()
-        enclave_key_id = CharField()
+        # Only the userSecureEnclaveKey authentication method has a key to register.
+        # macOS never generates one for the password method, so the agent registers with
+        # these blank -- registration is still what binds the local account to an
+        # authentik user, and refusing it would leave password mode unable to enrol.
+        user_secure_enclave_key = CharField(required=False, allow_blank=True, default="")
+        enclave_key_id = CharField(required=False, allow_blank=True, default="")
 
     permission_classes = [IsAuthenticated]
     pagination_class = None
@@ -117,6 +121,8 @@ class RegisterUserView(APIView):
             raise ValidationError("Invalid user authentication")
         # These fields must be set on create as well as update; update_or_create() returns
         # immediately when it creates, so anything only in `defaults` is never applied.
+        # A blank pair clears a previously stored key on purpose: it means this device has
+        # moved to the password method, where the old key can no longer be used to log in.
         enclave_keys = {
             "apple_secure_enclave_key": body.validated_data["user_secure_enclave_key"],
             "apple_enclave_key_id": body.validated_data["enclave_key_id"],

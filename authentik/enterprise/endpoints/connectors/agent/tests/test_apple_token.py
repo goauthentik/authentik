@@ -174,7 +174,7 @@ class TestAppleToken(TestCase):
     @apply_blueprint("default/flow-endpoints-agent-psso-password.yaml")
     @reconcile_app("authentik_crypto")
     def test_token_password_invalid(self):
-        """A wrong password is rejected with a 400 and issues no token"""
+        """A wrong password is rejected as an invalid credential and issues no token"""
         self.user.set_password(generate_id())
         self.user.save()
         nonce = generate_id()
@@ -182,7 +182,10 @@ class TestAppleToken(TestCase):
 
         res = self._post_password_request(self._password_request(nonce, password=generate_id()))
 
-        self.assertEqual(res.status_code, 400)
+        # 401 with this body, not a 400: it is what macOS reads as "wrong password" and
+        # re-prompts for, rather than failing the login outright.
+        self.assertEqual(res.status_code, 401)
+        self.assertJSONEqual(res.content, {"error": "invalid_grant"})
         self.assertFalse(
             Event.objects.filter(
                 action=EventAction.LOGIN,
@@ -202,7 +205,8 @@ class TestAppleToken(TestCase):
             self._password_request(nonce, username=generate_id(), password=generate_id())
         )
 
-        self.assertEqual(res.status_code, 400)
+        self.assertEqual(res.status_code, 401)
+        self.assertJSONEqual(res.content, {"error": "invalid_grant"})
 
     @reconcile_app("authentik_crypto")
     def test_token_unknown_kid(self):

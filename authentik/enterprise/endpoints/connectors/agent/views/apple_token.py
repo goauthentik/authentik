@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
@@ -45,6 +45,16 @@ LOGGER = get_logger()
 PSSO_PASSWORD_FLOW_SLUG = "endpoints-agent-psso-password"
 
 
+class InvalidCredentials(Exception):
+    """The credential in a Platform SSO login request was wrong.
+
+    Kept distinct from ValidationError because macOS has to tell the two apart. Apple's
+    ASAuthorizationProviderExtensionLoginConfiguration treats an HTTP 401 as a bad
+    credential and anything else as a general failure unless the extension supplies an
+    invalidCredentialPredicate to parse the body; only the former re-prompts the user for
+    their password instead of failing the login outright."""
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
 
@@ -56,6 +66,11 @@ class TokenView(View):
         # ValidationError raised below would surface as a 500 instead of a 400.
         try:
             return super().dispatch(request, *args, **kwargs)
+        except InvalidCredentials:
+            # 401 with a JSON body, which is what macOS reads as "wrong password" without
+            # the extension needing an invalidCredentialPredicate. The body deliberately
+            # says no more than that: this endpoint is unauthenticated.
+            return JsonResponse({"error": "invalid_grant"}, status=401)
         except ValidationError as exc:
             LOGGER.warning("Invalid Platform SSO token request", exc=exc)
             return HttpResponse(status=400)
@@ -255,7 +270,7 @@ class TokenView(View):
             # Deliberately the same response as a bad password: the token endpoint is
             # unauthenticated, so distinguishing the two would enumerate usernames.
             LOGGER.info("Platform SSO password login for unknown user")
-            raise ValidationError("Invalid request")
+            raise InvalidCredentials
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:
@@ -268,7 +283,7 @@ class TokenView(View):
         )
         if not authenticated:
             LOGGER.info("Platform SSO password login failed")
-            raise ValidationError("Invalid request")
+            raise InvalidCredentials
         id_token = self.create_id_token(authenticated)
         auth_token = DeviceAuthenticationToken.objects.create(
             device=self.device_connection.device,
