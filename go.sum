@@ -1,5 +1,5 @@
-beryju.io/ldap v0.2.1 h1:rhTAP2CXqrKZy/UycLC/aPSSBMcgJMzooKqk3TwVFxY=
-beryju.io/ldap v0.2.1/go.mod h1:GJSw3pVOON/3+L5att3Eysmj7j0GmjLvA6/WNmPajD4=
+beryju.io/ldap v0.2.2 h1:wF3EVja90O/3zYTebwIq/OUhuPKgGew1A0tVoioVN/E=
+beryju.io/ldap v0.2.2/go.mod h1:GJSw3pVOON/3+L5att3Eysmj7j0GmjLvA6/WNmPajD4=
 beryju.io/radius-eap v0.1.1 h1:ILIYy2rzaf2M2tvTgwmQDQMn4WwOn/CTmAFzH0oYDPo=
 beryju.io/radius-eap v0.1.1/go.mod h1:qRgYZYxUY8rgGfAYXPevM6WLI/b1h6f264A6aJoBO7w=
 github.com/Azure/go-ntlmssp v0.1.1 h1:l+FM/EEMb0U9QZE7mKNEDw5Mu3mFiaa2GKOoTSsNDPw=
@@ -108,8 +108,8 @@ github.com/gorilla/sessions v1.4.0/go.mod h1:FLWm50oby91+hl7p/wRxDth9bWSuk0qVL2e
 github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/gorilla/websocket v1.5.3 h1:saDtZ6Pbx/0u+bgYQ3q96pZgCzfhKXGPqt7kZ72aNNg=
 github.com/gorilla/websocket v1.5.3/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
-github.com/grafana/pyroscope-go v1.4.1 h1:SKvuZz1qTFpNXjHY3XGlm92mS9wJeCI/TZR42XcDs9w=
-github.com/grafana/pyroscope-go v1.4.1/go.mod h1:WQY21vHNiD2o/icxqVPM0AmofabycbhnPPHoV1/4X6s=
+github.com/grafana/pyroscope-go v1.4.2 h1:0LW5HrUJXgGr9zF5gITP/HaFXN9/LsMiwlgVJAK75l0=
+github.com/grafana/pyroscope-go v1.4.2/go.mod h1:Ej13Jr05rRJrjWvrrFhfh6gGYXtfibuukOs3Tl3Y7QQ=
 github.com/grafana/pyroscope-go/godeltaprof v0.1.11 h1:el5LYpXissAiCKZ5/6yjlr6mhYVV6Cp5lahTocxraXM=
 github.com/grafana/pyroscope-go/godeltaprof v0.1.11/go.mod h1:jl1V8M4cWsXciROCPIDDG7CtjSjT/ECbp6eLVuMxYRI=
 github.com/hashicorp/go-uuid v1.0.3 h1:2gKiV6YVmrJ1i2CKKa9obLvRieoRGviZFL26PcT/Co8=

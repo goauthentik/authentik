@@ -1,0 +1,4 @@
+# Legitimate terms that the spell checker's common-misspellings list would
+# otherwise report as typos. Only add a word here when `make lint-spellcheck`
+# flags it with a suggested "fix" and the original spelling is intentional.
+ontext

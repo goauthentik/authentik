@@ -52,9 +52,19 @@ urlpatterns = [
         name="if-admin",
     ),
     path(
+        "if/admin/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
+        name="if-admin-path",
+    ),
+    path(
         "if/user/",
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
+    ),
+    path(
+        "if/user/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/user.html"),
+        name="if-user-path",
     ),
     path(
         "if/flow/<slug:flow_slug>/",

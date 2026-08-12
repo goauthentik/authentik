@@ -3,7 +3,7 @@ module goauthentik.io
 go 1.26.0
 
 require (
-	beryju.io/ldap v0.2.1
+	beryju.io/ldap v0.2.2
 	beryju.io/radius-eap v0.1.1
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/coreos/go-oidc/v3 v3.20.0
@@ -18,7 +18,7 @@ require (
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/grafana/pyroscope-go v1.4.1
+	github.com/grafana/pyroscope-go v1.4.2
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/jellydator/ttlcache/v3 v3.4.1
 	github.com/mitchellh/mapstructure v1.5.0
