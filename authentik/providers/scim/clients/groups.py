@@ -76,16 +76,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
 
         if not self._config.patch.supported:
             users = list(obj.users.order_by("id").values_list("id", flat=True))
-            connections = SCIMProviderUser.objects.filter(
+            member_ids = SCIMProviderUser.objects.filter(
                 provider=self.provider, user__pk__in=users
-            )
-            members = []
-            for user in connections:
-                members.append(
-                    self._create_group_member(user.scim_id),
-                )
-            if members:
-                scim_group.members = members
+            ).values_list("scim_id", flat=True)
+            # The member list is also sent when it is empty, as without PATCH that is the only
+            # way to remove the last member of a group
+            scim_group.members = [self._create_group_member(x) for x in member_ids]
         else:
             del scim_group.members
         return scim_group
@@ -98,17 +94,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     def create(self, group: Group):
         """Create group from scratch and create a connection object"""
         scim_group = self.to_schema(group, None)
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
         connection = None
         with transaction.atomic():
             try:
-                response = self._request(
-                    "POST",
-                    "/Groups",
-                    json=scim_group.model_dump(
-                        mode="json",
-                        exclude_unset=True,
-                    ),
-                )
+                response = self._request("POST", "/Groups", json=payload)
             except ObjectExistsSyncException as exc:
                 if not self._config.filter.supported:
                     raise exc
@@ -132,16 +122,36 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
                 connection = SCIMProviderGroup.objects.create(
-                    provider=self.provider, group=group, scim_id=scim_id, attributes=response
+                    provider=self.provider,
+                    group=group,
+                    scim_id=scim_id,
+                    attributes=payload | response,
                 )
-        users = list(group.users.order_by("id").values_list("id", flat=True))
-        self._patch_add_users(connection, users)
+        # Members are only sent separately when PATCH is supported, as to_schema otherwise
+        # includes them in the request above
+        if self._config.patch.supported:
+            users = list(group.users.order_by("id").values_list("id", flat=True))
+            self._patch_add_users(connection, users)
         return connection
+
+    @staticmethod
+    def _member_ids(group: dict[str, Any]) -> set[str]:
+        """Get the IDs of a serialized group's members"""
+        return {member["value"] for member in group.get("members") or [] if member.get("value")}
 
     def diff(self, local_created: dict[str, Any], connection: SCIMProviderGroup):
         """Check if a group is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
+        if "members" in local_created:
+            # Members are compared by ID, as the remote system may return them with additional
+            # attributes, and as merging lists cannot detect a removed member. A recorded state
+            # without a member list cannot prove the members are unchanged.
+            if "members" not in local_known:
+                return True
+            if self._member_ids(local_created) != self._member_ids(local_known):
+                return True
+        local_created = {key: value for key, value in local_created.items() if key != "members"}
         local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
         return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
@@ -194,9 +204,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup
     ):
         """Update a group via PATCH request"""
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
         # Patch group's attributes instead of replacing it and re-adding users if we can
-        value = scim_group.model_dump(mode="json", exclude_unset=True, exclude={"id"})
-        self._request(
+        value = {key: value for key, value in payload.items() if key != "id"}
+        response = self._request(
             "PATCH",
             f"/Groups/{connection.scim_id}",
             json=PatchRequest(
@@ -213,18 +224,24 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 exclude_none=True,
             ),
         )
+        self._record_written_state(connection, payload, response)
+
+    def _record_written_state(
+        self, connection: SCIMProviderGroup, payload: dict[str, Any], response: dict[str, Any]
+    ):
+        """Remember what we wrote to the remote system, so that writes which would not change
+        anything can be skipped. The response takes precedence over the sent payload, but cannot
+        be recorded alone: servers may answer 204 No Content or omit attributes such as the
+        member list."""
+        connection.attributes = payload | response
+        connection.save()
 
     def _update_put(self, group: Group, scim_group: SCIMGroupSchema, connection: SCIMProviderGroup):
         """Update a group via PUT request"""
+        payload = scim_group.model_dump(mode="json", exclude_unset=True)
         try:
-            self._request(
-                "PUT",
-                f"/Groups/{connection.scim_id}",
-                json=scim_group.model_dump(
-                    mode="json",
-                    exclude_unset=True,
-                ),
-            )
+            response = self._request("PUT", f"/Groups/{connection.scim_id}", json=payload)
+            self._record_written_state(connection, payload, response)
             return self.patch_compare_users(group)
         except SCIMRequestException, ObjectExistsSyncException:
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
@@ -277,6 +294,26 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
                 json=req.model_dump(mode="json", exclude_none=True),
             )
 
+    def _patch_add_member(self, user_id: str) -> PatchOperation:
+        """Build a patch operation that adds a member to a group"""
+        return PatchOperation(
+            op=PatchOp.add,
+            path="members",
+            value=[
+                self._create_group_member(user_id).model_dump(
+                    mode="json",
+                    exclude_unset=True,
+                )
+            ],
+        )
+
+    def _patch_remove_member(self, user_id: str) -> PatchOperation:
+        """Build a patch operation that removes a member from a group"""
+        return PatchOperation(
+            op=PatchOp.remove,
+            path=f'members[value eq "{user_id}"]',
+        )
+
     @transaction.atomic
     def patch_compare_users(self, group: Group):
         """Compare users with a SCIM group and add/remove any differences"""
@@ -320,32 +357,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return
         return self._patch_chunked(
             scim_group.scim_id,
-            *[
-                PatchOperation(
-                    op=PatchOp.add,
-                    path="members",
-                    value=[
-                        self._create_group_member(x).model_dump(
-                            mode="json",
-                            exclude_unset=True,
-                        )
-                    ],
-                )
-                for x in users_to_add
-            ],
-            *[
-                PatchOperation(
-                    op=PatchOp.remove,
-                    path="members",
-                    value=[
-                        self._create_group_member(x).model_dump(
-                            mode="json",
-                            exclude_unset=True,
-                        )
-                    ],
-                )
-                for x in users_to_remove
-            ],
+            *[self._patch_add_member(x) for x in users_to_add],
+            *[self._patch_remove_member(x) for x in users_to_remove],
         )
 
     def _patch_add_users(self, scim_group: SCIMProviderGroup, users_set: set[int]):
@@ -361,19 +374,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return
         self._patch_chunked(
             scim_group.scim_id,
-            *[
-                PatchOperation(
-                    op=PatchOp.add,
-                    path="members",
-                    value=[
-                        self._create_group_member(x).model_dump(
-                            mode="json",
-                            exclude_unset=True,
-                        )
-                    ],
-                )
-                for x in user_ids
-            ],
+            *[self._patch_add_member(x) for x in user_ids],
         )
 
     def _patch_remove_users(self, scim_group: SCIMProviderGroup, users_set: set[int]):
@@ -389,13 +390,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             return
         self._patch_chunked(
             scim_group.scim_id,
-            *[
-                PatchOperation(
-                    op=PatchOp.remove,
-                    path=f'members[value eq "{x}"]',
-                )
-                for x in user_ids
-            ],
+            *[self._patch_remove_member(x) for x in user_ids],
         )
 
     def discover(self):
