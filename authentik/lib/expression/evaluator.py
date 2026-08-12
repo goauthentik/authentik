@@ -12,6 +12,7 @@ from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.http import HttpRequest
+from django.utils.functional import SimpleLazyObject
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
@@ -79,7 +80,7 @@ class BaseEvaluator:
             "list_flatten": BaseEvaluator.expr_flatten,
             "regex_match": BaseEvaluator.expr_regex_match,
             "regex_replace": BaseEvaluator.expr_regex_replace,
-            "requests": get_http_session(),
+            "requests": SimpleLazyObject(get_http_session),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "slugify": slugify,

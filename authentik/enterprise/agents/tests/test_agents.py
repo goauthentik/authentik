@@ -1,11 +1,22 @@
 from django.urls import reverse
 from rest_framework.test import APIClient, APITestCase
 
-from authentik.core.models import Token, TokenIntents, UserTypes
+from authentik.core.models import (
+    ActorPolicyInheritance,
+    Application,
+    Token,
+    TokenIntents,
+    UserTypes,
+)
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.enterprise.agents.models import Agent
+from authentik.enterprise.tests import enterprise_test
+from authentik.lib.generators import generate_id
+from authentik.policies.engine import PolicyEngine
+from authentik.policies.models import PolicyBinding
 
 
+@enterprise_test()
 class AgentTests(APITestCase):
 
     def _grant_self_service_perm(self, user):
@@ -74,6 +85,45 @@ class AgentTests(APITestCase):
         self.assertEqual(res.status_code, 204, res.content)
         # Deleting the agent cascades to its token
         self.assertFalse(Token.objects.filter(pk=token.pk).exists())
+
+    def test_self_service_inherits_no_access(self):
+        """A self-service agent is least-privilege: it inherits nothing from its owner and
+        cannot be talked into a different policy behavior"""
+        user = create_test_user()
+        self._grant_self_service_perm(user)
+        self.client.force_login(user)
+
+        app = Application.objects.create(name=generate_id(), slug=generate_id())
+        PolicyBinding.objects.create(target=app, user=user, order=0)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            # Ask for the owner's access to be mirrored; self-service must ignore it
+            data={"policy_behavior": ActorPolicyInheritance.MIRROR},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(parent=user)
+        self.assertEqual(agent.policy_behavior, ActorPolicyInheritance.NONE)
+
+        # The owner reaches the app; the agent does not.
+        self.assertTrue(PolicyEngine(app, user).build().passing)
+        self.assertFalse(PolicyEngine(app, agent).build().passing)
+
+    def test_admin_provisioned_agent_honors_policy_behavior(self):
+        """Only self-service is forced to NONE -- an admin provisioning for someone else
+        still picks the behavior"""
+        admin = create_test_user()
+        self._grant_admin_perm(admin)
+        other_user = create_test_user()
+        self.client.force_login(admin)
+
+        res = self.client.post(
+            reverse("authentik_api:agent-list"),
+            data={"parent": other_user.pk, "policy_behavior": ActorPolicyInheritance.MIRROR},
+        )
+        self.assertEqual(res.status_code, 201, res.content)
+        agent = Agent.objects.get(parent=other_user)
+        self.assertEqual(agent.policy_behavior, ActorPolicyInheritance.MIRROR)
 
     def test_self_service_always_expires(self):
         """Self-service agents are always expiring; the caller cannot opt out"""

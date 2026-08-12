@@ -1986,9 +1986,6 @@
 <trans-unit id="se9195c05c61d8ef8">
   <source>Selected Property Mappings</source>
 </trans-unit>
-<trans-unit id="s9b6bf63fddc7362f">
-  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
-</trans-unit>
 <trans-unit id="sb95baab425322600">
   <source>Shared secret</source>
   <target>Współdzielony sekret</target>
@@ -8137,12 +8134,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s6cd96061d397f7b5">
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
 </trans-unit>
-<trans-unit id="s0b7ddc0168e79ea2">
-  <source>Failed to fetch files</source>
-</trans-unit>
-<trans-unit id="sdc4f1cfd587212b4">
-  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
-</trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
 </trans-unit>
@@ -8197,18 +8188,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s6df8326edea3b23d">
   <source>If no device was provided, this stage will stop flow execution.</source>
 </trans-unit>
-<trans-unit id="s3a3d5b2575cd32ea">
-  <source>File uploaded successfully</source>
-</trans-unit>
-<trans-unit id="sd3775ef947e0de32">
-  <source>File Name</source>
-</trans-unit>
-<trans-unit id="s1afc99a84a890514">
-  <source>Type an optional custom file name...</source>
-</trans-unit>
-<trans-unit id="sb40e2763045466ea">
-  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
-</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
 </trans-unit>
@@ -8223,9 +8202,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
-</trans-unit>
-<trans-unit id="sa32e9d0a108ee802">
-  <source>Upload File</source>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
@@ -8821,9 +8797,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
                                         <x id="0" equiv-text="${html `&lt;a&#10;                                                target=&quot;_blank&quot;&#10;                                                rel=&quot;noopener noreferrer&quot;&#10;                                                href=${keyURL}&#10;                                                &gt;${formatAPISource()}&lt;/a&#10;                                            &gt;.`}"/></source>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
 </trans-unit>
-<trans-unit id="s87f858ca3c8e5579">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
-</trans-unit>
 <trans-unit id="s3934affe32f6a454">
   <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
 </trans-unit>
@@ -9251,9 +9224,6 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
-</trans-unit>
-<trans-unit id="s7e9afe092ef50353">
-  <source>See documentation for supported values.</source>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
@@ -11540,6 +11510,178 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="scf0457b46d32a983">
   <source>Bind an existing request rule to this object.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.label">
+  <source>Mirror</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.description">
+  <source>The agent has exactly the parent user's access, evaluated live.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.label">
+  <source>Copy</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.description">
+  <source>Copy the parent's policy bindings onto the agent.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.label">
+  <source>None</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.description">
+  <source>The agent uses only its own policy bindings.</source>
+</trans-unit>
+<trans-unit id="s95416925fd51a346">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="sefc8e08d71b8530f">
+  <source>Agents</source>
+</trans-unit>
+<trans-unit id="agent.form.close.label">
+  <source>Close</source>
+</trans-unit>
+<trans-unit id="s3687e4f7ae814ce1">
+  <source>Successfully created agent.</source>
+</trans-unit>
+<trans-unit id="s725865ad04deb9d4">
+  <source>Parent user</source>
+</trans-unit>
+<trans-unit id="sb4e8961d5ee9a6df">
+  <source>The user this agent acts on behalf of.</source>
+</trans-unit>
+<trans-unit id="s41a70d75feb46cd2">
+  <source>Optional display name. Defaults to the parent user's name.</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.label">
+  <source>Policy behavior</source>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.help">
+  <source>How the agent's access relates to its parent user.</source>
+</trans-unit>
+<trans-unit id="se105d24a03216c66">
+  <source>Whether this agent should be automatically removed once it expires.</source>
+</trans-unit>
+<trans-unit id="agent.token.description">
+  <source>Use the token below to authenticate as this agent. It is shown only once — store it now.</source>
+</trans-unit>
+<trans-unit id="agent.token.label">
+  <source>Token</source>
+</trans-unit>
+<trans-unit id="s2854025f8d4405b6">
+  <source>Search for a agent...</source>
+</trans-unit>
+<trans-unit id="s4a29404019d64d40">
+  <source>Admin-provisioned delegate identities that access can be requested and granted for, separately from their parent user.</source>
+</trans-unit>
+<trans-unit id="s4eb514ebcb80553d">
+  <source>Parent</source>
+</trans-unit>
+<trans-unit id="s9e5233ef650728d6">
+  <source>Agent(s)</source>
+</trans-unit>
+<trans-unit id="user.activation.confirm.deactivate">
+  <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+</trans-unit>
+<trans-unit id="user.activation.confirm.activate">
+  <source>Are you sure you want to activate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+</trans-unit>
+<trans-unit id="agent.column.name">
+  <source>Name</source>
+</trans-unit>
+<trans-unit id="agent.column.expires">
+  <source>Expires</source>
+</trans-unit>
+<trans-unit id="agent.column.actions">
+  <source>Actions</source>
+</trans-unit>
+<trans-unit id="agent.delete.object-label">
+  <source>Agent(s)</source>
+</trans-unit>
+<trans-unit id="agent.delete.trigger">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="agent.expires.never">
+  <source>-</source>
+</trans-unit>
+<trans-unit id="agent.delete.object-label-single">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="agent.delete.tooltip">
+  <source>Delete</source>
+</trans-unit>
+<trans-unit id="s98d9f46353f3fd25">
+  <source>Copy value</source>
+</trans-unit>
+<trans-unit id="agent.verbose-name.label">
+  <source>Agent</source>
+</trans-unit>
+<trans-unit id="agent.verbose-name-plural.label">
+  <source>Agents</source>
+</trans-unit>
+<trans-unit id="agent.create.label">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="agent.create.submit">
+  <source>Create</source>
+</trans-unit>
+<trans-unit id="agent.create.success">
+  <source>Successfully created agent.</source>
+</trans-unit>
+<trans-unit id="agent.label.label">
+  <source>Label</source>
+</trans-unit>
+<trans-unit id="agent.label.description">
+  <source>Optional display name for this agent.</source>
+</trans-unit>
+<trans-unit id="agent.mirror.description">
+  <source>This agent mirrors your access: it can act on exactly the applications you can, and never more.</source>
+</trans-unit>
+<trans-unit id="agent.list.empty">
+  <source>No agents.</source>
+</trans-unit>
+<trans-unit id="agent.create.header">
+  <source>Create Agent</source>
+</trans-unit>
+<trans-unit id="agent.create.trigger">
+  <source>Create Agent</source>
+</trans-unit>
+<trans-unit id="agent.page.description">
+  <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
+</trans-unit>
+<trans-unit id="s46eb6cf13a8022e9">
+  <source>Select File</source>
+</trans-unit>
+<trans-unit id="s0d1ed094b601e76d">
+  <source>Type an optional file name without an extension...</source>
+</trans-unit>
+<trans-unit id="s384efdec2b99d471">
+  <source>Custom Name</source>
+</trans-unit>
+<trans-unit id="sd749d80c570a0d0e">
+  <source>Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s1ea1d3a777930fd3">
+  <source>List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+</trans-unit>
+<trans-unit id="file-picker.upload-link.label">
+  <source>Upload file</source>
+</trans-unit>
+<trans-unit id="file-picker.value.placeholder">
+  <source>Select a file or enter a value...</source>
+</trans-unit>
+<trans-unit id="file-picker.value.description">
+  <source>Choose an existing file, or enter a URL or Font Awesome icon.</source>
+</trans-unit>
+<trans-unit id="file-picker.documentation-link.label">
+  <source>Supported values</source>
+</trans-unit>
+<trans-unit id="file.name.validation.html">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as code elements.</note>
+</trans-unit>
+<trans-unit id="file.name.validation.plaintext">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
 </trans-unit>
 </body>
 </file>
