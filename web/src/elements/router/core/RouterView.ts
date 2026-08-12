@@ -16,7 +16,7 @@ import "#elements/EmptyState";
 import { AKElement } from "#elements/Base";
 import { getRouterConfig } from "#elements/router/core/config";
 import { applyHashRedirect } from "#elements/router/core/hash-shim";
-import { matchRoute, type RouteMatch } from "#elements/router/core/matcher";
+import { matchRoute, type RouteMatch, sameRouteMatch } from "#elements/router/core/matcher";
 import {
     createClickInterceptor,
     navigate,
@@ -172,7 +172,15 @@ export class RouterView extends AKElement {
             stripped = this.#strip(window.location.pathname);
         }
 
-        this.current = matchRoute(stripped, this.routes);
+        const next = matchRoute(stripped, this.routes);
+
+        // Skip re-resolving when the route and its path parameters are unchanged
+        // (a search-param-only change — a tab, a table filter). Reassigning would
+        // hand `until()` a new promise and flash the loading state over a view
+        // that is already mounted.
+        if (sameRouteMatch(this.current, next)) return;
+
+        this.current = next;
     };
 
     //#endregion
