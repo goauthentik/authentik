@@ -44,7 +44,7 @@ runs:
       if: ${{ contains(inputs.dependencies, 'python') }}
       uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v5
       with:
-        python-version: 3.15.0rc1
+        python-version: 3.15.0-rc.1
     - name: Install Python deps
       if: ${{ contains(inputs.dependencies, 'python') }}
       shell: bash
