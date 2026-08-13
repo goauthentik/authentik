@@ -246,10 +246,14 @@ export const ROUTES: Route[] = [
         "users",
     ),
     new Route(
-        "/identity/users/:id",
+        // The `{/*}?` tail carries the tab path (`/identity/users/22/credentials`)
+        // to this route while `ak-user-view` stays mounted across tab changes.
+        "/identity/users/:id{/*}?",
         async (args) => {
             await import("#admin/users/UserViewPage");
-            return html`<ak-user-view .userId=${parseInt(String(args.id), 10)}></ak-user-view>`;
+            return html`<ak-user-view
+                .userId=${parseInt(String(args.id), 10)}
+            ></ak-user-view>`;
         },
         "user-view",
     ),
