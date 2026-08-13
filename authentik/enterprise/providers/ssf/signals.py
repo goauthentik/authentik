@@ -32,6 +32,7 @@ from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDevice,
 )
+from authentik.stages.password.models import PasswordDevice
 
 USER_PATH_PROVIDERS_SSF = USER_PATH_SYSTEM_PREFIX + "/providers/ssf"
 
@@ -130,7 +131,7 @@ device_type_map = {
 
 @receiver(post_save)
 def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, **_):
-    if not isinstance(instance, Device) or not instance.is_mfa:
+    if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
         return
     if not instance.confirmed:
         return
@@ -157,7 +158,7 @@ def ssf_device_post_save(sender: type[Model], instance: Device, created: bool, *
 
 @receiver(post_delete)
 def ssf_device_post_delete(sender: type[Model], instance: Device, **_):
-    if not isinstance(instance, Device) or not instance.is_mfa:
+    if not isinstance(instance, Device) or isinstance(instance, PasswordDevice):
         return
     if not instance.confirmed:
         return

@@ -129,8 +129,9 @@ def device_classes():
     from django.apps import apps
 
     from authentik.stages.authenticator.models import Device
+    from authentik.stages.password.models import PasswordDevice
 
     for config in apps.get_app_configs():
         for model in config.get_models():
-            if issubclass(model, Device) and model.is_mfa:
+            if issubclass(model, Device) and not issubclass(model, PasswordDevice):
                 yield model

@@ -85,10 +85,6 @@ class TestEnterpriseAudit(APITestCase):
                 "first_name": {"new_value": "", "previous_value": None},
                 "id": {"new_value": user.pk, "previous_value": None},
                 "last_name": {"new_value": "", "previous_value": None},
-                "password_change_date": {
-                    "new_value": sanitize_item(user.password_change_date),
-                    "previous_value": None,
-                },
             },
         )
 
@@ -225,7 +221,6 @@ class TestEnterpriseAudit(APITestCase):
                             "last_name": "",
                             "last_updated": sanitize_item(user.last_updated),
                             "name": user.name,
-                            "password_change_date": sanitize_item(user.password_change_date),
                             "path": "users",
                             "type": "internal",
                             "username": user.username,

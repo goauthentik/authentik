@@ -372,6 +372,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     # Hash staged by the `password` setter, written to the password device on save.
     _pending_password_hash: str | None = None
+    # Change date staged alongside the hash, written to the password device on save.
+    _pending_password_change_date: datetime | None = None
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
@@ -383,7 +385,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     roles = models.ManyToManyField(
         "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
     )
-    password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
 
@@ -400,7 +401,6 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         ]
         indexes = [
             models.Index(fields=["last_login"]),
-            models.Index(fields=["password_change_date"]),
             models.Index(fields=["uuid"]),
             models.Index(fields=["path"]),
             models.Index(fields=["type"]),
@@ -413,7 +413,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def save(self, *args, **kwargs):
         if self._pending_password_hash is None:
-            return super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+            return
         # The user and their password device hold what used to be a single row, so they
         # have to be written together.
         with transaction.atomic():
@@ -590,19 +591,33 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         """Stage a password hash. As with any other field, `save()` persists it."""
         self._pending_password_hash = password_hash
 
+    @property
+    def password_change_date(self) -> datetime:
+        """Date the user's password was last changed, stored on their password device."""
+        if self._pending_password_change_date is not None:
+            return self._pending_password_change_date
+        try:
+            return self.password_device.password_change_date
+        except ObjectDoesNotExist:
+            return self.date_joined
+
     def _save_pending_password(self):
         """Write a staged password hash to this user's password device."""
         from authentik.stages.password.models import PasswordDevice
 
         if self._pending_password_hash is None:
             return
+        defaults = {"password": self._pending_password_hash}
+        if self._pending_password_change_date is not None:
+            defaults["password_change_date"] = self._pending_password_change_date
         device, _ = PasswordDevice.objects.update_or_create(
             user=self,
-            defaults={"password": self._pending_password_hash},
-            create_defaults={"password": self._pending_password_hash, "name": "Password"},
+            defaults=defaults,
+            create_defaults={**defaults, "name": "Password"},
         )
         self.password_device = device
         self._pending_password_hash = None
+        self._pending_password_change_date = None
 
     def set_password(self, raw_password, signal=True, sender=None, request=None):
         if self.pk and signal:
@@ -611,7 +626,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             if not sender:
                 sender = self
             password_changed.send(sender=sender, user=self, password=raw_password, request=request)
-        self.password_change_date = now()
+        self._pending_password_change_date = now()
         return super().set_password(raw_password)
 
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
@@ -630,7 +645,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender = self
             password_hash_changed.send(sender=sender, user=self, request=request)
         self.password = password_hash
-        self.password_change_date = now()
+        self._pending_password_change_date = now()
 
     def check_password(self, raw_password: str) -> bool:
         """
