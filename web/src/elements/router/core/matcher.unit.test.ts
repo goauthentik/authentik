@@ -68,4 +68,33 @@ describe("sameRouteMatch", () => {
             ),
         ).toBe(false);
     });
+
+    it("ignores the wildcard tail so a subtree route stays mounted across its tabs", () => {
+        const subtree = route("/users/:id{/*}?");
+
+        // Same `:id`, different tail (a tab change) — same mount.
+        expect(
+            sameRouteMatch(
+                matchRoute("/users/22", [subtree]),
+                matchRoute("/users/22/credentials", [subtree]),
+            ),
+        ).toBe(true);
+        expect(
+            sameRouteMatch(
+                matchRoute("/users/22/credentials", [subtree]),
+                matchRoute("/users/22/credentials/tokens", [subtree]),
+            ),
+        ).toBe(true);
+    });
+
+    it("still remounts a subtree route when its named parameter changes", () => {
+        const subtree = route("/users/:id{/*}?");
+
+        expect(
+            sameRouteMatch(
+                matchRoute("/users/22/credentials", [subtree]),
+                matchRoute("/users/23/credentials", [subtree]),
+            ),
+        ).toBe(false);
+    });
 });

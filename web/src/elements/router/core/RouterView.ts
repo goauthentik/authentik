@@ -26,6 +26,7 @@ import {
     RouterNavigateEvent,
 } from "#elements/router/core/navigation";
 import { type RouteLike } from "#elements/router/core/Route";
+import { routedTabBaseContext } from "#elements/tabs/tab-context";
 import { type SlottedTemplateResult } from "#elements/types";
 
 import {
@@ -36,6 +37,7 @@ import {
     startBrowserTracingPageLoadSpan,
 } from "@sentry/browser";
 
+import { ContextProvider } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html, type PropertyValues, type TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -86,6 +88,14 @@ export class RouterView extends AKElement {
 
     #sentryClient = getClient();
     #pageLoadSpan: Span | null = null;
+
+    /**
+     * Publishes the current page's mount path to routed `<ak-tabs>` descendants.
+     */
+    #tabBaseProvider = new ContextProvider(this, {
+        context: routedTabBaseContext,
+        initialValue: "",
+    });
 
     constructor() {
         super();
@@ -147,22 +157,46 @@ export class RouterView extends AKElement {
     //#region Matching
 
     /**
-     * Strip the interface prefix, preserving the leading slash the matcher
-     * requires: `/if/user/settings` → `/settings`, `/if/user/` → `/`. A
-     * pathname outside the prefix is returned unchanged so it falls through to
-     * the 404 branch.
+     * Strip the prefix, preserving the leading slash the matcher requires:
+     * `/if/user/settings` → `/settings`, `/if/user/` → `/`. Matching is
+     * segment-aware so a prefix without a trailing slash (a nested outlet's
+     * base, e.g. `…/users/22`) never captures a sibling that merely shares its
+     * text (`…/users/220`). A pathname outside the prefix is returned unchanged
+     * so it falls through to the 404 branch.
      */
     #strip(pathname: string): string {
-        if (!pathname.startsWith(this.prefix)) return pathname;
+        const base = this.prefix.replace(/\/+$/, "");
 
-        return `/${pathname.slice(this.prefix.length).replace(/^\/+/, "")}`;
+        if (pathname === base) return "/";
+        if (pathname.startsWith(`${base}/`)) {
+            return `/${pathname.slice(base.length + 1).replace(/^\/+/, "")}`;
+        }
+
+        return pathname;
     }
 
     /**
-     * Join a route-relative path onto the prefix for navigation.
+     * Join a route-relative path onto the prefix for navigation, normalizing to
+     * exactly one separator regardless of whether the prefix ends in a slash.
      */
     #join(path: string): string {
-        return `${this.prefix}${path.replace(/^\/+/, "")}`;
+        return `${this.prefix.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+    }
+
+    /**
+     * The absolute path consumed to reach a match, excluding its wildcard tail —
+     * the mount path a tabbed page hands to its nested outlet. `/settings` and
+     * `/settings/sessions` (a subtree route) both resolve to base
+     * `/if/user/settings`; the tail (`sessions`) belongs to the nested outlet.
+     */
+    #basePath(match: RouteMatch<RouteLike>): string {
+        const tail = match.parameters["0"];
+
+        if (tail == null) return this.#join(match.pathname);
+
+        const consumed = match.pathname.slice(0, match.pathname.length - tail.length);
+
+        return this.#join(consumed.replace(/\/+$/, "") || "/");
     }
 
     #syncRoute = (): void => {
@@ -176,6 +210,11 @@ export class RouterView extends AKElement {
         }
 
         const next = matchRoute(stripped, this.routes);
+
+        // Publish the mount path (minus any tab tail) so routed `<ak-tabs>` under
+        // this outlet can consume it as their base. Refreshed even when the route
+        // is unchanged, so re-entering the same page restores a correct base.
+        this.#tabBaseProvider.setValue(next ? this.#basePath(next) : "");
 
         // Skip re-resolving when the route and its path parameters are unchanged
         // (a search-param-only change — a tab, a table filter). Reassigning would

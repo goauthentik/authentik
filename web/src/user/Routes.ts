@@ -38,7 +38,9 @@ export const ROUTES: RouteLike[] = [
         "requests.fulfill",
     ),
     new Route(
-        "/settings",
+        // The `{/*}?` tail lets the tab segment (`/settings/sessions`) resolve to
+        // this route while the page stays mounted across tab changes.
+        "/settings{/*}?",
         async () => {
             await import("#user/user-settings/UserSettingsPage");
 
