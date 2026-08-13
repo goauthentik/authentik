@@ -54,6 +54,7 @@ export class AccessRequestsPage extends AKElement {
                       </div>`
                     : nothing}
                 <ak-tabs
+                    routed
                     role="main"
                     aria-label=${msg("Access requests")}
                     ${AKSkipToContent.ref}
