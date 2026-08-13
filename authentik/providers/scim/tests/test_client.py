@@ -79,6 +79,35 @@ class SCIMClientTests(TestCase):
             self.assertEqual(mock.call_count, 1)
             self.assertEqual(mock.request_history[0].method, "GET")
 
+    def test_config_bulk_unsupported_without_max_operations(self):
+        """A provider that reports bulk as unsupported may omit the bulk limits.
+
+        RFC 7644 Section 5 only defines maxOperations alongside bulk support, so
+        such a response is conforming and must not push the client onto its
+        fallback config -- doing so reports patch and filter as unsupported
+        regardless of what the provider advertised, which silently disables
+        PATCH updates and the filtered lookup that adopts existing objects."""
+        with Mocker() as mock:
+            mock: Mocker
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                json={
+                    "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
+                    "authenticationSchemes": [],
+                    "patch": {"supported": True},
+                    "bulk": {"supported": False},
+                    "filter": {"supported": True, "maxResults": 50},
+                    "changePassword": {"supported": False},
+                    "sort": {"supported": False},
+                    "etag": {"supported": False},
+                },
+            )
+            client = SCIMClient(self.provider)
+            self.assertFalse(client._config.is_fallback)
+            self.assertTrue(client._config.patch.supported)
+            self.assertTrue(client._config.filter.supported)
+            self.assertEqual(client._config.bulk.maxOperations, 0)
+
     def test_config_invalid(self):
         """Test invalid config"""
         with Mocker() as mock:
