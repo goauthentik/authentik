@@ -5,24 +5,41 @@ for awhile, but at least let's get started.
 
 # Setup
 
-Install dependencies from the repo root with `make node-install` (or `make install` for the full
-Python + web + docs bootstrap). This wraps `npm ci` and explicitly rebuilds the small set of
-packages whose install scripts are required for the toolchain to function — currently `esbuild`,
-`chromedriver`, `tree-sitter`, and `tree-sitter-json`.
+The package manager is **pnpm**, pinned by the `packageManager` field in `package.json`. We
+currently require Node.js 24 or newer.
 
-The repo-root `.npmrc` sets `ignore-scripts=true` to neutralize the dominant npm supply-chain
-attack vector. As a side effect, running `npm ci` directly in this directory will install
-dependencies but skip those rebuilds, leaving `esbuild` and `chromedriver` in a non-functional
-state. If you bypass `make`, run the rebuild step yourself:
+Install from the project root (not the `./web` folder!):
 
 ```bash
-npm rebuild --ignore-scripts=false --foreground-scripts \
-    esbuild chromedriver tree-sitter tree-sitter-json
+make web-install   # this package only
+make install       # node + web + the Python core
 ```
 
-New dependencies that ship install scripts must be audited and added to `TRUSTED_INSTALL_SCRIPTS`
-in the repo-root `Makefile`. Each entry is arbitrary code that runs at install time, so the list
-is intentionally small.
+`web/` is a pnpm workspace root — it has its own `pnpm-workspace.yaml` and `pnpm-lock.yaml`,
+independent of the ones at the repository root. `make node-install` installs the _root_ workspace
+and does **not** include the `./web` folder (this folder); use `make web-install` (or `make
+install`) for web work. Documentation dependencies are also separate; build them with `make
+docs-install`.
+
+Running `pnpm install` in this folder will also work. The `make` targets add two things: they pass
+`--frozen-lockfile`, and `make node-install` first runs `scripts/node/lint-runtime.mjs` to check
+that the local Node or pnpm matches the requirements in `package.json`. (The project root `.npmrc`
+also sets `engine-strict=true` and `save-exact=true` to make sure `pnpm add` writes exact versions.)
+
+## Install scripts
+
+pnpm blocks package install scripts by default, since they're the vector for most supply-chain
+attacks.  Packages can be allowed to run install scripts only by explicitly being included in one of
+two fields in `pnpm-workspace.yaml`:
+
+- **`onlyBuiltDependencies`** — the allowlist. Currently `chromedriver`, `esbuild`, `tree-sitter`,
+  `tree-sitter-json`, and `@tree-sitter-grammars/tree-sitter-yaml`, all of which need to compile or
+  fetch a binary to function.
+- **`allowBuilds`** — pnpm 11's explicit approval map. `true` mirrors the allowlist; `false` records
+  a deliberate decline, which suppresses the "pending approval" prompt without running anything.
+
+A new dependency that ships an install script must be audited and added to **both** fields. Think
+before you add anything to the lists.
 
 # The Theory of the authentik UI
 
