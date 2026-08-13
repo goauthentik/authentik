@@ -95,7 +95,7 @@ Before configuring either service, you need to export the signing certificates f
     - Set **Slug** to `keycloak`.
     - Set **SSO URL** to `https://keycloak.company/realms/<realm-name>/protocol/saml`.
     - Set **SLO URL** to `https://keycloak.company/realms/<realm-name>/protocol/saml`.
-    - Set **Issuer** to `https://authentik.company/source/saml/<keycloak-slug>/metadata/`.
+    - Set **Issuer override** to `https://authentik.company/source/saml/<keycloak-slug>/metadata/` (optional; the source defaults to this value).
     - Set **Service Provider Binding** to `Post (Auto-Submit)`.
     - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Verification Certificate** to the Keycloak certificate you uploaded earlier.
