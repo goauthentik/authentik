@@ -37,8 +37,8 @@ To support the integration of WeChat with authentik, you need to create a WeChat
     - **Select type**: select **WeChat OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug (e.g. `wechat`), and set the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: Enter the **AppID** from the WeChat Open Platform.
-            - **Consumer Secret**: Enter the **AppSecret** from the WeChat Open Platform.
+            - **Consumer key**: Enter the **AppID** from the WeChat Open Platform.
+            - **Consumer secret**: Enter the **AppSecret** from the WeChat Open Platform.
             - **Scopes**: define any further access scopes.
 3. Click **Finish**.
 

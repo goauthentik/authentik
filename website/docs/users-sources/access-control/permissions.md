@@ -26,7 +26,7 @@ From 2025.12, authentik's access control is fully role-based. Before 2025.12, Ad
 There are two main types of permissions in authentik:
 
 - [**Global permissions**](#global-permissions)
-- [**Object permissions**](#object-permissions)
+- [**Object Permissions**](#object-permissions)
 
 Additionally, authentik employs _initial permissions_ to streamline the process of granting object-level permissions when an object (user or role) is created. When an Admin implements initial permissions, this feature automatically adds permissions for newly created objects to the role (and thus users with that role) that created them. For more details, refer to [Initial permissions](./initial_permissions.mdx).
 

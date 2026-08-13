@@ -31,7 +31,7 @@ You'll need to create the stages that make up the flow.
 
 First, you'll need to create a Password Stage.
 
-3. Select **Password Stage** as the stage type, click **Next**, and set the following required configurations:
+3. Select **Password stage** as the stage type, click **Next**, and set the following required configurations:
     - Provide a **Name** for the stage (e.g. `ldap-authentication-password-stage`).
     - For **Backends**, leave the default settings.
 4. Click **Finish**
@@ -43,7 +43,7 @@ Next, you'll need to create an Identification Stage.
 5. On the **Stages** page, click **Create**.
 6. Select **Identification Stage** as the stage type, click **Next**, and set the following required configurations:
     - Provide a **Name** for the stage (e.g. `ldap-identification-stage`).
-    - For **User fields**, select `Username` and `Email` (and UPN if it is relevant to your setup).
+    - For **User Fields**, select `Username` and `Email` (and UPN if it is relevant to your setup).
     - Set **Password stage** to the Password Stage created in the previous section (e.g. `ldap-authentication-password-stage`)
 7. Click **Finish**
 
@@ -66,9 +66,9 @@ Now you'll need to create the LDAP authentication flow and bind the previously c
     - Set **Designation** to `Authentication`.
 3. Click **Create**.
 4. Click the name of the newly created flow, open the **Stage Bindings** tab, and click **Create or bind...**
-5. Select **Existing stage**.
+5. Select **Existing Stage**.
 6. Select the previously created LDAP Identification Stage (e.g.`ldap-identification-stage`), set the order to `10`, and click **Create**.
-7. Repeat above steps: click **Create or bind...** and then select **Existing stage**.
+7. Repeat above steps: click **Create or bind...** and then select **Existing Stage**.
 8. Select the previously created LDAP User Login Stage (e.g.`ldap-authentication-login-stage`), set the order to `30`, and click **Create**.
 
 ## Create an LDAP application and provider
@@ -82,7 +82,7 @@ The LDAP application and provider can now be created.
 5. On the **Configure LDAP Provider** page, provide the configuration settings and then click **Submit** to create both the application and the provider.
 
 :::info
-If you followed the optional [Create an LDAP authentication flow](#create-an-ldap-authentication-flow-optional) section, ensure that you set **Bind flow** to newly created authentication flow (e.g. `ldap-authentication-flow`).
+If you followed the optional [Create an LDAP authentication flow](#create-an-ldap-authentication-flow-optional) section, ensure that you set **Bind Flow** to newly created authentication flow (e.g. `ldap-authentication-flow`).
 :::
 
 ## Create a service account
@@ -107,7 +107,7 @@ The service account needs permissions to search the LDAP directory. You'll need 
 2. Navigate to **Directory** > **Roles** and click **Create**.
 3. Provide a name for the role (e.g. `LDAP search`) and then click **Create**.
 4. Click on the newly created role and open the **Users** tab.
-5. Click **Add existing user**, select the service account, and then click **Assign**.
+5. Click **Add Existing User**, select the service account, and then click **Assign**.
 6. Navigate to **Applications** > **Providers**.
 7. Click on the name of the newly created LDAP provider and open the **Permissions** tab.
 8. Click **Assign Object Permissions**.

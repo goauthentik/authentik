@@ -37,7 +37,7 @@ The main steps to configure your Google Workspace organization are:
 
 ### Configure service account key and scopes
 
-1. On the **Service accounts** page, click the account that you just created.
+1. On the **Service Accounts** page, click the account that you just created.
 2. Click the **Keys** tab at the top of the page, then click **Add Key** > **Create new key**.
 3. Select **JSON** as the key type, then click **Create**.
    A pop-up displays with the private key. The key can be saved to your computer as a JSON file. This key will be required when creating the Google Workspace provider in authentik.
@@ -65,7 +65,7 @@ The main steps to configure your Google Workspace organization are:
 **Delegated Subject** is a required field when creating the Google Workspace provider in authentik. This field must be populated with the email address of a Google Workspace user with [suitable permissions](#delegated-subject-permissions).
 
 1. In the sidebar navigate to **Directory** > **Users**.
-2. Either select an existing user's email address or **Add new user** and define the user and email address to use as the Delegated Subject.
+2. Either select an existing user's email address or **Add New User** and define the user and email address to use as the Delegated Subject.
 3. Take note of this email address as it will be required when creating the Google Workspace provider in authentik.
 
 #### Delegated Subject permissions
