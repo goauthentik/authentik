@@ -69,6 +69,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
 
@@ -108,6 +109,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         group.name = generate_id()
@@ -145,6 +147,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         group.delete()
@@ -183,6 +186,7 @@ class SCIMGroupTests(TestCase):
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
                 "externalId": str(group.pk),
                 "displayName": group.name,
+                "members": [],
             },
         )
         conn = SCIMProviderGroup.objects.filter(group=group).first()
@@ -191,6 +195,7 @@ class SCIMGroupTests(TestCase):
             "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
             "externalId": str(group.pk),
             "displayName": group.name,
+            "members": [],
         }
         conn.save()
         mock.get(
@@ -209,6 +214,41 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertEqual(mock.request_history[2].method, "GET")
         self.assertNotIn("PUT", [req.method for req in mock.request_history])
+
+    @Mocker()
+    def test_group_update_records_remote_state(self, mock: Mocker):
+        """Test that the remote state is recorded on update, so the next write is a noop"""
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        group = Group.objects.create(
+            name=generate_id(),
+        )
+        group.name = generate_id()
+        remote_group = {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+            "id": scim_id,
+            "externalId": str(group.pk),
+            "displayName": group.name,
+            "members": [],
+        }
+        mock.put(f"https://localhost/Groups/{scim_id}", json=remote_group)
+        mock.get(f"https://localhost/Groups/{scim_id}", json=remote_group)
+
+        group.save()
+        connection = SCIMProviderGroup.objects.filter(provider=self.provider, group=group).first()
+        self.assertEqual(connection.attributes, remote_group)
+
+        group.save()
+        self.assertEqual([req.method for req in mock.request_history].count("PUT"), 1)
 
     @Mocker()
     def test_group_diff_nested_attribute(self, mock: Mocker):
