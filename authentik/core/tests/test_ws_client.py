@@ -19,6 +19,13 @@ class TestClientWS(TransactionTestCase):
     def setUp(self):
         self.user = create_test_user()
 
+    async def test_unauthenticated(self):
+        communicator = WebsocketCommunicator(
+            URLRouter(websocket.websocket_urlpatterns), "/ws/client/"
+        )
+        connected, _ = await communicator.connect()
+        self.assertFalse(connected)
+
     async def test_notification(self):
         communicator = WebsocketCommunicator(
             URLRouter(websocket.websocket_urlpatterns), "/ws/client/"

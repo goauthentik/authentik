@@ -21,10 +21,11 @@ class ClientConsumer(JsonWebsocketConsumer):
     user: User | None = None
 
     def connect(self):
-        self.accept()
-        self.user = self.scope.get("user")
-        if self.user is None or not self.user.is_authenticated:
+        user = self.scope.get("user")
+        if user is None or not user.is_authenticated:
             raise DenyConnection()
+        self.user = user
+        self.accept()
         async_to_sync(self.channel_layer.group_add)(build_user_group(self.user), self.channel_name)
 
     def disconnect(self, code):
