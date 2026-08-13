@@ -48,7 +48,7 @@ export class AccessRequestsPage extends AKElement {
                     ? html`<div class="pf-c-banner pf-m-info">
                           ${msg("Requests to review: ")}
                           <a
-                              href=${toUserInterface("requests", { page: "page-for-review" })}
+                              href=${toUserInterface("requests/for-review")}
                               >${msg("Review")}</a
                           >
                       </div>`
