@@ -12,7 +12,7 @@ from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
-from authentik.core.models import Application, AuthenticatedSession, Session, User
+from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken, hash_session_key
@@ -268,11 +268,16 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_user_deactivated_model(self, mock_get_session):
-        """Deactivating a user directly on the model sends a back-channel logout"""
+        """Deactivating a user keeps access tokens so deleting the session can notify"""
         mock_session = self._mock_http(mock_get_session)
 
         self.user.is_active = False
         self.user.save()
+
+        mock_session.post.assert_not_called()
+        self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 1)
+
+        self.session.delete()
 
         self._assert_logout_token_sent(mock_session)
         self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 0)
@@ -311,49 +316,12 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
         self.provider.logout_method = OAuth2LogoutMethod.FRONTCHANNEL
         self.provider.save()
 
-        self.user.is_active = False
-        self.user.save()
-
-        mock_session.post.assert_not_called()
-
-    @patch("authentik.providers.oauth2.tasks.get_http_session")
-    def test_user_deactivated_no_session(self, mock_get_session):
-        """A token without a session still sends a back-channel logout, without a sid"""
-        mock_session = self._mock_http(mock_get_session)
-        AccessToken.objects.all().delete()
-        AccessToken.objects.create(
-            provider=self.provider,
-            user=self.user,
-            token=generate_id(),
-            auth_time=timezone.now(),
-            _scope="openid user profile",
-            _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+            data=json.dumps({"is_active": False}),
+            content_type="application/json",
         )
-
-        self.user.is_active = False
-        self.user.save()
-
-        mock_session.post.assert_called_once()
-        _, kwargs = mock_session.post.call_args
-        key, alg = self.provider.jwt_key
-        if alg != "HS256":
-            key = self.provider.signing_key.public_key
-        decoded = jwt.decode(
-            kwargs["data"]["logout_token"],
-            key,
-            algorithms=[alg],
-            options={"verify_exp": False, "verify_aud": False},
-        )
-        self.assertEqual(decoded["sub"], str(self.user.uid))
-        self.assertNotIn("sid", decoded)
-
-    @patch("authentik.providers.oauth2.tasks.get_http_session")
-    def test_other_user_deactivated(self, mock_get_session):
-        """Deactivating an unrelated user does not send a back-channel logout"""
-        mock_session = self._mock_http(mock_get_session)
-        other = User.objects.create(username=generate_id())
-
-        other.is_active = False
-        other.save()
+        self.assertEqual(response.status_code, 200)
 
         mock_session.post.assert_not_called()
