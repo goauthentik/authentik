@@ -50,6 +50,8 @@ export interface UIConfig {
         search: boolean;
         // Requests
         requests: boolean;
+        // Agents
+        agents: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
@@ -79,6 +81,7 @@ export const DefaultUIConfig = {
         applicationEdit: true,
         search: true,
         requests: true,
+        agents: true,
     },
     layout: {
         type: LayoutType.row,

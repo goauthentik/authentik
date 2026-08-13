@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 00:31+0000\n"
+"POT-Creation-Date: 2026-08-11 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,6 +120,11 @@ msgstr ""
 #: authentik/blueprints/api.py
 #, python-brace-format
 msgid "User lacks permission to create {model}"
+msgstr ""
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "Invalid blueprint file: {exc}"
 msgstr ""
 
 #: authentik/blueprints/models.py
@@ -982,6 +987,30 @@ msgstr ""
 msgid "Sync endpoints."
 msgstr ""
 
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr ""
+
+#: authentik/enterprise/agents/api.py
+msgid "Only internal user accounts can create agents."
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr ""
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
+msgstr ""
+
 #: authentik/enterprise/api.py
 msgid "Enterprise is required to create/update this object."
 msgstr ""
@@ -1533,6 +1562,18 @@ msgstr ""
 
 #: authentik/enterprise/reports/tasks.py
 msgid "Generate data export."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents can request access through this endpoint."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "This agent has no owner who could approve its request."
+msgstr ""
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents with an expiry can request access."
 msgstr ""
 
 #: authentik/enterprise/requests/models.py
