@@ -82,27 +82,6 @@ def handle_flow_pre_user_logout(sender, request, user, executor, **kwargs):
         LOGGER.debug("Oauth iframe sessions gathered")
 
 
-def backchannel_logout_revocations(access_tokens) -> list[tuple[int, str, str, str | None]]:
-    """Build back-channel logout notifications for the given access tokens.
-
-    Only providers with a logout URI and the back-channel logout method are notified, and
-    duplicate notifications (multiple tokens for the same provider and session) are collapsed."""
-    revocations = []
-    for token in access_tokens:
-        if (
-            not token.provider.logout_uri
-            or token.provider.logout_method != OAuth2LogoutMethod.BACKCHANNEL
-        ):
-            continue
-        # AuthenticatedSession uses the session as its primary key, so session_id is the
-        # session key of the session the token was issued for
-        revocation = (token.provider_id, token.id_token.iss, token.id_token.sub, token.session_id)
-        if revocation in revocations:
-            continue
-        revocations.append(revocation)
-    return revocations
-
-
 @receiver(pre_delete, sender=AuthenticatedSession)
 def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
     sender, instance: AuthenticatedSession, **_
@@ -115,30 +94,30 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
         session__session__session_key=instance.session.session_key,
     )
 
-    revocations = backchannel_logout_revocations(access_tokens)
-    if revocations:
-        backchannel_logout_notification_dispatch.send(revocations=revocations)
+    # Only send backchannel logout notifications for providers that have
+    # logout_uri configured and backchannel logout method set
+    backchannel_tokens = [
+        (
+            token.provider_id,
+            token.id_token.iss,
+            token.id_token.sub,
+            instance.session.session_key,
+        )
+        for token in access_tokens
+        if token.provider.logout_uri
+        and token.provider.logout_method == OAuth2LogoutMethod.BACKCHANNEL
+    ]
+
+    if backchannel_tokens:
+        backchannel_logout_notification_dispatch.send(revocations=backchannel_tokens)
 
     access_tokens.delete()
 
 
 @receiver(post_save, sender=User)
 def user_deactivated(sender, instance: User, **_):
-    """Send back-channel logout requests and remove user tokens when deactivated"""
+    """Remove user tokens when deactivated"""
     if instance.is_active:
         return
-
-    access_tokens = (
-        AccessToken.objects.including_expired().select_related("provider").filter(user=instance)
-    )
-
-    revocations = backchannel_logout_revocations(access_tokens)
-    if revocations:
-        LOGGER.debug(
-            "Sending back-channel logout notifications for deactivated user", user=instance
-        )
-        backchannel_logout_notification_dispatch.send(revocations=revocations)
-
-    access_tokens.delete()
     RefreshToken.objects.including_expired().filter(user=instance).delete()
     DeviceToken.objects.including_expired().filter(user=instance).delete()
