@@ -4,11 +4,9 @@ from hashlib import sha256
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
-from django.core.cache import cache
 from django.db import connection
 
 from authentik.core.models import User
-from authentik.root.ws.storage import CACHE_PREFIX
 
 
 def build_user_group(user: User):
@@ -25,8 +23,6 @@ class MessageConsumer(JsonWebsocketConsumer):
     def connect(self):
         self.accept()
         self.session_key = self.scope["session"].session_key
-        if self.session_key:
-            cache.set(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}", True, None)
         if user := self.scope.get("user"):
             if user.is_authenticated:
                 async_to_sync(self.channel_layer.group_add)(
@@ -34,16 +30,10 @@ class MessageConsumer(JsonWebsocketConsumer):
                 )
 
     def disconnect(self, code):
-        if self.session_key:
-            cache.delete(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}")
         if self.user:
             async_to_sync(self.channel_layer.group_discard)(
                 build_user_group(self.user), self.channel_name
             )
-
-    def event_message(self, event: dict):
-        """Event handler which is called by Messages Storage backend"""
-        self.send_json(event)
 
     def event_notification(self, event: dict):
         """Event handler for new notifications"""
