@@ -37,6 +37,29 @@ test.describe("User interface routing", () => {
         });
     });
 
+    test("Settings tabs are path segments", async ({ session, navigator, page }) => {
+        await test.step("Deep-load a specific tab by path", async () => {
+            await session.login({ to: `${SETTINGS_PATHNAME}/sessions` });
+        });
+
+        await test.step("The tab named in the path is selected", async () => {
+            await expect(
+                page.getByRole("tab", { name: "Sessions" }),
+                "Sessions tab is selected from the path",
+            ).toHaveAttribute("aria-selected", "true");
+        });
+
+        await test.step("Switching tabs writes the segment to the path", async () => {
+            await page.getByRole("tab", { name: "Credentials" }).click();
+            await navigator.waitForPathname(`${SETTINGS_PATHNAME}/credentials`);
+        });
+
+        await test.step("The default tab drops back to the bare settings path", async () => {
+            await page.getByRole("tab", { name: "User details" }).click();
+            await navigator.waitForPathname(SETTINGS_PATHNAME);
+        });
+    });
+
     test("Back and forward traverse pushState navigations", async ({
         session,
         navigator,
@@ -117,9 +140,10 @@ test.describe("User interface routing", () => {
         });
 
         // Shim-only compatibility (see the plan's compatibility decision): the boot
-        // shim translates the legacy hash to the correct *page* and carries `?page=`
-        // forward, but this plan adds no `?page`→`activateTab` bridge, so the tab is
-        // NOT auto-selected until `ak-tabs` flips with the admin interface. Assert the
+        // shim translates the legacy hash to the page and carries `?page=` forward,
+        // but tabs are now tracked as path segments, not `?page=`. The shim is not
+        // extended to translate a legacy `?page=` into a path segment, so the tab is
+        // NOT auto-selected — a deliberate compatibility boundary. Assert the
         // page-level redirect only.
         await test.step("The settings page renders at the translated path", async () => {
             await expect(
