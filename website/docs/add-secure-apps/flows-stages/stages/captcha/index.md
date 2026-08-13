@@ -18,8 +18,8 @@ It can either be bound to a flow or embedded inside the [Identification stage](.
 - **Score minimum threshold**: minimum accepted score for score-based providers.
 - **Score maximum threshold**: maximum accepted score for score-based providers.
 - **Error on invalid score**: show an error immediately when the score is outside the configured threshold. If disabled, the flow continues and policies can inspect the result from context.
-- **JS URL**: JavaScript loader URL for the provider.
-- **API URL**: verification endpoint URL for the provider.
+- **JavaScript URL**: JavaScript loader URL for the provider.
+- **API Verification URL**: verification endpoint URL for the provider.
 - **Request content type**: content type used when authentik verifies the CAPTCHA token with the provider.
 
 ## Flow integration
@@ -43,8 +43,8 @@ Recommended defaults for reCAPTCHA:
 - **Interactive**: disabled for score-based reCAPTCHA
 - **Score minimum threshold**: `0.5`
 - **Score maximum threshold**: `1.0`
-- **JS URL**: `https://www.recaptcha.net/recaptcha/api.js`
-- **API URL**: `https://www.recaptcha.net/recaptcha/api/siteverify`
+- **JavaScript URL**: `https://www.recaptcha.net/recaptcha/api.js`
+- **API Verification URL**: `https://www.recaptcha.net/recaptcha/api/siteverify`
 
 ![](./captcha-admin.png)
 
@@ -55,8 +55,8 @@ See https://docs.hcaptcha.com/switch.
 Recommended values:
 
 - **Interactive**: enabled
-- **JS URL**: `https://js.hcaptcha.com/1/api.js`
-- **API URL**: `https://api.hcaptcha.com/siteverify`
+- **JavaScript URL**: `https://js.hcaptcha.com/1/api.js`
+- **API Verification URL**: `https://api.hcaptcha.com/siteverify`
 
 Score thresholds only apply to hCaptcha Enterprise.
 
@@ -73,8 +73,8 @@ Recommended values:
 - **Public key**: public Cap endpoint for the site key path, for example `https://cap.example.com/site-key/`
 - **Private key**: Cap secret key
 - **Interactive**: enabled
-- **JS URL**: self-hosted Cap widget asset, for example `https://cap.example.com/assets/widget.js`. If you use a CDN, pin a reviewed release such as `https://cdn.jsdelivr.net/npm/cap-widget@<version>` instead of the unversioned package URL. See [Cap releases](https://github.com/tiagozip/cap/releases).
-- **API URL**: Cap verification endpoint, for example `https://cap.example.com/site-key/siteverify`
+- **JavaScript URL**: self-hosted Cap widget asset, for example `https://cap.example.com/assets/widget.js`. If you use a CDN, pin a reviewed release such as `https://cdn.jsdelivr.net/npm/cap-widget@<version>` instead of the unversioned package URL. See [Cap releases](https://github.com/tiagozip/cap/releases).
+- **API Verification URL**: Cap verification endpoint, for example `https://cap.example.com/site-key/siteverify`
 - **Request content type**: JSON
 
 Cap does not use score thresholds.
@@ -88,8 +88,8 @@ Recommended values:
 - **Public key**: Turnstile site key
 - **Private key**: Turnstile secret key
 - **Interactive**: enable when using invisible or managed Turnstile modes
-- **JS URL**: `https://challenges.cloudflare.com/turnstile/v0/api.js`
-- **API URL**: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
+- **JavaScript URL**: `https://challenges.cloudflare.com/turnstile/v0/api.js`
+- **API Verification URL**: `https://challenges.cloudflare.com/turnstile/v0/siteverify`
 
 Turnstile does not use score thresholds.
 

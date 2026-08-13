@@ -103,7 +103,7 @@ The following property mappings are automatically added when you create a new SA
 | authentik default SAML Mapping: Username                      | `http://schemas.goauthentik.io/2021/02/saml/username`                        |
 | authentik default SAML Mapping: WindowsAccountName (Username) | `http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname` |
 
-The default SAML property mappings can be viewed on the **Property Mappings** page of the admin interface by disabling the **Hide managed mappings** toggle.
+The default SAML property mappings can be viewed on the **Property Mappings** page of the Admin interface by setting the **Managed** filter to **All**.
 
 ### Custom SAML property mappings
 

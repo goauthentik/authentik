@@ -21,7 +21,7 @@ Enrolled authenticators can later be used with the [Authenticator Validation sta
 - **Authenticator attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
 - **Hints**: browser hints that influence which authenticator is preferred during enrollment.
 - **Device type restrictions**: limit enrollment to specific WebAuthn device types.
-- **Maximum attempts**: maximum number of failed registration attempts before the stage denies access. A value of `0` disables the limit.
+- **Maximum registration attempts**: maximum number of failed registration attempts before the stage denies access. A value of `0` disables the limit.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.
 - **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
