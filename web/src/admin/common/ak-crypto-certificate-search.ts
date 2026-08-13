@@ -16,7 +16,7 @@ import {
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 const renderElement = (item: CertificateKeyPair): string => item.name;
@@ -138,14 +138,30 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         if (query !== undefined) {
             args.search = query;
         }
-        const { results } = await aki(CryptoApi).cryptoCertificatekeypairsList(args);
 
-        const usable: CertificateKeyPair[] = [];
-        const unusable: CertificateKeyPair[] = [];
-
-        for (const item of results) {
-            (this.#unusableReason(item) ? unusable : usable).push(item);
+        const restrictions: CryptoCertificatekeypairsListRequest = {};
+        if (!this.noKey) {
+            restrictions.hasKey = true;
         }
+        if (this.allowedKeyTypes?.length) {
+            restrictions.keyType = this.allowedKeyTypes;
+        }
+
+        const api = aki(CryptoApi);
+
+        if (Object.keys(restrictions).length === 0) {
+            const { results } = await api.cryptoCertificatekeypairsList(args);
+            return results;
+        }
+
+        // The API only returns one page of results, so ask it for the usable keypairs directly.
+        // Otherwise, a page full of unusable ones could push the usable ones out of the list.
+        const [{ results: usable }, { results: all }] = await Promise.all([
+            api.cryptoCertificatekeypairsList({ ...args, ...restrictions }),
+            api.cryptoCertificatekeypairsList(args),
+        ]);
+
+        const unusable = all.filter((item) => this.#unusableReason(item) !== null);
 
         return [...usable, ...unusable];
     };
@@ -153,7 +169,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     optionDisabled = (item: CertificateKeyPair): boolean => this.#unusableReason(item) !== null;
 
     renderDescription = (item: CertificateKeyPair): SlottedTemplateResult =>
-        this.#unusableReason(item) ?? nothing;
+        this.#unusableReason(item);
 
     selected = (item: CertificateKeyPair, items: CertificateKeyPair[]) => {
         if (this.certificate) {
