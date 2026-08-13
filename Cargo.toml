@@ -74,8 +74,8 @@ notify = "= 8.2.0"
 pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
-pyo3 = "= 0.29.0"
-pyo3-build-config = "= 0.29.0"
+pyo3 = "= 0.29.1"
+pyo3-build-config = "= 0.29.1"
 rand = "= 0.10.2"
 rcgen = { version = "= 0.14.8", default-features = false, features = [
   "aws_lc_rs",
