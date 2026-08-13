@@ -29,7 +29,7 @@ also sets `engine-strict=true` and `save-exact=true` to make sure `pnpm add` wri
 ## Install scripts
 
 pnpm blocks package install scripts by default, since they're the vector for most supply-chain
-attacks.  Packages can be allowed to run install scripts only by explicitly being included in one of
+attacks. Packages can be allowed to run install scripts only by explicitly being included in one of
 two fields in `pnpm-workspace.yaml`:
 
 - **`onlyBuiltDependencies`** — the allowlist. Currently `chromedriver`, `esbuild`, `tree-sitter`,
