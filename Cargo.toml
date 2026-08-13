@@ -23,14 +23,14 @@ arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
 askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.17.3", features = ["fips"] }
+aws-lc-rs = { version = "= 1.18.0", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
   "cookie-key-expansion",
 ] }
-base64 = "= 0.23.0"
-clap = { version = "= 4.6.5", features = ["derive", "env"] }
+base64 = "= 0.23.1"
+clap = { version = "= 4.6.6", features = ["derive", "env"] }
 client-ip = { version = "0.2.1" }
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
@@ -63,15 +63,15 @@ hyper-util = { version = "= 0.1.20", features = [
 ] }
 ipnet = { version = "= 2.12.1", features = ["serde"] }
 json-subscriber = "= 0.3.0"
-jsonwebtoken = { version = "= 10.4.0", features = ["aws_lc_rs"] }
+jsonwebtoken = { version = "= 11.0.0", features = ["aws_lc_rs"] }
 metrics = "= 0.24.6"
 metrics-exporter-prometheus = { version = "= 0.18.3", default-features = false }
-moka = { version = "= 0.12.15", default-features = false, features = [
+moka = { version = "= 0.12.16", default-features = false, features = [
   "future",
 ] }
 nix = { version = "= 0.31.3", features = ["hostname", "signal"] }
 notify = "= 8.2.0"
-pem = "= 3.0.6"
+pem = "= 4.0.0"
 percent-encoding = "= 2.3.2"
 pin-project-lite = "= 0.2.17"
 pyo3 = "= 0.29.0"
@@ -126,7 +126,7 @@ sqlx = { version = "= 0.9.0", default-features = false, features = [
   "json",
 ] }
 tempfile = "= 3.27.0"
-thiserror = "= 2.0.19"
+thiserror = "= 2.0.20"
 time = { version = "= 0.3.55", features = ["macros"] }
 tokio = { version = "= 1.53.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"

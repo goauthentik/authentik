@@ -69,9 +69,9 @@ class FleetController(BaseController[DBC]):
                         "page": page,
                         # Small page size as Fleet's API response, with the populate fields below
                         # can be quite large and eat a lot of memory
-                        "per_page": 5,
+                        "per_page": 1,
                         "device_mapping": "true",
-                        "populate_software": "true",
+                        "populate_software": "without_vulnerability_details",
                         "populate_users": "true",
                         "populate_policies": "true",
                     },

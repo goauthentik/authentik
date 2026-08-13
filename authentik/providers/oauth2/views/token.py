@@ -335,10 +335,12 @@ class TokenView(View):
 
     def create_token_exchange_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8693#section-2.2.1"""
+        # Issued on the `audience` target, else on the client's own provider
+        provider = self.params.token_provider
         now = timezone.now()
-        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token_expiry = now + timedelta_from_string(provider.access_token_validity)
         access_token = AccessToken(
-            provider=self.provider,
+            provider=provider,
             user=self.params.user,
             actor=self.params.actor,
             expires=access_token_expiry,
@@ -346,7 +348,7 @@ class TokenView(View):
             auth_time=now,
         )
         access_token.id_token = IDToken.new(
-            self.provider,
+            provider,
             access_token,
             self.request,
         )
@@ -360,6 +362,6 @@ class TokenView(View):
             "token_type": TOKEN_TYPE,
             "scope": " ".join(access_token.scope),
             "expires_in": int(
-                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+                timedelta_from_string(provider.access_token_validity).total_seconds()
             ),
         }

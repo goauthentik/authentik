@@ -52,10 +52,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@5c882eb04fcca27ebb4f5904e0da01f0780063ea
+      - uses: regclient/actions/regctl-installer@78eb729dbdb4ef6480e85ff697b4410e22112583
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
-      - uses: regclient/actions/regctl-login@5c882eb04fcca27ebb4f5904e0da01f0780063ea
+      - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
+      - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
@@ -121,7 +121,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           context: .
-      - uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v3
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v3
         with:
           subject-name: ghcr.io/goauthentik/docs
           subject-digest: "${{ steps.build.outputs.digest }}"
