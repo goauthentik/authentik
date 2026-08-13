@@ -58,6 +58,24 @@ After re-creating the containers with `AUTHENTIK_DEBUGGER` set to `true` and the
 
 If the authentik instance is running on a remote server, the `.vscode/launch.json` file needs to be adjusted to point to the IP of the remote server. Alternatively, you can forward the debug port via an SSH tunnel, using `-L 9901:127.0.0.1:9901`.
 
-## authentik Server / Outposts (Golang)
+## authentik Server / Proxy outpost (Rust)
 
-Outposts, as well as some auxiliary code of the authentik server, are written in Go. These components can be debugged using standard Golang tooling, such as [Delve](https://github.com/go-delve/delve).
+The authentik server entrypoint and the proxy outpost are written in Rust. The server accepts incoming requests, serves static assets, and forwards the rest to the Python core; the Python core itself is covered in the section above.
+
+These components can be debugged with standard Rust tooling, such as [`rust-gdb`, `rust-lldb`](https://doc.rust-lang.org/book/appendix-04-useful-development-tools.html), or the [CodeLLDB](https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb) extension for Visual Studio Code. Build a debug binary with `cargo build` and run the component you want to inspect, for example `cargo run -- server` or `cargo run -- proxy`.
+
+### Async runtime inspection
+
+Because these components are asynchronous, a stack trace is often less useful than a view of the task runtime. authentik embeds [tokio-console](https://github.com/tokio-rs/console) support for this.
+
+Set `AUTHENTIK_LISTEN__DEBUG_TOKIO` to an `address:port` to start the console subscriber, then connect with the `tokio-console` client. The setting is unset by default, and no console server is started when it is empty.
+
+### Log levels
+
+Rust log levels are configured per-crate with `AUTHENTIK_LOG__RUST_LOG__*`, for example `AUTHENTIK_LOG__RUST_LOG__SQLX` to change SQL query logging. When `AUTHENTIK_DEBUG` is enabled, logs are written in a compact human-readable format with thread IDs and source locations; otherwise they are emitted as JSON.
+
+## Outposts (Go)
+
+The LDAP, RADIUS, and RAC outposts are written in Go. These components can be debugged using standard Golang tooling, such as [Delve](https://github.com/go-delve/delve).
+
+They also expose a Go debug listener, configured with [`AUTHENTIK_LISTEN__DEBUG`](../../install-config/configuration/configuration.mdx#authentik_listen__debug).
