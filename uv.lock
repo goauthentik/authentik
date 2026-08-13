@@ -236,7 +236,6 @@ dependencies = [
     { name = "pydantic-scim" },
     { name = "pyjwt" },
     { name = "pyrad" },
-    { name = "pyroscope-io" },
     { name = "python-kadmin-rs" },
     { name = "pyyaml" },
     { name = "requests-oauthlib" },
@@ -345,7 +344,6 @@ requires-dist = [
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.13.0" },
     { name = "pyrad", specifier = "==2.5.4" },
-    { name = "pyroscope-io", specifier = "==1.2.1" },
     { name = "python-kadmin-rs", specifier = "==0.7.3" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "requests-oauthlib", specifier = "==2.0.0" },
@@ -2519,12 +2517,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/52/75/b3e18567376dd4f6d
 wheels = [
     { url = "https://files.pythonhosted.org/packages/19/54/5b0ded99e5a8390be3e5c29513b9f53c01e5741256b7f73a20c0c606f29d/pyrad-2.5.4-py3-none-any.whl", hash = "sha256:2c75e8a5642df262071d631e4552e08d9d5bed0c62699d83c24105c4fbfc2cff", size = 495110, upload-time = "2026-02-05T15:03:06.385Z" },
 ]
-
-[[package]]
-name = "pyroscope-io"
-version = "1.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/33/d2/5fc44302f861eb2fd19bf7e56423c93e8867199c647337bb9849bc6d2929/pyroscope_io-1.2.1.tar.gz", hash = "sha256:c3236136dc086845d283fbeb434f5e22f5a7ddc0ff5a5b328752335d61ee1aaf", size = 74584, upload-time = "2026-07-27T11:39:44.57Z" }
 
 [[package]]
 name = "pysocks"
