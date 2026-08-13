@@ -192,7 +192,7 @@ export class RouterView extends AKElement {
     #basePath(match: RouteMatch<RouteLike>): string {
         const tail = match.parameters["0"];
 
-        if (tail == null) return this.#join(match.pathname);
+        if (tail === undefined) return this.#join(match.pathname);
 
         const consumed = match.pathname.slice(0, match.pathname.length - tail.length);
 
