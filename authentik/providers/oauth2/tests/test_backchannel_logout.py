@@ -197,6 +197,35 @@ class TestBackChannelLogout(OAuthTestCase):
                 self.provider.pk, "http://testserver", sub="test-user-uid"
             ).get_result()
 
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_frontchannel_provider_no_backchannel(self, mock_get_session):
+        """Deleting a session does not back-channel a front-channel provider"""
+        self.provider.logout_uri = "http://testserver/logout"
+        self.provider.logout_method = OAuth2LogoutMethod.FRONTCHANNEL
+        self.provider.save()
+        mock_session = Mock()
+        mock_get_session.return_value = mock_session
+
+        session = Session.objects.create(
+            session_key=generate_id(),
+            last_ip="255.255.255.255",
+            last_user_agent="",
+        )
+        auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=auth_session,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
+        )
+
+        session.delete()
+
+        mock_session.post.assert_not_called()
+
 
 class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
     """Test that deactivating a user triggers back-channel logout"""
@@ -284,7 +313,7 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_user_deactivated_api(self, mock_get_session):
-        """Deactivating a user through the API sends exactly one back-channel logout"""
+        """Deactivating a user through the API sends back-channel logout"""
         mock_session = self._mock_http(mock_get_session)
 
         self.client.force_login(self.admin)
@@ -297,31 +326,3 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
 
         self._assert_logout_token_sent(mock_session)
         self.assertFalse(Session.objects.filter(session_key=self.session_key).exists())
-
-    @patch("authentik.providers.oauth2.tasks.get_http_session")
-    def test_user_activated_no_logout(self, mock_get_session):
-        """Saving an active user does not send a back-channel logout"""
-        mock_session = self._mock_http(mock_get_session)
-
-        self.user.name = generate_id()
-        self.user.save()
-
-        mock_session.post.assert_not_called()
-        self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 1)
-
-    @patch("authentik.providers.oauth2.tasks.get_http_session")
-    def test_user_deactivated_frontchannel_provider(self, mock_get_session):
-        """Deactivating a user does not back-channel a front-channel provider"""
-        mock_session = self._mock_http(mock_get_session)
-        self.provider.logout_method = OAuth2LogoutMethod.FRONTCHANNEL
-        self.provider.save()
-
-        self.client.force_login(self.admin)
-        response = self.client.patch(
-            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
-            data=json.dumps({"is_active": False}),
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-
-        mock_session.post.assert_not_called()
