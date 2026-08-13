@@ -3999,7 +3999,7 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
+  <source><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></source>
   <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
@@ -13161,6 +13161,15 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="sdcded316146a0b76">
   <source>Object Attributes are in preview.</source>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.label">
+  <source>Resume on matching failures</source>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.description">
+  <source>Resume this flow for the selected source matching failures. No source connection is created.</source>
+</trans-unit>
+<trans-unit id="stages.source.match-failure.missing-property.label">
+  <source>Missing property</source>
 </trans-unit>
 </body>
 </file>
