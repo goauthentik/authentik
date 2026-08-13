@@ -92,7 +92,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
 
-**Appearance Settings**:
+**Appearance settings**:
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 

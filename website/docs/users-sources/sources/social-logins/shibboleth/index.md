@@ -35,7 +35,7 @@ To integrate Shibboleth with authentik, create a SAML source in authentik.
       :::warning NameID Policy
       Shibboleth supports the `Transient` NameID by default. You need to reconfigure Shibboleth to use other NameIDs.
       :::
-    - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
+    - Set **Signing keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
 4. Click **Finish**.
 
