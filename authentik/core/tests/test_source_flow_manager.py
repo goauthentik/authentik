@@ -86,7 +86,7 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            reverse("authentik_core:if-user") + "#/settings;page-sources",
+            reverse("authentik_core:if-user") + "settings/sources",
         )
 
     def test_authenticated_auth_forwards_kwargs(self):
