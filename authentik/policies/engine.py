@@ -3,8 +3,6 @@
 from collections import defaultdict
 from collections.abc import Iterable
 from copy import copy
-from multiprocessing import Pipe, current_process
-from multiprocessing.connection import Connection
 
 from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
@@ -18,10 +16,8 @@ from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
-from authentik.policies.process import PolicyProcess, cache_key
+from authentik.policies.process import PolicyThread, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
-
-CURRENT_PROCESS = current_process()
 
 # Actors are always service accounts, so a cheap type check keeps the hot policy path free of an
 # extra query for ordinary (human) users.
@@ -54,17 +50,15 @@ def effective_policy_user(user: User) -> User:
     return user
 
 
-class PolicyProcessInfo:
-    """Dataclass to hold all information and communication channels to a process"""
+class PolicyThreadInfo:
+    """Dataclass to hold all information and communication channels to a thread"""
 
-    process: PolicyProcess
-    connection: Connection
+    thread: PolicyThread
     result: PolicyResult | None
     binding: PolicyBinding
 
-    def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):
-        self.process = process
-        self.connection = connection
+    def __init__(self, thread: PolicyThread, binding: PolicyBinding):
+        self.thread = thread
         self.binding = binding
         self.result = None
 
@@ -152,7 +146,7 @@ class _PolicyEngineBase:
         """Evaluate `policy_bindings` (bindings with a real Policy attached) against a
         single PolicyRequest."""
         results: list[PolicyResult | None] = [None] * len(policy_bindings)
-        pending: list[tuple[int, PolicyProcessInfo]] = []
+        pending: list[tuple[int, PolicyThreadInfo]] = []
         for idx, binding in enumerate(policy_bindings):
             self._check_policy_type(binding)
             cached = self._cached_result(binding, request, prefetched_cache)
@@ -160,21 +154,13 @@ class _PolicyEngineBase:
                 results[idx] = cached
                 continue
             self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=request)
-            our_end, task_end = Pipe(False)
-            task = PolicyProcess(binding, request, task_end)
+            task = PolicyThread(binding, request)
             task.daemon = False
             self.logger.debug("P_ENG: Starting Process", binding=binding, request=request)
-            if not CURRENT_PROCESS._config.get("daemon"):
-                task.run()
-            else:
-                task.start()
-            pending.append(
-                (idx, PolicyProcessInfo(process=task, connection=our_end, binding=binding))
-            )
+            task.start()
+            pending.append((idx, PolicyThreadInfo(thread=task, binding=binding)))
         for idx, proc_info in pending:
-            if proc_info.process.is_alive():
-                proc_info.process.join(proc_info.binding.timeout)
-            result = proc_info.connection.recv()
+            result = proc_info.thread.join(timeout=proc_info.binding.timeout)
             if result is not None and result._exec_time:
                 HIST_POLICIES_EXECUTION_TIME.labels(
                     binding_order=proc_info.binding.order,
