@@ -75,8 +75,8 @@ To create a new LDAP source in authentik:
         - **Group Property Mappings**: Select `authentik default OpenLDAP Mapping: cn`
 
     - Under **Additional settings**:
-        - **Parent Group**: If selected, all synchronized groups will be given this authentik group as a parent.
-        - **User path**: The path that users will be saved under in authentik.
+        - **Additional Parent Group**: If selected, all synchronized groups will be given this authentik group as a parent.
+        - **User Path**: The path that users will be saved under in authentik.
         - **Addition User/Group DN**: `cn=users,cn=accounts`
         - **Addition Group DN**: `cn=groups,cn=accounts`
         - **User object filter**: `(objectClass=person)`
