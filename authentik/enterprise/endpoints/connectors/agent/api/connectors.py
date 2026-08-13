@@ -2,7 +2,7 @@ from django.urls import reverse
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from structlog.stdlib import get_logger
@@ -31,7 +31,7 @@ class AgentConnectorViewSetMixin:
         detail=False,
         authentication_classes=[AgentAuth],
         # Permissions are handled via AgentAuth
-        permission_classes=[AllowAny],
+        permission_classes=[IsAuthenticated],
     )
     @enterprise_action
     def auth_ia(self, request: Request) -> Response:

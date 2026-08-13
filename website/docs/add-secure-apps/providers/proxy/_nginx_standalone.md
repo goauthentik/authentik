@@ -5,6 +5,13 @@ map $http_upgrade $connection_upgrade_keepalive {
     ''      '';
 }
 
+# Preserve an explicit Host header, including a non-standard port.
+# Fall back to $host when no Host header is present, such as with HTTP/3.
+map $http_host $ak_http_host {
+    default $http_host;
+    ''      $host;
+}
+
 server {
     # SSL and VHost configuration
     listen                  443 ssl http2;
@@ -65,9 +72,9 @@ server {
         # proxy_pass              http://outpost.company:9000;
 
         # Note: ensure the Host header matches your external authentik URL:
-        proxy_set_header        Host $host;
+        proxy_set_header        Host $ak_http_host;
 
-        proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header        X-Original-URL $scheme://$ak_http_host$request_uri;
         add_header              Set-Cookie $auth_cookie;
         auth_request_set        $auth_cookie $upstream_http_set_cookie;
         proxy_pass_request_body off;
@@ -79,9 +86,9 @@ server {
     location @goauthentik_proxy_signin {
         internal;
         add_header Set-Cookie $auth_cookie;
-        return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+        return 302 /outpost.goauthentik.io/start?rd=$scheme://$ak_http_host$request_uri;
         # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
-        # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+        # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$ak_http_host$request_uri;
     }
 }
 ```

@@ -16,7 +16,7 @@ class TestRequestProcessor(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer="authentik",
+            issuer_override="authentik",
             sso_url="https://idp.example.com/sso",
             pre_authentication_flow=create_test_flow(),
         )

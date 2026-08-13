@@ -8,13 +8,9 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 ## What is Portainer?
 
-> Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
+> Portainer is the operational control plane that lets enterprise IT teams run Kubernetes and Docker environments consistently, safely, predictably, and at scale.
 >
 > -- https://www.portainer.io/
-
-:::info
-This documentation has been tested with authentik 2025.10.3 and Portainer 2.33.6 LTS.
-:::
 
 ## Preparation
 
@@ -33,54 +29,53 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Portainer with authentik, you need to create an application/provider pair in authentik.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Add a **Redirect URI** of type `Strict` `Authorization` as `https://portainer.company/`.
-    - Select any available signing key.
-    - Under **Advanced protocol settings** > **Selected Scopes**, add `authentik default OAuth Mapping: OpenID 'entitlements'`.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it is required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they are required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` with the value `https://portainer.company/`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ## Portainer configuration
 
 1. Log in to Portainer as a user with administrative privileges.
 2. Navigate to **Settings** > **Authentication**.
-3. Under **Authentication method**, select **OAuth**, and under **Provider** select **Custom**.
-4. Under **OAuth Configuration**, enter the following values:
-    - **Client ID**: The `Client ID` from the authentik provider
-    - **Client Secret**: The `Client secret` from the authentik provider
+3. Under **Authentication method**, select **OAuth**.
+4. Configure the following settings:
+    - **Use SSO**: enabled.
+    - **Automatic user provisioning**: enabled.
+5. Under **Provider**, select **Custom**.
+6. Under **OAuth Configuration**, enter the following values:
+    - **Client ID**: the **Client ID** from the authentik provider.
+    - **Client Secret**: the **Client Secret** from the authentik provider.
     - **Authorization URL**: `https://authentik.company/application/o/authorize/`
     - **Access Token URL**: `https://authentik.company/application/o/token/`
     - **Resource URL**: `https://authentik.company/application/o/userinfo/`
     - **Redirect URL**: `https://portainer.company/`
-    - **Logout URL**: `https://authentik.company/application/o/portainer/end-session/`
-    - **User Identifier**: `preferred_username` (or `email` if you would prefer to use email addresses as identifiers)
-    - **Scopes**: `email openid profile`.
-5. Click **Save settings**.
+    - **Logout URL**: `https://authentik.company/application/o/<application_slug>/end-session/`
+    - **User Identifier**: `preferred_username`, or `email` if you prefer to use email addresses as identifiers.
+    - **Scopes**: `openid profile email`
+7. Click **Save settings**.
 
-:::caution
-By default, Portainer shows commas between each item in the Scopes field. Do **NOT** use commas. Use a _space_.
+:::caution Scope separators
+Do not use commas in the **Scopes** field. Use spaces only.
 :::
 
-![](./port1.png)
+### Configure automatic team membership _(optional)_
 
-## Configure automatic team membership in Portainer BE _(optional)_
+If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik application entitlements. It is only possible to configure automatic group membership in Portainer BE. This cannot be configured in the Community Edition.
 
-If you are using [Portainer Business Edition (BE)](https://www.portainer.io/take-3), it is possible to configure automatic team membership. This allows you to grant access to teams and environments, and automatically grant admin access to certain users based on authentik application entitlements. It is only possible to configure automatic group membership in Portainer BE - this cannot be configured in the Community Edition.
+This section assumes that you already have two teams configured in Portainer: `engineering` and `sysadmins`. See [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
 
-For this section, we will presume that you already have two teams configured in Portainer: `engineering` and `sysadmins`. Please reference [Portainer's documentation](https://docs.portainer.io/admin/user/teams) for information on managing teams and access to environments based on team membership.
+This section also assumes that two application entitlements have been created in authentik: `Portainer Admins` and `Portainer Users`. You can choose any entitlement names and replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
 
-We will also presume that two application entitlements have been created in authentik: `Portainer Admins` and `Portainer Users`. You can choose any entitlement names and replace `Portainer Admins` and `Portainer Users` later in this guide with your chosen names.
-
-### Create application entitlements and a property mapping
+#### Create application entitlements
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and open the Portainer application.
@@ -88,7 +83,7 @@ We will also presume that two application entitlements have been created in auth
 4. Create two entitlements named `Portainer Admins` and `Portainer Users`.
 5. Open each entitlement and bind the users or groups that should receive it.
 
-### Create a property mapping
+#### Create a property mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
@@ -115,34 +110,31 @@ We will also presume that two application entitlements have been created in auth
         }
         ```
 
-        In the expression above, we filter on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those set up in authentik, as they are case-sensitive.
+        This expression filters on the entitlement names `Portainer Admins` and `Portainer Users`. You can use any entitlements that exist on the Portainer application. Ensure that the names entered here exactly match those set up in authentik, as they are case-sensitive.
 
 3. Click **Finish**.
 4. Navigate to **Applications** > **Providers**.
-5. Select your provider for Portainer, and click **Edit**.
-6. Under **Advanced protocol settings**, add the property mapping created in the previous step to **selected scopes**.
+5. Select your provider for Portainer and click **Edit**.
+6. Under **Advanced protocol settings** > **Scopes**, add the property mapping created in the previous step to **Selected Scopes**.
 7. Click **Update** to save your changes to the provider.
-   :::info Application binding
-   Since we are configuring access to Portainer based on application entitlements, it is recommended that you configure a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) for the application in authentik such that access is restricted to the same users or groups that should be able to sign in to Portainer.
-   :::
 
-### Update your configuration in Portainer
+Since access to Portainer is based on application entitlements, configure a [binding](/docs/add-secure-apps/bindings-overview/) for the application in authentik so that access is restricted to the same users or groups that should be able to sign in to Portainer.
+
+#### Update the Portainer settings
 
 1. Log in to Portainer as a user with administrative privileges.
 2. Navigate to **Settings** > **Authentication**.
 3. Under **Team Membership**, toggle **Automatic team membership** to **ON**, and complete configuration as follows:
     - **Claim name**: `groups`
     - **Statically assigned teams**: Add two team mappings with the following values:
-        - **client value regex** `^user$` **maps to team** `engineering`.
-        - **client value regex** `^admin$` **maps to team** `sysadmins`.
+        - **claim value regex** `^user$` **maps to team** `engineering`.
+        - **claim value regex** `^admin$` **maps to team** `sysadmins`.
     - **Default team**: `engineering`
     - **Admin mapping**:
         - Toggle **Assign admin rights to group(s)** to **ON**.
-        - Add one admin mapping, and set **client value regex** to `^admin$`.
-4. Under **Provider** > **OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `email openid profile groups`.
+        - Add one admin mapping and set **claim value regex** to `^admin$`.
+4. Under **Provider** > **OAuth Configuration**, append `groups` to **Scopes**. The full value for **Scopes** should then be `openid profile email groups`.
 5. Click **Save settings**.
-
-![](./port2.png)
 
 ## Configuration verification
 

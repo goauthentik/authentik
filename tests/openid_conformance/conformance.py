@@ -205,7 +205,7 @@ class Conformance:
             info = self.get_module_info(module_id)
             status: str | None = info.get("status")
             if status in required_states:
-                return status
+                return info
             if status == "INTERRUPTED":
                 raise ConformanceException(f"Test module {module_id} has moved to INTERRUPTED")
             sleep(1)

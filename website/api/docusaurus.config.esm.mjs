@@ -53,7 +53,7 @@ await Promise.all(
 /**
  * Documentation site configuration for Docusaurus.
  */
-export default createDocusaurusConfig({
+const config = createDocusaurusConfig({
     url: "https://api.goauthentik.io",
 
     staticDirectories: [
@@ -152,12 +152,12 @@ export default createDocusaurusConfig({
     //#region Theme
 
     themes: ["docusaurus-theme-openapi-docs"],
-
+    favicon: "https://goauthentik.io/img/icon.png",
     themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
         footer: {
             copyright: FOOTER_COPYRIGHT,
         },
-
+        image: "https://goauthentik.io/img/social.png",
         navbar: {
             logo: {
                 alt: "authentik logo",
@@ -176,3 +176,5 @@ export default createDocusaurusConfig({
 });
 
 //#endregion
+
+export default /** @type {import("@docusaurus/types").Config} */ (config);

@@ -139,6 +139,6 @@ helm upgrade authentik authentik/authentik -f values.yaml
 If you are upgrading from an older Beta release to the most recent Beta release, you might need to run `kubectl rollout restart deployment`, because Helm needs to recreate the pods in order to pick up the new image (the tag doesn't change).
 :::
 
-## Verifying the installation
+## Verify the installation
 
 To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the RC or Beta version you intended.
