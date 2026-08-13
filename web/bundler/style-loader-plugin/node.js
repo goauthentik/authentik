@@ -135,6 +135,21 @@ export function styleLoaderPlugin({
                     bundle: true,
                     write: false,
                     minify: build.initialOptions.minify || false,
+                    /**
+                     * Lower (un-nest) native CSS nesting in component shadow styles.
+                     *
+                     * Flattening here keeps declarations and nested rules in separate
+                     * top-level rules that ShadyCSS can process intact.
+                     *
+                     * ShadyCSS predates native CSS nesting.
+                     * Internally, `stringify` drops a rule's own declarations whenever
+                     * that rule also contains nested rules, discarding them while retaining the nested rules.
+                     *
+                     * We should remove this after compatibility mode drops.
+                     *
+                     * @expires 2026-12-01
+                     */
+                    supported: { nesting: false },
                     logLevel: "silent",
                     loader: { ".woff": "empty", ".woff2": "empty" },
                     plugins: [
