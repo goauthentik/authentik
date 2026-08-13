@@ -45,7 +45,7 @@ export const ROUTES: RouteLike[] = [
         "dashboard-users",
     ),
     new Route(
-        "/administration/system-tasks",
+        "/administration/system-tasks{/*}?",
         async () => {
             await import("#admin/admin-overview/SystemTasksPage");
             return html`<ak-system-tasks></ak-system-tasks>`;
@@ -62,7 +62,7 @@ export const ROUTES: RouteLike[] = [
         "providers",
     ),
     new Route<{ id: string }>(
-        "/core/providers/:id",
+        "/core/providers/:id{/*}?",
         async (args) => {
             await import("#admin/providers/ProviderViewPage");
             return html`<ak-provider-view .providerID=${parseInt(args.id, 10)}></ak-provider-view>`;
@@ -79,7 +79,7 @@ export const ROUTES: RouteLike[] = [
         "applications",
     ),
     new Route<{ slug: string }>(
-        "/core/applications/:slug",
+        "/core/applications/:slug{/*}?",
         async (args) => {
             await import("#admin/applications/ApplicationViewPage");
             return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
@@ -96,7 +96,7 @@ export const ROUTES: RouteLike[] = [
         "devices",
     ),
     new Route<{ uuid: string }>(
-        "/endpoints/devices/:uuid",
+        "/endpoints/devices/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/devices/DeviceViewPage");
             return html`<ak-endpoints-device-view
@@ -114,7 +114,7 @@ export const ROUTES: RouteLike[] = [
         "connectors",
     ),
     new Route<{ uuid: string }>(
-        "/endpoints/connectors/:uuid",
+        "/endpoints/connectors/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/connectors/ConnectorViewPage");
             return html`<ak-endpoints-connector-view
@@ -141,7 +141,7 @@ export const ROUTES: RouteLike[] = [
         "sources",
     ),
     new Route<{ slug: string }>(
-        "/core/sources/:slug",
+        "/core/sources/:slug{/*}?",
         async (args) => {
             await import("#admin/sources/SourceViewPage");
             return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
@@ -224,7 +224,7 @@ export const ROUTES: RouteLike[] = [
         "groups",
     ),
     new Route<{ uuid: string }>(
-        "/identity/groups/:uuid",
+        "/identity/groups/:uuid{/*}?",
         async (args) => {
             await import("#admin/groups/GroupViewPage");
             return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
@@ -274,7 +274,7 @@ export const ROUTES: RouteLike[] = [
         "initial-permissions",
     ),
     new Route<{ id: string }>(
-        "/identity/roles/:id",
+        "/identity/roles/:id{/*}?",
         async (args) => {
             await import("#admin/roles/ak-role-view");
             return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
@@ -315,7 +315,7 @@ export const ROUTES: RouteLike[] = [
         "flows",
     ),
     new Route<{ slug: string }>(
-        "/flow/flows/:slug",
+        "/flow/flows/:slug{/*}?",
         async (args) => {
             await import("#admin/flows/FlowViewPage");
             return html`<ak-flow-view
@@ -400,7 +400,7 @@ export const ROUTES: RouteLike[] = [
         "outposts",
     ),
     new Route<{ id: string }>(
-        "/outpost/outposts/:id",
+        "/outpost/outposts/:id{/*}?",
         async (args) => {
             await import("#admin/outposts/OutpostViewPage");
             return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;

@@ -18,7 +18,7 @@ export const DEFAULT_PATH = "/library";
 export const ROUTES: RouteLike[] = [
     new Route("/library", () => html`<ak-library></ak-library>`, "library"),
     new Route(
-        "/requests",
+        "/requests{/*}?",
         async () => {
             await import("#user/requests/AccessRequestsPage");
 
