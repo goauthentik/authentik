@@ -1,6 +1,8 @@
 import { expect, test } from "#e2e";
 
-for (const scheme of ["light", "dark"]) {
+const COLOR_SCHEMES = ["light", "dark"] as const;
+
+for (const scheme of COLOR_SCHEMES) {
     test.describe(`Appearance - ${scheme}`, () => {
         // locking the viewport size to ensure consistent snapshots
         test.use({ colorScheme: scheme, viewport: { width: 1280, height: 800 } });
@@ -11,7 +13,7 @@ for (const scheme of ["light", "dark"]) {
 
             await expect(
                 page.locator("html"),
-                `Document reports the ${scheme} color scheme`
+                `Document reports the ${scheme} color scheme`,
             ).toHaveAttribute("data-theme", scheme, { timeout: 10_000 });
 
             await page.waitForTimeout(1000);
@@ -26,7 +28,7 @@ for (const scheme of ["light", "dark"]) {
                         caret: "hide",
                         mask: [page.locator("ak-version")],
                         maxDiffPixelRatio: 0.05,
-                    }
+                    },
                 );
             });
         });
@@ -47,7 +49,7 @@ for (const scheme of ["light", "dark"]) {
                         animations: "disabled",
                         caret: "hide",
                         maxDiffPixelRatio: 0.02,
-                    }
+                    },
                 );
             });
         });
@@ -68,7 +70,7 @@ for (const scheme of ["light", "dark"]) {
                         animations: "disabled",
                         caret: "hide",
                         maxDiffPixelRatio: 0.02,
-                    }
+                    },
                 );
             });
         });
