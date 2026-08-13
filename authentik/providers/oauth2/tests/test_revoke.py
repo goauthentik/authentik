@@ -195,7 +195,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
 
     def test_revoke_user_deactivated(self):
-        """Test revoke on logout"""
+        """Test revoking refresh and device tokens when a user is deactivated"""
         AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -229,7 +229,9 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.user.is_active = False
         self.user.save()
 
-        self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
+        # Access tokens are kept because the following session deletion event
+        # will use them for Backchannel Logout then delete the tokens.
+        self.assertEqual(AccessToken.objects.including_expired().all().count(), 1)
         self.assertEqual(RefreshToken.objects.including_expired().all().count(), 0)
         self.assertEqual(DeviceToken.objects.including_expired().all().count(), 0)
 
