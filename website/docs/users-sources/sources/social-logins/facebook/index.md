@@ -53,8 +53,8 @@ To support the integration of Facebook with authentik, you need to create a Face
     - **Select type**: select **Facebook OAuth Source** as the source type.
     - **Create Facebook OAuth Source**: provide a name, a slug that must match the slug used in the Facebook `Valid OAuth redirect URIs` field (e.g. `facebook`), and the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: enter the **App ID** from Facebook.
-            - **Consumer Secret**: enter the **App Secret** from Facebook.
+            - **Consumer key**: enter the **App ID** from Facebook.
+            - **Consumer secret**: enter the **App Secret** from Facebook.
             - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish** to save your settings.
 

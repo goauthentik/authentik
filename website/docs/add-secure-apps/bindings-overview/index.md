@@ -17,7 +17,7 @@ For a step-by-step guide, see [Work with bindings](./work-with-bindings.md).
 
 The two most common binding types are policy bindings and flow-stage bindings.
 
-- **Policy bindings** attach a policy, user, or group to a target that supports policy binding.
+- **Policy Bindings** attach a policy, user, or group to a target that supports policy binding.
 - **Flow-stage bindings** attach a stage to a flow and define where that stage runs.
 
 Use a policy binding when you want to control whether a target is allowed, denied, or shown. Use a flow-stage binding when you want to place a stage into a flow and decide when it should run.
@@ -122,7 +122,7 @@ Bindings also support these options:
 
 - **Negate**, which flips the pass or fail result of the binding.
 - **Timeout**, which limits how long authentik waits for policy execution.
-- **Failure result**, which controls whether a policy error is treated as pass or fail.
+- **Failure Result**, which controls whether a policy error is treated as pass or fail.
 
 Policy bindings attached directly to a flow are evaluated before the flow starts. In authentication and enrollment flows, that usually means that user- and group-based checks on the flow itself cannot pass until the user has already been identified elsewhere.
 
