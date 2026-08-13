@@ -77,6 +77,9 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.EscapedPath())
+	if r.URL.RawQuery != "" {
+		redirectUrl += "?" + r.URL.RawQuery
+	}
 
 	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
 		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
