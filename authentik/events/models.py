@@ -23,6 +23,7 @@ from structlog.stdlib import get_logger
 from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
+from authentik.core.consumer import build_user_group
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -50,7 +51,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel

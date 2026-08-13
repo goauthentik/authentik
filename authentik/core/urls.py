@@ -19,6 +19,7 @@ from authentik.core.api.sources import (
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
+from authentik.core.consumer import ClientConsumer
 from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
@@ -30,7 +31,6 @@ from authentik.core.views.interface import (
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
-from authentik.root.ws.consumer import MessageConsumer
 from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
@@ -116,7 +116,7 @@ websocket_urlpatterns = [
     path(
         "ws/client/",
         ChannelsLoggingMiddleware(
-            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
+            TenantsAwareMiddleware(AuthMiddlewareStack(ClientConsumer.as_asgi()))
         ),
     ),
 ]

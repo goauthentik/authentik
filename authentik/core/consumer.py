@@ -3,6 +3,7 @@
 from hashlib import sha256
 
 from asgiref.sync import async_to_sync
+from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.db import connection
 
@@ -13,21 +14,18 @@ def build_user_group(user: User):
     return sha256(f"{connection.schema_name}/group_client_user_{user.uuid}".encode()).hexdigest()
 
 
-class MessageConsumer(JsonWebsocketConsumer):
+class ClientConsumer(JsonWebsocketConsumer):
     """Consumer which sends django.contrib.messages Messages over WS.
     channel_name is saved into cache with user_id, and when a add_message is called"""
 
-    session_key: str
     user: User | None = None
 
     def connect(self):
         self.accept()
-        self.session_key = self.scope["session"].session_key
-        if user := self.scope.get("user"):
-            if user.is_authenticated:
-                async_to_sync(self.channel_layer.group_add)(
-                    build_user_group(user), self.channel_name
-                )
+        self.user = self.scope.get("user")
+        if self.user is None or not self.user.is_authenticated:
+            raise DenyConnection()
+        async_to_sync(self.channel_layer.group_add)(build_user_group(self.user), self.channel_name)
 
     def disconnect(self, code):
         if self.user:
