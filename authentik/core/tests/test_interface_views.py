@@ -1,12 +1,13 @@
 """Test interface view redirect behavior by user type"""
 
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import resolve, reverse
 
 from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import Application, UserTypes
 from authentik.core.tests.utils import create_test_brand, create_test_user
+from authentik.lib.config import CONFIG
 
 
 class TestInterfaceRedirects(TestCase):
@@ -101,3 +102,95 @@ class TestInterfaceRedirects(TestCase):
         response = self.client.get(reverse("authentik_core:if-user"))
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Interface can only be accessed by internal users", response.content)
+
+
+class TestInterfaceCatchAll(TestCase):
+    """Path-based routing: any subpath under if/admin/ and if/user/ renders the SPA shell."""
+
+    def setUp(self):
+        Setup.set(True)
+        self.user = create_test_user(type=UserTypes.INTERNAL)
+        create_test_brand()
+        self.client.force_login(self.user)
+
+    def test_admin_exact_prefix_renders_shell(self):
+        """The exact /if/admin/ prefix still renders the admin interface."""
+        response = self.client.get(reverse("authentik_core:if-admin"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "if/admin.html")
+        self.assertIn(b"ak-interface-admin", response.content)
+
+    def test_user_exact_prefix_renders_shell(self):
+        """The exact /if/user/ prefix still renders the user interface."""
+        response = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "if/user.html")
+        self.assertIn(b"ak-interface-user", response.content)
+
+    def test_admin_deep_subpath_renders_shell(self):
+        """An arbitrary nested admin path returns the admin shell, not a 404."""
+        response = self.client.get("/if/admin/identity/users/42")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "if/admin.html")
+        self.assertIn(b"ak-interface-admin", response.content)
+
+    def test_user_deep_subpath_renders_shell(self):
+        """An arbitrary nested user path returns the user shell, not a 404."""
+        response = self.client.get("/if/user/settings/sources")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "if/user.html")
+        self.assertIn(b"ak-interface-user", response.content)
+
+    def test_admin_subpath_is_reversible(self):
+        """The admin catch-all route reverses with a path kwarg."""
+        self.assertEqual(
+            reverse("authentik_core:if-admin-path", kwargs={"path": "flow/inspector"}),
+            "/if/admin/flow/inspector",
+        )
+
+    def test_user_subpath_is_reversible(self):
+        """The user catch-all route reverses with a path kwarg."""
+        self.assertEqual(
+            reverse("authentik_core:if-user-path", kwargs={"path": "settings"}),
+            "/if/user/settings",
+        )
+
+    def test_deep_subpath_carries_interface_context(self):
+        """The deep-path shell carries the same injected config as the root."""
+        response = self.client.get("/if/admin/core/applications")
+        self.assertEqual(response.status_code, 200)
+        # base/header_js.html injects window.authentik from the InterfaceView context.
+        self.assertIn(b"window.authentik", response.content)
+        self.assertIn(b'relBase: "/"', response.content)
+
+    def test_exact_admin_prefix_not_shadowed_by_catchall(self):
+        """Ordering: the exact route wins over the catch-all for /if/admin/."""
+        self.assertEqual(resolve("/if/admin/").url_name, "if-admin")
+
+    def test_exact_user_prefix_not_shadowed_by_catchall(self):
+        """Ordering: the exact route wins over the catch-all for /if/user/."""
+        self.assertEqual(resolve("/if/user/").url_name, "if-user")
+
+    def test_flow_route_not_shadowed(self):
+        """The catch-alls must not swallow flow URLs."""
+        self.assertEqual(resolve("/if/flow/some-slug/").url_name, "if-flow")
+
+    def test_ws_client_route_not_shadowed(self):
+        """The catch-alls must not swallow the websocket fallback URL."""
+        self.assertNotIn(resolve("/ws/client/").url_name, ("if-admin-path", "if-user-path"))
+
+    def test_api_route_not_shadowed(self):
+        """The catch-alls live under core's urlconf and must not affect the API."""
+        self.assertNotIn(resolve("/api/v3/core/users/").url_name, ("if-admin-path", "if-user-path"))
+
+    def test_web_path_reflected_in_shell_context(self):
+        """When web.path is non-root, the shell advertises it via relBase.
+
+        Routing under web.path is resolved at import time in the root urlconf, so
+        only the request-time context value is exercised here; deployment-prefix
+        routing is covered by the Playwright web.path smoke test in a later PR.
+        """
+        with CONFIG.patch("web.path", "/auth/"):
+            response = self.client.get("/if/user/settings")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'relBase: "/auth/"', response.content)

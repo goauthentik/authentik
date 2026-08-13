@@ -5,9 +5,9 @@
 This document describes how the CSS is built in our current system, and what we can do to make that
 process less challenging and fraught with difficulties:
 
-## styleLoaderPlugin (./bundler/style-loader-pluging/node.js)
+## styleLoaderPlugin (./bundler/style-loader-plugin/node.js)
 
-All of our CSS is complied together by this ESBuild plug.
+All of our CSS is compiled together by this ESBuild plugin.
 
 ## ./scripts/build-web.mjs
 
