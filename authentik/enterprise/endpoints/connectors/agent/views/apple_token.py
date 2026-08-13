@@ -1,9 +1,18 @@
 from base64 import b64decode, b64encode
+from datetime import timedelta
 from typing import Any
 
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.serialization import Encoding, load_pem_private_key
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    NoEncryption,
+    PrivateFormat,
+    load_pem_private_key,
+)
 from cryptography.x509 import load_pem_x509_certificate
+from cryptography.x509.oid import NameOID
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -18,7 +27,6 @@ from authentik.common.oauth.constants import TOKEN_TYPE
 from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.core.sessions import SessionStore
 from authentik.crypto.apps import MANAGED_KEY
-from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.connectors.agent.auth import agent_auth_issue_token
 from authentik.endpoints.connectors.agent.models import (
@@ -377,6 +385,64 @@ class TokenView(View):
         )
         raise ValidationError("Invalid request")
 
+    def build_key_certificate(self, key_purpose: str, username: str) -> tuple[str, str]:
+        """Mint the EC P-256 key and the certificate that carries its public half.
+
+        macOS stores this certificate in the user's keychain for a year and backs a
+        CryptoTokenKit identity with it, so it is built as a well-formed end-entity
+        certificate: BasicConstraints and SubjectKeyIdentifier make it structurally
+        complete, and keyAgreement is the usage the Diffie-Hellman exchange actually
+        performs. macOS accepts the extension-less certificate CertificateBuilder
+        emits too, but that helper also stamps the running authentik version into the
+        issuer name, which has no business in a certificate stored on every enrolled
+        device."""
+        private_key = ec.generate_private_key(ec.SECP256R1())
+        subject = x509.Name(
+            [
+                x509.NameAttribute(
+                    NameOID.COMMON_NAME, f"Platform SSO {key_purpose} {username}"[:64]
+                ),
+                x509.NameAttribute(NameOID.ORGANIZATION_NAME, "authentik"),
+            ]
+        )
+        certificate = (
+            x509.CertificateBuilder()
+            .subject_name(subject)
+            .issuer_name(subject)
+            .public_key(private_key.public_key())
+            .serial_number(x509.random_serial_number())
+            .not_valid_before(self.now - timedelta(days=1))
+            .not_valid_after(self.now + timedelta(days=365))
+            .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)
+            .add_extension(
+                x509.KeyUsage(
+                    digital_signature=False,
+                    content_commitment=False,
+                    key_encipherment=False,
+                    data_encipherment=False,
+                    key_agreement=True,
+                    key_cert_sign=False,
+                    crl_sign=False,
+                    encipher_only=False,
+                    decipher_only=False,
+                ),
+                critical=True,
+            )
+            .add_extension(
+                x509.SubjectKeyIdentifier.from_public_key(private_key.public_key()),
+                critical=False,
+            )
+            .sign(private_key, hashes.SHA256())
+        )
+        return (
+            private_key.private_bytes(
+                encoding=Encoding.PEM,
+                format=PrivateFormat.TraditionalOpenSSL,
+                encryption_algorithm=NoEncryption(),
+            ).decode(),
+            certificate.public_bytes(Encoding.PEM).decode(),
+        )
+
     def handle_key_request(self):
         """Provision the key macOS binds to the user's account.
 
@@ -393,15 +459,13 @@ class TokenView(View):
             key_purpose=key_purpose,
         ).first()
         if not key:
-            builder = CertificateBuilder(f"Platform SSO {key_purpose} {username}")
-            builder.alg = PrivateKeyAlg.ECDSA
-            builder.build(validity_days=365)
+            private_key, certificate = self.build_key_certificate(key_purpose, username)
             key = AppleUserKey.objects.create(
                 device_connection=self.device_connection,
                 username=username,
                 key_purpose=key_purpose,
-                certificate=builder.certificate,
-                private_key=builder.private_key,
+                certificate=certificate,
+                private_key=private_key,
             )
             LOGGER.info(
                 "Provisioned Platform SSO key",
