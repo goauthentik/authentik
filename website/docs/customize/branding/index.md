@@ -40,7 +40,7 @@ You can explicitly select, in your instance's Brand settings, the _default flows
 
 - **Authentication** flow: the flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.
 - **User switch flow**: the authentication flow used when [switching between users](../../users-sources/user/user-switching.md) signed in on the same browser. If left empty, user switching is disabled. To reuse the default authentication flow for switching, select it here explicitly.
-- **Invalidation flow**: for typical use cases, select the `default-invalidation-flow` (Logout) flow. This flow logs the user out of authentik when the application session ends (user logs out of the app).
+- **Invalidation Flow**: for typical use cases, select the `default-invalidation-flow` (Logout) flow. This flow logs the user out of authentik when the application session ends (user logs out of the app).
 - **Recovery flow**: if set, the user can access an option to recover their login credentials.
 - **Unenrollment flow**: if set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.
 - **User settings flow**: if set, users are able to configure details of their profile.

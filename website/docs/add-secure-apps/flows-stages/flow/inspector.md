@@ -22,7 +22,7 @@ The Inspector is accessible to users that have been granted the [permission](../
 
 2. Select the specific flow that you want to inspect by clicking its name in the list.
 
-3. On the flow's detail page, on the left side under **Execute Flow**, click **Use Inspector**.
+3. On the flow's detail page, on the left side under **Execute flow**, click **Use inspector**.
 
 4. The selected flow launches in a new browser tab, with the Flow Inspector displayed to the right.
 
