@@ -1,5 +1,8 @@
 """authentik core signals"""
 
+from contextlib import contextmanager
+from contextvars import ContextVar
+
 from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
@@ -33,6 +36,25 @@ admin_authenticated_session_deleted = Signal()
 
 LOGGER = get_logger()
 
+_CTX_INHIBIT_DEACTIVATION_SESSION_DELETE = ContextVar[bool](
+    "authentik_core_inhibit_deactivation_session_delete",
+    default=False,
+)
+
+
+@contextmanager
+def deactivation_inhibit_session_delete():
+    """
+    Prevent user_deactivated_delete_sessions from deleting sessions when a
+    deactivated user is saved, for callers that revoke sessions themselves
+    (e.g. enterprise revocation).
+    """
+    token = _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.set(True)
+    try:
+        yield
+    finally:
+        _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.reset(token)
+
 
 @receiver(post_save, sender=Application)
 def post_save_application(sender: type[Model], instance, created: bool, **_):
@@ -62,6 +84,17 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
             build_device_group(device_cookie),
             {"type": "event.session.authenticated"},
         )
+
+
+@receiver(post_save, sender=User)
+def user_deactivated_delete_sessions(sender: type[Model], instance: User, **_):
+    """Delete all of a user's sessions when they are deactivated"""
+    if instance.is_active:
+        return
+    if _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.get():
+        return
+    Session.objects.filter(authenticatedsession__user=instance).delete()
+    LOGGER.debug("Deleted deactivated user's sessions", user=instance.username)
 
 
 @receiver(post_delete, sender=AuthenticatedSession)

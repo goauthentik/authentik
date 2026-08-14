@@ -11,6 +11,7 @@ from dramatiq.composition import group
 from dramatiq.results.errors import ResultTimeout
 
 from authentik.core.models import User, UserTypes
+from authentik.core.signals import deactivation_inhibit_session_delete
 from authentik.enterprise.core.revocation import revoke_user_access
 from authentik.enterprise.stages.account_lockdown.models import AccountLockdownStage
 from authentik.events.models import Event, EventAction
@@ -89,7 +90,7 @@ class AccountLockdownStageView(StageView):
         if stage.set_unusable_password:
             user.set_unusable_password()
         if stage.deactivate_user:
-            with sync_outgoing_inhibit_dispatch():
+            with sync_outgoing_inhibit_dispatch(), deactivation_inhibit_session_delete():
                 user.save()
             return
         user.save()

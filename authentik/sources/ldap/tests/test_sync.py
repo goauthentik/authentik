@@ -8,8 +8,8 @@ from ldap3.core.exceptions import LDAPInvalidFilterError
 from ldap3.utils.conv import escape_filter_chars
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_admin_user
+from authentik.core.models import Group, Session, User
+from authentik.core.tests.utils import create_test_admin_user, create_test_session
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.sync.outgoing.exceptions import StopSync
@@ -252,6 +252,32 @@ class LDAPSyncTests(TestCase):
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
             self.assertFalse(User.objects.get(username="user-nsaccountlock").is_active)
+
+    def test_sync_users_freeipa_deactivate_deletes_sessions(self):
+        """Test that a user deactivated by sync (nsaccountlock) has their sessions deleted"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        user = User.objects.create(username="user-nsaccountlock", is_active=True)
+        UserLDAPSourceConnection.objects.create(
+            user=user,
+            source=self.source,
+            identifier="user-nsaccountlock",
+        )
+        session = create_test_session(user)
+        connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source, Task())
+            user_sync.sync_full()
+            user.refresh_from_db()
+            self.assertFalse(user.is_active)
+            self.assertFalse(
+                Session.objects.filter(session_key=session.session.session_key).exists()
+            )
 
     def test_sync_groups_freeipa_memberOf(self):
         """Test group sync when membership is derived from memberOf user attribute"""
