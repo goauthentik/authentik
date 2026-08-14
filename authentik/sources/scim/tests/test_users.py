@@ -58,9 +58,9 @@ class TestSCIMUsers(APITestCase):
     def test_user_list_filter(self):
         """Test user list with a filter"""
         user = create_test_user()
-        SCIMSourceUser.objects.create(source=self.source, user=user, id=str(uuid4()))
+        SCIMSourceUser.objects.create(source=self.source, user=user, external_id=str(uuid4()))
         other_user = create_test_user()
-        SCIMSourceUser.objects.create(source=self.source, user=other_user, id=str(uuid4()))
+        SCIMSourceUser.objects.create(source=self.source, user=other_user, external_id=str(uuid4()))
         response = self.client.get(
             reverse(
                 "authentik_sources_scim:v2-users",
