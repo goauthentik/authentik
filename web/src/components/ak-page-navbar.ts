@@ -2,14 +2,14 @@ import "#components/ak-nav-buttons";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { globalAK } from "#common/global";
+import { resolveThemedUrl } from "#common/theme";
 
 import { AKElement } from "#elements/Base";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithSession } from "#elements/mixins/session";
 import { isAdminRoute } from "#elements/router/utils";
 import { SlottedTemplateResult } from "#elements/types";
-import { resolveThemedUrl } from "#common/theme";
-
+import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
 import Styles from "#components/ak-page-navbar.css";
@@ -159,7 +159,9 @@ export class AKPageNavbar
                     return html`<img
                         aria-hidden="true"
                         class="accent-icon pf-icon"
-                        src="${resolveThemedUrl(this.activeTheme, this.iconThemedUrls, this.icon)}"
+                        src=${ifPresent(
+                            resolveThemedUrl(this.activeTheme, this.iconThemedUrls, this.icon),
+                        )}
                         alt="page icon"
                     />`;
                 }

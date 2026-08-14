@@ -55,7 +55,11 @@ export const ThemedImage: LitFC<ThemedImageProps> = ({
     // Use themed URL if available, otherwise use src directly
     const resolvedSrc = resolveThemedUrl(theme, themedUrls, src);
 
-    return html`<img src=${ifPresent(resolvedSrc)} class=${ifPresent(className)} ${spread(props)} />`;
+    return html`<img
+        src=${ifPresent(resolvedSrc)}
+        class=${ifPresent(className)}
+        ${spread(props)}
+    />`;
 };
 
 export function isDefaultAvatar(path?: string | null): boolean {

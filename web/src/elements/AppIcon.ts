@@ -1,9 +1,8 @@
 import { PFSize } from "#common/enums";
+import { resolveThemedUrl } from "#common/theme";
 
 import Styles from "#elements/AppIcon.css";
 import { AKElement } from "#elements/Base";
-import { resolveThemedUrl } from "#common/theme";
-
 import { FontAwesomeProtocol } from "#elements/utils/images";
 
 import type { ThemedUrls } from "@goauthentik/api";
