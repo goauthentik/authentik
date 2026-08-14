@@ -1,6 +1,6 @@
 from django.utils.timezone import now
+from django_dramatiq_postgres.utils import chunked_queryset
 
-from authentik.lib.utils.db import chunked_queryset
 from django_postgres_cache.models import CacheEntry
 
 

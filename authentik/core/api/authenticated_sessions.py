@@ -2,6 +2,7 @@
 
 from typing import TypedDict
 
+from django_dramatiq_postgres.utils import chunked_queryset
 from drf_spectacular.utils import (
     extend_schema,
     inline_serializer,
@@ -27,7 +28,6 @@ from authentik.core.models import AuthenticatedSession
 from authentik.core.signals import admin_authenticated_session_deleted
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR, ASNDict
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR, GeoIPDict
-from authentik.lib.utils.db import chunked_queryset
 from authentik.rbac.decorators import permission_required
 
 
