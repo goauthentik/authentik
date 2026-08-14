@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -119,5 +120,13 @@ def user_deactivated(sender, instance: User, **_):
     """Remove user tokens when deactivated"""
     if instance.is_active:
         return
+    # Tokens the subsequent session deletion will use for back-channel logout
+    # notifications are kept here; that deletion removes them afterwards.
+    # Everything else is revoked immediately.
+    AccessToken.objects.including_expired().filter(user=instance).exclude(
+        Q(session__isnull=False)
+        & Q(provider__logout_method=OAuth2LogoutMethod.BACKCHANNEL)
+        & ~Q(provider__logout_uri="")
+    ).delete()
     RefreshToken.objects.including_expired().filter(user=instance).delete()
     DeviceToken.objects.including_expired().filter(user=instance).delete()

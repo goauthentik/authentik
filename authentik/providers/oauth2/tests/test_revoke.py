@@ -15,6 +15,7 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     ClientType,
     DeviceToken,
+    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -195,7 +196,51 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
 
     def test_revoke_user_deactivated(self):
-        """Test revoking refresh and device tokens when a user is deactivated"""
+        """Test revoking tokens when a user is deactivated"""
+        backchannel_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
+            signing_key=create_test_cert(),
+            logout_uri="http://testserver/backchannel_logout",
+            logout_method=OAuth2LogoutMethod.BACKCHANNEL,
+        )
+        session = AuthenticatedSession.objects.create(
+            session=Session.objects.create(
+                session_key=generate_id(),
+                last_ip=ClientIPMiddleware.default_ip,
+            ),
+            user=self.user,
+        )
+        # Session-bound, back-channel logout configured: kept until the session dies
+        AccessToken.objects.create(
+            provider=backchannel_provider,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        # Session-bound, but no back-channel logout: revoked immediately
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=session,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        # No session (e.g. client_credentials): revoked immediately
         AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -229,11 +274,16 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.user.is_active = False
         self.user.save()
 
-        # Access tokens are kept because the following session deletion event
-        # will use them for Backchannel Logout then delete the tokens.
-        self.assertEqual(AccessToken.objects.including_expired().all().count(), 1)
+        # Only the token the session deletion will use for Backchannel Logout is
+        # kept; the session deletion then deletes it too.
+        remaining = AccessToken.objects.including_expired().all()
+        self.assertEqual(remaining.count(), 1)
+        self.assertEqual(remaining.first().provider, backchannel_provider)
         self.assertEqual(RefreshToken.objects.including_expired().all().count(), 0)
         self.assertEqual(DeviceToken.objects.including_expired().all().count(), 0)
+
+        session.delete()
+        self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
 
     def test_revoke_provider_fed(self):
         """Test revoke with federation. self.provider is a confidential
