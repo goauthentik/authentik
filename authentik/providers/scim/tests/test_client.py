@@ -68,7 +68,7 @@ class SCIMClientTests(TestCase):
                         }
                     ],
                     "patch": {"supported": True},
-                    "bulk": {"supported": False, "maxOperations": 1, "maxPayloadSize": 1048576},
+                    "bulk": {"supported": False},
                     "filter": {"supported": True, "maxResults": 50},
                     "changePassword": {"supported": False},
                     "sort": {"supported": False},
