@@ -36,24 +36,46 @@ admin_authenticated_session_deleted = Signal()
 
 LOGGER = get_logger()
 
-_CTX_INHIBIT_DEACTIVATION_SESSION_DELETE = ContextVar[bool](
-    "authentik_core_inhibit_deactivation_session_delete",
+_CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP = ContextVar[bool](
+    "authentik_core_inhibit_deactivation_session_cleanup",
+    default=False,
+)
+_CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP = ContextVar[bool](
+    "authentik_core_inhibit_deactivation_token_cleanup",
     default=False,
 )
 
 
 @contextmanager
-def deactivation_inhibit_session_delete():
+def deactivation_inhibit_cleanup(*, sessions: bool = True, tokens: bool = True):
     """
-    Prevent user_deactivated_delete_sessions from deleting sessions when a
-    deactivated user is saved, for callers that revoke sessions themselves
-    (e.g. enterprise revocation).
+    Prevent the automatic cleanup that runs when a deactivated user is saved,
+    for callers that revoke sessions and/or tokens themselves (e.g. enterprise
+    revocation). `sessions` inhibits session deletion, `tokens` inhibits
+    provider token revocation; both are inhibited by default. Nested uses can
+    add inhibition but not remove the outer context's.
     """
-    token = _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.set(True)
+    reset_sessions = _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.set(
+        _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.get() or sessions
+    )
+    reset_tokens = _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.set(
+        _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.get() or tokens
+    )
     try:
         yield
     finally:
-        _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.reset(token)
+        _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.reset(reset_sessions)
+        _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.reset(reset_tokens)
+
+
+def deactivation_session_cleanup_inhibited() -> bool:
+    """Whether deactivation session cleanup is inhibited in the current context"""
+    return _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.get()
+
+
+def deactivation_token_cleanup_inhibited() -> bool:
+    """Whether deactivation token cleanup is inhibited in the current context"""
+    return _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.get()
 
 
 @receiver(post_save, sender=Application)
@@ -91,7 +113,7 @@ def user_deactivated_delete_sessions(sender: type[Model], instance: User, **_):
     """Delete all of a user's sessions when they are deactivated"""
     if instance.is_active:
         return
-    if _CTX_INHIBIT_DEACTIVATION_SESSION_DELETE.get():
+    if deactivation_session_cleanup_inhibited():
         return
     Session.objects.filter(authenticatedsession__user=instance).delete()
     LOGGER.debug("Deleted deactivated user's sessions", user=instance.username)

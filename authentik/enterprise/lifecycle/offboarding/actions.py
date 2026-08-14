@@ -10,7 +10,7 @@ from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.core.signals import deactivation_inhibit_session_delete
+from authentik.core.signals import deactivation_inhibit_cleanup
 from authentik.enterprise.core.revocation import revoke_user_access
 from authentik.enterprise.lifecycle.offboarding.models import OffboardingAction
 from authentik.events.models import Event, EventAction
@@ -58,7 +58,7 @@ def offboard_user(
 
     if action == OffboardingAction.DEACTIVATE:
         user.is_active = False
-        with deactivation_inhibit_session_delete():
+        with deactivation_inhibit_cleanup(sessions=not revoke_sessions, tokens=not revoke_tokens):
             user.save(update_fields=["is_active"])
     elif action == OffboardingAction.DELETE:
         user.delete()

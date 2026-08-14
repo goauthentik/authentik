@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import AuthenticatedSession, Session, User
-from authentik.core.signals import deactivation_inhibit_session_delete
+from authentik.core.signals import deactivation_inhibit_cleanup
 from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.lib.generators import generate_id
 
@@ -43,18 +43,29 @@ class TestUserDeactivatedSignal(TestCase):
         self.assertFalse(AuthenticatedSession.objects.filter(user=user).exists())
 
     def test_deactivate_inhibited(self):
-        """deactivation_inhibit_session_delete leaves the user's sessions alone"""
+        """deactivation_inhibit_cleanup leaves the user's sessions alone"""
         user = create_test_user()
         session = create_test_session(user)
 
         user.is_active = False
-        with deactivation_inhibit_session_delete():
+        with deactivation_inhibit_cleanup():
             user.save()
 
         self.assertFalse(user.is_active)
         self.assertTrue(Session.objects.filter(session_key=session.session.session_key).exists())
         # Once the context manager exits, deactivating saves delete sessions again
         user.save()
+        self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
+
+    def test_deactivate_inhibit_tokens_only(self):
+        """Inhibiting only token cleanup still deletes sessions"""
+        user = create_test_user()
+        session = create_test_session(user)
+
+        user.is_active = False
+        with deactivation_inhibit_cleanup(sessions=False, tokens=True):
+            user.save()
+
         self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
 
     def test_deactivate_via_blueprint(self):
