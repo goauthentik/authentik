@@ -6,8 +6,6 @@ support_level: community
 
 import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
-<!-- spellchecker:ignore gromox -->
-
 ## What is grommunio?
 
 > grommunio is an open-source groupware server and collaboration platform offering email, calendar, contacts, tasks, video conferencing, and file sync. It is fully compatible with Microsoft Outlook via MAPI/RPC, EWS, and ActiveSync.
