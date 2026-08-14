@@ -34,6 +34,7 @@ from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
+from django_dramatiq_postgres.utils import chunked_queryset
 
 logger = get_logger(__name__)
 
@@ -617,11 +618,17 @@ class _PostgresConsumer(Consumer):
         if timezone.now() - self.task_purge_last_run < self.task_purge_interval:
             return
         self.logger.debug("Running garbage collector")
-        count = self.query_set.filter(
-            state__in=(TaskState.DONE, TaskState.REJECTED),
-            mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
-            result_expiry__lte=timezone.now(),
-        ).delete()
+        count = 0
+        for task in chunked_queryset(
+            self.query_set.filter(
+                state__in=(TaskState.DONE, TaskState.REJECTED),
+                mtime__lte=timezone.now() - timedelta(seconds=Conf().task_expiration),
+                result_expiry__lte=timezone.now(),
+            ),
+            chunk_size=100,
+        ):
+            task.delete()
+            count += 1
         self.logger.info("Purged messages in all queues", count=count)
         self.task_purge_last_run = timezone.now()
 
