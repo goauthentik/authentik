@@ -179,7 +179,7 @@ return user_matched
 
 5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing policy/group/user**.
 8. Select the policy that you previously created and click **Create Policy Binding**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 
@@ -249,7 +249,7 @@ return user_matched
 
 5. Click **Finish**. You can now bind this policy to the chosen enrollment and/or authentication flow of the Discord OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Policy/Group/User Bindings** tab and click **Bind existing Policy/Group/User**.
+7. Open the **Policy/Group/User Bindings** tab and click **Bind existing policy/group/user**.
 8. Select the policy that you previously created and click **Create Policy Binding**.
 9. Optionally, repeat the process for any other flows that you want the policy applied to.
 

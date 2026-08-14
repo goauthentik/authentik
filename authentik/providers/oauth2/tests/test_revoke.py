@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from authentik.core.models import Application, AuthenticatedSession, Session
+from authentik.core.signals import deactivation_inhibit_cleanup
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.id_token import IDToken
@@ -15,7 +16,6 @@ from authentik.providers.oauth2.models import (
     AccessToken,
     ClientType,
     DeviceToken,
-    OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -196,51 +196,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
 
     def test_revoke_user_deactivated(self):
-        """Test revoking tokens when a user is deactivated"""
-        backchannel_provider = OAuth2Provider.objects.create(
-            name=generate_id(),
-            authorization_flow=create_test_flow(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "")],
-            signing_key=create_test_cert(),
-            logout_uri="http://testserver/backchannel_logout",
-            logout_method=OAuth2LogoutMethod.BACKCHANNEL,
-        )
-        session = AuthenticatedSession.objects.create(
-            session=Session.objects.create(
-                session_key=generate_id(),
-                last_ip=ClientIPMiddleware.default_ip,
-            ),
-            user=self.user,
-        )
-        # Session-bound, back-channel logout configured: kept until the session dies
-        AccessToken.objects.create(
-            provider=backchannel_provider,
-            user=self.user,
-            session=session,
-            token=generate_id(),
-            auth_time=timezone.now(),
-            _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
-        )
-        # Session-bound, but no back-channel logout: revoked immediately
-        AccessToken.objects.create(
-            provider=self.provider,
-            user=self.user,
-            session=session,
-            token=generate_id(),
-            auth_time=timezone.now(),
-            _scope="openid user profile",
-            _id_token=json.dumps(
-                asdict(
-                    IDToken("foo", "bar"),
-                )
-            ),
-        )
-        # No session (e.g. client_credentials): revoked immediately
+        """Test revoke on logout"""
         AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
@@ -274,15 +230,69 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.user.is_active = False
         self.user.save()
 
-        # Only the token the session deletion will use for Backchannel Logout is
-        # kept; the session deletion then deletes it too.
-        remaining = AccessToken.objects.including_expired().all()
-        self.assertEqual(remaining.count(), 1)
-        self.assertEqual(remaining.first().provider, backchannel_provider)
+        self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
         self.assertEqual(RefreshToken.objects.including_expired().all().count(), 0)
         self.assertEqual(DeviceToken.objects.including_expired().all().count(), 0)
 
-        session.delete()
+    def test_revoke_user_deactivated_inhibited(self):
+        """Test tokens are kept when deactivation cleanup is inhibited"""
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        RefreshToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        DeviceToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            _scope="openid user profile",
+        )
+
+        self.user.is_active = False
+        with deactivation_inhibit_cleanup():
+            self.user.save()
+
+        self.assertEqual(AccessToken.objects.including_expired().all().count(), 1)
+        self.assertEqual(RefreshToken.objects.including_expired().all().count(), 1)
+        self.assertEqual(DeviceToken.objects.including_expired().all().count(), 1)
+
+    def test_revoke_user_deactivated_inhibit_sessions_only(self):
+        """Test tokens are still revoked when only session cleanup is inhibited"""
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+
+        self.user.is_active = False
+        with deactivation_inhibit_cleanup(sessions=True, tokens=False):
+            self.user.save()
+
         self.assertEqual(AccessToken.objects.including_expired().all().count(), 0)
 
     def test_revoke_provider_fed(self):

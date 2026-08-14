@@ -45,6 +45,7 @@ pnpm-workspace.yaml                     @goauthentik/frontend
 /packages/docusaurus-config             @goauthentik/frontend
 /packages/esbuild-plugin-live-reload    @goauthentik/frontend
 /packages/eslint-config                 @goauthentik/frontend
+/packages/fonts                         @goauthentik/frontend
 /packages/prettier-config               @goauthentik/frontend
 /packages/logger-js                     @goauthentik/frontend
 /packages/theme                         @goauthentik/frontend

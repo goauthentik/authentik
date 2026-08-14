@@ -297,18 +297,14 @@ class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")
     def test_user_deactivated_model(self, mock_get_session):
-        """Deactivating a user keeps access tokens so deleting the session can notify"""
+        """Deactivating a user directly sends back-channel logout"""
         mock_session = self._mock_http(mock_get_session)
 
         self.user.is_active = False
         self.user.save()
 
-        mock_session.post.assert_not_called()
-        self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 1)
-
-        self.session.delete()
-
         self._assert_logout_token_sent(mock_session)
+        self.assertFalse(Session.objects.filter(session_key=self.session_key).exists())
         self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 0)
 
     @patch("authentik.providers.oauth2.tasks.get_http_session")

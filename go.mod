@@ -3,14 +3,14 @@ module goauthentik.io
 go 1.26.0
 
 require (
-	beryju.io/ldap v0.2.1
+	beryju.io/ldap v0.2.2
 	beryju.io/radius-eap v0.1.1
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/coreos/go-oidc/v3 v3.20.0
 	github.com/getsentry/sentry-go v0.48.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.14
-	github.com/go-openapi/runtime v0.32.6
+	github.com/go-openapi/runtime v0.33.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
@@ -18,7 +18,7 @@ require (
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/gorilla/websocket v1.5.3
-	github.com/grafana/pyroscope-go v1.4.1
+	github.com/grafana/pyroscope-go v1.4.2
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/jellydator/ttlcache/v3 v3.4.1
 	github.com/mitchellh/mapstructure v1.5.0
@@ -34,7 +34,7 @@ require (
 	golang.org/x/oauth2 v0.36.0
 	golang.org/x/sync v0.22.0
 	gopkg.in/yaml.v2 v2.4.0
-	gorm.io/driver/postgres v1.6.1
+	gorm.io/driver/postgres v1.6.2
 	gorm.io/gorm v1.31.2
 	layeh.com/radius v0.0.0-20231213012653-1006025d24f8
 )
