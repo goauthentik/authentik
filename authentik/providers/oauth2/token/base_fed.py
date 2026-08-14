@@ -115,9 +115,7 @@ class FederatedTokenRequest(TokenRequest):
         providers = Q(provider__in=self.provider.jwt_federation_providers.all())
         if self.audience_provider:
             providers |= Q(provider=self.provider)
-        federated_token = AccessToken.objects.filter(
-            providers, token=assertion
-        ).first()
+        federated_token = AccessToken.objects.filter(providers, token=assertion).first()
         if federated_token:
             _key, _alg = federated_token.provider.jwt_key
             try:
