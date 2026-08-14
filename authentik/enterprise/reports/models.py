@@ -5,7 +5,6 @@ from uuid import uuid4
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import gettext as _
-from django_dramatiq_postgres.utils import chunked_queryset
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -16,6 +15,7 @@ from authentik.core.models import User
 from authentik.enterprise.reports.utils import MockRequest
 from authentik.events.models import Event, EventAction, Notification, NotificationSeverity
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.db import chunked_queryset
 from authentik.tenants.utils import get_current_tenant
 
 

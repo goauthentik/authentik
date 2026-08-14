@@ -7,12 +7,12 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.timezone import now
 from django_dramatiq_postgres.models import TaskState
-from django_dramatiq_postgres.utils import chunked_queryset
 from dramatiq.broker import get_broker
 from packaging.version import parse
 from prometheus_client import Gauge
 
 from authentik import authentik_full_version
+from authentik.lib.utils.db import chunked_queryset
 from authentik.root.monitoring import monitoring_set
 from authentik.tasks.models import Task, TasksModel, WorkerStatus
 

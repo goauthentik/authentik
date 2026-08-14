@@ -4,7 +4,6 @@ from uuid import UUID
 
 from django.db.models.query_utils import Q
 from django.utils.translation import gettext_lazy as _
-from django_dramatiq_postgres.utils import chunked_queryset
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
@@ -16,6 +15,7 @@ from authentik.events.models import (
     NotificationRule,
     NotificationTransport,
 )
+from authentik.lib.utils.db import chunked_queryset
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.tasks.middleware import CurrentTask

@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_channels_postgres.models import GroupChannel, Message
-from django_dramatiq_postgres.utils import chunked_queryset
 from django_postgres_cache.tasks import clear_expired_cache
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
@@ -17,6 +16,7 @@ from authentik.core.models import (
 )
 from authentik.lib.models import ExpiringModel
 from authentik.lib.sync.models import Sync
+from authentik.lib.utils.db import chunked_queryset
 from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
