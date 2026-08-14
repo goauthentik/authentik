@@ -32,9 +32,9 @@ from psycopg import sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
+from authentik.lib.utils.db import chunked_queryset
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
-from django_dramatiq_postgres.utils import chunked_queryset
 
 logger = get_logger(__name__)
 
