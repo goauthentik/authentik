@@ -66,12 +66,15 @@ class AuthNRequestParser:
             request_acs_url = root.attrib["AssertionConsumerServiceURL"]
 
         if self.provider.acs_url.lower() != request_acs_url.lower():
-            msg = (
+            self.logger.warning(
+                "ACS URL doesn't match Provider ACS URL",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
+            raise CannotHandleAssertion(
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
-            raise CannotHandleAssertion(msg)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
         # actively re-authenticate the user instead of relying on an existing session
