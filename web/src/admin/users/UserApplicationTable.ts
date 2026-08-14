@@ -40,7 +40,11 @@ export class UserApplicationTable extends Table<Application> {
 
     row(item: Application): SlottedTemplateResult[] {
         return [
-            html`<ak-app-icon name=${item.name} icon=${ifPresent(item.metaIconUrl)}></ak-app-icon>`,
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifPresent(item.metaIconUrl)}
+                .iconThemedUrls=${item.metaIconThemedUrls}
+            ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : nothing}
