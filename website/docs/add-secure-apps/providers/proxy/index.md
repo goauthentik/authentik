@@ -102,7 +102,9 @@ Logging out of a provider invalidates all sessions for that user within the resp
 
 To allow unauthenticated requests to specific paths or URLs, use the **Unauthenticated Paths** or **Unauthenticated URLs** field on the proxy provider.
 
-Each new line is interpreted as a regular expression and is compiled and checked using the standard Golang regex parser.
+Each new line is interpreted as a regular expression and is compiled and checked using the Rust [`regex`](https://docs.rs/regex/latest/regex/#syntax) crate.
+
+A pattern that fails to compile is skipped, and a warning is written to the outpost logs. The remaining patterns still apply, so a typo silently leaves a path authenticated rather than causing an error.
 
 The behavior of this field changes depending on the selected mode.
 

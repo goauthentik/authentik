@@ -25,7 +25,7 @@ Account Lockdown cannot be triggered on the anonymous user or internal service a
 
 1. A **Lockdown Flow** must be configured on your Brand (**System** > **Brands**)
 2. The flow must contain an [Account Lockdown Stage](../add-secure-apps/flows-stages/stages/account_lockdown/index.md) (Enterprise)
-3. For self-service lockdown, configure a **Completion Flow** on the stage
+3. For self-service lockdown, configure a **Completion flow** on the stage
 
 ## Use the packaged lockdown blueprint
 
@@ -117,7 +117,7 @@ Use Notification Rules to alert when lockdowns occur:
 
 1. Navigate to **Directory** > **Users** and find the locked user (shown as inactive).
 2. Click **Activate** to re-enable the account.
-3. Use **Set password** or **Create Recovery Link** to set a new password.
+3. Use **Set password** or **Create recovery link** to set a new password.
 4. Advise the user to re-enroll MFA devices.
 
 ## Troubleshooting

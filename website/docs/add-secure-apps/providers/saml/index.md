@@ -135,7 +135,7 @@ The NameID attribute acts as a unique identifier for a user. While other attribu
 
 ### NameID property mapping
 
-In authentik, it's possible to configure which property mapping will be used to create the NameID value. The **NameID property mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
+In authentik, it's possible to configure which property mapping will be used to create the NameID value. The **NameID Property Mapping** field on a SAML provider can be set to any property mapping that's enabled on a SAML provider. When left empty, the NameID Policy of the incoming SP request will be respected.
 
 ### Default NameID policy
 

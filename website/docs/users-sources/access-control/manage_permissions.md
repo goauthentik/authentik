@@ -63,9 +63,9 @@ To assign or remove _global_ permissions for a role:
 1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
-4. Click **Assigned Global Permissions** to the left.
+4. Click **Assigned global permissions** to the left.
 5. To assign a permission:
-    1. In the **Assign permissions** area, click **Assign Permission**.
+    1. In the **Assign permissions** area, click **Assign permission**.
     2. In the **Assign permission to role** dialog, click the plus sign (**+**), and then select each permission that you want to assign.
     3. Click **Add**, and then click **Assign**.
 6. To remove permissions that another _role_ has on this specific role:
@@ -81,8 +81,8 @@ To assign the `Can access admin interface` permission to a role:
 1. In the Admin interface, navigate to **Directory** > **Roles**.
 2. Select a specific role by clicking on the role's name.
 3. Click the **Permissions** tab at the top of the page.
-4. Click **Assigned Global Permissions** to the left.
-5. In the **Assigned global permissions** area, click **Assign Permission**.
+4. Click **Assigned global permissions** to the left.
+5. In the **Assigned global permissions** area, click **Assign permission**.
 6. In the **Assign permission to role** box, click the plus sign (**+**), enter `admin` in the Search field and click the search icon.
 7. Select the returned permission, click **Add**, and then click **Assign** to save your changes and close the box.
 

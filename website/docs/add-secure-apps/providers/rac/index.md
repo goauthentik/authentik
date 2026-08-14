@@ -59,7 +59,7 @@ RAC property mappings allow you to configure the following settings:
 
 - **Username**: the username for the remote machine
 - **Password**: the password for the remote machine
-- **Ignore Server certificate**: set whether the validity of the returned RDP server certificate will be ignored
+- **Ignore server certificate**: set whether the validity of the returned RDP server certificate will be ignored
 - **Enable wallpaper**: enable/disable the desktop wallpaper of the RDP server
 - **Enable font-smoothing**: enable/disable font-smoothing (anti-aliasing) on the RDP server
 - **Enable full window dragging**: enable/disable whether the full content of a window is visible while moving it on the RDP server

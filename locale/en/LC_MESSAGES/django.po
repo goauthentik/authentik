@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-11 00:14+0000\n"
+"POT-Creation-Date: 2026-08-13 00:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -704,6 +704,10 @@ msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
+msgstr ""
+
+#: authentik/core/sources/matcher.py
+msgid "Missing property"
 msgstr ""
 
 #: authentik/core/tasks.py
@@ -1796,6 +1800,10 @@ msgstr ""
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
 "flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source matching failure reasons for which the flow should resume."
 msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
@@ -4172,6 +4180,10 @@ msgstr ""
 
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults to the Metadata URL."
+msgstr ""
+
+#: authentik/sources/saml/models.py
+msgid "Audience value this IdP sends for authentik."
 msgstr ""
 
 #: authentik/sources/saml/models.py
