@@ -129,6 +129,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         return html`<div class="pf-c-page">
             <div class="pf-c-page__main">
                 <ak-tabs
+                    routed
                     vertical
                     role="main"
                     aria-label=${msg("User settings")}

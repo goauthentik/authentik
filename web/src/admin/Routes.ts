@@ -45,7 +45,7 @@ export const ROUTES: Route[] = [
         "dashboard-users",
     ),
     new Route(
-        "/administration/system-tasks",
+        "/administration/system-tasks{/*}?",
         async () => {
             await import("#admin/admin-overview/SystemTasksPage");
             return html`<ak-system-tasks></ak-system-tasks>`;
@@ -62,7 +62,7 @@ export const ROUTES: Route[] = [
         "providers",
     ),
     new Route(
-        "/core/providers/:id",
+        "/core/providers/:id{/*}?",
         async (args) => {
             await import("#admin/providers/ProviderViewPage");
             return html`<ak-provider-view .providerID=${parseInt(String(args.id), 10)}></ak-provider-view>`;
@@ -79,7 +79,7 @@ export const ROUTES: Route[] = [
         "applications",
     ),
     new Route(
-        "/core/applications/:slug",
+        "/core/applications/:slug{/*}?",
         async (args) => {
             await import("#admin/applications/ApplicationViewPage");
             return html`<ak-application-view .applicationSlug=${args.slug}></ak-application-view>`;
@@ -96,7 +96,7 @@ export const ROUTES: Route[] = [
         "devices",
     ),
     new Route(
-        "/endpoints/devices/:uuid",
+        "/endpoints/devices/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/devices/DeviceViewPage");
             return html`<ak-endpoints-device-view .deviceId=${args.uuid}></ak-endpoints-device-view>`;
@@ -112,7 +112,7 @@ export const ROUTES: Route[] = [
         "connectors",
     ),
     new Route(
-        "/endpoints/connectors/:uuid",
+        "/endpoints/connectors/:uuid{/*}?",
         async (args) => {
             await import("#admin/endpoints/connectors/ConnectorViewPage");
             return html`<ak-endpoints-connector-view
@@ -139,7 +139,7 @@ export const ROUTES: Route[] = [
         "sources",
     ),
     new Route(
-        "/core/sources/:slug",
+        "/core/sources/:slug{/*}?",
         async (args) => {
             await import("#admin/sources/SourceViewPage");
             return html`<ak-source-view .sourceSlug=${args.slug}></ak-source-view>`;
@@ -222,7 +222,7 @@ export const ROUTES: Route[] = [
         "groups",
     ),
     new Route(
-        "/identity/groups/:uuid",
+        "/identity/groups/:uuid{/*}?",
         async (args) => {
             await import("#admin/groups/GroupViewPage");
             return html`<ak-group-view .groupId=${args.uuid}></ak-group-view>`;
@@ -246,10 +246,14 @@ export const ROUTES: Route[] = [
         "users",
     ),
     new Route(
-        "/identity/users/:id",
+        // The `{/*}?` tail carries the tab path (`/identity/users/22/credentials`)
+        // to this route while `ak-user-view` stays mounted across tab changes.
+        "/identity/users/:id{/*}?",
         async (args) => {
             await import("#admin/users/UserViewPage");
-            return html`<ak-user-view .userId=${parseInt(String(args.id), 10)}></ak-user-view>`;
+            return html`<ak-user-view
+                .userId=${parseInt(String(args.id), 10)}
+            ></ak-user-view>`;
         },
         "user-view",
     ),
@@ -270,7 +274,7 @@ export const ROUTES: Route[] = [
         "initial-permissions",
     ),
     new Route(
-        "/identity/roles/:id",
+        "/identity/roles/:id{/*}?",
         async (args) => {
             await import("#admin/roles/ak-role-view");
             return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
@@ -311,7 +315,7 @@ export const ROUTES: Route[] = [
         "flows",
     ),
     new Route(
-        "/flow/flows/:slug",
+        "/flow/flows/:slug{/*}?",
         async (args) => {
             await import("#admin/flows/FlowViewPage");
             return html`<ak-flow-view .flowSlug=${args.slug} exportparts="main, tabs"></ak-flow-view>`;
@@ -393,7 +397,7 @@ export const ROUTES: Route[] = [
         "outposts",
     ),
     new Route(
-        "/outpost/outposts/:id",
+        "/outpost/outposts/:id{/*}?",
         async (args) => {
             await import("#admin/outposts/OutpostViewPage");
             return html`<ak-outpost-view .outpostID=${args.id}></ak-outpost-view>`;

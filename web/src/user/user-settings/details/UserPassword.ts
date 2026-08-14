@@ -28,7 +28,7 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        toUserInterface("settings", { page: "page-details" }),
+                        toUserInterface("settings"),
                     )}"
                     class="pf-c-button pf-m-primary"
                 >

@@ -17,7 +17,7 @@ export const DEFAULT_PATH = "/library";
 export const ROUTES: Route[] = [
     new Route("/library", () => html`<ak-library></ak-library>`, "library"),
     new Route(
-        "/requests",
+        "/requests{/*}?",
         async () => {
             await import("#user/requests/AccessRequestsPage");
 
@@ -26,7 +26,9 @@ export const ROUTES: Route[] = [
         "requests",
     ),
     new Route(
-        "/settings",
+        // The `{/*}?` tail lets the tab segment (`/settings/sessions`) resolve to
+        // this route while the page stays mounted across tab changes.
+        "/settings{/*}?",
         async () => {
             await import("#user/user-settings/UserSettingsPage");
 

@@ -81,7 +81,7 @@ export class LDAPSourceViewPage extends AKElement {
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"
