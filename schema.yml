@@ -42366,10 +42366,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         agent_owner:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
