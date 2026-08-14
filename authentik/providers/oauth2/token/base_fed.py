@@ -114,6 +114,8 @@ class FederatedTokenRequest(TokenRequest):
         token = provider = resolved_user = _key = None
         providers = Q(provider__in=self.provider.jwt_federation_providers.all())
         if self.audience_provider:
+            # For token exchange with actor, the given token may likely be a token
+            # of the provider this request is for
             providers |= Q(provider=self.provider)
         federated_token = AccessToken.objects.filter(providers, token=assertion).first()
         if federated_token:
