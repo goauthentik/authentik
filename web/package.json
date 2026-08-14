@@ -155,6 +155,7 @@
         "globals": "^17.8.0",
         "guacamole-common-js": "^1.5.0",
         "h3-js": "^4.5.0",
+        "hast-util-to-html": "^9.0.5",
         "hastscript": "^9.0.1",
         "knip": "^6.29.0",
         "lex": "workspace:*",
