@@ -173,6 +173,41 @@ class TestAgentConnector(APITestCase):
         # filevault left at "none" -> no policy to modify, so the key stays absent
         self.assertNotIn("FileVaultPolicy", psso)
 
+    def test_generate_mdm_macos_touch_id_unlock_modifier(self):
+        """AllowTouchIDOrWatchForUnlock only means something on an UnlockPolicy of
+        RequireAuthentication, so it lands there and nowhere else — and disabling the
+        connector option keeps it out even then."""
+        self.connector.apple_psso_authentication_method = ApplePSSOAuthenticationMethod.PASSWORD
+        self.connector.apple_psso_login_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.REQUIRE
+        self.connector.save()
+        request = self.factory.get("/")
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(
+            psso["UnlockPolicy"], ["RequireAuthentication", "AllowTouchIDOrWatchForUnlock"]
+        )
+        self.assertEqual(psso["LoginPolicy"], ["RequireAuthentication"])
+
+        self.connector.apple_psso_unlock_allow_touch_id_or_watch = False
+        self.connector.save()
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["UnlockPolicy"], ["RequireAuthentication"])
+
+        self.connector.apple_psso_unlock_allow_touch_id_or_watch = True
+        self.connector.apple_psso_unlock_policy = ApplePSSOAuthenticationPolicy.ATTEMPT
+        self.connector.save()
+        res = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        psso = _platform_sso(res.validated_data["config"])
+        self.assertEqual(psso["UnlockPolicy"], ["AttemptAuthentication"])
+
     def test_generate_mdm_macos_grace_period_without_policy(self):
         """A duration with no policy to attach to would be inert, so neither the flag nor
         the duration is written."""

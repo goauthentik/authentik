@@ -272,6 +272,15 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "These settings only affect macOS devices enrolled via this connector. When every policy is left at its default, Platform SSO runs silently and acquires SSO tokens in the background without prompting at the login window.",
                         )}
                     </p>
+                    <ak-number-input
+                        name="applePssoLoginFrequency"
+                        label=${msg("Login frequency")}
+                        required
+                        value="${this.instance?.applePssoLoginFrequency ?? 64800}"
+                        help=${msg(
+                            "Maximum interval, in seconds, before a full re-authentication is required. Apple default is 64800 (18 hours); minimum is 3600 (1 hour).",
+                        )}
+                    ></ak-number-input>
                     <ak-radio-input
                         @change=${this.#authenticationMethodChangeListener}
                         name="applePssoAuthenticationMethod"
@@ -283,15 +292,6 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                             "How users prove who they are at the macOS login window. Changing this only affects devices enrolled after the change.",
                         )}
                     ></ak-radio-input>
-                    <ak-number-input
-                        name="applePssoLoginFrequency"
-                        label=${msg("Login frequency")}
-                        required
-                        value="${this.instance?.applePssoLoginFrequency ?? 64800}"
-                        help=${msg(
-                            "Maximum interval, in seconds, before a full re-authentication is required. Apple default is 64800 (18 hours); minimum is 3600 (1 hour).",
-                        )}
-                    ></ak-number-input>
                     ${this.selectedAuthenticationMethod ===
                     ApplePssoAuthenticationMethodEnum.Password
                         ? this.renderPasswordModeOptions(pssoPolicyOptions)
@@ -301,7 +301,28 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
     }
 
     protected renderPasswordModeOptions(pssoPolicyOptions: RadioOption<string>[]) {
-        return html`<ak-radio-input
+        return html`<ak-switch-input
+                name="applePssoUnlockAllowTouchIdOrWatch"
+                label=${msg("Allow Touch ID or Apple Watch to unlock", {
+                    id: "endpoints.agent.psso.unlock-touch-id.label",
+                })}
+                ?checked=${this.instance?.applePssoUnlockAllowTouchIdOrWatch ?? true}
+                help=${msg(
+                    "Let Touch ID or Apple Watch unlock the screen in place of a Platform SSO authentication. Only applies when the screen unlock policy is set to Require; turning it off makes every unlock ask for the password.",
+                    { id: "endpoints.agent.psso.unlock-touch-id.description" },
+                )}
+            >
+            </ak-switch-input>
+            <ak-switch-input
+                name="applePssoEnableCreateUserAtLogin"
+                label=${msg("Create users at the login window")}
+                ?checked=${this.instance?.applePssoEnableCreateUserAtLogin ?? false}
+                help=${msg(
+                    "Let a user with no local account sign in at the login window and have an account created for them.",
+                )}
+            >
+            </ak-switch-input>
+            <ak-radio-input
                 name="applePssoLoginPolicy"
                 label=${msg("Login window policy")}
                 .options=${pssoPolicyOptions}
@@ -366,16 +387,7 @@ export class AgentConnectorForm extends WithBrandConfig(ModelForm<AgentConnector
                         "Local accounts that the policies above do not apply to, and that are never prompted to register. Add a break-glass administrator here before requiring authentication, otherwise an unreachable authentik locks every account out of the Mac.",
                     )}
                 </p>
-            </ak-form-element-horizontal>
-            <ak-switch-input
-                name="applePssoEnableCreateUserAtLogin"
-                label=${msg("Create users at the login window")}
-                ?checked=${this.instance?.applePssoEnableCreateUserAtLogin ?? false}
-                help=${msg(
-                    "Let a user with no local account sign in at the login window and have an account created for them.",
-                )}
-            >
-            </ak-switch-input>`;
+            </ak-form-element-horizontal>`;
     }
 
     protected renderSecureEnclaveModeOptions(pssoBiometricOptions: RadioOption<string>[]) {

@@ -162,6 +162,12 @@ export interface PatchedAgentConnectorRequest {
     applePssoUnlockPolicy?: ApplePssoFilevaultPolicyEnum;
     /**
      *
+     * @type {boolean}
+     * @memberof PatchedAgentConnectorRequest
+     */
+    applePssoUnlockAllowTouchIdOrWatch?: boolean;
+    /**
+     *
      * @type {ApplePssoFilevaultPolicyEnum}
      * @memberof PatchedAgentConnectorRequest
      */
@@ -276,6 +282,10 @@ export function PatchedAgentConnectorRequestFromJSONTyped(
             json["apple_psso_unlock_policy"] == null
                 ? undefined
                 : ApplePssoFilevaultPolicyEnumFromJSON(json["apple_psso_unlock_policy"]),
+        applePssoUnlockAllowTouchIdOrWatch:
+            json["apple_psso_unlock_allow_touch_id_or_watch"] == null
+                ? undefined
+                : json["apple_psso_unlock_allow_touch_id_or_watch"],
         applePssoFilevaultPolicy:
             json["apple_psso_filevault_policy"] == null
                 ? undefined
@@ -339,6 +349,7 @@ export function PatchedAgentConnectorRequestToJSONTyped(
         apple_psso_unlock_policy: ApplePssoFilevaultPolicyEnumToJSON(
             value["applePssoUnlockPolicy"],
         ),
+        apple_psso_unlock_allow_touch_id_or_watch: value["applePssoUnlockAllowTouchIdOrWatch"],
         apple_psso_filevault_policy: ApplePssoFilevaultPolicyEnumToJSON(
             value["applePssoFilevaultPolicy"],
         ),

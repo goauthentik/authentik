@@ -8162,6 +8162,10 @@
                     ],
                     "title": "Apple psso unlock policy"
                 },
+                "apple_psso_unlock_allow_touch_id_or_watch": {
+                    "type": "boolean",
+                    "title": "Apple psso unlock allow touch id or watch"
+                },
                 "apple_psso_filevault_policy": {
                     "type": "string",
                     "enum": [

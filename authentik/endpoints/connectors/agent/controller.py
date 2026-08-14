@@ -112,7 +112,10 @@ class AgentConnectorController(BaseController[AgentConnector]):
         Each array holds the enforcement mode followed by any modifiers. The grace periods
         are modifiers rather than standalone keys, so they are appended to every policy that
         is actually being enforced; a policy left at "none" stays absent entirely, and a
-        grace period attached to nothing would do nothing."""
+        grace period attached to nothing would do nothing. AllowTouchIDOrWatchForUnlock is
+        an UnlockPolicy-only modifier that Apple documents as acting when
+        RequireAuthentication is enabled, so it is appended only in that combination —
+        under "attempt" Touch ID and watch unlock already work."""
         if (
             self.connector.apple_psso_authentication_method
             != ApplePSSOAuthenticationMethod.PASSWORD
@@ -136,6 +139,12 @@ class AgentConnectorController(BaseController[AgentConnector]):
             value = mapping.get(getattr(self.connector, field))
             if value:
                 policies[payload_key] = [value, *modifiers]
+                if (
+                    payload_key == "UnlockPolicy"
+                    and value == "RequireAuthentication"
+                    and self.connector.apple_psso_unlock_allow_touch_id_or_watch
+                ):
+                    policies[payload_key].append("AllowTouchIDOrWatchForUnlock")
         if policies:
             if self.connector.apple_psso_authentication_grace_period:
                 policies["AuthenticationGracePeriod"] = (

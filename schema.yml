@@ -35898,6 +35898,8 @@ components:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_allow_touch_id_or_watch:
+          type: boolean
         apple_psso_filevault_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_login_frequency:
@@ -35984,6 +35986,8 @@ components:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_allow_touch_id_or_watch:
+          type: boolean
         apple_psso_filevault_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_login_frequency:
@@ -50282,6 +50286,8 @@ components:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_unlock_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
+        apple_psso_unlock_allow_touch_id_or_watch:
+          type: boolean
         apple_psso_filevault_policy:
           $ref: '#/components/schemas/ApplePssoFilevaultPolicyEnum'
         apple_psso_login_frequency:

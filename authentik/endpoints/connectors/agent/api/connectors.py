@@ -65,6 +65,7 @@ class AgentConnectorSerializer(ConnectorSerializer):
             "apple_psso_enable_create_user_at_login",
             "apple_psso_login_policy",
             "apple_psso_unlock_policy",
+            "apple_psso_unlock_allow_touch_id_or_watch",
             "apple_psso_filevault_policy",
             "apple_psso_login_frequency",
             "apple_psso_biometric_requirement",

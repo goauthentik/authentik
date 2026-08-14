@@ -117,6 +117,12 @@ class AgentConnector(Connector):
         choices=ApplePSSOAuthenticationPolicy.choices,
         default=ApplePSSOAuthenticationPolicy.NONE,
     )
+    # Maps to the AllowTouchIDOrWatchForUnlock modifier of UnlockPolicy, which lets Touch ID
+    # or Apple Watch unlock the screensaver in place of a Platform SSO authentication.
+    # Defaults on because without it an unlock policy of "require" silently disables Touch
+    # ID and watch unlock, which reads as breakage rather than enforcement; admins who do
+    # want a password at every unlock can switch it off.
+    apple_psso_unlock_allow_touch_id_or_watch = models.BooleanField(default=True)
     # Apple Platform SSO maximum interval (seconds) before a full re-authentication is
     # required. Maps to LoginFrequency; Apple's default is 64800 (18 hours), minimum 3600.
     apple_psso_login_frequency = models.PositiveIntegerField(default=64800)
