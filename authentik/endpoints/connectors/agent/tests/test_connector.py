@@ -102,6 +102,20 @@ class TestAgentConnector(APITestCase):
         # filevault left at the default "none" -> key omitted entirely
         self.assertNotIn("FileVaultPolicy", psso)
 
+    def test_generate_mdm_macos_deterministic(self):
+        """Two downloads of an unchanged configuration must be byte-identical. Random
+        PayloadUUIDs would make every download read as a changed profile to the MDM,
+        and redelivering the extensiblesso payload with a new UUID deregisters
+        Platform SSO on every enrolled Mac."""
+        request = self.factory.get("/")
+        first = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        second = self.connector.controller(self.connector).generate_mdm_config(
+            OSFamily.macOS, request, self.token
+        )
+        self.assertEqual(first.validated_data["config"], second.validated_data["config"])
+
     def test_generate_mdm_macos_authentication_method_default(self):
         """The Secure Enclave key mode stays the default, so existing enrollments keep the
         behaviour they had before the method was configurable."""

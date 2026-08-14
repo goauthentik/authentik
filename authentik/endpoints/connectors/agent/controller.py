@@ -1,5 +1,5 @@
 from plistlib import PlistFormat, dumps
-from uuid import uuid4
+from uuid import uuid5
 from xml.etree.ElementTree import Element, SubElement, tostring  # nosec
 
 from django.http import HttpRequest
@@ -158,6 +158,18 @@ class AgentConnectorController(BaseController[AgentConnector]):
             policies["EnableCreateUserAtLogin"] = True
         return policies
 
+    def _payload_uuid(self, token: EnrollmentToken, payload_type: str) -> str:
+        """Deterministic PayloadUUID for an inner payload.
+
+        Random UUIDs would make every download of an unchanged configuration a new
+        profile in the MDM's eyes, and redelivering an extensiblesso payload with a
+        changed PayloadUUID makes macOS remove and re-add it, which deregisters
+        Platform SSO. Apple updates a payload in place when PayloadIdentifier and
+        PayloadUUID both match the installed profile, so both are derived from the
+        same inputs: the identifier embeds the enrollment token, the UUID hashes the
+        token and payload type into the connector's namespace."""
+        return str(uuid5(self.connector.pk, f"{token.pk}:{payload_type}"))
+
     def _generate_mdm_config_macos(
         self, request: HttpRequest, token: EnrollmentToken
     ) -> MDMConfigResponseSerializer:
@@ -170,7 +182,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "authentik Platform",
                         "PayloadIdentifier": f"io.goauthentik.platform.{token_uuid}",
                         "PayloadType": "io.goauthentik.platform",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "io.goauthentik.platform"),
                         "PayloadVersion": 1,
                         "RegistrationToken": token.key,
                         "URL": request.build_absolute_uri(reverse("authentik_core:root-redirect")),
@@ -180,7 +192,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Associated Domains",
                         "PayloadIdentifier": f"com.apple.associated-domains.{token_uuid}",
                         "PayloadType": "com.apple.associated-domains",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.associated-domains"),
                         "PayloadVersion": 1,
                         "Configuration": [
                             {
@@ -195,7 +207,7 @@ class AgentConnectorController(BaseController[AgentConnector]):
                         "PayloadDisplayName": "Platform Single Sign-On",
                         "PayloadIdentifier": f"com.apple.extensiblesso.{token_uuid}",
                         "PayloadType": "com.apple.extensiblesso",
-                        "PayloadUUID": str(uuid4()),
+                        "PayloadUUID": self._payload_uuid(token, "com.apple.extensiblesso"),
                         "PayloadVersion": 1,
                         "ExtensionIdentifier": "io.goauthentik.platform.psso",
                         "TeamIdentifier": "232G855Y8N",
