@@ -76,12 +76,12 @@ test.describe("ak-mdx renders compiled markdown", () => {
         ).toHaveText("OAuth 2.0 provider");
 
         await expect(
-            mdx.locator("h2#authentik-and-oauth-2-0"),
-            "H2 carries a kebab-cased id slug derived from its text",
+            mdx.locator("h2#authentik-and-oauth-20"),
+            "H2 carries a github-slugger id slug derived from its text",
         ).toBeVisible();
 
         await expect(
-            mdx.locator("h2#about-oauth-2-0-and-oidc"),
+            mdx.locator("h2#about-oauth-20-and-oidc"),
             "Multiple H2s each receive their own slug",
         ).toBeVisible();
     });
@@ -124,11 +124,10 @@ test.describe("ak-mdx renders compiled markdown", () => {
         ).toBeVisible();
         await expect($relative).toHaveAttribute("target", "_blank");
 
-        // Fragment href is preserved verbatim from the source markdown,
-        // even when (as here) the docs author's intended target slug
-        // doesn't match this pipeline's slug algorithm. The wrapper
-        // intercepts the click regardless — the lookup only fails the
-        // scroll, not the link itself.
+        // Fragment href is preserved verbatim from the source markdown. The
+        // heading pipeline uses github-slugger, matching Docusaurus, so the
+        // docs author's `#about-oauth-20-and-oidc` target resolves to a real
+        // heading id on this page and the wrapper can scroll to it.
         const $fragment = mdx.locator('ak-md-a > a[href="#about-oauth-20-and-oidc"]').first();
         await expect(
             $fragment,

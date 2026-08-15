@@ -92,9 +92,19 @@ export function remarkAdmonition() {
 }
 
 /**
- * Remark plugin: kebab-case heading slugs into `id` attributes.
+ * @typedef {object} RemarkHeadingsOptions
+ * @property {import("github-slugger").default} slugger
  */
-export function remarkHeadings() {
+
+/**
+ * Remark plugin: heading slugs into `id` attributes.
+ *
+ * Uses `github-slugger` to match the anchor IDs Docusaurus generates for the
+ * same content.
+ *
+ * @param {RemarkHeadingsOptions} options
+ */
+export function remarkHeadings({ slugger }) {
     /**
      * @param {{ value?: string, children?: any[] }} n
      * @returns {string}
@@ -107,11 +117,7 @@ export function remarkHeadings() {
 
     return (/** @type {import('mdast').Root} */ tree) => {
         visit(tree, "heading", (node) => {
-            const id = flatten(node)
-                .toLowerCase()
-                .trim()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "");
+            const id = slugger.slug(flatten(node));
             const data = node.data || (node.data = {});
             data.hProperties = { ...(data.hProperties || {}), id };
         });

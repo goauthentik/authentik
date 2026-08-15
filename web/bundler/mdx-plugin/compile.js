@@ -14,6 +14,7 @@ import {
     remarkLists,
 } from "./remark.js";
 
+import GithubSlugger from "github-slugger";
 import { toHtml } from "hast-util-to-html";
 import apacheGrammar from "highlight.js/lib/languages/apache";
 import diffGrammar from "highlight.js/lib/languages/diff";
@@ -98,6 +99,7 @@ function renderEnvelope(bodyChildren, title) {
 export async function compileMarkdown(source, publicDirectory) {
     const { body: rawBody, frontmatter } = splitFrontmatter(source);
     const body = normalizeAdmonitionLabels(rawBody);
+    const slugger = new GithubSlugger();
 
     // Run the pipeline up to (but not including) HTML stringification —
     // we want the hast tree so we can splice it into the envelope and
@@ -108,7 +110,7 @@ export async function compileMarkdown(source, publicDirectory) {
         .use(remarkFrontmatter, ["yaml"])
         .use(remarkDirective)
         .use(remarkAdmonition)
-        .use(remarkHeadings)
+        .use(remarkHeadings, { slugger })
         .use(remarkLists)
         .use(remarkRehype, { allowDangerousHtml: false })
         .use(rehypeAnchors, { publicDirectory })
