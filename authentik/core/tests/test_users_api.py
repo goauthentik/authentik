@@ -22,6 +22,7 @@ from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_brand,
     create_test_flow,
+    create_test_session,
     create_test_user,
 )
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
@@ -531,6 +532,28 @@ class TestUsersAPI(APITestCase):
         response = self.client.patch(
             reverse("authentik_api:user-detail", kwargs={"pk": user.pk}),
             data={
+                "is_active": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(Session.objects.filter(session_key=session_id).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
+        )
+
+    def test_session_delete_put(self):
+        """Ensure sessions are deleted when a user is deactivated via PUT"""
+        user = create_test_admin_user()
+        session = create_test_session(user)
+        session_id = session.session.session_key
+
+        self.client.force_login(self.admin)
+        response = self.client.put(
+            reverse("authentik_api:user-detail", kwargs={"pk": user.pk}),
+            data={
+                "username": user.username,
+                "name": user.name,
                 "is_active": False,
             },
         )

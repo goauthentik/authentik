@@ -28,7 +28,7 @@ To show sources on the default login screen, add them to the flow. The process b
 3. Click the **default-authentication-flow**.
 4. Click the **Stage Bindings** tab.
 5. Click **Edit Stage** on the **default-authentication-identification** stage.
-6. Under **Source settings**, add sources to **Selected sources** to have them displayed on the authentik login page.
+6. Under **Source settings**, add sources to **Selected Sources** to have them displayed on the authentik login page.
 
 ## Bind a policy to a source
 

@@ -14,7 +14,7 @@ This stage is most commonly used to branch from one flow into another while opti
 - **Keep flow context**: preserve the current flow context when redirecting to another flow.
 - **Mode**: choose whether the target is a static URL or another flow.
 - **Static target**: URL used in static mode.
-- **Target flow**: flow used in flow mode.
+- **Target Flow**: flow used in flow mode.
 
 ## Flow integration
 

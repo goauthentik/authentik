@@ -13,6 +13,7 @@ packages:
   # `pnpm install` prunes right back out.
   - "!packages/fonts"
   - "!packages/prettier-config"
+  - "!packages/theme"
   - "!packages/tsconfig"
 
 # pnpm's default isolated linker exposes packages strictly — only declared
