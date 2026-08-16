@@ -39,7 +39,7 @@ The threshold defaults to a low score, so the policy is naturally suited to "tri
 
 ## Use it on stage bindings
 
-When you use a Reputation policy on a flow stage binding, configure the stage binding to **Evaluate when stage is run** so authentik can use the latest request context.
+When you use a Reputation policy on a flow stage binding, configure the stage binding to **Evaluate when stage is run** so authentik can use the latest request context. For more information, see [Planning and stage policies](../../../add-secure-apps/flows-stages/flow/planner.md#planning-and-stage-policies).
 
 This is especially important when the policy should react to the current login attempt rather than only to the initial planned flow state.
 

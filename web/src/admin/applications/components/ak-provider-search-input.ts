@@ -1,7 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { AKElement } from "#elements/Base";
@@ -75,7 +75,7 @@ export class AkProviderInput extends AKElement {
         const args: ProvidersAllListRequest = {
             ordering: "name",
         };
-        const api = new ProvidersApi(DEFAULT_CONFIG);
+        const api = aki(ProvidersApi);
         if (query !== undefined) {
             args.search = query;
         }

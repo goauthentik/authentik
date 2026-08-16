@@ -6,7 +6,8 @@ import "#admin/events/ObjectChangelog";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { isResponseErrorLike } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -58,9 +59,11 @@ export class FlowViewPage extends AKElement {
     ];
 
     fetchFlow(slug: string) {
-        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
-            this.flow = flow;
-        });
+        aki(FlowsApi)
+            .flowsInstancesRetrieve({ slug })
+            .then((flow) => {
+                this.flow = flow;
+            });
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -121,11 +124,7 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-primary"
                                                 @click=${() => {
-                                                    const finalURL = `${
-                                                        window.location.origin
-                                                    }/if/flow/${this.flow.slug}/${AndNext(
-                                                        `${window.location.pathname}#${window.location.hash}`,
-                                                    )}`;
+                                                    const finalURL = `${window.location.origin}/if/flow/${this.flow.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                     window.open(finalURL, "_blank");
                                                 }}
                                             >
@@ -137,14 +136,12 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                    aki(FlowsApi)
                                                         .flowsInstancesExecuteRetrieve({
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}${AndNext(
-                                                                `${window.location.pathname}#${window.location.hash}`,
-                                                            )}`;
+                                                            const finalURL = `${link.link}${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                                                             window.open(finalURL, "_blank");
                                                         });
                                                 }}
@@ -157,14 +154,12 @@ export class FlowViewPage extends AKElement {
                                                 )}
                                                 class="pf-c-button pf-m-block pf-m-secondary"
                                                 @click=${() => {
-                                                    new FlowsApi(DEFAULT_CONFIG)
+                                                    aki(FlowsApi)
                                                         .flowsInstancesExecuteRetrieve({
                                                             slug: this.flow.slug,
                                                         })
                                                         .then((link) => {
-                                                            const finalURL = `${link.link}?${encodeURI(
-                                                                `inspector=open&next=/#${window.location.hash}`,
-                                                            )}`;
+                                                            const finalURL = `${link.link}?${encodeURI(`inspector=open&next=/#${window.location.hash}`)}`;
                                                             window.open(finalURL, "_blank");
                                                         })
                                                         .catch(async (error: unknown) => {

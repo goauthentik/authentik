@@ -23,6 +23,10 @@ website/api/reference
 ## Yarn
 .yarn/**/*
 
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml
+
 ## Node
 node_modules
 coverage
@@ -50,4 +54,3 @@ src/locales/
 # Storybook
 storybook-static/
 .storybook/css-import-maps*
-

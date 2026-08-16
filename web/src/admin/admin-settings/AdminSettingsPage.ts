@@ -7,7 +7,7 @@ import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -57,9 +57,11 @@ export class AdminSettingsPage extends AKElement {
     }
 
     #refresh = () => {
-        return new AdminApi(DEFAULT_CONFIG).adminSettingsRetrieve().then((settings) => {
-            this.settings = settings;
-        });
+        return aki(AdminApi)
+            .adminSettingsRetrieve()
+            .then((settings) => {
+                this.settings = settings;
+            });
     };
 
     render() {

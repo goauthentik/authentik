@@ -4,7 +4,7 @@ title: WebAuthn / FIDO2 / Passkeys authenticator setup stage
 
 The WebAuthn / FIDO2 / Passkeys Authenticator setup stage enrolls a WebAuthn authenticator for the current user.
 
-## Overview
+## About the WebAuthn authenticator setup stage
 
 This stage supports common WebAuthn authenticator types, including:
 
@@ -18,8 +18,7 @@ Enrolled authenticators can later be used with the [Authenticator Validation sta
 
 - **User verification**: require, prefer, or discourage built-in user verification during registration.
 - **Resident key requirement**: control whether the authenticator should create a discoverable credential.
-- **Authenticator attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
-- **Prevent duplicate devices**: reject registration of the same authenticator more than once.
+- **Authenticator Attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
 - **Hints**: browser hints that influence which authenticator is preferred during enrollment.
 - **Device type restrictions**: limit enrollment to specific WebAuthn device types.
 - **Maximum attempts**: maximum number of failed registration attempts before the stage denies access. A value of `0` disables the limit.
@@ -46,7 +45,7 @@ For passkey-based passwordless login, set **Resident key requirement** to **Pref
 
 ### Authenticator attachment
 
-Use **Authenticator attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
+Use **Authenticator Attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
 
 This controls the `authenticatorAttachment` parameter sent to the browser during WebAuthn registration:
 
@@ -70,14 +69,22 @@ Optional hints can guide the browser toward a preferred authenticator type durin
 
 The order of selected hints matters. For example, selecting **Security key** before **Hybrid** asks the browser to prefer security keys before hybrid registration.
 
-For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when **Authenticator attachment** is not explicitly set:
+For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when **Authenticator Attachment** is not explicitly set:
 
 - Only **Security key** and/or **Hybrid** hints: `cross-platform`
 - Only **Client device** hints: `platform`
 - If both client-device and cross-platform hints are selected, no value is inferred
 
-### Duplicate and restricted devices
+### Duplicate devices
 
-**Prevent duplicate devices** can only be enforced when the authenticator exposes a unique attestation certificate.
+The **Prevent duplicate devices** option was removed in 2026.8. It compared attestation certificates, which manufacturers share across entire production batches, so it rejected legitimate enrollments of a second security key. No configuration replaces it, and no action is needed when upgrading.
 
-If **Device type restrictions** are enabled, authentik can also allow the special built-in type `authentik: Unknown devices` for authenticators whose AAGUID is not otherwise known.
+### Device type restrictions
+
+**Device type restrictions** are an allowlist for WebAuthn registration. When no device types are selected, authentik allows any WebAuthn authenticator that the browser and authenticator can register. When one or more device types are selected, authentik only allows registration when the authenticator returns an AAGUID that matches one of the selected entries.
+
+The available device-type entries are populated from the [FIDO Alliance Metadata Service](https://fidoalliance.org/metadata/) data and additional AAGUID metadata bundled with the authentik release. This lets you restrict enrollment to specific hardware families or passkey providers listed in that metadata.
+
+If you select specific device types, newly added metadata entries are not allowed automatically. Review this allowlist after authentik upgrades if your compliance policy should include newly recognized authenticators.
+
+authentik also includes the special device-type `authentik: Unknown devices`. Select it only when you want to allow authenticators that return an AAGUID that is not present in authentik's device-type metadata. Authenticators that do not return an AAGUID cannot satisfy a device-type restriction.

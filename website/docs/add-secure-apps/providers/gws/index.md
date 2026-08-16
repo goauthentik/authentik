@@ -1,6 +1,8 @@
 ---
 title: Google Workspace provider
 authentik_enterprise: true
+sidebar_position: 3
+sidebar_label: "Google Workspace Provider"
 ---
 
 The Google Workspace provider allows you to integrate with your Google Workspace organization. It supports syncing users and groups from authentik to Google Workspace, allowing authentik to act as a source of truth for all users and groups.
@@ -58,7 +60,7 @@ By default, authentik only maps a group's name.
 
 Refer to Google documentation for further details on which attributes can be mapped: [Google Workspace Reference - Resource: Group](https://developers.google.com/admin-sdk/directory/reference/rest/v1/groups#Group)
 
-### Skipping objects during synchronization
+### Skip objects during synchronization
 
 To exclude specific users or groups from Google Workspace synchronization, you can create a property mapping that raises the `SkipObject` exception. When this exception is raised during the evaluation of a property mapping, the object is skipped and the sync continues with the next object.
 

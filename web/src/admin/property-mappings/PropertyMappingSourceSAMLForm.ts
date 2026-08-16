@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: SAMLSourcePropertyMapping): Promise<SAMLSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlUpdate({
-                pmUuid: this.instance.pk,
-                sAMLSourcePropertyMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
-            sAMLSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlRetrieve({ pmUuid: pk }),
+        create: (sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlCreate({
+                sAMLSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, sAMLSourcePropertyMappingRequest: SAMLSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceSamlUpdate({
+                pmUuid: pk,
+                sAMLSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

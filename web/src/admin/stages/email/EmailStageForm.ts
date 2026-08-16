@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -20,7 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
     async loadInstance(pk: string): Promise<EmailStage> {
-        const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
+        const stage = await aki(StagesApi).stagesEmailRetrieve({
             stageUuid: pk,
         });
         this.showConnectionSettings = !stage.useGlobalSettings;
@@ -28,7 +28,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
     }
 
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -38,12 +38,12 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
 
     async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
+            return aki(StagesApi).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",
                 patchedEmailStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesEmailCreate({
+        return aki(StagesApi).stagesEmailCreate({
             emailStageRequest: data,
         });
     }

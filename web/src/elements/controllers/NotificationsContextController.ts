@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
 import { actionToLabel } from "#common/labels";
 import { MessageLevel } from "#common/messages";
@@ -62,7 +62,7 @@ export class NotificationsContextController extends ReactiveContextController<No
 
         this.logger.debug("Fetching notifications...");
 
-        return new EventsApi(DEFAULT_CONFIG)
+        return aki(EventsApi)
             .eventsNotificationsList(
                 {
                     seen: false,

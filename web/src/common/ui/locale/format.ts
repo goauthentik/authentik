@@ -8,7 +8,15 @@ import {
 } from "#common/ui/locale/definitions";
 import { safeParseLocale } from "#common/ui/locale/utils";
 
-import { msg, str } from "@lit/localize";
+import { msg, str, TemplateLike } from "@lit/localize";
+
+/**
+ * A Lit Localize callback function which returns a translated result.
+ */
+export type MessageFormatter<
+    R extends TemplateLike = TemplateLike,
+    Args extends unknown[] = never[],
+> = (...args: Args) => R;
 
 /**
  * Safely get a minimized locale ID, with fallback for older browsers.
@@ -196,6 +204,13 @@ export function formatLocaleDisplayNames(
     return entries.sort(createIntlCollator(activeLocaleTag, collatorOptions));
 }
 
+/**
+ * Format the display name for a single locale, using the same logic as the options list.
+ *
+ * @param languageTag The locale to format.
+ * @param localizedDisplayName The localized display name for the locale
+ * @param relativeDisplayName The relative display name for the locale.
+ */
 export function formatRelativeLocaleDisplayName(
     languageTag: TargetLanguageTag,
     localizedDisplayName: string,

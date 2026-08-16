@@ -8,7 +8,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { sourcesProvider, sourcesSelector } from "./IdentificationStageFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { AKLabel } from "#components/ak-label";
@@ -42,24 +42,13 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         `,
     ];
 
-    loadInstance(pk: string): Promise<IdentificationStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: IdentificationStage): Promise<IdentificationStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
-                stageUuid: this.instance.pk || "",
-                identificationStageRequest: data,
-            });
-        }
-
-        return new StagesApi(DEFAULT_CONFIG).stagesIdentificationCreate({
-            identificationStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesIdentificationRetrieve({ stageUuid }),
+        create: (identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationCreate({ identificationStageRequest }),
+        update: (stageUuid: string, identificationStageRequest: IdentificationStage) =>
+            aki(StagesApi).stagesIdentificationUpdate({ stageUuid, identificationStageRequest }),
+    };
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (
@@ -122,9 +111,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const stages = await new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesPasswordList(args);
+                                const stages = await aki(StagesApi).stagesPasswordList(args);
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -151,9 +138,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const stages = await new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesCaptchaList(args);
+                                const stages = await aki(StagesApi).stagesCaptchaList(args);
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>
@@ -219,9 +204,8 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const stages = await new StagesApi(
-                                    DEFAULT_CONFIG,
-                                ).stagesAuthenticatorValidateList(args);
+                                const stages =
+                                    await aki(StagesApi).stagesAuthenticatorValidateList(args);
                                 return stages.results;
                             }}
                             .groupBy=${(items: Stage[]) =>

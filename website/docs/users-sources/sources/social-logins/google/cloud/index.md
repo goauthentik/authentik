@@ -8,7 +8,7 @@ tags:
     - oauth
 ---
 
-Allows users to authenticate using their Google credentials by configuring Google Cloud as a federated identity provider via OAuth 2.0.
+This source lets users authenticate with their Google credentials by configuring Google Cloud as a federated identity provider with OAuth 2.0.
 
 ## Preparation
 
@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 To integrate Google with authentik, you need to create a new project and OAuth credentials in the Google Developer Console.
 
 1. Log in to the [Google Developer Console](https://console.developers.google.com/).
-2. Click on **GLogin** in the top left and then **New Project**.
+2. Click the project selector in the top bar, and then click **New Project**.
 
 ![](./googledeveloper1.png)
 
@@ -36,7 +36,7 @@ To integrate Google with authentik, you need to create a new project and OAuth c
 
 ![](./googledeveloper2.png)
 
-7. On the right side, click on **Configure Consent Screen**.
+7. On the right side, click **Configure Consent Screen**.
 
 ![](./googledeveloper3.png)
 
@@ -70,8 +70,8 @@ To support the integration of Google with authentik, you need to create a Google
     - **Select type**: select **Google OAuth Source** as the source type.
     - **Create Google OAuth Source**: provide a name, a slug that must match the slug used in the Google `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: `<client_ID>`
-            - **Consumer Secret**: `<client_secret>`
+            - **Consumer key**: `<client_ID>`
+            - **Consumer secret**: `<client_secret>`
             - **Scopes** _(optional)_: define any additional access scopes.
 3. Click **Finish** to save your settings.
 
@@ -106,7 +106,7 @@ return False
 
 5. Click **Finish**. You can now bind this policy to the chosen enrollment flow of the Google OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Stage Bindings** tab, expand the policies bound to the first stage and click **Bind existing Policy/Group/User**.
+7. Open the **Stage Bindings** tab, expand the policies bound to the first stage and click **Bind existing policy/group/user**.
 8. Select the policy that you previously created and click **Create Policy Binding**.
 
 :::note

@@ -30,6 +30,7 @@ from authentik.providers.oauth2.models import (
     RedirectURIType,
     ScopeMapping,
 )
+from authentik.providers.oauth2.utils import is_all_vschar
 from authentik.rbac.decorators import permission_required
 
 
@@ -47,6 +48,16 @@ class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+
+    def validate_client_id(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client ID must consist of only ASCII characters.")
+        return secret
+
+    def validate_client_secret(self, secret: str) -> str:
+        if not is_all_vschar(secret):
+            raise ValidationError("Client secret must consist of only ASCII characters.")
+        return secret
 
     def validate_redirect_uris(self, data: list) -> list:
         for entry in data:
@@ -97,6 +108,7 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     provider_info = CharField(read_only=True)
     logout = CharField(read_only=True)
     jwks = CharField(read_only=True)
+    dcr_registration = CharField(read_only=True, allow_null=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
@@ -170,6 +182,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             data["jwks"] = request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["dcr_registration"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

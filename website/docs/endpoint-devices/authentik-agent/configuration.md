@@ -36,13 +36,13 @@ The authentik Agent requires an OAuth application/provider pair to handle authen
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard. Alternatively, you can first create a provider separately, then create the application and connect it to the provider.
     - **Application**: set the **Name** and **Slug** to `authentik-cli`, and provide an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Set the **Client type** to `Public`.
+        - Set the **Client Type** to `Public`.
         - Set the **Client ID** to `authentik-cli`.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
-            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` scope.
+            - In addition to the three default **Selected Scopes**, add the `authentik default OAuth Mapping: OpenID 'offline_access'` and `authentik default OAuth Mapping: authentik API access` scopes.
     - **Configure Bindings** _(optional)_: you can create a [binding](../../add-secure-apps/bindings-overview/index.md) (policy, group, or user) to manage access to the application.
 
 3. Click **Submit** to save the new application and provider.
@@ -56,7 +56,7 @@ The authentik Agent [Connector](../device-compliance/connectors/authentik-agent.
 3. Select **Agent Connector** as the agent type and click **Next**.
 4. Configure the following required settings:
     - **Connector name**: provide a descriptive name (e.g. `authentik Agent`)
-    - **Refresh interval**: select how often the agent will attempt to update its configuration.
+    - **Refresh interval**: select how often the agent updates its configuration.
     - **Enabled**: toggle to enable the connector.
     - Under **Authentication settings**:
         - **Federated OIDC Providers**: add the `authentik-cli` provider that you created in the previous section.

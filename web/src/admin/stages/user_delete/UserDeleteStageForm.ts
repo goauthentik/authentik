@@ -1,6 +1,6 @@
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -13,23 +13,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
-    loadInstance(pk: string): Promise<UserDeleteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserDeleteStage): Promise<UserDeleteStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
-                stageUuid: this.instance.pk || "",
-                userDeleteStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
-            userDeleteStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserDeleteRetrieve({ stageUuid }),
+        create: (userDeleteStageRequest: UserDeleteStage) =>
+            aki(StagesApi).stagesUserDeleteCreate({ userDeleteStageRequest }),
+        update: (stageUuid: string, userDeleteStageRequest: UserDeleteStage) =>
+            aki(StagesApi).stagesUserDeleteUpdate({ stageUuid, userDeleteStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

@@ -13,6 +13,7 @@ class Scheduler(SchedulerBase):
             lock_id=f"authentik.scheduler/{tenant.schema_name}",
             side_effect=pglock.Return,
             timeout=0,
+            using=self.direct_db_alias,
         )
 
     def run(self):

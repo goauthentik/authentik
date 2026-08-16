@@ -3,7 +3,7 @@ import "#admin/common/ak-flow-search/ak-flow-search";
 
 import { renderForm, SetMode, SetShowHttpBasic } from "./ProxyProviderFormForm.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
@@ -21,7 +21,7 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
     static styles: CSSResult[] = [...super.styles, PFContent, PFList, PFSpacing];
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
+        const provider = await aki(ProvidersApi).providersProxyRetrieve({
             id: pk,
         });
         this.showHttpBasic = provider.basicAuthEnabled ?? true;
@@ -48,19 +48,19 @@ export class ProxyProviderFormPage extends BaseProviderForm<ProxyProvider> {
             data.cookieDomain = "";
         }
         if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersProxyUpdate({
+            return aki(ProvidersApi).providersProxyUpdate({
                 id: this.instance.pk,
                 proxyProviderRequest: data,
             });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersProxyCreate({
+        return aki(ProvidersApi).providersProxyCreate({
             proxyProviderRequest: data,
         });
     }
 
     renderForm() {
         const onSetMode: SetMode = (ev) => {
-            this.mode = ev.detail.value;
+            this.mode = ev.value;
         };
 
         const onSetShowHttpBasic: SetShowHttpBasic = (ev: Event) => {

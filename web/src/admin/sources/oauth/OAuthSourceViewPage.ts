@@ -6,7 +6,7 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -37,8 +37,6 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
             return "";
         case ProviderTypeEnum.Apple:
             return "Apple";
-        case ProviderTypeEnum.Azuread:
-            return "Azure Active Directory (Deprecated)";
         case ProviderTypeEnum.Discord:
             return "Discord";
         case ProviderTypeEnum.Facebook:
@@ -78,7 +76,7 @@ export function ProviderToLabel(provider?: ProviderTypeEnum): string {
 export class OAuthSourceViewPage extends AKElement {
     @property({ type: String })
     set sourceSlug(value: string) {
-        new SourcesApi(DEFAULT_CONFIG)
+        aki(SourcesApi)
             .sourcesOauthRetrieve({
                 slug: value,
             })

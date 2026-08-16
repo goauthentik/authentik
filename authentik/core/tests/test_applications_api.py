@@ -102,6 +102,7 @@ class TestApplicationsAPI(APITestCase):
                         "pk": str(self.allowed.pk),
                         "name": "allowed",
                         "slug": "allowed",
+                        "pbm_uuid": str(self.allowed.pbm_uuid),
                         "group": "",
                         "provider": self.provider.pk,
                         "provider_obj": {
@@ -162,6 +163,7 @@ class TestApplicationsAPI(APITestCase):
                         "name": "allowed",
                         "slug": "allowed",
                         "group": "",
+                        "pbm_uuid": str(self.allowed.pbm_uuid),
                         "provider": self.provider.pk,
                         "provider_obj": {
                             "assigned_application_name": "allowed",
@@ -204,6 +206,7 @@ class TestApplicationsAPI(APITestCase):
                         "meta_publisher": "",
                         "group": "",
                         "name": "denied",
+                        "pbm_uuid": str(self.denied.pbm_uuid),
                         "pk": str(self.denied.pk),
                         "policy_engine_mode": "any",
                         "provider": None,

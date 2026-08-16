@@ -6,7 +6,8 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
@@ -45,7 +46,7 @@ export class FlowListPage extends TablePage<Flow> {
     public override order = "slug";
 
     async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
+        return aki(FlowsApi).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Flow[]): [string, Flow[]][] {
@@ -68,12 +69,12 @@ export class FlowListPage extends TablePage<Flow> {
             object-label=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
+                return aki(FlowsApi).flowsInstancesUsedByList({
                     slug: item.slug,
                 });
             }}
             .delete=${(item: Flow) => {
-                return new FlowsApi(DEFAULT_CONFIG).flowsInstancesDestroy({
+                return aki(FlowsApi).flowsInstancesDestroy({
                     slug: item.slug,
                 });
             }}
@@ -99,9 +100,7 @@ export class FlowListPage extends TablePage<Flow> {
                     aria-label=${msg(str`Execute "${item.name}"`)}
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
-                            `${window.location.pathname}#${window.location.hash}`,
-                        )}`;
+                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(`${window.location.pathname}#${window.location.hash}`)}`;
                         window.open(finalURL, "_blank");
                     }}
                 >
@@ -160,7 +159,7 @@ export class FlowListPage extends TablePage<Flow> {
                 errorMessage=${msg("Failed to delete flow cache")}
                 action=${msg("Clear Cache")}
                 .onConfirm=${() => {
-                    return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
+                    return aki(FlowsApi).flowsInstancesCacheClearCreate();
                 }}
             >
                 <span slot="header">${msg("Clear Flow cache")}</span>
