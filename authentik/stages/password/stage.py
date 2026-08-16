@@ -28,6 +28,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
@@ -165,17 +166,19 @@ class PasswordStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
-        # Count failed attempts per flow plan directly. The previous
-        # `initial_score - new_score` check derived attempts from the
-        # Reputation score, which is clipped at tenant.reputation_lower_limit:
-        # once a user hits the floor (e.g. after the first flow exhausts
-        # the limit), subsequent failures no longer push the diff above
-        # failed_attempts_before_cancel and the cancel guard never fires
-        # on later flows. That let users keep retrying indefinitely after
-        # the first lockout - see #21600.
+        initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
+        if initial_score is None:
+            initial_score = self.get_reputation_score()
+            self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
         attempts = self.executor.plan.context.get(PLAN_CONTEXT_FAILED_ATTEMPTS, 0) + 1
         self.executor.plan.context[PLAN_CONTEXT_FAILED_ATTEMPTS] = attempts
-        if attempts >= current_stage.failed_attempts_before_cancel:
+        # Reputation is clipped at tenant.reputation_lower_limit, so a check based only
+        # on the score delta stops firing once the user is already at the floor and they
+        # can keep retrying in a fresh flow (#21600). Count attempts in this plan, but
+        # cap the allowance by the reputation left, so failures from earlier flows
+        # still count against the user.
+        remaining_reputation = initial_score - get_current_tenant().reputation_lower_limit
+        if attempts >= min(remaining_reputation, current_stage.failed_attempts_before_cancel):
             self.logger.debug("User has exceeded maximum tries")
             return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
