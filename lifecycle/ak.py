@@ -13,7 +13,7 @@ In a development checkout there may be no compiled binary, so:
 
 import os
 import shutil
-import subprocess
+import subprocess  # nosec
 import sys
 
 NATIVE_COMMANDS = ("server", "worker", "allinone", "healthcheck")
@@ -28,12 +28,12 @@ def main():
         os.execv(binary, [binary, "boot", *args])
 
     if args and args[0] in NATIVE_COMMANDS:
-        os.execvp("cargo", ["cargo", "run", "--", "boot", *args])
+        os.execvp("cargo", ["cargo", "run", "--", "boot", *args])  # nosec
 
     if args and args[0] == "dump_config":
         os.execv(sys.executable, [sys.executable, "-m", "authentik.lib.config", *args[1:]])
 
-    subprocess.run([sys.executable, "-m", "lifecycle.wait_for_db"], check=True)
+    subprocess.run([sys.executable, "-m", "lifecycle.wait_for_db"], check=True)  # nosec
     os.execv(sys.executable, [sys.executable, "-m", "manage", *args])
 
 

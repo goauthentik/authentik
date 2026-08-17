@@ -188,7 +188,11 @@ fn run_as_authentik(args: &[String], prometheus_dir: &str) -> Result<()> {
             .ok()
             .flatten()
             .map_or_else(|| "unnamed".to_owned(), |g| g.name);
-        info!(gid = gid.as_raw(), group = name, "granting access to the docker socket");
+        info!(
+            gid = gid.as_raw(),
+            group = name,
+            "granting access to the docker socket"
+        );
         groups.push(gid);
     }
 
@@ -288,7 +292,9 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
             if argv.len() == 1 {
                 match fs::read_to_string(tmpdir().join("authentik-mode")) {
                     Ok(mode) if !mode.trim().is_empty() => argv.push(mode.trim().to_owned()),
-                    _ => warn!("no mode file yet, the healthcheck will fail until the server writes one"),
+                    _ => warn!(
+                        "no mode file yet, the healthcheck will fail until the server writes one"
+                    ),
                 }
             }
             run_as_authentik(&argv, &prometheus_dir)
@@ -346,7 +352,7 @@ mod tests {
     }
 
     #[test]
-    fn the_ak_symlink_is_recognised() {
+    fn the_ak_symlink_is_recognized() {
         assert!(invoked_as_ak("/lifecycle/ak"));
         assert!(invoked_as_ak("ak"));
         assert!(!invoked_as_ak("/bin/authentik"));

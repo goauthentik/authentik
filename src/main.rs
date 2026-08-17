@@ -59,7 +59,9 @@ pub(crate) struct AllInOne {}
 /// are called under that name, insert the `boot` subcommand.
 fn parse_args() -> Cli {
     let argv: Vec<String> = std::env::args().collect();
-    let (program, rest) = argv.split_first().map_or(("authentik", &[][..]), |(p, r)| (p.as_str(), r));
+    let (program, rest) = argv
+        .split_first()
+        .map_or(("authentik", &[][..]), |(p, r)| (p.as_str(), r));
 
     #[cfg(feature = "core")]
     let inserted: Vec<&str> = if boot::invoked_as_ak(program) {
