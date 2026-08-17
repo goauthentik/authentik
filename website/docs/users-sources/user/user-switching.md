@@ -1,5 +1,6 @@
 ---
 title: User account switching
+sidebar_position: 6
 ---
 
 authentik can keep multiple user accounts signed in within the same browser. Users can switch between their user accounts from the User interface header.
