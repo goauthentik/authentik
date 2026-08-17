@@ -20,6 +20,9 @@ DROP_PATH_FILE=${3:-/dev/null}
 
 log() { echo "[prune] $*" >&2; }
 strip_comments() { sed -e 's/#.*//' -e '/^[[:space:]]*$/d' -e 's/[[:space:]]*$//' "$1"; }
+# Quote a path for use as a literal ERE. Without it the . in python3.14 matches
+# any character, and a path holding + (libstdc++) is read as a quantifier.
+ere_escape() { printf '%s' "$1" | sed 's/[][^$.*+?(){}|\]/\\&/g'; }
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
@@ -73,7 +76,7 @@ DROP_RE='^/usr/share/(man|doc|info|lintian|bug|common-licenses|locale)(/|$)|\.a$
 # A caller drop that matches nothing is a typo or a stale version pin
 MISSING_DROP=""
 while IFS= read -r p; do
-    esc="^${p//\//\\/}"
+    esc="^$(ere_escape "$p")"
     grep -qE "$esc" "$LIST" || MISSING_DROP="$MISSING_DROP $p"
     DROP_RE="$DROP_RE|$esc"
 done < <(strip_comments "$DROP_PATH_FILE")
