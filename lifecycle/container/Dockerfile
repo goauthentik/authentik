@@ -60,7 +60,8 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:f18dbc487a2c3148b62e46c394445aa87189861bca262e095496dca5b1f0ae39 AS rust-toolchain
+# TEMPORARY: pinned to goauthentik/fips#178 (runtime/dev split). Revert before merge.
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:6a38b52d092230d42fc91db92bf67ab1e17da4f1272d8d1c9efeaa305bfd78d8 AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -83,7 +84,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.12.3@sha256:2d890623d310b57771ce840f0da5eed5fc6d657da05ffaa45d82797b53fa3abc AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:a9a6b8f507ef9602c6fa294d4917b4ad6661f6aa04507cb1a535db9967a4ef4f AS python-base
+# TEMPORARY: pinned to goauthentik/fips#178 (runtime/dev split). Revert before merge.
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:f72f3a0d40ca1bf289384bd0974ed7907199007f2da2ab67bd8ef3a4e306e52a AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
