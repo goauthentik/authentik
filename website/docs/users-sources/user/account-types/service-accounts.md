@@ -44,7 +44,7 @@ To create a service account:
 2. Click **New User**, and then select **Service Account**.
 3. Configure the following settings:
     - **Username**: the primary identifier for the service account. This value is used as the username for app-password authentication.
-    - **Create Group** (_optional_): creates a group with the same name as the service account and adds the service account to it. This can be useful when you want to grant access through group membership.
+    - **Create group** (_optional_): creates a group with the same name as the service account and adds the service account to it. This can be useful when you want to grant access through group membership.
     - **Expiring**: controls whether the generated app password expires.
     - **Expires on**: sets the expiration date for the generated app password. If no date is provided, the default is 360 days.
 4. Click **Next**.
