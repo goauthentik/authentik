@@ -1,5 +1,6 @@
 ---
 title: Token exchange
+sidebar_position: 2
 ---
 
 Token exchange allows a client to exchange a token it already holds for a new token issued by an authentik provider. Token exchange is defined by [RFC 8693](https://datatracker.ietf.org/doc/html/rfc8693), whose abstract states:
