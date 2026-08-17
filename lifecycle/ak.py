@@ -8,7 +8,7 @@ In a development checkout there may be no compiled binary, so:
 
   * server, worker, allinone and healthcheck go through `cargo run -- boot`
   * dump_config goes straight to the config loader, which does not boot Django
-  * every other command is a Django management command and runs directly without waiting for a Rust build
+  * every other command is a Django management command and runs without waiting for a Rust build
 """
 
 import os
