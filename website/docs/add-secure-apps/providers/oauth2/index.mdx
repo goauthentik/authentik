@@ -220,10 +220,16 @@ This behavior does not apply to special scopes because they are not configurable
 - `email`: Includes the user's email address.
 - `entitlements`: Includes application entitlement data.
 - `offline_access`: Indicates that the application is requesting a refresh token.
+- `bound_key`: Requests an ID token bound to a client-held key using [OpenID Connect Key Binding](https://openid.github.io/connect-key-binding/main.html) and Demonstrating Proof of Possession (DPoP).
+
+:::info `bound_key` scope
+The `bound_key` scope applies OpenID Connect Key Binding to the ID token. It does not bind the access token to the client's key.
+:::
 
 ### authentik scopes
 
 - `goauthentik.io/api`: Grants access to the authentik API on behalf of the user.
+- `goauthentik.io/oidc/dcr`: Allows the client to register new OAuth 2.0 clients using [Dynamic Client Registration](./dynamic-client-registration.mdx).
 
 ### GitHub compatibility scopes
 
