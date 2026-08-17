@@ -12,11 +12,8 @@ A typical use case involves a service calling another service on behalf of a use
 authentik supports both token exchange modes defined by RFC 8693:
 
 - **Impersonation**: When the request contains only a subject token, the issued token identifies the user represented by that token and does not record an acting party.
-- **Delegation**, also known as on-behalf-of (OBO) token exchange: When the request also contains an actor token, the issued token identifies the user as its subject and records the authentik Actor that represents the acting party.
+- **Delegation**, also known as on-behalf-of (OBO) token exchange :ak-version[2026.8]: When the request also contains an actor token, the issued token identifies the user as its subject and records the authentik Actor that represents the acting party.
 
-:::info
-Delegation and on-behalf-of token exchange are available in authentik 2026.8 and later.
-:::
 
 ## Requirements
 
