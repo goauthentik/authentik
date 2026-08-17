@@ -202,9 +202,9 @@
         "yaml": "^2.9.0"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.28.1",
-        "@esbuild/linux-arm64": "^0.28.1",
-        "@esbuild/linux-x64": "^0.28.1",
+        "@esbuild/darwin-arm64": "^0.28.2",
+        "@esbuild/linux-arm64": "^0.28.2",
+        "@esbuild/linux-x64": "^0.28.2",
         "@goauthentik/prettier-config-dev": "link:../packages/prettier-config",
         "@rollup/rollup-darwin-arm64": "^4.62.4",
         "@rollup/rollup-linux-arm64-gnu": "^4.62.4",
