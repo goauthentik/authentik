@@ -1,0 +1,26 @@
+---
+title: Account types
+description: "Choose between internal users, external users, service accounts, and agent accounts."
+sidebar_position: 2
+---
+
+authentik supports several account types that represent people and machine identities. The account type determines how an account is created, how it authenticates, and how it is used.
+
+The available account types are:
+
+- [**Internal users**](./internal-users.md): human users whose accounts are created and managed in authentik.
+- [**External users**](./external-users.md): human users who typically authenticate to a single application and cannot access the authentik application dashboard.
+- [**Service accounts**](./service-accounts.md): non-human identities created by an administrator for integrations and automation.
+- [**Internal service accounts**](./service-accounts.md): non-human identities created and managed by authentik for internal components. They can not be created by administrators.
+- [**Agent accounts**](./agent-accounts.md): non-human identities that act on behalf of a parent user.
+
+## Choose an account type
+
+Use the following table to choose an account type:
+
+| Requirement                                                                | Account type                             |
+| -------------------------------------------------------------------------- | ---------------------------------------- |
+| A user that needs access to the application dashboard                      | [Internal user](./internal-users.md)     |
+| A user that does not need access to the application dashboard              | [External user](./external-users.md)     |
+| An administrator needs a machine identity for an integration or automation | [Service account](./service-accounts.md) |
+| An integration needs to act on behalf of a specific user                   | [Agent account](./agent-accounts.md)     |
