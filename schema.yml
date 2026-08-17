@@ -5929,6 +5929,11 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
