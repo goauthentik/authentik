@@ -15,7 +15,7 @@ Submitted values are written to `prompt_data` in the flow context and can be con
 ### Stage options
 
 - **Fields**: the ordered set of prompt definitions included in the stage.
-- **Validation policies**: optional policies evaluated after submission to validate the entered data.
+- **Validation Policies**: optional policies evaluated after submission to validate the entered data.
 
 ### Prompt field types
 

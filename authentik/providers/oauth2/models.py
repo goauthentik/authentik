@@ -825,7 +825,7 @@ class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.enterprise.providers.oauth2.api import (
+        from authentik.providers.oauth2.api.dcr import (
             OAuth2DynamicClientRegistrationSerializer,
         )
 

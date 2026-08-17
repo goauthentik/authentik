@@ -39,8 +39,8 @@ To support the integration of Twitch with authentik, create a Twitch OAuth sourc
     - **Select type**: select **Twitch OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug that must match the slug used in the Twitch `OAuth Redirect URLs` field (e.g. `twitch`), and set the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: `<client_ID>`
-            - **Consumer Secret**: `<client_secret>`
+            - **Consumer key**: `<client_ID>`
+            - **Consumer secret**: `<client_secret>`
             - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish** to save your settings.
 

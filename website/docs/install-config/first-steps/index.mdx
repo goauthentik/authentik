@@ -90,7 +90,7 @@ Every application that you add to authentik requires a provider, which is used t
           least one binding passes, or when no bindings are configured. The **All** mode requires
           every binding on the application to pass.
     - **UI Settings**: optional UI settings that are displayed about the application, including the launch URL, and three settings to display extra information about the application on the **Application Dashboard** page: an optional icon, the publisher of the application, and a brief description.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Choose a Provider Type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**:
     - **Name**: Provide a name (or accept the auto-provided name).
     - **Authorization flow**: Select the default `implicit` authorization flow to use for this provider.
@@ -109,7 +109,7 @@ Every application that you add to authentik requires a provider, which is used t
     - **Logout Method**: set to `Front-channel`.
         - <strong className="tip">TIP</strong>: With OAuth2, front-channel logout is considered the
           default because most applications (including Grafana) do not support back-channel logout.
-    - **Signing key**: select any available signing key.
+    - **Signing Key**: select any available signing key.
         - <strong className="tip">TIP</strong>: authentik generates a key that you can use, called
           the `authentik Self-signed Certificate`, if you do not have a specific signing key for an
           application.

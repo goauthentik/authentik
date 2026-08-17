@@ -59,6 +59,7 @@ If you want Cisco FMC to assign user roles from SAML attributes, create a SAML p
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Cisco FMC.
+    - Expand **UI settings** and set the **Launch URL** to `https://fmc.company/sso/saml/login`. Click `Next`.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://fmc.company/saml/acs`.

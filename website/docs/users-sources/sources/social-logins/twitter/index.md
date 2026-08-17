@@ -41,8 +41,8 @@ To support the integration of X with authentik, you need to create a Twitter OAu
     - **Select type**: select **Twitter OAuth Source** as the source type.
     - **Create OAuth Source**: provide a name, a slug that must match the slug used in the X `Callback URI / Redirect URL` field (e.g. `x`), and set the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: Enter the Client ID from the X Developer Portal.
-            - **Consumer Secret**: Enter the Client Secret from the X Developer Portal.
+            - **Consumer key**: Enter the Client ID from the X Developer Portal.
+            - **Consumer secret**: Enter the Client Secret from the X Developer Portal.
             - **Scopes** _(optional)_: define any further access scopes.
 3. Click **Finish**.
 

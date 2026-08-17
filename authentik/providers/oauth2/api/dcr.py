@@ -3,13 +3,12 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.utils import ModelSerializer
-from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.providers.oauth2.models import (
     OAuth2DynamicClientRegistration,
 )
 
 
-class OAuth2DynamicClientRegistrationSerializer(EnterpriseRequiredMixin, ModelSerializer):
+class OAuth2DynamicClientRegistrationSerializer(ModelSerializer):
     """Serializer for OAuth2DynamicClientRegistration"""
 
     class Meta:

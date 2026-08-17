@@ -70,8 +70,8 @@ To support the integration of Google with authentik, you need to create a Google
     - **Select type**: select **Google OAuth Source** as the source type.
     - **Create Google OAuth Source**: provide a name, a slug that must match the slug used in the Google `Authorized redirect URI` field (e.g. `google`), and set the following required configurations:
         - **Protocol settings**
-            - **Consumer Key**: `<client_ID>`
-            - **Consumer Secret**: `<client_secret>`
+            - **Consumer key**: `<client_ID>`
+            - **Consumer secret**: `<client_secret>`
             - **Scopes** _(optional)_: define any additional access scopes.
 3. Click **Finish** to save your settings.
 
@@ -106,7 +106,7 @@ return False
 
 5. Click **Finish**. You can now bind this policy to the chosen enrollment flow of the Google OAuth source.
 6. Navigate to **Flows and Stages** > **Flows** and click the name of the flow in question.
-7. Open the **Stage Bindings** tab, expand the policies bound to the first stage and click **Bind existing Policy/Group/User**.
+7. Open the **Stage Bindings** tab, expand the policies bound to the first stage and click **Bind existing policy/group/user**.
 8. Select the policy that you previously created and click **Create Policy Binding**.
 
 :::note
