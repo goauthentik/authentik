@@ -27,7 +27,7 @@ dependencies = [
   "django-tenants==3.13.0",
   "django==5.2.17",
   "djangoql==0.19.1",
-  "djangorestframework==3.17.2",
+  "djangorestframework==3.18.0",
   "docker==7.2.0",
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",
