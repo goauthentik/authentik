@@ -84,7 +84,6 @@ from authentik.core.models import (
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
     Group,
-    Session,
     Token,
     TokenIntents,
     User,
@@ -1126,11 +1125,3 @@ class UserViewSet(
                 )
             }
         )
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        response = super().partial_update(request, *args, **kwargs)
-        instance: User = self.get_object()
-        if not instance.is_active:
-            Session.objects.filter(authenticatedsession__user=instance).delete()
-            LOGGER.debug("Deleted user's sessions", user=instance.username)
-        return response
