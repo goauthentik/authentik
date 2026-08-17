@@ -164,6 +164,10 @@ export interface EndpointsAgentsConnectorsAuthFedCreateRequest {
     device: string;
 }
 
+export interface EndpointsAgentsConnectorsAuthIaCreateRequest {
+    loginHint?: string;
+}
+
 export interface EndpointsAgentsConnectorsCheckInCreateRequest {
     deviceFactsRequest?: DeviceFactsRequest;
 }
@@ -604,8 +608,14 @@ export class EndpointsApi extends runtime.BaseAPI {
     /**
      * Creates request options for endpointsAgentsConnectorsAuthIaCreate without sending the request
      */
-    async endpointsAgentsConnectorsAuthIaCreateRequestOpts(): Promise<runtime.RequestOpts> {
+    async endpointsAgentsConnectorsAuthIaCreateRequestOpts(
+        requestParameters: EndpointsAgentsConnectorsAuthIaCreateRequest,
+    ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
+
+        if (requestParameters["loginHint"] != null) {
+            queryParameters["login_hint"] = requestParameters["loginHint"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -623,9 +633,11 @@ export class EndpointsApi extends runtime.BaseAPI {
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async endpointsAgentsConnectorsAuthIaCreateRaw(
+        requestParameters: EndpointsAgentsConnectorsAuthIaCreateRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<runtime.ApiResponse<AgentAuthenticationResponse>> {
-        const requestOptions = await this.endpointsAgentsConnectorsAuthIaCreateRequestOpts();
+        const requestOptions =
+            await this.endpointsAgentsConnectorsAuthIaCreateRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
@@ -637,9 +649,13 @@ export class EndpointsApi extends runtime.BaseAPI {
      * Mixin to add a used_by endpoint to return a list of all objects using this object
      */
     async endpointsAgentsConnectorsAuthIaCreate(
+        requestParameters: EndpointsAgentsConnectorsAuthIaCreateRequest = {},
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AgentAuthenticationResponse> {
-        const response = await this.endpointsAgentsConnectorsAuthIaCreateRaw(initOverrides);
+        const response = await this.endpointsAgentsConnectorsAuthIaCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
         return await response.value();
     }
 

@@ -111,7 +111,7 @@ authentik acts as both a service provider (SP) to Google and an identity provide
     - Set **Name** to `Google Workspace`.
     - Set **Slug** to `google` (must match the slug used in Google Workspace ACS URL).
     - Set **SSO URL** to the SSO URL from Google Workspace.
-    - Set **Issuer** to `https://authentik.company/source/saml/<google-slug>/metadata/`.
+    - Set **Issuer override** to `https://authentik.company/source/saml/<google-slug>/metadata/` (optional; the source defaults to this value).
     - Set **Verification Certificate** to the Google Workspace certificate you uploaded earlier.
       :::warning Signed response required
       These verification settings expect Google Workspace to sign the SAML response. Make sure **Signed response** is enabled in the Google Workspace SAML app.

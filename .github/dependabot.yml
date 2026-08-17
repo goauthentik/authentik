@@ -20,6 +20,13 @@ updates:
       - dependencies
     cooldown:
       default-days: 3
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action/*"
+      regclient:
+        patterns:
+          - "regclient/actions//*"
 
   #endregion
 

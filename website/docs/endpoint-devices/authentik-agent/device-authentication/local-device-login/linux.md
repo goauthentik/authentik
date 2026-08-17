@@ -33,7 +33,7 @@ When configured correctly, when you log in you should see a prompt for **authent
 Local device login requires the authenticating user to have access to the device. Access is controlled via [device access groups](../device-access-groups.mdx), which always apply. On Enterprise, direct device bindings for users, groups, or policies also affect access. Without an appropriately configured device access group or direct binding, **all login attempts are denied**.
 
 1. In the Admin interface, navigate to **Endpoint Devices** > **Device access groups** and click **New Device Access Group**.
-2. Provide a **Group name** (e.g. `linux-devices`) and click **Create Device Access Group**.
+2. Provide a **Group Name** (e.g. `linux-devices`) and click **Create Device Access Group**.
 3. Expand the newly created device access group and click **Bind existing Policy / Group / User**.
 4. Select **Group** and choose a group that contains the users who should be allowed to log in to the device. Alternatively, bind a specific **User** or a **Policy**.
 5. Click **Create**.
@@ -42,7 +42,7 @@ Local device login requires the authenticating user to have access to the device
 8. Click **Update**.
 
 :::info
-You can also assign a device access group during enrollment by selecting a **Device group** when creating the enrollment token.
+You can also assign a device access group during enrollment by selecting a **Device Group** when creating the enrollment token.
 :::
 
 ## Known issues
