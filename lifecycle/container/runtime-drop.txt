@@ -1,0 +1,18 @@
+# Paths removed again after the keep list is applied.
+# A distroless image must not ship a package installer or interactive tooling.
+/usr/local/lib/python3.14/site-packages/pip
+/usr/local/lib/python3.14/site-packages/pip-
+/usr/local/lib/python3.14/ensurepip
+/usr/local/lib/python3.14/idlelib
+/usr/local/lib/python3.14/tkinter
+/usr/local/lib/python3.14/turtledemo
+/usr/local/lib/python3.14/pydoc_data
+/usr/local/bin/pip
+/usr/local/bin/idle
+/usr/local/bin/pydoc
+/usr/local/bin/python-config
+/usr/local/bin/python3-config
+/usr/local/bin/python3.14-config
+/usr/local/bin/xmlsec1-config
+/usr/local/bin/xmlsec1
+/usr/local/lib/xmlsec1Conf.sh

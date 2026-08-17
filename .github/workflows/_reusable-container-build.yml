@@ -12,6 +12,10 @@ on:
         description: "Name of the image to build"
         type: string
         required: true
+      image-target:
+        description: "Dockerfile stage to build. Empty builds the last stage."
+        type: string
+        default: ""
       image-dockerfile:
         description: "Path to the Dockerfile to build from"
         type: string
@@ -39,6 +43,7 @@ jobs:
       image-name: "${{ inputs.image-name }}"
       image-arch: amd64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-target: "${{ inputs.image-target }}"
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
@@ -51,6 +56,7 @@ jobs:
       image-name: "${{ inputs.image-name }}"
       image-arch: arm64
       image-dockerfile: "${{ inputs.image-dockerfile }}"
+      image-target: "${{ inputs.image-target }}"
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
