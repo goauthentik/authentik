@@ -3,13 +3,13 @@
 use std::collections::BTreeMap;
 use std::ffi::{CString, OsStr, OsString};
 use std::fs;
-use std::os::unix::ffi::OsStringExt;
-use std::os::unix::fs::{MetadataExt, PermissionsExt};
+use std::os::unix::ffi::OsStringExt as _;
+use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use argh::FromArgs;
-use eyre::{Report, Result, WrapErr, eyre};
+use eyre::{Report, Result, WrapErr as _, eyre};
 use nix::fcntl::{AT_FDCWD, AtFlags};
 use nix::unistd::{Gid, Group, Uid, User, execve, execvpe, getuid, setgid, setgroups, setuid};
 use tracing::{info, warn};
@@ -51,19 +51,19 @@ fn resolve_target(args: &[String]) -> Vec<String> {
     let python = venv_python().to_string_lossy().into_owned();
     match args.first().map(String::as_str) {
         Some(cmd) if NATIVE_COMMANDS.contains(&cmd) => {
-            let mut argv = vec![AUTHENTIK_BIN.to_owned()];
-            argv.extend_from_slice(args);
-            argv
+            let mut target = vec![AUTHENTIK_BIN.to_owned()];
+            target.extend_from_slice(args);
+            target
         }
         Some("manage") => {
-            let mut argv = vec![python, "-m".to_owned(), "manage".to_owned()];
-            argv.extend_from_slice(&args[1..]);
-            argv
+            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
+            target.extend_from_slice(&args[1..]);
+            target
         }
         _ => {
-            let mut argv = vec![python, "-m".to_owned(), "manage".to_owned()];
-            argv.extend_from_slice(args);
-            argv
+            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
+            target.extend_from_slice(args);
+            target
         }
     }
 }
@@ -169,12 +169,12 @@ fn docker_socket_gid() -> Option<Gid> {
 
 /// Fix up ownership while still root, then exec the target as `authentik`.
 fn run_as_authentik(args: &[String], prometheus_dir: &str) -> Result<()> {
-    let argv = resolve_target(args);
+    let target = resolve_target(args);
     let mut env = vec![("PROMETHEUS_MULTIPROC_DIR", prometheus_dir.to_owned())];
 
     if !getuid().is_root() {
         info!("not running as root, disabling permission fixes");
-        return exec(&argv, &env);
+        return exec(&target, &env);
     }
 
     let user = User::from_name(AK_USER)?.ok_or_else(|| eyre!("user {AK_USER} does not exist"))?;
@@ -214,7 +214,7 @@ fn run_as_authentik(args: &[String], prometheus_dir: &str) -> Result<()> {
         return Err(eyre!("failed to drop privileges to {AK_USER}"));
     }
 
-    exec(&argv, &env)
+    exec(&target, &env)
 }
 
 fn wait_for_db(prometheus_dir: &str) -> Result<()> {
@@ -255,9 +255,9 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
             let Some(shell) = find_shell() else {
                 return Err(no_shell_error(command));
             };
-            let mut argv = vec![shell.to_string_lossy().into_owned()];
-            argv.extend_from_slice(&args[1..]);
-            exec(&argv, &env)
+            let mut target = vec![shell.to_string_lossy().into_owned()];
+            target.extend_from_slice(&args[1..]);
+            exec(&target, &env)
         }
         "test-all" => {
             if find_shell().is_none() {
@@ -269,17 +269,21 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
                 add_mode(Path::new("/root"), 0o777)?;
             }
             wait_for_db(&prometheus_dir)?;
-            let argv = ["manage", "test", "authentik"].map(str::to_owned).to_vec();
-            run_as_authentik(&argv, &prometheus_dir)
+            let target = ["manage", "test", "authentik"].map(str::to_owned).to_vec();
+            run_as_authentik(&target, &prometheus_dir)
         }
         "dump_config" => {
             let python = venv_python().to_string_lossy().into_owned();
-            let mut argv = vec![python, "-m".to_owned(), "authentik.lib.config".to_owned()];
-            argv.extend_from_slice(&args[1..]);
-            exec(&argv, &env)
+            let mut target = vec![python, "-m".to_owned(), "authentik.lib.config".to_owned()];
+            target.extend_from_slice(&args[1..]);
+            exec(&target, &env)
         }
+        #[expect(
+            clippy::infinite_loop,
+            reason = "the debug entrypoint idles so a user can exec into the container"
+        )]
         "debug" => loop {
-            std::thread::sleep(std::time::Duration::from_secs(3600));
+            std::thread::sleep(std::time::Duration::from_hours(1));
         },
         "allinone" | "server" | "worker" => {
             wait_for_db(&prometheus_dir)?;
@@ -288,23 +292,23 @@ pub(crate) fn run(cli: &Cli) -> Result<()> {
         "healthcheck" => {
             // `authentik healthcheck` takes the mode as a positional argument.
             // The server writes it to $TMPDIR/authentik-mode on startup.
-            let mut argv = args.clone();
-            if argv.len() == 1 {
+            let mut target = args.clone();
+            if target.len() == 1 {
                 match fs::read_to_string(tmpdir().join("authentik-mode")) {
-                    Ok(mode) if !mode.trim().is_empty() => argv.push(mode.trim().to_owned()),
+                    Ok(mode) if !mode.trim().is_empty() => target.push(mode.trim().to_owned()),
                     _ => warn!(
                         "no mode file yet, the healthcheck will fail until the server writes one"
                     ),
                 }
             }
-            run_as_authentik(&argv, &prometheus_dir)
+            run_as_authentik(&target, &prometheus_dir)
         }
         _ => {
             wait_for_db(&prometheus_dir)?;
             let python = venv_python().to_string_lossy().into_owned();
-            let mut argv = vec![python, "-m".to_owned(), "manage".to_owned()];
-            argv.extend_from_slice(args);
-            exec(&argv, &env)
+            let mut target = vec![python, "-m".to_owned(), "manage".to_owned()];
+            target.extend_from_slice(args);
+            exec(&target, &env)
         }
     }
 }

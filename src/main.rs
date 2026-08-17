@@ -57,6 +57,11 @@ pub(crate) struct AllInOne {}
 /// The container ships `/lifecycle/ak` as a symlink to this binary, because the
 /// documented management commands are all invoked as `ak <command>`. When we
 /// are called under that name, insert the `boot` subcommand.
+#[expect(
+    clippy::print_stdout,
+    clippy::exit,
+    reason = "argh reports --help and --version as an EarlyExit that must be printed"
+)]
 fn parse_args() -> Cli {
     let argv: Vec<String> = std::env::args().collect();
     let (program, rest) = argv
@@ -84,7 +89,7 @@ fn main() -> Result<()> {
     let tracing_crude = ak_tracing::install_crude();
     info!(version = authentik_full_version(), "authentik is starting");
 
-    let cli: Cli = parse_args();
+    let cli = parse_args();
 
     match &cli.command {
         // The entrypoint execs away, so handle it before anything is set up.
