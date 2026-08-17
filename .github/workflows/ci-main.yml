@@ -507,6 +507,7 @@ jobs:
       matrix:
         name:
           - server
+          - server-debug
           - proxy
           - ldap
           - radius

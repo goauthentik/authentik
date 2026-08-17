@@ -109,7 +109,7 @@ fn find_shell() -> Option<PathBuf> {
 fn no_shell_error(command: &str) -> Report {
     eyre!(
         "'{command}' is not available in the production image, which ships no \
-         shell. Use the -debug image tag: it is the same build with apt, a \
+         shell. Use the server-debug image: it is the same build with apt, a \
          shell and the dev dependency group."
     )
 }
