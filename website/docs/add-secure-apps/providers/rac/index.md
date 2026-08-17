@@ -1,5 +1,7 @@
 ---
 title: Remote Access Control (RAC) Provider
+sidebar_position: 8
+sidebar_label: "RAC (Remote Access Control) Provider"
 ---
 
 The RAC provider allows users to access remote Windows, macOS, and Linux machines via [RDP](https://en.wikipedia.org/wiki/Remote_Desktop_Protocol)/[SSH](https://en.wikipedia.org/wiki/Secure_Shell)/[VNC](https://en.wikipedia.org/wiki/Virtual_Network_Computing). Just like other providers in authentik, the RAC provider is associated with an application that appears on a user's **Application Dashboard** page.
@@ -57,7 +59,7 @@ RAC property mappings allow you to configure the following settings:
 
 - **Username**: the username for the remote machine
 - **Password**: the password for the remote machine
-- **Ignore Server certificate**: set whether the validity of the returned RDP server certificate will be ignored
+- **Ignore server certificate**: set whether the validity of the returned RDP server certificate will be ignored
 - **Enable wallpaper**: enable/disable the desktop wallpaper of the RDP server
 - **Enable font-smoothing**: enable/disable font-smoothing (anti-aliasing) on the RDP server
 - **Enable full window dragging**: enable/disable whether the full content of a window is visible while moving it on the RDP server

@@ -6,7 +6,7 @@ import "#components/ak-text-input";
 import "#components/ak-radio-input";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
 
@@ -31,23 +31,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-user-write-form")
 export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
-    loadInstance(pk: string): Promise<UserWriteStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: UserWriteStage): Promise<UserWriteStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
-                stageUuid: this.instance.pk || "",
-                userWriteStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-            userWriteStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesUserWriteRetrieve({ stageUuid }),
+        create: (userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteCreate({ userWriteStageRequest }),
+        update: (stageUuid: string, userWriteStageRequest: UserWriteStage) =>
+            aki(StagesApi).stagesUserWriteUpdate({ stageUuid, userWriteStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <div>
@@ -170,9 +160,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
-                                    args,
-                                );
+                                const groups = await aki(CoreApi).coreGroupsList(args);
                                 return groups.results;
                             }}
                             .renderElement=${(group: Group): string => {

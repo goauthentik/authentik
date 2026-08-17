@@ -8,7 +8,7 @@ import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { SlottedTemplateResult } from "#elements/types";
@@ -31,7 +31,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
     public providerID: number | null = null;
 
     protected override loadInstance(pk: string): Promise<Endpoint> {
-        return new RacApi(DEFAULT_CONFIG).racEndpointsRetrieve({
+        return aki(RacApi).racEndpointsRetrieve({
             pbmUuid: pk,
         });
     }
@@ -50,12 +50,12 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             data.provider = this.instance.provider;
         }
         if (this.instance) {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsPartialUpdate({
+            return aki(RacApi).racEndpointsPartialUpdate({
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
         }
-        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+        return aki(RacApi).racEndpointsCreate({
             endpointRequest: data,
         });
     }

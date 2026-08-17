@@ -2,13 +2,13 @@ import "#components/ak-number-input";
 import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/ak-search-select-ez";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import {
     createPassFailOptions,
     PolicyBindingCheckTarget,
@@ -19,6 +19,7 @@ import { groupBy } from "#common/utils";
 import { ISearchSelectConfig } from "#elements/forms/SearchSelect/ak-search-select-ez";
 import { type SearchSelectBase } from "#elements/forms/SearchSelect/SearchSelect";
 import { withQuery } from "#elements/forms/SearchSelect/utils";
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import { type NavigableButton, type WizardButton } from "#components/ak-wizard/shared";
 
@@ -100,7 +101,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.Policy:
                 return {
                     fetchObjects: async (query) => {
-                        const policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList(
+                        const policies = await aki(PoliciesApi).policiesAllList(
                             withQuery(query, {
                                 ordering: "name",
                             }),
@@ -117,7 +118,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.Group:
                 return {
                     fetchObjects: async (query) => {
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                        const groups = await aki(CoreApi).coreGroupsList(
                             withQuery(query, {
                                 ordering: "name",
                                 includeUsers: false,
@@ -133,7 +134,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
             case PolicyBindingCheckTarget.User:
                 return {
                     fetchObjects: async (query) => {
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(
+                        const users = await aki(CoreApi).coreUsersList(
                             withQuery(query, {
                                 ordering: "username",
                             }),
@@ -176,8 +177,8 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep<Poli
                     <div class="pf-c-card__body">
                         <ak-toggle-group
                             value=${this.policyGroupUser}
-                            @ak-toggle=${(ev: CustomEvent<{ value: PolicyBindingCheckTarget }>) => {
-                                this.policyGroupUser = ev.detail.value;
+                            @ak-toggle=${(ev: ToggleGroupEvent<PolicyBindingCheckTarget>) => {
+                                this.policyGroupUser = ev.value;
                             }}
                         >
                             <option value=${PolicyBindingCheckTarget.Policy}>

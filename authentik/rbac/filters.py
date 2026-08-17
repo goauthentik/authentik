@@ -1,5 +1,7 @@
 """RBAC API Filter"""
 
+from hmac import compare_digest
+
 from django.conf import settings
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -103,7 +105,7 @@ class SecretKeyFilter(DjangoFilterBackend):
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
         auth_header = get_authorization_header(request)
         token = validate_auth(auth_header)
-        if token and token == settings.SECRET_KEY:
+        if token and compare_digest(token, settings.SECRET_KEY):
             return queryset
         queryset = ObjectFilter().filter_queryset(request, queryset, view)
         return super().filter_queryset(request, queryset, view)

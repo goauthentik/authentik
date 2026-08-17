@@ -3,7 +3,7 @@ import "#elements/forms/ModalForm";
 import "#components/sync/SyncObjectForm";
 import "#admin/common/ak-flow-search/ak-flow-search-no-default";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { formatUserDisplayName } from "#common/users";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
@@ -39,7 +39,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
                     .provider=${this.providerId}
                     model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
-                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                        return aki(ProvidersApi).providersScimSyncObjectCreate(data);
                     }}
                     slot="form"
                 >
@@ -55,7 +55,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             object-label=${msg("SCIM User(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: SCIMProviderUser) => {
-                return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersDestroy({
+                return aki(ProvidersApi).providersScimUsersDestroy({
                     id: item.id,
                 });
             }}
@@ -67,7 +67,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<SCIMProviderUser>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersScimUsersList({
+        return aki(ProvidersApi).providersScimUsersList({
             ...(await this.defaultEndpointConfig()),
             providerId: this.providerId,
         });

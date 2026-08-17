@@ -180,7 +180,7 @@ Full example:
 
 ```yaml
 required: !Condition [
-    AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
+    AND, # Valid modes are: EQ, NEQ, AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
     !Find [authentik_flows.flow, [slug, default-password-change],
     "My string",
@@ -361,8 +361,8 @@ value_in_mapping: !AtIndex [{ "foo": "bar", "other": "value" }, "foo"] # Resolve
 Example with default value:
 
 ```yaml
-default_value: !AtIndex [["first"], 100, "default"]  # Resolves to "default"
-default_value: !AtIndex [["first"], 100]  # Throws an error
+default_value: !AtIndex [["first"], 100, "default"] # Resolves to "default"
+default_value: !AtIndex [["first"], 100] # Throws an error
 ```
 
 Resolves to the value at a specific index in a sequence or a mapping.

@@ -1,7 +1,7 @@
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -21,7 +21,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
     intent: IntentEnum = IntentEnum.Api;
 
     loadInstance(pk: string): Promise<Token> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+        return aki(CoreApi).coreTokensRetrieve({
             identifier: pk,
         });
     }
@@ -35,13 +35,13 @@ export class UserTokenForm extends ModelForm<Token, string> {
     async send(data: Token): Promise<Token> {
         if (this.instance) {
             data.intent = this.instance.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
+            return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
         data.intent = this.intent;
-        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+        return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
     }

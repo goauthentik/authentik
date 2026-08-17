@@ -6,7 +6,8 @@ import "#elements/forms/ModalForm";
 import "#user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
@@ -38,7 +39,7 @@ export class MFADevicesPage extends Table<Device> {
     protected override emptyStateMessage = msg("No MFA devices enrolled.");
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
-        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
+        const devices = await aki(AuthenticatorsApi).authenticatorsAllList();
         return createPaginatedResponse(devices);
     }
 
@@ -104,7 +105,7 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
-        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const api = aki(AuthenticatorsApi);
         const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":

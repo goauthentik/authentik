@@ -8,7 +8,7 @@ import "#admin/endpoints/devices/facts/DeviceGroupTable";
 import "#admin/endpoints/devices/DeviceEvents";
 import "#elements/Tabs";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -48,7 +48,7 @@ export class DeviceViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFStack, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsDevicesRetrieve({ deviceUuid: id })
             .then((dev) => {
                 this.device = dev;
@@ -70,11 +70,11 @@ export class DeviceViewPage extends AKElement {
             header: this.device?.name
                 ? msg(str`Device ${this.device?.name}`)
                 : msg("Loading device..."),
-            description: this.device?.facts.data.os
+            description: this.device?.facts?.data.os
                 ? [
-                      this.device.facts.data.os?.name ||
-                          osFamilyToLabel(this.device.facts.data.os.family),
-                      this.device.facts.data.os?.version,
+                      this.device.facts?.data.os?.name ||
+                          osFamilyToLabel(this.device.facts?.data.os.family),
+                      this.device.facts?.data.os?.version,
                   ].join(" ")
                 : "-",
             icon: "fa fa-laptop",
@@ -83,7 +83,7 @@ export class DeviceViewPage extends AKElement {
 
     renderDetails() {
         const _rootDisk =
-            this.device?.facts.data.disks?.filter(
+            this.device?.facts?.data.disks?.filter(
                 (d) => d.mountpoint === "/" || d.mountpoint === "C:",
             ) || [];
         let rootDisk: Disk | undefined = undefined;
@@ -97,22 +97,25 @@ export class DeviceViewPage extends AKElement {
                     ${renderDescriptionList(
                         [
                             [msg("Name"), this.device?.name],
-                            [msg("Hostname"), this.device?.facts.data.network?.hostname ?? "-"],
-                            [msg("Serial number"), this.device?.facts.data.hardware?.serial ?? "-"],
+                            [msg("Hostname"), this.device?.facts?.data.network?.hostname ?? "-"],
+                            [
+                                msg("Serial number"),
+                                this.device?.facts?.data.hardware?.serial ?? "-",
+                            ],
                             [
                                 msg("Operating system"),
-                                this.device?.facts.data.os
+                                this.device?.facts?.data.os
                                     ? [
-                                          this.device?.facts.data.os?.name ||
-                                              osFamilyToLabel(this.device?.facts.data.os.family),
-                                          this.device?.facts.data.os?.version,
+                                          this.device?.facts?.data.os?.name ||
+                                              osFamilyToLabel(this.device?.facts?.data.os.family),
+                                          this.device?.facts?.data.os?.version,
                                       ].join(" ")
                                     : "-",
                             ],
                             [
                                 msg("Firewall enabled"),
                                 html`<ak-status-label
-                                    ?good=${this.device?.facts.data.network?.firewallEnabled}
+                                    ?good=${this.device?.facts?.data.network?.firewallEnabled}
                                 ></ak-status-label>`,
                             ],
                             [
@@ -145,22 +148,22 @@ export class DeviceViewPage extends AKElement {
                         [
                             [
                                 msg("Manufacturer"),
-                                this.device?.facts.data.hardware?.manufacturer ?? "-",
+                                this.device?.facts?.data.hardware?.manufacturer ?? "-",
                             ],
-                            [msg("Model"), this.device?.facts.data.hardware?.model ?? "-"],
+                            [msg("Model"), this.device?.facts?.data.hardware?.model ?? "-"],
                             [
                                 msg("CPU"),
-                                this.device?.facts.data.hardware?.cpuCount &&
-                                this.device?.facts.data.hardware?.cpuName
+                                this.device?.facts?.data.hardware?.cpuCount &&
+                                this.device?.facts?.data.hardware?.cpuName
                                     ? msg(
-                                          str`${this.device?.facts.data.hardware?.cpuCount} x ${this.device?.facts.data.hardware?.cpuName}`,
+                                          str`${this.device?.facts?.data.hardware?.cpuCount} x ${this.device?.facts?.data.hardware?.cpuName}`,
                                       )
                                     : "-",
                             ],
                             [
                                 msg("Memory"),
-                                this.device?.facts.data.hardware?.memoryBytes
-                                    ? getSize(this.device?.facts.data.hardware?.memoryBytes)
+                                this.device?.facts?.data.hardware?.memoryBytes
+                                    ? getSize(this.device?.facts?.data.hardware?.memoryBytes)
                                     : "-",
                             ],
                             [
@@ -227,7 +230,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-process-table
-            .items=${(this.device?.facts.data.processes || []).sort(trySortNumerical)}
+            .items=${(this.device?.facts?.data.processes || []).sort(trySortNumerical)}
         ></ak-endpoints-device-process-table>`;
     }
 
@@ -236,7 +239,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-users-table
-            .items=${(this.device?.facts.data.users || []).sort(trySortNumerical)}
+            .items=${(this.device?.facts?.data.users || []).sort(trySortNumerical)}
         ></ak-endpoints-device-users-table>`;
     }
 
@@ -245,7 +248,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-groups-table
-            .items=${(this.device?.facts.data.groups || []).sort(trySortNumerical)}
+            .items=${(this.device?.facts?.data.groups || []).sort(trySortNumerical)}
         ></ak-endpoints-device-groups-table>`;
     }
 
@@ -254,7 +257,7 @@ export class DeviceViewPage extends AKElement {
             return nothing;
         }
         return html`<ak-endpoints-device-software-table
-            .items=${(this.device?.facts.data.software || []).sort((a, b) =>
+            .items=${(this.device?.facts?.data.software || []).sort((a, b) =>
                 a.name.localeCompare(b.name),
             )}
         ></ak-endpoints-device-software-table>`;
@@ -281,6 +284,7 @@ export class DeviceViewPage extends AKElement {
                             <div class="pf-l-stack__item pf-c-card">
                                 <div class="pf-c-card__title">${msg("Users / Groups")}</div>
                                 <ak-bound-device-users-list
+                                    no-wizard
                                     .target=${this.device?.pbmUuid}
                                 ></ak-bound-device-users-list>
                             </div>

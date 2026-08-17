@@ -4,7 +4,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { groupBy } from "#common/utils";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -60,7 +60,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     async loadInstance(pk: string): Promise<FlowStageBinding> {
-        const binding = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsRetrieve({
+        const binding = await aki(FlowsApi).flowsBindingsRetrieve({
             fsbUuid: pk,
         });
         return binding;
@@ -87,7 +87,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsPartialUpdate({
+            return aki(FlowsApi).flowsBindingsPartialUpdate({
                 fsbUuid: this.instance.pk,
                 patchedFlowStageBindingRequest: data,
             });
@@ -95,7 +95,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
-        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
+        return aki(FlowsApi).flowsBindingsCreate({
             flowStageBindingRequest: data,
         });
     }
@@ -104,7 +104,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.pk) {
             return this.instance.order;
         }
-        const bindings = await new FlowsApi(DEFAULT_CONFIG).flowsBindingsList({
+        const bindings = await aki(FlowsApi).flowsBindingsList({
             target: this.targetPk || "",
         });
         const orders = bindings.results.map((binding) => binding.order);
@@ -139,7 +139,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList(args);
+                        const stages = await aki(StagesApi).stagesAllList(args);
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

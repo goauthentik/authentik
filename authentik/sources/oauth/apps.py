@@ -10,7 +10,6 @@ LOGGER = get_logger()
 
 AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.apple",
-    "authentik.sources.oauth.types.azure_ad",
     "authentik.sources.oauth.types.discord",
     "authentik.sources.oauth.types.entra_id",
     "authentik.sources.oauth.types.facebook",

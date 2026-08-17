@@ -6,7 +6,7 @@ import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/ak-status-label";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { IconEnrollmentTokenCopyButton } from "#elements/buttons/IconEnrollmentTokenCopyButton";
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -24,7 +24,10 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-endpoints-agent-enrollment-token-list")
 export class EnrollmentTokenListPage extends Table<EnrollmentToken> {
-    #api = new EndpointsApi(DEFAULT_CONFIG);
+    #api = aki(EndpointsApi);
+
+    public static override verboseName = msg("Enrollment Token");
+    public static override verboseNamePlural = msg("Enrollment Tokens");
 
     protected override searchEnabled = true;
     protected emptyStateMessage = msg("No enrollment tokens found for this connector.");

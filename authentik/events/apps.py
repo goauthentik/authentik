@@ -7,13 +7,6 @@ from authentik.lib.config import CONFIG, ENV_PREFIX
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
-# TODO: Deprecated metric - remove in 2024.2 or later
-GAUGE_TASKS = Gauge(
-    "authentik_system_tasks",
-    "System tasks and their status",
-    ["tenant", "task_name", "task_uid", "status"],
-)
-
 SYSTEM_TASK_TIME = Histogram(
     "authentik_system_tasks_time_seconds",
     "Runtime of system tasks",

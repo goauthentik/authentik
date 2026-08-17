@@ -12,7 +12,7 @@ import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
 import { SlottedTemplateResult } from "#elements/types";
@@ -51,7 +51,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     }
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
-        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await aki(AdminApi).adminSettingsUpdate({
             settingsRequest,
         });
 
@@ -75,6 +75,17 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
         const { settings } = this;
 
         return html`
+            <ak-text-input
+                name="baseUrl"
+                label=${msg("Base URL", { id: "settings.base-url.label" })}
+                value="${ifDefined(settings.baseUrl)}"
+                input-hint="code"
+                help=${msg(
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
+                    { id: "settings.base-url.description" },
+                )}
+            >
+            </ak-text-input>
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
@@ -277,7 +288,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(
-                    "Flags allow you to enable new functionality and behaviour in authentik early.",
+                    "Flags allow you to enable new functionality and behavior in authentik early.",
                 )}
             >
                 <div class="pf-c-form">
@@ -296,9 +307,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-switch-input
                         name="flags.coreDefaultAppAccess"
                         ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
-                        label=${msg("Require policies for application access")}
+                        label=${msg("Allow application access with no policies")}
                         help=${msg(
-                            "Configure if applications without any policy/group/user bindings should be accessible to any user.",
+                            "Applications with no policies bound can be accessed by any user..",
                         )}
                     >
                     </ak-switch-input>

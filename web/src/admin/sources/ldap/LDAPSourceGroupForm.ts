@@ -2,7 +2,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -30,14 +30,14 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
     }
 
     protected async loadInstance(pk: number): Promise<GroupLDAPSourceConnection> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapRetrieve({
+        return aki(SourcesApi).sourcesGroupConnectionsLdapRetrieve({
             id: pk,
         });
     }
 
     async send(data: GroupLDAPSourceConnection) {
         data.source = this.source?.pk || "";
-        return new SourcesApi(DEFAULT_CONFIG).sourcesGroupConnectionsLdapCreate({
+        return aki(SourcesApi).sourcesGroupConnectionsLdapCreate({
             groupLDAPSourceConnectionRequest: data,
         });
     }
@@ -52,7 +52,7 @@ export class LDAPSourceGroupForm extends ModelForm<GroupLDAPSourceConnection, nu
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        const groups = await aki(CoreApi).coreGroupsList(args);
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {

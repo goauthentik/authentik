@@ -1,6 +1,8 @@
 ---
 title: Single Logout (SLO)
 authentik_version: "2025.10.0"
+sidebar_position: 2
+sidebar_label: "Single Logout"
 ---
 
 Single Logout (SLO) is a security feature that logs users out of all active applications when they log out of authentik. It uses the OAuth2/OpenID Connect front-channel and back-channel logout specifications in combination with SAML's Single Logout specification.
@@ -82,7 +84,7 @@ By default, when a user logs out from an application (RP-initiated logout), only
 2. Navigate to **Flows and Stages** > **Flows**.
 3. Click `default-provider-invalidation-flow` to open the flow.
 4. Click the **Stage Bindings** tab.
-5. Click **Create or bind...** and select **Existing stage**.
+5. Click **Create or bind...** and select **Existing Stage**.
 6. In the **Stage** field, select `default-invalidation-logout` from the drop-down list.
 7. Configure any other settings, and then click **Create**.
 
@@ -96,7 +98,7 @@ If you need different logout behaviors for different applications, you can creat
 2. Add stages as needed:
     - Include a [User Logout stage](../../flows-stages/stages/user_logout/index.md) if you want full Single Logout.
     - Omit the User Logout stage if you only want to end the specific application session.
-3. When configuring a provider, select your custom flow in the **Invalidation flow** field.
+3. When configuring a provider, select your custom flow in the **Invalidation Flow** field.
 
 This allows you to configure full Single Logout only for sensitive applications while keeping the default behavior for others.
 
@@ -117,7 +119,7 @@ See the [SAML Single Logout documentation](../saml/saml_single_logout.md) for de
 
 See the [OIDC Front-channel and Back-channel logout documentation](../oauth2/frontchannel_and_backchannel_logout.mdx) for detailed instructions. You will need to:
 
-1. Configure the **logout URI** - the provider's logout endpoint
+1. Configure the **Logout URI** - the provider's logout endpoint
 2. Enable the desired **Logout Method**; front-channel or back-channel
 3. Optionally configure logout token signing for back-channel requests
 

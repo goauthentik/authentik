@@ -42,12 +42,12 @@ func NewMemorySearcher(si server.LDAPServerInstance, existing search.Searcher) *
 		if ems, ok := existing.(*MemorySearcher); ok {
 			ems.si = si
 			ems.fetch()
-			ems.log.Debug("re-initialised memory searcher")
+			ems.log.Debug("re-initialized memory searcher")
 			return ems
 		}
 	}
 	ms.fetch()
-	ms.log.Debug("initialised memory searcher")
+	ms.log.Debug("initialized memory searcher")
 	return ms
 }
 

@@ -2,10 +2,10 @@ import "#elements/Tabs";
 import "#admin/events/ObjectChangelog";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/rbac/ObjectPermissionModal";
-import "#elements/tasks/ScheduleList";
-import "#elements/tasks/TaskList";
+import "#components/tasks/ScheduleList";
+import "#components/tasks/TaskList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -38,7 +38,7 @@ export class GoogleChromeConnectorViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsGoogleChromeConnectorsRetrieve({ connectorUuid: id })
             .then((conn) => {
                 this.connector = conn;

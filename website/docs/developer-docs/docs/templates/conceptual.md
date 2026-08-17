@@ -20,7 +20,7 @@ In this first section, immediately after the title, write one or two sentences a
 
 In this optional section, provide some example use cases for the feature. Who would use it, WHY? If you mention HOW to use the feature, be sure to link off to the related procedural doc. Also share situations where users might NOT want to use the feature; for example, if the feature is intended for a specific environment.
 
-## Overview of feature/component
+## About the feature or component
 
 Dive deeper into explaining the concepts behind the feature/component.
 

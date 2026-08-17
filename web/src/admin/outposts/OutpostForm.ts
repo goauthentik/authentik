@@ -5,7 +5,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 import { groupBy } from "#common/utils";
 
@@ -40,7 +40,7 @@ interface ProviderBase {
     assignedApplicationName?: string | null;
 }
 
-const api = () => new ProvidersApi(DEFAULT_CONFIG);
+const api = () => aki(ProvidersApi);
 const providerListArgs = (page: number, search = "") => ({
     ordering: "name",
     applicationIsnull: false,
@@ -117,7 +117,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     async loadInstance(pk: string): Promise<Outpost> {
-        const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
+        const o = await aki(OutpostsApi).outpostsInstancesRetrieve({
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
@@ -126,9 +126,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     async load(): Promise<void> {
-        this.defaultConfig = await new OutpostsApi(
-            DEFAULT_CONFIG,
-        ).outpostsInstancesDefaultSettingsRetrieve();
+        this.defaultConfig = await aki(OutpostsApi).outpostsInstancesDefaultSettingsRetrieve();
         this.providers = providerProvider(this.type);
     }
 
@@ -140,12 +138,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
 
     async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
+            return aki(OutpostsApi).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+        return aki(OutpostsApi).outpostsInstancesCreate({
             outpostRequest: data,
         });
     }
@@ -210,9 +208,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const items = await new OutpostsApi(
-                            DEFAULT_CONFIG,
-                        ).outpostsServiceConnectionsAllList(args);
+                        const items =
+                            await aki(OutpostsApi).outpostsServiceConnectionsAllList(args);
                         return items.results;
                     }}
                     .renderElement=${(item: ServiceConnection): string => {

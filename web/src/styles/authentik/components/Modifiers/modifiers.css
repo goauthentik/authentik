@@ -1,0 +1,36 @@
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+
+    &::placeholder {
+        font-family: var(--pf-global--FontFamily--sans-serif);
+    }
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.pf-m-link {
+    color: var(--pf-global--link--Color);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: var(--pf-global--link--Color--hover);
+        text-decoration: underline;
+    }
+}
+
+.ak-m-capitalize {
+    text-transform: capitalize;
+}
+
+::placeholder {
+    font-style: italic;
+}
+
+.ak-m-placeholder {
+    font-style: italic;
+    color: var(--pf-c-form-control--placeholder--Color, var(--pf-global--Color--dark-200));
+}

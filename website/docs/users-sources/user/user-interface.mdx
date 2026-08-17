@@ -1,9 +1,10 @@
 ---
-title: User interface overview
+title: User interface
 sidebar_label: User interface
+sidebar_position: 5
 ---
 
-End-users who are accessing their applications via authentik typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), while some end-users never go to the User interface, but rather [log directly into their application](/brands/#external-user-settings) using authentik behind the scenes.)
+End-users who are accessing their applications via authentik typically only access the User interface, not the Admin interface. (There are exceptions; some end-users have [permissions to also access the Admin interface](../../users-sources/access-control/manage_permissions.md#assign-can-access-admin-interface-permissions), while some end-users never go to the User interface, but rather [log directly into their application](/customize/branding/index.md#external-user-settings) using authentik behind the scenes.)
 
 Conversely, administrators for an authentik instance work primarily in the Admin interface; that is where administrators add applications, create new users and groups, manage system settings, and more.
 
@@ -24,7 +25,7 @@ This section of the User interface displays (and allows you to edit if you have 
 - **Username**: the username is the unique identifier associated with the user, and is required for logging in. This value can only be edited by the user if the [global System settings](../../sys-mgmt/settings.md#allow-users-to-change-username) are configured to allow all users to change their username, or if the attribute [`goauthentik.io/user/can-change-username`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-username) has been added to the **Attributes** field for a specific user (overriding the global System setting).
 - **Name**: a display name, or nickname, for the user. Similar to the username, this value can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-name), or per user with the attribute [`goauthentik.io/user/can-change-name`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-name).
 - **Email**: the email address for the user. This value also can be set globally in [System settings](../../sys-mgmt/settings.md#allow-users-to-change-email), or if the attribute [`goauthentik.io/user/can-change-email`](../../users-sources/user/user_ref.mdx#goauthentikiousercan-change-email) has been added to the **Attributes** field for a specific user (overriding the global System setting).
-- **Locale**: override any global locale settings and either choose a specific language or select **Auto-Detect**, which relies on the user's browser local settings.
+- **Locale**: override any global locale settings and either choose a specific language or select **Auto-detect**, which relies on the user's browser local settings.
 - **Change your password**: if a user has the [permission to update their password](../user/user_basic_operations.md#reset-a-password), they can do so here.
 
 ### Sessions
@@ -48,7 +49,7 @@ The **Credentials** tab is where you can add and configure a new MFA device for 
 This is where users can add and configure MFA devices for accessing authentik. The three default options for MFA are:
 
 - **Static tokens**: authentik generates 6 single-use tokens.
-- **TOTP device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into your authenticator.
+- **TOTP Device**: using your preferred authenticator, scan the QR code, enter the code from the authenticator into the authentik prompt, and then click **Continue**. For authenticators that do not support QR scanning, you can copy the secret and paste it into your authenticator.
 - **WebAuthn device**: this option uses the [WebAuthn/FIDO2/Passkeys Authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md) to allow the user to create a passkey for the device.
 
 An authentik administrator can add additional MFA options for users, such as [Email](../../add-secure-apps/flows-stages/stages/authenticator_email/index.md), [SMS](../../add-secure-apps/flows-stages/stages/authenticator_sms/index.md), or [Duo](../../add-secure-apps/flows-stages/stages/authenticator_duo/index.md), by adding the stage for that authentication method to the flow.

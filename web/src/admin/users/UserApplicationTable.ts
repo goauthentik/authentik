@@ -1,7 +1,7 @@
 import "#elements/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,7 +23,7 @@ export class UserApplicationTable extends Table<Application> {
     static styles: CSSResult[] = [...super.styles, applicationListStyle];
 
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
+        return aki(CoreApi).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
             forUser: this.user?.pk,
         });

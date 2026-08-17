@@ -54,11 +54,13 @@ export class WebauthnController implements ReactiveController {
     }
 
     public hostUpdated() {
+        // Only (re)start when the challenge changes; restarting on every re-render would abort
+        // the pending request and the passkey autofill dropdown would never appear.
         if (this.passkey !== this.#hostPasskey) {
             this.passkey = this.#hostPasskey;
-        }
-        if (this.passkey) {
-            this.#startConditionalWebAuthn(this.passkey);
+            if (this.passkey) {
+                this.#startConditionalWebAuthn(this.passkey);
+            }
         }
     }
 

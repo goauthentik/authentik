@@ -1,9 +1,11 @@
 ---
 title: LDAP Provider
 toc_max_heading_level: 5
+sidebar_position: 4
+sidebar_label: "LDAP Provider"
 ---
 
-The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/services/sssd/) for authentication on Linux-based systems.
+The LDAP provider allows you to integrate with Service Providers using LDAP. It supports secure connections via LDAPS, code-based MFA authentication, basic LDAP schema compatibility, and can also be integrated with [SSSD](/integrations/infrastructure/sssd/) for authentication on Linux-based systems.
 
 Refer to our documentation to learn how to [create an LDAP provider](./create-ldap-provider.mdx).
 
@@ -72,7 +74,7 @@ The LDAP provider supports secure connections via LDAPS using SSL or StartTLS.
 
 You can configure SSL or StartTLS by configuring the **Certificate** and **TLS Server Name** settings on the provider.
 
-The provider will pick the correct certificate based on the configured **TLS Server name** setting. The certificate is not picked based on the **Bind DN**, because the StartTLS operation should occur before the bind request to ensure that bind credentials are transmitted over TLS.
+The provider will pick the correct certificate based on the configured **TLS Server Name** setting. The certificate is not picked based on the **Bind DN**, because the StartTLS operation should occur before the bind request to ensure that bind credentials are transmitted over TLS.
 
 Configuring SSL or StartTLS enables you to bind on port 636 using LDAPS.
 
@@ -80,7 +82,7 @@ Configuring SSL or StartTLS enables you to bind on port 636 using LDAPS.
 
 Binding against the LDAP provider uses a flow in the background. This allows you to use the same policies and flows as you do for web-based logins.
 
-The **Bind flow** determines the flow used for binding/authenticating users, and the **Unbind flow** determines the flow used when unbinding/de-authenticating users. Each is set under **Flow Settings** on the LDAP provider.
+The **Bind Flow** determines the flow used for binding/authenticating users, and the **Unbind Flow** determines the flow used when unbinding/de-authenticating users. Each is set under **Flow settings** on the LDAP provider.
 
 The following flow stages are supported by the LDAP provider:
 
@@ -133,7 +135,7 @@ Authenticator validation currently only supports DUO, TOTP and static authentica
 
 The LDAP provider supports code-based MFA.
 
-Code-based authenticators are only supported when the **Code-based MFA Support** setting is enabled on the provider and the configured **Bind flow** includes a [Authenticator Validation stage](../../flows-stages/stages/authenticator_validate/index.md).
+Code-based authenticators are only supported when the **Code-based MFA Support** setting is enabled on the provider and the configured **Bind Flow** includes a [Authenticator Validation stage](../../flows-stages/stages/authenticator_validate/index.md).
 
 When enabled, all users that bind to the LDAP provider should have a supported authenticator configured, as otherwise a password might be incorrectly rejected if it contains a semicolon.
 

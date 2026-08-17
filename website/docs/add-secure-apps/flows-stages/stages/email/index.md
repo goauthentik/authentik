@@ -4,7 +4,7 @@ title: Email stage
 
 The Email stage sends a verification or action email from within a flow.
 
-## Overview
+## About the email stage
 
 This stage is used for email verification, account recovery, invitations, and similar flow steps where authentik should send a tokenized link or message to a user.
 
@@ -15,16 +15,16 @@ When an email cannot be delivered immediately, authentik retries delivery throug
 ## Configuration options
 
 - **Use global connection settings**: use authentik's global email configuration instead of stage-specific SMTP settings.
-- **SMTP host**: SMTP server hostname for stage-specific delivery.
-- **SMTP port**: SMTP server port.
-- **SMTP username**: optional SMTP username.
-- **SMTP password**: optional SMTP password.
+- **SMTP Host**: SMTP server hostname for stage-specific delivery.
+- **SMTP Port**: SMTP server port.
+- **SMTP Username**: optional SMTP username.
+- **SMTP Password**: optional SMTP password.
 - **Use TLS**: enable STARTTLS for the SMTP connection.
 - **Use SSL**: enable SMTPS for the SMTP connection.
 - **Timeout**: SMTP connection timeout in seconds.
 - **From address**: sender address used for flow emails.
-- **Account recovery max attempts**: maximum number of recovery emails allowed in the configured time window.
-- **Account recovery cache timeout**: time window used for recovery-email rate limiting.
+- **Account Recovery Max Attempts**: maximum number of recovery emails allowed in the configured time window.
+- **Account Recovery Cache Timeout**: time window used for recovery-email rate limiting.
 - **Activate user on success**: activate the user after the stage succeeds.
 - **Token expiry**: how long the email token remains valid.
 - **Subject**: subject line used for the email.
@@ -127,9 +127,18 @@ These templates are rendered with Django's templating engine, so you can also us
 
 Templates can extend the base email template and use standard Django template tags. For example:
 
+:::info
+Each Django `{% ... %}` tag must stay on one line; a tag wrapped across lines won't parse.
+:::
+
+<!-- prettier-ignore -->
 ```html
-{# This comment is not rendered in the final email. #} {% extends "email/base.html" %} {% load i18n
-%} {% load humanize %} {% block content %}
+{# This comment is not rendered in the final email. #}
+{% extends "email/base.html" %}
+{% load i18n %}
+{% load humanize %}
+
+{% block content %}
 <tr>
     <td class="alert alert-success">
         {% blocktrans with username=user.username %} Hi {{ username }},{% endblocktrans %}
@@ -140,39 +149,20 @@ Templates can extend the base email template and use standard Django template ta
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="content-block">
-                    {% trans 'You recently requested to change your password for your authentik
-                    account. Use the button below to set a new password.' %}
+                    {% blocktrans %}You recently requested to change your password for your authentik account. Use the button below to set a new password.{% endblocktrans %}
                 </td>
             </tr>
             <tr>
                 <td class="content-block">
-                    <table
-                        role="presentation"
-                        border="0"
-                        cellpadding="0"
-                        cellspacing="0"
-                        class="btn btn-primary"
-                    >
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
                         <tbody>
                             <tr>
                                 <td align="center">
-                                    <table
-                                        role="presentation"
-                                        border="0"
-                                        cellpadding="0"
-                                        cellspacing="0"
-                                    >
+                                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <a
-                                                        id="confirm"
-                                                        href="{{ url }}"
-                                                        rel="noopener noreferrer"
-                                                        target="_blank"
-                                                    >
-                                                        {% trans 'Reset Password' %}
-                                                    </a>
+                                                    <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank">{% trans 'Reset Password' %}</a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -185,9 +175,7 @@ Templates can extend the base email template and use standard Django template ta
             </tr>
             <tr>
                 <td class="content-block">
-                    {% blocktrans with expires=expires|naturaltime %} If you did not request a
-                    password change, please ignore this email. The link above is valid for {{
-                    expires }}. {% endblocktrans %}
+                    {% blocktrans with expires=expires|timeuntil %}If you did not request a password change, please ignore this email. The link above is valid for {{ expires }}.{% endblocktrans %}
                 </td>
             </tr>
         </table>

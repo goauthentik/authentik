@@ -68,6 +68,10 @@ class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
     to = CharField()
+    # True only for the terminal redirect out of a completed flow. Intermediate redirects (e.g.
+    # source-stage hops to an external IdP) stay False so the web client doesn't resume other
+    # continuous-login tabs prematurely. See web/src/flow/tabs/orchestrator.ts.
+    final_redirect = BooleanField(default=False)
     component = CharField(default="xak-flow-redirect")
 
 

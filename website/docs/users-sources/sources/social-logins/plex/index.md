@@ -6,11 +6,11 @@ tags:
     - plex
 ---
 
-Allows users to authenticate using their Plex credentials by configuring Plex as a federated identity provider via OAuth2.
+This source lets users authenticate with their Plex credentials by configuring Plex as a federated identity provider.
 
 ## Preparation
 
-None
+No additional preparation is required.
 
 ## authentik configuration
 
@@ -23,11 +23,11 @@ To support the integration of Plex with authentik, you need to create a Plex sou
         - **Icon**: Optional icon or image shown for the source. See [File picker values](../../../../customize/file-picker.md).
         - **Protocol settings**
             - **Client ID**: Set a unique Client ID or leave the generated ID
-                - Click **Load Servers** to log in to Plex and pick the authorized Plex servers for "allowed users".
+                - Click **Load servers** to log in to Plex and pick the authorized Plex servers for "allowed users".
                 - Decide if _anyone_ with a Plex account can authenticate or only friends you share access with.
 3. Click **Finish** to save your settings.
 
-:::info
+:::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
 

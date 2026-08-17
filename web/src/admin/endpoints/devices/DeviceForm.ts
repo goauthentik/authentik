@@ -5,7 +5,7 @@ import "#elements/utils/TimeDeltaHelp";
 import "#admin/endpoints/ak-endpoints-device-group-search";
 import "#elements/CodeMirror";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -23,7 +23,7 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
     public static override verboseName = msg("Device");
     public static override verboseNamePlural = msg("Devices");
     loadInstance(pk: string): Promise<EndpointDevice> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesRetrieve({
+        return aki(EndpointsApi).endpointsDevicesRetrieve({
             deviceUuid: pk,
         });
     }
@@ -33,7 +33,7 @@ export class EndpointDeviceForm extends ModelForm<EndpointDevice, string> {
     }
 
     async send(data: EndpointDevice): Promise<EndpointDevice> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDevicesPartialUpdate({
+        return aki(EndpointsApi).endpointsDevicesPartialUpdate({
             deviceUuid: this.instance!.deviceUuid!,
             patchedEndpointDeviceRequest: data,
         });
