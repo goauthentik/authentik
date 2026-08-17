@@ -9761,11 +9761,7 @@ snapshots:
     dependencies:
       domelementtype: 3.0.0
 
-<<<<<<< HEAD
-  dompurify@3.4.12:
-=======
   dompurify@3.4.13:
->>>>>>> e8d095514 (web: bump dompurify from 3.4.12 to 3.4.13 in /web (#24892))
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
