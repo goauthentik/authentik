@@ -8,6 +8,13 @@ proxy_buffer_size 32k;
 # Make sure not to redirect traffic to a port 4443
 port_in_redirect off;
 
+# Preserve an explicit Host header, including a non-standard port.
+# Fall back to $host when no Host header is present, such as with HTTP/3.
+set $ak_http_host $http_host;
+if ($ak_http_host = "") {
+    set $ak_http_host $host;
+}
+
 location / {
     # Put your proxy_pass to your application here
     proxy_pass          $forward_scheme://$server:$port;
@@ -56,9 +63,9 @@ location /outpost.goauthentik.io {
     # proxy_pass              http://outpost.company:9000;
 
     # Note: ensure the Host header matches your external authentik URL:
-    proxy_set_header        Host $host;
+    proxy_set_header        Host $ak_http_host;
 
-    proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
+    proxy_set_header        X-Original-URL $scheme://$ak_http_host$request_uri;
     add_header              Set-Cookie $auth_cookie;
     auth_request_set        $auth_cookie $upstream_http_set_cookie;
     proxy_pass_request_body off;
@@ -70,8 +77,8 @@ location /outpost.goauthentik.io {
 location @goauthentik_proxy_signin {
     internal;
     add_header Set-Cookie $auth_cookie;
-    return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+    return 302 /outpost.goauthentik.io/start?rd=$scheme://$ak_http_host$request_uri;
     # For domain level, use the below error_page to redirect to your authentik server with the full redirect path
-    # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
+    # return 302 https://authentik.company/outpost.goauthentik.io/start?rd=$scheme://$ak_http_host$request_uri;
 }
 ```

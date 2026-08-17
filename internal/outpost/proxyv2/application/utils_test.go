@@ -27,6 +27,23 @@ func TestRedirectToStart_Proxy(t *testing.T) {
 	assert.Equal(t, "https://test.goauthentik.io/foo/bar/baz", s.Values[constants.SessionRedirect])
 }
 
+func TestRedirectToStart_Proxy_Query(t *testing.T) {
+	a := newTestApplication()
+	a.proxyConfig.Mode = api.PROXYMODE_PROXY.Ptr()
+	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
+	req, _ := http.NewRequest("GET", "/foo/bar/baz?foo=bar&baz=qux", nil)
+
+	rr := httptest.NewRecorder()
+	a.redirectToStart(rr, req)
+
+	assert.Equal(t, http.StatusFound, rr.Code)
+	loc, _ := rr.Result().Location()
+	assert.Equal(t, "https://test.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Ftest.goauthentik.io%2Ffoo%2Fbar%2Fbaz%3Ffoo%3Dbar%26baz%3Dqux", loc.String())
+
+	s, _ := a.sessions.Get(req, a.SessionName())
+	assert.Equal(t, "https://test.goauthentik.io/foo/bar/baz?foo=bar&baz=qux", s.Values[constants.SessionRedirect])
+}
+
 func TestRedirectToStart_Proxy_EncodedSlash(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.Mode = api.PROXYMODE_PROXY.Ptr()

@@ -15,16 +15,16 @@ When an email cannot be delivered immediately, authentik retries delivery throug
 ## Configuration options
 
 - **Use global connection settings**: use authentik's global email configuration instead of stage-specific SMTP settings.
-- **SMTP host**: SMTP server hostname for stage-specific delivery.
-- **SMTP port**: SMTP server port.
-- **SMTP username**: optional SMTP username.
-- **SMTP password**: optional SMTP password.
+- **SMTP Host**: SMTP server hostname for stage-specific delivery.
+- **SMTP Port**: SMTP server port.
+- **SMTP Username**: optional SMTP username.
+- **SMTP Password**: optional SMTP password.
 - **Use TLS**: enable STARTTLS for the SMTP connection.
 - **Use SSL**: enable SMTPS for the SMTP connection.
 - **Timeout**: SMTP connection timeout in seconds.
 - **From address**: sender address used for flow emails.
-- **Account recovery max attempts**: maximum number of recovery emails allowed in the configured time window.
-- **Account recovery cache timeout**: time window used for recovery-email rate limiting.
+- **Account Recovery Max Attempts**: maximum number of recovery emails allowed in the configured time window.
+- **Account Recovery Cache Timeout**: time window used for recovery-email rate limiting.
 - **Activate user on success**: activate the user after the stage succeeds.
 - **Token expiry**: how long the email token remains valid.
 - **Subject**: subject line used for the email.

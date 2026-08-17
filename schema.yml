@@ -5929,6 +5929,11 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
@@ -40428,6 +40433,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -40463,6 +40469,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -42364,10 +42371,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         agent_owner:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -53812,6 +53821,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -56692,6 +56706,10 @@ components:
       - pbm_uuid
       - verbose_name
       - verbose_name_plural
+    ResumeOnMatchFailuresEnum:
+      enum:
+      - missing_property
+      type: string
     Review:
       type: object
       description: |-
@@ -59186,6 +59204,11 @@ components:
           type: string
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - component
       - flow_set
@@ -59210,6 +59233,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - name
       - source
