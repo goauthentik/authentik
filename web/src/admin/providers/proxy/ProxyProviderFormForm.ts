@@ -14,6 +14,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProvi
 
 import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
+import { TLSKeyTypes } from "#admin/common/certificate-key-types";
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -255,6 +256,7 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         .certificate=${provider.certificate}
+                        .allowedKeyTypes=${TLSKeyTypes}
                     ></ak-crypto-certificate-search>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
