@@ -219,7 +219,6 @@ class LicenseKey:
                 external_user_count=self.get_external_user_count(),
                 status=self.status(),
             )
-        asdict(self.summary())
         return usage
 
     def summary(self) -> LicenseSummary:
@@ -233,7 +232,11 @@ class LicenseKey:
             status=status,
             license_flags=self.license_flags,
         )
-        cache.set(CACHE_KEY_ENTERPRISE_LICENSE, summary, timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE)
+        cache.set(
+            CACHE_KEY_ENTERPRISE_LICENSE,
+            asdict(self.summary()),
+            timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE,
+        )
         return summary
 
     @staticmethod
