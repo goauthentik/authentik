@@ -101,7 +101,6 @@ Any account in a group with **Superuser Privileges** enabled can change every ob
 
 - Use [roles](../users-sources/roles/index.md) and [access control](../users-sources/access-control/index.mdx) to assign specific object and global permissions instead of superuser membership.
 - Review superuser group membership regularly, and treat every superuser account as requiring phishing-resistant MFA.
-- Consider restricting access to `/if/admin/` at the reverse proxy to a trusted network range, in addition to authentik's own permission checks.
 
 ### Impersonation
 
