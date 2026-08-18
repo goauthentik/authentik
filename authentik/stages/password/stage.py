@@ -2,74 +2,54 @@
 
 from typing import Any
 
-from django.contrib.auth import _clean_credentials
-from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
 from django.db.models import Sum
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
-from sentry_sdk import start_span
-from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.core.signals import login_failed
-from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import Flow, Stage
+from authentik.flows.models import Flow
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
-from authentik.stages.password.models import PasswordDevice, PasswordStage
+from authentik.stages.password.auth import PasswordAuthenticationStatus, authenticate_password
+from authentik.stages.password.models import PasswordStage
 
-LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+PLAN_CONTEXT_LOCKED_ATTEMPTS = "goauthentik.io/stages/password/locked_attempts"
 
 
-def authenticate(
-    request: HttpRequest, backends: list[str], stage: Stage | None = None, **credentials: Any
-) -> User | None:
-    """If the given credentials are valid, return a User object.
+def should_show_lockout_message(
+    context: dict[str, Any],
+    password_stage: PasswordStage,
+    status: PasswordAuthenticationStatus,
+) -> bool:
+    """Return whether the current flow has reached its lockout message."""
+    if status is PasswordAuthenticationStatus.NEWLY_LOCKED:
+        return True
+    if status is not PasswordAuthenticationStatus.LOCKED:
+        return False
 
-    Customized version of django's authenticate, which accepts a list of backends"""
-    for backend_path in backends:
-        try:
-            backend: BaseBackend = path_to_class(backend_path)()
-        except ImportError:
-            LOGGER.warning("Failed to import backend", path=backend_path)
-            continue
-        LOGGER.debug("Attempting authentication...", backend=backend_path)
-        with start_span(
-            op="authentik.stages.password.authenticate",
-            name=backend_path,
-        ):
-            user = backend.authenticate(request, **credentials)
-        if user is None:
-            LOGGER.debug("Backend returned nothing, continuing", backend=backend_path)
-            continue
-        # Annotate the user object with the path of the backend.
-        user.backend = backend_path
-        LOGGER.info("Successful authentication", user=user.username, backend=backend_path)
-        return user
-
-    # The credentials supplied are invalid to all backends, fire signal
-    login_failed.send(
-        sender=__name__,
-        credentials=_clean_credentials(credentials),
-        request=request,
-        stage=stage,
+    key = f"{PLAN_CONTEXT_LOCKED_ATTEMPTS}/{password_stage.pk}"
+    attempts = context.get(key, 0) + 1
+    context[key] = attempts
+    threshold = (
+        password_stage.failed_attempts_before_lockout
+        or password_stage.failed_attempts_before_cancel
     )
+    return threshold > 0 and attempts >= threshold
 
 
 class PasswordChallenge(WithUserInfoChallenge):
@@ -89,6 +69,8 @@ class PasswordChallengeResponse(ChallengeResponse):
 
     password = CharField(trim_whitespace=False)
 
+    authentication_status = PasswordAuthenticationStatus.INVALID
+
     def validate_password(self, password: str) -> str | None:
         """Validate password and authenticate user"""
         executor = self.stage.executor
@@ -97,46 +79,38 @@ class PasswordChallengeResponse(ChallengeResponse):
         # Get the pending user's username, which is used as
         # an Identifier by most authentication backends
         pending_user: User = executor.plan.context[PLAN_CONTEXT_PENDING_USER]
-        if self.stage.password_locked():
-            # Refuse before authenticating, so a locked password is not accepted even when
-            # the submitted password is correct.
-            raise StageInvalidException("Password locked")
-        auth_kwargs = {
-            "password": password,
-            "username": pending_user.username,
-        }
         try:
-            with start_span(
-                op="authentik.stages.password.authenticate",
-                name="User authenticate call",
-            ):
-                user = authenticate(
-                    self.stage.request,
-                    executor.current_stage.backends,
-                    executor.current_stage,
-                    **auth_kwargs,
-                )
+            result = authenticate_password(
+                self.stage.request,
+                executor.current_stage,
+                pending_user,
+                password,
+                executor.current_stage,
+            )
         except PermissionDenied as exc:
-            del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
-            self.stage.logger.debug("Denied access", **auth_kwargs)
+            self.stage.logger.debug("Denied access", username=pending_user.username)
             raise StageInvalidException("Denied access") from exc
         except ValidationError as exc:
-            del auth_kwargs["password"]
             # User was found, authentication succeeded, but another signal raised an error
             # (most likely LDAP)
-            self.stage.logger.debug("Validation error from signal", exc=exc, **auth_kwargs)
+            self.stage.logger.debug(
+                "Validation error from signal",
+                exc=exc,
+                username=pending_user.username,
+            )
             raise StageInvalidException("Validation error") from exc
-        if not user:
+        self.authentication_status = result.status
+        if result.user is None:
             # No user was found -> invalid credentials
             self.stage.logger.info("Invalid credentials")
-            # This is the only place that knows the password itself was wrong, rather than
-            # the challenge being malformed, so the failure is counted here.
-            self.stage.register_failed_attempt(pending_user)
-            raise ValidationError(_("Invalid password"), "invalid")
+            error = _("Invalid password")
+            if result.status is PasswordAuthenticationStatus.LAST_ATTEMPT:
+                error = executor.current_stage.get_last_attempt_message(error)
+            raise ValidationError(error, "invalid")
         # User instance returned from authenticate() has .backend property set
-        executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
-        executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
+        executor.plan.context[PLAN_CONTEXT_PENDING_USER] = result.user
+        executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = result.user.backend
         return password
 
 
@@ -146,8 +120,6 @@ class PasswordStageView(ChallengeStageView):
     response_class = PasswordChallengeResponse
 
     def get_challenge(self) -> Challenge:
-        if self.password_locked():
-            raise StageInvalidException("Password locked")
         challenge = PasswordChallenge(
             data={
                 "allow_show_password": self.executor.current_stage.allow_show_password,
@@ -172,30 +144,16 @@ class PasswordStageView(ChallengeStageView):
             or 0
         )
 
-    def password_locked(self) -> bool:
-        """Whether this stage must refuse the pending user because their password is locked."""
-        if not self.executor.current_stage.lockout_limit:
-            return False
-        user = self.get_pending_user()
-        return (
-            bool(user.pk)
-            and PasswordDevice.objects.filter(user=user, locked_at__isnull=False).exists()
-        )
-
-    def register_failed_attempt(self, user: User):
-        """Count a failed password attempt, locking the password once the stage allows no more."""
-        limit = self.executor.current_stage.lockout_limit
-        if not limit or not PasswordDevice.register_failure(user, limit):
-            return
-        self.logger.info("Locked password after too many failed attempts", user=user.username)
-        Event.new(EventAction.PASSWORD_LOCKED, failed_attempts=limit).from_http(self.request, user)
-
     def challenge_invalid(self, response: PasswordChallengeResponse) -> HttpResponse:
         current_stage: PasswordStage = self.executor.current_stage
-        if self.password_locked():
-            # Deliberately the same message as a wrong password, so that the response does not
-            # tell an attacker whether they have locked the account.
-            return self.executor.stage_invalid(_("Invalid password"))
+        if should_show_lockout_message(
+            self.executor.plan.context,
+            current_stage,
+            response.authentication_status,
+        ):
+            return self.executor.stage_invalid(
+                current_stage.get_lockout_message(_("Invalid password"))
+            )
         initial_score = self.executor.plan.context.get(PLAN_CONTEXT_INITIAL_SCORE)
         if initial_score is None:
             initial_score = self.get_reputation_score()
@@ -203,14 +161,14 @@ class PasswordStageView(ChallengeStageView):
         new_score = self.get_reputation_score()
         if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
             self.logger.debug("User has exceeded maximum tries")
-            return self.executor.stage_invalid(_("Invalid password"))
+            error = _("Invalid password")
+            if response.authentication_status is PasswordAuthenticationStatus.LAST_ATTEMPT:
+                error = current_stage.get_last_attempt_message(error)
+            return self.executor.stage_invalid(error)
         return super().challenge_invalid(response)
 
     def challenge_valid(self, response: PasswordChallengeResponse) -> HttpResponse:
         """Authenticate against django's authentication backend"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             return self.executor.stage_invalid()
-        PasswordDevice.objects.filter(user=self.get_pending_user(), failed_attempts__gt=0).update(
-            failed_attempts=0
-        )
         return self.executor.stage_ok()

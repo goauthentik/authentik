@@ -1,23 +1,18 @@
 """PasswordStage API Views"""
 
-from django.utils.translation import gettext_lazy as _
-from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
-from authentik.enterprise.license import LicenseKey
 from authentik.flows.api.stages import StageSerializer
+from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.stages.password.models import PasswordStage
 
 
-class PasswordStageSerializer(StageSerializer):
+class PasswordStageSerializer(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.PasswordStageSerializerMixin"),
+    StageSerializer,
+):
     """PasswordStage Serializer"""
-
-    def validate_failed_attempts_before_lockout(self, limit: int) -> int:
-        """Locking passwords is an enterprise feature"""
-        if limit and not LicenseKey.cached_summary().status.is_valid:
-            raise ValidationError(_("Enterprise is required to lock passwords."))
-        return limit
 
     class Meta:
         model = PasswordStage
@@ -26,6 +21,10 @@ class PasswordStageSerializer(StageSerializer):
             "configure_flow",
             "failed_attempts_before_cancel",
             "failed_attempts_before_lockout",
+            "show_last_attempt_warning",
+            "last_attempt_warning_message",
+            "show_lockout_message",
+            "lockout_message",
             "allow_show_password",
         ]
 
@@ -39,6 +38,9 @@ class PasswordStageViewSet(UsedByMixin, ModelViewSet):
         "name",
         "configure_flow",
         "failed_attempts_before_cancel",
+        "failed_attempts_before_lockout",
+        "show_last_attempt_warning",
+        "show_lockout_message",
         "allow_show_password",
     ]
     search_fields = ["name"]

@@ -18061,7 +18061,27 @@
                     "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Failed attempts before lockout",
-                    "description": "How many consecutive failed attempts lock the user's password, until an administrator unlocks it or the password is changed. Set to 0 to never lock. Requires an enterprise license."
+                    "description": "How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock."
+                },
+                "show_last_attempt_warning": {
+                    "type": "boolean",
+                    "title": "Show last attempt warning",
+                    "description": "Show a warning when the user has one password attempt remaining."
+                },
+                "last_attempt_warning_message": {
+                    "type": "string",
+                    "title": "Last attempt warning message",
+                    "description": "Optional custom warning. Leave blank to use the default message."
+                },
+                "show_lockout_message": {
+                    "type": "boolean",
+                    "title": "Show lockout message",
+                    "description": "Show a message to the user when their password is locked."
+                },
+                "lockout_message": {
+                    "type": "string",
+                    "title": "Lockout message",
+                    "description": "Optional custom lockout message. Leave blank to use the default message."
                 },
                 "allow_show_password": {
                     "type": "boolean",

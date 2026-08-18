@@ -60,6 +60,12 @@ pub struct User {
     pub uuid: uuid::Uuid,
     #[serde(rename = "password_change_date")]
     pub password_change_date: chrono::DateTime<chrono::FixedOffset>,
+    /// When password authentication was locked, if it is locked.
+    #[serde(
+        rename = "password_login_locked_at",
+        deserialize_with = "Option::deserialize"
+    )]
+    pub password_login_locked_at: Option<chrono::DateTime<chrono::FixedOffset>>,
     #[serde(rename = "last_updated")]
     pub last_updated: chrono::DateTime<chrono::FixedOffset>,
 }
@@ -78,6 +84,7 @@ impl User {
         uid: String,
         uuid: uuid::Uuid,
         password_change_date: chrono::DateTime<chrono::FixedOffset>,
+        password_login_locked_at: Option<chrono::DateTime<chrono::FixedOffset>>,
         last_updated: chrono::DateTime<chrono::FixedOffset>,
     ) -> User {
         User {
@@ -100,6 +107,7 @@ impl User {
             r#type: None,
             uuid,
             password_change_date,
+            password_login_locked_at,
             last_updated,
         }
     }

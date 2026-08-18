@@ -4895,6 +4895,29 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/{id}/lock_password/:
+    post:
+      operationId: core_users_lock_password_create
+      description: Prevent a user's password from authenticating.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      - authentik_device_auth: []
+      responses:
+        '204':
+          description: Successfully locked password
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -33038,11 +33061,23 @@ paths:
         name: failed_attempts_before_cancel
         schema:
           type: integer
+      - in: query
+        name: failed_attempts_before_lockout
+        schema:
+          type: integer
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: show_last_attempt_warning
+        schema:
+          type: boolean
+      - in: query
+        name: show_lockout_message
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -50098,9 +50133,21 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-          description: How many consecutive failed attempts lock the user's password,
-            until an administrator unlocks it or the password is changed. Set to 0
-            to never lock. Requires an enterprise license.
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their password is locked.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -50142,9 +50189,21 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-          description: How many consecutive failed attempts lock the user's password,
-            until an administrator unlocks it or the password is changed. Set to 0
-            to never lock. Requires an enterprise license.
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their password is locked.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -52684,9 +52743,21 @@ components:
           type: integer
           maximum: 2147483647
           minimum: 0
-          description: How many consecutive failed attempts lock the user's password,
-            until an administrator unlocks it or the password is changed. Set to 0
-            to never lock. Requires an enterprise license.
+          description: How many consecutive failed attempts lock the user's password
+            until an administrator unlocks it. Set to 0 to never lock.
+        show_last_attempt_warning:
+          type: boolean
+          description: Show a warning when the user has one password attempt remaining.
+        last_attempt_warning_message:
+          type: string
+          description: Optional custom warning. Leave blank to use the default message.
+        show_lockout_message:
+          type: boolean
+          description: Show a message to the user when their password is locked.
+        lockout_message:
+          type: string
+          description: Optional custom lockout message. Leave blank to use the default
+            message.
         allow_show_password:
           type: boolean
           description: When enabled, provides a 'show password' button with the password
@@ -60557,6 +60628,12 @@ components:
           type: string
           format: date-time
           readOnly: true
+        password_login_locked_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When password authentication was locked, if it is locked.
+          readOnly: true
         last_updated:
           type: string
           format: date-time
@@ -60569,6 +60646,7 @@ components:
       - last_updated
       - name
       - password_change_date
+      - password_login_locked_at
       - pk
       - roles_obj
       - uid

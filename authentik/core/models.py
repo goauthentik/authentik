@@ -586,6 +586,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         except ObjectDoesNotExist:
             return UNUSABLE_PASSWORD_PREFIX
 
+    @property
+    def password_login_locked_at(self) -> datetime | None:
+        """When password authentication was locked, if it is locked."""
+        try:
+            return self.password_device.locked_at
+        except ObjectDoesNotExist:
+            return None
+
     @password.setter
     def password(self, password_hash: str):
         """Stage a password hash. As with any other field, `save()` persists it."""
@@ -610,14 +618,13 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         defaults = {
             "password": self._pending_password_hash,
             "failed_attempts": 0,
-            "locked_at": None,
         }
         if self._pending_password_change_date is not None:
             defaults["password_change_date"] = self._pending_password_change_date
         device, _ = PasswordDevice.objects.update_or_create(
             user=self,
             defaults=defaults,
-            create_defaults={**defaults, "name": "Password"},
+            create_defaults={**defaults, "locked_at": None, "name": "Password"},
         )
         self.password_device = device
         self._pending_password_hash = None

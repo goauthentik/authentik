@@ -5,6 +5,7 @@ from requests_mock import Mocker
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.enterprise.tests import enterprise_test
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER
 from authentik.flows.tests import FlowTestCase
@@ -17,7 +18,7 @@ from authentik.stages.captcha.tests import RECAPTCHA_PRIVATE_KEY, RECAPTCHA_PUBL
 from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
-from authentik.stages.password.models import PasswordStage
+from authentik.stages.password.models import PasswordDevice, PasswordStage
 
 
 class TestIdentificationStagePasskey(FlowTestCase):
@@ -215,6 +216,45 @@ class TestIdentificationStage(FlowTestCase):
             show_source_labels=False,
             user_fields=["email"],
         )
+
+    @enterprise_test()
+    def test_invalid_with_password_lockout(self):
+        """Test lockout applies to a password embedded in identification"""
+        pw_stage = PasswordStage.objects.create(
+            name="password-lockout",
+            backends=[BACKEND_INBUILT],
+            failed_attempts_before_lockout=2,
+            show_last_attempt_warning=True,
+            show_lockout_message=True,
+        )
+        self.stage.password_stage = pw_stage
+        self.stage.save(update_fields=("password_stage",))
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        form_data = {
+            "uid_field": self.user.email,
+            "password": self.user.username + "test",
+        }
+
+        response = self.client.post(url, form_data)
+        self.assertEqual(
+            response.json()["response_errors"]["non_field_errors"][0]["string"],
+            (
+                "You have one password attempt remaining before your password is locked. "
+                "If you have forgotten your password, please contact your administrator."
+            ),
+        )
+
+        response = self.client.post(url, form_data)
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-access-denied",
+            error_message=(
+                "Your password has been locked due to too many failed attempts. "
+                "Please contact your administrator."
+            ),
+        )
+        self.assertTrue(PasswordDevice.objects.get(user=self.user).locked)
 
     def test_invalid_with_password_pretend(self):
         """Test with invalid email and invalid password in single step (with pretend_user_exists)"""

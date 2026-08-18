@@ -37,15 +37,17 @@ type User struct {
 	RolesObj    []Role         `json:"roles_obj"`
 	Email       *string        `json:"email,omitempty"`
 	// User's avatar, either a http/https URL or a data URI
-	Avatar               string                 `json:"avatar"`
-	Attributes           map[string]interface{} `json:"attributes,omitempty"`
-	Uid                  string                 `json:"uid"`
-	Path                 *string                `json:"path,omitempty"`
-	Type                 *UserTypeEnum          `json:"type,omitempty"`
-	Uuid                 string                 `json:"uuid"`
-	PasswordChangeDate   time.Time              `json:"password_change_date"`
-	LastUpdated          time.Time              `json:"last_updated"`
-	AdditionalProperties map[string]interface{}
+	Avatar             string                 `json:"avatar"`
+	Attributes         map[string]interface{} `json:"attributes,omitempty"`
+	Uid                string                 `json:"uid"`
+	Path               *string                `json:"path,omitempty"`
+	Type               *UserTypeEnum          `json:"type,omitempty"`
+	Uuid               string                 `json:"uuid"`
+	PasswordChangeDate time.Time              `json:"password_change_date"`
+	// When password authentication was locked, if it is locked.
+	PasswordLoginLockedAt NullableTime `json:"password_login_locked_at"`
+	LastUpdated           time.Time    `json:"last_updated"`
+	AdditionalProperties  map[string]interface{}
 }
 
 type _User User
@@ -54,7 +56,7 @@ type _User User
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUser(pk int32, username string, name string, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, lastUpdated time.Time) *User {
+func NewUser(pk int32, username string, name string, dateJoined time.Time, isSuperuser bool, groupsObj []PartialGroup, rolesObj []Role, avatar string, uid string, uuid string, passwordChangeDate time.Time, passwordLoginLockedAt NullableTime, lastUpdated time.Time) *User {
 	this := User{}
 	this.Pk = pk
 	this.Username = username
@@ -67,6 +69,7 @@ func NewUser(pk int32, username string, name string, dateJoined time.Time, isSup
 	this.Uid = uid
 	this.Uuid = uuid
 	this.PasswordChangeDate = passwordChangeDate
+	this.PasswordLoginLockedAt = passwordLoginLockedAt
 	this.LastUpdated = lastUpdated
 	return &this
 }
@@ -614,6 +617,32 @@ func (o *User) SetPasswordChangeDate(v time.Time) {
 	o.PasswordChangeDate = v
 }
 
+// GetPasswordLoginLockedAt returns the PasswordLoginLockedAt field value
+// If the value is explicit nil, the zero value for time.Time will be returned
+func (o *User) GetPasswordLoginLockedAt() time.Time {
+	if o == nil || o.PasswordLoginLockedAt.Get() == nil {
+		var ret time.Time
+		return ret
+	}
+
+	return *o.PasswordLoginLockedAt.Get()
+}
+
+// GetPasswordLoginLockedAtOk returns a tuple with the PasswordLoginLockedAt field value
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *User) GetPasswordLoginLockedAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.PasswordLoginLockedAt.Get(), o.PasswordLoginLockedAt.IsSet()
+}
+
+// SetPasswordLoginLockedAt sets field value
+func (o *User) SetPasswordLoginLockedAt(v time.Time) {
+	o.PasswordLoginLockedAt.Set(&v)
+}
+
 // GetLastUpdated returns the LastUpdated field value
 func (o *User) GetLastUpdated() time.Time {
 	if o == nil {
@@ -687,6 +716,7 @@ func (o User) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["uuid"] = o.Uuid
 	toSerialize["password_change_date"] = o.PasswordChangeDate
+	toSerialize["password_login_locked_at"] = o.PasswordLoginLockedAt.Get()
 	toSerialize["last_updated"] = o.LastUpdated
 
 	for key, value := range o.AdditionalProperties {
@@ -712,6 +742,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		"uid",
 		"uuid",
 		"password_change_date",
+		"password_login_locked_at",
 		"last_updated",
 	}
 
@@ -761,6 +792,7 @@ func (o *User) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "type")
 		delete(additionalProperties, "uuid")
 		delete(additionalProperties, "password_change_date")
+		delete(additionalProperties, "password_login_locked_at")
 		delete(additionalProperties, "last_updated")
 		o.AdditionalProperties = additionalProperties
 	}

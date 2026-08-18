@@ -353,6 +353,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_login_locked_at",
             "last_updated",
         ]
         extra_kwargs = {
@@ -632,6 +633,7 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.UserPasswordLockoutMixin"),
     ConditionalInheritance(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
@@ -664,7 +666,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -980,7 +982,7 @@ class UserViewSet(
         device = PasswordDevice.objects.filter(user=user, locked_at__isnull=False).first()
         if device:
             device.unlock()
-            Event.new(EventAction.PASSWORD_UNLOCKED).from_http(request, user)
+            Event.new(EventAction.PASSWORD_UNLOCKED, affected_user=user).from_http(request)
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")
