@@ -607,13 +607,16 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
         if self._pending_password_hash is None:
             return
-        defaults = {"password": self._pending_password_hash}
+        defaults = {
+            "password": self._pending_password_hash,
+            "failed_attempts": 0,
+        }
         if self._pending_password_change_date is not None:
             defaults["password_change_date"] = self._pending_password_change_date
         device, _ = PasswordDevice.objects.update_or_create(
             user=self,
             defaults=defaults,
-            create_defaults={**defaults, "name": "Password"},
+            create_defaults={**defaults, "locked_at": None, "name": "Password"},
         )
         self.password_device = device
         self._pending_password_hash = None

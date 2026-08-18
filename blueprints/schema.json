@@ -10132,6 +10132,8 @@
                         "user_offboarded",
                         "suspicious_request",
                         "password_set",
+                        "password_locked",
+                        "password_unlocked",
                         "secret_view",
                         "secret_rotate",
                         "invitation_used",
@@ -10259,6 +10261,8 @@
                                 "user_offboarded",
                                 "suspicious_request",
                                 "password_set",
+                                "password_locked",
+                                "password_unlocked",
                                 "secret_view",
                                 "secret_rotate",
                                 "invitation_used",
@@ -11024,6 +11028,8 @@
                         "user_offboarded",
                         "suspicious_request",
                         "password_set",
+                        "password_locked",
+                        "password_unlocked",
                         "secret_view",
                         "secret_rotate",
                         "invitation_used",
@@ -18048,7 +18054,24 @@
                     "minimum": -2147483648,
                     "maximum": 2147483647,
                     "title": "Failed attempts before cancel",
-                    "description": "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
+                    "description": "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password."
+                },
+                "failed_attempts_before_lockout": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Failed attempts before lockout",
+                    "description": "How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock."
+                },
+                "last_attempt_warning_message": {
+                    "type": "string",
+                    "title": "Last attempt warning message",
+                    "description": "Warning shown when the user has one password attempt remaining. Leave blank to show no warning."
+                },
+                "lockout_message": {
+                    "type": "string",
+                    "title": "Lockout message",
+                    "description": "Message shown when the user's password has been locked. Leave blank to show no message."
                 },
                 "allow_show_password": {
                     "type": "boolean",
