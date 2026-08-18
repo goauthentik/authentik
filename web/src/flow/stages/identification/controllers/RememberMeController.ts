@@ -67,6 +67,12 @@ export class RememberMeController implements ReactiveController {
     protected logger = ConsoleLogger.prefix("controller/remember-me");
     protected autoSubmitAttempts = 0;
 
+    /**
+     * Whether the feature is currently on, seeded from {@linkcode defaultChecked} so that a
+     * returning user records keystrokes without having to re-toggle the switch.
+     */
+    protected rememberMeEnabled: boolean;
+
     constructor(
         protected host: ReactiveElementHost<IdentificationStage>,
         {
@@ -90,14 +96,25 @@ export class RememberMeController implements ReactiveController {
             persistedUserIdentifier || this.host.challenge?.pendingUserIdentifier || null;
 
         this.defaultChecked = !!persistedUserIdentifier;
+        this.rememberMeEnabled = this.defaultChecked;
     }
 
-    // After the page is updated, if everything is ready to go, do the autosubmit.
+    // After the page is updated, reconcile the keystroke listener against the current state, then,
+    // if everything is ready to go, do the autosubmit.
+    //
+    // The listener is bound here rather than in `hostConnected` because the username field is
+    // reached through a `ref`, which Lit only populates once the host has rendered.
     public hostUpdated() {
+        this.#reconcileUsernameInputListener();
+
         if (this.canAutoSubmit() && this.autoSubmitAttempts === 0) {
             this.autoSubmitAttempts++;
             this.host.submitForm?.();
         }
+    }
+
+    public hostDisconnected() {
+        this.#detachUsernameInputListener();
     }
 
     //#region Event Listeners
@@ -112,6 +129,45 @@ export class RememberMeController implements ReactiveController {
             RememberMeStorage.user.write(value);
         });
     };
+
+    /**
+     * The username field the keystroke listener is currently bound to, if any.
+     *
+     * Tracked so that reconciliation is idempotent across re-renders, and so the listener follows
+     * the field if Lit swaps in a new element.
+     */
+    #attachedUsernameField: HTMLInputElement | null = null;
+
+    /**
+     * Bind or unbind the keystroke listener so it matches {@linkcode rememberMeEnabled}.
+     */
+    #reconcileUsernameInputListener() {
+        const { usernameField } = this;
+
+        if (!this.rememberMeEnabled || !usernameField) {
+            this.#detachUsernameInputListener();
+            return;
+        }
+
+        this.#attachUsernameInputListener(usernameField);
+    }
+
+    #attachUsernameInputListener(usernameField: HTMLInputElement) {
+        if (this.#attachedUsernameField === usernameField) return;
+
+        this.#detachUsernameInputListener();
+
+        usernameField.addEventListener("input", this.inputListener, {
+            passive: true,
+        });
+
+        this.#attachedUsernameField = usernameField;
+    }
+
+    #detachUsernameInputListener() {
+        this.#attachedUsernameField?.removeEventListener("input", this.inputListener);
+        this.#attachedUsernameField = null;
+    }
 
     //#endregion
 
@@ -131,13 +187,16 @@ export class RememberMeController implements ReactiveController {
         const checkbox = event.target as HTMLInputElement;
         const { usernameField, passwordField } = this;
 
+        this.rememberMeEnabled = checkbox.checked;
+
         if (!checkbox.checked) {
             this.logger.debug("Disabling remember me");
 
             RememberMeStorage.reset();
 
+            this.#detachUsernameInputListener();
+
             if (usernameField) {
-                usernameField.removeEventListener("input", this.inputListener);
                 usernameField.focus();
                 usernameField.select();
             }
@@ -161,9 +220,7 @@ export class RememberMeController implements ReactiveController {
 
         RememberMeStorage.user.write(usernameField.value);
 
-        usernameField.addEventListener("input", this.inputListener, {
-            passive: true,
-        });
+        this.#attachUsernameInputListener(usernameField);
     };
 
     /**
