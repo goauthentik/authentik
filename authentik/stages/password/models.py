@@ -2,6 +2,7 @@
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views import View
