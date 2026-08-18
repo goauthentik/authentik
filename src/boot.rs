@@ -1,17 +1,23 @@
 //! Container entrypoint
 
-use std::collections::BTreeMap;
-use std::ffi::{CString, OsStr, OsString};
-use std::fs;
-use std::os::unix::ffi::OsStringExt as _;
-use std::os::unix::fs::{MetadataExt as _, PermissionsExt as _};
-use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::{
+    collections::BTreeMap,
+    ffi::{CString, OsStr, OsString},
+    fs,
+    os::unix::{
+        ffi::OsStringExt as _,
+        fs::{MetadataExt as _, PermissionsExt as _},
+    },
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use argh::FromArgs;
 use eyre::{Report, Result, WrapErr as _, eyre};
-use nix::fcntl::{AT_FDCWD, AtFlags};
-use nix::unistd::{Gid, Group, Uid, User, execve, execvpe, getuid, setgid, setgroups, setuid};
+use nix::{
+    fcntl::{AT_FDCWD, AtFlags},
+    unistd::{Gid, Group, Uid, User, execve, execvpe, getuid, setgid, setgroups, setuid},
+};
 use tracing::{info, warn};
 
 /// The unprivileged user the server runs as.
@@ -68,7 +74,8 @@ fn resolve_target(args: &[String]) -> Vec<String> {
     }
 }
 
-/// `execve` replaces the environment, so the current one is a snapshot and the overrides are applied to the copy
+/// `execve` replaces the environment, so the current one is a snapshot and the overrides are
+/// applied to the copy
 fn exec(argv: &[String], extra_env: &[(&str, String)]) -> Result<()> {
     let cargv = argv
         .iter()
@@ -108,9 +115,8 @@ fn find_shell() -> Option<PathBuf> {
 
 fn no_shell_error(command: &str) -> Report {
     eyre!(
-        "'{command}' is not available in the production image, which ships no \
-         shell. Use the server-debug image: it is the same build with apt, a \
-         shell and the dev dependency group."
+        "'{command}' is not available in the production image, which ships no shell. Use the \
+         server-debug image: it is the same build with apt, a shell and the dev dependency group."
     )
 }
 
