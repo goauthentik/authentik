@@ -415,7 +415,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             return super().save(*args, **kwargs)
         with transaction.atomic():
             super().save(*args, **kwargs)
-            self.password_device.save()
+            device = self.password_device
+            device.save(
+                update_fields=(
+                    None
+                    if device._state.adding
+                    else ["password", "password_change_date", "failed_attempts"]
+                )
+            )
         self._password_device_dirty = False
         return None
 
@@ -588,6 +595,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         if device is None:
             device = PasswordDevice(user=self, name="Password")
         device.password = password_hash
+        # A new password restarts the failed-attempt count towards lockout
+        device.failed_attempts = 0
         self._password_device_dirty = True
 
     @property
