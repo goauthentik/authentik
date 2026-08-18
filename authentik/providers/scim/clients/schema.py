@@ -189,15 +189,17 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
     @staticmethod
     def default() -> ServiceProviderConfiguration:
         """Get default configuration, which doesn't support any optional features as fallback"""
-        return ServiceProviderConfiguration(
+        config = ServiceProviderConfiguration(
             patch=Patch(supported=False),
             bulk=Bulk(supported=False, maxOperations=0),
             filter=Filter(supported=False),
             changePassword=ChangePassword(supported=False),
             sort=Sort(supported=False),
             authenticationSchemes=[],
-            _is_fallback=True,
         )
+        # Private attributes cannot be set through the constructor
+        config._is_fallback = True
+        return config
 
 
 class PatchOp(StrEnum):

@@ -8,6 +8,7 @@ from authentik.common.oauth.constants import (
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
 )
 from authentik.core.models import AuthenticatedSession, ProviderPropertyMapping, User
+from authentik.core.signals import deactivation_token_cleanup_inhibited
 from authentik.flows.models import in_memory_stage
 from authentik.providers.iframe_logout import IframeLogoutStageView
 from authentik.providers.oauth2.models import (
@@ -121,6 +122,8 @@ def user_session_deleted_oauth_backchannel_logout_and_tokens_removal(
 def user_deactivated(sender, instance: User, **_):
     """Remove user tokens when deactivated"""
     if instance.is_active:
+        return
+    if deactivation_token_cleanup_inhibited():
         return
     AccessToken.objects.including_expired().filter(user=instance).delete()
     RefreshToken.objects.including_expired().filter(user=instance).delete()

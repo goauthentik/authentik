@@ -14,6 +14,11 @@
 
 import type { FlowSet } from "./FlowSet";
 import { FlowSetFromJSON } from "./FlowSet";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import {
+    ResumeOnMatchFailuresEnumFromJSON,
+    ResumeOnMatchFailuresEnumToJSON,
+} from "./ResumeOnMatchFailuresEnum";
 
 /**
  * SourceStage Serializer
@@ -75,6 +80,12 @@ export interface SourceStage {
      * @memberof SourceStage
      */
     resumeTimeout?: string;
+    /**
+     * Source matching failure reasons for which the flow should resume.
+     * @type {Array<ResumeOnMatchFailuresEnum>}
+     * @memberof SourceStage
+     */
+    resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }
 
 /**
@@ -134,6 +145,12 @@ export function SourceStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
         source: json["source"],
         resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
+        resumeOnMatchFailures:
+            json["resume_on_match_failures"] == null
+                ? undefined
+                : (json["resume_on_match_failures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumFromJSON,
+                  ),
     };
 }
 
@@ -156,5 +173,11 @@ export function SourceStageToJSONTyped(
         name: value["name"],
         source: value["source"],
         resume_timeout: value["resumeTimeout"],
+        resume_on_match_failures:
+            value["resumeOnMatchFailures"] == null
+                ? undefined
+                : (value["resumeOnMatchFailures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumToJSON,
+                  ),
     };
 }

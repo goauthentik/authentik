@@ -86,7 +86,7 @@ Negation only changes the boolean result. Any messages returned by the policy ar
 
 ### Failure result
 
-If a policy errors during execution, **Failure result** decides whether authentik should treat that failure as pass or fail.
+If a policy errors during execution, **Failure Result** decides whether authentik should treat that failure as pass or fail.
 
 Use this carefully:
 
