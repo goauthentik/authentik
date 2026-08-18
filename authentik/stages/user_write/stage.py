@@ -164,8 +164,8 @@ class UserWriteStageView(StageView):
         """Snapshot of the user's concrete field values, used to detect whether
         `update_user` actually changed anything. Only concrete fields are captured;
         m2m relations (`groups`, `roles`) are handled separately and auto-managed
-        fields (`last_updated`, `password_change_date`) only change on save, so they
-        never produce a false positive when comparing before/after an update."""
+        fields (`last_updated`) only change on save, so they never produce a false
+        positive when comparing before/after an update."""
         return deepcopy(
             {field.attname: getattr(user, field.attname) for field in user._meta.concrete_fields}
         )
