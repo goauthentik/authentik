@@ -3,13 +3,12 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserPasswordLockForm";
 import "#components/ak-status-label";
-import "#elements/buttons/ActionButton/index";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/ModalForm";
 
 import { aki } from "#common/api/client";
-import { EVENT_REFRESH } from "#common/constants";
 import { userTypeToLabel } from "#common/labels";
 import { formatUserDisplayName, startAccountLockdown } from "#common/users";
 
@@ -24,10 +23,9 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
+import { ToggleUserPasswordLockButton } from "#admin/users/UserPasswordLockForm";
 
 import {
-    CompositeStatusEnum,
-    CoreApi,
     LifecycleApi,
     OffboardingActionEnum,
     OffboardingStatusEnum,
@@ -137,17 +135,11 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
-            ${user.compositeStatus === CompositeStatusEnum.PasswordLocked
-                ? html`<ak-action-button
-                      class="pf-m-secondary pf-m-block"
-                      .apiRequest=${() =>
-                          aki(CoreApi)
-                              .coreUsersUnlockPasswordCreate({ id: user.pk })
-                              .then(() => this.dispatchEvent(new CustomEvent(EVENT_REFRESH)))}
-                  >
-                      ${msg("Unlock password")}
-                  </ak-action-button>`
-                : nothing}
+            ${ToggleUserPasswordLockButton(user, {
+                className: "pf-m-block",
+                currentUserPk: this.currentUserPk,
+                hasEnterpriseLicense: this.hasEnterpriseLicense,
+            })}
             ${showEnterpriseActions
                 ? html`<button
                       class="pf-c-button pf-m-danger pf-m-block"

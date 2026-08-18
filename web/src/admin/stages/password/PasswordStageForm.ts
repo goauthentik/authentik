@@ -1,11 +1,14 @@
 import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-number-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
-import "#elements/LicenseNotice";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -27,7 +30,7 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends BaseStageForm<PasswordStage> {
+export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<PasswordStage>) {
     protected endpoints = {
         load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
         create: (passwordStageRequest: PasswordStage) =>
@@ -45,6 +48,74 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 return field === isField;
             }).length > 0
         );
+    }
+
+    protected renderLockoutSettings(): TemplateResult | null {
+        if (!this.hasEnterpriseLicense) {
+            return null;
+        }
+
+        return html`<ak-number-input
+                label=${msg("Failed attempts before lockout", {
+                    id: "password-stage.lockout-threshold.label",
+                })}
+                required
+                name="failedAttemptsBeforeLockout"
+                min=${0}
+                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                help=${msg(
+                    "Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to disable lockout.",
+                    { id: "password-stage.lockout-threshold.description" },
+                )}
+            ></ak-number-input>
+            <ak-switch-input
+                name="showLastAttemptWarning"
+                label=${msg("Show last-attempt warning", {
+                    id: "password-stage.last-attempt-warning.label",
+                })}
+                ?checked=${this.instance?.showLastAttemptWarning ?? false}
+                help=${msg("Show a warning when the user has one password attempt remaining.", {
+                    id: "password-stage.last-attempt-warning.description",
+                })}
+            ></ak-switch-input>
+            <ak-text-input
+                label=${msg("Last-attempt warning message", {
+                    id: "password-stage.last-attempt-warning-message.label",
+                })}
+                name="lastAttemptWarningMessage"
+                value=${this.instance?.lastAttemptWarningMessage ?? ""}
+                placeholder=${msg(
+                    "You have one password attempt remaining before your password is locked. If you have forgotten your password, please contact your administrator.",
+                    { id: "password-stage.last-attempt-warning-message.placeholder" },
+                )}
+                help=${msg("Leave blank to use the default warning.", {
+                    id: "password-stage.last-attempt-warning-message.description",
+                })}
+            ></ak-text-input>
+            <ak-switch-input
+                name="showLockoutMessage"
+                label=${msg("Show lockout message", {
+                    id: "password-stage.lockout-message-toggle.label",
+                })}
+                ?checked=${this.instance?.showLockoutMessage ?? false}
+                help=${msg("Show a message when the user's password is locked.", {
+                    id: "password-stage.lockout-message-toggle.description",
+                })}
+            ></ak-switch-input>
+            <ak-text-input
+                label=${msg("Lockout message", {
+                    id: "password-stage.lockout-message.label",
+                })}
+                name="lockoutMessage"
+                value="${this.instance?.lockoutMessage ?? ""}"
+                placeholder=${msg(
+                    "Your password has been locked due to too many failed attempts. Please contact your administrator.",
+                    { id: "password-stage.lockout-message.placeholder" },
+                )}
+                help=${msg("Leave blank to use the default lockout message.", {
+                    id: "password-stage.lockout-message.description",
+                })}
+            ></ak-text-input>`;
     }
 
     protected override renderForm(): TemplateResult {
@@ -161,29 +232,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.",
+                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                {
+                                    id: "password-stage.failed-attempts-before-cancel.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Failed attempts before lockout")}
-                        required
-                        name="failedAttemptsBeforeLockout"
-                    >
-                        <input
-                            type="number"
-                            min="0"
-                            value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <ak-license-notice></ak-license-notice>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "How many consecutive failed attempts lock the user's password, until an administrator unlocks it or the password is changed. Set to 0 to never lock.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"
