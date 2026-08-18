@@ -28,6 +28,8 @@ const (
 	EVENTACTIONS_USER_OFFBOARDED            EventActions = "user_offboarded"
 	EVENTACTIONS_SUSPICIOUS_REQUEST         EventActions = "suspicious_request"
 	EVENTACTIONS_PASSWORD_SET               EventActions = "password_set"
+	EVENTACTIONS_PASSWORD_LOCKED            EventActions = "password_locked"
+	EVENTACTIONS_PASSWORD_UNLOCKED          EventActions = "password_unlocked"
 	EVENTACTIONS_SECRET_VIEW                EventActions = "secret_view"
 	EVENTACTIONS_SECRET_ROTATE              EventActions = "secret_rotate"
 	EVENTACTIONS_INVITATION_USED            EventActions = "invitation_used"
@@ -70,6 +72,8 @@ var AllowedEventActionsEnumValues = []EventActions{
 	"user_offboarded",
 	"suspicious_request",
 	"password_set",
+	"password_locked",
+	"password_unlocked",
 	"secret_view",
 	"secret_rotate",
 	"invitation_used",
