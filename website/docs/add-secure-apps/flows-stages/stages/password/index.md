@@ -18,30 +18,31 @@ The stage supports authentik's built-in password database, app passwords, LDAP-b
     - **User database + LDAP password**
     - **User database + Kerberos password**
 - **Failed attempts before cancel**: how many failed password submissions are allowed before the flow is canceled. This only ends the flow; the user can restart the flow immediately.
-- **Failed attempts before lockout**: how many consecutive failed submissions password lock the user's account. Set to `0` to never password lock. Requires an enterprise license. See [Password lockout](#password-lockout).
+- **Failed attempts before lockout** :ak-enterprise Lock password login after this many consecutive failed attempts. Failed attempts against LDAP and Kerberos backends are not counted. Set this option to `0` to disable lockout.
+- **Show last-attempt warning** :ak-enterprise Show a warning when the user has one attempt remaining.
+- **Last-attempt warning message** :ak-enterprise Set an optional custom warning. Leave this blank to use the default message.
+- **Show lockout message** :ak-enterprise Show a specific message when an attempt locks the password. When disabled, authentik shows a generic authentication error.
+- **Lockout message** :ak-enterprise Set an optional custom message. Leave this blank to use the default message.
 - **Allow show password**: show a button that reveals the entered password.
 - **Configuration flow**: optional authenticated flow that lets users configure or change their password from user settings.
 
 ## Password lockout :ak-enterprise {#password-lockout}
 
-Set **Failed attempts before lockout** to a value above `0` to password lock a user's account after that many consecutive failed attempts. A password locked account is refused even when the correct password is submitted, so an attacker cannot keep guessing and a leaked password cannot be used until an administrator intervenes.
+Set **Failed attempts before lockout** to a value above `0` to lock password login after that many consecutive failed attempts. A locked password is refused even when the correct password is submitted.
 
-The count is per user and survives across flows and sessions. It resets whenever the user authenticates successfully.
+The count is per user and survives across flows and sessions, including password validation embedded in an Identification stage. A successful password validation resets it. Failed LDAP and Kerberos authentication is not counted because authentik cannot distinguish a wrong password from an unavailable external source.
 
-Password locking is deliberately invisible to the person at the login prompt: the flow reports the same "Invalid password" error it reports for a wrong password, so the response cannot be used to discover whether an account exists or has been password locked. The lock itself is recorded as a `password_locked` event in the [event log](../../../../sys-mgmt/events/index.md).
+By default, the flow reports the same error for a locked password and a wrong password. Enable **Show last-attempt warning** or **Show lockout message** to give the user more information. You can use the default text or set a custom message.
 
 Only password-based authentication is affected. A password locked user can still sign in through a flow that does not run a Password stage, such as a [passwordless flow](#passwordless-patterns).
 
 Users whose status is **Password locked** appear as such in the user list in the Admin interface. See [User status](../../../../users-sources/user/user_ref.mdx).
 
-### Unlock a password
+### Lock or unlock a password
 
-A password locked user is restored in one of two ways:
+An administrator can use **Lock password login** and **Unlock password login** on a user's details page. Existing sessions and other authentication methods are not affected.
 
-- An administrator unlocks the user in **Directory** > **Users** and selects **Unlock password**.
-- The password is changed, for example through a recovery flow or by an administrator setting a new one. A password reset is always a way back in.
-
-Both clear the failure count, and unlocking creates a `password_unlocked` event in the event log.
+Changing or resetting the password clears the failure count but does not remove the lock. An administrator must unlock password login separately.
 
 ## Flow integration
 
