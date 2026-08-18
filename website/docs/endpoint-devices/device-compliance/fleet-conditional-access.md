@@ -3,6 +3,7 @@ title: Fleet conditional access for Apple devices
 sidebar_label: Fleet conditional access
 tags: [device compliance, compliance, conditional access, fleet, fleetdm]
 authentik_version: "2026.5"
+sidebar_position: 5
 ---
 
 authentik can be configured to restrict access to specific services so that only Fleet-registered Apple devices are allowed.
