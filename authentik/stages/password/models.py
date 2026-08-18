@@ -2,12 +2,15 @@
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.models import User
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
+from authentik.stages.authenticator.models import Device
 from authentik.stages.password import (
     BACKEND_APP_PASSWORD,
     BACKEND_INBUILT,
@@ -88,3 +91,18 @@ class PasswordStage(ConfigurableStage, Stage):
     class Meta:
         verbose_name = _("Password Stage")
         verbose_name_plural = _("Password Stages")
+
+
+class PasswordDevice(Device):
+    """A user's password, stored as an authenticator device.
+
+    A password is a knowledge factor rather than a second factor, so this device is kept
+    out of MFA discovery, validation and the device APIs."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="password_device")
+    password = models.CharField(max_length=128)
+    password_change_date = models.DateTimeField(default=now)
+
+    class Meta(Device.Meta):
+        verbose_name = _("Password Device")
+        verbose_name_plural = _("Password Devices")
