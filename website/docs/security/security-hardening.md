@@ -9,15 +9,13 @@ While authentik is secure out of the box, you can take steps to further increase
 
 ### Password policy
 
-authentik's default password policy meets the mandatory requirements of the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password). The shipped policy sets the 8-character minimum the guidelines require, along with a zxcvbn strength check.
+authentik's shipped password policy is a reasonable baseline: an 8-character minimum plus a zxcvbn strength check. Two changes bring it in line with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password):
 
-The same guidelines additionally recommend two things the shipped default does not apply. Consider:
-
-- setting the minimum password length to 15 characters, and
-- enabling the **Check haveibeenpwned.com** blocklist comparison.
+- Set the minimum password length to 15 characters. NIST allows 8 characters only where the password is one factor of MFA, and the shipped flow skips [MFA validation](../add-secure-apps/flows-stages/stages/authenticator_validate/index.md) for users with no authenticator enrolled. If MFA is mandatory in your deployment, 8 characters remains sufficient.
+- Enable the **Check haveibeenpwned.com** blocklist comparison, which covers NIST's requirement to check passwords against commonly used, expected, or compromised values.
 
 :::note
-The haveibeenpwned.com check requires outbound network access, so it cannot be used on [air-gapped instances](../install-config/air-gapped.mdx).
+The haveibeenpwned.com check requires outbound network access, so it cannot be used on [air-gapped instances](../install-config/air-gapped.mdx). An air-gapped deployment would need an [Expression policy](../customize/policies/types/expression/index.mdx) checking against a locally held list.
 :::
 
 For further options, see [Password policy](../customize/policies/types/password.md). A [password expiry policy](../customize/policies/types/password-expiry.md) is also available, though NIST no longer recommends routine forced rotation.
