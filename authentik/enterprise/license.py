@@ -38,7 +38,7 @@ from authentik.enterprise.models import (
 from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
-CACHE_EXPIRY_ENTERPRISE_LICENSE = 4 * 60 * 60  # 4 Hours
+CACHE_EXPIRY_ENTERPRISE_LICENSE = 12 * 60 * 60  # 12 Hours
 
 
 @lru_cache
@@ -234,7 +234,7 @@ class LicenseKey:
         )
         cache.set(
             CACHE_KEY_ENTERPRISE_LICENSE,
-            asdict(self.summary()),
+            asdict(summary),
             timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE,
         )
         return summary
