@@ -55,7 +55,9 @@ class TestPropertyMappings(TestCase):
         properties = self.source.get_base_user_properties(info=info)
         self.assertEqual(properties["groups"], ["group 1", "group 2"])
         for group_id in info["groups"]:
-            properties = self.source.get_base_group_properties(info=info, group_id=group_id)
+            properties = self.source.get_base_group_properties(
+                info=info, group_id=group_id
+            )
             self.assertEqual(properties, {"name": group_id})
 
     def test_user_property_mappings(self):
@@ -66,7 +68,9 @@ class TestPropertyMappings(TestCase):
             )
         )
         request = self.request_factory.get("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": INFO}, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, IDENTIFIER, {"info": INFO}, {}
+        )
         self.assertEqual(
             flow_manager.user_properties,
             {
@@ -90,7 +94,9 @@ class TestPropertyMappings(TestCase):
             )
         )
         request = self.request_factory.get("/", user=AnonymousUser())
-        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, IDENTIFIER, {"info": info}, {}
+        )
         self.assertEqual(
             flow_manager.groups_properties,
             {
@@ -108,3 +114,20 @@ class TestPropertyMappings(TestCase):
                 },
             },
         )
+
+    def test_group_property_mappings_with_object_groups(self):
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "group-1", "name": "Admins"},
+        ]
+
+        request = self.request_factory.get("/", user=AnonymousUser())
+
+        with self.assertRaises(TypeError):
+            OAuthSourceFlowManager(
+                self.source,
+                request,
+                IDENTIFIER,
+                {"info": info},
+                {},
+            )
