@@ -215,7 +215,7 @@ The agent's expiration and the token's expiration are separate:
 - A self-service agent always expires using the default token duration.
 - An administrator-provisioned agent can be configured to expire or not expire.
 - The API token created for an agent always expires using the default token duration.
-- On expiry the token is deleted and not rotated unlike the other service accoung tokens.
+- On expiry the token is deleted and not rotated unlike the other service account tokens.
 
 Agent tokens are managed in the same token system as other authentik tokens. See [Service accounts](./service-accounts.md) for general token-management information.
 

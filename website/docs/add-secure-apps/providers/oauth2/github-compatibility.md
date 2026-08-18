@@ -1,5 +1,6 @@
 ---
 title: GitHub compatibility
+sidebar_position: 6
 ---
 
 The OAuth2 provider also exposes a GitHub-compatible endpoint. This endpoint can be used by applications, which support authenticating against GitHub Enterprise, but not generic OpenID Connect.
