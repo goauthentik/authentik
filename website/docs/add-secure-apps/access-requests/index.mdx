@@ -1,0 +1,163 @@
+---
+title: Access requests
+description: "Let users request time-bound access to applications and entitlements, with request rules, expiry, and a full audit trail"
+sidebar_label: Access requests
+authentik_enterprise: true
+authentik_version: "2026.8"
+authentik_preview: true
+---
+
+## About access requests
+
+Access requests allow users to request access to an application when they need it, rather than requiring an administrator to provision access in advance.
+
+Each request is evaluated against configured request rules and routed to one or more reviewers. When approved, access is granted for a defined period and expires automatically.
+
+This supports just-in-time and least-privilege access models. Users retain minimal standing access and request elevated access only when necessary, while authentik records every request and decision for auditing.
+
+Access requests provide:
+
+- A self-service way for users to request access through the [user interface](../../users-sources/user/user-interface.mdx).
+- Rule-based routing to the appropriate reviewers.
+- Time-limited access grants that expire automatically, without manual cleanup.
+- Audit events for request creation, approval, and denial.
+
+## Terminology
+
+| Term                 | Description                                                                                                                                                                                                                                                     |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Access request       | A request from a specific user for access to an application. A request can be pending, approved, or denied.                                                                                                                                                     |
+| Request rule         | A configuration that determines which request flow is used, who reviews requests, and how reviewers are notified. If no request flow is set on the request rule, it falls back to the request flow value set on the [brand](../../customize/branding/index.md). |
+| Request rule binding | A binding between a request rule and a requestable application. It also determines which users or groups can request access.                                                                                                                                    |
+| Reviewer             | A user or group authorized to approve or deny an access request.                                                                                                                                                                                                |
+| Expiry               | The period for which access granted through an approved request remains valid.                                                                                                                                                                                  |
+
+## Access request lifecycle
+
+1. A user logs in to authentik, opens the **Discover** page, and selects a requestable application, optionally also choosing an application entitlement.
+2. authentik creates the access request and evaluates it against the request rules bound to the selected application.
+3. authentik runs the configured request flow, if any, to collect required information such as a justification.
+4. The assigned reviewers are notified based on the request rule's configuration, and the request appears in their pending-request queue.
+5. A reviewer approves or denies the request. Requesters cannot approve their own requests.
+6. If approved, authentik grants access to the application and starts the expiry timer.
+7. When the access period ends, authentik automatically revokes access.
+
+## Request rules
+
+Request rules determine whether a request flow is used, who reviews requests, and how reviewers are notified. Users, groups, and policies are bound to a request rule to determine who is authorized to review access requests.
+
+Request rules are bound to an application, which makes the application requestable via the **Discover** page in the [user interface](../../users-sources/user/user-interface.mdx). Users, groups, and policies can be bound to request rule bindings to determine which users are eligible to request access to the application. If a request rule binding has no users, groups, or policies bound to it, every user is eligible to request access to the application, following the same convention as application access. Reviewer eligibility works differently: a request rule with no users, groups, or policies bound to it has no one who can approve requests against it.
+
+## Request flows
+
+Submitting a request executes a request flow. Use this to collect a justification, require re-authentication or MFA before elevation, or run policies against the requester.
+
+Configure a **Request flow** on either:
+
+- The request rule itself.
+- As a default for the [brand](../../customize/branding/index.md). Used as a fallback when the request rule does not specify a request flow.
+
+authentik includes a `default-request` flow that is empty. This flow can be configured with any required stages and policies. Any prompt data entered by a requester during a request flow is shown to the reviewer in the **Requester notes** field. Request flows can be left empty if you don't require user interaction.
+
+## Configure access requests
+
+### Create a request rule
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Request rules**.
+3. Click **New Request Rule** and set the following fields:
+    - **Rule Name**: The name for the rule.
+    - **Minimum reviewers**: The minimum number of reviewers who must approve a request.
+    - **Minimum reviewers is per-group** _(optional)_: When enabled, fulfilling the request requires at least that many reviewers from each of the reviewer groups bound to this rule. When disabled, the value is a total across all reviewer groups.
+    - **Notify**: Select one of the following options to determine who is notified of new access requests:
+        - **Everyone who can approve**
+        - **Only individually-selected reviewers**
+        - **A random subset (of size “minimum reviewers”) of everyone who can approve**
+    - **Notification transports** _(optional)_: The [notification transports](../../sys-mgmt/events/transports.md) used to notify reviewers.
+    - **Request flow** _(optional)_: The [request flow](#request-flows) presented to the user when requesting access.
+4. Click **Create Request Rule**.
+
+### Define users or groups to review access requests
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Request rules**.
+3. Expand the request rule by clicking the chevron (**>**) next to its name.
+4. Click **Create or bind...**.
+5. Select the users, groups, or policies that will review access requests for that request rule.
+   You can bind as many users, groups, and policies as necessary.
+
+### Make an application requestable
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Applications** and click the application name that you want to make requestable.
+3. Open the **Request rules** tab, click **Create or bind...**, then select **Bind existing rule**
+    - **Rule**: The request rule that is used.
+    - **Pending expiry**: How long a request against this binding stays pending before it automatically lapses if not approved or denied.
+    - **Maximum granted expiry**: The maximum duration a grant approved against this binding can last. Requesters can ask for less, but never more.
+    - **Additional entitlements** _(optional)_: Application entitlements granted alongside access to this object when a request is approved.
+4. Click **Create Request Rule Binding**.
+
+### Define users or groups that can request access to the application
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Applications** > **Applications** and click the application name that you want to make requestable.
+3. Open the **Request rules** tab, and expand a request rule by clicking the chevron (**>**) next to its name.
+4. Click **Create or bind...**.
+5. Select the users, groups, or policies that can request access to the application via that request rule.
+   You can bind as many users, groups, and policies as necessary.
+
+### Verify the configuration
+
+1. Log in as a test user who does not have access to the application.
+2. Open the **Discover** page and confirm that the application is offered as requestable.
+3. Click the application, submit an access request, and confirm that it appears in the reviewer's queue.
+4. Approve it, confirm that access is granted, and that the corresponding events are recorded.
+
+## Requester experience
+
+### Requesting access
+
+Users see requestable applications as cards on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **Browse** tab. Selecting a card opens the request dialog and runs the configured request flow.
+
+### View pending requests
+
+Users can view their pending access requests under the **My Requests** tab on the **Discover** page.
+
+## Reviewer experience
+
+### Approving and denying access requests
+
+Reviewers see pending requests on the **Discover** page of the [user interface](../../users-sources/user/user-interface.mdx) under the **For My Review** tab. The requester, the requested application, and the time since the request was made are listed.
+
+Reviewers click the **Review** button and can approve or deny the request, and optionally add **Notes** before clicking the **Submit** button. Reviewers also see any prompt data that a requester entered in the request flow, in the **Requester notes** field.
+
+### Admin interface
+
+Administrators can view all access requests via the access requests page (**Applications** > **Access Requests**). Each row represents an access request and shows the request's: requester, creation date and time, requested application, and status. Each access request can be expanded by clicking its chevron (**>**) to show **Requester Data** and **Targets**. This is all the prompt data that the requester entered during the request flow, for example a justification for why the require access.
+
+If the administrator account is set as a reviewer in the associated request rule, they can click **Fulfill** and approve or deny the access request.
+
+## Events and auditing
+
+Each stage of a request is recorded as an event and can be matched in event matcher policies:
+
+- `access_request_created`
+- `access_request_approved`
+- `access_request_denied`
+- `access_request_revoked`
+
+Pair an event matcher policy with a notification rule to alert security teams of access events via Slack, email, or webhooks. See [Events](../../sys-mgmt/events/index.md) and [Notifications](../../sys-mgmt/events/notifications.md) for more information.
+
+## Considerations and limitations
+
+- A user cannot approve their own request.
+- Approved access is time-bound; plan expiry durations so that they match how long the work actually takes.
+- Request rules depend on policies. A misconfigured policy can leave requests with no eligible reviewer.
+
+## Troubleshooting
+
+| Symptom                                        | Cause and resolution                                                                                                 |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| An application does not appear as requestable. | The user is not bound to the request rule binding on the application.                                                |
+| A request has no reviewers.                    | No rule is bound to the application, the bound policies did not pass, or the only matched reviewer is the requester. |
+| A reviewer cannot action a request.            | The reviewer is the requester, or is not matched by the request rule's bindings.                                     |
