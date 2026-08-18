@@ -1,5 +1,6 @@
 ---
 title: Create an OAuth2 provider
+sidebar_position: 0
 ---
 
 To create a provider along with the corresponding application that uses it for authentication, navigate to **Applications** > **Applications** and click **New Application**. We recommend this combined approach for most common use cases. (Alternatively, you can first create only the provider and then later pair it with an application, by navigating to **Applications** > **Providers** and clicking **New Provider**.)
