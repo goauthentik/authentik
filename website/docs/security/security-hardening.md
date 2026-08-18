@@ -51,7 +51,12 @@ By default, an [Identification stage](../add-secure-apps/flows-stages/stages/ide
 
 Combine the following controls to slow down credential-stuffing attempts:
 
-- Use a [Reputation policy](../customize/policies/types/reputation.md) to react to repeated failed attempts from a username or client IP. The policy passes when the score is at or below its threshold, so bind it to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md) binding to show an extra challenge only to low-reputation requests. To deny low-reputation requests instead, bind the same policy to the authentication flow and enable **Negate** on that flow binding. Binding it to a flow without negating it has the opposite effect: it blocks ordinary users and admits the risky ones. The score limits are configurable under **System** > **Settings** as **Reputation: lower limit** and **Reputation: upper limit**.
+- Use a [Reputation policy](../customize/policies/types/reputation.md) to react to repeated failed attempts from a username or client IP. It passes when the score is at or below its threshold, so bind it either:
+    - to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md) binding, to challenge low-reputation requests, or
+    - to the authentication flow with **Negate** enabled, to deny them.
+
+    A flow binding without **Negate** does the opposite of what you want: it blocks ordinary users and admits the risky ones. Score limits are configurable under **System** > **Settings**.
+
 - Add a CAPTCHA stage unconditionally, either as its own stage or configured inline on the Identification stage, if you would rather not make it reputation-dependent.
 - Bind a [GeoIP policy](../customize/policies/types/geoip.md) to restrict sign-ins to expected countries or to require additional verification elsewhere.
 - Configure [notification rules](../sys-mgmt/events/notifications.md) on the `login_failed` and `suspicious_request` events so that spikes are surfaced rather than only recorded.
@@ -80,7 +85,11 @@ When a binding is violated, authentik terminates the session and records a logou
 Stricter bindings cause more spurious logouts. Users on mobile networks, on VPNs, or behind load-balanced egress can change ASN or IP mid-session. Start with the loosest binding that meets your requirements and review the resulting logout events before tightening it.
 :::
 
-Each binding needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)) and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)). If a lookup fails because the database is missing, the binding is treated as broken and the session is terminated. Note that this check only runs once a client's IP changes, not at login, so a missing database can go unnoticed for some time before it starts logging users out. Make sure the database is present before enabling a binding.
+Each binding needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)), and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)).
+
+:::warning
+If the database is missing, the lookup fails, the binding is treated as broken, and the session is terminated. This check only runs once a client's IP changes, not at login, so the problem can stay hidden long after the binding is enabled.
+:::
 
 ### Unauthenticated sessions
 
