@@ -29,7 +29,10 @@ Requiring a second factor is the single most effective change you can make to an
 - Set **Not configured action** to **Configure** so that users without an authenticator are required to enroll one, or to **Deny** if enrollment is handled out of band. Leaving it on **Skip** means users without a device sign in with a password alone.
 - Restrict **Device Classes** to the methods you accept. Limiting the stage to WebAuthn removes phishable factors such as TOTP and SMS.
 - Set **WebAuthn User verification** to require user verification, so the authenticator confirms the user's presence and identity rather than only proving possession.
-- Use **WebAuthn Device type restrictions** to allow only approved hardware families. Configure the same allowlist on the [WebAuthn authenticator setup stage](../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md) so that new enrollments match.
+- Use **WebAuthn Device type restrictions** to limit authentication to approved hardware families. Configure the same allowlist on the [WebAuthn authenticator setup stage](../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.md) so that new enrollments match.
+
+    This filter only applies to devices that have a stored device type. Devices enrolled before authentik 2024.4, and authenticators whose AAGUID is unknown, have no stored type and are not matched by the filter, so they continue to work. For an enforceable policy, remove those enrollments and have the users re-enroll.
+
 - Lower or clear the **Last validation threshold** if you do not want authentik to skip validation for users who recently used a device.
 - Keep the throttling factors at or above their defaults. They apply exponential back-off to code-based methods after failed attempts.
 
@@ -42,14 +45,14 @@ By default, an [Identification stage](../add-secure-apps/flows-stages/stages/ide
 - Enable **Pretend user exists** so the flow continues with the same responses for unknown identifiers.
 - Disable **Show matched user** so the username and avatar of the matched account are not displayed.
 - Limit **User Fields** to the identifiers you actually need. Accepting both username and email widens the range of values an attacker can test.
-- Remove the **Enrollment flow**, **Recovery flow**, and **Passwordless flow** links from the stage if those paths should not be publicly reachable.
+- Remove the **Enrollment flow**, **Recovery flow**, and **Passwordless flow** links from the stage if those paths should not be advertised. This only removes the link from the login screen. The flows themselves stay reachable at `/if/flow/<slug>/`, so to actually restrict them, bind a policy to the flow or delete it.
 
 ### Brute-force resistance
 
 Combine the following controls to slow down credential-stuffing attempts:
 
-- Bind a [Reputation policy](../customize/policies/types/reputation.md) to your authentication flow to deny or challenge clients that have accumulated failed attempts. The score limits are configurable under **System** > **Settings** as **Reputation: lower limit** and **Reputation: upper limit**.
-- Add a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md), either as its own stage or configured inline on the Identification stage.
+- Use a [Reputation policy](../customize/policies/types/reputation.md) to react to repeated failed attempts from a username or client IP. The policy passes when the score is at or below its threshold, so bind it to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md) binding to show an extra challenge only to low-reputation requests. To deny those requests instead, negate the policy binding. Binding it directly to a flow without negation blocks ordinary users and admits the risky ones. The score limits are configurable under **System** > **Settings** as **Reputation: lower limit** and **Reputation: upper limit**.
+- Add a CAPTCHA stage unconditionally, either as its own stage or configured inline on the Identification stage, if you would rather not make it reputation-dependent.
 - Bind a [GeoIP policy](../customize/policies/types/geoip.md) to restrict sign-ins to expected countries or to require additional verification elsewhere.
 - Configure [notification rules](../sys-mgmt/events/notifications.md) on the `login_failed` and `suspicious_request` events so that spikes are surfaced rather than only recorded.
 
@@ -66,7 +69,7 @@ The [User Login stage](../add-secure-apps/flows-stages/stages/user_login/index.m
 
 ### Session binding
 
-The User Login stage can also bind a session to the network and location it was created from, so that a stolen session cookie stops working when replayed elsewhere.
+The User Login stage can also bind a session to the network and location it was created from. authentik then terminates the session when the client's network or location changes beyond the configured strictness, which limits how far a stolen session cookie can travel. A cookie replayed from within the same permitted ASN or region still works, so treat this as a way to detect relocation rather than as a guarantee against replay.
 
 - **Network binding** can bind to ASN, ASN and network, or ASN, network, and IP.
 - **GeoIP binding** can bind to continent, continent and country, or continent, country, and city.
@@ -77,7 +80,7 @@ When a binding is violated, authentik terminates the session and records a logou
 Stricter bindings cause more spurious logouts. Users on mobile networks, on VPNs, or behind load-balanced egress can change ASN or IP mid-session. Start with the loosest binding that meets your requirements and review the resulting logout events before tightening it.
 :::
 
-Both bindings require the GeoIP and ASN databases to be present. See [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip) and [`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn).
+Each binding needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)) and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)). If a lookup fails because the database is missing, the binding is treated as broken and the session is terminated, so make sure the database is present before enabling a binding.
 
 ### Unauthenticated sessions
 
@@ -107,7 +110,6 @@ Impersonation always generates `impersonation_started` and `impersonation_ended`
 API tokens and app passwords bypass flow-based authentication, including MFA. Under **System** > **Settings**:
 
 - Reduce **Default token duration** from its default of `days=1` if tokens in your deployment are short-lived.
-- Increase **Default token length** beyond the default of 60 characters.
 
 Review existing tokens under **Directory** > **Tokens and App passwords**, and prefer [service accounts](../users-sources/user/account-types/service-accounts.md) with scoped permissions over tokens tied to a superuser.
 
