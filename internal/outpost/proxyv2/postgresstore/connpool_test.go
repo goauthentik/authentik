@@ -67,7 +67,9 @@ func TestRefreshableConnPool_CredentialRefresh(t *testing.T) {
 	// Test initial connection works
 	ctx := context.Background()
 	err = pool.Ping(ctx)
-	assert.NoError(t, err, "Initial connection should work")
+	if err != nil {
+		t.Skipf("skipping RefreshableConnPool test: PostgreSQL not available: %v", err)
+	}
 
 	// Create GORM DB
 	db, err := pool.NewGORMDB()
@@ -123,7 +125,9 @@ func TestRefreshableConnPool_ConcurrentAccess(t *testing.T) {
 	ctx := context.Background()
 	var result int
 	err = db.WithContext(ctx).Raw("SELECT 1").Scan(&result).Error
-	require.NoError(t, err, "Initial connection test should succeed")
+	if err != nil {
+		t.Skipf("skipping RefreshableConnPool concurrent test: PostgreSQL not available: %v", err)
+	}
 
 	// Test concurrent queries
 	numGoroutines := 10

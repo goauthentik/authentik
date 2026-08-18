@@ -54,15 +54,21 @@ func SetupTestDB(t *testing.T) (*gorm.DB, *RefreshableConnPool) {
 
 	// Use standardized setup
 	db, pool, err := SetupGORMWithRefreshablePool(cfg, gormConfig, 10, 100, time.Hour)
-	require.NoError(t, err)
+	if err != nil {
+		t.Skipf("skipping postgresstore tests: database not available: %v", err)
+	}
 
 	return db, pool
 }
 
 // CleanupTestDB removes test sessions from the database
 func CleanupTestDB(t *testing.T, db *gorm.DB, pool *RefreshableConnPool) {
-	assert.NoError(t, db.Exec("DELETE FROM authentik_providers_proxy_proxysession").Error)
-	assert.NoError(t, pool.Close())
+	if db != nil {
+		assert.NoError(t, db.Exec("DELETE FROM authentik_providers_proxy_proxysession").Error)
+	}
+	if pool != nil {
+		assert.NoError(t, pool.Close())
+	}
 }
 
 func TestPostgresStore_New(t *testing.T) {
