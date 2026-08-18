@@ -1,5 +1,6 @@
 ---
 title: Device code flow
+sidebar_position: 5
 ---
 
 The device code flow is also known as _device flow_ or _device authorization grant flow_. This type of authentication flow is useful for devices with limited input capabilities and/or devices without browsers. The Request for Comments (RFC) 8628) abstract for this flow states:
