@@ -1,6 +1,8 @@
 """authentik multi-stage authentication engine"""
 
 from copy import deepcopy
+from hashlib import sha256
+from time import sleep
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -69,6 +71,14 @@ SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
+
+CACHE_DEDUP_PREFIX = "goauthentik.io/flows/dedup"
+# Seconds a submission and its stored response stay deduplicatable; must exceed
+# DEDUP_WAIT_ATTEMPTS * DEDUP_WAIT_INTERVAL so a waiting duplicate can still
+# read the stored response
+DEDUP_CACHE_TIMEOUT = 5
+DEDUP_WAIT_ATTEMPTS = 60
+DEDUP_WAIT_INTERVAL = 0.05
 
 
 def challenge_types():
@@ -333,6 +343,100 @@ class FlowExecutorView(APIView):
     )
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Solve the previously retrieved challenge and advanced to the next stage."""
+        # Some clients (Apple CFNetwork: iOS Safari, PWAs, ASWebAuthenticationSession)
+        # send the same request twice, concurrently. Processing both submissions
+        # consumes one-time credentials (e.g. TOTP) twice: the duplicate fails as a
+        # replay, emits a spurious login_failed event and can lock the user out of
+        # the current TOTP step. Elect a winner per identical (session, stage
+        # binding, path, body) submission and replay its response to the duplicate.
+        # Every deduplication path fails open to processing the request normally.
+        dedup_key = self._dedup_key(request)
+        dedup_winner = False
+        if dedup_key:
+            try:
+                stored = cache.get(f"{dedup_key}/response")
+                if stored is not None:
+                    self._logger.info("f(exec): replaying response to duplicate")
+                    # The winner's session state is authoritative; discard this
+                    # request's session writes so a late save cannot overwrite
+                    # it with stale state
+                    request.session.modified = False
+                    return self._dedup_restore_response(stored)
+                dedup_winner = bool(
+                    cache.add(f"{dedup_key}/lock", True, timeout=DEDUP_CACHE_TIMEOUT)
+                )
+                if not dedup_winner:
+                    self._logger.info("f(exec): duplicate submission, awaiting winner")
+                    for _ in range(DEDUP_WAIT_ATTEMPTS):
+                        stored = cache.get(f"{dedup_key}/response")
+                        if stored is not None:
+                            self._logger.info("f(exec): replaying response to duplicate")
+                            request.session.modified = False
+                            return self._dedup_restore_response(stored)
+                        sleep(DEDUP_WAIT_INTERVAL)
+                    self._logger.warning("f(exec): duplicate wait timed out, processing")
+            except Exception as exc:  # noqa
+                self._logger.warning("f(exec): dedup failed, processing normally", exc=exc)
+                dedup_winner = False
+        response = self._solve_challenge(request, *args, **kwargs)
+        if dedup_key and dedup_winner:
+            try:
+                stored = self._dedup_serialize_response(response)
+                if stored is not None:
+                    cache.set(f"{dedup_key}/response", stored, timeout=DEDUP_CACHE_TIMEOUT)
+            except Exception as exc:  # noqa
+                self._logger.warning("f(exec): failed to store response for dedup", exc=exc)
+        return response
+
+    def _dedup_key(self, request: HttpRequest) -> str | None:
+        """Cache key identifying an exact duplicate of this submission (same session,
+        stage binding, path and body), or None when the request cannot be safely
+        deduplicated. Scoping to the stage binding ensures identical bodies submitted
+        to consecutive stages are treated as distinct submissions."""
+        try:
+            session_key = request.session.session_key
+            if not session_key or not self.current_binding:
+                return None
+            digest = sha256()
+            digest.update(session_key.encode())
+            digest.update(b"\x00")
+            digest.update(str(self.current_binding.pk).encode())
+            digest.update(b"\x00")
+            digest.update(request.get_full_path().encode())
+            digest.update(b"\x00")
+            digest.update(request.body)
+            return f"{CACHE_DEDUP_PREFIX}/{digest.hexdigest()}"
+        except Exception as exc:  # noqa
+            self._logger.debug("f(exec): submission not deduplicatable", exc=exc)
+            return None
+
+    @staticmethod
+    def _dedup_serialize_response(response: HttpResponse) -> dict | None:
+        """Serialize a response for replay to a duplicate submission; None if the
+        response cannot be safely replayed"""
+        if getattr(response, "streaming", False):
+            return None
+        if hasattr(response, "is_rendered") and not response.is_rendered:
+            return None
+        return {
+            "status": response.status_code,
+            "content": bytes(response.content),
+            "content_type": response.get("Content-Type", ""),
+            "location": response.get("Location", ""),
+        }
+
+    @staticmethod
+    def _dedup_restore_response(stored: dict) -> HttpResponse:
+        """Rebuild a response serialized by _dedup_serialize_response"""
+        response = HttpResponse(content=stored["content"], status=stored["status"])
+        if stored["content_type"]:
+            response["Content-Type"] = stored["content_type"]
+        if stored["location"]:
+            response["Location"] = stored["location"]
+        return response
+
+    def _solve_challenge(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Pass the submission to the current stage view"""
         class_path = class_to_path(self.current_stage_view.__class__)
         self._logger.debug(
             "f(exec): Passing POST",
