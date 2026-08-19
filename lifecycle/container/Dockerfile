@@ -60,7 +60,8 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage: download Rust toolchain
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:f18dbc487a2c3148b62e46c394445aa87189861bca262e095496dca5b1f0ae39 AS rust-toolchain
+# TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:e048842e22989f2c0eaa7029d8a3d662a816504b0a9275917b5832a02e8cecda AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -72,7 +73,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential && \
+    build-essential \
+    curl ca-certificates && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
     rustup install && \
     rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
@@ -82,7 +84,8 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 # Stage: Download uv
 FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c AS uv
 # Stage: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:46b43f849cf570804e1dbca07bd15fa37dd940e93fa7fef38b6c9c54d4efdd80 AS python-base
+# TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:9f7cb71b77da3d38b3c7b77bb1cd913e9db90270137321771e97d25b9d07e8e8 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -182,8 +185,94 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,id=uv-python-deps-$TARGETARCH$TARGETVARIANT,target=/root/.cache/uv \
     uv sync --locked --no-install-project --no-dev
 
+# Stage: assemble the runtime filesystem
+# prune.sh copies the used files into /out, and the final stage starts FROM scratch
+FROM python-base AS runtime-assemble
+
+WORKDIR /
+
+# Not cached on purpose: apt-get upgrade on every build is what keeps the OS packages current
+RUN --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    $(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' /tmp/runtime-packages.txt) && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
+    mkdir -p /certs /data /media /blueprints /authentik/.ssh /ak-root && \
+    ln -s /media /data/media && \
+    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
+
+COPY ./authentik/ /authentik
+COPY ./pyproject.toml /
+COPY ./uv.lock /
+COPY ./schemas /schemas
+COPY ./locale /locale
+COPY ./manage.py /
+COPY ./blueprints /blueprints
+COPY ./lifecycle/ /lifecycle
+COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
+COPY --from=rust-builder /bin/authentik /bin/authentik
+COPY ./packages/ /ak-root/packages
+COPY --from=python-deps /ak-root/.venv /ak-root/.venv
+COPY --from=node-builder /work/web/dist/ /web/dist/
+COPY --from=node-builder /work/web/authentik/ /web/authentik/
+COPY --from=geoip /usr/share/GeoIP /geoip
+
+# Setup 'ak'
+RUN ln -s /ak-root/packages /packages && \
+    ln -sf /bin/authentik /lifecycle/ak
+
+# Prune everything that is not needed
+RUN --mount=type=bind,target=/tmp/prune.sh,src=./lifecycle/container/prune.sh \
+    --mount=type=bind,target=/tmp/runtime-packages.txt,src=./lifecycle/container/runtime-packages.txt \
+    --mount=type=bind,target=/tmp/runtime-paths.txt,src=./lifecycle/container/runtime-paths.txt \
+    --mount=type=bind,target=/tmp/runtime-drop.txt,src=./lifecycle/container/runtime-drop.txt \
+    bash /tmp/prune.sh /tmp/runtime-packages.txt /tmp/runtime-paths.txt /tmp/runtime-drop.txt
+
+# Stage: Debug
+# For `ak test-all`, AUTHENTIK_DEBUGGER and `docker exec ... bash`
+# Build it with --target debug-image as it is not the default
+FROM runtime-assemble AS debug-image
+
+ARG VERSION
+ARG GIT_BUILD_HASH
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
+LABEL org.opencontainers.image.title="authentik server image (debug)" \
+    org.opencontainers.image.version=${VERSION}
+
+COPY ./tests /tests
+# runtime-assemble already copied pyproject.toml and uv.lock to /, so uv syncs
+# from there. Dropping --no-dev is what adds the dev dependency group that
+# `ak test-all` needs. UV_NO_BINARY_PACKAGE matches the python-deps stage so
+# that anything uv does rebuild is still built from source against the FIPS
+# OpenSSL, rather than replaced with a prebuilt wheel.
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
+RUN rm -rf /out /out-root && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    bash-completion curl git less procps vim-tiny \
+    krb5-user krb5-kdc krb5-admin-server libkrb5-dev gcc && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    UV_PROJECT_ENVIRONMENT=/ak-root/.venv uv sync --locked --no-install-project && \
+    touch /unittest.xml && \
+    chown authentik:authentik /unittest.xml
+
+USER 1000
+ENV TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GOFIPS=1 \
+    RUST_BACKTRACE=full
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
+
 # Stage: Run
-FROM python-base AS final-image
+# Contains only what's needed at runtime and nothing more
+FROM scratch AS final-image
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -200,48 +289,32 @@ LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.vendor="Authentik Security Inc." \
     org.opencontainers.image.version=${VERSION}
 
+# The copies are split so a rebuild does not invalidate unchanged layers
+# /out-root holds the merged-usr symlinks (bin, lib, lib64, sbin) and the top level files, trailing slash required!
+COPY --from=runtime-assemble /out-root/ /
+COPY --from=runtime-assemble /out/usr /usr
+COPY --from=runtime-assemble /out/etc /etc
+COPY --from=runtime-assemble /out/var /var
+COPY --from=runtime-assemble /out/tmp /tmp
+COPY --from=runtime-assemble /out/run /run
+COPY --from=runtime-assemble /out/geoip /geoip
+COPY --from=runtime-assemble /out/ak-root /ak-root
+COPY --from=runtime-assemble /out/web /web
+COPY --from=runtime-assemble /out/locale /locale
+COPY --from=runtime-assemble /out/schemas /schemas
+COPY --from=runtime-assemble /out/blueprints /blueprints
+COPY --from=runtime-assemble /out/lifecycle /lifecycle
+COPY --from=runtime-assemble /out/authentik /authentik
+COPY --chown=1000:1000 --from=runtime-assemble /out/certs /certs
+COPY --chown=1000:1000 --from=runtime-assemble /out/data /data
+COPY --chown=1000:1000 --from=runtime-assemble /out/media /media
+
 WORKDIR /
-
-# We cannot cache this layer otherwise we'll end up with a bigger image
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    # Required for runtime
-    apt-get install -y --no-install-recommends \
-    libpq5 libmaxminddb0 ca-certificates \
-    libkadm5clnt-mit12 libkadm5clnt7t64-heimdal \
-    libltdl7 libxslt1.1 && \
-    apt-get purge -y curl libcurl4t64 && \
-    pip3 install --no-cache-dir --upgrade pip && \
-    apt-get clean && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
-    adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
-    mkdir -p /certs /data /media /blueprints && \
-    ln -s /media /data/media && \
-    mkdir -p /authentik/.ssh && \
-    mkdir -p /ak-root && \
-    chown authentik:authentik /certs /data /data/media /media /authentik/.ssh /ak-root
-
-COPY ./authentik/ /authentik
-COPY ./pyproject.toml /
-COPY ./uv.lock /
-COPY ./schemas /schemas
-COPY ./locale /locale
-COPY ./tests /tests
-COPY ./manage.py /
-COPY ./blueprints /blueprints
-COPY ./lifecycle/ /lifecycle
-COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
-COPY --from=rust-builder /bin/authentik /bin/authentik
-COPY ./packages/ /ak-root/packages
-RUN  ln -s /ak-root/packages /packages
-COPY --from=python-deps /ak-root/.venv /ak-root/.venv
-COPY --from=node-builder /work/web/dist/ /web/dist/
-COPY --from=node-builder /work/web/authentik/ /web/authentik/
-COPY --from=geoip /usr/share/GeoIP /geoip
-
 USER 1000
 
-ENV TMPDIR=/dev/shm/ \
+ENV PATH="/lifecycle:/ak-root/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    VENV_PATH="/ak-root/.venv" \
+    TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1 \

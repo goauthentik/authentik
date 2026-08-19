@@ -1,0 +1,50 @@
+# Debian packages whose files are kept in the final (distroless) server image.
+# Everything installed in the assemble stage but not listed here is dropped.
+#
+# Each entry is justified below. Nothing is here "just in case": the list was
+# derived from the transitive DT_NEEDED closure of /usr/bin/authentik, the
+# CPython interpreter, every .so in /ak-root/.venv, plus an strace of a full
+# boot (server + root worker) and a run of the Django test suite.
+#
+# Lines starting with # and blank lines are ignored.
+
+# --- C runtime -------------------------------------------------------------
+libc6                       # everything
+libc-bin                    # gconv modules (iconv, used by libxml2), /etc/ld.so.cache
+libgcc-s1                   # unwinder, needed by the Rust binary and by Rust wheels
+libstdc++6                  # C++ runtime, pulled in by several wheels
+base-files                  # /etc/os-release, the FHS directory skeleton
+netbase                     # /etc/protocols, /etc/services
+tzdata                      # zoneinfo, used by Python and Django
+ca-certificates             # /etc/ssl/certs, the trust store for every outbound TLS call
+
+# --- FIPS OpenSSL ----------------------------------------------------------
+libssl3t64                  # the from-source FIPS OpenSSL runtime
+openssl-provider-legacy     # ossl-modules/legacy.so, dlopened by OpenSSL at init
+
+# --- CPython extension modules --------------------------------------------
+libbz2-1.0                  # _bz2
+liblzma5                    # _lzma
+zlib1g                      # zlib, and libxml2/libpq compression
+libffi8                     # _ctypes
+libzstd1                    # libpq and libxml2 compression
+
+# --- lxml / xmlsec (SAML signing) -----------------------------------------
+libxml2                     # lxml, xmlsec
+libxslt1.1                  # lxml.etree.XSLT, libexslt
+libgcrypt20                 # required by libexslt
+libgpg-error0               # required by libgcrypt
+libltdl7                    # xmlsec dlopens its crypto backend through libltdl
+
+# --- PostgreSQL ------------------------------------------------------------
+libpq5                      # psycopg[c]
+libldap2                    # libpq links it (LDAP connection-service lookup)
+libsasl2-2                  # libldap links it
+
+# --- Kerberos (python gssapi, and libpq GSSAPI auth) -----------------------
+libgssapi-krb5-2
+libkrb5-3
+libk5crypto3
+libkrb5support0
+libcom-err2
+libkeyutils1
