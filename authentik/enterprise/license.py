@@ -38,7 +38,7 @@ from authentik.enterprise.models import (
 from authentik.tenants.utils import get_unique_identifier
 
 CACHE_KEY_ENTERPRISE_LICENSE = "goauthentik.io/enterprise/license"
-CACHE_EXPIRY_ENTERPRISE_LICENSE = 3 * 60 * 60  # 2 Hours
+CACHE_EXPIRY_ENTERPRISE_LICENSE = 12 * 60 * 60  # 12 Hours
 
 
 @lru_cache
@@ -219,22 +219,25 @@ class LicenseKey:
                 external_user_count=self.get_external_user_count(),
                 status=self.status(),
             )
-        summary = asdict(self.summary())
-        # Also cache the latest summary for the middleware
-        cache.set(CACHE_KEY_ENTERPRISE_LICENSE, summary, timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE)
         return usage
 
     def summary(self) -> LicenseSummary:
         """Summary of license status"""
         status = self.status()
         latest_valid = datetime.fromtimestamp(self.exp).replace(tzinfo=UTC)
-        return LicenseSummary(
+        summary = LicenseSummary(
             latest_valid=latest_valid,
             internal_users=self.internal_users,
             external_users=self.external_users,
             status=status,
             license_flags=self.license_flags,
         )
+        cache.set(
+            CACHE_KEY_ENTERPRISE_LICENSE,
+            asdict(summary),
+            timeout=CACHE_EXPIRY_ENTERPRISE_LICENSE,
+        )
+        return summary
 
     @staticmethod
     def cached_summary() -> LicenseSummary:
