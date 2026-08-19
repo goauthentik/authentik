@@ -5,6 +5,7 @@ from typing import Any
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509 import load_der_x509_certificate
 from django.db import transaction
+from django.db.models import Q
 from requests import RequestException
 from rest_framework.exceptions import ValidationError
 
@@ -128,7 +129,8 @@ class FleetController(BaseController[DBC]):
         for host in self._paginate_hosts():
             serial = host["hardware_serial"]
             device, _ = Device.objects.get_or_create(
-                identifier=serial, defaults={"name": host["hostname"], "expiring": False}
+                Q(identifier=serial) | Q(name=host["hostname"]),
+                defaults={"name": host["hostname"], "expiring": False},
             )
             connection, _ = DeviceConnection.objects.update_or_create(
                 device=device,

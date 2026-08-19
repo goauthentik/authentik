@@ -1,5 +1,6 @@
 from typing import cast
 
+from django.db.models import Q
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -125,7 +126,8 @@ class AgentConnectorViewSet(
         data = EnrollSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device, _ = Device.objects.get_or_create(
-            identifier=data.validated_data["device_serial"],
+            Q(identifier=data.validated_data["device_serial"])
+            | Q(name=data.validated_data["device_name"]),
             defaults={
                 "name": data.validated_data["device_name"],
                 "expiring": False,
