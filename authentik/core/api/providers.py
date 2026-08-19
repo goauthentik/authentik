@@ -57,8 +57,7 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         # providers without their specific type,
         # setting whether authorization_flow/invalidation_flow are required
         # is up to the child serializer
-        extra_kwargs = {
-        }
+        extra_kwargs = {}
         extra_write_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
             "invalidation_flow": {"required": True, "allow_null": False},
