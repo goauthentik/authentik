@@ -38,10 +38,10 @@ Recovery flows deserve the same scrutiny as authentication flows. A recovery flo
 
 ### Account enumeration
 
-By default, an [Identification stage](../add-secure-apps/flows-stages/stages/identification/index.md) reveals whether an identifier belongs to a real account. To reduce this:
+An [Identification stage](../add-secure-apps/flows-stages/stages/identification/index.md) has **Pretend user exists** enabled by default, so an unknown identifier continues through the flow instead of failing immediately. A few settings narrow what is left:
 
-- Enable **Pretend user exists** so the flow continues with the same responses for unknown identifiers.
-- Disable **Show matched user** so the username and avatar of the matched account are not displayed.
+- Keep **Pretend user exists** enabled. With it off, an unknown identifier fails at this stage while a valid one continues, which tells an attacker which is which.
+- Disable **Show matched user**, which is enabled by default. It displays the matched account's username and avatar on the following step, and for an unknown identifier authentik shows the value that was typed instead, so the two cases can look different.
 - Limit **User Fields** to the identifiers you actually need. Accepting both username and email widens the range of values an attacker can test.
 - Remove the **Enrollment flow**, **Recovery flow**, and **Passwordless flow** links from the stage if those paths should not be advertised. This only removes the link from the login screen. The flows themselves stay reachable at `/if/flow/<slug>/`, so to actually restrict them, bind a policy to the flow or delete it.
 
@@ -84,10 +84,6 @@ Each binding needs its own database. Network binding uses the ASN database ([`AU
 If the database is missing, the lookup fails, the binding is treated as broken, and the session is terminated. This check only runs once a client's IP changes, not at login, so the problem can stay hidden long after the binding is enabled.
 :::
 
-### Unauthenticated sessions
-
-[`AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`](../install-config/configuration/configuration.mdx#authentik_sessions__unauthenticated_age) controls how long a session lasts before the user has authenticated, which includes partially completed flows. It defaults to `days=1` and can be reduced considerably in most deployments.
-
 ## Administrative access
 
 ### Limit superusers
@@ -104,7 +100,7 @@ Impersonation lets an administrator act as another user. Under **System** > **Se
 - Set **Impersonation** to disabled if the feature is not needed. This applies globally, including to superusers.
 - Keep **Require reason for impersonation** enabled so every use is recorded with a justification.
 
-Impersonation always generates `impersonation_started` and `impersonation_ended` events. Configure a notification rule on these so that use is visible in real time rather than only on audit.
+Impersonation always generates `impersonation_started` and `impersonation_ended` events. Configure a [notification rule](../sys-mgmt/events/notifications.md) on these so that use is visible in real time rather than only on audit.
 
 ### Tokens and app passwords
 
