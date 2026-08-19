@@ -15,6 +15,7 @@ import os
 import shutil
 import subprocess  # nosec
 import sys
+from pathlib import Path
 
 NATIVE_COMMANDS = ("server", "worker", "allinone", "healthcheck")
 
@@ -22,6 +23,10 @@ NATIVE_COMMANDS = ("server", "worker", "allinone", "healthcheck")
 def main():
     """Dispatch an `ak` invocation."""
     args = sys.argv[1:]
+
+    # `boot` reads VENV_PATH to find the interpreter it runs Django with. The Dockerfile sets it;
+    # in a development checkout it is the venv this script itself is running from.
+    os.environ.setdefault("VENV_PATH", str(Path(sys.executable).parent.parent))
 
     binary = shutil.which("authentik")
     if binary:
