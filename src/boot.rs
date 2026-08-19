@@ -24,7 +24,7 @@ use tracing::{info, warn};
 const AK_USER: &str = "authentik";
 /// Mounted by deployments that let the worker manage outpost containers.
 const DOCKER_SOCKET: &str = "/var/run/docker.sock";
-/// Where the Dockerfile puts the compiled binary.
+/// Where the Dockerfile puts the compiled binary. Only a fallback, see `authentik_bin`.
 const AUTHENTIK_BIN: &str = "/bin/authentik";
 /// Subcommands this binary implements itself.
 const NATIVE_COMMANDS: [&str; 4] = ["server", "worker", "allinone", "healthcheck"];
@@ -43,6 +43,19 @@ fn venv_python() -> PathBuf {
     PathBuf::from(venv).join("bin/python")
 }
 
+/// The binary to exec for the commands this binary implements itself.
+///
+/// In the container this is the same file as `AUTHENTIK_BIN`, reached through the `/lifecycle/ak`
+/// symlink. In a development checkout it is the `cargo` build under `target/`, which the container
+/// path would miss. The fallback covers a running binary that cannot be resolved: no `/proc`, or a
+/// path that `readlink` marks as deleted because the file was replaced.
+fn authentik_bin() -> PathBuf {
+    std::env::current_exe()
+        .ok()
+        .filter(|path| path.is_file())
+        .unwrap_or_else(|| PathBuf::from(AUTHENTIK_BIN))
+}
+
 fn tmpdir() -> PathBuf {
     PathBuf::from(std::env::var("TMPDIR").unwrap_or_else(|_| "/tmp".to_owned()))
 }
@@ -57,7 +70,7 @@ fn resolve_target(args: &[String]) -> Vec<String> {
     let python = venv_python().to_string_lossy().into_owned();
     match args.first().map(String::as_str) {
         Some(cmd) if NATIVE_COMMANDS.contains(&cmd) => {
-            let mut target = vec![AUTHENTIK_BIN.to_owned()];
+            let mut target = vec![authentik_bin().to_string_lossy().into_owned()];
             target.extend_from_slice(args);
             target
         }
@@ -329,17 +342,22 @@ mod tests {
 
     #[test]
     fn native_commands_go_to_the_binary() {
+        let bin = authentik_bin().to_string_lossy().into_owned();
         for cmd in NATIVE_COMMANDS {
             let argv = resolve_target(&owned(&[cmd]));
-            assert_eq!(argv[0], AUTHENTIK_BIN);
+            assert_eq!(argv[0], bin);
             assert_eq!(argv[1], cmd);
         }
     }
 
     #[test]
     fn healthcheck_keeps_its_mode_argument() {
+        let bin = authentik_bin().to_string_lossy().into_owned();
         let argv = resolve_target(&owned(&["healthcheck", "worker"]));
-        assert_eq!(argv, vec![AUTHENTIK_BIN, "healthcheck", "worker"]);
+        assert_eq!(
+            argv,
+            vec![bin, "healthcheck".to_owned(), "worker".to_owned()]
+        );
     }
 
     #[test]
