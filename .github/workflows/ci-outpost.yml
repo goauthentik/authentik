@@ -75,7 +75,6 @@ jobs:
       fail-fast: false
       matrix:
         type:
-          - proxy
           - ldap
           - radius
           - rac
@@ -88,24 +87,6 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: "go.mod"
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
-      - name: Pin pnpm store directory
-        run: |
-          echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"
-          echo "npm_config_store_dir=${RUNNER_TEMP}/pnpm-home/store" >> "$GITHUB_ENV"
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v4
-        with:
-          node-version-file: package.json
-          cache: pnpm
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            web/pnpm-lock.yaml
-      - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir web install --frozen-lockfile
-      - name: Build web
-        run: pnpm --dir web run build-proxy
       - name: Build outpost
         run: |
           set -x
