@@ -10,13 +10,13 @@ This stage lets the user identify themselves by username, email address, UPN, or
 
 ## Configuration options
 
-- **User fields**: which identifiers the user can enter.
+- **User Fields**: which identifiers the user can enter.
     - **Username**
     - **Email**
     - **UPN**
 - **Password stage**: optional [Password stage](../password/index.md) to render inline instead of as a separate step.
 - **Captcha stage**: optional [Captcha stage](../captcha/index.md) to run as part of identification.
-- **WebAuthn Authenticator Validation stage**: optional [Authenticator Validation stage](../authenticator_validate/index.md) used for passkey autofill.
+- **WebAuthn Authenticator Validation Stage**: optional [Authenticator Validation stage](../authenticator_validate/index.md) used for passkey autofill.
 - **Case-insensitive matching**: match identifiers regardless of case.
 - **Show matched user**: display the matched user's username and avatar after a valid identifier is entered.
 - **Pretend user exists**: continue even when the entered identifier does not match a real user.
@@ -83,7 +83,7 @@ authentik automatically falls back to the normal identification flow when passke
 #### Configuration
 
 1. Create or edit an [Authenticator Validation stage](../authenticator_validate/index.md) that allows the **WebAuthn** device class.
-2. Set the Identification stage's **WebAuthn Authenticator Validation stage** to that stage.
+2. Set the Identification stage's **WebAuthn Authenticator Validation Stage** to that stage.
 3. Make sure users have already enrolled a WebAuthn authenticator, for example with the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.md).
 
 If the user has multiple passkeys, the browser shows its own picker. In the default authentication flow, authentik skips the MFA validation stage after a passkey login with an expression policy; adjust that policy if you still want a second factor after passkey login.

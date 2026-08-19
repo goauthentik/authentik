@@ -79,7 +79,7 @@ if not pending_user:
 return not DuoDevice.objects.filter(user=pending_user, confirmed=True).exists()
 ```
 
-Because the expression already returns whether the Password stage should run, you do not need to enable **Negate result** on the policy binding.
+Because the expression already returns whether the Password stage should run, you do not need to enable **Negate Result** on the policy binding.
 
 If the Password stage binding has more than one policy attached, review its **Policy engine mode** carefully:
 

@@ -12,6 +12,7 @@ tags:
         facts,
     ]
 authentik_version: "2025.12.0"
+sidebar_position: 3
 ---
 
 Endpoint devices registered with authentik through a [connector](./connectors/index.mdx), such as the [authentik Agent](./connectors/authentik-agent.md) connector, regularly [check in](#device-check-in) with authentik and report their [device facts](#device-facts).

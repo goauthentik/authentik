@@ -37,7 +37,7 @@ runs:
         sudo rsync -a --delete /tmp/empty/ /usr/local/lib/android/
     - name: Install uv
       if: ${{ contains(inputs.dependencies, 'python') }}
-      uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v5
+      uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v5
       with:
         enable-cache: true
     - name: Setup python
@@ -64,7 +64,7 @@ runs:
         rustflags: ""
     - name: Setup rust dependencies
       if: ${{ contains(inputs.dependencies, 'rust') }}
-      uses: taiki-e/install-action@7f4eb899022d8fe70b20c4f3de697aa85c309026 # v2
+      uses: taiki-e/install-action@288e746965032cfcc232e09af2daf5f23c14d780 # v2
       with:
         tool: cargo-deny cargo-machete cargo-llvm-cov nextest
     - name: Setup pnpm

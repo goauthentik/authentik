@@ -55,13 +55,13 @@ export interface GrantRequest {
      * @type {PartialUser}
      * @memberof GrantRequest
      */
-    readonly revokedBy: PartialUser;
+    readonly revokedBy: PartialUser | null;
     /**
      *
      * @type {PartialUser}
      * @memberof GrantRequest
      */
-    readonly agentOwner: PartialUser;
+    readonly agentOwner: PartialUser | null;
     /**
      *
      * @type {boolean}

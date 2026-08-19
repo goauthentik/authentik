@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" data-theme="">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>@goauthentik/theme — design system reference</title>
+
+        <!-- Copied from the `fonts` package -->
+        <link rel="stylesheet" href="./faces.css" />
+        <link rel="stylesheet" href="./icons.css" />
+
+        <!-- This document -->
+        <link rel="stylesheet" href="./index.css" />
+        <link rel="stylesheet" href="./demo.css" />
+    </head>
+
+    <body>
+        <header class="masthead">
+            <div class="masthead__inner">
+                <h1>@goauthentik/<span class="accent">theme</span></h1>
+                <span class="masthead__meta" id="meta-line">reading dist/index.css…</span>
+                <div class="masthead__controls">
+                    <div class="segmented" role="group" aria-label="Theme">
+                        <button type="button" data-theme-value="" aria-pressed="true">Light</button>
+                        <button type="button" data-theme-value="dark" aria-pressed="false">
+                            Dark
+                        </button>
+                        <button type="button" data-theme-value="reduced" aria-pressed="false">
+                            Reduced Motion
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <nav class="sitenav" aria-label="Sections">
+                <a href="#tokens">Tokens</a>
+                <a href="#color">Color</a>
+                <a href="#typography">Typography</a>
+                <a href="#spacing">Spacing</a>
+                <a href="#shape">Shape</a>
+                <a href="#surfaces">Surfaces</a>
+                <a href="#motion">Motion</a>
+                <a href="#layering">Layering</a>
+                <a href="#icons">Icons</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="tokens">
+                <div class="section__head">
+                    <h2>Tokens</h2>
+                    <span class="section__count" id="tokens-count">—</span>
+                    <p class="section__note">
+                        Following the pattern established by Patternfly, this page represents all of
+                        the tokens we currently have in <code>@goauthentik/theme</code>. The
+                        <code>build-demo.mjs</code> script copies the font and CSS files here, but
+                        this is the best demo we have so far of the tokens we support.
+                    </p>
+                </div>
+                <div class="stats" id="stats"></div>
+                <div class="audit" id="audit">Auditing…</div>
+            </section>
+
+            <section id="color">
+                <div class="section__head">
+                    <h2>Color</h2>
+                    <span class="section__count" id="color-count">—</span>
+                    <p class="section__note">
+                        We keep our colors in <code>oklch</code>, but include the hex as a comment
+                        to assist IDEs. Contrast is computed from the <code>oklch</code> triplet —
+                        converted through Oklab to linear sRGB, gamut-clamped, then measured per
+                        WCAG 2.1 — against the surface token appropriate to each role, and
+                        re-measured whenever the theme changes. Tokens marked
+                        <span class="badge badge--fallthrough">no dark override</span> keep their
+                        light value in dark mode. Most of these are fine in dark mode, but you
+                        should double-check.
+                    </p>
+                </div>
+                <div id="color-groups"></div>
+            </section>
+
+            <section id="typography">
+                <div class="section__head">
+                    <h2>Typography</h2>
+                    <span class="section__count" id="type-count">—</span>
+                    <p class="section__note">
+                        Three RedHat variable families, loaded from
+                        <code>@goauthentik/fonts</code>. The semantic aliases (<code>body</code>,
+                        <code>heading</code>, <code>code</code>) are listed ahead of the primitives
+                        they point at, matching the order in the source.
+                    </p>
+                </div>
+
+                <h3 class="subhead">Families</h3>
+                <div class="grid" id="families"></div>
+
+                <h3 class="subhead">Size ramp</h3>
+                <div class="ramp" id="sizes"></div>
+
+                <h3 class="subhead">Weights, across all three families</h3>
+                <p class="section__note" style="margin-bottom: var(--ak-global--space--md)">
+                    Each family is rendered at every weight token.
+                    <code>faces.css</code> declares different variable ranges per family — Display
+                    300–900, Text 400–500, Mono 300–700 — so a requested weight outside a family's
+                    range gets clamped, and the browser may synthesise the difference. Rows that
+                    look identical are the clamp; the computed weight beside each row is what was
+                    asked for, not necessarily what the face can draw.
+                </p>
+                <div class="weights" id="weights"></div>
+
+                <h3 class="subhead">Line height</h3>
+                <div class="leading" id="leading"></div>
+            </section>
+
+            <section id="spacing">
+                <div class="section__head">
+                    <h2>Spacing</h2>
+                    <span class="section__count" id="space-count">—</span>
+                    <p class="section__note">
+                        Bar length is the literal token value, so the ramp's shape is the ramp's
+                        actual proportions. Pixel figures are resolved at the current root font
+                        size.
+                    </p>
+                </div>
+                <div class="bars" id="spaces"></div>
+            </section>
+
+            <section id="shape">
+                <div class="section__head">
+                    <h2>Shape</h2>
+                    <span class="section__count" id="shape-count">—</span>
+                    <p class="section__note">
+                        Corner radii and border widths. Both scales are deliberately short; the
+                        radius scale has an
+                        <code>sm</code> and a full pill and nothing between them, which is why every
+                        card on this page shares one corner.
+                    </p>
+                </div>
+                <h3 class="subhead">Radius</h3>
+                <div class="grid" id="radii"></div>
+                <h3 class="subhead">Border width</h3>
+                <div class="grid" id="strokes"></div>
+            </section>
+
+            <section id="surfaces">
+                <div class="section__head">
+                    <h2>Surfaces &amp; elevation</h2>
+                    <span class="section__count" id="surface-count">—</span>
+                    <p class="section__note">
+                        Three background planes and five shadows. The shadow tokens carry their own
+                        dark-theme values — deeper alpha rather than a different geometry — so
+                        elevation stays legible on a dark ground.
+                    </p>
+                </div>
+                <h3 class="subhead">Planes</h3>
+                <div class="surfaces" id="surface-planes"></div>
+                <h3 class="subhead">Shadows</h3>
+                <div class="shadow-stage" id="shadows"></div>
+            </section>
+
+            <section id="motion">
+                <div class="section__head">
+                    <h2>Motion</h2>
+                    <span class="section__count" id="motion-count">—</span>
+                    <p class="section__note">
+                        One duration and one easing curve. Both the
+                        <code>prefers-reduced-motion</code> media query and the
+                        <code>reduced</code> theme zero the duration — and because they are two
+                        different mechanisms writing the same variable, the state readout below
+                        reports each separately.
+                    </p>
+                </div>
+                <div class="grid" id="motion-tokens"></div>
+                <h3 class="subhead">In practice</h3>
+                <div class="motion-track" id="motion-track" data-run="false">
+                    <div class="motion-dot"></div>
+                </div>
+                <p class="section__note" style="margin-top: var(--ak-global--space--md)">
+                    <button type="button" id="motion-run" class="badge" style="cursor: pointer">
+                        Run transition
+                    </button>
+                    <span id="motion-state"></span>
+                </p>
+            </section>
+
+            <section id="layering">
+                <div class="section__head">
+                    <h2>Layering</h2>
+                    <span class="section__count" id="z-count">—</span>
+                    <p class="section__note">
+                        Six stacking rungs, 100 apart. The gaps are the point: they leave room for
+                        ad-hoc values between named layers without renumbering the scale.
+                    </p>
+                </div>
+                <div class="zstack" id="zstack"></div>
+            </section>
+
+            <section id="icons">
+                <div class="section__head">
+                    <h2>Icons</h2>
+                    <span class="section__count" id="icon-count">—</span>
+                    <p class="section__note">
+                        <code>@goauthentik/fonts</code> ships the <code>@font-face</code> rules and
+                        the font files, and stops there — the <code>.pf-icon-*</code> and
+                        <code>.fa</code> classes stay with PatternFly, which this package does not
+                        depend on. What follows is therefore a representative selection addressed by
+                        raw codepoint, not the complete sets. The codepoints were taken from
+                        <code>@patternfly/patternfly@4.224.5</code>, whose font binaries are
+                        byte-identical to the ones shipped here, so they are authoritative for these
+                        files.
+                    </p>
+                </div>
+                <h3 class="subhead">pficon</h3>
+                <div class="icons" id="icons-pf"></div>
+                <h3 class="subhead">Font Awesome 5 Free, solid</h3>
+                <div class="icons" id="icons-fa"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>
+                Generated from <code>packages/theme/dist/index.css</code>,
+                <code>packages/fonts/faces.css</code>, and <code>packages/fonts/icons.css</code>.
+            </p>
+            <table class="provenance">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Origin</th>
+                        <th>License</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RedHatDisplay, RedHatText, RedHatMono</td>
+                        <td>The Red Hat Project Authors</td>
+                        <td>SIL OFL 1.1</td>
+                    </tr>
+                    <tr>
+                        <td>pficon</td>
+                        <td>PatternFly, © Red Hat, Inc.</td>
+                        <td>MIT</td>
+                    </tr>
+                    <tr>
+                        <td>Font Awesome 5 Free (solid)</td>
+                        <td>Fonticons, Inc.</td>
+                        <td>SIL OFL 1.1 (fonts), CC BY 4.0 (icons)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                Full attribution in <code>packages/fonts/NOTICE.md</code>; license texts in
+                <code>packages/fonts/licenses/</code>.
+            </p>
+        </footer>
+        <script src="./demo.js" type="module"></script>
+    </body>
+</html>

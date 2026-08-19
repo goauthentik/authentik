@@ -50,7 +50,7 @@ For detailed instructions, refer to Google documentation.
 
 ### Set credentials for the service account
 
-1. On the **Service accounts** page, click the account that you just created.
+1. On the **Service Accounts** page, click the account that you just created.
 2. Click the **Keys** tab at top of the page, then click **Add Key** > **Create new key**.
 3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
@@ -60,7 +60,7 @@ For detailed instructions, refer to Google documentation.
 6. Click on **New Provider Configuration**.
 7. Under **Universal Device Trust**, click **Set up**.
 8. Provide a name and set the URL to `https://authentik.company/endpoint/gdtc/chrome/`.
-9. Under **Service accounts**, enter the full name of the service account created above, for example `authentik-gdtc@authentik-enterprise-dev.iam.gserviceaccount.com`.
+9. Under **Service Accounts**, enter the full name of the service account created above, for example `authentik-gdtc@authentik-enterprise-dev.iam.gserviceaccount.com`.
 
 ### Create the connector
 

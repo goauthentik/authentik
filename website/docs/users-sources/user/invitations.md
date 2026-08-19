@@ -36,9 +36,9 @@ The invitation wizard, available from the **Directory** > **Invitations** page i
 
 - If you picked an existing flow, select it from the **Enrollment flow** drop-down and click **Next**.
 - If you are creating a new flow, fill in:
-    - **Flow name**: display name of the new enrollment flow.
-    - **Flow slug**: the slug for the flow which is included in the URL.
-    - **Invitation stage name**: name of the invitation stage that will be bound to the new flow.
+    - **Flow Name**: display name of the new enrollment flow.
+    - **Flow Slug**: the slug for the flow which is included in the URL.
+    - **Invitation Stage Name**: name of the invitation stage that will be bound to the new flow.
     - **User type**: the user type for users enrolled via this flow.
     - **Continue flow without invitation**: when enabled, the flow proceeds to the next stage even when no invitation token is supplied. When disabled, the flow is canceled if a valid invitation is not provided.
 
