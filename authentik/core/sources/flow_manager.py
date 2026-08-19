@@ -138,9 +138,46 @@ class SourceFlowManager:
                 group_id=group_id,
                 **self.user_info,
             )
-            for group_id in self.user_properties.setdefault("groups", [])
+            for group_id in self._keyable_group_ids(self.user_properties.setdefault("groups", []))
         }
         del self.user_properties["groups"]
+
+    def _keyable_group_ids(self, group_ids: list[Any]) -> list[Any]:
+        """Drop group identifiers that cannot be used as a `groups_properties` key.
+
+        A source is expected to hand us group *identifiers*, but nothing enforces
+        that: an IdP may return `groups` as a list of objects, and a user property
+        mapping can merge anything at all into the list. Either produced an
+        unhashable value, which raised `TypeError` out of this constructor and
+        surfaced as HTTP 500 — locking every member of such a group out of the
+        source, with no way for an operator to intervene, since mappings only run
+        after this point.
+
+        Skipping the entry keeps authentication working. It is recorded rather
+        than merely dropped, because a user silently arriving with fewer groups
+        than the IdP granted is a difference an operator needs to be able to see.
+        """
+        keyable = []
+        skipped = []
+        for group_id in group_ids:
+            try:
+                hash(group_id)
+            except TypeError:
+                skipped.append(group_id)
+            else:
+                keyable.append(group_id)
+        if skipped:
+            self._logger.warning("Skipping groups with an unusable identifier", groups=skipped)
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    f"Source '{self.source.name}' returned {len(skipped)} group(s) whose "
+                    "identifier is not a string; they were not applied to the user."
+                ),
+                source=self.source,
+                groups=skipped,
+            ).from_http(self.request)
+        return keyable
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""

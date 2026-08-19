@@ -80,6 +80,66 @@ class TestPropertyMappings(TestCase):
             },
         )
 
+    def test_object_group_base_properties(self):
+        """Test object-shaped groups being reduced to their identifier (#25191)"""
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "0db0", "name": "pixee-admins", "$ref": "https://idp.example.com/Groups/0db0"},
+            {"value": "28b5", "display": "Administrators"},
+        ]
+        properties = self.source.get_base_user_properties(info=info)
+        self.assertEqual(properties["groups"], ["0db0", "28b5"])
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="0db0"),
+            {"name": "pixee-admins"},
+        )
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="28b5"),
+            {"name": "Administrators"},
+        )
+
+    def test_object_group_base_properties_without_name(self):
+        """Test an object-shaped group falling back to its identifier for a name"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"id": "0db0"}]
+        self.assertEqual(self.source.get_base_user_properties(info=info)["groups"], ["0db0"])
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="0db0"), {"name": "0db0"}
+        )
+
+    def test_unrecognised_object_group_is_passed_through(self):
+        """Test a group object with no identifier claim being left for the flow manager"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"$ref": "https://idp.example.com/Groups/0db0"}]
+        self.assertEqual(
+            self.source.get_base_user_properties(info=info)["groups"],
+            [{"$ref": "https://idp.example.com/Groups/0db0"}],
+        )
+
+    def test_object_group_property_mappings(self):
+        """Test object-shaped groups reaching group property mappings (#25191)"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"id": "0db0", "name": "pixee-admins"}]
+        self.source.group_property_mappings.add(
+            OAuthSourcePropertyMapping.objects.create(
+                name="test",
+                expression="return {'attributes': {'id': group_id}}",
+            )
+        )
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        self.assertEqual(
+            flow_manager.groups_properties,
+            {
+                "0db0": {
+                    "name": "pixee-admins",
+                    "attributes": {
+                        "id": "0db0",
+                    },
+                },
+            },
+        )
+
     def test_grup_property_mappings(self):
         info = deepcopy(INFO)
         info["groups"] = ["group 1", "group 2"]
