@@ -74,19 +74,16 @@ def get_login_serializers():
 def login_capable_source_subclasses() -> list[type[Source]]:
     """Concrete Source subclasses that can render a UI login button.
 
-    ``Source.ui_login_button`` returns None, so a source can only appear on the
-    identification stage if its subclass overrides it. Walking the parent links
-    rather than ``__subclasses__`` keeps this to subclasses that actually have a
-    table to join against.
+    ``Source.ui_login_button`` returns None, so a source only reaches the
+    challenge below if its subclass overrides it. Abstract subclasses are skipped
+    because they have no table to join against.
     """
-    subclasses = []
-    for relation in Source._meta.related_objects:
-        if not getattr(relation.field, "parent_link", False):
-            continue
-        model = relation.related_model
-        if model.ui_login_button is not Source.ui_login_button:
-            subclasses.append(model)
-    return subclasses
+    return [
+        source_type
+        for source_type in all_subclasses(Source)
+        if not source_type._meta.abstract
+        and source_type.ui_login_button is not Source.ui_login_button
+    ]
 
 
 @extend_schema_field(
