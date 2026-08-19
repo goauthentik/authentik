@@ -45,7 +45,8 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
 
     @staticmethod
     @transaction.atomic
-    def get_or_create(identifier: str, name: str, defaults: dict[str, Any]) -> Device:
+    def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
+        defaults = defaults or {}
         try:
             return Device.objects.get(Q(identifier=identifier) | Q(name=name))
         except Device.DoesNotExist:
