@@ -69,6 +69,24 @@ def get_login_serializers():
     return mapping
 
 
+def login_capable_source_subclasses() -> list[type[Source]]:
+    """Concrete Source subclasses that can render a UI login button.
+
+    ``Source.ui_login_button`` returns None, so a source can only appear on the
+    identification stage if its subclass overrides it. Walking the parent links
+    rather than ``__subclasses__`` keeps this to subclasses that actually have a
+    table to join against.
+    """
+    subclasses = []
+    for relation in Source._meta.related_objects:
+        if not getattr(relation.field, "parent_link", False):
+            continue
+        model = relation.related_model
+        if model.ui_login_button is not Source.ui_login_button:
+            subclasses.append(model)
+    return subclasses
+
+
 @extend_schema_field(
     PolymorphicProxySerializer(
         component_name="LoginChallengeTypes",
@@ -385,9 +403,12 @@ class IdentificationStageView(ChallengeStageView):
 
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
-        sources: list[Source] = (
-            current_stage.sources.filter(enabled=True).order_by("name").select_subclasses()
-        )
+        sources: list[Source] = current_stage.sources.filter(enabled=True).order_by("name")
+        # Narrow the polymorphic join: a bare select_subclasses() LEFT JOINs every
+        # Source subtype table, but only subclasses overriding ui_login_button can
+        # contribute a button below.
+        if login_capable := login_capable_source_subclasses():
+            sources = sources.select_subclasses(*login_capable)
         for source in sources:
             ui_login_button = source.ui_login_button(self.request)
             if ui_login_button:
