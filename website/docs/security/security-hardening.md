@@ -108,9 +108,7 @@ Impersonation always generates `impersonation_started` and `impersonation_ended`
 
 ### Tokens and app passwords
 
-API tokens and app passwords bypass flow-based authentication, including MFA. Under **System** > **Settings**:
-
-- Reduce **Default token duration** from its default of `days=1` if tokens in your deployment are short-lived.
+API tokens and app passwords bypass flow-based authentication, including MFA.
 
 Review existing tokens under **Directory** > **Tokens and App passwords**, and prefer [service accounts](../users-sources/user/account-types/service-accounts.md) with scoped permissions over tokens tied to a superuser.
 
