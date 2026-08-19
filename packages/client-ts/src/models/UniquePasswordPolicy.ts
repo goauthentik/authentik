@@ -67,6 +67,12 @@ export interface UniquePasswordPolicy {
      */
     readonly boundTo: number;
     /**
+     *
+     * @type {Date}
+     * @memberof UniquePasswordPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
      * Field key to check, field keys defined in Prompt stages are available.
      * @type {string}
      * @memberof UniquePasswordPolicy
@@ -115,6 +121,13 @@ export function instanceOfUniquePasswordPolicy(value: object): value is UniquePa
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -138,6 +151,7 @@ export function UniquePasswordPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         numHistoricalPasswords:
             json["num_historical_passwords"] == null ? undefined : json["num_historical_passwords"],
@@ -151,7 +165,13 @@ export function UniquePasswordPolicyToJSON(json: any): UniquePasswordPolicy {
 export function UniquePasswordPolicyToJSONTyped(
     value?: Omit<
         UniquePasswordPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

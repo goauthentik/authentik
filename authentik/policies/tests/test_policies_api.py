@@ -57,6 +57,29 @@ class TestPoliciesAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_sort_by_last_updated(self):
+        """Test API sorting by last_updated"""
+        other = DummyPolicy.objects.create(name="dummy-other", result=True)
+        # Re-save the policy created in setUp so it becomes the most recently updated one
+        self.policy.save()
+
+        def ordered_pks(ordering: str) -> list[str]:
+            response = self.client.get(
+                reverse("authentik_api:policy-list"),
+                data={
+                    "ordering": ordering,
+                    "page_size": 100,
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+            return [policy["pk"] for policy in loads(response.content.decode())["results"]]
+
+        descending = ordered_pks("-last_updated")
+        self.assertLess(descending.index(str(self.policy.pk)), descending.index(str(other.pk)))
+
+        ascending = ordered_pks("last_updated")
+        self.assertLess(ascending.index(str(other.pk)), ascending.index(str(self.policy.pk)))
+
     def test_cache_info(self):
         """Test Policy's cache_info endpoint"""
         response = self.client.get(

@@ -68,6 +68,12 @@ export interface ExpressionPolicy {
     readonly boundTo: number;
     /**
      *
+     * @type {Date}
+     * @memberof ExpressionPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
      * @type {string}
      * @memberof ExpressionPolicy
      */
@@ -109,6 +115,13 @@ export function instanceOfExpressionPolicy(value: object): value is ExpressionPo
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
@@ -133,6 +146,7 @@ export function ExpressionPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         expression: json["expression"],
     };
 }
@@ -144,7 +158,13 @@ export function ExpressionPolicyToJSON(json: any): ExpressionPolicy {
 export function ExpressionPolicyToJSONTyped(
     value?: Omit<
         ExpressionPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

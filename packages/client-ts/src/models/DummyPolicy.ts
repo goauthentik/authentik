@@ -68,6 +68,12 @@ export interface DummyPolicy {
     readonly boundTo: number;
     /**
      *
+     * @type {Date}
+     * @memberof DummyPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
      * @type {boolean}
      * @memberof DummyPolicy
      */
@@ -121,6 +127,13 @@ export function instanceOfDummyPolicy(value: object): value is DummyPolicy {
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -141,6 +154,7 @@ export function DummyPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         result: json["result"] == null ? undefined : json["result"],
         waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
         waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
@@ -154,7 +168,13 @@ export function DummyPolicyToJSON(json: any): DummyPolicy {
 export function DummyPolicyToJSONTyped(
     value?: Omit<
         DummyPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
