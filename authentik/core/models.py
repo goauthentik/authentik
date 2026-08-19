@@ -394,6 +394,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["type"]),
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
+            models.Index(fields=["username", "is_active", "type"]),
         ]
 
     def __str__(self):
