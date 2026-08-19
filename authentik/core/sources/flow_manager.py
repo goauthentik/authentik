@@ -145,17 +145,11 @@ class SourceFlowManager:
     def _keyable_group_ids(self, group_ids: list[Any]) -> list[Any]:
         """Drop group identifiers that cannot be used as a `groups_properties` key.
 
-        A source is expected to hand us group *identifiers*, but nothing enforces
-        that: an IdP may return `groups` as a list of objects, and a user property
-        mapping can merge anything at all into the list. Either produced an
-        unhashable value, which raised `TypeError` out of this constructor and
-        surfaced as HTTP 500 — locking every member of such a group out of the
-        source, with no way for an operator to intervene, since mappings only run
-        after this point.
-
-        Skipping the entry keeps authentication working. It is recorded rather
-        than merely dropped, because a user silently arriving with fewer groups
-        than the IdP granted is a difference an operator needs to be able to see.
+        An unhashable identifier, such as an object in an IdP's `groups` claim,
+        raised `TypeError` out of the constructor and surfaced as HTTP 500,
+        locking every member of that group out of the source. Skipped entries are
+        recorded so a user arriving with fewer groups than the IdP granted stays
+        visible to an operator.
         """
         keyable = []
         skipped = []

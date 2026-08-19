@@ -76,4 +76,4 @@ return {
 
 The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name. Each identifier is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.
 
-An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped. OpenID Connect sources handle the common shapes without a mapping: an object's `id`, `value`, or `sub` member is taken as the identifier, and its `name`, `display`, or `displayName` member as the group name.
+An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
