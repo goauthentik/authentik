@@ -49,12 +49,7 @@ By default, an [Identification stage](../add-secure-apps/flows-stages/stages/ide
 
 Combine the following controls to slow down credential-stuffing attempts:
 
-- Use a [Reputation policy](../customize/policies/types/reputation.md) to react to repeated failed attempts from a username or client IP. It passes when the score is at or below its threshold, so bind it either:
-    - to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md) binding, to challenge low-reputation requests, or
-    - to the authentication flow with **Negate** enabled, to deny them.
-
-    A flow binding without **Negate** does the opposite of what you want: it blocks ordinary users and admits the risky ones. Score limits are configurable under **System** > **Settings**.
-
+- Use a [Reputation policy](../customize/policies/types/reputation.md) to react to repeated failed attempts from a username or client IP. The policy passes when the score is at or below its threshold, so bind it to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.md) to challenge low-reputation requests, or to the authentication flow with **Negate** enabled to deny them. Score limits are configurable under **System** > **Settings**.
 - Add a CAPTCHA stage unconditionally, either as its own stage or configured inline on the Identification stage, if you would rather not make it reputation-dependent.
 - Bind a [GeoIP policy](../customize/policies/types/geoip.md) to restrict sign-ins to expected countries or to require additional verification elsewhere.
 - Configure [notification rules](../sys-mgmt/events/notifications.md) on the `login_failed` and `suspicious_request` events so that spikes are surfaced rather than only recorded.
@@ -142,6 +137,7 @@ To prevent any user, including superusers, from using expressions to create or e
 
 - `/api/v3/policies/expression*`
 - `/api/v3/propertymappings*`
+- `/api/v3/stages/prompt/prompts*`
 - `/api/v3/managed/blueprints*`
 
 ### Blueprints
