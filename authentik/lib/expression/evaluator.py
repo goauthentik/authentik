@@ -62,8 +62,8 @@ class BaseEvaluator:
 
     def __init__(self, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
-        # update website/docs/expressions/_objects.md
-        # update website/docs/expressions/_functions.md
+        # update website/docs/expressions/reference/_objects.mdx
+        # update website/docs/expressions/reference/_functions.mdx
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
