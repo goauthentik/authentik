@@ -301,7 +301,7 @@ checksum = "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
 
 [[package]]
 name = "authentik"
-version = "2026.8.0-rc7"
+version = "2026.8.0"
 dependencies = [
  "arc-swap",
  "argh",
@@ -355,7 +355,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-axum"
-version = "2026.8.0-rc7"
+version = "2026.8.0"
 dependencies = [
  "authentik-common",
  "axum",
@@ -375,7 +375,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-client"
-version = "2026.8.0-rc7"
+version = "2026.8.0"
 dependencies = [
  "aws-lc-rs",
  "chrono",
@@ -392,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "authentik-common"
-version = "2026.8.0-rc7"
+version = "2026.8.0"
 dependencies = [
  "arc-swap",
  "authentik-client",
@@ -1635,9 +1635,9 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
 name = "h2"
-version = "0.4.15"
+version = "0.4.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cb093c84e8bd9b188d4c4a8cb6579fc016968d14c99882163cd3ff402a4f155"
+checksum = "a9f37a958b41b3b19ee2707c06439c0e9e547e847223eb791ecb0cb821c65e27"
 dependencies = [
  "atomic-waker",
  "bytes",

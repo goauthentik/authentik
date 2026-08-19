@@ -3,7 +3,7 @@ authentik
 
 Making authentication simple.
 
-API version: 2026.8.0-rc7
+API version: 2026.8.0
 Contact: hello@goauthentik.io
 */
 
@@ -26,10 +26,10 @@ type Provider struct {
 	// Flow used for authentication when the associated application is accessed by an un-authenticated user.
 	AuthenticationFlow NullableString `json:"authentication_flow,omitempty"`
 	// Flow used when authorizing this provider.
-	AuthorizationFlow string `json:"authorization_flow"`
+	AuthorizationFlow NullableString `json:"authorization_flow,omitempty"`
 	// Flow used ending the session from a provider.
-	InvalidationFlow string   `json:"invalidation_flow"`
-	PropertyMappings []string `json:"property_mappings,omitempty"`
+	InvalidationFlow NullableString `json:"invalidation_flow,omitempty"`
+	PropertyMappings []string       `json:"property_mappings,omitempty"`
 	// Get object component so that we know how to edit the object
 	Component string `json:"component"`
 	// Internal application name, used in URLs.
@@ -55,12 +55,10 @@ type _Provider Provider
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProvider(pk int32, name string, authorizationFlow string, invalidationFlow string, component string, assignedApplicationSlug NullableString, assignedApplicationName NullableString, assignedBackchannelApplicationSlug NullableString, assignedBackchannelApplicationName NullableString, verboseName string, verboseNamePlural string, metaModelName string) *Provider {
+func NewProvider(pk int32, name string, component string, assignedApplicationSlug NullableString, assignedApplicationName NullableString, assignedBackchannelApplicationSlug NullableString, assignedBackchannelApplicationName NullableString, verboseName string, verboseNamePlural string, metaModelName string) *Provider {
 	this := Provider{}
 	this.Pk = pk
 	this.Name = name
-	this.AuthorizationFlow = authorizationFlow
-	this.InvalidationFlow = invalidationFlow
 	this.Component = component
 	this.AssignedApplicationSlug = assignedApplicationSlug
 	this.AssignedApplicationName = assignedApplicationName
@@ -171,52 +169,90 @@ func (o *Provider) UnsetAuthenticationFlow() {
 	o.AuthenticationFlow.Unset()
 }
 
-// GetAuthorizationFlow returns the AuthorizationFlow field value
+// GetAuthorizationFlow returns the AuthorizationFlow field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Provider) GetAuthorizationFlow() string {
-	if o == nil {
+	if o == nil || IsNil(o.AuthorizationFlow.Get()) {
 		var ret string
 		return ret
 	}
-
-	return o.AuthorizationFlow
+	return *o.AuthorizationFlow.Get()
 }
 
-// GetAuthorizationFlowOk returns a tuple with the AuthorizationFlow field value
+// GetAuthorizationFlowOk returns a tuple with the AuthorizationFlow field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Provider) GetAuthorizationFlowOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.AuthorizationFlow, true
+	return o.AuthorizationFlow.Get(), o.AuthorizationFlow.IsSet()
 }
 
-// SetAuthorizationFlow sets field value
+// HasAuthorizationFlow returns a boolean if a field has been set.
+func (o *Provider) HasAuthorizationFlow() bool {
+	if o != nil && o.AuthorizationFlow.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAuthorizationFlow gets a reference to the given NullableString and assigns it to the AuthorizationFlow field.
 func (o *Provider) SetAuthorizationFlow(v string) {
-	o.AuthorizationFlow = v
+	o.AuthorizationFlow.Set(&v)
 }
 
-// GetInvalidationFlow returns the InvalidationFlow field value
+// SetAuthorizationFlowNil sets the value for AuthorizationFlow to be an explicit nil
+func (o *Provider) SetAuthorizationFlowNil() {
+	o.AuthorizationFlow.Set(nil)
+}
+
+// UnsetAuthorizationFlow ensures that no value is present for AuthorizationFlow, not even an explicit nil
+func (o *Provider) UnsetAuthorizationFlow() {
+	o.AuthorizationFlow.Unset()
+}
+
+// GetInvalidationFlow returns the InvalidationFlow field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Provider) GetInvalidationFlow() string {
-	if o == nil {
+	if o == nil || IsNil(o.InvalidationFlow.Get()) {
 		var ret string
 		return ret
 	}
-
-	return o.InvalidationFlow
+	return *o.InvalidationFlow.Get()
 }
 
-// GetInvalidationFlowOk returns a tuple with the InvalidationFlow field value
+// GetInvalidationFlowOk returns a tuple with the InvalidationFlow field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Provider) GetInvalidationFlowOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.InvalidationFlow, true
+	return o.InvalidationFlow.Get(), o.InvalidationFlow.IsSet()
 }
 
-// SetInvalidationFlow sets field value
+// HasInvalidationFlow returns a boolean if a field has been set.
+func (o *Provider) HasInvalidationFlow() bool {
+	if o != nil && o.InvalidationFlow.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInvalidationFlow gets a reference to the given NullableString and assigns it to the InvalidationFlow field.
 func (o *Provider) SetInvalidationFlow(v string) {
-	o.InvalidationFlow = v
+	o.InvalidationFlow.Set(&v)
+}
+
+// SetInvalidationFlowNil sets the value for InvalidationFlow to be an explicit nil
+func (o *Provider) SetInvalidationFlowNil() {
+	o.InvalidationFlow.Set(nil)
+}
+
+// UnsetInvalidationFlow ensures that no value is present for InvalidationFlow, not even an explicit nil
+func (o *Provider) UnsetInvalidationFlow() {
+	o.InvalidationFlow.Unset()
 }
 
 // GetPropertyMappings returns the PropertyMappings field value if set, zero value otherwise.
@@ -466,8 +502,12 @@ func (o Provider) ToMap() (map[string]interface{}, error) {
 	if o.AuthenticationFlow.IsSet() {
 		toSerialize["authentication_flow"] = o.AuthenticationFlow.Get()
 	}
-	toSerialize["authorization_flow"] = o.AuthorizationFlow
-	toSerialize["invalidation_flow"] = o.InvalidationFlow
+	if o.AuthorizationFlow.IsSet() {
+		toSerialize["authorization_flow"] = o.AuthorizationFlow.Get()
+	}
+	if o.InvalidationFlow.IsSet() {
+		toSerialize["invalidation_flow"] = o.InvalidationFlow.Get()
+	}
 	if !IsNil(o.PropertyMappings) {
 		toSerialize["property_mappings"] = o.PropertyMappings
 	}
@@ -494,8 +534,6 @@ func (o *Provider) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"pk",
 		"name",
-		"authorization_flow",
-		"invalidation_flow",
 		"component",
 		"assigned_application_slug",
 		"assigned_application_name",

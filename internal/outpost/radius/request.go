@@ -38,7 +38,13 @@ func (r *RadiusRequest) ID() string {
 }
 
 func (r *RadiusRequest) validateMessageAuthenticator() error {
-	mauth := rfc2869.MessageAuthenticator_Get(r.Packet)
+	mauth, err := rfc2869.MessageAuthenticator_Lookup(r.Packet)
+	if err != nil {
+		if errors.Is(err, radius.ErrNoAttribute) {
+			return nil
+		}
+		return err
+	}
 	// Per RFC 2869 §5.14, the Message-Authenticator field must be treated as
 	// 16 zero bytes when computing the HMAC-MD5 for verification.
 	_ = rfc2869.MessageAuthenticator_Set(r.Packet, make([]byte, 16))
