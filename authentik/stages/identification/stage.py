@@ -1,6 +1,7 @@
 """Identification stage logic"""
 
 from dataclasses import asdict
+from functools import cache
 from typing import Any
 
 from django.contrib.auth.hashers import make_password
@@ -69,6 +70,7 @@ def get_login_serializers():
     return mapping
 
 
+@cache
 def login_capable_source_subclasses() -> list[type[Source]]:
     """Concrete Source subclasses that can render a UI login button.
 
@@ -403,12 +405,11 @@ class IdentificationStageView(ChallengeStageView):
 
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
-        sources: list[Source] = current_stage.sources.filter(enabled=True).order_by("name")
-        # Narrow the polymorphic join: a bare select_subclasses() LEFT JOINs every
-        # Source subtype table, but only subclasses overriding ui_login_button can
-        # contribute a button below.
-        if login_capable := login_capable_source_subclasses():
-            sources = sources.select_subclasses(*login_capable)
+        sources: list[Source] = (
+            current_stage.sources.filter(enabled=True)
+            .order_by("name")
+            .select_subclasses(*login_capable_source_subclasses())
+        )
         for source in sources:
             ui_login_button = source.ui_login_button(self.request)
             if ui_login_button:
