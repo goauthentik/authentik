@@ -90,6 +90,17 @@ const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
+    /**
+     * Anchor `[dir]` at the monorepo root rather than letting ESBuild infer it
+     * from the entry points.
+     *
+     * Assets pulled from a workspace package outside `web/` (the RedHat faces in
+     * `@goauthentik/fonts`) would otherwise resolve to a `..` segment, which
+     * ESBuild sanitizes to `_.._`. Go's `//go:embed dist/*` in `static_outpost.go`
+     * silently skips any path segment starting with `_`, so those fonts would be
+     * missing from the embedded outpost build.
+     */
+    outbase: MonoRepoRoot,
     outdir: DistDirectory,
     bundle: true,
     write: true,
@@ -110,6 +121,12 @@ const BASE_ESBUILD_OPTIONS = {
     },
     /**
      * Conditions for module resolution.
+     *
+     * `bundler` lets workspace packages that ship TypeScript sources (e.g.
+     * `@goauthentik/theme`) expose `src/*.ts` to this build while keeping a
+     * compiled `default` entry for plain Node consumers. esbuild does not
+     * imply it, so without this the resolver falls through to the built
+     * output and every edit needs a rebuild of the dependency first.
      *
      * @see https://esbuild.github.io/api/#conditions
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports

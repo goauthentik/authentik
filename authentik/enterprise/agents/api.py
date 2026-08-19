@@ -27,10 +27,11 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserTypes,
     default_token_duration,
 )
 from authentik.enterprise.agents.models import Agent
-from authentik.enterprise.api import EnterpriseRequiredMixin
+from authentik.enterprise.api import EnterpriseRequiredMixin, enterprise_action
 
 
 class AgentSerializer(EnterpriseRequiredMixin, PartialUserSerializer):
@@ -95,6 +96,7 @@ class AgentViewSet(
 
     @extend_schema(request=AgentCreateSerializer, responses={201: AgentCreatedSerializer})
     @validate(AgentCreateSerializer)
+    @enterprise_action
     def create(self, request: Request, body: AgentCreateSerializer) -> Response:
         parent: User = body.validated_data.get("parent") or request.user
         self_service_perm = request.user.has_perm("authentik_agents.add_agent_self_service")
@@ -108,13 +110,17 @@ class AgentViewSet(
                 raise PermissionDenied(_("You can only create agents for yourself."))
             if not self_service_perm:
                 raise PermissionDenied(_("Self-service agent creation is not enabled."))
+            if request.user.type != UserTypes.INTERNAL:
+                raise PermissionDenied(_("Only internal user accounts can create agents."))
 
         if self_service:
-            # Self-service agents always expire with the tenant default and MIRROR their owner,
-            # so they can never exceed the access of the user creating them.
+            # Self-service agents are least-privilege by construction: they always expire with the
+            # tenant default and inherit NO access from their owner. They earn access the same way
+            # a human does -- by filing a grant request their owner approves (see
+            # authentik.enterprise.requests).
             expiring = True
             expires = default_token_duration()
-            policy_behavior = ActorPolicyInheritance.MIRROR
+            policy_behavior = ActorPolicyInheritance.NONE
         else:
             # Provisioning for another user may set a custom/standing expiry and policy behavior.
             expiring = body.validated_data["expiring"]

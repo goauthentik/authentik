@@ -18,7 +18,7 @@ Enrolled authenticators can later be used with the [Authenticator Validation sta
 
 - **User verification**: require, prefer, or discourage built-in user verification during registration.
 - **Resident key requirement**: control whether the authenticator should create a discoverable credential.
-- **Authenticator attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
+- **Authenticator Attachment**: restrict enrollment to platform authenticators, cross-platform authenticators, or leave it unrestricted.
 - **Hints**: browser hints that influence which authenticator is preferred during enrollment.
 - **Device type restrictions**: limit enrollment to specific WebAuthn device types.
 - **Maximum attempts**: maximum number of failed registration attempts before the stage denies access. A value of `0` disables the limit.
@@ -45,7 +45,7 @@ For passkey-based passwordless login, set **Resident key requirement** to **Pref
 
 ### Authenticator attachment
 
-Use **Authenticator attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
+Use **Authenticator Attachment** when the flow should prefer either removable authenticators such as YubiKeys or built-in authenticators such as Touch ID, Windows Hello, or password-manager passkeys.
 
 This controls the `authenticatorAttachment` parameter sent to the browser during WebAuthn registration:
 
@@ -69,7 +69,7 @@ Optional hints can guide the browser toward a preferred authenticator type durin
 
 The order of selected hints matters. For example, selecting **Security key** before **Hybrid** asks the browser to prefer security keys before hybrid registration.
 
-For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when **Authenticator attachment** is not explicitly set:
+For backward compatibility with older browsers that do not support hints, authentik automatically infers the `authenticatorAttachment` parameter from the selected hints when **Authenticator Attachment** is not explicitly set:
 
 - Only **Security key** and/or **Hybrid** hints: `cross-platform`
 - Only **Client device** hints: `platform`

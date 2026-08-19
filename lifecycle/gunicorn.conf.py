@@ -76,6 +76,10 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
 
     values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
 
+    from authentik.lib.debug import start_pyroscope
+
+    start_pyroscope("server", worker_id=str(worker._worker_id))
+
 
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Remove pid dbs when worker is shutdown"""

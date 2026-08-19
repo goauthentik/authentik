@@ -30,7 +30,7 @@ packages/           # Shared workspace packages, polyglot:
 web/                # TypeScript web UI (own AGENTS.md)
 website/            # Docs / integrations / API sites (own AGENTS.md)
 blueprints/         # YAML declarative config (default/ system/ example/) applied at startup
-locale/             # Backend translations (.po) + shared cspell dictionaries (en/dictionaries/)
+locale/             # Backend translations (.po) + cspell overrides dictionary (en/dictionaries/)
 tests/              # Cross-cutting test support: e2e/, integration/, geoip/, openid_conformance/
 schemas/            # Third-party XSD/JSON schemas (SAML, WS-*, SCIM) used at runtime
 scripts/            # Repo automation (schema build, compose generation, node setup, semver)
@@ -106,7 +106,7 @@ make web-test          # Web UI tests (delegates to web/)
 ```bash
 make lint-fix          # Auto-fix: black + ruff (Python) and rustfmt (Rust)
 make lint              # Check: bandit, mypy --strict, golangci-lint, cargo deny/machete
-make lint-spellcheck   # cspell across the repo (shared dictionaries in locale/en/dictionaries/)
+make lint-spellcheck   # cspell across the repo (typo-only mode: reports known misspellings and forbidden British spellings, not unknown words)
 make lint-catalogs     # pnpm catalog pins in sync across the root/web/website workspaces
 ```
 
@@ -154,7 +154,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`) + Redis                   |
+| Datastore       | PostgreSQL (multi-tenant via `django-tenants`)                           |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |

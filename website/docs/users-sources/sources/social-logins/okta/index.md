@@ -42,7 +42,7 @@ To support the integration of Okta with authentik, you need to create an Okta OA
             - **Consumer secret**: paste the **Secret** from Okta
         - Under **URL settings**:
             - **Authorization URL**: `https://company.okta.com/oauth2/v1/authorize`
-            - **Access Token URL**: `https://company.okta.com/oauth2/v1/token`
+            - **Access token URL**: `https://company.okta.com/oauth2/v1/token`
             - **Profile URL**: `https://company.okta.com/oauth2/v1/userinfo`
             - **OIDC Well-known URL**: `https://company.okta.com/.well-known/openid-configuration`
             - **OIDC JWKS URL**: `https://company.okta.com/oauth2/v1/keys`

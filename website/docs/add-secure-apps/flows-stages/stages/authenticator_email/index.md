@@ -14,10 +14,10 @@ The enrolled email address can later be used with the [Authenticator Validation 
 ## Configuration options
 
 - **Use global connection settings**: use authentik's global email configuration instead of stage-specific SMTP settings.
-- **SMTP host**: SMTP server hostname for stage-specific email delivery.
-- **SMTP port**: SMTP server port.
-- **SMTP username**: optional SMTP username.
-- **SMTP password**: optional SMTP password.
+- **SMTP Host**: SMTP server hostname for stage-specific email delivery.
+- **SMTP Port**: SMTP server port.
+- **SMTP Username**: optional SMTP username.
+- **SMTP Password**: optional SMTP password.
 - **Use TLS**: enable STARTTLS for the SMTP connection.
 - **Use SSL**: enable SMTPS for the SMTP connection.
 - **Timeout**: SMTP connection timeout in seconds.

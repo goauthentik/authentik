@@ -1,5 +1,6 @@
 ---
 title: Reverse proxy
+sidebar_position: 6
 ---
 
 Use this page when authentik is exposed through a reverse proxy or load balancer.

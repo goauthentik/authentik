@@ -2,9 +2,11 @@ packages:
   - "packages/docusaurus-config"
   - "packages/esbuild-plugin-live-reload"
   - "packages/eslint-config"
+  - "packages/fonts"
   - "packages/geo"
   - "packages/logger-js"
   - "packages/prettier-config"
+  - "packages/theme"
   - "packages/tsconfig"
   - "lifecycle/aws"
 
