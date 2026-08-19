@@ -154,11 +154,6 @@ class SourceFlowManager:
             if existing := self.user_connection_type.objects.filter(
                 source=self.source, identifier=self.identifier
             ).first():
-                # `**kwargs` carries the credential for sources that store one
-                # (Plex's `plex_token`, for example). Dropping it here made
-                # `update_user_connection()` overwrite a valid stored token with
-                # None on every re-link, so the AUTH path is the one that must
-                # forward it — the LINK path below already did.
                 existing = self.update_user_connection(existing, **kwargs)
                 return Action.AUTH, existing
             return Action.LINK, new_connection
