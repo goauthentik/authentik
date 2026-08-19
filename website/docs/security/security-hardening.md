@@ -115,7 +115,7 @@ Review existing tokens under **Directory** > **Tokens and App passwords**, and p
 - **Event retention** defaults to `days=365`. Increase it to match your retention requirements, or forward events to an external system and reduce it. Changing the value only affects new events.
 - **GDPR compliance** deletes a user's events when the user is deleted. Disable it if your audit requirements outweigh that, keeping local data protection obligations in mind.
 
-Notification rules on `model_created`, `model_updated`, `model_deleted`, `secret_view`, and `password_set` give early warning of changes to authentik's own configuration.
+Notification rules give early warning of administrative activity, for example `model_created` / `model_updated` / `model_deleted` for configuration changes, or `secret_view` for reading a token or certificate. See [event actions](../sys-mgmt/events/event-actions.md) for the full list.
 
 ## Restricting configuration changes
 
@@ -155,7 +155,7 @@ To prevent any user from creating or editing CAPTCHA stages, block:
 
 ### Secret key
 
-[`AUTHENTIK_SECRET_KEY`](../install-config/configuration/configuration.mdx#authentik_secret_key) signs session cookies. Generate it from a cryptographically secure source, keep it out of version control, and supply it through a secret manager rather than a plaintext environment file. Changing it invalidates all active sessions, which also makes it a way to force a global logout.
+[`AUTHENTIK_SECRET_KEY`](../install-config/configuration/configuration.mdx#authentik_secret_key) signs session cookies and is used for several other cryptographic operations. Generate it from a cryptographically secure source, keep it out of version control, and supply it through a secret manager rather than a plaintext environment file. Change it only if it has leaked, not as routine maintenance.
 
 ### Trusted proxy headers
 
@@ -177,7 +177,7 @@ The embedded outpost runs inside the authentik server and serves proxy provider 
 
 ### Logging and error reporting
 
-- Keep [`AUTHENTIK_LOG_LEVEL`](../install-config/configuration/configuration.mdx#authentik_log_level) at `info` or higher in production. The `trace` level includes session cookies and other sensitive details in logs.
+- Keep [`AUTHENTIK_LOG_LEVEL`](../install-config/configuration/configuration.mdx#authentik_log_level) at `info` or higher in production. `trace` is a debugging level and could put sensitive information, such as request headers, into your logs.
 - [`AUTHENTIK_ERROR_REPORTING__ENABLED`](../install-config/configuration/configuration.mdx#authentik_error_reporting) is disabled by default. If you enable it, leave `AUTHENTIK_ERROR_REPORTING__SEND_PII` disabled, or point the DSN at a Sentry instance you control.
 - [`AUTHENTIK_DISABLE_UPDATE_CHECK`](../install-config/configuration/configuration.mdx#authentik_disable_update_check) stops authentik from contacting an external service. Note that disabling it also removes notifications about security releases, so plan another way to track them.
 
