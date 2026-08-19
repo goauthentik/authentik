@@ -26,6 +26,9 @@
 /usr/lib/ssl
 /etc/ssl
 
+# glibc data from libc-bin, which is not in the keep list.
+/usr/lib/locale
+
 # resolver and account data written in the assemble stage
 /etc/nsswitch.conf
 /etc/host.conf

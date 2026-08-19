@@ -10,7 +10,6 @@
 
 # --- C runtime -------------------------------------------------------------
 libc6                       # everything
-libc-bin                    # gconv modules (iconv, used by libxml2), /etc/ld.so.cache
 libgcc-s1                   # unwinder, needed by the Rust binary and by Rust wheels
 libstdc++6                  # C++ runtime, pulled in by several wheels
 base-files                  # /etc/os-release, the FHS directory skeleton
