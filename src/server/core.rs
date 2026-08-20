@@ -345,7 +345,7 @@ mod tests {
     fn unsupported_http_methods_are_rejected() {
         assert!(!is_django_http_method(&Method::CONNECT));
         assert!(!is_django_http_method(
-            &Method::from_bytes("PROPFIND".as_bytes()).expect("method")
+            &Method::from_bytes(b"PROPFIND").expect("method")
         ));
     }
 }
