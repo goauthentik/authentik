@@ -109,4 +109,4 @@ To get security notifications, subscribe to the mailing list [here](https://gro
 
 For general inquiries, you can reach the authentik Security team at [security@goauthentik.io](mailto:security@goauthentik.io).
 
-Please do not use email for vulnerability reports, instead use our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new).
+_Please do not use email for vulnerability reports, instead use our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)._
