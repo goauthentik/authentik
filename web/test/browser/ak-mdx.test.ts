@@ -11,7 +11,7 @@ import { series } from "@goauthentik/core/promises";
  *
  * - frontmatter (`title: OAuth 2.0 provider`)
  * - multiple H2 headings (id slugs)
- * - `:::caution` and `:::info` admonitions (two flavours: with title, without)
+ * - `:::caution` and `:::info` admonitions (two flavors: with title, without)
  * - relative-doc links (`./create-oauth2-provider.md`)
  * - external links (`https://oauth.net/2/`)
  * - a `mermaid` sequence diagram
