@@ -130,9 +130,11 @@ class SourceFlowManager:
         self.user_properties = self.mapper.build_object_properties(
             object_type=User, request=request, user=None, **self.user_info
         )
+        groups_manager = self.mapper.get_manager(Group, ["group_id", *self.user_info.keys()])
         self.groups_properties = {
             group_id: self.mapper.build_object_properties(
                 object_type=Group,
+                manager=groups_manager,
                 request=request,
                 user=None,
                 group_id=group_id,
@@ -154,7 +156,7 @@ class SourceFlowManager:
             if existing := self.user_connection_type.objects.filter(
                 source=self.source, identifier=self.identifier
             ).first():
-                existing = self.update_user_connection(existing)
+                existing = self.update_user_connection(existing, **kwargs)
                 return Action.AUTH, existing
             return Action.LINK, new_connection
 
