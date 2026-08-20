@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from django.core.cache import cache
-from django.db import models
-from django.db.models import OuterRef, Subquery
+from django.db import models, transaction
+from django.db.models import OuterRef, Q, Subquery
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
@@ -37,6 +37,15 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
     access_group = models.ForeignKey(
         "DeviceAccessGroup", null=True, on_delete=models.SET_DEFAULT, default=None
     )
+
+    @staticmethod
+    @transaction.atomic
+    def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
+        defaults = defaults or {}
+        try:
+            return Device.objects.get(Q(identifier=identifier) | Q(name=name))
+        except Device.DoesNotExist:
+            return Device.objects.create(name=name, identifier=identifier, **defaults)
 
     @property
     def cache_key_facts(self):
@@ -182,7 +191,6 @@ class Connector(ScheduledModel, SerializerModel):
 
 
 class DeviceAccessGroup(AttributesMixin, SerializerModel, PolicyBindingModel):
-
     name = models.TextField(unique=True)
 
     @property
