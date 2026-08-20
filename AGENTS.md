@@ -154,7 +154,7 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 | --------------- | ------------------------------------------------------------------------ |
 | Core server     | Python 3.14, Django 5.2 + Django REST Framework, Channels (ASGI)         |
 | Background work | Dramatiq (Postgres broker)                                               |
-| Datastore       | PostgreSQL (multi-tenant via `django-tenants`) + Redis                   |
+| Datastore       | PostgreSQL (multi-tenant via `django-tenants`)                           |
 | Outposts        | Go 1.26 (`goauthentik.io` module) — LDAP, proxy, RAC, RADIUS             |
 | Native services | Rust (2024 edition, `axum`) — server/worker components + shared crates   |
 | Web UI          | TypeScript, Lit 3, PatternFly 4 (see `web/`)                             |
