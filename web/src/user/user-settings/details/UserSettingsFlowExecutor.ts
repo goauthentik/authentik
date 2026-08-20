@@ -51,7 +51,7 @@ export class UserSettingsFlowExecutor
 
         // Messages ride along with the challenge they were queued during, and the server
         // considers them delivered once sent, so each challenge is shown exactly once.
-        for (const message of flowMessages(value?.messages)) {
+        for (const message of flowMessages(value?.flowInfo?.messages)) {
             showMessage(message);
         }
 
