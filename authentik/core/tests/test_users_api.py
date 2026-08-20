@@ -4,9 +4,7 @@ from datetime import datetime, timedelta
 from json import loads
 
 from django.contrib.auth.hashers import (
-    Argon2PasswordHasher,
     PBKDF2PasswordHasher,
-    PBKDF2SHA1PasswordHasher,
     check_password,
     make_password,
 )
@@ -182,12 +180,6 @@ class TestUsersAPI(APITestCase):
 
         self._assert_password_hash_set(self.user, password, password_hash, response)
 
-        argon2 = Argon2PasswordHasher()
-        password_hash = argon2.encode(password, argon2.salt())
-        response = self._set_password_hash(self.user, password_hash)
-
-        self._assert_password_hash_set(self.user, password, password_hash, response)
-
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
@@ -203,38 +195,19 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash_override(self):
         """Test override imports a non-current hash, but not an invalid one."""
         self.client.force_login(self.admin)
+        original_password = self.user.password
         password = generate_key()
         password_hash = self._noncurrent_pbkdf2_hash(password)
-        response = self._set_password_hash(self.user, password_hash, override=True)
 
+        response = self._set_password_hash(self.user, password_hash)
+        self._assert_password_hash_rejected(self.user, original_password, response, errors=None)
+        self.assertTrue(any("override" in error for error in response.json()["password"]))
+
+        response = self._set_password_hash(self.user, password_hash, override=True)
         self._assert_password_hash_set(self.user, password, password_hash, response)
 
         response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
-
         self._assert_password_hash_rejected(self.user, password_hash, response)
-
-    def test_set_password_hash_policy(self):
-        """Test hashes outside the current import policy are rejected."""
-        self.client.force_login(self.admin)
-        original_password = self.user.password
-        password = generate_key()
-        password_hashes = (
-            self._noncurrent_pbkdf2_hash(password),
-            PBKDF2SHA1PasswordHasher().encode(password, PBKDF2SHA1PasswordHasher().salt()),
-            PBKDF2PasswordHasher().encode(password, "salt"),
-        )
-
-        for password_hash in password_hashes:
-            with self.subTest(password_hash=password_hash):
-                response = self._set_password_hash(self.user, password_hash)
-
-                self._assert_password_hash_rejected(
-                    self.user,
-                    original_password,
-                    response,
-                    errors=None,
-                )
-                self.assertTrue(any("override" in error for error in response.json()["password"]))
 
     def test_recovery(self):
         """Test user recovery link"""

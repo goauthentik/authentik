@@ -100,7 +100,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.validators import PasswordHashRequiresOverride, validate_password_hash
+from authentik.lib.validators import PasswordHashRequiresOverride
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -110,10 +110,6 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
-
-PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE = _(
-    '%(reason)s Set "override" to true to import it anyway.'
-)
 
 
 class ParamUserSerializer(PassiveSerializer):
@@ -510,22 +506,6 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
             "current password hashing policy."
         ),
     )
-
-    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        try:
-            validate_password_hash(attrs["password"], require_current=not attrs["override"])
-        except PasswordHashRequiresOverride as exc:
-            raise ValidationError(
-                {
-                    "password": [
-                        PASSWORD_HASH_REQUIRES_OVERRIDE_MESSAGE % {"reason": reason}
-                        for reason in exc.messages
-                    ]
-                }
-            ) from exc
-        except ValidationError as exc:
-            raise ValidationError({"password": exc.detail}) from exc
-        return attrs
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -986,9 +966,25 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.set_password_from_hash(
+                body.validated_data["password"],
+                request=request,
+                require_current=not body.validated_data["override"],
+            )
             user.save()
-        except (ValidationError, IntegrityError) as exc:
+        except PasswordHashRequiresOverride as exc:
+            raise ValidationError(
+                {
+                    "password": [
+                        _('%(reason)s Set "override" to true to import it anyway.')
+                        % {"reason": reason}
+                        for reason in exc.messages
+                    ]
+                }
+            ) from exc
+        except ValidationError as exc:
+            raise ValidationError({"password": exc.detail}) from exc
+        except IntegrityError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)

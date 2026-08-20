@@ -1,21 +1,17 @@
 """Serializer validators"""
 
-from django.contrib.auth.hashers import get_hashers, identify_hasher, must_update_salt
+from django.contrib.auth.hashers import (
+    BasePasswordHasher,
+    get_hashers,
+    identify_hasher,
+    must_update_salt,
+)
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
 
 INVALID_PASSWORD_HASH_MESSAGE = _("Invalid password hash encoding.")
-_HASHER_PARAM_ATTRS = (
-    "iterations",
-    "rounds",
-    "time_cost",
-    "memory_cost",
-    "work_factor",
-    "block_size",
-    "parallelism",
-)
 
 
 class PasswordHashRequiresOverride(Exception):
@@ -26,19 +22,27 @@ class PasswordHashRequiresOverride(Exception):
         super().__init__(" ".join(str(message) for message in messages))
 
 
-def _importable_hashers():
+def _importable_hashers() -> list[BasePasswordHasher]:
     return [hasher for hasher in get_hashers() if hasher.algorithm != "pbkdf2_sha1"]
 
 
-def _current_policy_message(hashers) -> str:
+def _current_policy_message(hashers: list[BasePasswordHasher]) -> str:
     expected: list[str] = []
     for hasher in hashers:
         params = ", ".join(
             f"{attr}={getattr(hasher, attr)}"
-            for attr in _HASHER_PARAM_ATTRS
+            for attr in (
+                "iterations",
+                "rounds",
+                "time_cost",
+                "memory_cost",
+                "work_factor",
+                "block_size",
+                "parallelism",
+            )
             if hasattr(hasher, attr)
         )
-        expected.append(f"{hasher.algorithm} ({params})" if params else hasher.algorithm)
+        expected.append(f"{hasher.algorithm} ({params})")
     return _("Password hash parameters must match: %(expected)s.") % {
         "expected": "; ".join(expected)
     }
@@ -57,11 +61,11 @@ def validate_password_hash(password_hash: str, *, require_current: bool = False)
 
     importable = _importable_hashers()
     messages: list[str] = []
-    if hasher.algorithm not in {item.algorithm for item in importable} or hasher.must_update(
-        password_hash
-    ):
+    salt_stale = must_update_salt(decoded["salt"], hasher.salt_entropy)
+    # hasher.must_update() is also true for a short salt.
+    if hasher not in importable or (hasher.must_update(password_hash) and not salt_stale):
         messages.append(_current_policy_message(importable))
-    if must_update_salt(decoded["salt"], hasher.salt_entropy):
+    if salt_stale:
         messages.append(
             _(
                 "Password hash salt does not meet the current requirement of "

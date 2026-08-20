@@ -569,18 +569,23 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
-        """Set password directly from a pre-hashed value.
+    def set_password_from_hash(
+        self,
+        password_hash: str,
+        signal=True,
+        sender=None,
+        request=None,
+        *,
+        require_current: bool = False,
+    ):
+        """Set password from a pre-hashed Django value. Does not hash again.
 
-        Unlike set_password(), this does not hash the input again. The provided value is
-        validated as a recognized Django password hash before it is stored.
-
-        Because no raw password is available, downstream password sync integrations
-        such as LDAP and Kerberos cannot be updated from this code path.
+        Validates encoding, and current hasher parameters when require_current is set.
+        LDAP and Kerberos are not updated; no raw password is available.
         """
         from authentik.lib.validators import validate_password_hash
 
-        validate_password_hash(password_hash)
+        validate_password_hash(password_hash, require_current=require_current)
         self.set_password_from_hash_unchecked(
             password_hash,
             signal=signal,
@@ -1566,7 +1571,7 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
         field_kwargs = {}
 
-        match (self.type):
+        match self.type:
             case self.AttributeType.TEXT:
                 field_cls = CharField
                 field_kwargs["allow_blank"] = True
@@ -1617,7 +1622,6 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
 
 class ActorPolicyInheritance(models.TextChoices):
-
     MIRROR = "mirror", _("Mirror policy engine")
     COPY = "copy", _("Copy policy bindings")
     NONE = "none", _("Don't inherit any policy bindings")

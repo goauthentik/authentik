@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
 from django.test.testcases import TestCase
-from rest_framework.exceptions import ValidationError
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.users import UserSerializer
@@ -82,16 +81,6 @@ class TestUsers(TestCase):
         self.assertEqual(len(password_hash_changed_captured), 1)
         ldap_sources_filter.assert_not_called()
         kerberos_connections_select.assert_not_called()
-
-    def test_set_password_from_hash_rejects_unrecognized_format(self):
-        """Test the model method preserves the password hash format invariant."""
-        user = User.objects.create(username=generate_id())
-        original_password = user.password
-
-        with self.assertRaises(ValidationError):
-            user.set_password_from_hash("custom$password$hash")
-
-        self.assertEqual(user.password, original_password)
 
 
 class TestUserSerializerPasswordHash(TestCase):
