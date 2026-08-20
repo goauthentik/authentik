@@ -189,6 +189,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 : this.ownerDocument.body;
 
         applyBackgroundImageProperty(background, { target });
+
+        for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
+            showMessage(message);
+        }
     }
 
     //#region Listeners
@@ -244,14 +248,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         document.title = match(this.challenge?.flowInfo?.title)
             .with(P.nullish, () => this.brandingTitle)
             .otherwise((title) => `${title} - ${this.brandingTitle}`);
-
-        if (changedProperties.has("challenge")) {
-            // Messages ride along with the challenge they were queued during, and the server
-            // considers them delivered once sent, so each challenge is shown exactly once.
-            for (const message of flowMessages(this.challenge?.messages)) {
-                showMessage(message);
-            }
-        }
 
         if (changedProperties.has("challenge") && this.challenge?.flowInfo) {
             this.layout = this.challenge?.flowInfo?.layout || FlowExecutor.DefaultLayout;
