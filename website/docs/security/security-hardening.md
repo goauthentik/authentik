@@ -60,7 +60,7 @@ Combine the following controls to slow down credential-stuffing attempts:
 
 The [User Login stage](../add-secure-apps/flows-stages/stages/user_login/index.md) controls how long an authenticated session lasts.
 
-- Set **Session duration** to an explicit value rather than leaving it at `seconds=0`. A value of `seconds=0` is intended to end the session when the browser session ends, but browsers vary in how they honor this.
+- **Session duration** defaults to `seconds=0`, which ends the session when the browser closes. Setting an explicit duration makes the session persistent instead, so it survives browser restarts for that long. Only set one if you need it, and keep it short.
 - Set **Remember me offset** to `seconds=0` to hide the remember-me option, or keep the offset short.
 - Set **Remember device** to `seconds=0` if you do not want authentik to store a long-lived device cookie.
 - Enable **Terminate other sessions** so that a new sign-in invalidates the user's existing sessions.
@@ -175,7 +175,6 @@ The embedded outpost runs inside the authentik server and serves proxy provider 
 
 - Keep [`AUTHENTIK_LOG_LEVEL`](../install-config/configuration/configuration.mdx#authentik_log_level) at `info` or higher in production. `trace` is a debugging level and could put sensitive information, such as request headers, into your logs.
 - [`AUTHENTIK_ERROR_REPORTING__ENABLED`](../install-config/configuration/configuration.mdx#authentik_error_reporting) is disabled by default. If you enable it, leave `AUTHENTIK_ERROR_REPORTING__SEND_PII` disabled, or point the DSN at a Sentry instance you control.
-- [`AUTHENTIK_DISABLE_UPDATE_CHECK`](../install-config/configuration/configuration.mdx#authentik_disable_update_check) stops authentik from contacting an external service. Note that disabling it also removes notifications about security releases, so plan another way to track them.
 
 ## HTTP headers
 
