@@ -126,11 +126,11 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
             html`<a href="#/endpoints/devices/${item.deviceUuid}">
-                <div>${item.facts.data.network?.hostname || item.name}</div>
+                <div>${item.facts?.data.network?.hostname || item.name}</div>
             </a>`,
-            html`${item.facts.data.os?.name} ${item.facts.data.os?.version}`,
+            html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}`,
             html`${item.accessGroupObj?.name || "-"}`,
-            item.facts.created ? Timestamp(item.facts.created) : html`-`,
+            item.facts?.created ? Timestamp(item.facts?.created) : html`-`,
             html`<button
                 class="pf-c-button pf-m-plain"
                 ${modalInvoker(EndpointDeviceForm, { instancePk: item.deviceUuid })}

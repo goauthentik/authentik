@@ -38,7 +38,11 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
         with:
-          version: latest
+          # latest (v2.13.0) bundles honnef.co/go/tools v0.8.0-rc.1, whose nilness
+          # analyzer panics on getsentry/sentry-go ("unhandled builtin recover",
+          # https://github.com/dominikh/go-tools/issues/1725). Unpin once a
+          # release with the fix ships.
+          version: v2.12.2
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
@@ -88,7 +92,7 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: "go.mod"
-      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
       - name: Pin pnpm store directory
         run: |
           echo "PNPM_HOME=${RUNNER_TEMP}/pnpm-home" >> "$GITHUB_ENV"

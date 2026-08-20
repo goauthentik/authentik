@@ -402,6 +402,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["type"]),
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
+            models.Index(fields=["username", "is_active", "type"]),
         ]
 
     def __str__(self):
@@ -1210,11 +1211,15 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         """Handler which is called when this object is expired."""
         from authentik.events.models import Event, EventAction
 
-        if self.intent in [
-            TokenIntents.INTENT_RECOVERY,
-            TokenIntents.INTENT_VERIFICATION,
-            TokenIntents.INTENT_APP_PASSWORD,
-        ]:
+        if (
+            self.intent
+            in [
+                TokenIntents.INTENT_RECOVERY,
+                TokenIntents.INTENT_VERIFICATION,
+                TokenIntents.INTENT_APP_PASSWORD,
+            ]
+            or Actor.objects.filter(pk=self.user_id).exists()
+        ):
             super().expire_action(*args, **kwargs)
             return
 
@@ -1591,3 +1596,77 @@ class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
         verbose_name = _("Object Attribute")
         verbose_name_plural = _("Object Attributes")
         unique_together = (("object_type", "key", "enabled"),)
+
+
+class ActorPolicyInheritance(models.TextChoices):
+
+    MIRROR = "mirror", _("Mirror policy engine")
+    COPY = "copy", _("Copy policy bindings")
+    NONE = "none", _("Don't inherit any policy bindings")
+
+
+class Actor(ExpiringModel, User):
+    """Generic actor which can either perform tasks by itself
+    or on behalf of a parent user."""
+
+    parent = models.ForeignKey(
+        User, on_delete=models.SET_DEFAULT, default=None, null=True, related_name="actors"
+    )
+    policy_behavior = models.TextField(choices=ActorPolicyInheritance)
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Actor")
+        verbose_name_plural = _("Actors")
+
+    def save(self, *args, **kwargs):
+        # policy_behavior determines how the actor derives access and may only be chosen at
+        # creation time; changing it afterwards is rejected.
+        if (
+            not self._state.adding
+            and hasattr(self, "_original_policy_behavior")
+            and self._original_policy_behavior != self.policy_behavior
+        ):
+            raise ValidationError(
+                {"policy_behavior": _("Policy behavior cannot be changed after creation.")}
+            )
+        super().save(*args, **kwargs)
+        self._original_policy_behavior = self.policy_behavior
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        instance._original_policy_behavior = instance.policy_behavior
+        return instance
+
+    def copy_parent_policy_bindings(self):
+        """Snapshot the parent's directly-assigned policy bindings onto this actor.
+
+        Unlike MIRROR (which defers to the parent live), COPY takes an independent snapshot at
+        creation: the actor holds its own PolicyBindings, so later changes to the parent don't
+        affect it. Only bindings that reference the parent as a *user* are copied -- access the
+        parent derives from group membership is not (use MIRROR, or add the actor to groups).
+        """
+        from authentik.policies.models import PolicyBinding
+
+        if not self.parent_id:
+            return
+        for binding in PolicyBinding.objects.filter(user_id=self.parent_id):
+            binding.pk = None
+            binding.policy_binding_uuid = uuid4()
+            binding._state.adding = True
+            binding.user = self
+            binding.save()
+
+    @staticmethod
+    def for_user(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
+        prefix = f"{user.username}" if user else "global"
+        actor = Actor.objects.create(
+            username=f"{prefix}-{generate_id()}"[:USERNAME_MAX_LENGTH],
+            parent=user,
+            policy_behavior=policy_behavior,
+            type=UserTypes.SERVICE_ACCOUNT,
+            **kwargs,
+        )
+        actor.set_unusable_password()
+        actor.save()
+        return actor

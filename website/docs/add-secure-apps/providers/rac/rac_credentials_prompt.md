@@ -64,7 +64,7 @@ You can optionally add other prompt fields such as `domain` (e.g. `connection_se
             - Add the two newly created prompt fields (e.g.`username` and `password`) to selected fields.
         - Under **Validation Policies**:
             - Click the **x** icon to remove all selected validation policies.
-    - **Create binding**:
+    - **Create Binding**:
         - Click **Finish**.
 
 ## Update the RAC provider

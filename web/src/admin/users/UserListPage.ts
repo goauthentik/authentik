@@ -204,7 +204,7 @@ export class UserListPage extends WithLicenseSummary(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    //#region Renderering
+    //#region Rendering
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

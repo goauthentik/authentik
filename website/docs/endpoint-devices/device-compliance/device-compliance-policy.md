@@ -4,6 +4,7 @@ sidebar_label: Device compliance policy
 tags: [device compliance, compliance, device access, policy]
 toc_max_heading_level: 4
 authentik_version: "2025.12.0"
+sidebar_position: 2
 ---
 
 Device compliance policies are used to limit access to authentik and applications based on [Device Compliance](./index.mdx) information.
@@ -12,7 +13,7 @@ Device compliance policies are currently in development and inaccessible. Howeve
 
 ## Prerequisites
 
-You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#enable-device-compliance-ssh-server-authentication-and-local-device-login), [Windows](../../authentik-agent/agent-deployment/windows/#enable-device-compliance-and-local-device-login), [macOS](../../authentik-agent/agent-deployment/macos/#enable-device-compliance)).
+You must have [configured compliance](./configuration.md) in authentik and on the endpoint device ([Linux](../../authentik-agent/agent-deployment/linux/#join-the-device-to-an-authentik-domain), [Windows](../../authentik-agent/agent-deployment/windows/#join-the-device-to-an-authentik-domain), [macOS](../../authentik-agent/agent-deployment/macos/#join-the-device-to-an-authentik-domain)).
 
 ## Access device facts within a flow
 

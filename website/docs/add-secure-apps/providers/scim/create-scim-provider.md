@@ -18,7 +18,7 @@ To create a provider along with a corresponding application, navigate to **Appli
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click the edit icon of the new SCIM application.
-3. Click the plus icon (+) next to **Backchannel providers**.
+3. Click the plus icon (+) next to **Backchannel Providers**.
 4. Select the new SCIM provider, and then click **Confirm**.
 5. Click **Save changes**.
 
@@ -47,7 +47,7 @@ If using OAuth (Interactive) mode, you will also need to:
 2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair.
 3. On the **Application** page, define the application settings, and then click **Next**.
 4. Select **SCIM** as the **Provider Type**, and then click **Next**.
-5. On the **Configure Provider** page, configure the required settings. Set **Authentication mode** to the desired OAuth option, select the **OAuth source** you created in the previous section, and then click **Next**.
+5. On the **Configure Provider** page, configure the required settings. Set **Authentication Mode** to the desired OAuth option, select the **OAuth Source** you created in the previous section, and then click **Next**.
 6. On the **Configure Bindings** page, click **Next**.
 7. Click **Create** to create both the application and the provider.
 
@@ -55,13 +55,13 @@ If using OAuth (Interactive) mode, you will also need to:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click the edit icon of the new SCIM application.
-3. Click the plus icon (+) next to **Backchannel providers**.
+3. Click the plus icon (+) next to **Backchannel Providers**.
 4. Select the new SCIM provider, and then click **Confirm**.
 5. Click **Save changes**.
 
 ### Provide admin authorization (OAuth Interactive mode only)
 
-If you selected **OAuth (Interactive)** as the **Authentication mode** for the SCIM provider, you will need to authorize the initial OAuth connection.
+If you selected **OAuth (Interactive)** as the **Authentication Mode** for the SCIM provider, you will need to authorize the initial OAuth connection.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the name of the new SCIM provider.

@@ -108,3 +108,20 @@ class TestPropertyMappings(TestCase):
                 },
             },
         )
+
+    def test_group_property_mappings_with_object_groups(self):
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "group-1", "name": "Admins"},
+        ]
+
+        request = self.request_factory.get("/", user=AnonymousUser())
+
+        with self.assertRaises(TypeError):
+            OAuthSourceFlowManager(
+                self.source,
+                request,
+                IDENTIFIER,
+                {"info": info},
+                {},
+            )
