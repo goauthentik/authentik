@@ -55215,10 +55215,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55266,9 +55268,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk

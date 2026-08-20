@@ -95,7 +95,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
