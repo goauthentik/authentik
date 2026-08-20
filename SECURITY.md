@@ -25,10 +25,7 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 ## Reporting a Vulnerability
 
-If you discover a potential vulnerability, please report it responsibly through one of the following channels:
-
-- **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
-- **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
+If you discover a potential vulnerability, please report it responsibly by submitting a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
 
 When submitting a report, please include as much detail as possible, such as:
 
