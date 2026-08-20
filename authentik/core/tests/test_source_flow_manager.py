@@ -88,6 +88,49 @@ class TestSourceFlowManager(TestCase):
             reverse("authentik_core:if-user") + "#/settings;page-sources",
         )
 
+    def test_authenticated_auth_forwards_kwargs(self):
+        """kwargs must reach update_user_connection() for the *existing* connection.
+
+        Sources carry their credential in kwargs — Plex's `plex_token`, for
+        example. The AUTH branch dropped them, so `update_user_connection()`
+        read `kwargs.get(...)` as None and overwrote a valid stored credential
+        with NULL on every subsequent login through the source.
+
+        `get_action()` calls `update_user_connection()` twice on this path: once
+        for a fresh unsaved connection (which always forwarded kwargs) and once
+        for the existing row (which did not). Recording per call and keying on
+        whether the connection is saved is what separates them — an accumulated
+        dict is satisfied by the first call and proves nothing.
+        """
+        user = User.objects.create(username="foo", email="foo@bar.baz")
+        existing_connection = UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=user)
+
+        calls: list[tuple] = []
+
+        class RecordingFlowManager(OAuthSourceFlowManager):
+            def update_user_connection(self, connection, **kwargs):
+                calls.append((connection.pk, kwargs))
+                return connection
+
+        flow_manager = RecordingFlowManager(self.source, request, self.identifier, {"info": {}}, {})
+        action, connection = flow_manager.get_action(some_token="a-credential")
+
+        self.assertEqual(action, Action.AUTH)
+        self.assertEqual(connection.pk, existing_connection.pk)
+
+        for_existing = [kw for pk, kw in calls if pk == existing_connection.pk]
+        self.assertEqual(
+            len(for_existing), 1, "expected exactly one update for the existing connection"
+        )
+        self.assertEqual(
+            for_existing[0].get("some_token"),
+            "a-credential",
+            "get_action() dropped kwargs when updating the existing connection",
+        )
+
     def test_authenticated_auth(self):
         """Test authenticated user linking"""
         user = User.objects.create(username="foo", email="foo@bar.baz")
