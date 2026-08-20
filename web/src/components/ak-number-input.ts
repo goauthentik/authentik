@@ -17,6 +17,9 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Boolean, reflect: true })
     allowFloat = false;
 
+    @property({ type: Boolean, attribute: "readonly" })
+    readOnly = false;
+
     renderControl() {
         const setValue = (ev: InputEvent) => {
             const value = (ev.target as HTMLInputElement).value.trim();
@@ -42,6 +45,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
             min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}
+            ?readonly=${this.readOnly}
         />`;
     }
 }
