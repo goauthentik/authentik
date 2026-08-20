@@ -1,7 +1,9 @@
 """Test Source flow_manager"""
 
 from django.contrib.auth.models import AnonymousUser
+from django.db import connection
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
@@ -16,7 +18,11 @@ from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import (
+    OAuthSource,
+    OAuthSourcePropertyMapping,
+    UserOAuthSourceConnection,
+)
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
 
@@ -268,3 +274,37 @@ class TestSourceFlowManager(TestCase):
         self.assertIsInstance(response, AccessDeniedResponse)
 
         self.assertEqual(response.error_message, "foo")
+
+    def calculate_group_property_mapping_queries(self, group_count: int) -> int:
+        """Build group properties for `group_count` groups, check them, and return the
+        number of queries it took"""
+        group_ids = [f"group-{index}" for index in range(group_count)]
+        with CaptureQueriesContext(connection) as queries:
+            flow_manager = OAuthSourceFlowManager(
+                self.source,
+                self.request_factory.get("/", user=AnonymousUser()),
+                self.identifier,
+                {"info": {"groups": group_ids}},
+                {},
+            )
+        self.assertEqual(len(flow_manager.groups_properties), group_count)
+        for group_id in group_ids:
+            # Each group must get its own properties, from both the base properties and
+            # the property mapping
+            self.assertEqual(
+                flow_manager.groups_properties[group_id],
+                {"name": group_id, "attributes": {"group_id": group_id}},
+            )
+        return len(queries.captured_queries)
+
+    def test_group_properties_reuse_mapping_manager(self):
+        """Test that building group properties doesn't re-fetch and re-compile the
+        source's group property mappings for every single group"""
+        self.source.group_property_mappings.add(
+            OAuthSourcePropertyMapping.objects.create(
+                name=generate_id(),
+                expression="""return {"attributes": {"group_id": group_id}}""",
+            )
+        )
+        # Building N groups must take fewer than N queries
+        self.assertLess(self.calculate_group_property_mapping_queries(100), 100)
