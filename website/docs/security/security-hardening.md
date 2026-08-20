@@ -43,7 +43,7 @@ An [Identification stage](../add-secure-apps/flows-stages/stages/identification/
 - Keep **Pretend user exists** enabled. With it off, an unknown identifier fails at this stage while a valid one continues, which tells an attacker which is which.
 - Disable **Show matched user**, which is enabled by default. It displays the matched account's username and avatar on the following step, and for an unknown identifier authentik shows the value that was typed instead, so the two cases can look different.
 - Limit **User Fields** to the identifiers you actually need. Accepting both username and email widens the range of values an attacker can test.
-- Remove the **Enrollment flow**, **Recovery flow**, and **Passwordless flow** links from the stage if those paths should not be advertised. This only removes the link from the login screen. The flows themselves stay reachable at `/if/flow/<slug>/`, so to actually restrict them, bind a policy to the flow or delete it.
+- Bind a policy to the **Enrollment flow**, **Recovery flow**, and **Passwordless flow**, or delete them, if those paths should not be reachable. Removing their links from this stage only hides them from the login screen, since the flows stay reachable at `/if/flow/<slug>/`.
 
 ### Brute-force resistance
 
@@ -166,10 +166,6 @@ Narrow it to the addresses of your actual reverse proxies. If any untrusted clie
 ### Database connections
 
 Set [`AUTHENTIK_POSTGRESQL__SSLMODE`](../install-config/configuration/configuration.mdx#postgresql-settings) to `verify-ca`, or to `verify-full` when hostname verification is available, whenever the database is not reached over a trusted local socket. The default of `disable` performs no certificate validation.
-
-### Cookie scope
-
-[`AUTHENTIK_COOKIE_DOMAIN`](../install-config/configuration/configuration.mdx#authentik_cookie_domain) controls the domain the session cookie is set on. By default the cookie is scoped to the domain authentik is served from, which is the narrowest option. Only widen it to a parent domain if you need cookie sharing across subdomains, and be aware that every host under that domain then receives the cookie.
 
 ### Embedded outpost
 
