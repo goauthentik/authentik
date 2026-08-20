@@ -19,7 +19,6 @@ from authentik.core.api.sources import (
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
-from authentik.core.consumer import ClientConsumer
 from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
@@ -28,6 +27,7 @@ from authentik.core.views.interface import (
     InterfaceView,
     RootRedirectView,
 )
+from authentik.events.consumer import ClientConsumer
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
