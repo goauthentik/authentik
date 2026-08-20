@@ -105,7 +105,7 @@ The destinations of outgoing network requests (HTTP, TCP, etc.) made by authenti
 
 To get security notifications, subscribe to the mailing list [here](https://groups.google.com/g/authentik-security-announcements) or join the [discord](https://goauthentik.io/discord) server.
 
-## General inquiries
+## Contact
 
 For general inquiries, you can reach the authentik Security team at [security@goauthentik.io](mailto:security@goauthentik.io).
 
