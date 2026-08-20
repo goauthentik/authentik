@@ -15,8 +15,6 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * Challenge type to redirect the client
@@ -42,12 +40,6 @@ export interface RedirectChallenge {
      * @memberof RedirectChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof RedirectChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -86,10 +78,6 @@ export function RedirectChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         to: json["to"],
         finalRedirect: json["final_redirect"] == null ? undefined : json["final_redirect"],
     };
@@ -111,10 +99,6 @@ export function RedirectChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         to: value["to"],
         final_redirect: value["finalRedirect"],
     };

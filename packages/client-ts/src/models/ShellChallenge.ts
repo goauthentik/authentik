@@ -15,8 +15,6 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * challenge type to render HTML as-is
@@ -42,12 +40,6 @@ export interface ShellChallenge {
      * @memberof ShellChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof ShellChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -80,10 +72,6 @@ export function ShellChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         body: json["body"],
     };
 }
@@ -104,10 +92,6 @@ export function ShellChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         body: value["body"],
     };
 }

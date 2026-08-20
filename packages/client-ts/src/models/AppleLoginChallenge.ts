@@ -15,8 +15,6 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * Special challenge for apple-native authentication flow, which happens on the client.
@@ -42,12 +40,6 @@ export interface AppleLoginChallenge {
      * @memberof AppleLoginChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof AppleLoginChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -113,10 +105,6 @@ export function AppleLoginChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         clientId: json["client_id"],
         scope: json["scope"],
         redirectUri: json["redirect_uri"],
@@ -140,10 +128,6 @@ export function AppleLoginChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         client_id: value["clientId"],
         scope: value["scope"],
         redirect_uri: value["redirectUri"],

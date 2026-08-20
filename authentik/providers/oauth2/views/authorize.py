@@ -643,7 +643,6 @@ class OAuthFulfillmentStage(StageView):
             self.executor.stage_ok()
             return HttpChallengeResponse(
                 challenge=challenge,
-                request=self.request,
             )
         self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])

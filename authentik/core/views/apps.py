@@ -81,4 +81,4 @@ class RedirectToAppStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        return HttpChallengeResponse(self.get_challenge(), self.request)
+        return HttpChallengeResponse(self.get_challenge())

@@ -19,8 +19,6 @@ import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./Contextu
 import type { ErrorDetail } from "./ErrorDetail";
 import type { FlowDesignationEnum } from "./FlowDesignationEnum";
 import { FlowDesignationEnumFromJSON, FlowDesignationEnumToJSON } from "./FlowDesignationEnum";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 import type { LoginSource } from "./LoginSource";
 import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
 
@@ -48,12 +46,6 @@ export interface IdentificationChallenge {
      * @memberof IdentificationChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof IdentificationChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {Array<string>}
@@ -210,10 +202,6 @@ export function IdentificationChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         userFields: json["user_fields"] == null ? null : json["user_fields"],
         pendingUserIdentifier:
             json["pending_user_identifier"] === undefined
@@ -270,10 +258,6 @@ export function IdentificationChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         user_fields: value["userFields"],
         pending_user_identifier: value["pendingUserIdentifier"],
         password_fields: value["passwordFields"],

@@ -15,8 +15,6 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * Signed challenge for authentik agent to respond to
@@ -42,12 +40,6 @@ export interface EndpointAgentChallenge {
      * @memberof EndpointAgentChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof EndpointAgentChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -93,10 +85,6 @@ export function EndpointAgentChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         challenge: json["challenge"],
         challengeIdleTimeout: json["challenge_idle_timeout"],
     };
@@ -118,10 +106,6 @@ export function EndpointAgentChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         challenge: value["challenge"],
         challenge_idle_timeout: value["challengeIdleTimeout"],
     };

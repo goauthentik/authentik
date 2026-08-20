@@ -19,8 +19,6 @@ pub struct EmailChallenge {
     pub component: Option<String>,
     #[serde(rename = "response_errors", skip_serializing_if = "Option::is_none")]
     pub response_errors: Option<std::collections::HashMap<String, Vec<models::ErrorDetail>>>,
-    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
-    pub messages: Option<Vec<models::FlowMessage>>,
 }
 
 impl EmailChallenge {
@@ -30,7 +28,6 @@ impl EmailChallenge {
             flow_info: None,
             component: None,
             response_errors: None,
-            messages: None,
         }
     }
 }

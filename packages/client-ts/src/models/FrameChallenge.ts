@@ -15,8 +15,6 @@
 import type { ContextualFlowInfo } from "./ContextualFlowInfo";
 import { ContextualFlowInfoFromJSON, ContextualFlowInfoToJSON } from "./ContextualFlowInfo";
 import type { ErrorDetail } from "./ErrorDetail";
-import type { FlowMessage } from "./FlowMessage";
-import { FlowMessageFromJSON, FlowMessageToJSON } from "./FlowMessage";
 
 /**
  * Challenge type to render a frame
@@ -42,12 +40,6 @@ export interface FrameChallenge {
      * @memberof FrameChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
-    /**
-     *
-     * @type {Array<FlowMessage>}
-     * @memberof FrameChallenge
-     */
-    messages?: Array<FlowMessage>;
     /**
      *
      * @type {string}
@@ -99,10 +91,6 @@ export function FrameChallengeFromJSONTyped(
             json["flow_info"] == null ? undefined : ContextualFlowInfoFromJSON(json["flow_info"]),
         component: json["component"] == null ? undefined : json["component"],
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
-        messages:
-            json["messages"] == null
-                ? undefined
-                : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
         url: json["url"],
         loadingOverlay: json["loading_overlay"] == null ? undefined : json["loading_overlay"],
         loadingText: json["loading_text"],
@@ -125,10 +113,6 @@ export function FrameChallengeToJSONTyped(
         flow_info: ContextualFlowInfoToJSON(value["flowInfo"]),
         component: value["component"],
         response_errors: value["responseErrors"],
-        messages:
-            value["messages"] == null
-                ? undefined
-                : (value["messages"] as Array<any>).map(FlowMessageToJSON),
         url: value["url"],
         loading_overlay: value["loadingOverlay"],
         loading_text: value["loadingText"],

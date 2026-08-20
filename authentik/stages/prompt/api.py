@@ -127,6 +127,4 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
             },
         )
         challenge.is_valid()
-        # Deliberately without a request, as this is not a flow execution: attaching messages
-        # here would mark messages meant for the admin interface as read.
         return HttpChallengeResponse(challenge)

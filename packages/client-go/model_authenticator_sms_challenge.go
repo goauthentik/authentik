@@ -24,7 +24,6 @@ type AuthenticatorSMSChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	Messages             []FlowMessage             `json:"messages,omitempty"`
 	PendingUser          string                    `json:"pending_user"`
 	PendingUserAvatar    string                    `json:"pending_user_avatar"`
 	PhoneNumberRequired  *bool                     `json:"phone_number_required,omitempty"`
@@ -156,38 +155,6 @@ func (o *AuthenticatorSMSChallenge) SetResponseErrors(v map[string][]ErrorDetail
 	o.ResponseErrors = &v
 }
 
-// GetMessages returns the Messages field value if set, zero value otherwise.
-func (o *AuthenticatorSMSChallenge) GetMessages() []FlowMessage {
-	if o == nil || IsNil(o.Messages) {
-		var ret []FlowMessage
-		return ret
-	}
-	return o.Messages
-}
-
-// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *AuthenticatorSMSChallenge) GetMessagesOk() ([]FlowMessage, bool) {
-	if o == nil || IsNil(o.Messages) {
-		return nil, false
-	}
-	return o.Messages, true
-}
-
-// HasMessages returns a boolean if a field has been set.
-func (o *AuthenticatorSMSChallenge) HasMessages() bool {
-	if o != nil && !IsNil(o.Messages) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
-func (o *AuthenticatorSMSChallenge) SetMessages(v []FlowMessage) {
-	o.Messages = v
-}
-
 // GetPendingUser returns the PendingUser field value
 func (o *AuthenticatorSMSChallenge) GetPendingUser() string {
 	if o == nil {
@@ -287,9 +254,6 @@ func (o AuthenticatorSMSChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
-	if !IsNil(o.Messages) {
-		toSerialize["messages"] = o.Messages
-	}
 	toSerialize["pending_user"] = o.PendingUser
 	toSerialize["pending_user_avatar"] = o.PendingUserAvatar
 	if !IsNil(o.PhoneNumberRequired) {
@@ -342,7 +306,6 @@ func (o *AuthenticatorSMSChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
-		delete(additionalProperties, "messages")
 		delete(additionalProperties, "pending_user")
 		delete(additionalProperties, "pending_user_avatar")
 		delete(additionalProperties, "phone_number_required")

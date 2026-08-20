@@ -23,7 +23,6 @@ type OAuthDeviceCodeFinishChallenge struct {
 	FlowInfo             *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component            *string                   `json:"component,omitempty"`
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	Messages             []FlowMessage             `json:"messages,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -146,38 +145,6 @@ func (o *OAuthDeviceCodeFinishChallenge) SetResponseErrors(v map[string][]ErrorD
 	o.ResponseErrors = &v
 }
 
-// GetMessages returns the Messages field value if set, zero value otherwise.
-func (o *OAuthDeviceCodeFinishChallenge) GetMessages() []FlowMessage {
-	if o == nil || IsNil(o.Messages) {
-		var ret []FlowMessage
-		return ret
-	}
-	return o.Messages
-}
-
-// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *OAuthDeviceCodeFinishChallenge) GetMessagesOk() ([]FlowMessage, bool) {
-	if o == nil || IsNil(o.Messages) {
-		return nil, false
-	}
-	return o.Messages, true
-}
-
-// HasMessages returns a boolean if a field has been set.
-func (o *OAuthDeviceCodeFinishChallenge) HasMessages() bool {
-	if o != nil && !IsNil(o.Messages) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
-func (o *OAuthDeviceCodeFinishChallenge) SetMessages(v []FlowMessage) {
-	o.Messages = v
-}
-
 func (o OAuthDeviceCodeFinishChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -196,9 +163,6 @@ func (o OAuthDeviceCodeFinishChallenge) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
-	}
-	if !IsNil(o.Messages) {
-		toSerialize["messages"] = o.Messages
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -225,7 +189,6 @@ func (o *OAuthDeviceCodeFinishChallenge) UnmarshalJSON(data []byte) (err error) 
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
-		delete(additionalProperties, "messages")
 		o.AdditionalProperties = additionalProperties
 	}
 

@@ -145,8 +145,7 @@ class SAMLFlowFinalView(ChallengeStageView):
                             "to": f"{provider.acs_url}?{querystring}",
                             "final_redirect": True,
                         }
-                    ),
-                    self.request,
+                    )
                 )
             return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")

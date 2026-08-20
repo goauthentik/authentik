@@ -5,10 +5,10 @@ from enum import Enum
 from typing import TYPE_CHECKING, TypedDict
 from uuid import UUID
 
-from django.contrib.messages import DEFAULT_TAGS, get_messages
+from django.contrib.messages import DEFAULT_TAGS
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.http import HttpRequest, JsonResponse
+from django.http import JsonResponse
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
 from rest_framework.request import Request
 
@@ -61,6 +61,7 @@ class ContextualFlowInfo(PassiveSerializer):
     background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
+    messages = FlowMessageSerializer(many=True, required=False)
 
 
 class Challenge(PassiveSerializer):
@@ -73,7 +74,6 @@ class Challenge(PassiveSerializer):
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
     )
-    messages = FlowMessageSerializer(many=True, required=False)
 
 
 class RedirectChallenge(Challenge):
@@ -208,14 +208,7 @@ class DataclassEncoder(DjangoJSONEncoder):
 
 
 class HttpChallengeResponse(JsonResponse):
-    """Subclass of JsonResponse that uses the `DataclassEncoder`. When a request is given,
-    any message queued for it is attached to the challenge and marked as read, so that it
-    isn't delivered a second time through the message storage backend."""
+    """Subclass of JsonResponse that uses the `DataclassEncoder`"""
 
-    def __init__(self, challenge, request: HttpRequest | None = None, **kwargs) -> None:
-        data = dict(challenge.data)
-        # The client navigates away as soon as it receives a redirect challenge, so it never
-        # gets to display messages. Leave them queued for the page we redirect to instead.
-        if request is not None and not isinstance(challenge, RedirectChallenge):
-            data["messages"] = FlowMessageSerializer(get_messages(request), many=True).data
-        super().__init__(data, encoder=DataclassEncoder, **kwargs)
+    def __init__(self, challenge, **kwargs) -> None:
+        super().__init__(challenge.data, encoder=DataclassEncoder, **kwargs)

@@ -101,7 +101,7 @@ class SourceStageView(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Completion happens via dispatch(), not here.
-        return HttpChallengeResponse(self._get_challenge(), self.request)
+        return HttpChallengeResponse(self._get_challenge())
 
 
 class SourceStageFinal(StageView):

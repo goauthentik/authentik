@@ -48,10 +48,10 @@ class TestFlowMessages(FlowTestCase):
         self.set_flow_plan(plan)
 
         response = self.client.get(self.url)
-        self.assertStageResponse(
-            response,
-            self.flow,
-            messages=[{"level": "warning", "message": "challenge message"}],
+        raw_response = self.assertStageResponse(response, self.flow)
+        self.assertEqual(
+            raw_response["flow_info"]["messages"],
+            [{"level": "warning", "message": "challenge message"}],
         )
 
     def test_challenge_not_repeated(self):
@@ -64,10 +64,10 @@ class TestFlowMessages(FlowTestCase):
         # The stage queues a new message on every render, so the second challenge only
         # contains the message queued for it
         response = self.client.get(self.url)
-        self.assertStageResponse(
-            response,
-            self.flow,
-            messages=[{"level": "warning", "message": "challenge message"}],
+        raw_response = self.assertStageResponse(response, self.flow)
+        self.assertEqual(
+            raw_response["flow_info"]["messages"],
+            [{"level": "warning", "message": "challenge message"}],
         )
 
     def test_previous_stage(self):
@@ -82,11 +82,14 @@ class TestFlowMessages(FlowTestCase):
         self.set_flow_plan(plan)
 
         response = self.client.get(self.url, follow=True)
-        self.assertStageResponse(
+        raw_response = self.assertStageResponse(
             response,
             self.flow,
             component="ak-stage-dummy",
-            messages=[{"level": "success", "message": "stage message"}],
+        )
+        self.assertEqual(
+            raw_response["flow_info"]["messages"],
+            [{"level": "success", "message": "stage message"}],
         )
 
     def test_redirect_challenge(self):
@@ -99,7 +102,7 @@ class TestFlowMessages(FlowTestCase):
 
         response = self.client.get(self.url)
         raw_response = self.assertStageResponse(response, component="xak-flow-redirect")
-        self.assertNotIn("messages", raw_response)
+        self.assertNotIn("messages", raw_response.get("flow_info", {}))
         self.assertIn("stage message", self.client.session[SessionStorage.session_key])
 
     def test_no_messages(self):
@@ -109,4 +112,5 @@ class TestFlowMessages(FlowTestCase):
         )
 
         response = self.client.get(self.url)
-        self.assertStageResponse(response, self.flow, messages=[])
+        raw_response = self.assertStageResponse(response)
+        self.assertEqual(raw_response["flow_info"]["messages"], [])

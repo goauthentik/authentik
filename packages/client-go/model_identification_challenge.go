@@ -24,7 +24,6 @@ type IdentificationChallenge struct {
 	FlowInfo              *ContextualFlowInfo       `json:"flow_info,omitempty"`
 	Component             *string                   `json:"component,omitempty"`
 	ResponseErrors        *map[string][]ErrorDetail `json:"response_errors,omitempty"`
-	Messages              []FlowMessage             `json:"messages,omitempty"`
 	UserFields            []string                  `json:"user_fields"`
 	PendingUserIdentifier NullableString            `json:"pending_user_identifier,omitempty"`
 	PasswordFields        bool                      `json:"password_fields"`
@@ -174,38 +173,6 @@ func (o *IdentificationChallenge) HasResponseErrors() bool {
 // SetResponseErrors gets a reference to the given map[string][]ErrorDetail and assigns it to the ResponseErrors field.
 func (o *IdentificationChallenge) SetResponseErrors(v map[string][]ErrorDetail) {
 	o.ResponseErrors = &v
-}
-
-// GetMessages returns the Messages field value if set, zero value otherwise.
-func (o *IdentificationChallenge) GetMessages() []FlowMessage {
-	if o == nil || IsNil(o.Messages) {
-		var ret []FlowMessage
-		return ret
-	}
-	return o.Messages
-}
-
-// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *IdentificationChallenge) GetMessagesOk() ([]FlowMessage, bool) {
-	if o == nil || IsNil(o.Messages) {
-		return nil, false
-	}
-	return o.Messages, true
-}
-
-// HasMessages returns a boolean if a field has been set.
-func (o *IdentificationChallenge) HasMessages() bool {
-	if o != nil && !IsNil(o.Messages) {
-		return true
-	}
-
-	return false
-}
-
-// SetMessages gets a reference to the given []FlowMessage and assigns it to the Messages field.
-func (o *IdentificationChallenge) SetMessages(v []FlowMessage) {
-	o.Messages = v
 }
 
 // GetUserFields returns the UserFields field value
@@ -724,9 +691,6 @@ func (o IdentificationChallenge) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ResponseErrors) {
 		toSerialize["response_errors"] = o.ResponseErrors
 	}
-	if !IsNil(o.Messages) {
-		toSerialize["messages"] = o.Messages
-	}
 	if o.UserFields != nil {
 		toSerialize["user_fields"] = o.UserFields
 	}
@@ -817,7 +781,6 @@ func (o *IdentificationChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "flow_info")
 		delete(additionalProperties, "component")
 		delete(additionalProperties, "response_errors")
-		delete(additionalProperties, "messages")
 		delete(additionalProperties, "user_fields")
 		delete(additionalProperties, "pending_user_identifier")
 		delete(additionalProperties, "password_fields")
