@@ -18,10 +18,10 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version   | Supported |
-| --------- | --------- |
-| 2026.2.x  | ✅        |
-| 2026.5.x  | ✅        |
+| Version  | Supported |
+|----------| --------- |
+| 2026.5.x | ✅        |
+| 2026.8.x | ✅        |
 
 ## Reporting a Vulnerability
 
