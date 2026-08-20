@@ -362,7 +362,7 @@ export class LibraryPage extends WithSession(AKElement) {
         const { currentUser, selectedApp } = this;
         const { layout, theme, enabledFeatures } = this.uiConfig;
 
-        const editable = currentUser?.isSuperuser && enabledFeatures.applicationEdit;
+        const editable = canAccessAdmin(currentUser) && enabledFeatures.applicationEdit;
 
         const groupedApps = groupBy(this.visibleApplications, (app) => app.group || "").sort(
             ([groupLabelA, groupAppsA], [groupLabelB, groupAppsB]) => {

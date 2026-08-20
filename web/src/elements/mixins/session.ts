@@ -89,12 +89,9 @@ export interface SessionMixin {
  * Whether the user can view the admin innterface.
  */
 export function canAccessAdmin(user?: UserSelf | null) {
-    return (
-        user &&
-        (user.isSuperuser ||
-            user.systemPermissions.includes("access_admin_interface") ||
-            user.pk === 0)
-    );
+    if (!user) return false;
+
+    return !!(user.isSuperuser || user.systemPermissions.includes("access_admin_interface"));
 }
 
 /**

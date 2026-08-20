@@ -179,7 +179,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
                     >
                         <div class="pf-c-card">
                             <ak-user-consent-list
-                                userId=${ifPresent(currentUser?.pk)}
+                                userId=${ifDefined(currentUser?.pk)}
                             ></ak-user-consent-list>
                         </div>
                     </div>
