@@ -159,6 +159,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         max_length=USERNAME_MAX_LENGTH,
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
+    password_change_date = DateTimeField(read_only=True)
 
     @property
     def _should_include_groups(self) -> bool:
@@ -356,7 +357,6 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         extra_kwargs = {
             "name": {"allow_blank": True},
             "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 
