@@ -61,6 +61,11 @@ test.describe("Session Lifecycle", () => {
     });
 
     test("Remember me persists username", async ({ navigator, session, page }) => {
+        // This one walks the whole loop — sign in with remember-me, sign out, and come
+        // back to a pre-filled form — so it pays the flow executor's startup cost twice
+        // and doesn't fit the default budget.
+        test.setTimeout(60_000);
+
         await test.step("Verify identification stage", async () => {
             await expect(
                 session.$rememberMeCheckbox,
@@ -102,7 +107,9 @@ test.describe("Session Lifecycle", () => {
             await signOutItem.click();
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
-            await session.$identificationStage.waitFor({ state: "visible" });
+            // The shell is served before the executor has resolved the first stage, so
+            // the pathname landing is not enough to act on.
+            await session.$identificationStage.waitFor({ state: "visible", timeout: 20_000 });
 
             const passwordEmbedded = await session.$passwordField.isVisible();
 

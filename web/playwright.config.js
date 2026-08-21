@@ -24,7 +24,13 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: CI,
     retries: CI ? 1 : 0,
-    workers: "50%",
+    // Serial in CI. Every test drives the same authentik instance and the same database,
+    // and several of them mutate `akadmin` — the groups and users suites both edit its
+    // group membership — so concurrent workers contend for the same records on top of
+    // competing for one server. Locally that mostly shows up as slowness; in CI it showed
+    // up as timeouts and missing rows that pass on their own. The full suite runs in about
+    // three minutes serially.
+    workers: CI ? 1 : "50%",
     maxFailures: CI ? 5 : 2,
     reporter: CI
         ? [
