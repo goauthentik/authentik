@@ -12,7 +12,7 @@ from authentik.policies.expression.api import ExpressionPolicySerializer
 from authentik.policies.expression.evaluator import PolicyEvaluator
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.policies.process import PolicyProcess
+from authentik.policies.process import PolicyThread
 from authentik.policies.types import PolicyRequest
 
 
@@ -85,7 +85,7 @@ class TestEvaluator(TestCase):
         )
         evaluator = PolicyEvaluator("test")
         evaluator.set_policy_request(self.request)
-        proc = PolicyProcess(PolicyBinding(policy=expr), request=self.request, connection=None)
+        proc = PolicyThread(PolicyBinding(policy=expr), request=self.request)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/",))
 
@@ -107,7 +107,7 @@ class TestEvaluator(TestCase):
                 ak_message(msg)
             """,
         )
-        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        proc = PolicyThread(PolicyBinding(policy=expr2), request=self.request)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 
@@ -130,7 +130,7 @@ class TestEvaluator(TestCase):
             """,
         )
         self.request.obj = None
-        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        proc = PolicyThread(PolicyBinding(policy=expr2), request=self.request)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 

@@ -1,7 +1,6 @@
 """authentik policy task"""
 
-from multiprocessing import get_context
-from multiprocessing.connection import Connection
+from threading import Thread
 from time import perf_counter
 
 from django.core.cache import cache
@@ -18,9 +17,7 @@ from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
-FORK_CTX = get_context("fork")
 CACHE_TIMEOUT = CONFIG.get_int("cache.timeout_policies")
-PROCESS_CLASS = FORK_CTX.Process
 
 
 def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
@@ -33,10 +30,9 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
     return prefix
 
 
-class PolicyProcess(PROCESS_CLASS):
+class PolicyThread(Thread):
     """Evaluate a single policy within a separate process"""
 
-    connection: Connection
     binding: PolicyBinding
     request: PolicyRequest
 
@@ -44,15 +40,14 @@ class PolicyProcess(PROCESS_CLASS):
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Connection | None,
     ):
         super().__init__()
         self.binding = binding
         self.request = request
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
-        if connection:
-            self.connection = connection
+
+        self._return = None
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
@@ -77,7 +72,7 @@ class PolicyProcess(PROCESS_CLASS):
             policy=self.binding.policy,
             user=self.request.user.username,
             # this is used for filtering in access checking where logs are sent to the admin
-            process="PolicyProcess",
+            process="PolicyThread",
         )
         try:
             policy_result = self.binding.passes(self.request)
@@ -114,7 +109,7 @@ class PolicyProcess(PROCESS_CLASS):
             cached=should_cache,
             result=policy_result,
             # this is used for filtering in access checking where logs are sent to the admin
-            process="PolicyProcess",
+            process="PolicyThread",
             passing=policy_result.passing,
             user=self.request.user.username,
         )
@@ -130,16 +125,21 @@ class PolicyProcess(PROCESS_CLASS):
             span.set_data("request", self.request)
             return self.execute()
 
-    def run(self):  # pragma: no cover
-        """Task wrapper to run policy checking"""
-        result = None
+    def _run(self):  # pragma: no cover
         try:
             start = perf_counter()
             result = self.profiling_wrapper()
             end = perf_counter()
             result._exec_time = max((end - start), 0)
+            return result
         except Exception as exc:  # noqa
             LOGGER.warning("Policy failed to run", exc=exc)
-            result = PolicyResult(False, str(exc))
-        finally:
-            self.connection.send(result)
+            return PolicyResult(False, str(exc))
+
+    def run(self):  # pragma: no cover
+        """Task wrapper to run policy checking"""
+        self._return = self._run()
+
+    def join(self, *args, **kwargs):
+        super().join(*args, **kwargs)
+        return self._return

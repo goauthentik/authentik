@@ -13,7 +13,7 @@ from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding
-from authentik.policies.process import PolicyProcess
+from authentik.policies.process import PolicyThread
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest
 
 
@@ -38,7 +38,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(group=group)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, True)
 
     def test_group_negative(self):
@@ -47,7 +47,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(group=group)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
 
     def test_user_passing(self):
@@ -55,7 +55,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(user=self.user)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, True)
 
     def test_user_negative(self):
@@ -63,7 +63,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(user=get_anonymous_user())
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
 
     def test_empty(self):
@@ -71,7 +71,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding()
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
 
     def test_invalid(self):
@@ -79,7 +79,7 @@ class TestPolicyProcess(TestCase):
         policy = DummyPolicy.objects.create(result=True, wait_min=0, wait_max=1)
         binding = PolicyBinding(policy=policy)
         with self.assertRaises(ValueError):
-            PolicyProcess(binding, None, None)  # type: ignore
+            PolicyThread(binding, None)  # type: ignore
 
     def test_true(self):
         """Test policy execution"""
@@ -87,7 +87,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(policy=policy)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, True)
         self.assertEqual(response.messages, ("dummy",))
 
@@ -97,7 +97,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(policy=policy)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
 
@@ -107,7 +107,7 @@ class TestPolicyProcess(TestCase):
         binding = PolicyBinding(policy=policy, negate=True)
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, True)
         self.assertEqual(response.messages, ("dummy",))
 
@@ -119,7 +119,7 @@ class TestPolicyProcess(TestCase):
         )
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
 
     def test_execution_logging(self):
@@ -151,7 +151,7 @@ class TestPolicyProcess(TestCase):
                 "password": password,
             }
         }
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
 
@@ -205,7 +205,7 @@ class TestPolicyProcess(TestCase):
 
         request = PolicyRequest(user)
         request.set_http_request(http_request)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
 
@@ -229,7 +229,7 @@ class TestPolicyProcess(TestCase):
         )
 
         request = PolicyRequest(self.user)
-        response = PolicyProcess(binding, request, None).execute()
+        response = PolicyThread(binding, request).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("division by zero",))
 

@@ -29,7 +29,7 @@ from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
-from authentik.policies.process import PolicyProcess
+from authentik.policies.process import PolicyThread
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.policies.utils import delete_none_values
 from authentik.providers.oauth2.id_token import IDToken
@@ -209,7 +209,7 @@ class BaseEvaluator:
         if "request" in self._context:
             req = self._context["request"]
         req.context.update(kwargs)
-        proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
+        proc = PolicyThread(PolicyBinding(policy=policy), request=req)
         return proc.profiling_wrapper()
 
     def expr_create_jwt(

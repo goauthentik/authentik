@@ -8,7 +8,15 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: authentik
     command:
-      ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+      [
+        "postgres",
+        "-c",
+        "log_statement=all",
+        "-c",
+        "log_destination=stderr",
+        "-c",
+        "max_connections=1000",
+      ]
     ports:
       - 127.0.0.1:5432:5432
     restart: always
