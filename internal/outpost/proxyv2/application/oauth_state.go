@@ -71,15 +71,21 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 func (a *Application) createState(r *http.Request, w http.ResponseWriter, fwd string) (string, error) {
 	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
-		// Session file may not exist (e.g., after outpost restart or logout)
-		// Delete the stale session cookie and continue with the new empty session
-		a.log.WithError(err).Debug("failed to get session, clearing stale cookie")
-		s.Options.MaxAge = -1
-		if saveErr := s.Save(r, w); saveErr != nil {
-			a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
-		}
-		// Get a fresh session after clearing the stale cookie
-		s, _ = a.sessions.Get(r, a.SessionName())
+		// The client presented a session cookie but the backing session could not
+		// be loaded: it was erased on sign-out, or lost because the outpost
+		// restarted while storing sessions in a tmpfs (TMPDIR=/dev/shm).
+		//
+		// Reset the stale session in place and continue with a new one.
+		// a.sessions.Get() memoises both the session and the error in the
+		// request-scoped registry, so re-fetching would only hand back this very
+		// same object with the dead ID still set, skipping the regeneration below
+		// and minting a state JWT for a session that is never written to the
+		// store. Options is left alone: it is shared with every other Get() in
+		// this request and Save() below depends on its MaxAge.
+		a.log.WithError(err).Debug("discarding stale session")
+		s.ID = ""
+		s.IsNew = true
+		s.Values = map[any]any{}
 	}
 	if s.ID == "" {
 		// Ensure session has an ID
@@ -136,12 +142,7 @@ func (a *Application) stateFromRequest(rw http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		a.log.WithError(err).Warning("failed to get session")
 		// Delete the stale session cookie if it exists
-		if rw != nil {
-			s.Options.MaxAge = -1
-			if saveErr := s.Save(r, rw); saveErr != nil {
-				a.log.WithError(saveErr).Warning("failed to delete stale session cookie")
-			}
-		}
+		a.discardSession(rw, r, s)
 		return nil
 	}
 	if claims.SessionID != s.ID {
