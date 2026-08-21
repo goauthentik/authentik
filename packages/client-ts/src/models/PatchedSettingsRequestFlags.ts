@@ -42,7 +42,7 @@ export interface PatchedSettingsRequestFlags {
      * @memberof PatchedSettingsRequestFlags
      * @deprecated
      */
-    flowsRefreshOthers?: boolean | null;
+    flowsRefreshOthers?: boolean;
 }
 
 /**
@@ -91,11 +91,7 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
         flowsRefreshOthers:
-            json["flows_refresh_others"] === undefined
-                ? undefined
-                : json["flows_refresh_others"] === null
-                  ? null
-                  : json["flows_refresh_others"],
+            json["flows_refresh_others"] == null ? undefined : json["flows_refresh_others"],
     };
 }
 

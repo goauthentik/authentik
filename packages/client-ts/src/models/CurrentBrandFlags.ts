@@ -30,7 +30,7 @@ export interface CurrentBrandFlags {
      * @memberof CurrentBrandFlags
      * @deprecated
      */
-    flowsRefreshOthers?: boolean | null;
+    flowsRefreshOthers?: boolean;
 }
 
 /**
@@ -61,11 +61,7 @@ export function CurrentBrandFlagsFromJSONTyped(
     return {
         flowsContinuousLogin: json["flows_continuous_login"],
         flowsRefreshOthers:
-            json["flows_refresh_others"] === undefined
-                ? undefined
-                : json["flows_refresh_others"] === null
-                  ? null
-                  : json["flows_refresh_others"],
+            json["flows_refresh_others"] == null ? undefined : json["flows_refresh_others"],
     };
 }
 

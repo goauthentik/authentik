@@ -39126,7 +39126,6 @@ components:
               type: boolean
               description: Refresh other tabs after successful authentication.
               deprecated: true
-              nullable: true
           required:
           - flows_continuous_login
           readOnly: true
@@ -53801,7 +53800,6 @@ components:
               type: boolean
               description: Refresh other tabs after successful authentication.
               deprecated: true
-              nullable: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -58896,7 +58894,6 @@ components:
               type: boolean
               description: Refresh other tabs after successful authentication.
               deprecated: true
-              nullable: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
@@ -58991,7 +58988,6 @@ components:
               type: boolean
               description: Refresh other tabs after successful authentication.
               deprecated: true
-              nullable: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
