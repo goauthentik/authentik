@@ -28,7 +28,7 @@ test.describe("Invitation form", () => {
     // CodeMirror editor must not block submission.
     test("Create invitation with custom attributes", async ({ page, form, pointer }, testInfo) => {
         const name = invitationNames.get(testInfo.testId)!;
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -46,8 +46,7 @@ test.describe("Invitation form", () => {
         await test.step("Fill invitation details", async () => {
             await fill("Invitation Name", name, $dialog);
 
-            await $dialog.getByPlaceholder("Select a flow...").click();
-            await page.getByRole("option", { name: /default-source-enrollment/ }).click();
+            await selectSearchValue("Flow", /default-source-enrollment/, $dialog);
         });
 
         await test.step("Edit custom attributes (#22637)", async () => {
@@ -91,7 +90,7 @@ test.describe("Invitation form", () => {
     }, testInfo) => {
         const name = invitationNames.get(testInfo.testId)!;
         const seed = name.replace("invite-", "");
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -105,9 +104,7 @@ test.describe("Invitation form", () => {
         });
 
         await test.step("Open the stacked enrollment flow form via the flow select", async () => {
-            await $dialog.getByPlaceholder("Select a flow...").click();
-
-            await page.getByRole("option", { name: "Create a new enrollment flow" }).click();
+            await selectSearchValue("Flow", /Create a new enrollment flow/, $dialog);
 
             await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
         });
