@@ -42,7 +42,7 @@ export interface PatchedSettingsRequestFlags {
      * @memberof PatchedSettingsRequestFlags
      * @deprecated
      */
-    flowsRefreshOthers: boolean;
+    flowsRefreshOthers: boolean | null;
 }
 
 /**

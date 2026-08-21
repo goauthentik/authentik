@@ -19,7 +19,6 @@ from authentik.tenants.utils import normalize_base_url
 
 
 class FlagJSONField(JSONDictField):
-
     def to_internal_value(self, data: str):
         flags = super().to_internal_value(data)
         for flag in Flag.available(visibility="system", exclude_system=False):
@@ -68,6 +67,7 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
                 props[_flag.key]["description"] = _flag.description
             if _flag.deprecated:
                 props[_flag.key]["deprecated"] = _flag.deprecated
+                props[_flag.key]["nullable"] = _flag.deprecated
         return build_object_type(props, required=props.keys())
 
 

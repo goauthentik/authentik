@@ -30,7 +30,7 @@ export interface CurrentBrandFlags {
      * @memberof CurrentBrandFlags
      * @deprecated
      */
-    flowsRefreshOthers: boolean;
+    flowsRefreshOthers: boolean | null;
 }
 
 /**
