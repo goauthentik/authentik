@@ -100,7 +100,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import PasswordHashRequiresOverride
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -246,7 +246,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
         if password_hash is not None:
-            instance.set_password_from_hash(password_hash)
+            instance.set_password_from_hash_unchecked(password_hash)
             instance.save()
         elif password:
             instance.set_password(password)
@@ -498,7 +498,14 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True, validators=[validate_password_hash])
+    password = CharField(required=True)
+    override = BooleanField(
+        default=False,
+        help_text=_(
+            "Import a valid password hash even when its parameters do not match authentik's "
+            "current password hashing policy."
+        ),
+    )
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -959,9 +966,25 @@ class UserViewSet(
         """
         user: User = self.get_object()
         try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
+            user.set_password_from_hash(
+                body.validated_data["password"],
+                request=request,
+                require_current=not body.validated_data["override"],
+            )
             user.save()
-        except (ValidationError, IntegrityError) as exc:
+        except PasswordHashRequiresOverride as exc:
+            raise ValidationError(
+                {
+                    "password": [
+                        _('%(reason)s Set "override" to true to import it anyway.')
+                        % {"reason": reason}
+                        for reason in exc.messages
+                    ]
+                }
+            ) from exc
+        except ValidationError as exc:
+            raise ValidationError({"password": exc.detail}) from exc
+        except IntegrityError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)
