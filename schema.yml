@@ -39128,7 +39128,6 @@ components:
               deprecated: true
           required:
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -53805,7 +53804,6 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -55215,10 +55213,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55266,9 +55266,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -58900,7 +58898,6 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -58995,7 +58992,6 @@ components:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:

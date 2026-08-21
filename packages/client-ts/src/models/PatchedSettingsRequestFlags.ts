@@ -42,7 +42,7 @@ export interface PatchedSettingsRequestFlags {
      * @memberof PatchedSettingsRequestFlags
      * @deprecated
      */
-    flowsRefreshOthers: boolean;
+    flowsRefreshOthers?: boolean;
 }
 
 /**
@@ -72,13 +72,6 @@ export function instanceOfPatchedSettingsRequestFlags(
             (value as Record<string, any>)["flows_continuous_login"] === undefined)
     )
         return false;
-    if (
-        (!("flowsRefreshOthers" in (value as Record<string, any>)) &&
-            !("flows_refresh_others" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsRefreshOthers"] === undefined &&
-            (value as Record<string, any>)["flows_refresh_others"] === undefined)
-    )
-        return false;
     return true;
 }
 
@@ -97,7 +90,8 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         coreDefaultAppAccess: json["core_default_app_access"],
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
-        flowsRefreshOthers: json["flows_refresh_others"],
+        flowsRefreshOthers:
+            json["flows_refresh_others"] == null ? undefined : json["flows_refresh_others"],
     };
 }
 

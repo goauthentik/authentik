@@ -58,6 +58,6 @@ After re-creating the containers with `AUTHENTIK_DEBUGGER` set to `true` and the
 
 If the authentik instance is running on a remote server, the `.vscode/launch.json` file needs to be adjusted to point to the IP of the remote server. Alternatively, you can forward the debug port via an SSH tunnel, using `-L 9901:127.0.0.1:9901`.
 
-## authentik Server / Outposts (Golang)
+## authentik Outposts (Golang)
 
-Outposts, as well as some auxiliary code of the authentik server, are written in Go. These components can be debugged using standard Golang tooling, such as [Delve](https://github.com/go-delve/delve).
+Outposts, except the proxy outpost, are written in Go. These components can be debugged using standard Golang tooling, such as [Delve](https://github.com/go-delve/delve).
