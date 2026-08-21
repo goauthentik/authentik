@@ -24,13 +24,16 @@ export default defineConfig({
     fullyParallel: true,
     forbidOnly: CI,
     retries: CI ? 1 : 0,
-    // Serial in CI. Every test drives the same authentik instance and the same database,
-    // and several of them mutate `akadmin` — the groups and users suites both edit its
-    // group membership — so concurrent workers contend for the same records on top of
-    // competing for one server. Locally that mostly shows up as slowness; in CI it showed
-    // up as timeouts and missing rows that pass on their own. The full suite runs in about
-    // three minutes serially.
-    workers: CI ? 1 : "50%",
+    workers: "50%",
+    // Every action here is a round trip to a real authentik instance that the other
+    // workers are hitting too — creating an entity is a POST plus a table refresh, not a
+    // local state change. Playwright's 5s assertion default is written for in-process UI
+    // and is optimistic for that, so raise the floor rather than sprinkling per-assertion
+    // timeouts. Individual steps that are slow for a known reason still say so locally.
+    timeout: 60_000,
+    expect: {
+        timeout: 15_000,
+    },
     maxFailures: CI ? 5 : 2,
     reporter: CI
         ? [

@@ -194,7 +194,7 @@ test.describe("RAC", () => {
             await expect(
                 launchDialog.getByRole("cell", { name: endpointA }),
                 `Endpoint ${endpointA} is visible in the launcher`,
-            ).toBeVisible({ timeout: 5_000 });
+            ).toBeVisible();
 
             await expect(
                 launchDialog.getByRole("cell", { name: endpointB }),
