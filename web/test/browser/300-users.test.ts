@@ -188,7 +188,7 @@ test.describe("Impersonation", () => {
 
             await impersonateDialog.getByRole("button", { name: "Impersonate" }).click();
 
-            await navigator.waitForPathname("if/user/#/library", {
+            await navigator.waitForPathname("/if/user/library", {
                 timeout: 10_000,
             });
         });
