@@ -24,7 +24,7 @@ from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
 from authentik.events.middleware import audit_ignore
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import StageView
 from authentik.lib.utils.email import mask_email
@@ -167,7 +167,8 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             context={
                 PLAN_CONTEXT_METHOD_ARGS: {
                     "device_class": DeviceClasses.TOTP.value,
-                }
+                },
+                "reason": LoginFailedReason.MFA_INVALID_OTP,
             },
         )
         raise ValidationError(
@@ -246,6 +247,7 @@ def validate_challenge_webauthn(
                     "device_class": DeviceClasses.WEBAUTHN.value,
                     "device_type": device.device_type,
                 },
+                "reason": LoginFailedReason.MFA_WEBAUTHN_FAILED,
             },
         )
         raise ValidationError("Assertion failed") from exc
@@ -300,7 +302,8 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
                     PLAN_CONTEXT_METHOD_ARGS: {
                         "device_class": DeviceClasses.DUO.value,
                         "duo_response": response,
-                    }
+                    },
+                    "reason": LoginFailedReason.MFA_DUO_DENIED,
                 },
             )
             raise ValidationError("Duo denied access", code="denied")

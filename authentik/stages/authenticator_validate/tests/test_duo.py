@@ -8,7 +8,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.brands.utils import get_brand_for_request
 from authentik.core.middleware import RESPONSE_HEADER_ID
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
-from authentik.events.models import Event, EventAction
+from authentik.events.models import Event, EventAction, LoginFailedReason
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
@@ -98,6 +98,9 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                     ),
                     self.user,
                 )
+        event = Event.objects.filter(action=EventAction.LOGIN_FAILED, user__pk=self.user.pk).first()
+        self.assertIsNotNone(event)
+        self.assertEqual(event.context["reason"], LoginFailedReason.MFA_DUO_DENIED.value)
 
     @patch(
         "authentik.stages.authenticator_duo.models.AuthenticatorDuoStage.auth_client",
