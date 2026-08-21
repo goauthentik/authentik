@@ -2,6 +2,8 @@
  * @file brandSetFavicon() and AndNext(), which is used for redirects and flow steps
  */
 
+import { resolveThemedUrl, resolveUITheme } from "#common/theme";
+
 import type { CurrentBrand } from "@goauthentik/api";
 
 export function brandSetFavicon(brand: CurrentBrand) {
@@ -9,6 +11,14 @@ export function brandSetFavicon(brand: CurrentBrand) {
      *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
      *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
      */
+    const href = resolveThemedUrl(
+        resolveUITheme(brand.uiTheme),
+        brand.brandingFaviconThemedUrls,
+        brand.brandingFavicon,
+    );
+    if (!href) {
+        return;
+    }
     const rels = ["icon", "shortcut icon"];
     rels.forEach((rel) => {
         let relIcon = document.head.querySelector<HTMLLinkElement>(`link[rel='${rel}']`);
@@ -17,7 +27,7 @@ export function brandSetFavicon(brand: CurrentBrand) {
             relIcon.rel = rel;
             document.getElementsByTagName("head")[0].appendChild(relIcon);
         }
-        relIcon.href = brand.brandingFavicon;
+        relIcon.href = href;
     });
 }
 

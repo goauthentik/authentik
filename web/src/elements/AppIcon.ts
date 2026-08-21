@@ -1,4 +1,5 @@
 import { PFSize } from "#common/enums";
+import { resolveThemedUrl } from "#common/theme";
 
 import Styles from "#elements/AppIcon.css";
 import { AKElement } from "#elements/Base";
@@ -64,8 +65,7 @@ export class AppIcon extends AKElement implements IAppIcon {
 
         // Check for image URLs (http://, https://, or file paths)
         // Use themed URL if available, otherwise fall back to icon
-        const resolvedIcon =
-            (this.iconThemedUrls as Record<string, string> | null)?.[this.activeTheme] ?? this.icon;
+        const resolvedIcon = resolveThemedUrl(this.activeTheme, this.iconThemedUrls, this.icon);
         if (resolvedIcon) {
             return this.#wrap(
                 html`<img
