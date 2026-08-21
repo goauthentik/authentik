@@ -67,6 +67,12 @@ export interface PasswordPolicy {
      */
     readonly boundTo: number;
     /**
+     *
+     * @type {Date}
+     * @memberof PasswordPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
      * Field key to check, field keys defined in Prompt stages are available.
      * @type {string}
      * @memberof PasswordPolicy
@@ -181,6 +187,13 @@ export function instanceOfPasswordPolicy(value: object): value is PasswordPolicy
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -204,6 +217,7 @@ export function PasswordPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
         amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
@@ -231,7 +245,13 @@ export function PasswordPolicyToJSON(json: any): PasswordPolicy {
 export function PasswordPolicyToJSONTyped(
     value?: Omit<
         PasswordPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

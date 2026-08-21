@@ -18,7 +18,7 @@ import { aki } from "#common/api/client";
 import { IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PFColor } from "#elements/Label";
-import { PaginatedResponse, TableColumn } from "#elements/table/Table";
+import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -55,6 +55,7 @@ export class PolicyListPage extends TablePage<Policy> {
         // ---
         [msg("Name"), "name"],
         [msg("Type")],
+        [msg("Last updated", { id: "policy.column.last-updated" }), "last_updated"],
         [msg("Actions")],
     ];
 
@@ -69,6 +70,7 @@ export class PolicyListPage extends TablePage<Policy> {
                           ${msg("Warning: Policy is not assigned.")}
                       </ak-label>`}`,
             html`${item.verboseName}`,
+            Timestamp(item.lastUpdated),
             html`<div class="ak-c-table__actions">
                 ${IconEditButtonByTagName(item.component, item.pk)}
                 ${IconPermissionButton(item.name, {
