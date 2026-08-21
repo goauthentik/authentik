@@ -90,11 +90,16 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            const signOutLink = page.getByRole("link", { name: "Sign out" });
+            // Sign-out lives in the user switcher's dropdown, which is `hidden` until the
+            // toggle is pressed, and the entry carries an explicit role="menuitem" rather
+            // than the implicit link role of its `<a>`.
+            await page.getByRole("button", { name: "Switch user" }).click();
 
-            await expect(signOutLink, "Sign out link is visible").toBeVisible();
+            const signOutItem = page.getByRole("menuitem", { name: "Sign out current user" });
 
-            await signOutLink.click();
+            await expect(signOutItem, "Sign out entry is visible").toBeVisible();
+
+            await signOutItem.click();
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
             await session.$identificationStage.waitFor({ state: "visible" });
