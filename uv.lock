@@ -448,7 +448,7 @@ dev = [
     { name = "coverage", extras = ["toml"], specifier = "==7.15.4" },
     { name = "daphne", specifier = "==4.2.3" },
     { name = "debugpy", specifier = "==1.8.21" },
-    { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==6.0.7" },
+    { name = "django-stubs", extras = ["compatible-mypy"], specifier = "==6.1.0" },
     { name = "djangorestframework-stubs", extras = ["compatible-mypy"], specifier = "==3.17.1" },
     { name = "drf-jsonschema-serializer", specifier = "==3.0.0" },
     { name = "freezegun", specifier = "==1.5.5" },
@@ -1350,7 +1350,7 @@ s3 = [
 
 [[package]]
 name = "django-stubs"
-version = "6.0.7"
+version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
@@ -1358,9 +1358,9 @@ dependencies = [
     { name = "types-pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/90/087c6e424e705e05182e543ef6b366a59eb5c92ab008b0dbbba55f357a40/django_stubs-6.0.7.tar.gz", hash = "sha256:bc55431c0af745a64e39cf33a8d36c87dccbedeae2fe26fab47dd355270e8538", size = 282293, upload-time = "2026-07-14T10:08:27.122Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/65/34/e9f03764b32f56c02168814385ddc6d0e49a7b3e4381e8e3f6f5f34f39ff/django_stubs-6.1.0.tar.gz", hash = "sha256:b6aecc5c738a103135f76ba160a6f75e3b27dcf0200c64d7226018cdbc2340dd", size = 293018, upload-time = "2026-08-12T10:55:28.817Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/86/230ae6056221b543d63f7710d73967fe1c6840693540e99ea3c54f45859c/django_stubs-6.0.7-py3-none-any.whl", hash = "sha256:7ed9a14c438e589272ca04e966dee82a4d1ff7ca5c2171bc986c50a0d03ec35b", size = 547460, upload-time = "2026-07-14T10:08:25.626Z" },
+    { url = "https://files.pythonhosted.org/packages/a8/cf/064d7c48642309f3397b17ff14f3159c5225eb9321185a10039c0e846848/django_stubs-6.1.0-py3-none-any.whl", hash = "sha256:63b23ccca2616d464ed7e37d1ce44960315cb3cecab75b23c928467ef125e560", size = 557040, upload-time = "2026-08-12T10:55:26.959Z" },
 ]
 
 [package.optional-dependencies]
