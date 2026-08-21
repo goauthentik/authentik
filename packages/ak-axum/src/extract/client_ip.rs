@@ -5,13 +5,16 @@ use std::net::{IpAddr, Ipv6Addr, SocketAddr};
 use axum::{
     Extension, RequestPartsExt as _,
     extract::{ConnectInfo, FromRequestParts, Request},
-    http::request::Parts,
+    http::{HeaderMap, request::Parts},
     middleware::Next,
     response::Response,
 };
 use tracing::{Span, instrument};
 
-use crate::{accept::proxy_protocol::ProxyProtocolState, extract::trusted_proxy::TrustedProxy};
+use crate::{
+    accept::proxy_protocol::ProxyProtocolState,
+    extract::trusted_proxy::{TrustedProxy, ip_addr_trusted},
+};
 
 /// Client IP.
 ///
@@ -33,6 +36,38 @@ where
     }
 }
 
+/// Get the rightmost IP from the `X-Forwarded-For` chain that is not itself a
+/// trusted proxy.
+///
+/// Each proxy appends the address it received the request from, so entries
+/// added by our own trusted proxies are skipped from the right and the first
+/// untrusted address is the originating client. Using the rightmost untrusted
+/// entry (instead of the plain leftmost) keeps client-supplied spoofed values
+/// from being trusted: a client can only append to the left of its own
+/// address. When every entry is trusted, the leftmost (oldest) entry is the
+/// best remaining guess at the client.
+fn rightmost_untrusted_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
+    let mut forwarded_ips = Vec::new();
+    for value in headers.get_all("x-forwarded-for") {
+        let Ok(value) = value.to_str() else {
+            continue;
+        };
+        for part in value.split(',') {
+            let Ok(ip) = part.trim().parse() else {
+                continue;
+            };
+            forwarded_ips.push(ip);
+        }
+    }
+
+    forwarded_ips
+        .iter()
+        .rev()
+        .find(|ip| ip_addr_trusted(ip).is_none())
+        .or_else(|| forwarded_ips.first())
+        .copied()
+}
+
 /// Get the client IP from the request.
 #[instrument(skip_all)]
 async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
@@ -43,7 +78,7 @@ async fn extract_client_ip(parts: &mut Parts) -> IpAddr {
         .0;
 
     if is_trusted {
-        if let Ok(ip) = client_ip::rightmost_x_forwarded_for(&parts.headers) {
+        if let Some(ip) = rightmost_untrusted_x_forwarded_for(&parts.headers) {
             return ip;
         }
 
@@ -90,6 +125,7 @@ pub async fn client_ip_middleware(request: Request, next: Next) -> Response {
 mod tests {
     use std::net::Ipv4Addr;
 
+    use ak_common::config;
     use axum::{body::Body, http::Request};
 
     use super::*;
@@ -168,6 +204,40 @@ mod tests {
         let client_ip = extract_client_ip(&mut parts).await;
 
         assert_eq!(client_ip, Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0x42),);
+    }
+
+    #[tokio::test]
+    async fn rightmost_untrusted_x_forwarded_for() {
+        config::init().expect("config");
+        // The proxy's own appended address is trusted (172.16.0.0/12 by
+        // default), so the client to its left wins (#25393).
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "1.2.3.4, 172.17.0.1")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(1, 2, 3, 4));
+    }
+
+    #[tokio::test]
+    async fn all_forwarded_for_entries_trusted_falls_back_to_leftmost() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "10.0.0.9, 10.0.0.1")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(10, 0, 0, 9));
     }
 
     #[tokio::test]
