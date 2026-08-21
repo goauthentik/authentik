@@ -28,7 +28,7 @@ test.describe("Invitation form", () => {
     // CodeMirror editor must not block submission.
     test("Create invitation with custom attributes", async ({ page, form, pointer }, testInfo) => {
         const name = invitationNames.get(testInfo.testId)!;
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -46,8 +46,7 @@ test.describe("Invitation form", () => {
         await test.step("Fill invitation details", async () => {
             await fill("Invitation Name", name, $dialog);
 
-            await $dialog.getByPlaceholder("Select a flow...").click();
-            await page.getByRole("option", { name: /default-source-enrollment/ }).click();
+            await selectSearchValue("Flow", /default-source-enrollment/, $dialog);
         });
 
         await test.step("Edit custom attributes (#22637)", async () => {
@@ -62,7 +61,7 @@ test.describe("Invitation form", () => {
             await expect(
                 page.getByText("Successfully created invitation."),
                 "Success message confirms the invitation was created",
-            ).toBeVisible({ timeout: 10_000 });
+            ).toBeVisible();
         });
 
         await test.step("Success modal presents the invitation link", async () => {
@@ -89,9 +88,13 @@ test.describe("Invitation form", () => {
         form,
         pointer,
     }, testInfo) => {
+        // The blueprint import in the middle of this test eats most of the default
+        // budget on its own; the remaining steps still need room after it.
+        test.setTimeout(90_000);
+
         const name = invitationNames.get(testInfo.testId)!;
         const seed = name.replace("invite-", "");
-        const { fill } = form;
+        const { fill, selectSearchValue } = form;
         const { click } = pointer;
 
         const $dialog = page.getByRole("dialog", { name: "New Invitation" });
@@ -105,26 +108,38 @@ test.describe("Invitation form", () => {
         });
 
         await test.step("Open the stacked enrollment flow form via the flow select", async () => {
-            await $dialog.getByPlaceholder("Select a flow...").click();
-
-            await page.getByRole("option", { name: "Create a new enrollment flow" }).click();
+            await selectSearchValue("Flow", /Create a new enrollment flow/, $dialog);
 
             await expect($flowDialog, "Enrollment flow form opens on top").toBeVisible();
         });
 
         await test.step("Create the enrollment flow and invitation stage", async () => {
             await fill("Flow Name", `Invite Flow ${seed}`, $flowDialog);
+            // Seed the slug too. It defaults to a fixed `enrollment-with-invitation`, and
+            // the blueprint import upserts by slug — so without this every run targets the
+            // same flow record and the assertion below reads back a previous run's name.
+            await fill("Flow Slug", `invite-flow-${seed}`, $flowDialog);
             await fill("Invitation Stage Name", `invite-stage-${seed}`, $flowDialog);
 
             await click("Create Enrollment Flow", "button", $flowDialog);
 
-            await expect($flowDialog, "Flow form closes after creation").toBeHidden();
+            // Creating the flow posts a blueprint import, which builds the flow, the
+            // invitation stage, and the binding between them in one synchronous request.
+            // That runs well past the 5s default — measured at ~4.4s for the request and
+            // ~5.4s to the dialog closing on a debug build.
+            await expect($flowDialog, "Flow form closes after creation").toBeHidden({
+                timeout: 20_000,
+            });
             await expect($dialog, "Invitation form is still open underneath").toBeVisible();
         });
 
         await test.step("The newly created flow is selected", async () => {
+            // Scoped to the view rather than the placeholder: `ak-flow-search` composes
+            // three elements deep and each level carries a real input with the same
+            // placeholder — the host, `ak-search-select`'s hidden value input holding the
+            // flow UUID, and the view's display input. Only the last shows the label.
             await expect(
-                $dialog.getByPlaceholder("Select a flow..."),
+                $dialog.locator("ak-search-select-view").getByRole("textbox"),
                 "Flow search adopts the newly created flow",
             ).toHaveValue(new RegExp(seed));
         });
@@ -134,7 +149,7 @@ test.describe("Invitation form", () => {
 
             await click("Create Invitation", "button", $dialog);
 
-            await expect($successDialog, "Success modal opens").toBeVisible({ timeout: 10_000 });
+            await expect($successDialog, "Success modal opens").toBeVisible();
 
             await $successDialog.getByRole("button", { name: "Close", exact: true }).click();
         });
