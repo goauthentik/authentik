@@ -140,9 +140,40 @@ class SourceFlowManager:
                 group_id=group_id,
                 **self.user_info,
             )
-            for group_id in self.user_properties.setdefault("groups", [])
+            for group_id in self._keyable_group_ids(self.user_properties.setdefault("groups", []))
         }
         del self.user_properties["groups"]
+
+    def _keyable_group_ids(self, group_ids: list[Any]) -> list[Any]:
+        """Drop group identifiers that cannot be used as a `groups_properties` key.
+
+        An unhashable identifier, such as an object in an IdP's `groups` claim,
+        raised `TypeError` out of the constructor and surfaced as HTTP 500,
+        locking every member of that group out of the source. Skipped entries are
+        recorded so a user arriving with fewer groups than the IdP granted stays
+        visible to an operator.
+        """
+        keyable = []
+        skipped = []
+        for group_id in group_ids:
+            try:
+                hash(group_id)
+            except TypeError:
+                skipped.append(group_id)
+            else:
+                keyable.append(group_id)
+        if skipped:
+            self._logger.warning("Skipping groups with an unusable identifier", groups=skipped)
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    f"Source '{self.source.name}' returned {len(skipped)} group(s) whose "
+                    "identifier is not a string; they were not applied to the user."
+                ),
+                source=self.source,
+                groups=skipped,
+            ).from_http(self.request)
+        return keyable
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
