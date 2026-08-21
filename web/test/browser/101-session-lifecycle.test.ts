@@ -61,6 +61,11 @@ test.describe("Session Lifecycle", () => {
     });
 
     test("Remember me persists username", async ({ navigator, session, page }) => {
+        // This one walks the whole loop — sign in with remember-me, sign out, and come
+        // back to a pre-filled form — so it pays the flow executor's startup cost twice
+        // and doesn't fit the default budget.
+        test.setTimeout(60_000);
+
         await test.step("Verify identification stage", async () => {
             await expect(
                 session.$rememberMeCheckbox,
