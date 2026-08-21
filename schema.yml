@@ -38793,6 +38793,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -41492,6 +41496,25 @@ components:
       - sidebar_right
       - sidebar_left_frame_background
       - sidebar_right_frame_background
+      type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
       type: string
     FlowRequest:
       type: object
