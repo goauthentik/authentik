@@ -3,7 +3,6 @@
 from json import dumps
 
 from django_filters.rest_framework import DjangoFilterBackend
-from guardian.shortcuts import get_anonymous_user
 from rest_framework import mixins
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -14,6 +13,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.rbac.filters import ObjectFilter
 
 
 class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
@@ -67,16 +67,11 @@ class AuthorizationCodeViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        ObjectFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
     ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
 
 
 class RefreshTokenViewSet(
@@ -93,16 +88,11 @@ class RefreshTokenViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        ObjectFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
     ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
 
 
 class AccessTokenViewSet(
@@ -119,13 +109,8 @@ class AccessTokenViewSet(
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [
+        ObjectFilter,
         DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
     ]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
