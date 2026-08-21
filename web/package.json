@@ -195,6 +195,7 @@
         "typescript": "catalog:",
         "typescript-eslint": "catalog:",
         "unist-util-visit": "^5.1.0",
+        "urlpattern-polyfill": "^10.1.0",
         "vite": "catalog:",
         "vitest": "catalog:",
         "webcomponent-qr-code": "^2.0.0",
