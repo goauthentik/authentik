@@ -12,6 +12,7 @@ from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
@@ -160,6 +161,27 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
         flow_manager.get_flow()
+
+    def test_unusable_group_identifier_does_not_abort(self):
+        """Test a group identifier that cannot be used as a key being skipped (#25191)"""
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(
+            self.source,
+            request,
+            self.identifier,
+            {"info": {"groups": ["usable", {"id": "unusable"}, ["also-unusable"]]}},
+            {},
+        )
+        # Enrolling has to remain possible: raising here surfaced as HTTP 500 and
+        # locked out every member of such a group.
+        self.assertEqual(list(flow_manager.groups_properties.keys()), ["usable"])
+        self.assertEqual(flow_manager.get_action()[0], Action.ENROLL)
+        self.assertEqual(flow_manager.get_flow().status_code, 302)
+
+        event = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).first()
+        self.assertIsNotNone(event)
+        self.assertIn("2 group(s)", event.context["message"])
+        self.assertEqual(event.context["groups"], [{"id": "unusable"}, ["also-unusable"]])
 
     def test_unauthenticated_enroll_email(self):
         """Test un-authenticated user enrolling (link on email)"""
