@@ -38,11 +38,7 @@ test.describe("User interface routing under a deployment base path", () => {
         });
     });
 
-    test("In-app navigation keeps the deployment prefix", async ({
-        session,
-        navigator,
-        page,
-    }) => {
+    test("In-app navigation keeps the deployment prefix", async ({ session, navigator, page }) => {
         await test.step("Authenticate to the prefixed library", async () => {
             await session.login({ to: `${BASE_PATH}if/user/library` });
         });
