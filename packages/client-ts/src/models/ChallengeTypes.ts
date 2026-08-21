@@ -83,6 +83,8 @@ import {
     IframeLogoutChallengeFromJSONTyped,
     IframeLogoutChallengeToJSON,
 } from "./IframeLogoutChallenge";
+import type { MessageChallenge } from "./MessageChallenge";
+import { MessageChallengeFromJSONTyped, MessageChallengeToJSON } from "./MessageChallenge";
 import type { NativeLogoutChallenge } from "./NativeLogoutChallenge";
 import {
     NativeLogoutChallengeFromJSONTyped,
@@ -150,6 +152,7 @@ export type ChallengeTypes =
     | ({ component: "ak-stage-endpoint-agent" } & EndpointAgentChallenge)
     | ({ component: "ak-stage-flow-error" } & FlowErrorChallenge)
     | ({ component: "ak-stage-identification" } & IdentificationChallenge)
+    | ({ component: "ak-stage-message" } & MessageChallenge)
     | ({ component: "ak-stage-password" } & PasswordChallenge)
     | ({ component: "ak-stage-prompt" } & PromptChallenge)
     | ({ component: "ak-stage-session-end" } & SessionEndChallenge)
@@ -261,6 +264,10 @@ export function ChallengeTypesFromJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeFromJSONTyped(json, true), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-message":
+            return Object.assign({}, MessageChallengeFromJSONTyped(json, true), {
+                component: "ak-stage-message",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeFromJSONTyped(json, true), {
@@ -398,6 +405,10 @@ export function ChallengeTypesToJSONTyped(
         case "ak-stage-identification":
             return Object.assign({}, IdentificationChallengeToJSON(value), {
                 component: "ak-stage-identification",
+            } as const);
+        case "ak-stage-message":
+            return Object.assign({}, MessageChallengeToJSON(value), {
+                component: "ak-stage-message",
             } as const);
         case "ak-stage-password":
             return Object.assign({}, PasswordChallengeToJSON(value), {
