@@ -91,7 +91,7 @@ export class RoleListPage extends TablePage<Role> {
                 aria-label=${msg(str`View details of role "${item.name}"`)}
                 >${item.name}</a
             >`,
-            html`${item.userCount}`,
+            item.userCount ?? msg("-"),
             html`<div class="ak-c-table__actions">${IconEditButton(RoleForm, item.pk)}</div>`,
         ];
     }
