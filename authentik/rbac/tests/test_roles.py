@@ -156,3 +156,49 @@ class TestRoles(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 404)
+
+    def test_user_count_direct(self):
+        """Test user_count counts users assigned to a role directly"""
+        role = Role.objects.create(name=generate_id())
+        self.assertEqual(role.user_count, 0)
+        role.users.add(self.user)
+        self.assertEqual(role.user_count, 1)
+
+    def test_user_count_group(self):
+        """Test user_count counts users that are members of a group with the role"""
+        group = Group.objects.create(name=generate_id())
+        role = Role.objects.create(name=generate_id())
+        group.roles.add(role)
+        group.users.add(self.user)
+        self.assertEqual(role.user_count, 1)
+
+    def test_user_count_inherited_group(self):
+        """Test user_count counts users of a group that inherits the role from an ancestor"""
+        parent_group = Group.objects.create(name=generate_id())
+        child_group = Group.objects.create(name=generate_id())
+        child_group.parents.add(parent_group)
+        role = Role.objects.create(name=generate_id())
+        parent_group.roles.add(role)
+        child_group.users.add(self.user)
+        self.assertEqual(role.user_count, 1)
+
+    def test_user_count_distinct(self):
+        """Test user_count counts a user once even when assigned directly and via a group"""
+        group = Group.objects.create(name=generate_id())
+        role = Role.objects.create(name=generate_id())
+        group.roles.add(role)
+        group.users.add(self.user)
+        role.users.add(self.user)
+        self.assertEqual(role.user_count, 1)
+
+    def test_user_count_api(self):
+        """Test user_count is returned by the API"""
+        role = Role.objects.create(name=generate_id())
+        role.users.add(self.user)
+        self.login_user.assign_perms_to_managed_role("authentik_rbac.view_role")
+        self.client.force_login(self.login_user)
+        res = self.client.get(
+            reverse("authentik_api:roles-detail", kwargs={"pk": role.pk}),
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json()["user_count"], 1)
