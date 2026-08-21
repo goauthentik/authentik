@@ -6,7 +6,6 @@ import { GOOD_USERNAME, SessionFixture } from "#e2e/fixtures/SessionFixture";
 import type { Page } from "@playwright/test";
 
 const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
-const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
 
 const IDENTIFICATION_STAGE_NAME = "default-authentication-identification";
 
@@ -48,13 +47,9 @@ test.describe("Session Lifecycle", () => {
     test.beforeEach(async ({ session, page }) => {
         await session.toLoginPage();
 
-        await page.evaluate(
-            ([userKey, sessionKey]) => {
-                localStorage.removeItem(userKey);
-                localStorage.removeItem(sessionKey);
-            },
-            [REMEMBER_ME_USER_KEY, REMEMBER_ME_SESSION_KEY],
-        );
+        await page.evaluate((userKey) => {
+            localStorage.removeItem(userKey);
+        }, REMEMBER_ME_USER_KEY);
 
         await page.reload();
         await session.$identificationStage.waitFor({ state: "visible" });
@@ -129,6 +124,60 @@ test.describe("Session Lifecycle", () => {
             const storedUserIdentifier = await readStoredUserIdentifier(page);
 
             expect(storedUserIdentifier, "Removed after clicking not you link").toBeNull();
+        });
+    });
+
+    test("Remember me persists username for a returning browser", async ({
+        navigator,
+        session,
+        page,
+    }) => {
+        const signOut = async () => {
+            const signOutLink = page.getByRole("link", { name: "Sign out" });
+
+            await expect(signOutLink, "Sign out link is visible").toBeVisible();
+
+            await signOutLink.click();
+
+            await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
+            await session.$identificationStage.waitFor({ state: "visible" });
+        };
+
+        // A browser that has never completed a login carries no CSRF cookie; the first
+        // successful login sets and rotates it. Complete one full login/sign-out cycle
+        // before enabling remember-me, so the toggle is exercised in the same state a
+        // returning user's browser is in.
+        await test.step("Prime the browser with a completed login", async () => {
+            await session.login({ to: "if/user/#/library" }, page);
+            await signOut();
+        });
+
+        await test.step("Identify with remember-me enabled", async () => {
+            await session.login(
+                {
+                    rememberMe: true,
+                    to: "if/user/#/library",
+                },
+                page,
+            );
+
+            const storedUserIdentifier = await readStoredUserIdentifier(page);
+
+            expect(
+                storedUserIdentifier,
+                "username persists to localStorage when remember-me is checked",
+            ).toBe(GOOD_USERNAME);
+        });
+
+        await test.step("Sign out and verify username is still remembered", async () => {
+            await signOut();
+
+            const storedUserIdentifier = await readStoredUserIdentifier(page);
+
+            expect(
+                storedUserIdentifier,
+                "username survives a login/sign-out cycle on a returning browser",
+            ).toBe(GOOD_USERNAME);
         });
     });
 });
