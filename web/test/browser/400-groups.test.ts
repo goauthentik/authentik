@@ -1,15 +1,62 @@
 import { expect, test } from "#e2e";
+import type { FormFixture } from "#e2e/fixtures/FormFixture";
+import type { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
+import type { PointerFixture } from "#e2e/fixtures/PointerFixture";
 import { randomName } from "#e2e/utils/generators";
 
 import { IDGenerator } from "@goauthentik/core/id";
 import { series } from "@goauthentik/core/promises";
 
+import type { Page } from "@playwright/test";
 import { snakeCase } from "change-case";
 
+interface CreateUserContext {
+    navigator: NavigatorFixture;
+    form: FormFixture;
+    pointer: PointerFixture;
+    page: Page;
+}
+
+/**
+ * Create an internal user through the admin UI and leave the browser on the users list.
+ *
+ * Both tests below need a user they own: they assert on a group's member list or on a
+ * user's related group list, and reaching for `akadmin` makes them read shared state that
+ * every other worker — and every previous run — has been writing to.
+ */
+async function createInternalUser(
+    { navigator, form, pointer, page }: CreateUserContext,
+    username: string,
+    displayName: string,
+): Promise<void> {
+    const { fill } = form;
+    const { click } = pointer;
+
+    await navigator.navigate("/if/admin/identity/users");
+
+    const dialog = page.getByRole("dialog", { name: "New User Wizard" });
+
+    await click("New User", "button");
+
+    await expect(dialog, "User wizard opens").toBeVisible();
+
+    await dialog.getByRole("radio", { name: "Internal" }).click({ force: true });
+
+    await series(
+        [fill, /^Username/, username, dialog],
+        [fill, /^Display Name/, displayName, dialog],
+        [fill, /^Email Address/, `${username}@example.com`, dialog],
+        [fill, /^Path/, "users", dialog],
+    );
+
+    await dialog.getByRole("button", { name: "Create" }).click();
+
+    await expect(dialog, "User wizard closes after creation").toBeHidden();
+}
+
 test.describe("Groups", () => {
-    const adminGroupName = "authentik Admins";
-    const adminUsername = "akadmin";
     const usernames = new Map<string, string>();
+    const userDisplayNames = new Map<string, string>();
     const groupNames = new Map<string, string>();
 
     //#region Lifecycle
@@ -20,6 +67,9 @@ test.describe("Groups", () => {
 
         groupNames.set(testId, groupName);
         usernames.set(testId, snakeCase(groupName));
+        // Deliberately unlike the group name: tests below assert on a group link by
+        // accessible name, and a user sharing that name would match it too.
+        userDisplayNames.set(testId, `Member ${randomName(seed)} (${seed})`);
 
         await test.step("Authenticate", async () => {
             await session.login({
@@ -32,32 +82,47 @@ test.describe("Groups", () => {
 
     //#region Tests
 
-    test("Creating a user within the admin group", async ({
-        navigator,
-        form,
-        pointer,
-        page,
-    }, testInfo) => {
+    test("Creating a user within a group", async ({ navigator, form, pointer, page }, testInfo) => {
         const { fill, search } = form;
         const { click } = pointer;
 
-        const displayName = groupNames.get(testInfo.testId)!;
+        const groupName = groupNames.get(testInfo.testId)!;
+        const displayName = userDisplayNames.get(testInfo.testId)!;
         const username = usernames.get(testInfo.testId)!;
 
-        const adminsURL = await test.step("Find admin group via search", async () => {
-            const $adminGroupRow = await search(adminGroupName);
+        // A group of our own rather than "authentik Admins". The mechanic under test is
+        // creating a user from inside a group's Users tab, which doesn't care which group
+        // it is — and every worker writing members into the one shared superuser group
+        // both couples the tests together and quietly grants those users superuser.
+        await test.step("Create the group", async () => {
+            const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
 
-            await expect($adminGroupRow, "Admin group is visible").toBeVisible();
+            await click("New Group", "button");
 
-            const groupLink = $adminGroupRow.getByRole("link", { name: "view details" });
-            await expect(groupLink, "Admin group link is visible").toBeVisible();
+            await expect(newGroupDialog, "Dialog opens").toBeVisible();
+
+            await fill(/^Group Name/, groupName, newGroupDialog);
+
+            await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
+
+            await expect(newGroupDialog, "Dialog closes").toBeHidden();
+        });
+
+        const groupURL = await test.step("Find the group via search", async () => {
+            const $groupRow = await search(groupName);
+
+            await expect($groupRow, "Group is visible").toBeVisible();
+
+            const groupLink = $groupRow.getByRole("link", { name: "view details" });
+
+            await expect(groupLink, "Group link is visible").toBeVisible();
 
             return groupLink.evaluate((el: HTMLAnchorElement) => el.href);
         });
 
-        expect(adminsURL, "Admin group link has href").not.toBeNull();
+        expect(groupURL, "Group link has href").not.toBeNull();
 
-        await navigator.navigate(adminsURL);
+        await navigator.navigate(groupURL);
 
         await test.step("User creation", async () => {
             await click("Users", "tab");
@@ -96,13 +161,20 @@ test.describe("Groups", () => {
         });
     });
 
-    test("Simple group", async ({ form, pointer, page }, testInfo) => {
+    test("Simple group", async ({ navigator, form, pointer, page }, testInfo) => {
         const groupName = groupNames.get(testInfo.testId)!;
+        const username = usernames.get(testInfo.testId)!;
+        const userDisplayName = userDisplayNames.get(testInfo.testId)!;
 
         const { fill, search } = form;
         const { click } = pointer;
 
         const dialog = page.getByRole("dialog", { name: "New Group" });
+
+        await test.step("Create a user to assign", () =>
+            createInternalUser({ navigator, form, pointer, page }, username, userDisplayName));
+
+        await test.step("Return to groups", () => navigator.navigate("/if/admin/identity/groups"));
 
         await test.step("Group Creation", async () => {
             await expect(dialog, "Dialog is initially closed").toBeHidden();
@@ -121,9 +193,7 @@ test.describe("Groups", () => {
             await expect(createButton, "Create button is visible").toBeVisible();
             await createButton.click();
 
-            await expect(dialog, "Dialog closes after creating group").toBeHidden({
-                timeout: 10_000,
-            });
+            await expect(dialog, "Dialog closes after creating group").toBeHidden();
         });
 
         await test.step("Verify group creation", async () => {
@@ -145,12 +215,12 @@ test.describe("Groups", () => {
                 [click, "Open user selection dialog", "button"],
             );
 
-            const adminRow = await test.step("Find admin via search", () =>
-                search(adminUsername, selectUsersModal));
+            const userRow = await test.step("Find the user via search", () =>
+                search(username, selectUsersModal));
 
-            await expect(adminRow, "Admin is visible").toBeVisible();
+            await expect(userRow, "User is visible").toBeVisible();
 
-            await adminRow.getByRole("checkbox").check();
+            await userRow.getByRole("checkbox").check();
 
             const confirmButton = selectUsersModal.getByRole("button", { name: "Confirm" });
 
@@ -162,19 +232,17 @@ test.describe("Groups", () => {
             await expect(assignButton, "Assign button is visible").toBeVisible();
             await assignButton.click();
 
-            await expect(assignUsersModal, "Assign users modal closes").toBeHidden({
-                timeout: 10_000,
-            });
+            await expect(assignUsersModal, "Assign users modal closes").toBeHidden();
 
-            await test.step("Verify admin user assignment", async () => {
+            await test.step("Verify user assignment", async () => {
                 // eslint-disable-next-line max-nested-callbacks
-                const groupRow = await test.step("Find group via search", () => {
+                const memberRow = await test.step("Find member via search", () => {
                     const context = page.getByRole("tabpanel", { name: "Users" });
 
-                    return search(adminUsername, context);
+                    return search(username, context);
                 });
 
-                await expect(groupRow, "Group is visible").toBeVisible();
+                await expect(memberRow, "User is a member of the group").toBeVisible();
             });
         });
     });
@@ -197,9 +265,7 @@ test.describe("Groups", () => {
 
             await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
 
-            await expect(newGroupDialog, "Dialog closes after creating group").toBeHidden({
-                timeout: 10_000,
-            });
+            await expect(newGroupDialog, "Dialog closes after creating group").toBeHidden();
         });
 
         await test.step("Navigate to group view page", async () => {
@@ -249,13 +315,15 @@ test.describe("Groups", () => {
         page,
     }, testInfo) => {
         const groupName = groupNames.get(testInfo.testId)!;
+        const username = usernames.get(testInfo.testId)!;
+        const userDisplayName = userDisplayNames.get(testInfo.testId)!;
 
         const { fill, search } = form;
         const { click } = pointer;
 
         const newGroupDialog = page.getByRole("dialog", { name: "New Group" });
 
-        await test.step("Create group with admin user", async () => {
+        await test.step("Create the group", async () => {
             await click("New Group", "button");
 
             await expect(newGroupDialog, "Dialog opens").toBeVisible();
@@ -264,19 +332,21 @@ test.describe("Groups", () => {
 
             await newGroupDialog.getByRole("button", { name: "Create Group" }).click();
 
-            await expect(newGroupDialog, "Dialog closes").toBeHidden({ timeout: 10_000 });
+            await expect(newGroupDialog, "Dialog closes").toBeHidden();
         });
 
-        await test.step("Navigate to admin user", async () => {
-            await navigator.navigate("/if/admin/identity/users");
+        await test.step("Create a user to add to the group", () =>
+            createInternalUser({ navigator, form, pointer, page }, username, userDisplayName));
 
-            const $adminUser = await search(adminUsername);
+        await test.step("Navigate to the new user", async () => {
+            const $user = await search(username);
 
-            await expect($adminUser, "Admin user is visible").toBeVisible();
+            await expect($user, "User is visible").toBeVisible();
 
-            const viewLink = $adminUser.getByRole("link", {
-                name: "View details for authentik Default Admin",
+            const viewLink = $user.getByRole("link", {
+                name: `View details for ${userDisplayName}`,
             });
+
             await expect(viewLink, "View details link is visible").toBeVisible();
 
             await viewLink.click();
@@ -322,12 +392,12 @@ test.describe("Groups", () => {
                 await expect(
                     page.getByText("Adding Group..."),
                     "Loader shows 'Adding Group...' not 'Creating Group...'",
-                ).toBeVisible({ timeout: 5_000 });
+                ).toBeVisible();
 
                 await expect(
-                    page.getByRole("link", { name: groupName }).first(),
+                    page.getByRole("link", { name: groupName }),
                     "Group appears in the user's related group list",
-                ).toBeVisible({ timeout: 10_000 });
+                ).toBeVisible();
             });
         });
     });
