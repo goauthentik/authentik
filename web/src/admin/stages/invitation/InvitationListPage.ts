@@ -9,6 +9,7 @@ import { aki } from "#common/api/client";
 
 import { IconEditButton } from "#elements/dialogs";
 import { PFColor } from "#elements/Label";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -116,7 +117,9 @@ export class InvitationListPage extends TablePage<Invitation> {
                       `
                     : null}`,
             html`<div>
-                    <a href="#/identity/users/${item.createdBy.pk}">${item.createdBy.username}</a>
+                    <a href=${toAdminInterface(`identity/users/${item.createdBy.pk}`)}
+                        >${item.createdBy.username}</a
+                    >
                 </div>
                 <small>${item.createdBy.name}</small>`,
             item.expires?.toLocaleString() || msg("-"),

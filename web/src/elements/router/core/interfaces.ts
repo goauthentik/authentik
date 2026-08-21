@@ -70,6 +70,16 @@ export function toUserInterface(path?: string, params?: RouterParameterInit): st
 }
 
 /**
+ * Build a URL into the currently-configured interface.
+ *
+ * For interface-agnostic shared components (sidebar, navbar) that link within
+ * whichever interface booted the router, rather than a fixed target.
+ */
+export function toCurrentInterface(path?: string, params?: RouterParameterInit): string {
+    return formatInterfaceURL(getRouterConfig().interfaceName, path, params);
+}
+
+/**
  * Build a URL into the flow interface for a given flow slug.
  *
  * The flow interface keeps its server-driven, trailing-slashed URL space

@@ -5,7 +5,7 @@
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 
 import { type Notification, type PaginatedNotificationList } from "@goauthentik/api";
 
@@ -81,7 +81,7 @@ export function renderNotificationDrawerPanel({ notifications, api }: DrawerStat
  * Persists the drawer state to the URL parameters.
  */
 export function persistDrawerParams(drawers: DrawerState) {
-    updateURLParams({
+    updateSearchParams({
         "drawer-notification": drawers.notifications,
         "drawer-api": drawers.api,
     });
@@ -92,7 +92,7 @@ export function persistDrawerParams(drawers: DrawerState) {
  */
 export function readDrawerParams(): DrawerState {
     return {
-        notifications: getURLParam("drawer-notification", false),
-        api: getURLParam("drawer-api", false),
+        notifications: getSearchParam("drawer-notification", false),
+        api: getSearchParam("drawer-api", false),
     };
 }

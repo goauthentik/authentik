@@ -5,6 +5,7 @@ import "#admin/endpoints/devices/DeviceAddHowTo";
 import { aki } from "#common/api/client";
 
 import { modalInvoker } from "#elements/dialogs";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -125,7 +126,7 @@ export class DeviceListPage extends TablePage<EndpointDevice> {
 
     row(item: EndpointDevice): SlottedTemplateResult[] {
         return [
-            html`<a href="#/endpoints/devices/${item.deviceUuid}">
+            html`<a href=${toAdminInterface(`endpoints/devices/${item.deviceUuid}`)}>
                 <div>${item.facts?.data.network?.hostname || item.name}</div>
             </a>`,
             html`${item.facts?.data.os?.name} ${item.facts?.data.os?.version}`,

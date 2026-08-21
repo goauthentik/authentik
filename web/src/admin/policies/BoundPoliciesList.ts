@@ -13,6 +13,7 @@ import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#comm
 
 import { asInstanceInvokerByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
 import { StrictUnsafe } from "#elements/utils/unsafe";
@@ -104,10 +105,14 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     protected getPolicyUserGroupRow(item: PolicyBinding): SlottedTemplateResult {
         const label = this.getPolicyUserGroupRowLabel(item);
         if (item.user) {
-            return html` <a href=${`#/identity/users/${item.user}`}> ${label} </a> `;
+            return html`
+                <a href=${toAdminInterface(`identity/users/${item.user}`)}> ${label} </a>
+            `;
         }
         if (item.group) {
-            return html` <a href=${`#/identity/groups/${item.group}`}> ${label} </a> `;
+            return html`
+                <a href=${toAdminInterface(`identity/groups/${item.group}`)}> ${label} </a>
+            `;
         }
         return html`${label}`;
     }
