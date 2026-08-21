@@ -60,6 +60,7 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
 
     def map_serializer_field(self, auto_schema, direction):
         props = {}
+        required = []
         for flag in Flag.available():
             _flag = flag()
             props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
@@ -68,7 +69,9 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
             if _flag.deprecated:
                 props[_flag.key]["deprecated"] = _flag.deprecated
                 props[_flag.key]["nullable"] = _flag.deprecated
-        return build_object_type(props, required=props.keys())
+            if not _flag.deprecated:
+                required.append(_flag.key)
+        return build_object_type(props, required=required)
 
 
 class SettingsSerializer(ModelSerializer):

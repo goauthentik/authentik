@@ -30,7 +30,7 @@ export interface CurrentBrandFlags {
      * @memberof CurrentBrandFlags
      * @deprecated
      */
-    flowsRefreshOthers: boolean | null;
+    flowsRefreshOthers?: boolean | null;
 }
 
 /**
@@ -42,13 +42,6 @@ export function instanceOfCurrentBrandFlags(value: object): value is CurrentBran
             !("flows_continuous_login" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
             (value as Record<string, any>)["flows_continuous_login"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowsRefreshOthers" in (value as Record<string, any>)) &&
-            !("flows_refresh_others" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsRefreshOthers"] === undefined &&
-            (value as Record<string, any>)["flows_refresh_others"] === undefined)
     )
         return false;
     return true;
@@ -67,7 +60,12 @@ export function CurrentBrandFlagsFromJSONTyped(
     }
     return {
         flowsContinuousLogin: json["flows_continuous_login"],
-        flowsRefreshOthers: json["flows_refresh_others"],
+        flowsRefreshOthers:
+            json["flows_refresh_others"] === undefined
+                ? undefined
+                : json["flows_refresh_others"] === null
+                  ? null
+                  : json["flows_refresh_others"],
     };
 }
 
