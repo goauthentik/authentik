@@ -1,3 +1,4 @@
+/* eslint-disable sort-imports */
 /**
  * @file Public entry point for `@goauthentik/theme`.
  *
@@ -9,5 +10,18 @@
  * filesystem live in `./node.ts` (exposed via the `./build` subpath).
  */
 
-export { instance, ref, selector, theme, variable } from "./shared.js";
-export * from "./tokens/index.js";
+import "./authentik/palette.js";
+import "./authentik/background-color.js";
+import "./authentik/spacing.js";
+import "./authentik/gutters.js";
+/*
+ * The patternfly bridges
+ */
+import "./patternfly/palette.js";
+import "./patternfly/background-color.js";
+import "./patternfly/spacing.js";
+import "./patternfly/gutters.js";
+
+import { instance } from "./shared.js";
+
+export { instance };

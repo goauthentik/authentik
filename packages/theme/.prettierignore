@@ -3,6 +3,9 @@
 ## Node
 node_modules
 
+## Cascade
+./src/index.ts
+
 ## Static Files
 **/LICENSE
 ./README.md

@@ -11,7 +11,7 @@
  * the same tree the rest of the package uses.
  */
 
-import "./src/tokens/index.js";
+import "./src/index.js";
 
 import { instance } from "./src/shared.js";
 
