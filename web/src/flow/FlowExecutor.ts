@@ -17,7 +17,7 @@ import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty } from "#common/theme";
 
 import { Interface } from "#elements/Interface";
-import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
@@ -29,6 +29,7 @@ import {
     AKFlowUpdateChallengeRequest,
 } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
+import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 
@@ -188,6 +189,10 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 : this.ownerDocument.body;
 
         applyBackgroundImageProperty(background, { target });
+
+        for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
+            showMessage(message);
+        }
     }
 
     //#region Listeners
