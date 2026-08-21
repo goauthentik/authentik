@@ -72,6 +72,7 @@ jobs:
       should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -115,6 +116,7 @@ jobs:
         run: make ci-lint-${{ matrix.job }}
   test-gen:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -131,6 +133,7 @@ jobs:
         run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
   test-migrations:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Setup authentik env
@@ -347,6 +350,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: pnpm install --frozen-lockfile
       - id: cache-web
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
@@ -359,6 +364,8 @@ jobs:
         working-directory: web
         env:
           NODE_ENV: "production"
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 15
         run: |
           pnpm install --frozen-lockfile
           pnpm run build
@@ -415,6 +422,8 @@ jobs:
         if: steps.cache-web.outputs.cache-hit != 'true'
         env:
           NODE_ENV: "production"
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 15
         run: |
           pnpm --dir web install --frozen-lockfile
           pnpm --dir web run build

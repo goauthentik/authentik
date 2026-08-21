@@ -64,6 +64,7 @@ jobs:
     needs:
       - check-inputs
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     outputs:
       release-commit: "${{ steps.commit.outputs.release-commit }}"
     steps:

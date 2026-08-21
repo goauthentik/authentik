@@ -16,6 +16,12 @@ WORKDIR /work
 COPY --from=pnpm /opt/pnpm /opt/pnpm
 ENV PATH="/opt/pnpm:${PATH}"
 
+# `pnpm run` would otherwise spawn a nested `pnpm install` to re-verify
+# node_modules against the lockfile. The install layer below already
+# guarantees that, and the nested install is the spot where pnpm's
+# hang-after-install (pnpm/pnpm#13617) stalls image builds.
+ENV npm_config_verify_deps_before_run=false
+
 RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \

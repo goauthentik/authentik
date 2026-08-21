@@ -39,6 +39,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
@@ -62,6 +64,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
@@ -108,6 +112,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile

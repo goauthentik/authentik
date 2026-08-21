@@ -41,6 +41,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
@@ -66,6 +68,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
@@ -90,6 +94,8 @@ jobs:
             pnpm-lock.yaml
             website/pnpm-lock.yaml
       - name: Install dependencies
+        # Capped: pnpm can hang after an install completes (pnpm/pnpm#13617).
+        timeout-minutes: 10
         run: |
           pnpm install --frozen-lockfile
           pnpm --dir website install --frozen-lockfile
@@ -97,6 +103,8 @@ jobs:
         run: pnpm --dir website run build:integrations
   build-container:
     runs-on: ubuntu-latest
+    # Bounds a pnpm hang-after-install (pnpm/pnpm#13617) inside `docker build`.
+    timeout-minutes: 60
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
