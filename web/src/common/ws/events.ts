@@ -3,20 +3,14 @@
  */
 
 import { EVENT_REFRESH } from "#common/constants";
-import { AKMessageEvent, APIMessage } from "#common/messages";
 
 import { Notification, NotificationFromJSON } from "@goauthentik/api";
 
 //#region WebSocket Messages
 
 export enum WSMessageType {
-    Message = "message",
     NotificationNew = "notification.new",
     Refresh = "refresh",
-}
-
-export interface WSMessageMessage extends APIMessage {
-    message_type: WSMessageType.Message;
 }
 
 export interface WSMessageNotification {
@@ -29,7 +23,7 @@ export interface WSMessageRefresh {
     message_type: WSMessageType.Refresh;
 }
 
-export type WSMessage = WSMessageMessage | WSMessageNotification | WSMessageRefresh;
+export type WSMessage = WSMessageNotification | WSMessageRefresh;
 
 //#endregion
 
@@ -58,8 +52,6 @@ export class AKNotificationEvent extends Event {
  */
 export function createEventFromWSMessage(message: WSMessage): Event {
     switch (message.message_type) {
-        case WSMessageType.Message:
-            return new AKMessageEvent(message);
         case WSMessageType.NotificationNew:
             return new AKNotificationEvent(message.data);
         case WSMessageType.Refresh:

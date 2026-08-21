@@ -7,7 +7,6 @@ import "#flow/tabs/broadcast";
 
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
-import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { aki } from "#common/api/client";
@@ -128,9 +127,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     // Listen for authentik state-change events from other tabs
     #flowMultitabController = new FlowMultitabController(this);
 
-    // Listen for server-side events and forward them to the notification handler
-    #flowWebsocketClientController = new FlowWebsocketClientController(this);
-
     //#endregion
 
     //#region Accessors
@@ -161,7 +157,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         this.#api = aki(FlowsApi);
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
-        this.addController(this.#flowWebsocketClientController);
         this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
         this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
