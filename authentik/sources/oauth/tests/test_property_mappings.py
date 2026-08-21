@@ -107,7 +107,7 @@ class TestPropertyMappings(TestCase):
             self.source.get_base_group_properties(info=info, group_id="0db0"), {"name": "0db0"}
         )
 
-    def test_unrecognised_object_group_is_passed_through(self):
+    def test_unrecognized_object_group_is_passed_through(self):
         """Test a group object with no identifier claim being left for the flow manager"""
         info = deepcopy(INFO)
         info["groups"] = [{"$ref": "https://idp.example.com/Groups/0db0"}]
@@ -174,7 +174,7 @@ class TestPropertyMappings(TestCase):
 
         Arrived in #25195 asserting the `TypeError` that #25191 is about, and
         was narrowed in #25208 to the skip that stopped the HTTP 500. The
-        identifier is now recognised rather than merely unusable, so the entry
+        identifier is now recognized rather than merely unusable, so the entry
         reaches property mappings instead of being dropped — which is the point
         of this change, and the reason the assertion moves rather than stays.
         """

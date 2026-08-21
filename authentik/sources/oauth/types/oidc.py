@@ -89,7 +89,7 @@ class OpenIDConnectType(SourceType):
     group_name_claims = ("name", "display", "displayName")
 
     def get_group_id(self, group: dict[str, Any]) -> str | None:
-        """Identifier of an object-shaped group entry, or None if unrecognised."""
+        """Identifier of an object-shaped group entry, or None if unrecognized."""
         for claim in self.group_id_claims:
             if value := group.get(claim):
                 return str(value)
