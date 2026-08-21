@@ -175,13 +175,17 @@ test.describe("RAC", () => {
             "Application launch button appears in the filtered library",
         ).toBeVisible({ timeout: 15_000 });
 
-        await test.step("Open the endpoint launcher", async () => {
-            await launchButton.click();
-        });
-
         const launchDialog = page.getByRole("dialog", { name: /Launch Endpoint/i });
 
-        await expect(launchDialog, "Launch Endpoint dialog opens").toBeVisible();
+        // No explicit click: filling the search dispatches `change`, and the library
+        // launches the row itself once exactly one application matches — see
+        // `#changeListener` in `ak-library-impl`. Clicking again would land on the modal
+        // that filter just opened, and the card underneath stops receiving pointer events.
+        await test.step("Endpoint launcher opens for the single match", async () => {
+            await expect(launchDialog, "Launch Endpoint dialog opens").toBeVisible({
+                timeout: 15_000,
+            });
+        });
 
         // Both endpoints must render on first open — no manual refresh, no
         // re-navigation. Two endpoints are required because a single endpoint
