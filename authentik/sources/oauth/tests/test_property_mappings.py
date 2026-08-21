@@ -80,6 +80,66 @@ class TestPropertyMappings(TestCase):
             },
         )
 
+    def test_object_group_base_properties(self):
+        """Test object-shaped groups being reduced to their identifier (#25191)"""
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "0db0", "name": "pixee-admins", "$ref": "https://idp.example.com/Groups/0db0"},
+            {"value": "28b5", "display": "Administrators"},
+        ]
+        properties = self.source.get_base_user_properties(info=info)
+        self.assertEqual(properties["groups"], ["0db0", "28b5"])
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="0db0"),
+            {"name": "pixee-admins"},
+        )
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="28b5"),
+            {"name": "Administrators"},
+        )
+
+    def test_object_group_base_properties_without_name(self):
+        """Test an object-shaped group falling back to its identifier for a name"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"id": "0db0"}]
+        self.assertEqual(self.source.get_base_user_properties(info=info)["groups"], ["0db0"])
+        self.assertEqual(
+            self.source.get_base_group_properties(info=info, group_id="0db0"), {"name": "0db0"}
+        )
+
+    def test_unrecognized_object_group_is_passed_through(self):
+        """Test a group object with no identifier claim being left for the flow manager"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"$ref": "https://idp.example.com/Groups/0db0"}]
+        self.assertEqual(
+            self.source.get_base_user_properties(info=info)["groups"],
+            [{"$ref": "https://idp.example.com/Groups/0db0"}],
+        )
+
+    def test_object_group_property_mappings(self):
+        """Test object-shaped groups reaching group property mappings (#25191)"""
+        info = deepcopy(INFO)
+        info["groups"] = [{"id": "0db0", "name": "pixee-admins"}]
+        self.source.group_property_mappings.add(
+            OAuthSourcePropertyMapping.objects.create(
+                name="test",
+                expression="return {'attributes': {'id': group_id}}",
+            )
+        )
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        self.assertEqual(
+            flow_manager.groups_properties,
+            {
+                "0db0": {
+                    "name": "pixee-admins",
+                    "attributes": {
+                        "id": "0db0",
+                    },
+                },
+            },
+        )
+
     def test_grup_property_mappings(self):
         info = deepcopy(INFO)
         info["groups"] = ["group 1", "group 2"]
@@ -110,11 +170,13 @@ class TestPropertyMappings(TestCase):
         )
 
     def test_group_property_mappings_with_object_groups(self):
-        """An object-shaped `groups` entry is skipped instead of aborting the flow.
+        """An object-shaped `groups` entry is applied, not skipped.
 
-        Added in #25195 asserting the `TypeError` that #25191 is about; the
-        identifier is still unusable as a key, so the entry is dropped rather
-        than mapped.
+        Arrived in #25195 asserting the `TypeError` that #25191 is about, and
+        was narrowed in #25208 to the skip that stopped the HTTP 500. The
+        identifier is now recognized rather than merely unusable, so the entry
+        reaches property mappings instead of being dropped — which is the point
+        of this change, and the reason the assertion moves rather than stays.
         """
         info = deepcopy(INFO)
         info["groups"] = [
@@ -124,4 +186,6 @@ class TestPropertyMappings(TestCase):
         request = self.request_factory.get("/", user=AnonymousUser())
 
         flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
-        self.assertEqual(flow_manager.groups_properties, {})
+        self.assertIn("group-1", flow_manager.groups_properties)
+        # The name the IdP sent, recovered from the object the identifier came from.
+        self.assertEqual(flow_manager.groups_properties["group-1"]["name"], "Admins")

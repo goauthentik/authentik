@@ -81,10 +81,47 @@ class OpenIDConnectType(SourceType):
 
     urls_customizable = True
 
+    # Members an object-shaped `groups` entry may use for the group's stable
+    # identifier and for its human-readable name, in preference order. SCIM
+    # names them `value` and `display` (RFC 7643 section 2.4); Oracle Identity
+    # Domains' userinfo endpoint uses `id` and `name`.
+    group_id_claims = ("id", "value", "sub")
+    group_name_claims = ("name", "display", "displayName")
+
+    def get_group_id(self, group: dict[str, Any]) -> str | None:
+        """Identifier of an object-shaped group entry, or None if unrecognized."""
+        for claim in self.group_id_claims:
+            if value := group.get(claim):
+                return str(value)
+        return None
+
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        # The claim is only required to be "a list of group identifiers", so an
+        # IdP returning objects is not misconfigured — reduce each to the
+        # identifier the rest of the source machinery keys on. Entries we cannot
+        # reduce are passed through untouched for the flow manager to report and
+        # skip, so an unsupported shape yields one diagnostic rather than two.
+        groups = [
+            (self.get_group_id(group) or group) if isinstance(group, dict) else group
+            for group in info.get("groups", [])
+        ]
         return {
             "username": info.get("nickname", info.get("preferred_username")),
             "email": info.get("email"),
             "name": info.get("name"),
-            "groups": info.get("groups", []),
+            "groups": groups,
         }
+
+    def get_base_group_properties(self, source, group_id: str, **kwargs) -> dict[str, Any]:
+        # Recover the name the IdP sent, which `get_base_user_properties` had to
+        # reduce away. Looked up rather than stashed on `info`, so that a claim
+        # of plain strings — every IdP but the object-shaped ones — reaches
+        # property mappings exactly as it does today.
+        for group in (kwargs.get("info") or {}).get("groups", []):
+            if not isinstance(group, dict) or self.get_group_id(group) != group_id:
+                continue
+            for claim in self.group_name_claims:
+                if name := group.get(claim):
+                    return {"name": str(name)}
+            break
+        return {"name": group_id}
