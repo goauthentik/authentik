@@ -61,12 +61,8 @@ class TestSourceOAuth2(SeleniumTestCase):
         url_after_login = self.driver.current_url
 
         user_settings_url = self.if_user_url("/settings")
-        hash_route = ';%7B"page"%3A"page-' + tab_name + '"%7D'
 
-        self.driver.get(user_settings_url + hash_route)
-
-        # A refresh is required because the hash change doesn't always trigger a reload.
-        self.driver.refresh()
+        self.driver.get(f"{user_settings_url}?page=page-{tab_name}")
 
         try:
             self.wait.until(ec.url_contains(user_settings_url))
@@ -244,7 +240,7 @@ class TestSourceOAuth2(SeleniumTestCase):
 
         self.login_via_oauth_provider()
 
-        post_login_expected_url = self.if_user_url("/settings;page-sources")
+        post_login_expected_url = self.if_user_url("/settings?page=page-sources")
 
         self.assertEqual(
             self.driver.current_url,
