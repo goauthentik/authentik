@@ -12,8 +12,8 @@
  * Do not edit the class manually.
  */
 
-import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
-import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
+import type { KeyTypeEnum } from "./KeyTypeEnum";
+import { KeyTypeEnumFromJSON } from "./KeyTypeEnum";
 
 /**
  * CertificateKeyPair Serializer
@@ -65,10 +65,10 @@ export interface CertificateKeyPair {
     readonly privateKeyAvailable: boolean;
     /**
      * Key algorithm type detected from the certificate's public key
-     * @type {CertificateKeyPairKeyTypeEnum}
+     * @type {KeyTypeEnum}
      * @memberof CertificateKeyPair
      */
-    readonly keyType: CertificateKeyPairKeyTypeEnum | null;
+    readonly keyType: KeyTypeEnum | null;
     /**
      * Get URL to download certificate
      * @type {string}
@@ -174,7 +174,7 @@ export function CertificateKeyPairFromJSONTyped(
         certExpiry: json["cert_expiry"] == null ? null : new Date(json["cert_expiry"]),
         certSubject: json["cert_subject"],
         privateKeyAvailable: json["private_key_available"],
-        keyType: CertificateKeyPairKeyTypeEnumFromJSON(json["key_type"]),
+        keyType: KeyTypeEnumFromJSON(json["key_type"]),
         certificateDownloadUrl: json["certificate_download_url"],
         privateKeyDownloadUrl: json["private_key_download_url"],
         managed: json["managed"],

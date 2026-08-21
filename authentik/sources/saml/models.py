@@ -11,16 +11,8 @@ from lxml.etree import _Element  # nosec
 from rest_framework.serializers import Serializer
 
 from authentik.common.saml.constants import (
-    DSA_SHA1,
-    ECDSA_SHA1,
-    ECDSA_SHA256,
-    ECDSA_SHA384,
-    ECDSA_SHA512,
     NS_SAML_ASSERTION,
-    RSA_SHA1,
     RSA_SHA256,
-    RSA_SHA384,
-    RSA_SHA512,
     SAML_ATTRIBUTES_GROUP,
     SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
@@ -30,11 +22,9 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
-    SHA1,
     SHA256,
-    SHA384,
-    SHA512,
 )
+from authentik.common.saml.models import DigestAlgorithm, SignatureAlgorithm
 from authentik.common.saml.utils import get_element_text
 from authentik.core.models import (
     GroupSourceConnection,
@@ -190,26 +180,11 @@ class SAMLSource(Source):
     )
 
     digest_algorithm = models.TextField(
-        choices=(
-            (SHA1, _("SHA1")),
-            (SHA256, _("SHA256")),
-            (SHA384, _("SHA384")),
-            (SHA512, _("SHA512")),
-        ),
+        choices=DigestAlgorithm.choices,
         default=SHA256,
     )
     signature_algorithm = models.TextField(
-        choices=(
-            (RSA_SHA1, _("RSA-SHA1")),
-            (RSA_SHA256, _("RSA-SHA256")),
-            (RSA_SHA384, _("RSA-SHA384")),
-            (RSA_SHA512, _("RSA-SHA512")),
-            (ECDSA_SHA1, _("ECDSA-SHA1")),
-            (ECDSA_SHA256, _("ECDSA-SHA256")),
-            (ECDSA_SHA384, _("ECDSA-SHA384")),
-            (ECDSA_SHA512, _("ECDSA-SHA512")),
-            (DSA_SHA1, _("DSA-SHA1")),
-        ),
+        choices=SignatureAlgorithm.choices,
         default=RSA_SHA256,
     )
 

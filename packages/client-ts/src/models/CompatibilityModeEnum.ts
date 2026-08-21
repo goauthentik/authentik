@@ -18,12 +18,12 @@
  */
 export const CompatibilityModeEnum = {
     Default: "default",
-    Aws: "aws",
+    AWS: "aws",
     Slack: "slack",
-    Sfdc: "sfdc",
-    Gitlab: "gitlab",
+    Salesforce: "sfdc",
+    GitLab: "gitlab",
     Webex: "webex",
-    Vcenter: "vcenter",
+    vCenter: "vcenter",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type CompatibilityModeEnum =

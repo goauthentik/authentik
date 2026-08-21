@@ -11,3 +11,7 @@ class AuthentikAPIConfig(ManagedAppConfig):
     mountpoint = "api/"
     verbose_name = "authentik API"
     default = True
+
+    def import_related(self):
+        self.import_module("authentik.api.v3.schema.enum")
+        return super().import_related()

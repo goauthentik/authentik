@@ -20,7 +20,13 @@ class TestSchemaGeneration(APITestCase):
         response = self.client.get(
             reverse("authentik_api:schema"),
         )
-        self.assertTrue(safe_load(response.content.decode()))
+        components = safe_load(response.content.decode())["components"]["schemas"]
+        self.assertEqual(
+            components["KeyTypeEnum"]["x-enum-varnames"],
+            ["RSA", "EC", "DSA", "Ed25519", "Ed448"],
+        )
+        self.assertNotIn("CertificateKeyPairKeyTypeEnum", components)
+        self.assertNotIn("x-enum-varnames", components["SignatureAlgorithmEnum"])
 
     def test_browser(self):
         """Test API Browser"""

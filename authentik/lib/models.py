@@ -14,6 +14,11 @@ from rest_framework.serializers import BaseSerializer
 from authentik.lib.utils.reflection import class_to_path
 
 
+class GeneratedEnum(models.TextChoices):
+    """TextChoices whose labels become member names in the generated API clients,
+    via OpenAPI `x-enum-varnames`. They are identifiers, so never translate them."""
+
+
 class SerializerModel(models.Model):
     """Base Abstract Model which has a serializer"""
 

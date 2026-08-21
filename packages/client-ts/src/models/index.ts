@@ -93,7 +93,6 @@ export * from "./CertAttributeEnum";
 export * from "./CertificateData";
 export * from "./CertificateGenerationRequest";
 export * from "./CertificateKeyPair";
-export * from "./CertificateKeyPairKeyTypeEnum";
 export * from "./CertificateKeyPairRequest";
 export * from "./ChallengeTypes";
 export * from "./ClientTypeEnum";
