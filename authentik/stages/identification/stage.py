@@ -1,6 +1,7 @@
 """Identification stage logic"""
 
 from dataclasses import asdict
+from functools import cache
 from typing import Any
 
 from django.contrib.auth.hashers import make_password
@@ -67,6 +68,22 @@ def get_login_serializers():
     for cls in all_subclasses(LoginChallengeMixin):
         mapping[cls().fields["component"].default] = cls
     return mapping
+
+
+@cache
+def login_capable_source_subclasses() -> list[type[Source]]:
+    """Concrete Source subclasses that can render a UI login button.
+
+    ``Source.ui_login_button`` returns None, so a source only reaches the
+    challenge below if its subclass overrides it. Abstract subclasses are skipped
+    because they have no table to join against.
+    """
+    return [
+        source_type
+        for source_type in all_subclasses(Source)
+        if not source_type._meta.abstract
+        and source_type.ui_login_button is not Source.ui_login_button
+    ]
 
 
 @extend_schema_field(
@@ -386,7 +403,9 @@ class IdentificationStageView(ChallengeStageView):
         # Check all enabled source, add them if they have a UI Login button.
         ui_sources = []
         sources: list[Source] = (
-            current_stage.sources.filter(enabled=True).order_by("name").select_subclasses()
+            current_stage.sources.filter(enabled=True)
+            .order_by("name")
+            .select_subclasses(*login_capable_source_subclasses())
         )
         for source in sources:
             ui_login_button = source.ui_login_button(self.request)
