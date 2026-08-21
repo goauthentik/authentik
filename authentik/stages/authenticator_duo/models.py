@@ -1,5 +1,8 @@
 """Duo stage"""
 
+from os import chmod
+from tempfile import NamedTemporaryFile, mkdtemp
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -9,6 +12,7 @@ from duo_client.auth import Auth
 from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik.core.types import UserSettingSerializer
+from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
@@ -25,6 +29,40 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     admin_integration_key = models.TextField(blank=True, default="")
     admin_secret_key = models.TextField(blank=True, default="")
+
+    ca_chain = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        blank=True,
+        related_name="duo_ca_chains",
+        help_text=_(
+            "Optionally verify the Duo API server's certificate against the CA Chain in this "
+            "keypair, instead of the CA bundle shipped with the Duo client. Required when Duo "
+            "is reached through a TLS-inspecting proxy that re-signs with an internal CA."
+        ),
+    )
+
+    def _duo_client_kwargs(self) -> dict:
+        """Extra kwargs for the Duo client, carrying a custom CA chain if configured.
+
+        `duo_client` accepts `ca_certs` only as a *path* to a PEM bundle, while authentik keeps
+        certificates in the database. So the chain is materialised to a file, the same way
+        `authentik.sources.ldap.models.LDAPSource.server()` does for `ldap3`.
+
+        The file holds only the CA chain — public certificate material, never a private key —
+        and is still written 0600 and into a private directory, so it is not readable by other
+        users on the host.
+        """
+        if not self.ca_chain:
+            return {}
+        temp_dir = mkdtemp()
+        with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir, suffix=".pem") as temp_ca:
+            temp_ca.write(self.ca_chain.certificate_data)
+            ca_path = temp_ca.name
+        chmod(ca_path, 0o600)
+        return {"ca_certs": ca_path}
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -45,6 +83,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             self.client_secret,
             self.api_hostname,
             user_agent=authentik_user_agent(),
+            **self._duo_client_kwargs(),
         )
 
     def admin_client(self) -> Admin:
@@ -56,6 +95,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             self.admin_secret_key,
             self.api_hostname,
             user_agent=authentik_user_agent(),
+            **self._duo_client_kwargs(),
         )
         return client
 

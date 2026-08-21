@@ -93,6 +93,12 @@ export interface AuthenticatorDuoStage {
      * @memberof AuthenticatorDuoStage
      */
     adminIntegrationKey?: string;
+    /**
+     * Optionally verify the Duo API server's certificate against the CA Chain in this keypair, instead of the CA bundle shipped with the Duo client. Required when Duo is reached through a TLS-inspecting proxy that re-signs with an internal CA.
+     * @type {string}
+     * @memberof AuthenticatorDuoStage
+     */
+    caChain?: string | null;
 }
 
 /**
@@ -177,6 +183,12 @@ export function AuthenticatorDuoStageFromJSONTyped(
         apiHostname: json["api_hostname"],
         adminIntegrationKey:
             json["admin_integration_key"] == null ? undefined : json["admin_integration_key"],
+        caChain:
+            json["ca_chain"] === undefined
+                ? undefined
+                : json["ca_chain"] === null
+                  ? null
+                  : json["ca_chain"],
     };
 }
 
@@ -202,5 +214,6 @@ export function AuthenticatorDuoStageToJSONTyped(
         client_id: value["clientId"],
         api_hostname: value["apiHostname"],
         admin_integration_key: value["adminIntegrationKey"],
+        ca_chain: value["caChain"],
     };
 }
