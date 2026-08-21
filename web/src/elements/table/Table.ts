@@ -92,7 +92,9 @@ export interface ColumnOptions {
 const connectedSearchParams = new Map<string, number>();
 
 function registerSearchParam(param: string): void {
-    if (process.env.NODE_ENV === "production") return;
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
 
     const next = (connectedSearchParams.get(param) ?? 0) + 1;
 
@@ -107,12 +109,17 @@ function registerSearchParam(param: string): void {
 }
 
 function unregisterSearchParam(param: string): void {
-    if (process.env.NODE_ENV === "production") return;
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
 
     const next = (connectedSearchParams.get(param) ?? 1) - 1;
 
-    if (next <= 0) connectedSearchParams.delete(param);
-    else connectedSearchParams.set(param, next);
+    if (next <= 0) {
+        connectedSearchParams.delete(param);
+    } else {
+        connectedSearchParams.set(param, next);
+    }
 }
 
 export abstract class Table<T extends object, D = T>
@@ -322,7 +329,7 @@ export abstract class Table<T extends object, D = T>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page: number;
+    public page = 1;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -383,12 +390,13 @@ export abstract class Table<T extends object, D = T>
     public searchPlaceholder: string | null = null;
 
     /**
-     * The search query is serialized to this search parameter. Defaults to `q`;
-     * override per-table (`search-param="…"`) when a page hosts more than one
-     * searchable table.
+     * The search parameter this table's search and page are serialized to.
+     *
+     * This is used to synchronize the table's state with the URL,
+     * allowing for deep-linking and back/forward navigation.
      */
     @property({ type: String, attribute: "search-param" })
-    public searchParam = "q";
+    public searchParam: string | null = null;
 
     //#endregion
 
@@ -470,7 +478,6 @@ export abstract class Table<T extends object, D = T>
         const { localName } = this;
 
         this.#pageParam = `${localName}-page`;
-        this.page = getSearchParam(this.#pageParam, 1);
 
         this.logger = ConsoleLogger.prefix(localName);
     }
@@ -481,9 +488,13 @@ export abstract class Table<T extends object, D = T>
         this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.addEventListener("submit", this.refreshListener);
 
-        if (this.searchEnabled) {
-            this.search = getSearchParam(this.searchParam, "");
-            registerSearchParam(this.searchParam);
+        if (this.searchParam) {
+            this.page = getSearchParam(this.#pageParam, 1);
+
+            if (this.searchEnabled) {
+                this.search = getSearchParam(this.searchParam, "");
+                registerSearchParam(this.searchParam);
+            }
         }
 
         // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
@@ -498,15 +509,17 @@ export abstract class Table<T extends object, D = T>
         this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
 
-        if (this.searchEnabled) unregisterSearchParam(this.searchParam);
+        if (this.searchEnabled && this.searchParam) {
+            unregisterSearchParam(this.searchParam);
+        }
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
         super.willUpdate(changedProperties);
 
-        const interactive = isInteractiveElement(this);
+        const { searchParam } = this;
 
-        if (!interactive) {
+        if (!searchParam || !isInteractiveElement(this)) {
             return;
         }
 
@@ -518,7 +531,7 @@ export abstract class Table<T extends object, D = T>
 
         if (changedProperties.has("search")) {
             updateSearchParams({
-                [this.searchParam]: this.search,
+                [searchParam]: this.search,
             });
         }
     }
