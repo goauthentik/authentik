@@ -13,7 +13,6 @@ export enum WSMessageType {
     Message = "message",
     NotificationNew = "notification.new",
     Refresh = "refresh",
-    SessionAuthenticated = "session.authenticated",
 }
 
 export interface WSMessageMessage extends APIMessage {
@@ -30,15 +29,7 @@ export interface WSMessageRefresh {
     message_type: WSMessageType.Refresh;
 }
 
-export interface WSMessageSessionAuthenticated {
-    message_type: WSMessageType.SessionAuthenticated;
-}
-
-export type WSMessage =
-    | WSMessageMessage
-    | WSMessageNotification
-    | WSMessageRefresh
-    | WSMessageSessionAuthenticated;
+export type WSMessage = WSMessageMessage | WSMessageNotification | WSMessageRefresh;
 
 //#endregion
 
@@ -53,14 +44,6 @@ export class AKNotificationEvent extends Event {
         super(AKNotificationEvent.eventName, { bubbles: true, composed: true });
 
         this.notification = NotificationFromJSON(input);
-    }
-}
-
-export class AKSessionAuthenticatedEvent extends Event {
-    static readonly eventName = "ak-session-authenticated";
-
-    constructor() {
-        super(AKSessionAuthenticatedEvent.eventName, { bubbles: true, composed: true });
     }
 }
 
@@ -84,8 +67,6 @@ export function createEventFromWSMessage(message: WSMessage): Event {
                 bubbles: true,
                 composed: true,
             });
-        case WSMessageType.SessionAuthenticated:
-            return new AKSessionAuthenticatedEvent();
         default: {
             throw new TypeError(`Unknown WS message type: ${message satisfies never}`, {
                 cause: message,
@@ -97,6 +78,5 @@ export function createEventFromWSMessage(message: WSMessage): Event {
 declare global {
     interface WindowEventMap {
         [AKNotificationEvent.eventName]: AKNotificationEvent;
-        [AKSessionAuthenticatedEvent.eventName]: AKSessionAuthenticatedEvent;
     }
 }

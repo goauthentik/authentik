@@ -24,13 +24,6 @@ export interface CurrentBrandFlags {
      * @memberof CurrentBrandFlags
      */
     flowsContinuousLogin: boolean;
-    /**
-     * Refresh other tabs after successful authentication.
-     * @type {boolean}
-     * @memberof CurrentBrandFlags
-     * @deprecated
-     */
-    flowsRefreshOthers?: boolean;
 }
 
 /**
@@ -60,8 +53,6 @@ export function CurrentBrandFlagsFromJSONTyped(
     }
     return {
         flowsContinuousLogin: json["flows_continuous_login"],
-        flowsRefreshOthers:
-            json["flows_refresh_others"] == null ? undefined : json["flows_refresh_others"],
     };
 }
 
@@ -79,6 +70,5 @@ export function CurrentBrandFlagsToJSONTyped(
 
     return {
         flows_continuous_login: value["flowsContinuousLogin"],
-        flows_refresh_others: value["flowsRefreshOthers"],
     };
 }
