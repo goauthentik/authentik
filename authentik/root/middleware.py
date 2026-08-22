@@ -22,7 +22,7 @@ from structlog.stdlib import get_logger
 from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import set_tag
+from authentik.lib.tracing import set_tag
 from authentik.lib.utils.crypto import get_cookie_signing_key
 
 LOGGER = get_logger("authentik.asgi")

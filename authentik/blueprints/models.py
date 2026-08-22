@@ -13,7 +13,7 @@ from structlog import get_logger
 from authentik.blueprints.v1.oci import OCI_PREFIX, BlueprintOCIClient, OCIException
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 
 LOGGER = get_logger()
 

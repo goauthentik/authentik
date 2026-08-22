@@ -1,6 +1,6 @@
 """exceptions used by the kubernetes reconciler to trigger updates"""
 
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 
 
 class ReconcileTrigger(TracingIgnoredException):

@@ -9,7 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import Span, start_span
+from authentik.lib.tracing import Span, start_span
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding

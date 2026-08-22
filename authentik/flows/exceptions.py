@@ -2,7 +2,7 @@
 
 from django.utils.translation import gettext_lazy as _
 
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.policies.types import PolicyResult
 
 

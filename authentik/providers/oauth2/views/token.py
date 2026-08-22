@@ -22,7 +22,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,

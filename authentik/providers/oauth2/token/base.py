@@ -20,7 +20,7 @@ from authentik.core.models import (
     Application,
 )
 from authentik.events.models import Event, EventAction
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError

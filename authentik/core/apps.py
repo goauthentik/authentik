@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import otel_init
+from authentik.lib.tracing import otel_init
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tenants.flags import Flag
 

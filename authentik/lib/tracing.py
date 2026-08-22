@@ -2,7 +2,6 @@
 
 from asyncio.exceptions import CancelledError
 from contextlib import contextmanager
-from hashlib import sha512
 from typing import Any
 
 from django.conf import settings
@@ -31,6 +30,7 @@ from websockets.exceptions import WebSocketException
 from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 _root_path = CONFIG.get("web.path", "/")
@@ -91,9 +91,7 @@ def otel_init():
                 "authentik.build_hash": authentik_build_hash("tagged"),
                 "authentik.env": get_env(),
                 "authentik.component": "backend",
-                "authentik.uuid": sha512(str(settings.SECRET_KEY).encode("ascii")).hexdigest()[
-                    :16
-                ],
+                "authentik.uuid": get_install_id(),
             }
         ),
         sampler=ParentBased(TraceIdRatioBased(sample_rate)),

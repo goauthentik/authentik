@@ -22,7 +22,7 @@ from authentik.flows.views.executor import (
     SESSION_KEY_POST,
     ToDefaultFlow,
 )
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBindingModel

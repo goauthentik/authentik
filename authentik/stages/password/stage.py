@@ -24,7 +24,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
