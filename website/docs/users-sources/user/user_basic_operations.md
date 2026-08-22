@@ -146,6 +146,8 @@ As an administrator, you can reset a user's password.
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the options.
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
+To instead require the user to change their password themselves on their next login, see [Require actions on next login](./next_actions.mdx).
+
 ### User resets their password
 
 If a [Recovery flow](#configure-a-recovery-flow) has been applied to the brand, users can reset their own passwords in the [User interface](../user/user-interface.mdx).
