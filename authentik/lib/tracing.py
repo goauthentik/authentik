@@ -100,7 +100,12 @@ def otel_init():
         sampler=ParentBased(TraceIdRatioBased(sample_rate)),
     )
     endpoint = CONFIG.get("error_reporting.otel_endpoint")
-    provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint or None)))
+    exporter = (
+        OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
+        if endpoint
+        else OTLPSpanExporter()
+    )
+    provider.add_span_processor(BatchSpanProcessor(exporter))
     trace.set_tracer_provider(provider)
     DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
