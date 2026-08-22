@@ -49,18 +49,35 @@ export class SourceSettingsPlex extends BaseUserSettings {
     }
 
     protected async authenticateWithPlex(): Promise<void> {
-        const authInfo = await PlexAPIClient.getPin(this.configureURL || "");
-        const authWindow = await popupCenterScreen(authInfo.authUrl, "plex auth", 550, 700);
+        // Opened before awaiting the pin: the click's user activation is gone by
+        // the time the pin request resolves, and the popup would be blocked.
+        const authWindow = popupCenterScreen("about:blank", "plex auth", 550, 700);
+        const clientId = this.configureURL || "";
+        const authInfo = await PlexAPIClient.getPin(clientId);
+        if (authWindow && !authWindow.closed) {
+            authWindow.location.replace(authInfo.authUrl);
+        }
 
-        PlexAPIClient.pinPoll(this.configureURL || "", authInfo.pin.id).then((token) => {
-            authWindow?.close();
-            aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
-                plexTokenRedeemRequest: {
-                    plexToken: token,
-                },
-                slug: this.objectId,
+        PlexAPIClient.pinPoll(clientId, authInfo.pin.id)
+            .then((token) => {
+                authWindow?.close();
+                aki(SourcesApi).sourcesPlexRedeemTokenAuthenticatedCreate({
+                    plexTokenRedeemRequest: {
+                        plexToken: token,
+                    },
+                    slug: this.objectId,
+                });
+            })
+            .catch(async (error: unknown) => {
+                // Rejects when the pin expires unauthorized, which is where an
+                // unopened popup ends up too.
+                authWindow?.close();
+                const parsedError = await parseAPIResponseError(error);
+                showMessage({
+                    level: MessageLevel.error,
+                    message: msg(str`Failed to connect source: ${pluckErrorDetail(parsedError)}`),
+                });
             });
-        });
 
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
