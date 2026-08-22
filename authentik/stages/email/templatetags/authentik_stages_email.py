@@ -1,5 +1,6 @@
 """authentik core inlining template tags"""
 
+import mimetypes
 from base64 import b64encode
 from pathlib import Path
 
@@ -13,7 +14,13 @@ register = template.Library()
 def inline_static_ascii(path: str) -> str:
     """Inline static asset. Doesn't check file contents, plain text is assumed.
     If no file could be found, original path is returned"""
-    result = Path(finders.find(path))
+    result = finders.find(path)
+
+    if result is None:
+        return path
+
+    result = Path(result)
+
     if result:
         with open(result, encoding="utf8") as _file:
             return _file.read()
@@ -24,11 +31,23 @@ def inline_static_ascii(path: str) -> str:
 def inline_static_binary(path: str) -> str:
     """Inline static asset. Uses file extension for base64 block. If no file could be found,
     path is returned."""
-    result = Path(finders.find(path))
-    if result and result.is_file():
-        with open(result, encoding="utf8") as _file:
-            b64content = b64encode(_file.read().encode())
-            return f"data:image/{result.suffix};base64,{b64content.decode('utf-8')}"
+    result = finders.find(path)
+
+    if result is None:
+        return path
+
+    result = Path(result)
+
+    if result.is_file():
+        type, _ = mimetypes.guess_file_type(result)
+
+        if type is None:
+            type = "application/octet-stream"
+
+        with open(result, "rb") as _file:
+            b64content = b64encode(_file.read())
+            return f"data:{type};base64,{b64content.decode('utf-8')}"
+
     return path
 
 
