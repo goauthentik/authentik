@@ -88,6 +88,11 @@ class FlowPlan:
         self.bindings.insert(index, FlowStageBinding(stage=stage, order=0))
         self.markers.insert(index, marker or StageMarker())
 
+    def insert_plan(self, plan: FlowPlan, index=1):
+        """Insert all bindings and markers of `plan` into this plan, as immediate next stages"""
+        self.bindings[index:index] = plan.bindings
+        self.markers[index:index] = plan.markers
+
     def redirect(self, destination: str):
         """Insert a redirect stage as next stage"""
         from authentik.flows.stage import RedirectStage
@@ -198,6 +203,7 @@ class FlowPlanner:
 
     use_cache: bool
     allow_empty_flows: bool
+    check_authentication: bool
 
     flow: Flow
 
@@ -206,6 +212,7 @@ class FlowPlanner:
     def __init__(self, flow: Flow):
         self.use_cache = True
         self.allow_empty_flows = False
+        self.check_authentication = True
         self.flow = flow
         self._logger = get_logger().bind(flow_slug=flow.slug)
 
@@ -277,7 +284,10 @@ class FlowPlanner:
             else:
                 user = request.user
 
-            context.update(self._check_authentication(request, context))
+            # Skipping the authentication check also skips outpost detection,
+            # callers disabling it must have established the user's identity already
+            if self.check_authentication:
+                context.update(self._check_authentication(request, context))
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
