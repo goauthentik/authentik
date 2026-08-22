@@ -64,6 +64,18 @@ export interface SCIMProvider {
      * @type {string}
      * @memberof SCIMProvider
      */
+    readonly assignedApplicationSlug: string | null;
+    /**
+     * Application's display Name.
+     * @type {string}
+     * @memberof SCIMProvider
+     */
+    readonly assignedApplicationName: string | null;
+    /**
+     * Internal application name, used in URLs.
+     * @type {string}
+     * @memberof SCIMProvider
+     */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
@@ -207,6 +219,20 @@ export function instanceOfSCIMProvider(value: object): value is SCIMProvider {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
+        (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
+            !("assigned_application_slug" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationSlug"] === undefined &&
+            (value as Record<string, any>)["assigned_application_slug"] === undefined)
+    )
+        return false;
+    if (
+        (!("assignedApplicationName" in (value as Record<string, any>)) &&
+            !("assigned_application_name" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["assignedApplicationName"] === undefined &&
+            (value as Record<string, any>)["assigned_application_name"] === undefined)
+    )
+        return false;
+    if (
         (!("assignedBackchannelApplicationSlug" in (value as Record<string, any>)) &&
             !("assigned_backchannel_application_slug" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["assignedBackchannelApplicationSlug"] === undefined &&
@@ -288,6 +314,8 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         propertyMappingsGroup:
             json["property_mappings_group"] == null ? undefined : json["property_mappings_group"],
         component: json["component"],
+        assignedApplicationSlug: json["assigned_application_slug"],
+        assignedApplicationName: json["assigned_application_name"],
         assignedBackchannelApplicationSlug: json["assigned_backchannel_application_slug"],
         assignedBackchannelApplicationName: json["assigned_backchannel_application_name"],
         verboseName: json["verbose_name"],
@@ -347,6 +375,8 @@ export function SCIMProviderToJSONTyped(
         SCIMProvider,
         | "pk"
         | "component"
+        | "assignedApplicationSlug"
+        | "assignedApplicationName"
         | "assignedBackchannelApplicationSlug"
         | "assignedBackchannelApplicationName"
         | "verboseName"
