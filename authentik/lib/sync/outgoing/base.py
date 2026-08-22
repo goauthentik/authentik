@@ -53,6 +53,11 @@ class BaseOutgoingSyncClient[
         self.logger = get_logger().bind(provider=provider.name)
         self.provider = provider
 
+    def get_identifier(self, connection: TConnection) -> str:
+        """Return the remote object identifier stored on a connection object
+        (e.g. scim_id / google_id / microsoft_id)"""
+        raise NotImplementedError()
+
     def create(self, obj: TModel) -> TConnection:
         """Create object in remote destination"""
         raise NotImplementedError()
