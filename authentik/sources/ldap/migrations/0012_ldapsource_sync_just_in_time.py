@@ -1,0 +1,27 @@
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ("authentik_sources_ldap", "0011_ldapsource_sync_outgoing_trigger_mode"),
+    ]
+
+    operations = [
+        migrations.AddField(
+            model_name="ldapsource",
+            name="sync_users_just_in_time",
+            field=models.BooleanField(
+                default=False,
+                help_text="Enable this option to automatically sync users just-in-time into Authentik as they login/authenticate.",
+            ),
+        ),
+        migrations.AddField(
+            model_name="ldapsource",
+            name="user_just_in_time_search_filter",
+            field=models.TextField(
+                default="(|(cn=%(id)s)(mail=%(id)s))",
+                help_text="Filter used when searching for user accounts when just-in-time user syncing is enabled. Placeholders like `%(id)s` are replaced with the identifier the user attempts to log in with.",
+            ),
+        ),
+    ]
