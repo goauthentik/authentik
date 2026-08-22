@@ -141,7 +141,9 @@ class EmailStageView(ChallengeStageView):
         # Check if the user came back from the email link to verify
         restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
         user = self.get_pending_user()
-        if restore_token:
+        # Check if we have an actual pending user (no fallbacks, we only care if
+        # a pending user was set by an identification stage/etc)
+        if restore_token and self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER):
             if restore_token.user != user:
                 self.logger.warning("Flow token for non-matching user, denying request")
                 return self.executor.stage_invalid()
