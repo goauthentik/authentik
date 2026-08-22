@@ -114,6 +114,7 @@ def otel_init():
     ThreadingInstrumentor().instrument()
     StructlogInstrumentor().instrument()
     RequestsInstrumentor().instrument()
+    LOGGER.info("Enabled Open Telemetry tracing")
 
 
 def should_ignore_exception(exc: Exception) -> bool:
@@ -157,7 +158,7 @@ class Span:
 @contextmanager
 def start_span(op: str, name: str | None = None):
     """Start a new span, compatible with the previous sentry_sdk.start_span API"""
-    with tracer.start_as_current_span(name or op, attributes={"op": op}) as span:
+    with tracer.start_as_current_span(op, attributes={"name": name}) as span:
         yield Span(span)
 
 
