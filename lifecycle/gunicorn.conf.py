@@ -80,6 +80,13 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
 
     start_pyroscope("server", worker_id=str(worker._worker_id))
 
+    # BatchSpanProcessor's background export thread does not survive the fork done by
+    # preload_app, so each worker needs its own live exporter (see otel_reinit_exporter)
+    if CONFIG.get_bool("error_reporting.enabled", False):
+        from authentik.lib.otel import otel_reinit_exporter
+
+        otel_reinit_exporter()
+
 
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     """Remove pid dbs when worker is shutdown"""
