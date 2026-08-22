@@ -106,10 +106,10 @@ class UserInfoView(View):
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         self.token = kwargs.get("token", None)
         response = super().dispatch(request, *args, **kwargs)
-        allowed_origins = []
         if self.token:
-            allowed_origins = [x.url for x in self.token.provider.redirect_uris]
-        cors_allow(self.request, response, *allowed_origins)
+            cors_allow(self.request, response, *self.token.provider.redirect_uris)
+        else:
+            cors_allow(self.request, response)
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
