@@ -1,0 +1,57 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 2868.
+#	http://www.ietf.org/rfc/rfc2868.txt
+#
+#	$Id$
+#
+ATTRIBUTE	Tunnel-Type				64	integer	has_tag
+ATTRIBUTE	Tunnel-Medium-Type			65	integer	has_tag
+ATTRIBUTE	Tunnel-Client-Endpoint			66	string	has_tag
+ATTRIBUTE	Tunnel-Server-Endpoint			67	string	has_tag
+
+ATTRIBUTE	Tunnel-Password				69	string	has_tag,encrypt=Tunnel-Password
+
+ATTRIBUTE	Tunnel-Private-Group-Id			81	string	has_tag
+ATTRIBUTE	Tunnel-Assignment-Id			82	string	has_tag
+ATTRIBUTE	Tunnel-Preference			83	integer	has_tag
+
+ATTRIBUTE	Tunnel-Client-Auth-Id			90	string	has_tag
+ATTRIBUTE	Tunnel-Server-Auth-Id			91	string	has_tag
+
+#	Tunnel Type
+
+VALUE	Tunnel-Type			PPTP			1
+VALUE	Tunnel-Type			L2F			2
+VALUE	Tunnel-Type			L2TP			3
+VALUE	Tunnel-Type			ATMP			4
+VALUE	Tunnel-Type			VTP			5
+VALUE	Tunnel-Type			AH			6
+VALUE	Tunnel-Type			IP			7
+VALUE	Tunnel-Type			MIN-IP			8
+VALUE	Tunnel-Type			ESP			9
+VALUE	Tunnel-Type			GRE			10
+VALUE	Tunnel-Type			DVS			11
+VALUE	Tunnel-Type			IP-in-IP		12
+
+#	Tunnel Medium Type
+
+VALUE	Tunnel-Medium-Type		IP			1
+VALUE	Tunnel-Medium-Type		IPv4			1
+VALUE	Tunnel-Medium-Type		IPv6			2
+VALUE	Tunnel-Medium-Type		NSAP			3
+VALUE	Tunnel-Medium-Type		HDLC			4
+VALUE	Tunnel-Medium-Type		BBN-1822		5
+VALUE	Tunnel-Medium-Type		IEEE-802		6
+VALUE	Tunnel-Medium-Type		E.163			7
+VALUE	Tunnel-Medium-Type		E.164			8
+VALUE	Tunnel-Medium-Type		F.69			9
+VALUE	Tunnel-Medium-Type		X.121			10
+VALUE	Tunnel-Medium-Type		IPX			11
+VALUE	Tunnel-Medium-Type		Appletalk		12
+VALUE	Tunnel-Medium-Type		DecNet-IV		13
+VALUE	Tunnel-Medium-Type		Banyan-Vines		14
+VALUE	Tunnel-Medium-Type		E.164-NSAP		15

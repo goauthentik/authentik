@@ -1,0 +1,16 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 3162.
+#	http://www.ietf.org/rfc/rfc3162.txt
+#
+#	$Id$
+#
+ATTRIBUTE	NAS-IPv6-Address			95	ipv6addr
+ATTRIBUTE	Framed-Interface-Id			96	ifid
+ATTRIBUTE	Framed-IPv6-Prefix			97	ipv6prefix
+ATTRIBUTE	Login-IPv6-Host				98	ipv6addr
+ATTRIBUTE	Framed-IPv6-Route			99	string
+ATTRIBUTE	Framed-IPv6-Pool			100	string
