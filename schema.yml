@@ -40771,6 +40771,9 @@ components:
       - user_offboarded
       - suspicious_request
       - password_set
+      - next_action_set
+      - next_action_removed
+      - next_action_completed
       - secret_view
       - secret_rotate
       - invitation_used
