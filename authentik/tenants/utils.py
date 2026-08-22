@@ -1,5 +1,7 @@
 """Tenant utils"""
 
+from urllib.parse import urljoin
+
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
 
@@ -31,3 +33,14 @@ def get_unique_identifier() -> str:
 def normalize_base_url(value: str | None) -> str:
     """Normalize a configured base URL: strip whitespace and trailing slashes."""
     return (value or "").strip().rstrip("/")
+
+
+def apply_base_url(url: str) -> str:
+    """Make a relative URL absolute by resolving it against the current tenant's configured
+    base URL. Absolute URLs, and any URL when no base URL is configured, are returned
+    unchanged. Expects server-relative URLs as emitted by `reverse()`, which already carry
+    the `web.path` prefix all of authentik's URLs are mounted under."""
+    if not url:
+        return url
+    base_url = get_current_tenant(only=["base_url"]).base_url
+    return urljoin(base_url, url)

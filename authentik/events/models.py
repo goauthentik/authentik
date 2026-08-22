@@ -55,7 +55,7 @@ from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import get_current_tenant
+from authentik.tenants.utils import apply_base_url, get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -517,7 +517,10 @@ class NotificationTransport(TasksModel, SerializerModel):
                 # https://birdie0.github.io/discord-webhooks-guide/other/field_limits.html
                 if len(fields) >= DISCORD_FIELD_LIMIT:
                     continue
-                fields.append({"title": key[:256], "value": value[:1024]})
+                field = {"title": key[:256], "value": value[:1024]}
+                if key == "hyperlink":
+                    field["value"] = apply_base_url(value)[:1024]
+                fields.append(field)
         body = {
             "username": "authentik",
             "icon_url": "https://goauthentik.io/img/icon.png",
@@ -594,7 +597,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         if notification.hyperlink:
             context["link"] = {
-                "target": notification.hyperlink,
+                "target": notification.hyperlink_absolute,
                 "label": notification.hyperlink_label,
             }
         if notification.event:
@@ -603,6 +606,8 @@ class NotificationTransport(TasksModel, SerializerModel):
                 if not isinstance(value, str):
                     continue
                 context["key_value"][key] = value
+                if key == "hyperlink":
+                    context["key_value"][key] = apply_base_url(value)
         else:
             context["title"] += notification.body[:NOTIFICATION_SUMMARY_LENGTH]
         # TODO: improve permission check
@@ -656,6 +661,14 @@ class Notification(SerializerModel):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True)
     seen = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def hyperlink_absolute(self) -> str | None:
+        """The hyperlink resolved against the tenant's configured base URL, for use
+        outside of the authentik UI where relative URLs do not resolve"""
+        if not self.hyperlink:
+            return None
+        return apply_base_url(self.hyperlink)
 
     @property
     def serializer(self) -> type[Serializer]:
