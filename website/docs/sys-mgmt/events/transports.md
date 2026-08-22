@@ -24,6 +24,23 @@ Select this transport to send event notifications to an email address. By defaul
 
 To edit the email address used by the transport, update the global email configuration from your installation method.
 
+#### Custom email template
+
+The email template that's used by a transport can be selected via the **Email Template** setting. Configured [Custom email templates](../../add-secure-apps/flows-stages/stages/email/index.md#custom-templates) can also be seleced.
+
+The context that's available when sending an email via a notification transport include:
+
+<!-- prettier-ignore -->
+```html
+{{ key_value.user_email }} # email address of the user being emailed
+{{ key_value.user_username}} # username of the user being emailed
+{{ key_value.http_request.* }} # values from the http_request linked to the generation of the email
+{{ body }} # body of the event that triggered the notification
+{{ title }} # title of the event that triggered the notification
+{{ link.target }} # URL included in the event, only available in data export and custom events
+{{ link.label }} # URL label included in the event, only available in data export and custom events
+```
+
 ### Webhook (generic)
 
 This transport sends a POST request to the configured URL. The default body includes the notification body, severity, notification recipient, and triggering event user.
