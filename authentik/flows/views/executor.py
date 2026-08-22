@@ -267,6 +267,11 @@ class FlowExecutorView(APIView):
                 serializers=challenge_types,
                 resource_type_field_name="component",
             ),
+            400: PolymorphicProxySerializer(
+                component_name="ChallengeTypes",
+                serializers=challenge_types,
+                resource_type_field_name="component",
+            ),
         },
         request=OpenApiTypes.NONE,
         parameters=[
@@ -310,6 +315,11 @@ class FlowExecutorView(APIView):
     @extend_schema(
         responses={
             200: PolymorphicProxySerializer(
+                component_name="ChallengeTypes",
+                serializers=challenge_types,
+                resource_type_field_name="component",
+            ),
+            400: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
                 serializers=challenge_types,
                 resource_type_field_name="component",
