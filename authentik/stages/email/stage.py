@@ -150,7 +150,10 @@ class EmailStageView(ChallengeStageView):
                 user.is_active = True
                 user.save(update_fields=["is_active"])
             return self.executor.stage_ok()
-        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+        if (
+            PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context
+            and not self.request.user.is_authenticated
+        ):
             self.logger.debug("No pending user")
             messages.error(self.request, _("No pending user."))
             return self.executor.stage_invalid()
@@ -231,7 +234,10 @@ class EmailStageView(ChallengeStageView):
             messages.error(self.request, error)
             return super().challenge_invalid(response)
 
-        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+        if (
+            PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context
+            and not self.request.user.is_authenticated
+        ):
             messages.error(self.request, _("No pending user."))
             return super().challenge_invalid(response)
 
