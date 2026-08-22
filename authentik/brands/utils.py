@@ -10,7 +10,7 @@ from django.utils.safestring import mark_safe
 
 from authentik import authentik_full_version
 from authentik.brands.models import _BRAND_RELATED_FK_FIELDS, SESSION_KEY_BRAND_SAFE_MODE, Brand
-from authentik.lib.sentry import get_http_meta
+from authentik.lib.otel import get_http_meta
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)

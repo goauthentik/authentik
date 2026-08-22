@@ -18,8 +18,6 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, PolymorphicProxySerializer, extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from sentry_sdk import capture_exception, start_span
-from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
@@ -54,7 +52,13 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
+from authentik.lib.otel import (
+    TracingIgnoredException,
+    record_exception,
+    set_tag,
+    should_ignore_exception,
+    start_span,
+)
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
@@ -91,7 +95,7 @@ def challenge_response_types():
     return mapping
 
 
-class InvalidStageError(SentryIgnoredException):
+class InvalidStageError(TracingIgnoredException):
     """Error raised when a challenge from a stage is not valid"""
 
 
@@ -251,7 +255,7 @@ class FlowExecutorView(APIView):
             raise exc
         self._logger.warning(exc)
         if not should_ignore_exception(exc):
-            capture_exception(exc)
+            record_exception(exc)
             Event.new(
                 action=EventAction.SYSTEM_EXCEPTION,
                 message="System exception during flow execution.",

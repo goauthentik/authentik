@@ -2,11 +2,9 @@
 
 import importlib
 from collections import OrderedDict
-from hashlib import sha512
 from pathlib import Path
 
 from django.utils import http as utils_http
-from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
@@ -17,8 +15,6 @@ from authentik.lib.config import (
     postgresql_direct_db_enabled,
 )
 from authentik.lib.logging import get_logger_config, structlog_configure
-from authentik.lib.sentry import sentry_init
-from authentik.lib.utils.reflection import get_env
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
@@ -497,16 +493,6 @@ DRAMATIQ = {
 }
 
 
-# Sentry integration
-
-env = get_env()
-_ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
-if _ERROR_REPORTING:
-    sentry_env = CONFIG.get("error_reporting.environment", "customer")
-    sentry_init(spotlight=DEBUG)
-    set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -612,3 +598,6 @@ _update_settings("data.user_settings")
 MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWARE_LAST))
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+
+# OpenTelemetry is initialized from AuthentikCoreConfig.ready(), since it needs to run
+# after Django settings have fully loaded (see authentik/core/apps.py)

@@ -16,7 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
-from authentik.lib.sentry import sentry_init
+from authentik.lib.otel import otel_init
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.test import use_test_broker
 
@@ -88,7 +88,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         ASN_CONTEXT_PROCESSOR.load()
         GEOIP_CONTEXT_PROCESSOR.load()
 
-        sentry_init()
+        otel_init()
         self.logger.debug("Test environment configured")
 
         self.task_broker = use_test_broker()
