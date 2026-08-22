@@ -12,8 +12,9 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
-from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
+
+from authentik.lib.otel import set_tag
 
 SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
 SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"

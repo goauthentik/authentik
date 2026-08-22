@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 from django.http import HttpRequest
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
-from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.common.oauth.constants import (
@@ -21,6 +20,7 @@ from authentik.core.models import (
     Application,
 )
 from authentik.events.models import Event, EventAction
+from authentik.lib.otel import start_span
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError

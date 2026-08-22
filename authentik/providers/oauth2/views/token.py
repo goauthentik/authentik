@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.common.oauth.constants import (
@@ -23,6 +22,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
+from authentik.lib.otel import start_span
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,

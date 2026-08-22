@@ -1,9 +1,9 @@
 """authentik saml source exceptions"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.otel import TracingIgnoredException
 
 
-class SAMLException(SentryIgnoredException):
+class SAMLException(TracingIgnoredException):
     """Base SAML Exception"""
 
     default_message = "An unspecified SAML error occurred."

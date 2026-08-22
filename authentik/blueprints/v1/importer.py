@@ -46,7 +46,7 @@ from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.otel import TracingIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
@@ -97,7 +97,7 @@ def is_model_allowed(model: type[Model]) -> bool:
     )
 
 
-class DoRollback(SentryIgnoredException):
+class DoRollback(TracingIgnoredException):
     """Exception to trigger a rollback"""
 
 

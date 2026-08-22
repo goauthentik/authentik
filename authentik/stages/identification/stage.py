@@ -13,7 +13,6 @@ from django.utils.translation import gettext as _
 from drf_spectacular.utils import PolymorphicProxySerializer, extend_schema_field
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField, ListField
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, Source, User
@@ -35,6 +34,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
+from authentik.lib.otel import start_span
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware

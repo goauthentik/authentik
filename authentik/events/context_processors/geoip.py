@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, TypedDict
 from django.http import HttpRequest
 from geoip2.errors import GeoIP2Error
 from geoip2.models import City
-from sentry_sdk import start_span
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
+from authentik.lib.otel import start_span
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:

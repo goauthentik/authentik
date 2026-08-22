@@ -6,8 +6,6 @@ from typing import TYPE_CHECKING, Any
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
@@ -24,6 +22,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.otel import Span, start_span
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine

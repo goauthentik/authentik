@@ -1,7 +1,7 @@
 """authentik SAML IDP Exceptions"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.otel import TracingIgnoredException
 
 
-class CannotHandleAssertion(SentryIgnoredException):
+class CannotHandleAssertion(TracingIgnoredException):
     """This processor does not handle this assertion."""

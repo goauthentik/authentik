@@ -10,10 +10,10 @@ from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
-from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Actor, ActorPolicyInheritance, Group, User, UserTypes
+from authentik.lib.otel import start_span
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException

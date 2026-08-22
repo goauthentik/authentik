@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
-from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -25,6 +24,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.otel import start_span
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
