@@ -15,6 +15,9 @@ from ldap3.core.exceptions import LDAPException
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.structlog import StructlogInstrumentor
+from opentelemetry.instrumentation.threading import ThreadingInstrumentor
 from opentelemetry.propagate import inject
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
@@ -101,7 +104,11 @@ def otel_init():
     trace.set_tracer_provider(provider)
     DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
+        is_sql_commentor_enabled=True,
     )
+    ThreadingInstrumentor().instrument()
+    StructlogInstrumentor().instrument()
+    RequestsInstrumentor().instrument()
 
 
 def should_ignore_exception(exc: Exception) -> bool:
