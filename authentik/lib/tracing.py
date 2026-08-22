@@ -80,10 +80,23 @@ ignored_classes = (
 )
 
 
+def _build_span_exporter() -> OTLPSpanExporter:
+    # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
+    # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
+    # unlike OTEL_EXPORTER_OTLP_ENDPOINT, passing `endpoint=` directly skips that step
+    endpoint = CONFIG.get("error_reporting.otel_endpoint")
+    if not endpoint:
+        return OTLPSpanExporter()
+    return OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
+
+
 def otel_init():
     """Configure the global OpenTelemetry TracerProvider.
     Must run after Django settings have fully loaded, since DjangoInstrumentor inserts
-    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready)"""
+    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready).
+
+    Under gunicorn's preload_app, this runs once in the master before workers are forked; call
+    otel_reinit_exporter() from a post_fork hook to give each worker a live export thread"""
     sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
     provider = TracerProvider(
         resource=Resource.create(
@@ -99,13 +112,7 @@ def otel_init():
         ),
         sampler=ParentBased(TraceIdRatioBased(sample_rate)),
     )
-    endpoint = CONFIG.get("error_reporting.otel_endpoint")
-    exporter = (
-        OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
-        if endpoint
-        else OTLPSpanExporter()
-    )
-    provider.add_span_processor(BatchSpanProcessor(exporter))
+    provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
     DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
@@ -115,6 +122,18 @@ def otel_init():
     StructlogInstrumentor().instrument()
     RequestsInstrumentor().instrument()
     LOGGER.info("Enabled Open Telemetry tracing")
+
+
+def otel_reinit_exporter():
+    """Re-attach a fresh span exporter after a process fork.
+    BatchSpanProcessor starts a background thread that does not survive fork(), so a forked
+    worker silently buffers spans without ever exporting them. This keeps the TracerProvider
+    (and the DjangoInstrumentor instrumentation already wired into the request middleware) as
+    inherited from the parent, and just gives this process its own live export thread"""
+    provider = trace.get_tracer_provider()
+    if not isinstance(provider, TracerProvider):
+        return
+    provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
 
 
 def should_ignore_exception(exc: Exception) -> bool:
