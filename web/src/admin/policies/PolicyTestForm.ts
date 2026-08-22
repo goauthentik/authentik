@@ -95,8 +95,16 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     }
 
     protected renderResult(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Passing")}>
-                <div class="pf-c-form__group-label">
+        return html`<ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "policy-test-passing",
+                    },
+                    msg("Passing"),
+                )}
+                <div id="policy-test-passing" class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
                             <ak-status-label ?good=${this.result?.passing}></ak-status-label>
@@ -104,8 +112,16 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Messages")}>
-                <div class="pf-c-form__group-label">
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "policy-test-messages",
+                    },
+                    msg("Messages"),
+                )}
+                <div id="policy-test-messages" class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <ul>
                             ${(this.result?.messages || []).length > 0
@@ -122,14 +138,35 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 </div>
             </ak-form-element-horizontal>
 
-            <ak-form-element-horizontal label=${msg("Log messages")}>
-                <ak-log-viewer .items=${this.result?.logMessages}></ak-log-viewer>
+            <ak-form-element-horizontal>
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "policy-test-log-messages",
+                    },
+                    msg("Log messages"),
+                )}
+                <ak-log-viewer
+                    id="policy-test-log-messages"
+                    .items=${this.result?.logMessages}
+                ></ak-log-viewer>
             </ak-form-element-horizontal>`;
     }
 
     protected override renderForm(): SlottedTemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} required name="user">
+        return html`<ak-form-element-horizontal required name="user">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "user",
+                        required: true,
+                    },
+                    msg("User"),
+                )}
                 <ak-search-select
+                    id="user"
                     placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
