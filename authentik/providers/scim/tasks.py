@@ -9,42 +9,66 @@ from authentik.providers.scim.models import SCIMProvider
 sync_tasks = SyncTasks(SCIMProvider)
 
 
-@actor(description=_("Sync SCIM provider objects."))
+@actor(
+    description=_("Sync SCIM provider objects."),
+    queue_name="scim_provider",
+)
 def scim_sync_objects(*args, **kwargs):
     return sync_tasks.sync_objects(*args, **kwargs)
 
 
-@actor(description=_("Full sync for SCIM provider."))
+@actor(
+    description=_("Full sync for SCIM provider."),
+    queue_name="scim_provider",
+)
 def scim_sync(provider_pk: int, *args, **kwargs):
     """Run full sync for SCIM provider"""
     return sync_tasks.sync(provider_pk, scim_sync_objects)
 
 
-@actor(description=_("Sync a direct object (user, group) for SCIM provider."))
+@actor(
+    description=_("Sync a direct object (user, group) for SCIM provider."),
+    queue_name="scim_provider",
+)
 def scim_sync_direct(*args, **kwargs):
     return sync_tasks.sync_signal_direct(*args, **kwargs)
 
 
-@actor(description=_("Dispatch syncs for a direct object (user, group) for SCIM providers."))
+@actor(
+    description=_("Dispatch syncs for a direct object (user, group) for SCIM providers."),
+    queue_name="scim_provider",
+)
 def scim_sync_direct_dispatch(*args, **kwargs):
     return sync_tasks.sync_signal_direct_dispatch(scim_sync_direct, *args, **kwargs)
 
 
-@actor(description=_("Delete an object (user, group) for SCIM provider."))
+@actor(
+    description=_("Delete an object (user, group) for SCIM provider."),
+    queue_name="scim_provider",
+)
 def scim_sync_delete(*args, **kwargs):
     return sync_tasks.sync_signal_delete(*args, **kwargs)
 
 
-@actor(description=_("Dispatch deletions for an object (user, group) for SCIM providers."))
+@actor(
+    description=_("Dispatch deletions for an object (user, group) for SCIM providers."),
+    queue_name="scim_provider",
+)
 def scim_sync_delete_dispatch(*args, **kwargs):
     return sync_tasks.sync_signal_delete_dispatch(scim_sync_delete, *args, **kwargs)
 
 
-@actor(description=_("Sync a related object (memberships) for SCIM provider."))
+@actor(
+    description=_("Sync a related object (memberships) for SCIM provider."),
+    queue_name="scim_provider",
+)
 def scim_sync_m2m(*args, **kwargs):
     return sync_tasks.sync_signal_m2m(*args, **kwargs)
 
 
-@actor(description=_("Dispatch syncs for a related object (memberships) for SCIM providers."))
+@actor(
+    description=_("Dispatch syncs for a related object (memberships) for SCIM providers."),
+    queue_name="scim_provider",
+)
 def scim_sync_m2m_dispatch(*args, **kwargs):
     return sync_tasks.sync_signal_m2m_dispatch(scim_sync_m2m, *args, **kwargs)
