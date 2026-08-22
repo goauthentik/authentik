@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-07 01:11+0000\n"
+"POT-Creation-Date: 2026-08-13 00:21+0000\n"
 "PO-Revision-Date: 2025-12-01 19:09+0000\n"
 "Last-Translator: Azharul Haque, 2026\n"
 "Language-Team: Bengali (Bangladesh) (https://app.transifex.com/authentik/teams/119923/bn_BD/)\n"
@@ -765,6 +765,10 @@ msgstr "{source} সফলভাবে লিঙ্ক করা হয়েছ
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
 msgstr "সোর্সটি এনরোলমেন্টের জন্য কনফিগার করা নেই।"
+
+#: authentik/core/sources/matcher.py
+msgid "Missing property"
+msgstr "প্রপার্টি অনুপস্থিত"
 
 #: authentik/core/tasks.py
 msgid "Remove expired objects."
@@ -1670,6 +1674,21 @@ msgstr "ডাউনলোড করুন"
 msgid "Generate data export."
 msgstr "ডেটা এক্সপোর্ট তৈরি করুন।"
 
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents can request access through this endpoint."
+msgstr ""
+"শুধুমাত্র এজেন্টরা এই এন্ডপয়েন্টের মাধ্যমে অ্যাক্সেসের অনুরোধ করতে পারবে।"
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "This agent has no owner who could approve its request."
+msgstr "এই এজেন্টের কোনো মালিক নেই যিনি এর অনুরোধ অনুমোদন করতে পারেন।"
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents with an expiry can request access."
+msgstr ""
+"শুধুমাত্র মেয়াদোত্তীর্ণ সময়সীমাযুক্ত এজেন্টরাই অ্যাক্সেসের অনুরোধ করতে "
+"পারবে।"
+
 #: authentik/enterprise/requests/models.py
 msgid "Everyone who can approve"
 msgstr "যে কেউ অনুমোদন করতে পারেন এমন সবাই"
@@ -1906,6 +1925,11 @@ msgid ""
 msgstr ""
 "ফ্লো চালিয়ে যাওয়ার জন্য সোর্স থেকে ফিরে আসতে একজন ব্যবহারকারী কত সময় নিতে"
 " পারেন (ফরম্যাট: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source matching failure reasons for which the flow should resume."
+msgstr ""
+"যেসব সোর্স মিলকরণে ব্যর্থতার কারণে ফ্লো চালিয়ে যেতে হবে, তার কারণসমূহ।"
 
 #: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
@@ -4506,6 +4530,10 @@ msgstr "প্রমাণীকরণের আগে ব্যবহৃত ফ
 #: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr "এটি Entity ID নামেও পরিচিত। ডিফল্টভাবে মেটাডেটা URL ব্যবহৃত হয়।"
+
+#: authentik/sources/saml/models.py
+msgid "Audience value this IdP sends for authentik."
+msgstr "authentik-এর জন্য এই IdP যে অডিয়েন্স ভ্যালু পাঠায়।"
 
 #: authentik/sources/saml/models.py
 msgid "SSO URL"
