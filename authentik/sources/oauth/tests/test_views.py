@@ -226,3 +226,74 @@ class TestOAuthSource(APITestCase):
             )
         )
         self.assertEqual(res.status_code, 302)
+
+    def test_source_redirect_additional_url_params(self):
+        """test redirect view with additional URL params expression"""
+        self.source.additional_url_params = 'return {"prompt": "select_account"}'
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertEqual(qs["prompt"], ["select_account"])
+
+    def test_source_redirect_additional_url_params_flow_context(self):
+        """test redirect view with additional URL params expression using flow context"""
+        self.source.additional_url_params = """
+        return {
+            "login_hint": "foo@authentik.company",
+            "prompt": context["prompt"]
+        }
+        """
+        self.source.save()
+        user = User(email="foo@authentik.company")
+        session = self.client.session
+        plan = FlowPlan(generate_id())
+        plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        plan.context["prompt"] = "select_account"
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertEqual(qs["login_hint"], ["foo@authentik.company"])
+        self.assertEqual(qs["prompt"], ["select_account"])
+
+    def test_source_redirect_additional_url_params_reserved_blocked(self):
+        """test that reserved OAuth params cannot be overridden via expression"""
+        self.source.additional_url_params = 'return {"client_id": "evil", "prompt": "none"}'
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertNotIn("client_id", qs)
+        self.assertEqual(qs["prompt"], ["none"])
+
+    def test_source_redirect_additional_url_params_invalid_expression(self):
+        """test that a broken expression degrades gracefully"""
+        self.source.additional_url_params = "raise Exception('bad expression')"
+        self.source.save()
+        res = self.client.get(
+            reverse(
+                "authentik_sources_oauth:oauth-client-login",
+                kwargs={"source_slug": self.source.slug},
+            )
+        )
+        self.assertEqual(res.status_code, 302)
+        qs = parse_qs(res.url)
+        self.assertIn("state", qs)
+        self.assertIn("redirect_uri", qs)

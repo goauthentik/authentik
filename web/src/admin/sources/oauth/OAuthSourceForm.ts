@@ -429,8 +429,24 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Additional URL Parameters")}
+                        name="additionalUrlParams"
+                    >
+                        <ak-codemirror
+                            mode="python"
+                            value="${ifDefined(this.instance?.additionalUrlParams)}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Expression that returns a dictionary of additional parameters to append to the authorization URL.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
+
             ${this.renderUrlOptions()}
             <ak-form-group open label="${msg("OAuth Attribute mapping")}">
                 <div class="pf-c-form">
