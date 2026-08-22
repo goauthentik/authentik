@@ -1,0 +1,113 @@
+---
+title: Integrate with Nutanix AHV
+sidebar_label: Nutanix AHV
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
+
+## What is Nutanix AHV?
+
+> Nutanix AHV is the native hypervisor of the Nutanix Cloud Platform, providing enterprise virtualization for compute workloads. AHV clusters are managed through Prism Central, which supports single sign-on with SAML 2.0 identity providers.
+>
+> -- https://www.nutanix.com/products/ahv
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `prismcentral.company` is the FQDN of the Prism Central instance that manages the Nutanix AHV cluster.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Nutanix AHV with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
+
+### Create property mappings
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+3. Select **SAML Provider Property Mapping** as the property mapping type.
+4. Set the following values:
+    - **Name**: `Nutanix username`
+    - **SAML Attribute Name**: `username`
+    - **Expression**:
+
+        ```python
+        return request.user.username
+        ```
+
+5. Click **Finish**.
+6. Repeat these steps to create a second property mapping with the following values:
+    - **Name**: `Nutanix email`
+    - **SAML Attribute Name**: `email`
+    - **Expression**:
+
+        ```python
+        return request.user.email
+        ```
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://prismcentral.company:9440/api/iam/authn/callback`.
+        - Set the **Audience** to `https://prismcentral.company:9440/api/iam/authn`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing certificate**.
+            - Add the `Nutanix username` and `Nutanix email` property mappings that you created in the previous section to **Property mappings**.
+            - Set **NameID Property Mapping** to `Nutanix email`.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download metadata file
+
+1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
+2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
+
+## Nutanix AHV configuration
+
+Authentication for Nutanix AHV clusters is configured in Prism Central.
+
+### Add the identity provider
+
+1. Log in to Prism Central as an administrator.
+2. From the Application Switcher, select the **Admin Center** application, then select **IAM** from the navigation bar.
+3. Select the **IdP Configuration** tab.
+4. Click **Add Identity Provider** > **SAML Identity Provider**.
+5. In the **Configure Identity Provider** window, set the following values:
+    - **Configuration Name**: `authentik` (this name appears on the Prism Central login screen)
+    - **Username Attribute**: `username`
+    - **Email Attribute**: `email`
+6. Click **Import Metadata** and upload the authentik metadata file that you downloaded in the previous section.
+7. Click **Save**.
+
+### Create an authorization policy
+
+By default, SAML users are not granted any permissions. To grant access, create an authorization policy in Prism Central.
+
+1. In the Admin Center, navigate to **IAM** > **Authorization Policies**.
+2. Click **Create Authorization Policy**.
+3. Choose the role to assign, then click **Next**.
+4. Define the scope of the policy, then click **Next**.
+5. In the **Assign Users** section, change **Local User** to the authentik identity provider that you created, enter the email address of the user that should receive access, and select the user.
+6. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Nutanix AHV, log out of Prism Central and log back in by clicking the authentik configuration name on the login screen. Complete the authentik authentication flow and confirm that you are logged in with the expected role.
+
+## Resources
+
+- [Nutanix Security Guide - Adding a SAML-based Identity Provider](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_0%3Amul-security-authentication-saml-pc-iam-t.html)
+- [Nutanix KB - Configuration Steps for Cisco Duo Integration with Prism Central](https://portal.nutanix.com/page/documents/kbs/details?targetId=kA0VO0000004hET0AY)
