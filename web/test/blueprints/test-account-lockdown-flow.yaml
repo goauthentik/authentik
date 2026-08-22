@@ -1,0 +1,37 @@
+version: 1
+metadata:
+    name: Test - Account lockdown flow
+entries:
+    # Nothing ships a lockdown flow by default, and the brand's "Account lockdown
+    # flow" field is what enables the feature. Browser tests point the brand at this
+    # flow; the flow and its stage are seeded here so the suite only has to drive the
+    # one field a real operator configures.
+    - attrs:
+          designation: stage_configuration
+          name: Test - Account lockdown
+          title: Account lockdown
+          # The stage deletes the target's sessions, so the flow must not require an
+          # authenticated session of its own.
+          authentication: none
+      identifiers:
+          slug: test-account-lockdown
+      model: authentik_flows.flow
+      id: flow
+    - attrs:
+          deactivate_user: true
+          set_unusable_password: true
+          delete_sessions: true
+          revoke_tokens: true
+          # Self-service lockdown deletes the caller's own session, so the stage
+          # refuses to run without somewhere to send them afterwards.
+          self_service_completion_flow:
+              !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+      identifiers:
+          name: test-account-lockdown-stage
+      model: authentik_stages_account_lockdown.accountlockdownstage
+      id: stage
+    - identifiers:
+          order: 0
+          stage: !KeyOf stage
+          target: !KeyOf flow
+      model: authentik_flows.flowstagebinding
