@@ -20,7 +20,7 @@ In normal mode, the enrolled phone number can later be used with the [Authentica
 - **Auth type**: choose **Basic** or **Bearer** authentication for the generic provider.
 - **Verify only**: verify phone ownership during enrollment without storing the plain phone number for later MFA use.
 - **Mapping**: optional webhook mapping used to customize the payload sent to custom providers.
-- **Authenticator type name**: optional friendly name shown to the user in self-service settings.
+- **Authenticator type name**: optional friendly name shown to the user in self-service settings and as the delivery method during [authenticator validation](../authenticator_validate/index.md#sms-delivery-hints). When you run multiple SMS stages for different delivery channels (for example SMS and WhatsApp), set a distinct name on each so users can tell where their code was sent.
 - **Configuration flow**: optional authenticated flow that lets users enroll this authenticator from user settings.
 
 ## Flow integration
