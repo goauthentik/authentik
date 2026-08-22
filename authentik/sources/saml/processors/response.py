@@ -32,8 +32,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
     USER_ATTRIBUTE_SOURCES,
-    USERNAME_MAX_LENGTH,
-    User,
+    SourceUserMatchingModes,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.time import timedelta_from_string
@@ -99,6 +98,7 @@ class ResponseProcessor:
         self._verify_request_id()
         self._verify_status()
         self._verify_conditions()
+        self._saml_attributes = self._source.extract_attributes(self._root, self.get_assertion())
 
     def _decrypt_response(self):
         """Decrypt SAMLResponse EncryptedAssertion Element"""
@@ -237,46 +237,6 @@ class ResponseProcessor:
         if message_text or detail_text:
             LOGGER.debug("SAML Status message", message=message_text, detail=detail_text)
 
-    def _handle_name_id_transient(self) -> SourceFlowManager:
-        """Handle a NameID with the Format of Transient. This is a bit more complex than other
-        formats, as we need to create a temporary User that is used in the session. This
-        user has an attribute that refers to our Source for cleanup. The user is also deleted
-        on logout and periodically."""
-        # Create a temporary User
-        name_id_el, name_id = self._get_name_id()
-        # trim username to ensure it is max 150 chars
-        username = f"ak-{name_id[: USERNAME_MAX_LENGTH - 14]}-transient"
-        expiry = mktime(
-            (now() + timedelta_from_string(self._source.temporary_user_delete_after)).timetuple()
-        )
-        user: User = User.objects.create(
-            username=username,
-            attributes={
-                USER_ATTRIBUTE_GENERATED: True,
-                USER_ATTRIBUTE_SOURCES: [
-                    self._source.name,
-                ],
-                USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
-                USER_ATTRIBUTE_EXPIRES: expiry,
-            },
-            path=self._source.get_user_path(),
-        )
-        LOGGER.debug("Created temporary user for NameID Transient", username=name_id)
-        user.set_unusable_password()
-        user.save()
-        UserSAMLSourceConnection.objects.create(source=self._source, user=user, identifier=name_id)
-        return SAMLSourceFlowManager(
-            source=self._source,
-            request=self._http_request,
-            identifier=str(name_id),
-            user_info={
-                "root": self._root,
-                "assertion": self.get_assertion(),
-                "name_id": name_id_el,
-            },
-            policy_context={},
-        )
-
     def get_assertion(self) -> Element | None:
         """Get assertion element, if we have a signed assertion"""
         if self._assertion is not None:
@@ -301,10 +261,12 @@ class ResponseProcessor:
         name_id_el, name_id = self._get_name_id()
         if not name_id:
             raise UnsupportedNameIDFormat("Subject's NameID is empty.")
-        _format = name_id_el.attrib["Format"]
+        _format = name_id_el.attrib.get("Format")
+        if not _format:
+            raise UnsupportedNameIDFormat("Subject's NameID has no Format attribute.")
         if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
-        if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
+        if _format in [SAML_NAME_ID_FORMAT_PERSISTENT, SAML_NAME_ID_FORMAT_TRANSIENT]:
             return {"username": name_id}
         if _format == SAML_NAME_ID_FORMAT_X509:
             # This attribute is statically set by the LDAP source
@@ -327,22 +289,50 @@ class ResponseProcessor:
                 expected=self._source.name_id_policy,
                 got=name_id_el.attrib["Format"],
             )
-        # transient NameIDs are handled separately as they don't have to go through flows.
+        attributes = getattr(self, "_saml_attributes", None)
+        if attributes is None:
+            attributes = self._source.extract_attributes(self._root, self.get_assertion())
+
+        if self._source.user_matching_mode in [
+            SourceUserMatchingModes.USERNAME_LINK,
+            SourceUserMatchingModes.USERNAME_DENY,
+        ]:
+            if "eppn" in attributes:
+                attributes["username"] = attributes["eppn"]
+            elif "eptid" in attributes:
+                attributes["username"] = attributes["eptid"]
+
+        connection_id = name_id
         if name_id_el.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
-            return self._handle_name_id_transient()
+            for key in ["eppn", "eptid", "email"]:
+                if key in attributes:
+                    connection_id = attributes[key]
+                    attributes["username"] = attributes[key]
+                    break
+            else:
+                expiry = mktime(
+                    (
+                        now() + timedelta_from_string(self._source.temporary_user_delete_after)
+                    ).timetuple()
+                )
+                attributes["attributes"] = {
+                    USER_ATTRIBUTE_GENERATED: True,
+                    USER_ATTRIBUTE_SOURCES: [self._source.name],
+                    USER_ATTRIBUTE_DELETE_ON_LOGOUT: True,
+                    USER_ATTRIBUTE_EXPIRES: expiry,
+                }
 
         return SAMLSourceFlowManager(
             source=self._source,
             request=self._http_request,
-            identifier=str(name_id),
+            identifier=connection_id,
             user_info={
                 "root": self._root,
                 "assertion": self.get_assertion(),
                 "name_id": name_id_el,
+                "saml_attributes": attributes,
             },
-            policy_context={
-                "saml_response": etree.tostring(self._root),
-            },
+            policy_context={"saml_response": etree.tostring(self._root)},
         )
 
 
