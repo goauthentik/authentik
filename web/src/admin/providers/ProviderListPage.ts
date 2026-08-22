@@ -13,6 +13,7 @@ import "#admin/providers/wsfed/WSFederationProviderForm";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import CFragmentsIcon from "@carbon/icons/lib/fragments/32";
 
 import { aki } from "#common/api/client";
 
@@ -39,7 +40,7 @@ export class ProviderListPage extends TablePage<Provider> {
         "Provide support for protocols like SAML and OAuth to assigned applications.",
     );
 
-    public pageIcon = "pf-icon pf-icon-integration";
+    public pageIcon = CFragmentsIcon;
 
     override checkbox = true;
     override clearOnRefresh = true;
