@@ -5,7 +5,7 @@ from rest_framework.fields import CharField
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 
 
 class DummyChallenge(Challenge):

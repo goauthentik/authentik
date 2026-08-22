@@ -1,6 +1,6 @@
 """policy exceptions"""
 
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 
 
 class PolicyEngineException(TracingIgnoredException):

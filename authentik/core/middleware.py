@@ -14,7 +14,7 @@ from django.utils.functional import SimpleLazyObject
 from django.utils.translation import override
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 
-from authentik.lib.otel import set_tag
+from authentik.lib.tracing import set_tag
 
 SESSION_KEY_IMPERSONATE_USER = "authentik/impersonate/user"
 SESSION_KEY_IMPERSONATE_ORIGINAL_USER = "authentik/impersonate/original_user"

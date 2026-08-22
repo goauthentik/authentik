@@ -32,7 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec

@@ -16,7 +16,7 @@ from psycopg.errors import Error
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction
-from authentik.lib.otel import should_ignore_exception
+from authentik.lib.tracing import should_ignore_exception
 from authentik.lib.utils.reflection import class_to_path
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.models import Task, TaskLog, TaskStatus

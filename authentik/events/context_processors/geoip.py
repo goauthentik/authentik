@@ -8,7 +8,7 @@ from geoip2.models import City
 
 from authentik.events.context_processors.mmdb import MMDBContextProcessor
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.root.middleware import ClientIPMiddleware
 
 if TYPE_CHECKING:

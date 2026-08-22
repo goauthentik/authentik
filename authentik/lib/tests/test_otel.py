@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from authentik.lib.otel import TracingIgnoredException, should_ignore_exception
+from authentik.lib.tracing import TracingIgnoredException, should_ignore_exception
 
 
 class TestOtel(TestCase):

@@ -16,7 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import otel_init
+from authentik.lib.tracing import otel_init
 from authentik.root.signals import post_startup, pre_startup, startup
 from authentik.tasks.test import use_test_broker
 

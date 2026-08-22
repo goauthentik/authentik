@@ -32,7 +32,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:

@@ -52,7 +52,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.otel import (
+from authentik.lib.tracing import (
     TracingIgnoredException,
     record_exception,
     set_tag,

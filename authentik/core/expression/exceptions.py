@@ -1,7 +1,7 @@
 """authentik core exceptions"""
 
 from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 
 
 class PropertyMappingExpressionException(TracingIgnoredException):

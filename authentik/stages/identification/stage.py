@@ -34,7 +34,7 @@ from authentik.flows.planner import (
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET
 from authentik.lib.avatars import DEFAULT_AVATAR
-from authentik.lib.otel import start_span
+from authentik.lib.tracing import start_span
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware

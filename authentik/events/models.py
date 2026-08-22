@@ -44,7 +44,7 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
-from authentik.lib.otel import TracingIgnoredException
+from authentik.lib.tracing import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string

@@ -22,7 +22,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
-from authentik.lib.otel import Span, start_span
+from authentik.lib.tracing import Span, start_span
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
