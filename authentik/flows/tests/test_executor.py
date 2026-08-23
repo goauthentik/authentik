@@ -47,7 +47,12 @@ POLICY_RETURN_FALSE = PropertyMock(return_value=PolicyResult(False, "foo"))
 POLICY_RETURN_TRUE = MagicMock(return_value=PolicyResult(True))
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse, final_redirect: bool = False):
+def to_stage_response(
+    request: HttpRequest,
+    source: HttpResponse,
+    final_redirect: bool = False,
+    continuous_login_hold: bool = True,
+):
     """Mock for to_stage_response that returns the original response, so we can check
     inheritance and member attributes"""
     return source
@@ -823,6 +828,7 @@ class TestFlowExecutor(FlowTestCase):
                 "layout": "stacked",
                 "title": flow.title,
                 "messages": [],
+                "continuous_login_hold": True,
             },
         )
 

@@ -31,7 +31,11 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD,
+    PLAN_CONTEXT_PENDING_USER,
+)
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.utils.reflection import class_to_path
 
@@ -211,6 +215,9 @@ class ChallengeStageView(StageView):
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
                         "messages": FlowMessageSerializer(messages, many=True).data,
+                        "continuous_login_hold": getattr(self.executor.plan, "context", {}).get(
+                            PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD, True
+                        ),
                     },
                 )
                 flow_info.is_valid()
