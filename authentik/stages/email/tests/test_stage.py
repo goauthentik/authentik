@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
+from django.test import override_settings
 from django.urls import reverse
 from django.utils.http import urlencode
 
@@ -22,8 +23,10 @@ from authentik.lib.generators import generate_id
 from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
+from authentik.stages.email.tests import STATICFILES_DIRS
 
 
+@override_settings(STATICFILES_DIRS=STATICFILES_DIRS)
 class TestEmailStage(FlowTestCase):
     """Email tests"""
 
