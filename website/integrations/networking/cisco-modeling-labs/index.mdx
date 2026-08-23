@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Cisco Modeling Labs?
 
-> Cisco Modeling Labs is an on-premises network simulation tool that runs on workstations and servers and allows you to quickly and easily simulate Cisco or multi-vendor networks.
+> Cisco Modeling Labs is an on-premises network simulation platform for designing and testing Cisco and multivendor networks.
 >
 > -- https://www.cisco.com/site/us/en/learn/training-certifications/training/modeling-labs/index.html
 
@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `ldap.company` is the FQDN of the authentik LDAP outpost.
 
-Cisco Modeling Labs (CML) authenticates users against LDAP. The CML server must be able to reach the authentik LDAP outpost on port 636.
+Cisco Modeling Labs (CML) authenticates users against LDAP. The CML server must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -24,9 +24,9 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Cisco Modeling Labs with authentik, you need to create groups for CML access, an LDAP application/provider pair, a service account, and an LDAP outpost.
+To support the integration of Cisco Modeling Labs with authentik, you need to create groups for CML access and configure an LDAP provider and outpost.
 
-### Create groups
+### Create access groups
 
 Create groups that Cisco Modeling Labs uses to allow login and to grant administrator privileges. Users who should be CML administrators must be members of both groups, because CML requires an administrator to match both the user filter and the admin filter.
 
@@ -36,51 +36,25 @@ Create groups that Cisco Modeling Labs uses to allow login and to grant administ
 4. Open the group, select the **Users** tab, and add the users who should have access to Cisco Modeling Labs.
 5. Repeat these steps with the name `cml-admins`, and add only the users who should have CML administrator privileges. Also add those administrator users to `cml-users`.
 
-### Create an application and provider
+### Create the LDAP resources
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **LDAP Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and note the **Base DN** because you will use it when configuring Cisco Modeling Labs.
-    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-3. Click **Submit** to save the new application and provider.
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create or reuse an LDAP application and provider, create a service account with LDAP search permissions, and create an LDAP outpost.
 
-### Create a service account
+Use the following CML-specific settings while completing the LDAP provider setup:
 
-1. Navigate to **Directory** > **Users** and click **New User**.
-2. Select **Service Account**.
-3. Set **Username** to `ldapservice` and disable **Expiring** so that the generated password does not rotate.
-4. Click **Next**.
-5. Copy the generated app password from the confirmation screen because it will be required later.
+- Use `cml-ldap` as the service account username. Note its password and full DN for the CML configuration.
+- Note the LDAP provider's **Base DN** as `<base_dn>`.
+- On the LDAP provider, set **Certificate** to the certificate that CML should trust for `ldap.company`.
+- Set **TLS Server Name** to `ldap.company`.
+- Select the CML LDAP application on the outpost and expose the outpost as `ldap.company`.
 
-For an LDAP provider whose **Base DN** is `<base_dn>`, this service account's DN is `cn=ldapservice,ou=users,<base_dn>`.
-
-### Assign LDAP search permissions
-
-1. Navigate to **Directory** > **Roles** and click **Create**.
-2. Provide a name, such as `LDAP search`, and click **Create**.
-3. Click the role that you created and open the **Users** tab.
-4. Click **Add Existing User**, select `ldapservice`, and click **Assign**.
-5. Navigate to **Applications** > **Providers**.
-6. Click the LDAP provider that you created and open the **Permissions** tab.
-7. Click **Assign Object Permissions**.
-8. Select the role that you created, enable **Search full LDAP directory**, and click **Assign**.
-
-### Create an LDAP outpost
-
-1. Navigate to **Applications** > **Outposts** and click **New Outpost**.
-2. Configure the following settings:
-    - **Name**: provide a descriptive name.
-    - **Type**: select **LDAP**.
-    - **Applications**: select the LDAP application that you created.
-3. Click **Create**.
-
-Expose the LDAP outpost as `ldap.company` so that Cisco Modeling Labs can reach it. If you already have an LDAP outpost, add this application to that outpost instead of creating a new one.
+If you configure application bindings, ensure that `cml-ldap` and the `cml-users` group have access to the LDAP application.
 
 ## Cisco Modeling Labs configuration
 
-:::warning Incorrect LDAP settings
+### Configure LDAP authentication
+
+:::warning LDAP lockout
 After you save LDAP as the authentication method, Cisco Modeling Labs authenticates every login against LDAP, including the local administrator account. Always use **Test Authentication** before you click **Save**. If you save incorrect settings and can no longer log in, recover access with the authentication reset in the CML system administration cockpit.
 :::
 
@@ -99,15 +73,15 @@ After you save LDAP as the authentication method, Cisco Modeling Labs authentica
     - **Group Search Filter**: `(&(cn={0})(objectClass=group))`
     - **Group Via User**: enabled
     - **Group User Attribute**: `memberOf`
-    - **Manager DN**: `cn=ldapservice,ou=users,<base_dn>`
-    - **Manager Password**: the app password for the `ldapservice` service account
+    - **Manager DN**: `cn=cml-ldap,ou=users,<base_dn>`
+    - **Manager Password**: the password for the `cml-ldap` service account
     - **Display Name LDAP Attribute**: `displayName`
     - **Email Address LDAP Attribute**: `mail`
 6. If the LDAP outpost certificate is issued by a private CA, paste that CA certificate into **Certificate Chain**.
 7. Click **Test Authentication**, enter the **Manager Password** if the field is empty, and test with an authentik username and password. **Authenticated** should be `true`. For a user in `cml-admins`, the test should also show that the admin filter matched.
 8. Click **Save**.
 
-### Create LDAP groups
+### Create the LDAP groups
 
 Cisco Modeling Labs does not create groups from LDAP automatically. After you save the LDAP settings, create groups whose names match the authentik groups so that CML can synchronize membership on login.
 
@@ -121,7 +95,7 @@ Do not add members in the wizard. CML reads group membership from authentik when
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Cisco Modeling Labs, open the CML UI and log in with an authentik username and password. A user in `cml-users` should reach the CML dashboard.
+To confirm that authentik is properly configured with Cisco Modeling Labs, open the CML UI and log in with an authentik username and password. A user in `cml-users` should reach the CML dashboard, and a user in both access groups should have administrator privileges.
 
 ## Resources
 
