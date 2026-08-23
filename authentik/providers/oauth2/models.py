@@ -317,6 +317,17 @@ class OAuth2Provider(WebfingerProvider, Provider):
         default=IssuerMode.PER_PROVIDER,
         help_text=_("Configure how the issuer field of the ID Token should be filled."),
     )
+    issuer_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=_(
+            "Use this exact value as the issuer instead of deriving one from Issuer mode. "
+            "Leave empty to use Issuer mode. Set this when several providers must share a "
+            "single issuer, for example an application whose desktop and mobile clients ship "
+            "their own fixed client IDs and therefore need one provider each, while the "
+            "application itself only trusts a single issuer."
+        ),
+    )
 
     signing_key = models.ForeignKey(
         CertificateKeyPair,
@@ -364,6 +375,8 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
+        if self.issuer_override:
+            return self.issuer_override
         if self.issuer_mode == IssuerMode.GLOBAL:
             return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
         try:

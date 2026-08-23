@@ -481,6 +481,18 @@ export function renderForm({
                     help=${msg("Configure how the issuer field of the ID Token should be filled.")}
                 >
                 </ak-radio-input>
+                <ak-text-input
+                    name="issuerOverride"
+                    autocomplete="off"
+                    label=${msg("Issuer override", {
+                        id: "provider.oauth2.issuer-override.label",
+                    })}
+                    value=${ifDefined(provider.issuerOverride)}
+                    help=${msg(
+                        "Use this exact value as the issuer instead of deriving one from Issuer mode. Leave empty to use Issuer mode. Set this when several providers must share a single issuer, for example an application whose desktop and mobile clients ship their own fixed client IDs and therefore need one provider each, while the application itself only trusts a single issuer.",
+                        { id: "provider.oauth2.issuer-override.description" },
+                    )}
+                ></ak-text-input>
             </div>
         </ak-form-group>
 
