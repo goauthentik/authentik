@@ -87,28 +87,12 @@ ignored_classes = (
 )
 
 
-def _build_span_exporter() -> OTLPSpanExporter:
-    # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
-    # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
-    # unlike OTEL_EXPORTER_OTLP_ENDPOINT, passing `endpoint=` directly skips that step
-    endpoint = CONFIG.get("error_reporting.otel_endpoint")
-    if not endpoint:
-        return OTLPSpanExporter()
-    return OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
-
-
 def otel_instrument():
-    """Wire up automatic instrumentation (Django middleware, requests, threading,
-    structlog, psycopg queries). Safe to call before a fork: this only registers
-    middleware/patches library internals and captures a lazy proxy tracer that resolves
-    once a real TracerProvider is set later by otel_init_provider().
-    Must run after Django settings have fully loaded, since DjangoInstrumentor inserts
-    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready).
+    """Wire up automatic instrumentation. Safe to call before a fork; must run after
+    Django settings have fully loaded, since DjangoInstrumentor patches MIDDLEWARE.
 
-    opentelemetry-instrumentation-asgi is a required dependency even though it's never
-    imported directly here: DjangoInstrumentor only supports Django's ASGI request path
-    (which authentik is served entirely over) if that package's internals are importable,
-    silently falling back to WSGI-only (i.e. never) otherwise"""
+    Needs opentelemetry-instrumentation-asgi installed (never imported directly here),
+    or DjangoInstrumentor silently falls back to WSGI-only, which authentik never uses."""
     ThreadingInstrumentor().instrument()
     RequestsInstrumentor().instrument()
     StructlogInstrumentor().instrument()
@@ -120,18 +104,14 @@ def otel_instrument():
 
 
 def trace_middleware_list(middleware_paths: list[str]) -> list[str]:
-    """Wrap every entry of a Django MIDDLEWARE list so each request creates a span named
-    after that middleware's dotted path, covering Django's own, third-party, and
-    authentik's middleware alike. Call this on the final assembled MIDDLEWARE list in
-    authentik/root/settings.py, since it must run before Django builds the request
-    handler from it"""
+    """Wrap each MIDDLEWARE entry so it gets a span named after its dotted path.
+    Call on the final assembled MIDDLEWARE list, before Django builds the handler."""
     return [_traced_middleware_path(path) for path in middleware_paths]
 
 
 def _traced_middleware_path(path: str) -> str:
-    """Dynamically build a middleware wrapper class for `path` and register it as an
-    attribute of this module, so Django's import_string() can resolve the dotted path
-    this returns back to it"""
+    """Build a wrapper class for `path` and register it on this module, so Django's
+    import_string() can resolve the dotted path this returns back to it"""
     real_middleware = import_string(path)
 
     class _TracedMiddleware:
@@ -166,12 +146,9 @@ def _traced_middleware_path(path: str) -> str:
 def otel_init_provider():
     """Create and set the real OpenTelemetry TracerProvider and span exporter.
 
-    Must run after any fork that will happen: BatchSpanProcessor starts a background
-    export thread, and if a lock it holds is inherited mid-fork, the child can deadlock
-    on it forever (see
-    https://opentelemetry-python.readthedocs.io/en/latest/examples/fork-process-model/).
-    Under gunicorn's preload_app, call otel_instrument() from AuthentikCoreConfig.ready()
-    (before the fork) and this function from a post_fork hook (after the fork) instead"""
+    Must run after any fork: BatchSpanProcessor's background export thread doesn't
+    survive fork() safely. Under gunicorn's preload_app, call this from a post_fork
+    hook, after otel_instrument() has run pre-fork."""
     sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
     provider = TracerProvider(
         resource=Resource.create(
@@ -186,15 +163,23 @@ def otel_init_provider():
         ),
         sampler=ParentBased(TraceIdRatioBased(sample_rate)),
     )
-    provider.add_span_processor(SimpleSpanProcessor(_build_span_exporter()))
+    # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
+    # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
+    # unlike OTEL_EXPORTER_OTLP_ENDPOINT, passing `endpoint=` directly skips that step
+    endpoint = CONFIG.get("error_reporting.otel_endpoint")
+    exporter = (
+        OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
+        if endpoint
+        else OTLPSpanExporter()
+    )
+    provider.add_span_processor(SimpleSpanProcessor(exporter))
     trace.set_tracer_provider(provider)
     LOGGER.info("Enabled Open Telemetry tracing")
 
 
 def otel_init():
-    """Full init for single-process entrypoints that never fork afterwards (management
-    commands, the test runner, dramatiq workers). For gunicorn's preloaded web server,
-    call otel_instrument() and otel_init_provider() separately instead, see their docs"""
+    """Full init for single-process entrypoints that never fork afterwards. Gunicorn's
+    preloaded web server calls otel_instrument()/otel_init_provider() separately instead"""
     otel_instrument()
     otel_init_provider()
 
