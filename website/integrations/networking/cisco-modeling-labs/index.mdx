@@ -98,6 +98,9 @@ Expose the LDAP outpost as `ldap.company` so that Cisco Modeling Labs can reach 
 :::warning Incorrect LDAP settings
 After you save LDAP as the authentication method, Cisco Modeling Labs authenticates every login against LDAP, including the local administrator account. Always use **Test Authentication** before you click **Save**. If you save incorrect settings and can no longer log in, recover access with the authentication reset in the CML system administration cockpit.
 :::
+:::info Allowing multiple groups for users and admins
+To allow multiple groups to log in to Cisco Modeling Labs, append another section `(memberOf=cn=samplegroup,ou=groups,<base_dn>)` to the user filter. Please keep in mind that when adding new groups to the admin filter, the user filter has to reflect the same changes.
+:::
 
 1. Log in to Cisco Modeling Labs as a user with administrator privileges.
 2. Navigate to **Tools** > **System Administration**.
@@ -108,7 +111,7 @@ After you save LDAP as the authentication method, Cisco Modeling Labs authentica
     - **Verify TLS**: enabled
     - **Root DN**: `<base_dn>`
     - **User Search Base**: `ou=users`
-    - **User Filter**: `(&(cn={0})(memberOf=cn=cml-users,ou=groups,<base_dn>))`
+    - **User Filter**: `(&(cn={0})(|(memberOf=cn=cml-users,ou=groups,<base_dn>)(memberOf=cn=cml-admins,ou=groups,<base_dn>)))`
     - **Admin Filter**: `(&(cn={0})(memberOf=cn=cml-admins,ou=groups,<base_dn>))`
     - **Group Search Base**: `ou=groups`
     - **Group Search Filter**: `(&(cn={0})(objectClass=group))`
