@@ -21,7 +21,7 @@ from opentelemetry.instrumentation.threading import ThreadingInstrumentor
 from opentelemetry.propagate import inject
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.trace import Span as OtelSpan
 from opentelemetry.trace import Status, StatusCode
@@ -33,7 +33,6 @@ from websockets.exceptions import WebSocketException
 from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
-from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 _root_path = CONFIG.get("web.path", "/")
@@ -128,12 +127,11 @@ def otel_init_provider():
                 "authentik.build_hash": authentik_build_hash("tagged"),
                 "authentik.env": get_env(),
                 "authentik.component": "backend",
-                "authentik.uuid": get_install_id(),
             }
         ),
         sampler=ParentBased(TraceIdRatioBased(sample_rate)),
     )
-    provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
+    provider.add_span_processor(SimpleSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
     LOGGER.info("Enabled Open Telemetry tracing")
 
