@@ -46,6 +46,17 @@ Create groups that Cisco Modeling Labs uses to allow login and to grant administ
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
+### Configure LDAPS
+LDAPS is preferred over LDAP because LDAP sends plaintext user passwords over the network.
+
+1. Navigate to **System** > **Certificates** and click **Generate Certificate-Key Pair**
+2. Give the certificate a **Common Name** like "LDAPS Certificate for Cisco Modeling Labs"
+3. Set a validity period
+4. Set the **Algorithm** to **RSA**
+5. Click **Generate Certificate-Key Pair**
+6. Edit your LDAP Provider, and select your generated certificate in the **Certificate** section.
+7. **Save** your changes
+
 ### Create a service account
 
 1. Navigate to **Directory** > **Users** and click **New User**.
@@ -67,6 +78,10 @@ For an LDAP provider whose **Base DN** is `<base_dn>`, this service account's DN
 7. Click **Assign Object Permissions**.
 8. Select the role that you created, enable **Search full LDAP directory**, and click **Assign**.
 
+
+:::info LDAP Outpost Reuse
+If you have an existing LDAP Outpost, you may safely ignore this section and move on to **Cisco Modeling Labs configuration**.
+:::
 ### Create an LDAP outpost
 
 1. Navigate to **Applications** > **Outposts** and click **New Outpost**.
@@ -105,17 +120,8 @@ After you save LDAP as the authentication method, Cisco Modeling Labs authentica
     - **Email Address LDAP Attribute**: `mail`
 6. If the LDAP outpost certificate is issued by a private CA, paste that CA certificate into **Certificate Chain**.
 7. Click **Test Authentication**, enter the **Manager Password** if the field is empty, and test with an authentik username and password. **Authenticated** should be `true`. For a user in `cml-admins`, the test should also show that the admin filter matched.
-8. Click **Save**.
-
-### Create LDAP groups
-
-Cisco Modeling Labs does not create groups from LDAP automatically. After you save the LDAP settings, create groups whose names match the authentik groups so that CML can synchronize membership on login.
-
-1. Navigate to **Tools** > **System Administration**.
-2. Click **Group Administration**.
-3. Click **Add**.
-4. Set the group name to `cml-users`, click **Next** through the optional wizard steps, and click **Create**.
-5. Repeat these steps for `cml-admins`.
+8. Optionally, assign a **Resource Pool** template. This will clone the Resource Pool for every user registered through LDAP. This is useful for preventing resource abuse on multi-user systems. Refer to CML Documentation on how to create and configure a resource pool.
+9. Click **Save**.
 
 Do not add members in the wizard. CML reads group membership from authentik when each user logs in.
 
