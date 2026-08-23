@@ -55,7 +55,19 @@ def get_template_choices():
     for template_dir in dirs:
         if not template_dir.exists() or not template_dir.is_dir():
             continue
-        for template in template_dir.glob("**/*.html"):
+
+        # when .html and .txt files are both present, only show .html
+        html_files = list(template_dir.glob("**/*.html"))
+        html_files_set = set(html_files)
+        template_files = [
+            *html_files,
+            *[
+                t
+                for t in template_dir.glob("**/*.txt")
+                if t.with_suffix(".html") not in html_files_set
+            ],
+        ]
+        for template in template_files:
             path = str(template)
             if not access(path, R_OK):
                 LOGGER.warning("Custom template file is not readable, check permissions", path=path)
