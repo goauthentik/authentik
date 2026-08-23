@@ -9104,14 +9104,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Add new role</source>
   <target>নতুন রোল যোগ করুন</target>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>প্রমাণীকরণের পর অন্যান্য ফ্লো ট্যাব রিফ্রেশ করুন</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>সক্রিয় করা থাকলে, একটি সেশনের অন্যান্য ফ্লো ট্যাব সফল প্রমাণীকরণের পর রিফ্রেশ হবে।</target>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
   <target>ডেটা এক্সপোর্ট প্রস্তুত</target>
@@ -11888,10 +11880,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
   <target>ইউজার ফিল্ড</target>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>এই ফ্ল্যাগটি ডেপ্রিকেটেড।</target>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
