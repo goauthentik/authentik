@@ -14,7 +14,7 @@ from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.instrumentation.asgi import OpenTelemetryMiddleware
+from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.structlog import StructlogInstrumentor
@@ -95,26 +95,24 @@ def _build_span_exporter() -> OTLPSpanExporter:
 
 
 def otel_instrument():
-    """Wire up automatic instrumentation (requests, threading, structlog, psycopg queries).
-    Safe to call before a fork: this only patches library internals and captures a lazy
-    proxy tracer that resolves once a real TracerProvider is set later by
-    otel_init_provider(). Django's own request/response spans come from wrapping the ASGI
-    app instead (see otel_wrap_asgi): opentelemetry-instrumentation-django's middleware
-    only supports Django's WSGI path, and authentik is served entirely over ASGI"""
+    """Wire up automatic instrumentation (Django middleware, requests, threading,
+    structlog, psycopg queries). Safe to call before a fork: this only registers
+    middleware/patches library internals and captures a lazy proxy tracer that resolves
+    once a real TracerProvider is set later by otel_init_provider().
+    Must run after Django settings have fully loaded, since DjangoInstrumentor inserts
+    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready).
+
+    opentelemetry-instrumentation-asgi is a required dependency even though it's never
+    imported directly here: DjangoInstrumentor only supports Django's ASGI request path
+    (which authentik is served entirely over) if that package's internals are importable,
+    silently falling back to WSGI-only (i.e. never) otherwise"""
     ThreadingInstrumentor().instrument()
     RequestsInstrumentor().instrument()
     StructlogInstrumentor().instrument()
     PsycopgInstrumentor().instrument()
-
-
-def otel_wrap_asgi(app):
-    """Wrap an ASGI application to create a span per request.
-    Call this on the app returned by django.core.asgi.get_asgi_application(), after
-    otel_init_provider() has set the real TracerProvider (see authentik/root/asgi.py)"""
-    return OpenTelemetryMiddleware(
-        app,
+    DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
-        exclude_spans=["receive", "send"],
+        is_sql_commentor_enabled=True,
     )
 
 
