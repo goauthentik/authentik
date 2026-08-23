@@ -28,13 +28,13 @@ To support the integration of Cisco Modeling Labs with authentik, you need to cr
 
 ### Create access groups
 
-Create groups that Cisco Modeling Labs uses to allow login and to grant administrator privileges. Users who should be CML administrators must be members of both groups, because CML requires an administrator to match both the user filter and the admin filter.
+Create groups that Cisco Modeling Labs uses to allow login and to grant administrator privileges. The CML user filter permits members of either group to log in, while the admin filter grants administrator privileges only to members of `cml-admins`.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set **Name** to `cml-users` and click **Create**.
-4. Open the group, select the **Users** tab, and add the users who should have access to Cisco Modeling Labs.
-5. Repeat these steps with the name `cml-admins`, and add only the users who should have CML administrator privileges. Also add those administrator users to `cml-users`.
+4. Open the group, select the **Users** tab, and add the users who should have non-administrative access to Cisco Modeling Labs.
+5. Repeat these steps with the name `cml-admins`, and add the users who should have CML administrator privileges.
 
 ### Create the LDAP resources
 
@@ -48,7 +48,7 @@ Use the following CML-specific settings while completing the LDAP provider setup
 - Set **TLS Server Name** to `ldap.company`.
 - Select the CML LDAP application on the outpost and expose the outpost as `ldap.company`.
 
-If you configure application bindings, ensure that `cml-ldap` and the `cml-users` group have access to the LDAP application.
+If you configure application bindings, ensure that `cml-ldap`, `cml-users`, and `cml-admins` have access to the LDAP application.
 
 ## Cisco Modeling Labs configuration
 
@@ -67,7 +67,7 @@ After you save LDAP as the authentication method, Cisco Modeling Labs authentica
     - **Verify TLS**: enabled
     - **Root DN**: `<base_dn>`
     - **User Search Base**: `ou=users`
-    - **User Filter**: `(&(cn={0})(memberOf=cn=cml-users,ou=groups,<base_dn>))`
+    - **User Filter**: `(&(cn={0})(|(memberOf=cn=cml-users,ou=groups,<base_dn>)(memberOf=cn=cml-admins,ou=groups,<base_dn>)))`
     - **Admin Filter**: `(&(cn={0})(memberOf=cn=cml-admins,ou=groups,<base_dn>))`
     - **Group Search Base**: `ou=groups`
     - **Group Search Filter**: `(&(cn={0})(objectClass=group))`
@@ -95,7 +95,7 @@ Do not add members in the wizard. CML reads group membership from authentik when
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Cisco Modeling Labs, open the CML UI and log in with an authentik username and password. A user in `cml-users` should reach the CML dashboard, and a user in both access groups should have administrator privileges.
+To confirm that authentik is properly configured with Cisco Modeling Labs, open the CML UI and log in with an authentik username and password. A user in `cml-users` should reach the CML dashboard without administrator privileges, and a user in `cml-admins` should have administrator privileges.
 
 ## Resources
 
