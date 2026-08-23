@@ -26,6 +26,7 @@ type ContextualFlowInfo struct {
 	BackgroundThemedUrls NullableThemedUrls           `json:"background_themed_urls,omitempty"`
 	CancelUrl            string                       `json:"cancel_url"`
 	Layout               ContextualFlowInfoLayoutEnum `json:"layout"`
+	ContinuousLoginHold  *bool                        `json:"continuous_login_hold,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -39,6 +40,8 @@ func NewContextualFlowInfo(cancelUrl string, layout ContextualFlowInfoLayoutEnum
 	this := ContextualFlowInfo{}
 	this.CancelUrl = cancelUrl
 	this.Layout = layout
+	var continuousLoginHold bool = true
+	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -47,6 +50,8 @@ func NewContextualFlowInfo(cancelUrl string, layout ContextualFlowInfoLayoutEnum
 // but it doesn't guarantee that properties required by API are set
 func NewContextualFlowInfoWithDefaults() *ContextualFlowInfo {
 	this := ContextualFlowInfo{}
+	var continuousLoginHold bool = true
+	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -205,6 +210,38 @@ func (o *ContextualFlowInfo) SetLayout(v ContextualFlowInfoLayoutEnum) {
 	o.Layout = v
 }
 
+// GetContinuousLoginHold returns the ContinuousLoginHold field value if set, zero value otherwise.
+func (o *ContextualFlowInfo) GetContinuousLoginHold() bool {
+	if o == nil || IsNil(o.ContinuousLoginHold) {
+		var ret bool
+		return ret
+	}
+	return *o.ContinuousLoginHold
+}
+
+// GetContinuousLoginHoldOk returns a tuple with the ContinuousLoginHold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContextualFlowInfo) GetContinuousLoginHoldOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContinuousLoginHold) {
+		return nil, false
+	}
+	return o.ContinuousLoginHold, true
+}
+
+// HasContinuousLoginHold returns a boolean if a field has been set.
+func (o *ContextualFlowInfo) HasContinuousLoginHold() bool {
+	if o != nil && !IsNil(o.ContinuousLoginHold) {
+		return true
+	}
+
+	return false
+}
+
+// SetContinuousLoginHold gets a reference to the given bool and assigns it to the ContinuousLoginHold field.
+func (o *ContextualFlowInfo) SetContinuousLoginHold(v bool) {
+	o.ContinuousLoginHold = &v
+}
+
 func (o ContextualFlowInfo) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -226,6 +263,9 @@ func (o ContextualFlowInfo) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["cancel_url"] = o.CancelUrl
 	toSerialize["layout"] = o.Layout
+	if !IsNil(o.ContinuousLoginHold) {
+		toSerialize["continuous_login_hold"] = o.ContinuousLoginHold
+	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
@@ -275,6 +315,7 @@ func (o *ContextualFlowInfo) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "background_themed_urls")
 		delete(additionalProperties, "cancel_url")
 		delete(additionalProperties, "layout")
+		delete(additionalProperties, "continuous_login_hold")
 		o.AdditionalProperties = additionalProperties
 	}
 

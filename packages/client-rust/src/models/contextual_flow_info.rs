@@ -28,6 +28,11 @@ pub struct ContextualFlowInfo {
     pub cancel_url: String,
     #[serde(rename = "layout")]
     pub layout: models::ContextualFlowInfoLayoutEnum,
+    #[serde(
+        rename = "continuous_login_hold",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub continuous_login_hold: Option<bool>,
 }
 
 impl ContextualFlowInfo {
@@ -42,6 +47,7 @@ impl ContextualFlowInfo {
             background_themed_urls: None,
             cancel_url,
             layout,
+            continuous_login_hold: None,
         }
     }
 }

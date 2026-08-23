@@ -29,9 +29,15 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.flows.apps import ContinuousLogin
 from authentik.flows.models import FlowStageBinding
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.xml import lxml_from_string
-from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
+from authentik.providers.saml.models import (
+    SAMLBindings,
+    SAMLPropertyMapping,
+    SAMLProvider,
+    SAMLSession,
+)
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
 from authentik.sources.saml.exceptions import MismatchedRequestID
@@ -120,6 +126,104 @@ class TestAuthNRequest(TestCase):
             binding_type=SAMLBindingTypes.POST,
         )
 
+    def post_authn_request(self):
+        """Send an SP-initiated AuthnRequest using the HTTP-POST binding."""
+        request = RequestProcessor(
+            self.source, self.request_factory.get("/"), "test_state"
+        ).build_auth_n()
+        return self.client.post(
+            reverse(
+                "authentik_providers_saml:sso-post",
+                kwargs={"application_slug": "test-app"},
+            ),
+            {
+                "SAMLRequest": b64encode(request.encode()).decode(),
+                "RelayState": "test_state",
+            },
+        )
+
+    def assert_direct_post_response(self, response):
+        """Assert a direct SAML HTTP-POST response and its side effects."""
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "if/saml_form_post.html")
+        self.assertEqual(response.context_data["redirect_uri"], self.provider.acs_url)
+        self.assertEqual(response.context_data["attrs"]["RelayState"], "test_state")
+        self.assertIn("SAMLResponse", response.context_data["attrs"])
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertTrue(SAMLSession.objects.filter(provider=self.provider).exists())
+        self.assertTrue(Event.objects.filter(action=EventAction.AUTHORIZE_APPLICATION).exists())
+
+    def test_post_response_empty_flow_is_direct(self):
+        """An empty authorization flow returns the SAML POST form directly."""
+        self.provider.sp_binding = SAMLBindings.POST
+        self.provider.save()
+        self.client.force_login(create_test_admin_user())
+
+        self.assert_direct_post_response(self.post_authn_request())
+
+    @patch_flag(ContinuousLogin, True)
+    def test_post_response_empty_flow_is_direct_with_continuous_login(self):
+        """Continuous login does not force an empty authorization flow into the executor."""
+        self.provider.sp_binding = SAMLBindings.POST
+        self.provider.save()
+        self.client.force_login(create_test_admin_user())
+
+        self.assert_direct_post_response(self.post_authn_request())
+
+    @patch_flag(ContinuousLogin, True)
+    def test_redirect_response_empty_flow_is_direct_with_continuous_login(self):
+        """An empty authorization flow returns the SAML Redirect response directly."""
+        self.provider.sp_binding = SAMLBindings.REDIRECT
+        self.provider.save()
+        app = Application.objects.get(slug="test-app")
+        params = RequestProcessor(
+            self.source, self.request_factory.get("/"), "test_state"
+        ).build_auth_n_detached()
+        self.client.force_login(create_test_admin_user())
+
+        response = self.client.get(
+            reverse(
+                "authentik_providers_saml:sso-redirect",
+                kwargs={"application_slug": app.slug},
+            ),
+            params,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        redirect = urlparse(response["Location"])
+        self.assertEqual(
+            f"{redirect.scheme}://{redirect.netloc}{redirect.path}", self.provider.acs_url
+        )
+        redirect_query = parse_qs(redirect.query)
+        self.assertEqual(redirect_query["RelayState"], ["test_state"])
+        self.assertIn("SAMLResponse", redirect_query)
+        self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertTrue(SAMLSession.objects.filter(provider=self.provider).exists())
+        self.assertTrue(Event.objects.filter(action=EventAction.AUTHORIZE_APPLICATION).exists())
+
+    def test_post_response_nonempty_flow_uses_executor(self):
+        """A configured authorization stage keeps using the flow executor."""
+        self.provider.sp_binding = SAMLBindings.POST
+        self.provider.save()
+        FlowStageBinding.objects.create(
+            target=self.provider.authorization_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
+        self.client.force_login(create_test_admin_user())
+
+        response = self.post_authn_request()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            urlparse(response["Location"]).path,
+            reverse(
+                "authentik_core:if-flow",
+                kwargs={"flow_slug": self.provider.authorization_flow.slug},
+            ),
+        )
+        self.assertIn(SESSION_KEY_PLAN, self.client.session)
+
     def test_signed_valid(self):
         """Test generated AuthNRequest with valid signature"""
         http_request = self.request_factory.get("/")
@@ -171,6 +275,11 @@ class TestAuthNRequest(TestCase):
         continuous login, instead of an un-validated-serializer error."""
         self.provider.sp_binding = SAMLBindings.REDIRECT
         self.provider.save()
+        FlowStageBinding.objects.create(
+            target=self.provider.authorization_flow,
+            stage=DummyStage.objects.create(name=generate_id()),
+            order=0,
+        )
         app = Application.objects.get(slug="test-app")
         http_request = self.request_factory.get("/")
         params = RequestProcessor(self.source, http_request, "test_state").build_auth_n_detached()
@@ -187,17 +296,25 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(initiate.status_code, 302)
 
         # Drive the flow executor to completion, reaching SAMLFlowFinalView.
-        response = self.client.get(
-            reverse(
-                "authentik_api:flow-executor",
-                kwargs={"flow_slug": self.provider.authorization_flow.slug},
-            )
+        executor_url = reverse(
+            "authentik_api:flow-executor",
+            kwargs={"flow_slug": self.provider.authorization_flow.slug},
         )
+        challenge = self.client.get(executor_url)
+        self.assertEqual(challenge.json()["component"], "ak-stage-dummy")
+        advance = self.client.post(
+            executor_url,
+            {"component": "ak-stage-dummy"},
+            content_type="application/json",
+        )
+        self.assertEqual(advance.status_code, 302)
+        response = self.client.get(executor_url)
 
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["component"], "xak-flow-redirect")
         self.assertTrue(body["final_redirect"])
+        self.assertTrue(body["continuous_login_hold"])
         self.assertTrue(body["to"].startswith(self.provider.acs_url))
 
     def test_request_encrypt(self):

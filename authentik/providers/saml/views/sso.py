@@ -10,9 +10,8 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.flows.apps import ContinuousLogin
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import FlowStageBinding, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
@@ -49,6 +48,14 @@ class SAMLSSOView(PolicyAccessView):
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
         )
+
+    def continuous_login_hold_required(self) -> bool:
+        """Conservatively hold tabs when authorization may require the flow executor.
+
+        Stage policies can depend on the user who is about to authenticate, so they cannot be
+        evaluated accurately here. An entirely empty flow is the only flow known to be safe.
+        """
+        return FlowStageBinding.objects.filter(target=self.provider.authorization_flow).exists()
 
     def check_saml_request(self) -> HttpRequest | None:
         """Handler to verify the SAML Request. Must be implemented by a subclass"""
@@ -89,7 +96,7 @@ class SAMLSSOView(PolicyAccessView):
             next=self.get_resume_url(),
             allowed_silent_types=(
                 [SAMLFlowFinalView]
-                if self.provider.sp_binding in [SAMLBindings.REDIRECT] and not ContinuousLogin.get()
+                if self.provider.sp_binding in [SAMLBindings.POST, SAMLBindings.REDIRECT]
                 else []
             ),
         )

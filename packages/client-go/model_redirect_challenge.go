@@ -26,6 +26,7 @@ type RedirectChallenge struct {
 	ResponseErrors       *map[string][]ErrorDetail `json:"response_errors,omitempty"`
 	To                   string                    `json:"to"`
 	FinalRedirect        *bool                     `json:"final_redirect,omitempty"`
+	ContinuousLoginHold  *bool                     `json:"continuous_login_hold,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -42,6 +43,8 @@ func NewRedirectChallenge(to string) *RedirectChallenge {
 	this.To = to
 	var finalRedirect bool = false
 	this.FinalRedirect = &finalRedirect
+	var continuousLoginHold bool = true
+	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -54,6 +57,8 @@ func NewRedirectChallengeWithDefaults() *RedirectChallenge {
 	this.Component = &component
 	var finalRedirect bool = false
 	this.FinalRedirect = &finalRedirect
+	var continuousLoginHold bool = true
+	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -209,6 +214,38 @@ func (o *RedirectChallenge) SetFinalRedirect(v bool) {
 	o.FinalRedirect = &v
 }
 
+// GetContinuousLoginHold returns the ContinuousLoginHold field value if set, zero value otherwise.
+func (o *RedirectChallenge) GetContinuousLoginHold() bool {
+	if o == nil || IsNil(o.ContinuousLoginHold) {
+		var ret bool
+		return ret
+	}
+	return *o.ContinuousLoginHold
+}
+
+// GetContinuousLoginHoldOk returns a tuple with the ContinuousLoginHold field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RedirectChallenge) GetContinuousLoginHoldOk() (*bool, bool) {
+	if o == nil || IsNil(o.ContinuousLoginHold) {
+		return nil, false
+	}
+	return o.ContinuousLoginHold, true
+}
+
+// HasContinuousLoginHold returns a boolean if a field has been set.
+func (o *RedirectChallenge) HasContinuousLoginHold() bool {
+	if o != nil && !IsNil(o.ContinuousLoginHold) {
+		return true
+	}
+
+	return false
+}
+
+// SetContinuousLoginHold gets a reference to the given bool and assigns it to the ContinuousLoginHold field.
+func (o *RedirectChallenge) SetContinuousLoginHold(v bool) {
+	o.ContinuousLoginHold = &v
+}
+
 func (o RedirectChallenge) MarshalJSON() ([]byte, error) {
 	toSerialize, err := o.ToMap()
 	if err != nil {
@@ -231,6 +268,9 @@ func (o RedirectChallenge) ToMap() (map[string]interface{}, error) {
 	toSerialize["to"] = o.To
 	if !IsNil(o.FinalRedirect) {
 		toSerialize["final_redirect"] = o.FinalRedirect
+	}
+	if !IsNil(o.ContinuousLoginHold) {
+		toSerialize["continuous_login_hold"] = o.ContinuousLoginHold
 	}
 
 	for key, value := range o.AdditionalProperties {
@@ -280,6 +320,7 @@ func (o *RedirectChallenge) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "response_errors")
 		delete(additionalProperties, "to")
 		delete(additionalProperties, "final_redirect")
+		delete(additionalProperties, "continuous_login_hold")
 		o.AdditionalProperties = additionalProperties
 	}
 

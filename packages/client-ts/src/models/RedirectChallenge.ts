@@ -52,6 +52,12 @@ export interface RedirectChallenge {
      * @memberof RedirectChallenge
      */
     finalRedirect?: boolean;
+    /**
+     *
+     * @type {boolean}
+     * @memberof RedirectChallenge
+     */
+    continuousLoginHold?: boolean;
 }
 
 /**
@@ -80,6 +86,8 @@ export function RedirectChallengeFromJSONTyped(
         responseErrors: json["response_errors"] == null ? undefined : json["response_errors"],
         to: json["to"],
         finalRedirect: json["final_redirect"] == null ? undefined : json["final_redirect"],
+        continuousLoginHold:
+            json["continuous_login_hold"] == null ? undefined : json["continuous_login_hold"],
     };
 }
 
@@ -101,5 +109,6 @@ export function RedirectChallengeToJSONTyped(
         response_errors: value["responseErrors"],
         to: value["to"],
         final_redirect: value["finalRedirect"],
+        continuous_login_hold: value["continuousLoginHold"],
     };
 }

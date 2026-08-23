@@ -3,6 +3,7 @@ import "#flow/components/ak-flow-card";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { BaseStage } from "#flow/stages/base";
+import { shouldReleaseContinuousLogin } from "#flow/tabs/continuous-login";
 import {
     multiTabOrchestrateLeave,
     multiTabOrchestrateResume,
@@ -78,6 +79,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // resume other continuous-login tabs; intermediate hops (source stages, the same-origin
         // SAML resume re-entry) skip orchestration entirely.
         const finalRedirect = this.challenge?.finalRedirect ?? false;
+        const continuousLoginHold = this.challenge?.continuousLoginHold ?? true;
         if (finalRedirect) {
             await multiTabOrchestrateResume();
         }
@@ -86,7 +88,10 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // Same-origin navigation suppress it, otherwise we'd look like we left mid-flow.
         const url = new URL(this.challenge!.to, window.location.origin);
 
-        if (finalRedirect && url.origin !== window.location.origin) {
+        if (
+            finalRedirect &&
+            shouldReleaseContinuousLogin(url, window.location.origin, continuousLoginHold)
+        ) {
             multiTabOrchestrateLeave();
         } else {
             suppressNextExitForSameOriginNavigation();

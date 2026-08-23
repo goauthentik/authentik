@@ -50,6 +50,7 @@ class ContextualFlowInfo(PassiveSerializer):
     background_themed_urls = ThemedUrlsSerializer(required=False, allow_null=True)
     cancel_url = CharField()
     layout = ChoiceField(choices=[(x.value, x.name) for x in FlowLayout])
+    continuous_login_hold = BooleanField(default=True)
 
 
 class Challenge(PassiveSerializer):
@@ -72,6 +73,7 @@ class RedirectChallenge(Challenge):
     # source-stage hops to an external IdP) stay False so the web client doesn't resume other
     # continuous-login tabs prematurely. See web/src/flow/tabs/orchestrator.ts.
     final_redirect = BooleanField(default=False)
+    continuous_login_hold = BooleanField(default=True)
     component = CharField(default="xak-flow-redirect")
 
 
