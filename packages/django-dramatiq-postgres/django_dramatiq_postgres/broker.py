@@ -17,7 +17,7 @@ from django.db import (
     transaction,
 )
 from django.db.backends.postgresql.base import DatabaseWrapper
-from django.db.models import QuerySet
+from django.db.models import Prefetch, QuerySet
 from django.db.models.expressions import F
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -54,6 +54,11 @@ CONSUMABLE_TASK_STATES: set[TaskState] = set(TaskState) - {
     TaskState.REJECTED,
     TaskState.WAITING_FOR_DEPENDENCIES,
 }
+
+# Bound how many rows a single poll/backlog pass touches, so the cost of each call stays
+# roughly constant instead of scaling with the total size of the task table.
+FETCH_BATCH_SIZE = 1000
+BACKLOG_BATCH_SIZE = 100
 
 
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
@@ -344,12 +349,25 @@ class _PostgresConsumer(Consumer):
 
     def _backlog_waiting_for_dependencies(self) -> None:
         self.logger.debug("Backlogging tasks waiting for dependencies", queue=self.queue_name)
+        # Only fetch the state of dependencies, and only for the batch of tasks we're about
+        # to look at, instead of running one query per task (N+1).
+        dependencies_queryset = self.query_set.model._default_manager.using(self.db_alias).only(
+            "message_id", "state"
+        )
         with transaction.atomic(using=self.db_alias):
-            for task in self.query_set.filter(
-                queue_name=self.queue_name,
-                state=TaskState.WAITING_FOR_DEPENDENCIES,
-            ).select_for_update():
-                dependencies_states = task.dependencies.values_list("state", flat=True)
+            tasks = list(
+                self.query_set.filter(
+                    queue_name=self.queue_name,
+                    state=TaskState.WAITING_FOR_DEPENDENCIES,
+                )
+                # skip_locked so a large backlog can be worked through in bounded batches
+                # across multiple calls without piling up on rows another process holds.
+                .select_for_update(skip_locked=True).prefetch_related(
+                    Prefetch("dependencies", queryset=dependencies_queryset)
+                )[:BACKLOG_BATCH_SIZE]
+            )
+            for task in tasks:
+                dependencies_states = [dependency.state for dependency in task.dependencies.all()]
                 if any(state == TaskState.REJECTED for state in dependencies_states):
                     self.logger.debug(
                         "Task found with rejected dependencies, rejecting it too.",
@@ -385,7 +403,7 @@ class _PostgresConsumer(Consumer):
             .filter(state__in=CONSUMABLE_TASK_STATES)
             .exclude(eta__gte=timezone.now() + timedelta(seconds=self.timeout))
             .order_by(F("eta").asc(nulls_first=True))
-            .values_list("message_id", flat=True)
+            .values_list("message_id", flat=True)[:FETCH_BATCH_SIZE]
         )
         self.logger.debug(
             "Finished fetching pending messages in queue",
