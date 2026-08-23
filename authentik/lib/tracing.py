@@ -40,6 +40,10 @@ _root_path = CONFIG.get("web.path", "/")
 
 tracer = trace.get_tracer("authentik")
 
+# Set by lifecycle/gunicorn.conf.py before the app is preloaded, to tell
+# AuthentikCoreConfig.ready() to skip otel_init_provider() (see its docstring)
+OTEL_DEFER_PROVIDER_ENV_VAR = "AUTHENTIK_OTEL_DEFER_PROVIDER"
+
 
 class TracingIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not recorded as span errors."""
@@ -90,13 +94,30 @@ def _build_span_exporter() -> OTLPSpanExporter:
     return OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
 
 
-def otel_init():
-    """Configure the global OpenTelemetry TracerProvider.
+def otel_instrument():
+    """Wire up automatic instrumentation (Django middleware, requests, threading, structlog).
+    Safe to call before a fork: this only registers middleware and captures a lazy proxy
+    tracer that resolves once a real TracerProvider is set later by otel_init_provider().
     Must run after Django settings have fully loaded, since DjangoInstrumentor inserts
-    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready).
+    its own middleware into django.conf.settings.MIDDLEWARE (see AuthentikCoreConfig.ready)"""
+    ThreadingInstrumentor().instrument()
+    RequestsInstrumentor().instrument()
+    StructlogInstrumentor().instrument()
+    DjangoInstrumentor().instrument(
+        excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
+        is_sql_commentor_enabled=True,
+    )
 
-    Under gunicorn's preload_app, this runs once in the master before workers are forked; call
-    otel_reinit_exporter() from a post_fork hook to give each worker a live export thread"""
+
+def otel_init_provider():
+    """Create and set the real OpenTelemetry TracerProvider and span exporter.
+
+    Must run after any fork that will happen: BatchSpanProcessor starts a background
+    export thread, and if a lock it holds is inherited mid-fork, the child can deadlock
+    on it forever (see
+    https://opentelemetry-python.readthedocs.io/en/latest/examples/fork-process-model/).
+    Under gunicorn's preload_app, call otel_instrument() from AuthentikCoreConfig.ready()
+    (before the fork) and this function from a post_fork hook (after the fork) instead"""
     sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
     provider = TracerProvider(
         resource=Resource.create(
@@ -114,23 +135,15 @@ def otel_init():
     )
     provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
-    ThreadingInstrumentor().instrument()
-    RequestsInstrumentor().instrument()
-    StructlogInstrumentor().instrument()
-    DjangoInstrumentor().instrument(
-        excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
-        is_sql_commentor_enabled=True,
-    )
     LOGGER.info("Enabled Open Telemetry tracing")
 
 
-def otel_reinit_exporter():
-    """Re-attach a fresh span exporter after a process fork."""
-    provider = trace.get_tracer_provider()
-    if not isinstance(provider, TracerProvider):
-        LOGGER.warn("no provider")
-        return
-    provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
+def otel_init():
+    """Full init for single-process entrypoints that never fork afterwards (management
+    commands, the test runner, dramatiq workers). For gunicorn's preloaded web server,
+    call otel_instrument() and otel_init_provider() separately instead, see their docs"""
+    otel_instrument()
+    otel_init_provider()
 
 
 def should_ignore_exception(exc: Exception) -> bool:

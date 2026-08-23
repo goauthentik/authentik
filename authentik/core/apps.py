@@ -1,10 +1,12 @@
 """authentik core app config"""
 
+import os
+
 from django.utils.translation import gettext_lazy as _
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
-from authentik.lib.tracing import otel_init
+from authentik.lib.tracing import OTEL_DEFER_PROVIDER_ENV_VAR, otel_init, otel_instrument
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tenants.flags import Flag
 
@@ -33,7 +35,12 @@ class AuthentikCoreConfig(ManagedAppConfig):
 
     def ready(self) -> None:
         if CONFIG.get_bool("error_reporting.enabled", False):
-            otel_init()
+            # Under gunicorn's preload_app, the real TracerProvider must be created after
+            # the fork instead (see lifecycle/gunicorn.conf.py's post_fork hook)
+            if os.environ.get(OTEL_DEFER_PROVIDER_ENV_VAR):
+                otel_instrument()
+            else:
+                otel_init()
         return super().ready()
 
     def import_related(self):
