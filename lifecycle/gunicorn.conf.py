@@ -83,7 +83,7 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     # BatchSpanProcessor's background export thread does not survive the fork done by
     # preload_app, so each worker needs its own live exporter (see otel_reinit_exporter)
     if CONFIG.get_bool("error_reporting.enabled", False):
-        from authentik.lib.otel import otel_reinit_exporter
+        from authentik.lib.tracing import otel_reinit_exporter
 
         otel_reinit_exporter()
 

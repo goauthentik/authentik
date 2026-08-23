@@ -101,7 +101,7 @@ def otel_init():
     provider = TracerProvider(
         resource=Resource.create(
             {
-                "service.name": "authentik",
+                "service.name": "authentik-v2",
                 "service.version": authentik_version(),
                 "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
                 "authentik.build_hash": authentik_build_hash("tagged"),
@@ -114,24 +114,21 @@ def otel_init():
     )
     provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
+    ThreadingInstrumentor().instrument()
+    RequestsInstrumentor().instrument()
+    StructlogInstrumentor().instrument()
     DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
         is_sql_commentor_enabled=True,
     )
-    ThreadingInstrumentor().instrument()
-    StructlogInstrumentor().instrument()
-    RequestsInstrumentor().instrument()
     LOGGER.info("Enabled Open Telemetry tracing")
 
 
 def otel_reinit_exporter():
-    """Re-attach a fresh span exporter after a process fork.
-    BatchSpanProcessor starts a background thread that does not survive fork(), so a forked
-    worker silently buffers spans without ever exporting them. This keeps the TracerProvider
-    (and the DjangoInstrumentor instrumentation already wired into the request middleware) as
-    inherited from the parent, and just gives this process its own live export thread"""
+    """Re-attach a fresh span exporter after a process fork."""
     provider = trace.get_tracer_provider()
     if not isinstance(provider, TracerProvider):
+        LOGGER.warn("no provider")
         return
     provider.add_span_processor(BatchSpanProcessor(_build_span_exporter()))
 
