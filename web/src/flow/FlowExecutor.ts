@@ -7,7 +7,6 @@ import "#flow/tabs/broadcast";
 
 import { FlowIframeMessageController } from "./controllers/FlowIframeMessageController";
 import { FlowMultitabController } from "./controllers/FlowMultitabController";
-import { FlowWebsocketClientController } from "./controllers/FlowWebsocketClientController";
 import Styles from "./FlowExecutor.css" with { type: "bundled-text" };
 
 import { aki } from "#common/api/client";
@@ -15,11 +14,9 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { applyBackgroundImageProperty, resolveThemedUrl } from "#common/theme";
-import { AKSessionAuthenticatedEvent } from "#common/ws/events";
 
-import { listen } from "#elements/decorators/listen";
 import { Interface } from "#elements/Interface";
-import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { exportParts } from "#elements/utils/attributes";
@@ -31,6 +28,7 @@ import {
     AKFlowUpdateChallengeRequest,
 } from "#flow/events";
 import { StageMapping } from "#flow/FlowExecutorStageFactory";
+import { flowMessages } from "#flow/messages";
 import { BaseStage } from "#flow/stages/base";
 import type { FlowChallengeResponseRequestBody, StageHost, SubmitOptions } from "#flow/types";
 
@@ -129,9 +127,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
     // Listen for authentik state-change events from other tabs
     #flowMultitabController = new FlowMultitabController(this);
 
-    // Listen for server-side events and forward them to the notification handler
-    #flowWebsocketClientController = new FlowWebsocketClientController(this);
-
     //#endregion
 
     //#region Accessors
@@ -162,7 +157,6 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
         this.#api = aki(FlowsApi);
         this.addController(this.#flowIframeMessageController);
         this.addController(this.#flowMultitabController);
-        this.addController(this.#flowWebsocketClientController);
         this.addEventListener(AKFlowUpdateChallengeRequest.eventName, this.handleChallengeRequest);
         this.addEventListener(AKFlowSubmitRequest.eventName, this.handleSubordinateSubmit);
     }
@@ -193,19 +187,13 @@ export class FlowExecutor extends WithBrandConfig(Interface) implements StageHos
                 : this.ownerDocument.body;
 
         applyBackgroundImageProperty(background, { target });
+
+        for (const message of flowMessages(this.challenge?.flowInfo?.messages)) {
+            showMessage(message);
+        }
     }
 
     //#region Listeners
-
-    @listen(AKSessionAuthenticatedEvent, { target: window })
-    protected sessionAuthenticatedListener = () => {
-        if (!document.hidden) {
-            return;
-        }
-
-        console.debug("authentik/ws: Reloading after session authenticated event");
-        window.location.reload();
-    };
 
     private setFlowErrorChallenge(error: APIError) {
         this.challenge = {

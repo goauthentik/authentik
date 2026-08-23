@@ -5929,6 +5929,11 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
@@ -38788,6 +38793,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -39117,13 +39126,8 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -41493,6 +41497,25 @@ components:
       - sidebar_left_frame_background
       - sidebar_right_frame_background
       type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
+      type: string
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -42366,10 +42389,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         agent_owner:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -53790,15 +53815,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -55208,10 +55228,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55259,9 +55281,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -58885,15 +58905,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -58980,15 +58995,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:

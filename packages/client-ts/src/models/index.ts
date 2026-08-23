@@ -202,6 +202,8 @@ export * from "./FlowErrorChallenge";
 export * from "./FlowInspection";
 export * from "./FlowInspectorPlan";
 export * from "./FlowLayoutEnum";
+export * from "./FlowMessage";
+export * from "./FlowMessageLevelEnum";
 export * from "./FlowRequest";
 export * from "./FlowSet";
 export * from "./FlowStageBinding";
