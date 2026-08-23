@@ -23,6 +23,8 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
+This guide follows the authorization policy workflow available in Prism Central pc.2024.1 and later. Earlier versions use standard user and group role assignments.
+
 ## authentik configuration
 
 To support the integration of Nutanix AHV with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
@@ -30,10 +32,10 @@ To support the integration of Nutanix AHV with authentik, you need to create two
 ### Create property mappings
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-3. Select **SAML Provider Property Mapping** as the property mapping type.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+3. Select **SAML Provider Property Mapping** and click **Next**.
 4. Set the following values:
-    - **Name**: `Nutanix username`
+    - **Mapping Name**: `Nutanix username`
     - **SAML Attribute Name**: `username`
     - **Expression**:
 
@@ -41,9 +43,9 @@ To support the integration of Nutanix AHV with authentik, you need to create two
         return request.user.username
         ```
 
-5. Click **Finish**.
+5. Click **Create**.
 6. Repeat these steps to create a second property mapping with the following values:
-    - **Name**: `Nutanix email`
+    - **Mapping Name**: `Nutanix email`
     - **SAML Attribute Name**: `email`
     - **Expression**:
 
@@ -51,26 +53,28 @@ To support the integration of Nutanix AHV with authentik, you need to create two
         return request.user.email
         ```
 
+7. Click **Create**.
+
 ### Create an application and provider
 
 <SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set the **ACS URL** to `https://prismcentral.company:9440/api/iam/authn/callback`.
         - Set the **Audience** to `https://prismcentral.company:9440/api/iam/authn`.
         - Under **Advanced protocol settings**:
-            - Select an available **Signing certificate**.
+            - Select an available **Signing Certificate**.
             - Add the `Nutanix username` and `Nutanix email` property mappings that you created in the previous section to **Property mappings**.
             - Set **NameID Property Mapping** to `Nutanix email`.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Download metadata file
+### Download the authentik metadata
 
 1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
@@ -94,7 +98,7 @@ Authentication for Nutanix AHV clusters is configured in Prism Central.
 
 ### Create an authorization policy
 
-By default, SAML users are not granted any permissions. To grant access, create an authorization policy in Prism Central.
+By default, SAML users are not granted any permissions. On Prism Central pc.2024.1 and later, create an authorization policy to grant access.
 
 1. In the Admin Center, navigate to **IAM** > **Authorization Policies**.
 2. Click **Create Authorization Policy**.
@@ -103,11 +107,13 @@ By default, SAML users are not granted any permissions. To grant access, create 
 5. In the **Assign Users** section, change **Local User** to the authentik identity provider that you created, enter the email address of the user that should receive access, and select the user.
 6. Click **Save**.
 
+On earlier Prism Central versions, select or create a role, then use **Actions** > **Manage Assignment** to assign users or groups from the authentik identity provider.
+
 ## Configuration verification
 
-To confirm that authentik is properly configured with Nutanix AHV, log out of Prism Central and log back in by clicking the authentik configuration name on the login screen. Complete the authentik authentication flow and confirm that you are logged in with the expected role.
+To confirm that authentik is properly configured with Nutanix AHV, open Prism Central and select the authentik configuration on the login screen. Complete the authentik authentication flow and confirm that Prism Central opens with the expected role.
 
 ## Resources
 
 - [Nutanix Security Guide - Adding a SAML-based Identity Provider](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_0%3Amul-security-authentication-saml-pc-iam-t.html)
-- [Nutanix KB - Configuration Steps for Cisco Duo Integration with Prism Central](https://portal.nutanix.com/page/documents/kbs/details?targetId=kA0VO0000004hET0AY)
+- [Nutanix Security Guide - Configuring an authorization policy](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_0%3Amul-authorization-policy-configure-iam-pc-t.html)
