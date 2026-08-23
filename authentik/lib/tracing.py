@@ -22,6 +22,7 @@ from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.structlog import StructlogInstrumentor
 from opentelemetry.instrumentation.threading import ThreadingInstrumentor
 from opentelemetry.propagate import inject
 from opentelemetry.sdk._logs import LoggerProvider
@@ -134,6 +135,7 @@ def otel_instrument():
     silently falling back to WSGI-only (i.e. never) otherwise"""
     ThreadingInstrumentor().instrument()
     RequestsInstrumentor().instrument()
+    StructlogInstrumentor().instrument()
     PsycopgInstrumentor().instrument()
     DjangoInstrumentor().instrument(
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
@@ -203,6 +205,12 @@ def otel_init_provider():
     )
     provider.add_span_processor(SimpleSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
+
+    # StructlogInstrumentor (see otel_instrument) emits logs through this LoggerProvider,
+    # a separate signal/pipeline from traces above; without it, it silently emits nothing
+    log_provider = LoggerProvider(resource=resource)
+    log_provider.add_log_record_processor(BatchLogRecordProcessor(_build_log_exporter()))
+    set_logger_provider(log_provider)
 
     LOGGER.info("Enabled Open Telemetry tracing")
 
