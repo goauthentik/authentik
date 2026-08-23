@@ -1,13 +1,16 @@
 """authentik OpenTelemetry integration"""
 
+import sys
 from asyncio.exceptions import CancelledError
 from contextlib import contextmanager
 from typing import Any
 
+from asgiref.sync import iscoroutinefunction, markcoroutinefunction
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
 from django.http.response import Http404
+from django.utils.module_loading import import_string
 from docker.errors import DockerException
 from dramatiq.errors import Retry
 from h11 import LocalProtocolError
@@ -114,6 +117,50 @@ def otel_instrument():
         excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
         is_sql_commentor_enabled=True,
     )
+
+
+def trace_middleware_list(middleware_paths: list[str]) -> list[str]:
+    """Wrap every entry of a Django MIDDLEWARE list so each request creates a span named
+    after that middleware's dotted path, covering Django's own, third-party, and
+    authentik's middleware alike. Call this on the final assembled MIDDLEWARE list in
+    authentik/root/settings.py, since it must run before Django builds the request
+    handler from it"""
+    return [_traced_middleware_path(path) for path in middleware_paths]
+
+
+def _traced_middleware_path(path: str) -> str:
+    """Dynamically build a middleware wrapper class for `path` and register it as an
+    attribute of this module, so Django's import_string() can resolve the dotted path
+    this returns back to it"""
+    real_middleware = import_string(path)
+
+    class _TracedMiddleware:
+        # Mirror the real middleware's declared capabilities so Django's load_middleware()
+        # adapts the handler passed to our __init__ exactly as it would for the real one
+        sync_capable = getattr(real_middleware, "sync_capable", True)
+        async_capable = getattr(real_middleware, "async_capable", False)
+
+        def __init__(self, get_response):
+            self.inner = real_middleware(get_response)
+            if iscoroutinefunction(self.inner):
+                markcoroutinefunction(self)
+            for hook in ("process_view", "process_exception", "process_template_response"):
+                if hasattr(self.inner, hook):
+                    setattr(self, hook, getattr(self.inner, hook))
+
+        def __call__(self, request):
+            if iscoroutinefunction(self):
+                return self.__acall__(request)
+            with tracer.start_as_current_span(path):
+                return self.inner(request)
+
+        async def __acall__(self, request):
+            with tracer.start_as_current_span(path):
+                return await self.inner(request)
+
+    attr_name = "_traced_" + path.replace(".", "_")
+    setattr(sys.modules[__name__], attr_name, _TracedMiddleware)
+    return f"{__name__}.{attr_name}"
 
 
 def otel_init_provider():

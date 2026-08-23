@@ -2,11 +2,17 @@
 
 import os
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
-from authentik.lib.tracing import OTEL_DEFER_PROVIDER_ENV_VAR, otel_init, otel_instrument
+from authentik.lib.tracing import (
+    OTEL_DEFER_PROVIDER_ENV_VAR,
+    otel_init,
+    otel_instrument,
+    trace_middleware_list,
+)
 from authentik.tasks.schedules.common import ScheduleSpec
 from authentik.tenants.flags import Flag
 
@@ -35,6 +41,9 @@ class AuthentikCoreConfig(ManagedAppConfig):
 
     def ready(self) -> None:
         if CONFIG.get_bool("error_reporting.enabled", False):
+            # Must run before otel_instrument()/otel_init() below, so DjangoInstrumentor's
+            # own middleware is inserted afterwards and doesn't get wrapped a second time
+            settings.MIDDLEWARE = trace_middleware_list(settings.MIDDLEWARE)
             # Under gunicorn's preload_app, the real TracerProvider must be created after
             # the fork instead (see lifecycle/gunicorn.conf.py's post_fork hook)
             if os.environ.get(OTEL_DEFER_PROVIDER_ENV_VAR):
