@@ -51,7 +51,7 @@ def to_stage_response(
     request: HttpRequest,
     source: HttpResponse,
     final_redirect: bool = False,
-    continuous_login_hold: bool = True,
+    continuous_login_hold: bool | None = None,
 ):
     """Mock for to_stage_response that returns the original response, so we can check
     inheritance and member attributes"""
@@ -828,7 +828,6 @@ class TestFlowExecutor(FlowTestCase):
                 "layout": "stacked",
                 "title": flow.title,
                 "messages": [],
-                "continuous_login_hold": True,
             },
         )
 

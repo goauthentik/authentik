@@ -43,8 +43,6 @@ func NewRedirectChallenge(to string) *RedirectChallenge {
 	this.To = to
 	var finalRedirect bool = false
 	this.FinalRedirect = &finalRedirect
-	var continuousLoginHold bool = true
-	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -57,8 +55,6 @@ func NewRedirectChallengeWithDefaults() *RedirectChallenge {
 	this.Component = &component
 	var finalRedirect bool = false
 	this.FinalRedirect = &finalRedirect
-	var continuousLoginHold bool = true
-	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 

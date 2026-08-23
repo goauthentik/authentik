@@ -41,8 +41,6 @@ func NewContextualFlowInfo(cancelUrl string, layout ContextualFlowInfoLayoutEnum
 	this := ContextualFlowInfo{}
 	this.CancelUrl = cancelUrl
 	this.Layout = layout
-	var continuousLoginHold bool = true
-	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
@@ -51,8 +49,6 @@ func NewContextualFlowInfo(cancelUrl string, layout ContextualFlowInfoLayoutEnum
 // but it doesn't guarantee that properties required by API are set
 func NewContextualFlowInfoWithDefaults() *ContextualFlowInfo {
 	this := ContextualFlowInfo{}
-	var continuousLoginHold bool = true
-	this.ContinuousLoginHold = &continuousLoginHold
 	return &this
 }
 
