@@ -314,7 +314,7 @@ class TestAuthNRequest(TestCase):
         body = loads(response.content.decode())
         self.assertEqual(body["component"], "xak-flow-redirect")
         self.assertTrue(body["final_redirect"])
-        self.assertTrue(body["continuous_login_hold"])
+        self.assertNotIn("continuous_login_hold", body)
         self.assertTrue(body["to"].startswith(self.provider.acs_url))
 
     def test_request_encrypt(self):

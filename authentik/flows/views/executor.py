@@ -388,9 +388,9 @@ class FlowExecutorView(APIView):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
-        continuous_login_hold = True
+        continuous_login_hold = None
         if self.plan:
-            continuous_login_hold = self.plan.context.get(PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD, True)
+            continuous_login_hold = self.plan.context.get(PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD)
         if self.plan and PLAN_CONTEXT_REDIRECT in self.plan.context:
             # The context `redirect` variable can only be set by
             # an expression policy or authentik itself, so we don't
@@ -558,7 +558,7 @@ def to_stage_response(
     request: HttpRequest,
     source: HttpResponse,
     final_redirect: bool = False,
-    continuous_login_hold: bool = True,
+    continuous_login_hold: bool | None = None,
 ) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
@@ -574,15 +574,13 @@ def to_stage_response(
             to=str(redirect_url),
             current=request.path,
         )
-        return HttpChallengeResponse(
-            RedirectChallenge(
-                {
-                    "to": str(redirect_url),
-                    "final_redirect": final_redirect,
-                    "continuous_login_hold": continuous_login_hold,
-                }
-            )
-        )
+        challenge_data = {
+            "to": str(redirect_url),
+            "final_redirect": final_redirect,
+        }
+        if continuous_login_hold is not None:
+            challenge_data["continuous_login_hold"] = continuous_login_hold
+        return HttpChallengeResponse(RedirectChallenge(challenge_data))
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
             ShellChallenge(

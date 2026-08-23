@@ -36920,7 +36920,6 @@ components:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
         continuous_login_hold:
           type: boolean
-          default: true
       required:
       - cancel_url
       - layout
@@ -53560,7 +53559,6 @@ components:
           default: false
         continuous_login_hold:
           type: boolean
-          default: true
       required:
       - to
     RedirectChallengeResponseRequest:

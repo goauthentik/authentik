@@ -96,7 +96,8 @@ class PolicyAccessView(AccessMixin, View):
         authn_flow = None
         if self.application:
             flow_context[PLAN_CONTEXT_APPLICATION] = self.application
-            flow_context[PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD] = self.continuous_login_hold_required()
+            if not self.continuous_login_hold_required():
+                flow_context[PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD] = False
             if self.provider and self.provider.authentication_flow:
                 authn_flow = self.provider.authentication_flow
         # Because this view might get hit with a POST request, we need to preserve that data
