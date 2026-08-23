@@ -10,7 +10,7 @@ import RedirectURI20265Note from "../../\_redirect-uri-2026-5-note.mdx";
 
 > VMware Cloud Foundation is a private cloud platform that combines vSphere compute, vSAN storage, NSX networking, and fleet management into a single integrated stack.
 >
-> -- https://www.vmware.com/products/cloud-foundation
+> -- https://www.vmware.com/products/cloud-infrastructure/vmware-cloud-foundation
 
 ## Preparation
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-This guide uses VCF Single Sign-On with a Generic OIDC identity provider, which requires VMware Cloud Foundation 9.0 or later. VCF Single Sign-On is configured in VCF Operations and uses the VCF Identity Broker to authenticate users across the VCF fleet. Before starting, verify that VCF Operations can reach authentik's OIDC endpoints.
+This guide uses VCF Single Sign-On with a Generic OIDC identity provider, which requires VMware Cloud Foundation 9.0 or later. VCF Single Sign-On is configured in VCF Operations and uses the VCF Identity Broker to authenticate users across the VCF fleet. Before starting, verify that VCF Operations can reach authentik's OIDC endpoints and review the VCF Single Sign-On prerequisites.
 
 ## authentik configuration
 
@@ -31,12 +31,12 @@ To support the integration of VMware Cloud Foundation with authentik, you need t
 ### Create a domain scope mapping
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**.
-3. Select **Scope Mapping** as the property mapping type.
+2. Navigate to **Customization** > **Property Mappings** and click **New Property Mapping**.
+3. Select **Scope Mapping** and click **Next**.
 4. Set the following values:
-    - **Name**: `VCF domain`
+    - **Mapping Name**: `VCF domain`
     - **Scope name**: `profile`
-    - **Expression**: replace `company` with the domain that users will log in with.
+    - **Expression**: replace `company` with the domain that users will use to log in.
 
         ```python
         return {
@@ -44,7 +44,7 @@ To support the integration of VMware Cloud Foundation with authentik, you need t
         }
         ```
 
-5. Click **Finish**.
+5. Click **Create**.
 
 ### Create an application and provider
 
@@ -68,18 +68,22 @@ To support the integration of VMware Cloud Foundation with authentik, you need t
 ### Configure the identity provider
 
 1. Log in to VCF Operations as an administrator.
-2. Navigate to **Fleet Management** > **Identity & Access** to open the **Configure VCF SSO** page.
-3. Click **Start** next to **Configure Identity Provider**.
-4. Select **Generic OIDC** from the list and click **Next**.
-5. Click **Configure** to configure the VCF Identity Broker.
-6. In the **Identity Provider Configuration** screen, configure the following settings:
+2. In the top navigation bar, click **Manage**, then navigate to **Fleet Management** > **Identity & Access**.
+3. Open **VCF SSO Overview**. If you are creating the first VCF SSO configuration:
+    1. Open the **Get Started with SSO** tab and click **Configure SSO**.
+    2. On the **Prerequisites** tab, confirm each checkbox and click **Submit**.
+    3. On the **Configure VCF SSO** page, click **Start** next to **Choose deployment mode**, select a deployment mode, and click **Configure**.
+4. On the **Configure VCF SSO** page, click **Start** next to **Configure Identity Provider**.
+5. Select **Generic OIDC** from the list and click **Next**.
+6. Click **Configure** to configure the VCF Identity Broker.
+7. On the **Identity Provider Configuration** screen, configure the following settings:
     - **IDP Display Name**: `authentik`
     - **Client Identifier**: enter the **Client ID** value from authentik.
     - **Shared secret**: enter the **Client Secret** value from authentik.
     - **OpenID Address**: enter the **OpenID Configuration URL** value from authentik.
     - **List of domains**: enter the domain that users will log in with. This value must match the `domain` claim from the scope mapping that you created in authentik.
-7. Copy the **Redirect URI** value shown in the wizard and save it for the next section.
-8. Click **Next**.
+8. Copy the **Redirect URI** value shown in the wizard and save it for the next section.
+9. Click **Next**.
 
 ### Update the authentik provider
 
@@ -96,23 +100,33 @@ To support the integration of VMware Cloud Foundation with authentik, you need t
 2. On the **User/Group Provisioning Method** screen, select **Just-In-Time Provisioning (JIT)** and click **Next**.
 3. On the **Group Provisioning** screen, select **Just-In-Time Group Provisioning** and click **Next**.
 4. On the **Domain(s)** screen, add the domain that users will log in with and click **Next**.
-5. On the **Attributes** screen, confirm the default claims and click **Next**. The authentik `profile` and `email` scopes provide `preferred_username`, `email`, `given_name`, `family_name`, and `groups`; the `VCF domain` scope mapping provides `domain`.
+5. On the **Attributes** screen, confirm that `preferred_username`, `email`, `given_name`, `family_name`, `groups`, and `domain` map to claims with the same names, then click **Next**. The authentik `profile` and `email` scopes provide these claims, and the `VCF domain` scope mapping adds `domain`.
 6. On the **Review** screen, review the configuration and click **Finish**.
-7. Click **Done**, then click **Finish Setup**.
+7. On the **Configure User and Group Provisioning** screen, click **Done**.
+8. If the VCF Identity Broker is version 9.1 or later, click **Test Login**, click **Next**, and complete the authentik login flow. After VCF validates the login, click **Done**.
+9. Click **Finish Setup**, then click **Continue**.
 
-### Assign roles
+### Enable single sign-on and assign roles
 
-VCF Single Sign-On does not grant permissions by default. To allow users to log in, assign roles to the provisioned users and groups.
+VCF Single Sign-On does not grant permissions by default. With JIT provisioning, users and groups become available for role assignment after their first login.
+
+On VCF 9.1 or later:
 
 1. On the **VCF SSO Overview** page, open the single sign-on configuration that you created.
-2. Click the **Access Management** tab and assign the appropriate VCF roles to your users and groups.
-3. Click the **Component Configuration** tab and enable single sign-on for each VCF component, such as VCF Operations and vCenter.
+2. Open the **Component Configuration** tab and enable single sign-on for each VCF component that users should access.
+3. Attempt an SSO login to provision the user and groups.
+4. Return to the single sign-on configuration, open the **Access Management** tab, select the provisioned users or groups, and click **Assign**.
+5. Select the role and its scope, click **Apply**, then click **Assign**.
+
+On VCF 9.0, enable single sign-on for each component from the VCF SSO configuration and attempt an SSO login to provision the user and groups. Then log in to each configured component with a local administrator account and assign the required service roles.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with VMware Cloud Foundation, log out of VCF Operations and log back in using single sign-on. Complete the authentik flow and confirm that you are logged in with the expected role.
+To confirm that authentik is properly configured with VMware Cloud Foundation, open VCF Operations and sign in using single sign-on. Complete the authentik flow and confirm that VCF Operations opens with the expected role.
 
 ## Resources
 
-- [VMware Cloud Foundation Documentation - Configure an Identity Provider using Generic OIDC](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/fleet-management/managing-identity-and-access-using-vcf-single-sign-on/what-is/setting-up-sso/cofigure-vmware-cloud-foundation-identity-provider/configure-an-identity-provider-using-generic-oidc.html)
-- [VMware Cloud Foundation Documentation - Configure an Identity Provider](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/fleet-management/managing-identity-and-access-using-vcf-single-sign-on/what-is/setting-up-sso/cofigure-vmware-cloud-foundation-identity-provider.html)
+- [Broadcom TechDocs - Choose the VCF Identity Broker deployment mode](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/fleet-management/managing-identity-and-access-using-vcf-single-sign-on/what-is/setting-up-sso/choose-the-deployment-mode.html)
+- [Broadcom TechDocs - Configure an identity provider using Generic OIDC](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/fleet-management/managing-identity-and-access-using-vcf-single-sign-on/what-is/setting-up-sso/cofigure-vmware-cloud-foundation-identity-provider/configure-an-identity-provider-using-generic-oidc.html)
+- [Broadcom TechDocs - Assign roles and permissions in VCF 9.0](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-0/fleet-management/what-is/setting-up-sso/assigning-roles-and-permissions.html)
+- [Broadcom TechDocs - Assign VCF roles in VCF 9.1](<https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vcf-9-0-and-later/9-1/fleet-management/managing-identity-and-access-using-vcf-single-sign-on/what-is/managing-vmware-cloud-foundation-operations-sso/manage-roles/assign-vcf-roles-after-configuring-vcf-single-sign-on(1).html>)
