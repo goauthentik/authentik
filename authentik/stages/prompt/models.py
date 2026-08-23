@@ -149,7 +149,7 @@ class Prompt(SerializerModel):
 
     @property
     def serializer(self) -> Type[BaseSerializer]:  # noqa: UP006
-        from authentik.stages.prompt.api import PromptSerializer
+        from authentik.stages.prompt.api.prompts import PromptSerializer
 
         return PromptSerializer
 
@@ -359,7 +359,7 @@ class PromptStage(Stage):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.stages.prompt.api import PromptStageSerializer
+        from authentik.stages.prompt.api.stages import PromptStageSerializer
 
         return PromptStageSerializer
 
@@ -385,10 +385,12 @@ class PromptStageField(SimpleThroughModel):
         db_column="promptstage_id",
     )
     prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+    order = models.IntegerField(default=0)
 
     class Meta:
         db_table = "authentik_stages_prompt_promptstage_fields"
         unique_together = (("prompt_stage", "prompt"),)
+        ordering = ["order"]
         verbose_name = _("Prompt Stage Field")
         verbose_name_plural = _("Prompt Stage Fields")
 
