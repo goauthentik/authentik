@@ -174,7 +174,9 @@ class BaseEvaluator:
         return fallback value."""
         attrs = getattr(obj, "attributes", {})
         value = get_path_from_dict(attrs, attr_key)
-        return fallback if value is None else value
+        if value is None and fallback:
+            return getattr(obj, fallback, fallback)
+        return value
 
     def expr_event_create(self, action: str, **kwargs):
         """Create event with supplied data and try to extract as much relevant data

@@ -45,6 +45,7 @@ class TestEvaluator(TestCase):
         user.attributes = {"locale": "en-US"}
 
         self.assertEqual(BaseEvaluator.expr_obj_attr(user, "locale", "en-GB"), "en-US")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "username"), user.username)
         self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "en-GB"), "en-GB")
         self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", ""), "")
         self.assertIsNone(BaseEvaluator.expr_obj_attr(user, "missing"))
