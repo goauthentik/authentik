@@ -19,7 +19,14 @@ setup()
 django.setup()
 
 
+from authentik.lib.config import CONFIG  # noqa
 from authentik.root import websocket  # noqa
+
+django_asgi_app = get_asgi_application()
+if CONFIG.get_bool("error_reporting.enabled", False):
+    from authentik.lib.tracing import otel_wrap_asgi
+
+    django_asgi_app = otel_wrap_asgi(django_asgi_app)
 
 
 class LifespanApp:
@@ -80,7 +87,7 @@ class AuthentikAsgi:
 application = AuthentikAsgi(
     ProtocolTypeRouter(
         {
-            "http": get_asgi_application(),
+            "http": django_asgi_app,
             "websocket": RouteNotFoundMiddleware(URLRouter(websocket.websocket_urlpatterns)),
             "lifespan": LifespanApp,
         }
