@@ -16,6 +16,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.core.signals import login_failed
+from authentik.events.models import LoginFailedReason
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -68,6 +69,7 @@ def authenticate(
         credentials=_clean_credentials(credentials),
         request=request,
         stage=stage,
+        context={"reason": LoginFailedReason.INCORRECT_PASSWORD},
     )
 
 
@@ -115,6 +117,15 @@ class PasswordChallengeResponse(ChallengeResponse):
             del auth_kwargs["password"]
             # User was found, but permission was denied (i.e. user is not active)
             self.stage.logger.debug("Denied access", **auth_kwargs)
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": auth_kwargs["username"]},
+                request=self.stage.request,
+                stage=self.stage.executor.current_stage,
+                context={
+                    "reason": LoginFailedReason.ACCOUNT_INACTIVE,
+                },
+            )
             raise StageInvalidException("Denied access") from exc
         except ValidationError as exc:
             del auth_kwargs["password"]

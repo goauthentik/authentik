@@ -67,7 +67,39 @@ export interface EventContext {
     device?: EventModel;
 }
 
+export enum LoginFailedReason {
+    IncorrectPassword = "incorrect_password",
+    AccountInactive = "account_inactive",
+    MFAInvalidOTP = "mfa_invalid_otp",
+    MFAWebAuthnFailed = "mfa_webauthn_failed",
+    MFADuoDenied = "mfa_duo_denied",
+}
+
+export interface EventContextWithReason extends EventContext {
+    reason: LoginFailedReason;
+}
+
+export function isEventContextWithReason(
+    context?: EventContext,
+): context is EventContextWithReason {
+    if (!context) return false;
+    if (!("reason" in context)) return false;
+
+    return !!(typeof context.reason === "string" && context.reason);
+}
+
 export interface EventWithContext extends EventSerializer {
     user: EventUser;
     context: EventContext;
+}
+
+export interface EventContextWithModel extends EventContext {
+    model: EventModel;
+}
+
+export function isContextWithModel(context?: EventContext): context is EventContextWithModel {
+    if (!context) return false;
+    if (!("model" in context)) return false;
+
+    return !!(typeof context.model === "object" && context.model);
 }

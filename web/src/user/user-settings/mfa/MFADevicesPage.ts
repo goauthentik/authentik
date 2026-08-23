@@ -10,7 +10,7 @@ import { aki } from "#common/api/client";
 import { AndNext } from "#common/api/config";
 import { createPaginatedResponse } from "#common/api/responses";
 import { globalAK } from "#common/global";
-import { deviceTypeName } from "#common/labels";
+import { formatDeviceTypeName } from "#common/labels";
 import { SentryIgnoredError } from "#common/sentry/index";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
@@ -145,7 +145,7 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): SlottedTemplateResult[] {
         return [
             html`${item.name}`,
-            html`<div>${deviceTypeName(item)}</div>
+            html`<div>${formatDeviceTypeName(item)}</div>
                 ${item.extraDescription
                     ? html`
                           <pf-tooltip position="top" content=${item.externalId || ""}>
