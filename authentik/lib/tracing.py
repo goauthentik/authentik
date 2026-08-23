@@ -16,8 +16,6 @@ from dramatiq.errors import Retry
 from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from opentelemetry import trace
-from opentelemetry._logs import set_logger_provider
-from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
@@ -25,8 +23,6 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.structlog import StructlogInstrumentor
 from opentelemetry.instrumentation.threading import ThreadingInstrumentor
 from opentelemetry.propagate import inject
-from opentelemetry.sdk._logs import LoggerProvider
-from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
@@ -91,19 +87,6 @@ ignored_classes = (
 )
 
 
-def _otel_resource() -> Resource:
-    return Resource.create(
-        {
-            "service.name": "authentik-v2",
-            "service.version": authentik_version(),
-            "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
-            "authentik.build_hash": authentik_build_hash("tagged"),
-            "authentik.env": get_env(),
-            "authentik.component": "backend",
-        }
-    )
-
-
 def _build_span_exporter() -> OTLPSpanExporter:
     # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
     # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
@@ -112,13 +95,6 @@ def _build_span_exporter() -> OTLPSpanExporter:
     if not endpoint:
         return OTLPSpanExporter()
     return OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
-
-
-def _build_log_exporter() -> OTLPLogExporter:
-    endpoint = CONFIG.get("error_reporting.otel_endpoint")
-    if not endpoint:
-        return OTLPLogExporter()
-    return OTLPLogExporter(endpoint=f"{endpoint.rstrip('/')}/v1/logs")
 
 
 def otel_instrument():
@@ -188,8 +164,7 @@ def _traced_middleware_path(path: str) -> str:
 
 
 def otel_init_provider():
-    """Create and set the real OpenTelemetry TracerProvider/LoggerProvider and their
-    exporters.
+    """Create and set the real OpenTelemetry TracerProvider and span exporter.
 
     Must run after any fork that will happen: BatchSpanProcessor starts a background
     export thread, and if a lock it holds is inherited mid-fork, the child can deadlock
@@ -198,20 +173,21 @@ def otel_init_provider():
     Under gunicorn's preload_app, call otel_instrument() from AuthentikCoreConfig.ready()
     (before the fork) and this function from a post_fork hook (after the fork) instead"""
     sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
-    resource = _otel_resource()
-
     provider = TracerProvider(
-        resource=resource, sampler=ParentBased(TraceIdRatioBased(sample_rate))
+        resource=Resource.create(
+            {
+                "service.name": "authentik-v2",
+                "service.version": authentik_version(),
+                "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
+                "authentik.build_hash": authentik_build_hash("tagged"),
+                "authentik.env": get_env(),
+                "authentik.component": "backend",
+            }
+        ),
+        sampler=ParentBased(TraceIdRatioBased(sample_rate)),
     )
     provider.add_span_processor(SimpleSpanProcessor(_build_span_exporter()))
     trace.set_tracer_provider(provider)
-
-    # StructlogInstrumentor (see otel_instrument) emits logs through this LoggerProvider,
-    # a separate signal/pipeline from traces above; without it, it silently emits nothing
-    log_provider = LoggerProvider(resource=resource)
-    log_provider.add_log_record_processor(BatchLogRecordProcessor(_build_log_exporter()))
-    set_logger_provider(log_provider)
-
     LOGGER.info("Enabled Open Telemetry tracing")
 
 
