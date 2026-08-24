@@ -29,14 +29,8 @@ axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
   "cookie-key-expansion",
 ] }
-<<<<<<< HEAD
 base64 = "= 0.23.0"
 clap = { version = "= 4.6.4", features = ["derive", "env"] }
-client-ip = { version = "0.2.1" }
-=======
-base64 = "= 0.23.1"
-clap = { version = "= 4.6.6", features = ["derive", "env"] }
->>>>>>> 0b46c6c0e (packages/ak-axum: extract the rightmost untrusted IP from X-Forwarded-For (#25397))
 chrono = { version = "0.4.45", features = ["serde"] }
 color-eyre = "= 0.6.5"
 colored = "= 3.1.1"
