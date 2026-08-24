@@ -124,6 +124,7 @@ mod tests {
 
     #[tokio::test]
     async fn x_forwarded_for_trusted() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "192.0.2.51, 192.0.2.42")
@@ -185,6 +186,7 @@ mod tests {
 
     #[tokio::test]
     async fn ipv6() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "2001:db8::42")
@@ -234,6 +236,7 @@ mod tests {
 
     #[tokio::test]
     async fn multiple_x_forwarded_for() {
+        config::init().expect("config");
         let (mut parts, _) = Request::builder()
             .uri("http://example.com/path")
             .header("x-forwarded-for", "192.0.2.1, 192.0.2.2, 192.0.2.3")
