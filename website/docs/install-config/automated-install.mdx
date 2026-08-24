@@ -44,7 +44,7 @@ Password hashes contain `$` characters which Docker Compose interprets as variab
 AUTHENTIK_BOOTSTRAP_PASSWORD_HASH='pbkdf2_sha256$1000000$xKKFuYtJEE27km09BD49x2$4+Z6j3utmouPF5mik0Z21L2P0og5IlmMmIJ46Tj3zCM='
 ```
 
-**In `docker-compose.yml`** (inline environment), escape each `$` with `$$`:
+**In `compose.yml`** (inline environment), escape each `$` with `$$`:
 
 ```yaml
 services:
