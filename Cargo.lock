@@ -360,7 +360,6 @@ dependencies = [
  "authentik-common",
  "axum",
  "axum-server",
- "client-ip",
  "durstr",
  "eyre",
  "futures",
@@ -859,15 +858,6 @@ name = "clap_lex"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8d4a3bb8b1e0c1050499d1815f5ab16d04f0959b233085fb31653fbfc9d98f9"
-
-[[package]]
-name = "client-ip"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "39d2056bf065c8b4bce5a8898d40e175211ff4410add2a84d695845d3937c729"
-dependencies = [
- "http",
-]
 
 [[package]]
 name = "cmake"
