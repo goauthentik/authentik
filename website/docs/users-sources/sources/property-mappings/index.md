@@ -77,3 +77,26 @@ return {
 The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name. Each identifier is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.
 
 An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
+
+There is no standard for what a `groups` claim contains, so authentik does not guess at object-shaped entries. Reduce them to identifiers yourself in a user property mapping, which runs before the identifiers are read:
+
+```python
+groups = []
+for group in info.get("groups", []):
+    if isinstance(group, dict):
+        # Use whichever member your provider sends: SCIM names it `value`
+        # (RFC 7643 section 2.4), others use `id`.
+        groups.append(group.get("value") or group.get("id"))
+    else:
+        groups.append(group)
+return {"groups": groups}
+```
+
+The identifier is all that survives that step, so if you want the provider's own group names, recover them in a group property mapping, which receives `group_id` along with the original claim:
+
+```python
+for group in info.get("groups", []):
+    if isinstance(group, dict) and (group.get("value") or group.get("id")) == group_id:
+        return {"name": group.get("display") or group.get("name") or group_id}
+return {"name": group_id}
+```
