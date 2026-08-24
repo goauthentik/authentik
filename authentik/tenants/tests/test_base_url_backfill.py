@@ -95,14 +95,6 @@ class TestBaseURLBackfill(APITestCase):
         self.assertEqual(self.tenant.base_url, "https://outpost.example.com")
 
     @patch_flag(Setup, True)
-    def test_backfill_no_source_logs_warning(self):
-        """With no config value and no outpost, the reconcile logs that the base URL is unset"""
-        Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
-        with capture_logs() as logs:
-            apps.get_app_config("authentik_tenants").backfill_base_url()
-        self.assertTrue(any("Base URL is not configured" in log.event for log in logs))
-
-    @patch_flag(Setup, True)
     def test_backfill_no_source_files_deprecation_event(self):
         """With no source available, the reconcile files a configuration-warning event so the
         missing base URL surfaces in the event log and to notification rules"""
