@@ -7,11 +7,14 @@
  * inert: nothing imports it until the interface flip in Plan 3b.
  *
  * App-context-free: imports only the router core, the reused 404/empty-state
- * elements, `AKElement`, lit, `@sentry/browser`, and `@lit/localize`.
+ * elements, `AKElement`, lit, `@sentry/browser` (plus the leaf
+ * `sentry/tracing` predicate), and `@lit/localize`.
  */
 
 import "#elements/router/Router404";
 import "#elements/EmptyState";
+
+import { sentryReporting } from "#common/sentry/tracing";
 
 import { AKElement } from "#elements/Base";
 import { getRouterConfig } from "#elements/router/core/config";
@@ -87,7 +90,7 @@ export class RouterView extends AKElement {
     constructor() {
         super();
 
-        if (process.env.NODE_ENV !== "production" && this.#sentryClient) {
+        if (this.#sentryClient && sentryReporting(this.#sentryClient)) {
             this.#pageLoadSpan =
                 startBrowserTracingPageLoadSpan(this.#sentryClient, {
                     name: window.location.pathname,
@@ -206,7 +209,7 @@ export class RouterView extends AKElement {
 
     protected override updated(changedProperties: PropertyValues): void {
         if (!changedProperties.has("current")) return;
-        if (!this.#sentryClient) return;
+        if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         const name = this.#spanName();
 

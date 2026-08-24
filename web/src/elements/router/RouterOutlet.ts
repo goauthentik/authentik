@@ -2,6 +2,7 @@ import "#elements/router/Router404";
 import "#elements/a11y/ak-skip-to-content";
 
 import { ROUTE_SEPARATOR } from "#common/constants";
+import { sentryReporting } from "#common/sentry/tracing";
 
 import { type AKSkipToContent, findMainContent } from "#elements/a11y/ak-skip-to-content";
 import { AKElement } from "#elements/Base";
@@ -103,7 +104,7 @@ export class RouterOutlet extends AKElement {
 
         window.addEventListener("hashchange", this.navigate);
 
-        if (process.env.NODE_ENV !== "production" && this.#sentryClient) {
+        if (this.#sentryClient && sentryReporting(this.#sentryClient)) {
             this.#pageLoadSpan =
                 startBrowserTracingPageLoadSpan(this.#sentryClient, {
                     name: window.location.pathname,
@@ -196,7 +197,7 @@ export class RouterOutlet extends AKElement {
 
     protected override updated(changedProperties: PropertyValues<this>): void {
         if (!changedProperties.has("current") || !this.current) return;
-        if (!this.#sentryClient) return;
+        if (!this.#sentryClient || !sentryReporting(this.#sentryClient)) return;
 
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
         if (this.#pageLoadSpan) {
