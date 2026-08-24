@@ -1,7 +1,11 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
+<<<<<<< HEAD
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:c048f885615f96feb36c94ec97648dd8cb752e0a5158cf9affcb95d326a0214d AS builder
+=======
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27-trixie@sha256:6212da3924947f4b6a939df02ea627c13f338f1a41d6c3fcb0dd9d076eef46c4 AS builder
+>>>>>>> 29a7f8345 (core: bump library/golang from 1.27rc3-trixie to 1.27-trixie in /lifecycle/container (#25425))
 
 ARG TARGETOS
 ARG TARGETARCH
