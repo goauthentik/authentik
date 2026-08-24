@@ -4,6 +4,7 @@ from ssl import SSLCertVerificationError, SSLError
 from typing import Any
 
 from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
@@ -217,25 +218,25 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         except SSLCertVerificationError as exc:
             LOGGER.warning("failed to verify duo api certificate", exc=exc)
             return {
-                "error": "Failed to connect to Duo: TLS certificate verification failed.",
+                "error": _("Failed to connect to Duo: TLS certificate verification failed."),
                 "count": created,
             }
         except SSLError as exc:
             LOGGER.warning("tls error connecting to duo", exc=exc)
             return {
-                "error": "Failed to connect to Duo: TLS error.",
+                "error": _("Failed to connect to Duo: TLS error."),
                 "count": created,
             }
         except OSError as exc:
             LOGGER.warning("failed to connect to duo", exc=exc)
             return {
-                "error": "Failed to connect to Duo.",
+                "error": _("Failed to connect to Duo."),
                 "count": created,
             }
         except RuntimeError as exc:
             LOGGER.warning("failed to get users from duo", exc=exc)
             return {
-                "error": "An internal error occurred while importing devices.",
+                "error": _("An internal error occurred while importing devices."),
                 "count": created,
             }
 
