@@ -1,3 +1,4 @@
+import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
@@ -7,6 +8,7 @@ import { aki } from "#common/api/client";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
 import {
+    ResumeOnMatchFailuresEnum,
     Source,
     SourcesAllListRequest,
     SourcesApi,
@@ -70,6 +72,32 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                     }}
                 >
                 </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Resume on matching failures", {
+                    id: "stages.source.resume-on-match-failures.label",
+                })}
+                name="resumeOnMatchFailures"
+            >
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Resume this flow for the selected source matching failures. No source connection is created.",
+                        {
+                            id: "stages.source.resume-on-match-failures.description",
+                        },
+                    )}
+                </p>
+                <ak-checkbox-group
+                    .options=${[
+                        {
+                            name: ResumeOnMatchFailuresEnum.MissingProperty,
+                            label: msg("Missing property", {
+                                id: "stages.source.match-failure.missing-property.label",
+                            }),
+                        },
+                    ]}
+                    .value=${this.instance?.resumeOnMatchFailures ?? []}
+                ></ak-checkbox-group>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Resume timeout")}

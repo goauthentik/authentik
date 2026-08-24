@@ -5,7 +5,7 @@ sidebar_label: "Flows"
 
 Flows are a major component in authentik. In conjunction with [stages](../stages/index.md) and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
 
-There are over a dozen default, out-of-the-box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/examples/default_flows.md) or if they want to [create](#create-a-flow) their own customized flow, using the Admin interface, Terraform, or via the API.
+There are over a dozen default, out-of-the-box flows available in authentik. Users can decide if they already have everything they need with the [default flows](../flow/default-flows.md) or if they want to [create](#create-a-flow) their own customized flow, using the Admin interface, Terraform, or via the API.
 
 A flow is a method of describing a sequence of stages. A stage represents a single verification or logic step. By connecting a series of stages within a flow (and optionally attaching policies as needed) you can build a highly flexible process for authenticating users, enrolling them, and more.
 
@@ -92,7 +92,7 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Policy engine mode**: Configure the flow to succeed in _any_ policy passes, or only if _all_ policies pass.
 
-**Appearance Settings**:
+**Appearance settings**:
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 

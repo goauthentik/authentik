@@ -120,19 +120,11 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         connection.save()
 
     def discover(self):
-        res = self.lower_case_keys(self._request("GET", "/Users"))
-        seen_items = 0
-        expected_items = int(res["totalresults"])
-        while True:
-            for user in res["resources"]:
-                try:
-                    self._discover_user_single(user)
-                except ValidationError:
-                    self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
-                seen_items += 1
-            if seen_items >= expected_items:
-                break
-            res = self.lower_case_keys(self._request("GET", f"/Users?startIndex={seen_items + 1}"))
+        for user in self.paginate_resources("/Users"):
+            try:
+                self._discover_user_single(user)
+            except ValidationError:
+                self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
 
     def _discover_user_single(self, user: dict):
         scim_user = SCIMUserSchema.model_validate(user)

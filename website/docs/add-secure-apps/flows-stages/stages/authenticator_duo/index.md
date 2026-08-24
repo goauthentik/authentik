@@ -10,9 +10,9 @@ This stage connects authentik to Duo and stores a Duo-backed authenticator for t
 
 ## Configuration options
 
-- **API hostname**: the Duo API hostname for your tenant.
+- **API Hostname**: the Duo API hostname for your tenant.
 - **Client ID**: Duo Auth API client identifier.
-- **Client secret**: Duo Auth API secret.
+- **Client Secret**: Duo Auth API secret.
 - **Admin integration key**: optional Duo Admin API integration key, used for importing existing Duo users and authenticators.
 - **Admin secret key**: optional Duo Admin API secret, used together with the admin integration key.
 - **Authenticator type name**: optional friendly name shown to the user in self-service settings.

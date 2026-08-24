@@ -108,6 +108,12 @@ export interface PatchedGoogleWorkspaceProviderRequest {
      * @memberof PatchedGoogleWorkspaceProviderRequest
      */
     dryRun?: boolean;
+    /**
+     * When enabled, authentik will attempt to discover existing resources in the remote system.
+     * @type {boolean}
+     * @memberof PatchedGoogleWorkspaceProviderRequest
+     */
+    discoveryEnabled?: boolean;
 }
 
 /**
@@ -165,6 +171,7 @@ export function PatchedGoogleWorkspaceProviderRequestFromJSONTyped(
         syncPageSize: json["sync_page_size"] == null ? undefined : json["sync_page_size"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
     };
 }
 
@@ -197,5 +204,6 @@ export function PatchedGoogleWorkspaceProviderRequestToJSONTyped(
         sync_page_size: value["syncPageSize"],
         sync_page_timeout: value["syncPageTimeout"],
         dry_run: value["dryRun"],
+        discovery_enabled: value["discoveryEnabled"],
     };
 }

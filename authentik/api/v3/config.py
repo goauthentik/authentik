@@ -37,6 +37,8 @@ class Capabilities(models.TextChoices):
     CAN_IMPERSONATE = "can_impersonate"
     CAN_DEBUG = "can_debug"
     IS_ENTERPRISE = "is_enterprise"
+    CAN_REQUEST = "can_request"
+    CAN_AGENT_SELF_SERVICE = "can_agent_self_service"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -82,7 +84,7 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
-        for _, result in capabilities.send(sender=ConfigView):
+        for _, result in capabilities.send(sender=ConfigView, request=request):
             if result:
                 caps.append(result)
         return caps

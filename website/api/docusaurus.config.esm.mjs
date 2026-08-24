@@ -177,4 +177,4 @@ const config = createDocusaurusConfig({
 
 //#endregion
 
-export default config;
+export default /** @type {import("@docusaurus/types").Config} */ (config);
