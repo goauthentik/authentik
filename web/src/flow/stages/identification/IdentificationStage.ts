@@ -34,7 +34,7 @@ import { kebabCase } from "change-case";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
+import { ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -80,8 +80,6 @@ export class IdentificationStage extends BaseStage<
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
 
-    protected passwordFieldRef = createRef<HTMLInputElement>();
-
     #form?: HTMLFormElement;
 
     public defaultUserIdentification: string | null = null;
@@ -118,12 +116,9 @@ export class IdentificationStage extends BaseStage<
             });
 
             this.#createHelperForm();
-        }
-    }
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
-        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+            this.focus();
+        }
     }
 
     public override disconnectedCallback(): void {
@@ -132,7 +127,9 @@ export class IdentificationStage extends BaseStage<
         cancelAnimationFrame(this.#prepareRememberMeFrame);
     }
 
-    public override firstUpdated(): void {
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
         this.focus();
     }
 
@@ -155,8 +152,8 @@ export class IdentificationStage extends BaseStage<
         if (!this.rememberMeController) {
             this.rememberMeController = new RememberMeController(this, {
                 identificationFieldID: this.inputID,
-                identificationFieldRef: this.autofocusTarget.reference,
-                passwordFieldRef: this.passwordFieldRef,
+                identificationFieldRef: this.primaryFocusTarget.reference,
+                passwordFieldRef: this.secondaryFocusTarget.reference,
                 pendingUserIdentifier,
             });
 
@@ -265,6 +262,16 @@ export class IdentificationStage extends BaseStage<
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
+<<<<<<< HEAD
+=======
+
+        const passwordField = this.secondaryFocusTarget.target;
+
+        if (passwordField) {
+            passwordField.focus();
+            passwordField.select();
+        }
+>>>>>>> e964e5452 (web: Fix issues surrounding text field focus behavior. (#25159))
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
@@ -293,7 +300,7 @@ export class IdentificationStage extends BaseStage<
         }
 
         return html`<input
-            ${ref(this.autofocusTarget.reference)}
+            ${ref(this.primaryFocusTarget.reference)}
             id=${id}
             type=${type}
             name="uidField"
@@ -313,7 +320,7 @@ export class IdentificationStage extends BaseStage<
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
         return html`<ak-flow-input-password
-            .inputRef=${this.passwordFieldRef}
+            .inputRef=${this.secondaryFocusTarget.reference}
             label=${msg("Password")}
             input-id="ak-stage-identification-password"
             class="pf-c-form__group"
