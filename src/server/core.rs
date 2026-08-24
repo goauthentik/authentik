@@ -12,10 +12,10 @@ use axum::{
     body::Body,
     extract::{OriginalUri, Request, State},
     http::{
-        HeaderName, HeaderValue, StatusCode, Uri,
+        HeaderName, HeaderValue, Method, StatusCode, Uri,
         header::{ACCEPT, CONTENT_TYPE, HOST, LOCATION, RETRY_AFTER},
     },
-    response::Response,
+    response::{IntoResponse as _, Response},
     routing::any,
 };
 use http_body_util::BodyExt as _;
@@ -60,6 +60,13 @@ static STARTUP_RESPONSE_PLAIN: LazyLock<Response<String>> = LazyLock::new(|| {
 const X_FORWARDED_CLIENT_CERT: HeaderName = HeaderName::from_static("x-forwarded-client-cert");
 const X_FORWARDED_FOR: HeaderName = HeaderName::from_static("x-forwarded-for");
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
+
+fn is_django_http_method(method: &Method) -> bool {
+    matches!(
+        method.as_str(),
+        "GET" | "HEAD" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS" | "TRACE"
+    )
+}
 
 const FORWARD_ALWAYS_REMOVED_HEADERS: [HeaderName; 7] = [
     HeaderName::from_static("forwarded"),
@@ -111,6 +118,9 @@ async fn forward_request(
 
     if !GUNICORN_READY.load(Ordering::Relaxed) {
         return Ok(startup_response(&accept_header));
+    }
+    if !is_django_http_method(request.method()) {
+        return Ok((StatusCode::NOT_IMPLEMENTED, "Unsupported HTTP method.\n").into_response());
     }
 
     let uri = Uri::builder()
@@ -307,6 +317,37 @@ pub(super) fn build_router(server: &Arc<Server>) -> eyre::Result<Router> {
     };
 
     Ok(router)
+}
+
+#[cfg(test)]
+mod tests {
+    use axum::http::Method;
+
+    use super::is_django_http_method;
+
+    #[test]
+    fn django_http_methods_are_allowed() {
+        for method in [
+            Method::GET,
+            Method::HEAD,
+            Method::POST,
+            Method::PUT,
+            Method::PATCH,
+            Method::DELETE,
+            Method::OPTIONS,
+            Method::TRACE,
+        ] {
+            assert!(is_django_http_method(&method));
+        }
+    }
+
+    #[test]
+    fn unsupported_http_methods_are_rejected() {
+        assert!(!is_django_http_method(&Method::CONNECT));
+        assert!(!is_django_http_method(
+            &Method::from_bytes(b"PROPFIND").expect("method")
+        ));
+    }
 }
 
 mod websockets {

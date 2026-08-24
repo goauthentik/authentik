@@ -1,7 +1,9 @@
 """Test Source flow_manager"""
 
 from django.contrib.auth.models import AnonymousUser
+from django.db import connection
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
@@ -10,13 +12,18 @@ from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.matcher import MatchFailureReason
 from authentik.core.sources.stage import PostSourceStage
 from authentik.core.tests.utils import RequestFactory, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.sources.oauth.models import OAuthSource, UserOAuthSourceConnection
+from authentik.sources.oauth.models import (
+    OAuthSource,
+    OAuthSourcePropertyMapping,
+    UserOAuthSourceConnection,
+)
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 
 
@@ -82,6 +89,49 @@ class TestSourceFlowManager(TestCase):
             reverse("authentik_core:if-user") + "#/settings;page-sources",
         )
 
+    def test_authenticated_auth_forwards_kwargs(self):
+        """kwargs must reach update_user_connection() for the *existing* connection.
+
+        Sources carry their credential in kwargs — Plex's `plex_token`, for
+        example. The AUTH branch dropped them, so `update_user_connection()`
+        read `kwargs.get(...)` as None and overwrote a valid stored credential
+        with NULL on every subsequent login through the source.
+
+        `get_action()` calls `update_user_connection()` twice on this path: once
+        for a fresh unsaved connection (which always forwarded kwargs) and once
+        for the existing row (which did not). Recording per call and keying on
+        whether the connection is saved is what separates them — an accumulated
+        dict is satisfied by the first call and proves nothing.
+        """
+        user = User.objects.create(username="foo", email="foo@bar.baz")
+        existing_connection = UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = self.request_factory.get("/", user=user)
+
+        calls: list[tuple] = []
+
+        class RecordingFlowManager(OAuthSourceFlowManager):
+            def update_user_connection(self, connection, **kwargs):
+                calls.append((connection.pk, kwargs))
+                return connection
+
+        flow_manager = RecordingFlowManager(self.source, request, self.identifier, {"info": {}}, {})
+        action, connection = flow_manager.get_action(some_token="a-credential")
+
+        self.assertEqual(action, Action.AUTH)
+        self.assertEqual(connection.pk, existing_connection.pk)
+
+        for_existing = [kw for pk, kw in calls if pk == existing_connection.pk]
+        self.assertEqual(
+            len(for_existing), 1, "expected exactly one update for the existing connection"
+        )
+        self.assertEqual(
+            for_existing[0].get("some_token"),
+            "a-credential",
+            "get_action() dropped kwargs when updating the existing connection",
+        )
+
     def test_authenticated_auth(self):
         """Test authenticated user linking"""
         user = User.objects.create(username="foo", email="foo@bar.baz")
@@ -111,6 +161,27 @@ class TestSourceFlowManager(TestCase):
         self.assertEqual(action, Action.LINK)
         self.assertIsNone(connection.pk)
         flow_manager.get_flow()
+
+    def test_unusable_group_identifier_does_not_abort(self):
+        """Test a group identifier that cannot be used as a key being skipped (#25191)"""
+        request = self.request_factory.get("/", user=AnonymousUser())
+        flow_manager = OAuthSourceFlowManager(
+            self.source,
+            request,
+            self.identifier,
+            {"info": {"groups": ["usable", {"id": "unusable"}, ["also-unusable"]]}},
+            {},
+        )
+        # Enrolling has to remain possible: raising here surfaced as HTTP 500 and
+        # locked out every member of such a group.
+        self.assertEqual(list(flow_manager.groups_properties.keys()), ["usable"])
+        self.assertEqual(flow_manager.get_action()[0], Action.ENROLL)
+        self.assertEqual(flow_manager.get_flow().status_code, 302)
+
+        event = Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).first()
+        self.assertIsNotNone(event)
+        self.assertIn("2 group(s)", event.context["message"])
+        self.assertEqual(event.context["groups"], [{"id": "unusable"}, ["also-unusable"]])
 
     def test_unauthenticated_enroll_email(self):
         """Test un-authenticated user enrolling (link on email)"""
@@ -268,3 +339,37 @@ class TestSourceFlowManager(TestCase):
         self.assertIsInstance(response, AccessDeniedResponse)
 
         self.assertEqual(response.error_message, "foo")
+
+    def calculate_group_property_mapping_queries(self, group_count: int) -> int:
+        """Build group properties for `group_count` groups, check them, and return the
+        number of queries it took"""
+        group_ids = [f"group-{index}" for index in range(group_count)]
+        with CaptureQueriesContext(connection) as queries:
+            flow_manager = OAuthSourceFlowManager(
+                self.source,
+                self.request_factory.get("/", user=AnonymousUser()),
+                self.identifier,
+                {"info": {"groups": group_ids}},
+                {},
+            )
+        self.assertEqual(len(flow_manager.groups_properties), group_count)
+        for group_id in group_ids:
+            # Each group must get its own properties, from both the base properties and
+            # the property mapping
+            self.assertEqual(
+                flow_manager.groups_properties[group_id],
+                {"name": group_id, "attributes": {"group_id": group_id}},
+            )
+        return len(queries.captured_queries)
+
+    def test_group_properties_reuse_mapping_manager(self):
+        """Test that building group properties doesn't re-fetch and re-compile the
+        source's group property mappings for every single group"""
+        self.source.group_property_mappings.add(
+            OAuthSourcePropertyMapping.objects.create(
+                name=generate_id(),
+                expression="""return {"attributes": {"group_id": group_id}}""",
+            )
+        )
+        # Building N groups must take fewer than N queries
+        self.assertLess(self.calculate_group_property_mapping_queries(100), 100)
