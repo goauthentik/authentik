@@ -63,16 +63,18 @@ Most component CSS still reads `--pf-*`. `token-bridge.css` maps the semantic la
 ```css
 :root,
 :host {
-    --pf-global--primary-color--100: var(--ak-color-primary, var(--pf-global--primary-color--100));
-    --pf-global--spacer--md: var(--ak-space-md, var(--pf-global--spacer--md));
+    --pf-global--primary-color--100: var(--ak-color-primary, oklab(0.522 -0.0434 -0.1717));
+    --pf-global--spacer--md: var(--ak-space-md, 1rem);
 }
 ```
 
-Each PatternFly variable falls back to its own prior value, so the bridge only overrides where a token exists. It is imported in two places — `global/theme/variables.css` for the document, and `shadow/patternfly-base.css` for shadow roots — so both cascades resolve the same way.
+Each PatternFly variable falls back to a literal copy of its prior value, so the bridge only overrides where a token exists. The fallback must be a literal: a self-reference like `var(--ak-space-md, var(--pf-global--spacer--md))` is a custom-property dependency cycle, which computes to invalid rather than the prior value. The bridge is imported in two places — `global/theme/variables.css` for the document, and `shadow/patternfly-base.css` for shadow roots — so both cascades resolve the same way.
 
-## Shadow DOM API
+## Styling components
 
-Custom properties are the configuration surface:
+A component exposes three styling surfaces, in order of preference: custom properties, host attributes, and parts.
+
+**Custom properties are the configuration surface:**
 
 ```css
 ak-flow-executor {
@@ -80,15 +82,49 @@ ak-flow-executor {
 }
 ```
 
-`::part()` is for exposed structure, and only where a brand can reasonably style that substructure without coupling to internal DOM:
+**Variants are host attributes, styled with `:host([attribute])`.** A component's visual states — position, size, expanded, resizable — belong on the host element as attributes, with the styling keyed off them inside the shadow root:
+
+```css
+:host([position="left"]) .ak-v2-c-drawer__panel {
+    inset-inline-start: 0;
+}
+```
+
+The variant API stays visible in markup (`<ak-drawer position="left">` documents itself), consumers and tests can target states without knowing shadow internals, and the component avoids maintaining a parallel class vocabulary for its own states.
+
+**Prefer reassigning custom properties over writing alternative concrete stylings.** When a variant only changes values — a width, a color, a shadow — the variant rule should reassign the component-local properties the base rules consume, not repeat the declaration block with different literals:
+
+```css
+.ak-v2-c-drawer__panel {
+    box-shadow: var(--ak-v2-c-drawer__panel--BoxShadow);
+}
+
+:host([position="left"]) {
+    --ak-v2-c-drawer--m-expanded__panel--BoxShadow: var(--_drawer-shadow-right);
+}
+```
+
+One rule owns the layout; variants are data. Reserve separate rule blocks for variants that genuinely change structure.
+
+**Slots are for composition; ownership decides what is slotted.** Content goes in a slot when the consumer owns it — actions, footers, arbitrary body content. It stays in the template when the component owns it — icons, labels bound to properties, structure the component must control to function. A slot is not a styling escape hatch: if the only reason to slot something is to reach it with outside CSS, expose a custom property or a part instead.
+
+**`::slotted()` is a boundary tool — keep it shallow.** It can only select the slotted elements themselves, never their descendants, and it should only declare what a container legitimately owns about its children: layout, spacing, alignment.
+
+```css
+::slotted(*) {
+    margin-block: 0;
+}
+```
+
+Typography and color inside slotted content belong to the document cascade — slotted elements are light DOM, so the global stylesheets and semantic tokens already reach them. If a component needs deep control over slotted content, that content is probably component-owned and should move into the template.
+
+**`::part()` is for exposed structure**, and only where a brand can reasonably style that substructure without coupling to internal DOM:
 
 ```css
 ak-flow-executor::part(locale-select) {
     display: none;
 }
 ```
-
-Slots are for composition, not styling.
 
 ## Accessibility defaults
 
@@ -107,6 +143,7 @@ Prefer semantic tokens that media queries adjust over separate per-variant theme
 
 ## Still to do
 
+- Derive relational colors (hover, tint, and shade variants) algorithmically in OKLCH space instead of hand-picking each value. Colors already emit as `oklch()`, so lightness and chroma are directly adjustable; today every variant is still an explicit stop.
 - Migrate component markup off PatternFly incrementally, starting where styling is already mostly custom.
 - Move component CSS next to the component it styles, rather than under `web/src/styles/authentik/components/`.
 - Generate token reference documentation from the DTCG export instead of maintaining the table by hand.

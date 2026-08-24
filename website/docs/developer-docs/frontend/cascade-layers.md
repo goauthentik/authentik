@@ -75,6 +75,7 @@ Because the custom CSS path is adopted last within its shadow root rather than b
 ## Adding CSS
 
 - A new document-level component rule goes in `web/src/styles/authentik/components/<Name>/`, imported into the relevant entrypoint with `layer(components)`.
+- Classes for light-DOM content — markup the document owns even when a component slots and positions it — are document-level component rules too, and go in `layer(components)` with the rest. If this category grows, it may earn a dedicated layer between `components` and `theme` so slotted-content styling can be reasoned about separately; today the volume does not justify extending the layer order.
 - A new design token goes in `web/src/styles/global/theme/`, which is already imported into `layer(theme)`.
 - A light/dark or accessibility override goes in `web/src/styles/global/mode/`.
 - Anything vendored from PatternFly goes through `web/src/styles/global/vendor/patternfly.css`.
