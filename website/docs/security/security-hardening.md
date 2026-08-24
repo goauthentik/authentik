@@ -3,7 +3,7 @@ title: Hardening authentik
 sidebar_position: 2
 ---
 
-While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. As everyone knows, there is a consequential tradeoff between security and convenience. Many of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff. Apply the ones that match your threat model rather than all of them at once.
+While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. There is a consequential tradeoff between security and convenience. Many of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff. Apply the ones that match your threat model rather than all of them at once.
 
 ## Authentication
 
@@ -78,7 +78,7 @@ When a binding is violated, authentik terminates the session and records a logou
 Stricter bindings cause more spurious logouts. Users on mobile networks, on VPNs, or behind load-balanced egress can change ASN or IP mid-session. Start with the loosest binding that meets your requirements and review the resulting logout events before tightening it.
 :::
 
-Each binding needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)), and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)).
+Each binding type needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)), and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)).
 
 :::warning
 If the database is missing, the lookup fails, the binding is treated as broken, and the session is terminated. This check only runs once a client's IP changes, not at login, so the problem can stay hidden long after the binding is enabled.
