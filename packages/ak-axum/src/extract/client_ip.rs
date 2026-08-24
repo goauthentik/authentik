@@ -38,14 +38,6 @@ where
 
 /// Get the rightmost IP from the `X-Forwarded-For` chain that is not itself a
 /// trusted proxy.
-///
-/// Each proxy appends the address it received the request from, so entries
-/// added by our own trusted proxies are skipped from the right and the first
-/// untrusted address is the originating client. Using the rightmost untrusted
-/// entry (instead of the plain leftmost) keeps client-supplied spoofed values
-/// from being trusted: a client can only append to the left of its own
-/// address. When every entry is trusted, the leftmost (oldest) entry is the
-/// best remaining guess at the client.
 fn rightmost_untrusted_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
     let mut forwarded_ips = Vec::new();
     for value in headers.get_all("x-forwarded-for") {
