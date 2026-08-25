@@ -6,7 +6,6 @@ import "#elements/router/RouterOutlet";
 import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -83,8 +82,6 @@ class UserInterface extends WithLicenseSummary(
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
@@ -157,8 +154,9 @@ class UserInterface extends WithLicenseSummary(
             navItems.push({ label: msg("Discover"), link: "/requests" });
         }
         if (
-            this.can(CapabilitiesEnum.CanAgentSelfService) &&
-            this.uiConfig.enabledFeatures.agents
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
+            this.uiConfig.enabledFeatures.agents &&
+            this.can(CapabilitiesEnum.CanAgentSelfService)
         ) {
             navItems.push({ label: msg("Agents"), link: "/agents" });
         }

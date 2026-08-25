@@ -9105,14 +9105,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Add new role</source>
   <target>Legg til ny rolle</target>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>Oppdater andre flyt-faner ved autentisering</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>Når aktivert, vil andre flyt-faner i en økt oppdateres ved en vellykket autentisering.</target>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
   <target>Dataeksport klar</target>
@@ -11884,10 +11876,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
   <target>Brukerfelt</target>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>Dette flagget er avviklet.</target>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
