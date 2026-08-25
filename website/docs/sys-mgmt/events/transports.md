@@ -14,6 +14,10 @@ Notifications can be sent to users through multiple delivery methods, or _transp
 - Webhook (generic)
 - Webhook (Slack/Discord)
 
+:::info
+For every transport except Local, links included in a notification are made absolute using the [Base URL](../settings.md#base-url) system setting, so that they can be opened from outside of authentik. While no base URL is configured, such links remain relative.
+:::
+
 ### Local
 
 This notification transport creates a notification in the authentik UI.
@@ -65,6 +69,14 @@ You can also include fields from the notification recipient and the triggering e
 return {
     "email": request.user.email,
     "client_ip": notification.event.client_ip,
+}
+```
+
+The notification's hyperlink is stored as a URL relative to the authentik instance. Use `hyperlink_absolute` to get it resolved against the [Base URL](../settings.md#base-url) system setting, so that it can be opened from wherever the webhook is delivered to:
+
+```python
+return {
+    "link": notification.hyperlink_absolute,
 }
 ```
 
