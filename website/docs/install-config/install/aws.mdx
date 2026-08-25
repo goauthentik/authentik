@@ -1,5 +1,6 @@
 ---
 title: AWS installation
+sidebar_position: 3
 ---
 
 You can install authentik to run on AWS with a CloudFormation template.

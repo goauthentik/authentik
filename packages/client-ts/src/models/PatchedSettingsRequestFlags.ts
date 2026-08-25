@@ -36,13 +36,6 @@ export interface PatchedSettingsRequestFlags {
      * @memberof PatchedSettingsRequestFlags
      */
     flowsContinuousLogin: boolean;
-    /**
-     * Refresh other tabs after successful authentication.
-     * @type {boolean}
-     * @memberof PatchedSettingsRequestFlags
-     * @deprecated
-     */
-    flowsRefreshOthers?: boolean;
 }
 
 /**
@@ -90,8 +83,6 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         coreDefaultAppAccess: json["core_default_app_access"],
         enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
         flowsContinuousLogin: json["flows_continuous_login"],
-        flowsRefreshOthers:
-            json["flows_refresh_others"] == null ? undefined : json["flows_refresh_others"],
     };
 }
 
@@ -111,6 +102,5 @@ export function PatchedSettingsRequestFlagsToJSONTyped(
         core_default_app_access: value["coreDefaultAppAccess"],
         enterprise_audit_include_expanded_diff: value["enterpriseAuditIncludeExpandedDiff"],
         flows_continuous_login: value["flowsContinuousLogin"],
-        flows_refresh_others: value["flowsRefreshOthers"],
     };
 }

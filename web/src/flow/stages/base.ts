@@ -5,7 +5,7 @@ import { pluckErrorDetail } from "#common/errors/network";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import { WithLocale } from "#elements/mixins/locale";
-import { FocusTarget } from "#elements/utils/focus";
+import { findEmptyFocusCandidate, FocusTarget } from "#elements/utils/focus";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { IBaseStage, StageChallengeLike, StageHost } from "#flow/types";
@@ -55,22 +55,35 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     @intersectionObserver()
     public visible = false;
 
-    protected autofocusTarget = new FocusTarget<HTMLInputElement>();
-    focus = this.autofocusTarget.focus;
+    protected primaryFocusTarget = new FocusTarget<HTMLInputElement>();
+    protected secondaryFocusTarget = new FocusTarget<HTMLInputElement>();
+
+    public override focus = (): void => {
+        const focusTarget = findEmptyFocusCandidate(
+            this.primaryFocusTarget.target,
+            this.secondaryFocusTarget.target,
+        );
+
+        if (!focusTarget) {
+            this.logger.info("Skipping focus. No empty candidate.");
+            return;
+        }
+
+        this.logger.info("Attempting to focus");
+        focusTarget.focus();
+    };
 
     #visibilityListener = () => {
         if (document.visibilityState !== "visible") return;
         if (!this.visible) return;
 
-        if (!this.autofocusTarget.target) return;
-
-        this.autofocusTarget.focus();
+        this.focus();
     };
 
     public override connectedCallback(): void {
         super.connectedCallback();
 
-        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+        this.addEventListener("focus", this.focus);
 
         document.addEventListener("visibilitychange", this.#visibilityListener);
     }
@@ -78,7 +91,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
     public override disconnectedCallback(): void {
         super.disconnectedCallback();
 
-        this.removeEventListener("focus", this.autofocusTarget.toEventListener());
+        this.removeEventListener("focus", this.focus);
 
         document.removeEventListener("visibilitychange", this.#visibilityListener);
     }
@@ -88,13 +101,10 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
 
         // We're especially mindful of how often this runs to avoid
         // unnecessary focus and in-fighting between the user's chosen focus target.
-        if (
-            changed.has("visible") &&
-            changed.get("visible") !== this.visible &&
-            this.visible &&
-            this.autofocusTarget.target
-        ) {
-            this.autofocusTarget.focus();
+        if (changed.has("visible") && changed.get("visible") !== this.visible && this.visible) {
+            requestAnimationFrame(() => {
+                this.focus();
+            });
         }
     }
 
