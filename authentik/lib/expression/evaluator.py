@@ -2,6 +2,7 @@
 
 import re
 import socket
+from copy import deepcopy
 from ipaddress import ip_address, ip_network
 from smtplib import SMTPException
 from textwrap import indent
@@ -12,6 +13,7 @@ from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.http import HttpRequest
+from django.utils.functional import SimpleLazyObject
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
@@ -79,7 +81,7 @@ class BaseEvaluator:
             "list_flatten": BaseEvaluator.expr_flatten,
             "regex_match": BaseEvaluator.expr_regex_match,
             "regex_replace": BaseEvaluator.expr_regex_replace,
-            "requests": get_http_session(),
+            "requests": SimpleLazyObject(get_http_session),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "slugify": slugify,
@@ -173,8 +175,8 @@ class BaseEvaluator:
         return fallback value."""
         attrs = getattr(obj, "attributes", {})
         value = get_path_from_dict(attrs, attr_key)
-        if value is None and fallback:
-            return getattr(obj, fallback)
+        if value is None and fallback is not None:
+            return getattr(obj, fallback, fallback)
         return value
 
     def expr_event_create(self, action: str, **kwargs):
@@ -206,7 +208,7 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = self._context["request"]
+            req = deepcopy(self._context["request"])
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
@@ -249,7 +251,7 @@ class BaseEvaluator:
         kwargs["aud"] = provider.client_id
         return provider.encode(kwargs)
 
-    def expr_send_email(  # noqa: PLR0913
+    def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
         address: str | list[str],
         subject: str,

@@ -22,11 +22,11 @@ This stage is used during authentication after a user has already enrolled one o
     - **Deny**: deny access and end the flow.
     - **Configure**: inject one of the configured enrollment stages and continue after that stage succeeds.
 - **Configuration stages**: stages that can be injected when **Not configured action** is set to **Configure**.
-- **Device classes**: which enrolled authenticator types can be used at this step.
+- **Device Classes**: which enrolled authenticator types can be used at this step.
 - **Last validation threshold**: skip validation if the user has successfully used a compatible device within the configured time window.
-- **WebAuthn user verification**: user-verification requirement for WebAuthn authentication.
-- **WebAuthn hints**: browser hints that influence which WebAuthn authenticator is preferred.
-- **WebAuthn device type restrictions**: optionally limit which WebAuthn device types are allowed.
+- **WebAuthn User verification**: user-verification requirement for WebAuthn authentication.
+- **WebAuthn Hints**: browser hints that influence which WebAuthn authenticator is preferred.
+- **WebAuthn Device type restrictions**: optionally limit which WebAuthn device types are allowed.
 - **Email OTP throttling factor**: exponential back-off factor for Email devices after failed verification attempts.
 - **SMS OTP throttling factor**: exponential back-off factor for SMS devices after failed verification attempts.
 - **TOTP throttling factor**: exponential back-off factor for TOTP devices after failed verification attempts.
@@ -44,17 +44,17 @@ If **Not configured action** is set to **Configure**, the stage can bootstrap en
 
 To require users to enroll more than one MFA method and validate with each method on every login, add multiple Authenticator Validation stages to the same authentication flow.
 
-Configure each validation stage with a different set of allowed **Device classes**, and set **Not configured action** to **Configure**.
+Configure each validation stage with a different set of allowed **Device Classes**, and set **Not configured action** to **Configure**.
 
 For example, to require both TOTP and WebAuthn:
 
 1. Create a TOTP setup stage and a WebAuthn setup stage if you do not already have them.
 2. Create an Authenticator Validation stage for TOTP:
-    - Set **Device classes** to `totp`.
+    - Set **Device Classes** to `totp`.
     - Set **Not configured action** to **Configure**.
     - Set **Configuration stages** to your TOTP setup stage.
 3. Create a second Authenticator Validation stage for WebAuthn:
-    - Set **Device classes** to `webauthn`.
+    - Set **Device Classes** to `webauthn`.
     - Set **Not configured action** to **Configure**.
     - Set **Configuration stages** to your WebAuthn setup stage.
 4. Bind both validation stages to your authentication flow in the order that users should enroll and validate them.
@@ -129,7 +129,7 @@ If the user has multiple compatible authenticators, authentik lets them choose o
 
 ### WebAuthn authenticator type restrictions
 
-**WebAuthn device type restrictions** are an allowlist for already-enrolled WebAuthn authenticators. When no device types are selected, any enrolled WebAuthn authenticator that matches the stage's **Device classes** can be used. When one or more device types are selected, authentik only allows WebAuthn authentication from enrolled devices whose recorded device type matches one of the selected entries.
+**WebAuthn Device type restrictions** are an allowlist for already-enrolled WebAuthn authenticators. When no device types are selected, any enrolled WebAuthn authenticator that matches the stage's **Device Classes** can be used. When one or more device types are selected, authentik only allows WebAuthn authentication from enrolled devices whose recorded device type matches one of the selected entries.
 
 The available device-type entries are populated from the [FIDO Alliance Metadata Service](https://fidoalliance.org/metadata/) data and additional AAGUID metadata bundled with the authentik release. This is useful when you need to limit authentication to specific hardware families or compliance profiles.
 

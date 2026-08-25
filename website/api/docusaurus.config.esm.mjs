@@ -152,12 +152,12 @@ const config = createDocusaurusConfig({
     //#region Theme
 
     themes: ["docusaurus-theme-openapi-docs"],
-
+    favicon: "https://goauthentik.io/img/icon.png",
     themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
         footer: {
             copyright: FOOTER_COPYRIGHT,
         },
-
+        image: "https://goauthentik.io/img/social.png",
         navbar: {
             logo: {
                 alt: "authentik logo",
@@ -177,4 +177,4 @@ const config = createDocusaurusConfig({
 
 //#endregion
 
-export default config;
+export default /** @type {import("@docusaurus/types").Config} */ (config);

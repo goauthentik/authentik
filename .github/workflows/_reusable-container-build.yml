@@ -42,6 +42,7 @@ jobs:
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
+
   build-arm64:
     uses: ./.github/workflows/_reusable-container-build-single.yml
     secrets: inherit
@@ -54,29 +55,180 @@ jobs:
       image-build-args: "${{ inputs.image-build-args }}"
       should-cache: "${{ inputs.should-cache }}"
       cache-suffix: "${{ inputs.cache-suffix }}"
+
   merge:
     runs-on: ubuntu-latest
     needs:
       - build-amd64
       - build-arm64
     steps:
-      - uses: regclient/actions/regctl-installer@c48159175b58fb90cccd0f98410927a81e04a166
+      - uses: regclient/actions/regctl-installer@78eb729dbdb4ef6480e85ff697b4410e22112583
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5
         with:
           artifact-ids: "${{ needs.build-amd64.outputs.artifact-id }},${{ needs.build-arm64.outputs.artifact-id }}"
           merge-multiple: true
-      - name: merge
+
+      - name: Merge and flatten architecture indexes
+        shell: bash
         run: |
-          regctl image import ocidir://${{ inputs.image-name }}-amd64:build container/${{ inputs.image-name }}-amd64.oci.tar
-          regctl image import ocidir://${{ inputs.image-name }}-arm64:build container/${{ inputs.image-name }}-arm64.oci.tar
+          set -euo pipefail
 
-          regctl index create ocidir://${{ inputs.image-name }}:build
+          image_name="${{ inputs.image-name }}"
+          target="ocidir://${image_name}:build"
 
-          regctl index add ocidir://${{ inputs.image-name }}:build --ref ocidir://${{ inputs.image-name }}-amd64:build --desc-platform linux/amd64
-          regctl index add ocidir://${{ inputs.image-name }}:build --ref ocidir://${{ inputs.image-name }}-arm64:build --desc-platform linux/arm64
+          regctl image import \
+            "ocidir://${image_name}-amd64:build" \
+            "container/${image_name}-amd64.oci.tar"
+
+          regctl image import \
+            "ocidir://${image_name}-arm64:build" \
+            "container/${image_name}-arm64.oci.tar"
+
+          regctl index create "${target}"
+
+          add_platform() {
+            local arch="$1"
+            local source="ocidir://${image_name}-${arch}:build"
+            local source_index
+            local image_digest
+            local attestation_digest
+
+            source_index="$(
+              regctl manifest get "${source}" --format raw-body
+            )"
+
+            # Select the runnable image manifest from the architecture index.
+            image_digest="$(
+              jq -er --arg arch "${arch}" '
+                [
+                  .manifests[]
+                  | select(
+                      .mediaType
+                        == "application/vnd.oci.image.manifest.v1+json"
+                      and .platform.os == "linux"
+                      and .platform.architecture == $arch
+                    )
+                  | .digest
+                ]
+                | if length == 1 then .[0]
+                  else error(
+                    "expected exactly one linux/" + $arch
+                    + " image manifest"
+                  )
+                  end
+              ' <<<"${source_index}"
+            )"
+
+            # Select the BuildKit attestation associated with that image.
+            attestation_digest="$(
+              jq -er --arg image_digest "${image_digest}" '
+                [
+                  .manifests[]
+                  | select(
+                      .mediaType
+                        == "application/vnd.oci.image.manifest.v1+json"
+                      and .platform.os == "unknown"
+                      and .platform.architecture == "unknown"
+                      and .annotations["vnd.docker.reference.type"]
+                        == "attestation-manifest"
+                      and .annotations["vnd.docker.reference.digest"]
+                        == $image_digest
+                    )
+                  | .digest
+                ]
+                | if length == 1 then .[0]
+                  else error(
+                    "expected exactly one attestation for "
+                    + $image_digest
+                  )
+                  end
+              ' <<<"${source_index}"
+            )"
+
+            # Add the runnable image manifest directly to the final index.
+            regctl index add "${target}" \
+              --ref "${source}@${image_digest}" \
+              --desc-platform "linux/${arch}"
+
+            # Add the associated attestation directly beside the image.
+            regctl index add "${target}" \
+              --ref "${source}@${attestation_digest}" \
+              --desc-platform "unknown/unknown" \
+              --desc-annotation \
+                "vnd.docker.reference.type=attestation-manifest" \
+              --desc-annotation \
+                "vnd.docker.reference.digest=${image_digest}"
+          }
+
+          add_platform amd64
+          add_platform arm64
+
+          final_index="$(
+            regctl manifest get "${target}" --format raw-body
+          )"
+
+          # Ensure the result is a flat index containing two runnable image
+          # manifests and their two attestations, with no nested OCI indexes.
+          jq -e '
+            .mediaType == "application/vnd.oci.image.index.v1+json"
+            and (.manifests | length == 4)
+            and (
+              [.manifests[].mediaType]
+              | all(
+                  . == "application/vnd.oci.image.manifest.v1+json"
+                )
+            )
+            and (
+              [
+                .manifests[]
+                | select(.platform.os == "linux")
+                | .platform.architecture
+              ]
+              | sort
+              == ["amd64", "arm64"]
+            )
+            and (
+              [
+                .manifests[]
+                | select(
+                    .platform.os == "unknown"
+                    and .platform.architecture == "unknown"
+                    and .annotations["vnd.docker.reference.type"]
+                      == "attestation-manifest"
+                  )
+              ]
+              | length == 2
+            )
+            and (
+              (
+                [
+                  .manifests[]
+                  | select(.platform.os == "linux")
+                  | .digest
+                ]
+                | sort
+              )
+              ==
+              (
+                [
+                  .manifests[]
+                  | select(
+                      .platform.os == "unknown"
+                      and .platform.architecture == "unknown"
+                    )
+                  | .annotations["vnd.docker.reference.digest"]
+                ]
+                | sort
+              )
+            )
+          ' <<<"${final_index}"
 
           mkdir -p build/container/
-          regctl image export ocidir://${{ inputs.image-name }}:build build/container/${{ inputs.image-name }}.oci.tar
+
+          regctl image export \
+            "${target}" \
+            "build/container/${image_name}.oci.tar"
+
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4
         with:
           name: "container-build-${{ inputs.image-name }}"

@@ -30,12 +30,12 @@ To integrate Shibboleth with authentik, create a SAML source in authentik.
     - Set **Slug** to `shibboleth` (this sets the slug used in Shibboleth's metadata URL).
     - Set **SSO URL** to `https://shibboleth.company/idp/profile/SAML2/Redirect/SSO`.
     - Set **Binding Type** to `Redirect`.
-    - Set **Issuer** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/`.
+    - Set **Issuer override** to `https://authentik.company/source/saml/<shibboleth-slug>/metadata/` (optional; the source defaults to this value).
     - Set **NameID Policy** to `Transient`.
       :::warning NameID Policy
       Shibboleth supports the `Transient` NameID by default. You need to reconfigure Shibboleth to use other NameIDs.
       :::
-    - Set **Signing Keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
+    - Set **Signing keypair** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
     - Set **Encryption Certificate** to an authentik certificate (e.g., the default `authentik Self-signed Certificate`).
 4. Click **Finish**.
 

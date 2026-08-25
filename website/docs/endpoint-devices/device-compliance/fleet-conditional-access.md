@@ -3,6 +3,7 @@ title: Fleet conditional access for Apple devices
 sidebar_label: Fleet conditional access
 tags: [device compliance, compliance, conditional access, fleet, fleetdm]
 authentik_version: "2026.5"
+sidebar_position: 5
 ---
 
 authentik can be configured to restrict access to specific services so that only Fleet-registered Apple devices are allowed.
@@ -18,7 +19,7 @@ authentik automatically retrieves the Conditional Access Root CA certificate fro
 
 ## Configure Fleet and devices
 
-A Fleet Conditional Access configuration profile must be applied to every device that you wish to apply conditional access to. Please note that this will only function on iOS and iPadOS devices that are enrolled via Apple Automated Device Enrollment (ADE). The same limitation does not apply to macOS devices.
+Apply a Fleet Conditional Access configuration profile to every device that requires conditional access. This works only on iOS and iPadOS devices enrolled through Apple Automated Device Enrollment (ADE). The same limitation does not apply to macOS devices.
 
 1. Log in to your Fleet dashboard as an administrator.
 2. Navigate to **Settings** > **Integrations** > **Conditional Access**.

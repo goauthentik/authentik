@@ -128,15 +128,14 @@ Avoid renaming/moving pages unless necessary; better organization rarely justifi
 
 ## Spell checking
 
-Spell checking uses **cspell** (`make lint-spellcheck`, config `../cspell.config.jsonc`). Custom dictionaries live in `../locale/en/dictionaries/` (`software-terms.txt`, `integrations.txt`, `idp.txt`, language-specific lists, `people.txt`, `ignore.txt`). Add genuinely new product/service/technology terms to the appropriate dictionary rather than rewording correct prose; never disable the checker for a whole page.
+Spell checking uses **cspell** (`make lint-spellcheck`, config `../cspell.config.jsonc`) in typo-only mode (`unknownWords: "report-common-typos"`): it reports only words on the common-misspellings list (always with a suggested fix) and forbidden British spellings. Unknown words — product names, jargon, identifiers — pass silently, so a new integration or technology term needs **no** dictionary entry.
 
-For a genuine one-off that does not belong in a dictionary (a deliberate misspelling in an example, an opaque token), use an inline cspell comment scoped as tightly as possible:
+If the checker flags a word whose spelling is intentional (a third-party API member, a deliberate misspelling in an example), either:
 
-- `<!-- spellchecker:ignore someword anotherword -->` in Markdown/MDX, or `// spellchecker:ignore ...` in code — allow specific words for the rest of the file.
-- `<!-- spellchecker:disable-next-line -->` / `// spellchecker:disable-next-line` — skip just the following line.
-- `<!-- spellchecker:disable -->` … `<!-- spellchecker:enable -->` — skip a bounded region (avoid; prefer the narrower forms).
+- add it to `../locale/en/dictionaries/overrides.txt` if it may recur across files, or
+- use an inline comment scoped as tightly as possible for a true one-off: `<!-- spellchecker:ignore someword -->` in Markdown/MDX (`// spellchecker:ignore ...` in code), or `<!-- spellchecker:disable-next-line -->` for a single line.
 
-Reach for a dictionary entry first — inline ignores are for the rare case the term is truly local to one page.
+Never disable the checker for a whole page.
 
 ## Deployment
 
@@ -161,6 +160,6 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 | Build runtime  | Node ≥ 24, npm ≥ 11 (run via `corepack`)                                            |
 | Package layout | NPM Workspaces (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
 | Lint / format  | ESLint 9 (`@goauthentik/eslint-config`) + Prettier (`@goauthentik/prettier-config`) |
-| Spell check    | cspell + shared dictionaries                                                        |
+| Spell check    | cspell (typo-only mode)                                                             |
 | Types          | TypeScript (`tsc -b`)                                                               |
 | Hosting        | Netlify + GitHub Actions                                                            |

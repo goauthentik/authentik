@@ -184,6 +184,10 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
+    :::info Deprecated
+    Deprecated as of version 2026.5 and will be removed in a future version. If you rely on a specific parameter, open an issue so we can discuss an alternative.
+    :::
+
     Additional `libpq` connection parameters for the primary database connection.
 
     A list of supported parameter keywords can be found in the [PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
@@ -213,11 +217,15 @@ For the first replica, use index `0`:
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS` (deprecated, see above)
 
 Use index `1`, `2`, and so on for additional replicas.
 
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
+
+    :::info Deprecated
+    Deprecated as of version 2026.5 and will be removed in a future version. If you rely on a specific parameter, open an issue so we can discuss an alternative.
+    :::
 
     Additional `libpq` connection parameters for all read replica connections.
 
@@ -262,7 +270,7 @@ To run the bulk of ORM traffic through a transaction-pooling pooler while keepin
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLROOTCERT`
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLCERT`
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLKEY`
-- `AUTHENTIK_POSTGRESQL__DIRECT__CONN_OPTIONS`
+- `AUTHENTIK_POSTGRESQL__DIRECT__CONN_OPTIONS` (deprecated, see above)
 
 Any setting left unset falls back to the corresponding top-level `AUTHENTIK_POSTGRESQL__*` value, so the common case of "same database, different endpoint" only requires `AUTHENTIK_POSTGRESQL__DIRECT__HOST` (and optionally `AUTHENTIK_POSTGRESQL__DIRECT__PORT`).
 
@@ -407,6 +415,14 @@ Applies to LDAP outposts.
 
 Defaults to `[::]:6636`.
 
+##### `AUTHENTIK_LISTEN__RADIUS`
+
+List of comma-separated `address:port` values for RADIUS.
+
+Applies to RADIUS outposts.
+
+Defaults to `[::]:1812`.
+
 ##### `AUTHENTIK_LISTEN__METRICS`
 
 List of comma-separated `address:port` values for Prometheus metrics.
@@ -417,9 +433,9 @@ Defaults to `[::]:9300`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG`
 
-Listening address:port for Go Debugging metrics.
+Listening address:port for Go debugging metrics.
 
-Applies to all, except the worker.
+Applies to the LDAP, RADIUS, and RAC outposts, which are the remaining Go components.
 
 Defaults to `0.0.0.0:9900`.
 
@@ -787,6 +803,12 @@ Configure how long unauthenticated sessions last for. Does not impact how long a
 
 Defaults to `days=1`.
 
+### `AUTHENTIK_SESSIONS__USER_SWITCHING_AGE`:ak-version[2026.8]
+
+Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.md) lasts. This setting does not change the validity of the grouped sessions.
+
+Defaults to `days=365`.
+
 ### `AUTHENTIK_WEB__WORKERS`
 
 Configure how many gunicorn worker processes should be started (see https://docs.gunicorn.org/en/stable/design.html).
@@ -816,6 +838,22 @@ Defaults to 50.
 Configure the path under which authentik is served. For example to access authentik under `https://my.domain/authentik/`, set this to `/authentik/`. Value _must_ contain both a leading and trailing slash.
 
 Defaults to `/`.
+
+### `AUTHENTIK_WEB__BASE_URL`:ak-version[2026.8]
+
+The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
+
+This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.md) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
+
+:::info
+Set this to the scheme and host only, without a path. All of authentik is served under [`AUTHENTIK_WEB__PATH`](#authentik_web__path) (`/` by default), and that prefix is already part of every link authentik generates. So even when you serve authentik under a subpath, for example `AUTHENTIK_WEB__PATH=/authentik/`, the base URL stays `https://authentik.company`, and generated links resolve under `https://authentik.company/authentik/`.
+:::
+
+Defaults to an empty string.
+
+This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
 
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 

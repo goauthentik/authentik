@@ -29,6 +29,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.consumer import build_user_group
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -50,7 +51,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
@@ -95,6 +95,7 @@ class EventAction(models.TextChoices):
     LOGOUT = "logout"
 
     USER_WRITE = "user_write"
+    USER_OFFBOARDED = "user_offboarded"
     SUSPICIOUS_REQUEST = "suspicious_request"
     PASSWORD_SET = "password_set"  # noqa # nosec
 
@@ -134,6 +135,11 @@ class EventAction(models.TextChoices):
     REVIEW_OVERDUE = "review_overdue"
     REVIEW_ATTESTED = "review_attested"
     REVIEW_COMPLETED = "review_completed"
+
+    ACCESS_REQUEST_CREATED = "access_request_created"
+    ACCESS_REQUEST_APPROVED = "access_request_approved"
+    ACCESS_REQUEST_DENIED = "access_request_denied"
+    ACCESS_REQUEST_REVOKED = "access_request_revoked"
 
     CUSTOM_PREFIX = "custom_"
 

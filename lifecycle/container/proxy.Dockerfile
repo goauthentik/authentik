@@ -1,72 +1,47 @@
 # syntax=docker/dockerfile:1
 
-# Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
-# keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.15.1@sha256:bef6540b50263f4e43ab23f5c21fda02f9f4396adb250560a247effa511d368f AS pnpm
+# Stage: Build
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341 AS builder
 
-# Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26 AS web-builder
-
-ENV NODE_ENV=production
-WORKDIR /static
-
-# These files need to be copied and cannot be mounted as `pnpm install` will build the client's typescript
-COPY ./packages /packages
-COPY ./web/packages /static/packages
-
-COPY --from=pnpm /opt/pnpm /opt/pnpm
-ENV PATH="/opt/pnpm:${PATH}"
-
-RUN --mount=type=bind,target=/static/package.json,src=./package.json \
-    --mount=type=bind,target=/static/web/package.json,src=./web/package.json \
-    --mount=type=bind,target=/static/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
-    --mount=type=bind,target=/static/scripts/node/,src=./scripts/node/ \
-    --mount=type=bind,target=/static/packages/logger-js/,src=./packages/logger-js/ \
-    node ./scripts/node/lint-runtime.mjs ./web
-
-COPY package.json /
-
-RUN --mount=type=bind,target=/static/.npmrc,src=./.npmrc \
-    --mount=type=bind,target=/static/package.json,src=./web/package.json \
-    --mount=type=bind,target=/static/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
-    --mount=type=bind,target=/static/pnpm-workspace.yaml,src=./web/pnpm-workspace.yaml \
-    --mount=type=bind,target=/static/scripts,src=./web/scripts \
-    --mount=type=cache,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
-
-COPY web .
-RUN pnpm run build-proxy
-
-# Stage 2: Build
-FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.27rc2-trixie@sha256:c048f885615f96feb36c94ec97648dd8cb752e0a5158cf9affcb95d326a0214d AS builder
-
-ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
 
-ARG GOOS=$TARGETOS
-ARG GOARCH=$TARGETARCH
-
-WORKDIR /go/src/goauthentik.io
-
+ENV PATH="/root/.cargo/bin:$PATH"
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
-    dpkg --add-architecture arm64 && \
+    --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     apt-get update && \
-    apt-get install -y --no-install-recommends crossbuild-essential-arm64 gcc-aarch64-linux-gnu
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential \
+    # aws-lc deps
+    cmake clang golang && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y --profile minimal --default-toolchain none && \
+    rustup install && \
+    rustup default "$(sed -n 's/channel = "\(.*\)"/\1/p' rust-toolchain.toml)" && \
+    rustc --version && \
+    cargo --version
+# See https://github.com/aws/aws-lc-rs/issues/569
+ENV AWS_LC_FIPS_SYS_CC=clang
 
-RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
-    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
-    --mount=type=cache,target=/go/pkg/mod \
-    go mod download
+RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
+    --mount=type=bind,target=Cargo.toml,src=Cargo.toml \
+    --mount=type=bind,target=Cargo.lock,src=Cargo.lock \
+    --mount=type=bind,target=.cargo/,src=.cargo/ \
+    --mount=type=bind,target=src/,src=src/ \
+    --mount=type=bind,target=packages/,src=packages/ \
+    --mount=type=bind,target=authentik/lib/default.yml,src=authentik/lib/default.yml \
+    # Required otherwise workspace discovery fails
+    --mount=type=bind,target=website/scripts/docsmg/,src=website/scripts/docsmg/ \
+    --mount=type=cache,id=cargo-git-db-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/git/db/ \
+    --mount=type=cache,id=cargo-registry-$TARGETARCH$TARGETVARIANT,target=/root/.cargo/registry/ \
+    --mount=type=cache,id=rust-target-$TARGETARCH$TARGETVARIANT,target=/build/target/ \
+    cargo build --package authentik --no-default-features --features proxy --locked --release && \
+    cp ./target/release/authentik /bin/authentik
 
-COPY . .
-RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
-    --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
-    if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
-    go build -o /go/proxy ./cmd/proxy
-
-# Stage 3: Run
+# Stage: Run
 FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips@sha256:7726387c78b5787d2146868c2ccc8948a3591d0a5a6436f7780c8c28acc76341
 
 ARG VERSION
@@ -89,19 +64,15 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/*
 
-COPY --from=builder /go/proxy /
-COPY --from=web-builder /static/robots.txt /web/robots.txt
-COPY --from=web-builder /static/security.txt /web/security.txt
-COPY --from=web-builder /static/dist/ /web/dist/
-COPY --from=web-builder /static/authentik/ /web/authentik/
+COPY --from=builder /bin/authentik /
 
-HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/proxy", "healthcheck" ]
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/authentik", "healthcheck", "proxy" ]
 
 EXPOSE 9000 9300 9443
 
 USER 1000
 
 ENV TMPDIR=/dev/shm/ \
-    GOFIPS=1
+    RUST_BACKTRACE=full
 
-ENTRYPOINT ["/proxy"]
+ENTRYPOINT ["/authentik", "proxy"]

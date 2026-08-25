@@ -1,8 +1,8 @@
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.15.1@sha256:bef6540b50263f4e43ab23f5c21fda02f9f4396adb250560a247effa511d368f AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.22.0@sha256:eba76954b37ec1ba6187f0adb39caee1e31733194857eedd01319da0af3fa00d AS pnpm
 
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.5.0-trixie@sha256:0473e7dc433a1310f436edee02aa79737ec78a4b345433ab0963d4a256f9ad85 AS docs-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:26.7.0-trixie@sha256:bde0dae02f2b12d2bce5ee72b2432f0e511767b7b2dc4dd3b064df11ae422fee AS docs-builder
 
 ENV NODE_ENV=production
 
@@ -60,7 +60,7 @@ COPY ./SECURITY.md /work/
 RUN  --mount=type=bind,target=/work/packages/docusaurus-config/,src=./packages/docusaurus-config/ \
     pnpm run build
 
-FROM docker.io/library/nginx:1.31.3-trixie@sha256:5a88c9c45479443d7be2eadc894b4ed0a9801bae03d97a5760ae13b5c2005942
+FROM docker.io/library/nginx:1.31.4-trixie@sha256:0d4374c710a9649200e84f8ef8dbdd4fa76c0c107839cd50f1e42a63916b0f2e
 LABEL org.opencontainers.image.authors="Authentik Security Inc." \
     org.opencontainers.image.source="https://github.com/goauthentik/authentik" \
     org.opencontainers.image.description="authentik product documentation" \

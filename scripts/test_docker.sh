@@ -12,7 +12,7 @@ fi
 
 echo PG_PASS="$(openssl rand -base64 36 | tr -d '\n')" >lifecycle/container/.env
 echo AUTHENTIK_SECRET_KEY="$(openssl rand -base64 60 | tr -d '\n')" >>lifecycle/container/.env
-export COMPOSE_PROJECT_NAME="authentik-test-${AUTHENTIK_TAG}"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-authentik-test-${AUTHENTIK_TAG}}"
 
 if [[ -v BUILD ]]; then
     echo AUTHENTIK_IMAGE="${AUTHENTIK_IMAGE}" >>lifecycle/container/.env

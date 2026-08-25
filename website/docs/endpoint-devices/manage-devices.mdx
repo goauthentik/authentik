@@ -8,28 +8,26 @@ sidebar_position: 2
 
 The Devices page provides a list of all endpoint devices registered with your authentik deployment. Refer to [Device reporting](./device-compliance/device-reporting.md) for more details on how [device facts](./device-compliance/device-reporting.md#device-facts) are reported to authentik.
 
-Each Endpoint Device can be expanded to view more detailed information.
+Select an endpoint device to view detailed information about it.
 
-## Accessing the Devices page
-
-To access the Devices page, follow these steps:
+## Access the Devices page
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Endpoint Devices** > **Devices**.
-3. Specific endpoint device information can be accessed by clicking on a device.
+3. Click a device to view its details.
 
-## Specific device
+## View device details
 
-Once you have selected a specific endpoint device you will have access to the following tabs:
+After you select an endpoint device, the following tabs are available:
 
-### Overview
+### Device overview
 
-Provides an overview of the endpoint device:
+The overview contains:
 
-- **Device details**: basic facts about the device: name, hostname, serial number, operating system, firewall status and device access group.
-- **Hardware**: basic hardware facts about the device: manufacturer, model, CPU, memory, disk encryption status, primary disk size, primary disk usage.
-- **Connections**: shows the current [connectors](./device-compliance/connectors/index.mdx) that are enabled for the device and when the last [check-in](./device-compliance/device-reporting.md#device-check-in) occurred.
-- **Users/Groups**: shows the users and groups that have access to the device. Controlled via [device access groups](./authentik-agent/device-authentication/device-access-groups.mdx).
+- **Device details**: The device name, hostname, serial number, operating system, firewall status, and device access group.
+- **Hardware**: The manufacturer, model, CPU, memory, disk encryption status, primary disk size, and primary disk usage.
+- **Connections**: The enabled [connectors](./device-compliance/connectors/index.mdx) and the time of the last [check-in](./device-compliance/device-reporting.md#device-check-in).
+- **Users/Groups**: The users and groups that can access the device, as controlled by [device access groups](./authentik-agent/device-authentication/device-access-groups.mdx).
 
 ### Processes
 

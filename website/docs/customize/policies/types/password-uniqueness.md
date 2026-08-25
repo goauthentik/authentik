@@ -68,6 +68,6 @@ Password history records are stored securely and cannot be used to reconstruct o
 
 ## Configuration tips
 
-- The **Password field** must match the prompt field's **Field key** exactly.
+- The **Password field** must match the prompt field's **Field Key** exactly.
 - If you have multiple password-entry prompts, point the policy at the field that represents the new password.
 - Increase the history count only as far as your requirements need. Higher values mean more password history is retained per user.

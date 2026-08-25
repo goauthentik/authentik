@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "3.0.2",
+    "version": "3.0.4",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "repository": {
@@ -26,13 +26,13 @@
         "./css/*.css": "./css/*.css"
     },
     "dependencies": {
-        "deepmerge-ts": "^7.1.5",
+        "deepmerge-ts": "^8.0.0",
         "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@docusaurus/theme-common": "^3.10.1",
-        "@docusaurus/theme-search-algolia": "^3.10.1",
-        "@docusaurus/types": "^3.10.1",
+        "@docusaurus/theme-common": "^3.10.2",
+        "@docusaurus/theme-search-algolia": "^3.10.2",
+        "@docusaurus/types": "^3.10.2",
         "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
         "@goauthentik/prettier-config": "link:../prettier-config",
@@ -45,7 +45,7 @@
         "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "^8.62.1"
+        "typescript-eslint": "^8.65.0"
     },
     "peerDependencies": {
         "@docusaurus/theme-common": "^3.10.1",
@@ -55,8 +55,8 @@
         "react-dom": ">=19"
     },
     "optionalDependencies": {
-        "react": "^19.2.7",
-        "react-dom": "^19.2.7"
+        "react": "^19.2.8",
+        "react-dom": "^19.2.8"
     },
     "files": [
         "./index.js",
