@@ -28,12 +28,14 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 PLAN_CONTEXT_AUTHENTICATION_BACKEND = "user_backend"
 PLAN_CONTEXT_METHOD = "auth_method"
 PLAN_CONTEXT_METHOD_ARGS = "auth_method_args"
 PLAN_CONTEXT_INITIAL_SCORE = "goauthentik.io/stages/password/initial_score"
+PLAN_CONTEXT_FAILED_ATTEMPTS = "goauthentik.io/stages/password/failed_attempts"
 
 
 def authenticate(
@@ -168,8 +170,15 @@ class PasswordStageView(ChallengeStageView):
         if initial_score is None:
             initial_score = self.get_reputation_score()
             self.executor.plan.context[PLAN_CONTEXT_INITIAL_SCORE] = initial_score
-        new_score = self.get_reputation_score()
-        if (initial_score - new_score) >= current_stage.failed_attempts_before_cancel:
+        attempts = self.executor.plan.context.get(PLAN_CONTEXT_FAILED_ATTEMPTS, 0) + 1
+        self.executor.plan.context[PLAN_CONTEXT_FAILED_ATTEMPTS] = attempts
+        # Reputation is clipped at tenant.reputation_lower_limit, so a check based only
+        # on the score delta stops firing once the user is already at the floor and they
+        # can keep retrying in a fresh flow (#21600). Count attempts in this plan, but
+        # cap the allowance by the reputation left, so failures from earlier flows
+        # still count against the user.
+        remaining_reputation = initial_score - get_current_tenant().reputation_lower_limit
+        if attempts >= min(remaining_reputation, current_stage.failed_attempts_before_cancel):
             self.logger.debug("User has exceeded maximum tries")
             return self.executor.stage_invalid(_("Invalid password"))
         return super().challenge_invalid(response)
