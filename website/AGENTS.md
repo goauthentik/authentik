@@ -96,6 +96,8 @@ When you change a documented workflow (commands, structure, conventions), update
 
 **`docs/developer-docs/docs/style-guide.mdx` is the single source of truth — read it before authoring prose, and follow it over any summary.** It covers terminology, voice and tense, sentence-case headings, frontmatter, callouts, code-block options, formatting of UI elements and placeholders, accessibility, and metadata. This file deliberately does not restate those rules; a partial copy would drift out of sync with the guide.
 
+**Content is `.mdx` only.** All three sites dropped `.md`; the `ak-mdx-only-plugin` in `docusaurus-theme/mdx-only/` fails the build and names any `.md` file it finds under a site directory. Rename with `git mv <file>.md <file>.mdx`, and add a `_redirects` entry if the page was already published. Files that are not pages (notes, partials) can stay `.md` if prefixed with `_`, which Docusaurus already excludes.
+
 The one rule the linters and spell checker cannot enforce, and the one most often gotten wrong: **the product name is always `authentik`** — lowercase `a`, even at the start of a sentence; the company is **Authentik Security, Inc.**, and **Admin** is capitalized only when naming the Admin interface.
 
 ### Adding a Topics page
