@@ -24,7 +24,7 @@ Our [enterprise offering](https://goauthentik.io/pricing) is available for organ
 - Kubernetes (Helm Chart): recommended for larger setups. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/kubernetes/) and the Helm chart [repository](https://github.com/goauthentik/helm).
 - AWS CloudFormation: deploy on AWS using our official templates. See the [documentation](https://docs.goauthentik.io/docs/install-config/install/aws/).
 - DigitalOcean Marketplace: one-click deployment via the official Marketplace app. See the [app listing](https://marketplace.digitalocean.com/apps/authentik).
-- RepoCloud: one-click cloud deployment with competitive pricing. [![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Authentik/)
+- RepoCloud: one-click deployment on managed cloud hosting. See the [app listing](https://repocloud.io/details/Authentik/).
 
 ## Screenshots
 
