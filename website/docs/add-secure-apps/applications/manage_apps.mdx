@@ -27,7 +27,7 @@ By default, if you click **New Application**, you are prompted to create the new
 
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any additional required configurations.
 
-    - **Configure Bindings**: optionally create a [binding](../bindings-overview/index.md) between the application and a policy, group, or user. Application bindings control whether users can view and access the application from their **Application Dashboard** page. If you do not define any bindings, all users have access to the application. For more information, see [policy-driven authorization](#policy-driven-authorization), [application entitlements](#application-entitlements), and [hiding an application](#hide-applications).
+    - **Configure Bindings**: optionally create a [binding](../bindings-overview/index.mdx) between the application and a policy, group, or user. Application bindings control whether users can view and access the application from their **Application Dashboard** page. If you do not define any bindings, all users have access to the application. For more information, see [policy-driven authorization](#policy-driven-authorization), [application entitlements](#application-entitlements), and [hiding an application](#hide-applications).
 
 4. On the **Review and Submit Application** panel, review the configuration for the new application and its provider, and then click **Create Application**.
 
@@ -44,12 +44,12 @@ When multiple policies, groups, or users are attached, use **Policy engine mode*
 
 The most common ways to control access to an application by using bindings are:
 
-1. [Create a policy binding](../../customize/policies/working_with_policies.md#bind-a-policy-to-an-application) that determines whether a user can access an application.
+1. [Create a policy binding](../../customize/policies/working_with_policies.mdx#bind-a-policy-to-an-application) that determines whether a user can access an application.
 2. [Bind a user or group to the application](#bind-a-user-or-group-to-an-application).
 
 ### Policy-driven authorization
 
-To use a [policy](../../customize/policies/index.md) to control which users or groups can access an application, click an application in the applications list, open the **Policy / Group / User Bindings** tab, and click **Create or bind...**. You can then create a new policy and bind it to the application, or select **Bind an existing policy** under **Bind Existing...**.
+To use a [policy](../../customize/policies/index.mdx) to control which users or groups can access an application, click an application in the applications list, open the **Policy / Group / User Bindings** tab, and click **Create or bind...**. You can then create a new policy and bind it to the application, or select **Bind an existing policy** under **Bind Existing...**.
 
 ### Bind a user or group to an application
 
@@ -125,7 +125,7 @@ To give users direct links to applications, you can now use a URL like `https://
 
 ## Backchannel providers
 
-Backchannel providers can augment the functionality of applications by using additional protocols. The main provider of an application provides the SSO protocol that is used for logging into the application. Then, additional backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.md) and [LDAP](../providers/ldap/index.md) to provide directory syncing.
+Backchannel providers can augment the functionality of applications by using additional protocols. The main provider of an application provides the SSO protocol that is used for logging into the application. Then, additional backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.mdx) and [LDAP](../providers/ldap/index.mdx) to provide directory syncing.
 
 Note that any access restrictions that are configured on an application apply to all of its backchannel providers.
 
@@ -134,7 +134,7 @@ To create a backchannel provider and then add it to an existing application, fol
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click **Create**.
 
-- **Choose a Provider Type**: The protocol for a backchannel provider must be [SCIM](../providers/scim/index.md), [LDAP](../providers/ldap/index.md), [Google Workspace (GWS)](../providers/gws/index.md), [Microsoft Entra ID](../providers/entra/index.md), or [Shared Signals Framework (SSF)](../providers/ssf/index.md).
+- **Choose a Provider Type**: The protocol for a backchannel provider must be [SCIM](../providers/scim/index.mdx), [LDAP](../providers/ldap/index.mdx), [Google Workspace (GWS)](../providers/gws/index.mdx), [Microsoft Entra ID](../providers/entra/index.mdx), or [Shared Signals Framework (SSF)](../providers/ssf/index.mdx).
 - **Configure the Provider**: Enter any required configurations.
 
 3. Click **Finish** to save the provider.
