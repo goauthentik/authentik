@@ -157,8 +157,9 @@ class UserInterface extends WithLicenseSummary(
             navItems.push({ label: msg("Discover"), link: "/requests" });
         }
         if (
-            this.can(CapabilitiesEnum.CanAgentSelfService) &&
-            this.uiConfig.enabledFeatures.agents
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
+            this.uiConfig.enabledFeatures.agents &&
+            this.can(CapabilitiesEnum.CanAgentSelfService)
         ) {
             navItems.push({ label: msg("Agents"), link: "/agents" });
         }

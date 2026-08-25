@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages import get_messages
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
@@ -22,6 +23,7 @@ from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     ContextualFlowInfo,
+    FlowMessageSerializer,
     HttpChallengeResponse,
     RedirectChallenge,
     SessionEndChallenge,
@@ -194,6 +196,9 @@ class ChallengeStageView(StageView):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
             if "flow_info" not in challenge.initial_data:
+                messages = []
+                if self.request is not None and not isinstance(challenge, RedirectChallenge):
+                    messages = get_messages(self.request)
                 # Flow payloads can outlive the previous signed media JWT, so
                 # refreshes must mint fresh URLs instead of reusing cached ones.
                 flow_info = ContextualFlowInfo(
@@ -205,7 +210,8 @@ class ChallengeStageView(StageView):
                         ),
                         "cancel_url": self.cancel_url,
                         "layout": self.executor.flow.layout,
-                    }
+                        "messages": FlowMessageSerializer(messages, many=True).data,
+                    },
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data

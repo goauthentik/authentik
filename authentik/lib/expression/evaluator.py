@@ -2,6 +2,7 @@
 
 import re
 import socket
+from copy import deepcopy
 from ipaddress import ip_address, ip_network
 from smtplib import SMTPException
 from textwrap import indent
@@ -174,8 +175,8 @@ class BaseEvaluator:
         return fallback value."""
         attrs = getattr(obj, "attributes", {})
         value = get_path_from_dict(attrs, attr_key)
-        if value is None and fallback:
-            return getattr(obj, fallback)
+        if value is None and fallback is not None:
+            return getattr(obj, fallback, fallback)
         return value
 
     def expr_event_create(self, action: str, **kwargs):
@@ -207,7 +208,7 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = self._context["request"]
+            req = deepcopy(self._context["request"])
         req.context.update(kwargs)
         proc = PolicyThread(PolicyBinding(policy=policy), request=req)
         return proc.profiling_wrapper()

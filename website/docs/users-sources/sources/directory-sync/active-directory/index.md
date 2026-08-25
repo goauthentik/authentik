@@ -73,7 +73,7 @@ To support the integration of authentik with Active Directory, create a new LDAP
     - **Bind Password**: the password of the service account created in the previous section.
     - **Base DN**: the base DN that you want authentik to sync.
 
-    Under **LDAP attribute mapping**:
+    Under **LDAP Attribute mapping**:
     - **User Property Mappings**: select all mappings that start with `authentik default LDAP` and `authentik default Active Directory`.
     - **Group Property Mappings**: select `authentik default LDAP Mapping: Name`.
 
