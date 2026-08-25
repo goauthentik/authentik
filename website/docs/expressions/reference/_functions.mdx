@@ -55,18 +55,6 @@ is returned (`.passing` will be `False`), with the error message available in `.
 If no policy matches _name_, a `ValueError` is raised and the **calling** policy fails.
 :::
 
-:::warning Keyword arguments modify the shared request context
-Keyword arguments are written directly into the context of the current `PolicyRequest`, any key you pass can
-remain visible to:
-
-- The rest of the caller, after `ak_call_policy` returns.
-- Other policies bound to the same flow, stage binding, application, or source.
-- Any further `ak_call_policy` calls made during the same evaluation.
-
-Passing a key that already exists in the context (such as `pending_user` or `prompt_data`) overwrites
-it for the remainder of the evaluation.
-:::
-
 ### `ak_is_group_member(user: User, **group_filters) -> bool`
 
 Check if `user` is member of a group matching `**group_filters`.
