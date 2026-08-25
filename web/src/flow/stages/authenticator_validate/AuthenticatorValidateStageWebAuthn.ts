@@ -37,7 +37,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     public showBackButton = false;
 
     @state()
-    protected authenticating = false;
+    protected authenticating = true;
 
     transformedCredentialRequestOptions?: PublicKeyCredentialRequestOptions;
 
@@ -90,12 +90,23 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         super.updated(changedProperties);
 
         if (changedProperties.has("challenge") && this.challenge) {
+            this.authenticating = false;
+            this.errorMessage = undefined;
+
             // convert certain members of the PublicKeyCredentialRequestOptions into
             // byte arrays as expected by the spec.
             const credentialRequestOptions = this.deviceChallenge
                 ?.challenge as PublicKeyCredentialRequestOptions;
             this.transformedCredentialRequestOptions =
                 transformCredentialRequestOptions(credentialRequestOptions);
+
+            const responseErrors = Object.values(this.challenge.responseErrors ?? {}).flat();
+            if (responseErrors.length > 0) {
+                this.errorMessage =
+                    responseErrors.map((error) => error.string).join(", ") ||
+                    msg("Failed to authenticate");
+                return;
+            }
 
             this.tryAuthenticating();
         }
@@ -108,34 +119,32 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
         this.authenticating = true;
 
-        return this.authenticate()
-            .catch(async (error: unknown) => {
-                const reason = msg("Failed to authenticate");
-                this.logger.warn(reason, error);
+        return this.authenticate().catch(async (error: unknown) => {
+            const reason = msg("Failed to authenticate");
+            this.logger.warn(reason, error);
 
-                const parsedError = await parseAPIResponseError(error);
+            const parsedError = await parseAPIResponseError(error);
 
-                this.errorMessage = pluckErrorDetail(parsedError, reason);
-            })
-            .finally(() => {
-                this.authenticating = false;
-            });
+            this.errorMessage = pluckErrorDetail(parsedError, reason);
+            this.authenticating = false;
+
+            return false;
+        });
     };
 
     protected override render(): SlottedTemplateResult {
+        const hasError = this.errorMessage !== undefined;
+        const loading = this.authenticating || !hasError;
+
         return html`<form class="pf-c-form">
             ${this.renderUserInfo()}
-            <ak-empty-state ?loading="${this.authenticating}" icon="fa-times">
-                <span
-                    >${this.authenticating
-                        ? msg("Authenticating...")
-                        : this.errorMessage || msg("Loading")}</span
-                >
+            <ak-empty-state ?loading="${loading}" icon="fa-times">
+                <span>${hasError ? this.errorMessage : msg("Authenticating...")}</span>
             </ak-empty-state>
-            ${!this.authenticating || this.showBackButton
+            ${hasError || this.showBackButton
                 ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                       <legend class="sr-only">${msg("Form actions")}</legend>
-                      ${!this.authenticating
+                      ${hasError
                           ? html`<button
                                 class="pf-c-button pf-m-primary pf-m-block"
                                 @click=${this.tryAuthenticating}
