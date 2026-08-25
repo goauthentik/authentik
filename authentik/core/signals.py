@@ -3,7 +3,6 @@
 from contextlib import contextmanager
 from contextvars import ContextVar
 
-from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.db.models import Model
@@ -20,9 +19,7 @@ from authentik.core.models import (
     User,
     default_token_duration,
 )
-from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
 from authentik.lib.models import ExpiringModel
-from authentik.root.ws.consumer import build_device_group
 
 password_changed = Signal()
 """Arguments: user: User, password: str"""
@@ -96,16 +93,6 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
     AuthenticatedSession.create_from_request(request, user)
-
-    if not RefreshOtherFlowsAfterAuthentication.get():
-        return
-    layer = get_channel_layer()
-    device_cookie = request.COOKIES.get("authentik_device")
-    if device_cookie:
-        layer.group_send_blocking(
-            build_device_group(device_cookie),
-            {"type": "event.session.authenticated"},
-        )
 
 
 @receiver(post_save, sender=User)

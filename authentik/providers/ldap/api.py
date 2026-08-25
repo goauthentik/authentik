@@ -43,7 +43,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "bind_mode",
             "mfa_support",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class LDAPProviderFilter(FilterSet):
