@@ -40,6 +40,7 @@ export const fontSize = useFontSizeDesignTokens(instance, {
 
 export const fontWeightLight = variable("font-weight.light", 300);
 export const fontWeightNormal = variable("font-weight.normal", 400);
+export const fontWeightSemiBold = variable("font-weight.semi-bold", 500);
 export const fontWeightBold = variable("font-weight.bold", 700);
 
 export const lineHeightSm = variable("line-height.sm", 1.3);

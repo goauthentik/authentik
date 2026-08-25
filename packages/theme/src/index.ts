@@ -1,4 +1,3 @@
-/* eslint-disable sort-imports */
 /**
  * @file Public entry point for `@goauthentik/theme`.
  *
@@ -8,12 +7,25 @@
  *
  * Browser-safe: no Node-only dependencies. Build helpers that touch the
  * filesystem live in `./node.ts` (exposed via the `./build` subpath).
+ *
+ * **Do not sort these imports.** They are side-effect imports, and styleframe
+ * validates an `@ref` the moment it is declared — referencing a variable that
+ * has not been registered yet throws. So every authentik token module must run
+ * before the patternfly bridge that points at it, and within each group a
+ * module must follow whatever it references.
  */
 
 import "./authentik/palette.js";
 import "./authentik/background-color.js";
 import "./authentik/spacing.js";
 import "./authentik/gutters.js";
+import "./authentik/motion.js";
+import "./authentik/shape.js";
+import "./authentik/shadow.js";
+import "./authentik/fonts.js";
+import "./authentik/z-index.js";
+import "./authentik/typography.js";
+import "./authentik/breakpoint.js";
 /*
  * The patternfly bridges
  */
@@ -21,6 +33,12 @@ import "./patternfly/palette.js";
 import "./patternfly/background-color.js";
 import "./patternfly/spacing.js";
 import "./patternfly/gutters.js";
+import "./patternfly/motion.js";
+import "./patternfly/shape.js";
+import "./patternfly/shadow.js";
+import "./patternfly/fonts.js";
+import "./patternfly/z-index.js";
+import "./patternfly/breakpoint.js";
 
 import { instance } from "./shared.js";
 

@@ -14,6 +14,9 @@ import css from "@eslint/css";
 
 export default [
     {
+        ignores: [".wireit/**", "public/**", "**/*.{js,mjs,cjs,ts,mts,cts}"],
+    },
+    {
         files: ["dist/*.css"],
         plugins: {
             css,

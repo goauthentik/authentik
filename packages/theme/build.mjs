@@ -38,7 +38,7 @@ const CATEGORIES = [
     },
     { name: "spacing", prefixes: ["global--space--"] },
     { name: "shape", prefixes: ["global--radius--", "global--border-width--"] },
-    { name: "shadow", prefixes: ["global--shadow--"] },
+    { name: "shadow", prefixes: ["global--box-shadow--"] },
     { name: "motion", prefixes: ["global--duration--", "global--easing--"] },
     { name: "z-index", prefixes: ["global--z-index--"] },
 ];

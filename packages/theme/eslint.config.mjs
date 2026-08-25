@@ -14,8 +14,8 @@ import tseslint from "typescript-eslint";
  * @type {Config[]}
  */
 const eslintConfig = defineConfig(
-    // Global ignores: compiled output is generated, not linted.
-    { ignores: ["dist/**"] },
+    // Global ignores. Compiled output does not need to be linted, and `.wireit` is a cache.
+    { ignores: ["dist/**", "public/**", ".wireit/**"] },
     {
         extends: [js.configs.recommended, tseslint.configs.recommended],
         rules: {
@@ -42,6 +42,30 @@ const eslintConfig = defineConfig(
                     caughtErrorsIgnorePattern: "^_",
                 },
             ],
+        },
+    },
+
+    // The demo page is plain browser JavaScript.
+    {
+        files: ["demo/**/*.js"],
+        languageOptions: {
+            globals: {
+                console: "readonly",
+                document: "readonly",
+                fetch: "readonly",
+                getComputedStyle: "readonly",
+                matchMedia: "readonly",
+            },
+        },
+    },
+
+    // Scripts run under Node, where `console` is legal.
+    {
+        files: ["*.mjs"],
+        languageOptions: {
+            globals: {
+                console: "readonly",
+            },
         },
     },
 );
