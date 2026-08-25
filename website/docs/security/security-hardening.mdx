@@ -3,56 +3,58 @@ title: Hardening authentik
 sidebar_position: 2
 ---
 
-While authentik is secure out of the box, you can take steps to further increase the security of an authentik instance. There is a consequential tradeoff between security and convenience. Many of these hardening practices have an impact on the user experience and should only be applied knowing this tradeoff. Apply the ones that match your threat model rather than all of them at once.
+authentik is secure by default, but you can tighten it further. Most of the changes below cost something in convenience, and some of them will generate support tickets. Apply the ones that match your threat model rather than all of them at once.
 
 ## Authentication
 
 ### Password policy
 
-authentik's shipped password policy is a reasonable baseline: an 8-character minimum plus a zxcvbn strength check. Two changes bring it in line with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password):
+The shipped password policy requires 8 characters and runs a zxcvbn strength check, failing anything scoring 2 or below. It is bound to the default password change flow only, so it does not apply to enrollment flows or to passwords an administrator sets directly. Bind it, or a policy like it, anywhere else a user can choose a password.
 
-- Set the minimum password length to 15 characters. NIST allows 8 characters only where the password is one factor of MFA, and the shipped flow skips [MFA validation](../add-secure-apps/flows-stages/stages/authenticator_validate/index.mdx) for users with no authenticator enrolled. If MFA is mandatory in your deployment, 8 characters remains sufficient.
-- Enable the **Check haveibeenpwned.com** blocklist comparison, which covers NIST's requirement to check passwords against commonly used, expected, or compromised values.
+Two changes bring the policy in line with the [NIST SP 800-63 Digital Identity Guidelines](https://pages.nist.gov/800-63-4/sp800-63b.html#password):
+
+- Raise the minimum length to 15 characters. NIST allows 8 characters only when the password is one factor of MFA, and the shipped authentication flow skips [MFA validation](../add-secure-apps/flows-stages/stages/authenticator_validate/index.mdx) for users with no authenticator enrolled. If MFA is mandatory in your deployment, 8 characters remains sufficient.
+- Enable **Check haveibeenpwned.com**, which covers NIST's requirement to compare passwords against commonly used, expected, or compromised values.
 
 :::note
-The haveibeenpwned.com check requires outbound network access, so it cannot be used on [air-gapped instances](../install-config/air-gapped.mdx). An air-gapped deployment would need an [Expression policy](../customize/policies/types/expression/index.mdx) checking against a locally held list.
+The haveibeenpwned.com check needs outbound network access, so it does not work on [air-gapped instances](../install-config/air-gapped.mdx). Air-gapped deployments need an [Expression policy](../customize/policies/types/expression/index.mdx) that checks against a locally held list instead.
 :::
 
-For further options, see [Password policy](../customize/policies/types/password.mdx). A [password expiry policy](../customize/policies/types/password-expiry.mdx) is also available, though NIST no longer recommends routine forced rotation.
+For the remaining options, see [Password policy](../customize/policies/types/password.mdx). A [password expiry policy](../customize/policies/types/password-expiry.mdx) also exists, though NIST no longer recommends routine forced rotation.
 
 ### Multi-factor authentication
 
-Requiring a second factor is the single most effective change you can make to an authentication flow. Add an [Authenticator Validation stage](../add-secure-apps/flows-stages/stages/authenticator_validate/index.mdx) to your authentication flow and consider the following settings:
+Requiring a second factor is the single most effective change you can make to an authentication flow. Add an [Authenticator Validation stage](../add-secure-apps/flows-stages/stages/authenticator_validate/index.mdx) to your authentication flow and review these settings:
 
-- Set **Not configured action** to **Configure** so that users without an authenticator are required to enroll one, or to **Deny** if enrollment is handled out of band. Leaving it on **Skip** means users without a device sign in with a password alone.
-- Restrict **Device Classes** to the methods you accept. Limiting the stage to WebAuthn removes phishable factors such as TOTP and SMS.
-- Set **WebAuthn User verification** to require user verification, so the authenticator confirms the user's presence and identity rather than only proving possession.
-- Use **WebAuthn Device type restrictions** to limit authentication to approved hardware families. Configure the same allowlist on the [WebAuthn authenticator setup stage](../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) so that new enrollments match.
+- **Not configured action** defaults to **Continue**, which lets a user with no authenticator sign in with a password alone. Set it to **Force the user to configure an authenticator**, or to **Deny the user access** if you enroll authenticators out of band.
+- Restrict **Device Classes** to the methods you accept. All six are enabled by default; limiting the stage to WebAuthn removes phishable factors such as TOTP and SMS.
+- Set **WebAuthn User verification** to **Required**. The default, **Preferred**, lets an authenticator prove possession without confirming who is holding it.
+- Use **WebAuthn Device type restrictions** to limit authentication to approved hardware. Configure the same allowlist on the [WebAuthn authenticator setup stage](../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) so new enrollments match.
 
-    This filter only applies to devices that have a stored device type. Devices enrolled before authentik 2024.4, and authenticators whose AAGUID is unknown, have no stored type and are not matched by the filter, so they continue to work. For an enforceable policy, remove those enrollments and have the users re-enroll.
+    The filter only applies to devices that have a stored device type. Devices enrolled before authentik 2024.4, and authenticators whose AAGUID authentik does not recognize, have no stored type and pass the filter untouched. To make the restriction enforceable, delete those enrollments and have the users re-enroll.
 
-- Lower or clear the **Last validation threshold** if you do not want authentik to skip validation for users who recently used a device.
-- Keep the throttling factors at or above their defaults. They apply exponential back-off to code-based methods after failed attempts.
+- **Last validation threshold** defaults to `seconds=0`, which validates on every attempt. Only raise it if you deliberately want to skip validation for users who recently used a device.
+- Leave the four throttling factors at their default of `1`. They apply exponential back-off to code-based methods, doubling the lockout after each consecutive failure: one second, then two, then four. Setting a factor to `0` turns the back-off off entirely.
 
-Recovery flows deserve the same scrutiny as authentication flows. A recovery flow that only requires an emailed link reduces the whole account to the security of the user's mailbox.
+Recovery flows deserve the same scrutiny. A recovery flow that only requires an emailed link reduces the whole account to the security of the user's mailbox.
 
 ### Account enumeration
 
-An [Identification stage](../add-secure-apps/flows-stages/stages/identification/index.mdx) has **Pretend user exists** enabled by default, so an unknown identifier continues through the flow instead of failing immediately. A few settings narrow what is left:
+The [Identification stage](../add-secure-apps/flows-stages/stages/identification/index.mdx) ships with enumeration protection on, but two of its defaults still leak.
 
-- Keep **Pretend user exists** enabled. With it off, an unknown identifier fails at this stage while a valid one continues, which tells an attacker which is which.
-- Disable **Show matched user**, which is enabled by default. It displays the matched account's username and avatar on the following step, and for an unknown identifier authentik shows the value that was typed instead, so the two cases can look different.
-- Limit **User Fields** to the identifiers you actually need. Accepting both username and email widens the range of values an attacker can test.
-- Bind a policy to the **Enrollment flow**, **Recovery flow**, and **Passwordless flow**, or delete them, if those paths should not be reachable. Removing their links from this stage only hides them from the login screen, since the flows stay reachable at `/if/flow/<slug>/`.
+- Keep **Pretend user exists** enabled, as it is by default. With it off, an unknown identifier fails at this stage while a valid one continues, which tells an attacker which is which.
+- Disable **Show matched user**, which is enabled by default. It shows the matched account's username and avatar on the next step, and falls back to echoing whatever was typed for an unknown identifier, so the two cases look different.
+- Limit **User Fields** to the identifiers you need. The default flow accepts both email and username, which doubles the values an attacker can test per account.
+- Bind a policy to the **Enrollment flow**, **Recovery flow**, and **Passwordless flow**, or delete those flows, if they should not be reachable. Unlinking them here only removes them from the login screen; the flows stay live at `/if/flow/<slug>/`.
 
 ### Brute-force resistance
 
-Combine the following controls to slow down credential-stuffing attempts:
+Combine these controls to slow down credential stuffing:
 
-- Use a [Reputation policy](../customize/policies/types/reputation.mdx) to react to repeated failed attempts from a username or client IP. The policy passes when the score is at or below its threshold, so bind it to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.mdx) to challenge low-reputation requests, or to the authentication flow with **Negate** enabled to deny them. Score limits are configurable under **System** > **Settings**.
-- Add a CAPTCHA stage unconditionally, either as its own stage or configured inline on the Identification stage, if you would rather not make it reputation-dependent.
-- Bind a [GeoIP policy](../customize/policies/types/geoip.mdx) to restrict sign-ins to expected countries or to require additional verification elsewhere.
-- Configure [notification rules](../sys-mgmt/events/notifications.mdx) on the `login_failed` and `suspicious_request` events so that spikes are surfaced rather than only recorded.
+- Use a [Reputation policy](../customize/policies/types/reputation.mdx) to react to repeated failures from a username or client IP. Each failed login scores -1 and each success +1, and the policy passes when the score is at or **below** its threshold, so it passes for bad actors. Bind it to a [CAPTCHA stage](../add-secure-apps/flows-stages/stages/captcha/index.mdx) to challenge low-reputation requests, or to the authentication flow with **Negate** enabled to deny them. Binding it to a flow without **Negate** locks out everyone except the attacker. Score limits live under **System** > **Settings** as **Reputation: lower limit** and **Reputation: upper limit**.
+- Add a CAPTCHA stage unconditionally, either standalone or inline on the Identification stage, if you would rather not make it reputation-dependent.
+- Bind a [GeoIP policy](../customize/policies/types/geoip.mdx) to restrict sign-ins to expected countries, or to require extra verification elsewhere.
+- Configure [notification rules](../sys-mgmt/events/notifications.mdx) on `login_failed` and `suspicious_request` so spikes surface instead of only being recorded.
 
 ## Sessions
 
@@ -60,47 +62,47 @@ Combine the following controls to slow down credential-stuffing attempts:
 
 The [User Login stage](../add-secure-apps/flows-stages/stages/user_login/index.mdx) controls how long an authenticated session lasts.
 
-- **Session duration** defaults to `seconds=0`, which ends the session when the browser closes. Setting an explicit duration makes the session persistent instead, so it survives browser restarts for that long. Only set one if you need it, and keep it short.
-- Set **Remember me offset** to `seconds=0` to hide the remember-me option, or keep the offset short.
-- Set **Remember device** to `seconds=0` if you do not want authentik to store a long-lived device cookie.
-- Enable **Terminate other sessions** so that a new sign-in invalidates the user's existing sessions.
+- **Session duration** defaults to `seconds=0`, which ends the session when the browser closes. Any explicit duration makes the session persistent instead, surviving browser restarts for that long. Set one only if you need it, and keep it short.
+- **Remember device** defaults to `days=30`. That is a signed cookie identifying the user on this device, outliving the session itself. Set it to `seconds=0` if you do not want it.
+- **Remember me offset** defaults to `seconds=0`, which hides the remember-me option. Leave it there, or keep any offset short.
+- Enable **Terminate other sessions**, off by default, so a new sign-in invalidates the user's existing sessions.
 
 ### Session binding
 
-The User Login stage can also bind a session to the network and location it was created from. authentik then terminates the session when the client's network or location changes beyond the configured strictness, which limits how far a stolen session cookie can travel. A cookie replayed from within the same permitted ASN or region still works, so treat this as a way to detect relocation rather than as a guarantee against replay.
+The User Login stage can bind a session to the network and location it was created from, then terminate it when the client moves beyond the configured strictness. This limits how far a stolen session cookie travels. A cookie replayed from within the same permitted ASN or region still works, so treat binding as relocation detection rather than as replay protection.
 
-- **Network binding** can bind to ASN, ASN and network, or ASN, network, and IP.
-- **GeoIP binding** can bind to continent, continent and country, or continent, country, and city.
+- **Network binding** can bind to ASN; ASN and network; or ASN, network, and IP.
+- **GeoIP binding** can bind to continent; continent and country; or continent, country, and city.
 
-When a binding is violated, authentik terminates the session and records a logout event describing what changed.
+Both default to no binding. When a bound session moves, authentik terminates it and records a logout event naming what changed.
 
 :::warning
-Stricter bindings cause more spurious logouts. Users on mobile networks, on VPNs, or behind load-balanced egress can change ASN or IP mid-session. Start with the loosest binding that meets your requirements and review the resulting logout events before tightening it.
+Stricter bindings cause more spurious logouts. Users on mobile networks, on VPNs, or behind load-balanced egress change ASN or IP mid-session as a matter of course. Start with the loosest binding that meets your requirements and read the resulting logout events before tightening it.
 :::
 
-Each binding type needs its own database. Network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)), and GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)).
+Each binding type needs its own database: network binding uses the ASN database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__ASN`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__asn)), GeoIP binding uses the GeoIP City database ([`AUTHENTIK_EVENTS__CONTEXT_PROCESSORS__GEOIP`](../install-config/configuration/configuration.mdx#authentik_events__context_processors__geoip)).
 
 :::warning
-If the database is missing, the lookup fails, the binding is treated as broken, and the session is terminated. This check only runs once a client's IP changes, not at login, so the problem can stay hidden long after the binding is enabled.
+A missing database fails the lookup, which counts as a broken binding and terminates the session. authentik only runs the check once a client's IP changes, never at login, so a missing database can stay hidden long after you enable binding.
 :::
 
 ## Administrative access
 
 ### Limit superusers
 
-Any account in a group with **Superuser Privileges** enabled can change every object in authentik, including the flows that protect it. Grant the smallest set of permissions that lets an administrator do their job:
+Any account in a group with **Superuser Privileges** can change every object in authentik, including the flows that protect it. Grant the smallest set of permissions that lets an administrator do their job:
 
 - Use [roles](../users-sources/roles/index.mdx) and [access control](../users-sources/access-control/index.mdx) to assign specific object and global permissions instead of superuser membership.
-- Review superuser group membership regularly, and treat every superuser account as requiring phishing-resistant MFA.
+- Review superuser group membership regularly, and require phishing-resistant MFA on every superuser account.
 
 ### Impersonation
 
-Impersonation lets an administrator act as another user. Under **System** > **Settings**:
+Impersonation lets an administrator act as another user. Both settings live under **System** > **Settings** and are enabled by default:
 
-- Set **Impersonation** to disabled if the feature is not needed. This applies globally, including to superusers.
-- Keep **Require reason for impersonation** enabled so every use is recorded with a justification.
+- Disable **Impersonation** if you do not need it. This applies globally, superusers included.
+- Keep **Require reason for impersonation** enabled so every use carries a justification.
 
-Impersonation always generates `impersonation_started` and `impersonation_ended` events. Configure a [notification rule](../sys-mgmt/events/notifications.mdx) on these so that use is visible in real time rather than only on audit.
+Impersonation always generates `impersonation_started` and `impersonation_ended` events. Configure a [notification rule](../sys-mgmt/events/notifications.mdx) on them so use is visible in real time rather than at audit.
 
 ### Tokens and app passwords
 
@@ -110,24 +112,22 @@ Review existing tokens under **Directory** > **Tokens and App passwords**, and p
 
 ### Audit events
 
-[Events](../sys-mgmt/events/index.mdx) are authentik's audit log. Two settings under **System** > **Settings** matter for retention:
+[Events](../sys-mgmt/events/index.mdx) are authentik's audit log. Two settings under **System** > **Settings** govern retention:
 
-- **Event retention** defaults to `days=365`. Increase it to match your retention requirements, or forward events to an external system and reduce it. Changing the value only affects new events.
-- **GDPR compliance** deletes a user's events when the user is deleted. Disable it if your audit requirements outweigh that, keeping local data protection obligations in mind.
+- **Event retention** defaults to `days=365`. Raise it to match your requirements, or forward events to an external system and lower it. authentik stamps the expiry when it writes the event, so a change only affects events recorded afterwards.
+- **GDPR compliance**, enabled by default, deletes a user's events along with the user. Disable it if your audit requirements outweigh that, bearing local data protection obligations in mind.
 
-Notification rules give early warning of administrative activity, for example `model_created` / `model_updated` / `model_deleted` for configuration changes, or `secret_view` for reading a token or certificate. See [event actions](../sys-mgmt/events/event-actions.mdx) for the full list.
+Notification rules give early warning of administrative activity: `model_created`, `model_updated`, and `model_deleted` for configuration changes, or `secret_view` for reading a token or certificate. See [event actions](../sys-mgmt/events/event-actions.mdx) for the full list.
 
 ## Restricting configuration changes
 
-Expressions, blueprints, and CAPTCHA stages let a highly privileged user change how authentik behaves. By default they are limited to superusers and users with the relevant permissions, and all changes are logged. To remove the ability entirely, block the corresponding API endpoints in front of authentik, for example at your [reverse proxy](../install-config/reverse-proxy.mdx).
+Expressions, blueprints, and CAPTCHA stages all let a highly privileged user change how authentik behaves. By default authentik limits them to superusers and users holding the relevant permissions, and logs every change. To remove the ability entirely, block the corresponding API endpoints in front of authentik, for example at your [reverse proxy](../install-config/reverse-proxy.mdx).
 
-With any of these restrictions in place, the affected objects can only be edited through [blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file). Take care to restrict access to the file system itself, and to the process that deploys files to it.
+Once you do, the affected objects can only be edited through [blueprints on the file system](../customize/blueprints/index.mdx#as-a-local-file). Restrict access to that file system, and to whatever deploys files onto it, with the same care.
 
 ### Expressions
 
-[Expressions](../customize/policies/types/expression/index.mdx) allow super-users and other highly privileged users to create custom logic within authentik to modify its behavior. Editing/creating these expressions is, by default, limited to super-users and any related events are fully logged.
-
-To prevent any user, including superusers, from using expressions to create or edit objects, block:
+[Expressions](../customize/policies/types/expression/index.mdx) run custom Python inside authentik to modify its behavior. To stop every user, superusers included, from creating or editing them, block:
 
 - `/api/v3/policies/expression*`
 - `/api/v3/propertymappings*`
@@ -136,17 +136,13 @@ To prevent any user, including superusers, from using expressions to create or e
 
 ### Blueprints
 
-Blueprints allow for templating and managing the authentik configuration as code. Just like expressions, they can only be created/edited by super-users or users with specific permissions assigned to them. However, because they interact with the authentik API on a lower level, they can create other objects.
-
-To prevent any user from creating or editing blueprints, block:
+Blueprints manage authentik configuration as code. They carry the same permission requirements as expressions, but because they drive the API at a lower level they can create other objects outright. To stop every user from creating or editing them, block:
 
 - `/api/v3/managed/blueprints*`
 
-### CAPTCHA Stage
+### CAPTCHA stage
 
-The CAPTCHA stage allows for additional verification of a user while authenticating or authorizing an application. Because the CAPTCHA stage supports multiple different CAPTCHA providers, such as Google's reCAPTCHA and Cloudflare's Turnstile, the URL for the JavaScript snippet can be modified. Depending on the threat model, this could be exploited by a malicious internal actor.
-
-To prevent any user from creating or editing CAPTCHA stages, block:
+The CAPTCHA stage verifies a user while authenticating or authorizing an application. It supports several providers, including Google's reCAPTCHA and Cloudflare's Turnstile, so the URL of the JavaScript snippet it loads is editable. Depending on your threat model, a malicious insider could point it somewhere else. To stop every user from creating or editing CAPTCHA stages, block:
 
 - `/api/v3/stages/captcha*`
 - `/api/v3/managed/blueprints*`
@@ -155,68 +151,64 @@ To prevent any user from creating or editing CAPTCHA stages, block:
 
 ### Secret key
 
-[`AUTHENTIK_SECRET_KEY`](../install-config/configuration/configuration.mdx#authentik_secret_key) signs session cookies and is used for several other cryptographic operations. Generate it from a cryptographically secure source, keep it out of version control, and supply it through a secret manager rather than a plaintext environment file. Change it only if it has leaked, not as routine maintenance.
+[`AUTHENTIK_SECRET_KEY`](../install-config/configuration/configuration.mdx#authentik_secret_key) signs session cookies and backs several other cryptographic operations. Generate it from a cryptographically secure source, keep it out of version control, and supply it through a secret manager rather than a plaintext environment file. Rotating it invalidates every active session, so change it if it leaks, not as routine maintenance.
 
 ### Trusted proxy headers
 
-[`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](../install-config/configuration/configuration.mdx#authentik_listen__trusted_proxy_cidrs) defines which source addresses are allowed to set proxy headers such as `X-Forwarded-For`. The default includes the private ranges, which is broad for most deployments.
+[`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](../install-config/configuration/configuration.mdx#authentik_listen__trusted_proxy_cidrs) decides which source addresses may set proxy headers such as `X-Forwarded-For`. It defaults to loopback plus every private range, which is broader than most deployments need.
 
-Narrow it to the addresses of your actual reverse proxies. If any untrusted client can reach authentik directly from within one of the listed ranges, it can spoof its own client IP, which in turn undermines reputation policies, GeoIP policies, session binding, and the accuracy of the audit log.
+Narrow it to the addresses of your actual reverse proxies. Any untrusted client that can reach authentik directly from a listed range can spoof its own client IP, which undermines reputation policies, GeoIP policies, session binding, and the accuracy of the audit log all at once.
 
 ### Database connections
 
-Set [`AUTHENTIK_POSTGRESQL__SSLMODE`](../install-config/configuration/configuration.mdx#postgresql-settings) to `verify-ca`, or to `verify-full` when hostname verification is available, whenever the database is not reached over a trusted local socket. The default of `disable` performs no certificate validation.
+[`AUTHENTIK_POSTGRESQL__SSLMODE`](../install-config/configuration/configuration.mdx#postgresql-settings) defaults to `disable`, which validates no certificate at all. Unless the database is reached over a trusted local socket, set it to `verify-ca`, or to `verify-full` where hostname verification is available.
 
 ### Embedded outpost
 
-The embedded outpost runs inside the authentik server and serves proxy provider traffic. If you run standalone outposts, or use no proxy providers at all, set `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST` to `true` to remove that surface.
+The embedded outpost runs inside the authentik server and serves proxy provider traffic. If you run standalone outposts, or no proxy providers at all, set `AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST` to `true` to shut it off.
 
 ### Logging and error reporting
 
-- Keep [`AUTHENTIK_LOG_LEVEL`](../install-config/configuration/configuration.mdx#authentik_log_level) at `info` or higher in production. `trace` is a debugging level and could put sensitive information, such as request headers, into your logs.
+- Keep [`AUTHENTIK_LOG_LEVEL`](../install-config/configuration/configuration.mdx#authentik_log_level) at its `info` default in production. `trace` is a debugging level and can put session cookies and request headers into your logs.
 - [`AUTHENTIK_ERROR_REPORTING__ENABLED`](../install-config/configuration/configuration.mdx#authentik_error_reporting) is disabled by default. If you enable it, leave `AUTHENTIK_ERROR_REPORTING__SEND_PII` disabled, or point the DSN at a Sentry instance you control.
 
 ## HTTP headers
 
 ### Content Security Policy (CSP)
 
-:::warning
-Setting up CSP incorrectly might result in the client not loading necessary third-party code.
-:::
+Content Security Policy mitigates content injection. authentik does not set a CSP on its own interface, so it depends on your installation; we recommend setting the header at a [reverse proxy](../install-config/reverse-proxy.mdx).
 
 :::warning
-In some cases, a CSP header will already be set by authentik (for example, in [user uploaded content](https://github.com/goauthentik/authentik/pull/12092/)). Do not overwrite an already existing header as doing so might result in vulnerabilities. Instead, add a new CSP header.
+authentik already sets a restrictive CSP on user-uploaded files under `/media`. Do not overwrite a header authentik has set, as replacing that one weakens it. Add your header only where none exists.
 :::
 
-Content Security Policy (CSP) is a security standard that mitigates the risk of content injection vulnerabilities. authentik doesn't currently support CSP natively, so setting it up depends on your installation. We recommend using a [reverse proxy](../install-config/reverse-proxy.mdx) to set a CSP header.
-
-authentik requires at least the following allowed locations:
+authentik needs at least these locations allowed:
 
 ```
 default-src 'self';
 img-src https: data:;
 object-src 'none';
-frame-ancestors 'self';              # Same-origin framing is used by some SAML endpoints
+frame-ancestors 'self';              # Same-origin framing is used by the flow executor and SAML
 style-src 'self' 'unsafe-inline';    # Required due to Lit/ShadowDOM
 script-src 'self' 'unsafe-inline';   # Required for generated scripts
 ```
 
-Your use case might require more allowed locations for various directives, for example:
+Get this wrong and the client silently fails to load code it needs, so test before rolling it out. Your deployment may need more locations, for example:
 
 - when using a CAPTCHA service
 - when using Sentry
-- when using any custom JavaScript in a prompt stage
+- when using custom JavaScript in a prompt stage
 - when using Spotlight Sidecar for development
-- when using images hosted via HTTP
+- when using images hosted over HTTP
 
 :::note
-`frame-ancestors 'none'` is stricter, but several SAML endpoints intentionally permit same-origin framing. Use `'self'` unless you have confirmed that no SAML provider in your deployment relies on it.
+`frame-ancestors 'none'` is stricter, but the flow executor and the SAML POST bindings intentionally permit same-origin framing. Use `'self'` unless you have confirmed nothing in your deployment relies on it.
 :::
 
 ### Other headers
 
 authentik already sends `X-Frame-Options` on its own responses. At the reverse proxy, consider adding:
 
-- `Strict-Transport-Security`, once you are confident every host under the domain is served over HTTPS.
-- `Referrer-Policy: strict-origin-when-cross-origin` or stricter, so that flow URLs containing tokens are not leaked in referrers.
+- `Strict-Transport-Security`, once every host under the domain is served over HTTPS.
+- `Referrer-Policy: strict-origin-when-cross-origin` or stricter, so flow URLs carrying tokens do not leak in referrers.
 - `X-Content-Type-Options: nosniff`.
