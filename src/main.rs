@@ -5,6 +5,8 @@ use ak_common::db;
 use ak_common::{Mode, Tasks, authentik_full_version, config, tls, tracing as ak_tracing};
 use argh::FromArgs;
 use eyre::{Result, eyre};
+#[cfg(feature = "core")]
+use pyo3::prelude::*;
 use tracing::{error, info, trace};
 
 #[cfg(feature = "core")]
@@ -71,9 +73,7 @@ fn main() -> Result<()> {
 
     #[cfg(feature = "core")]
     if Mode::is_core() {
-        trace!("initializing Python");
-        pyo3::Python::initialize();
-        trace!("Python initialized");
+        setup_python();
     }
 
     config::init()?;
@@ -101,6 +101,8 @@ fn main() -> Result<()> {
             #[cfg(feature = "core")]
             if Mode::is_core() {
                 db::init(&mut tasks).await?;
+
+                setup_django()?;
             }
 
             match cli.command {
@@ -146,4 +148,34 @@ fn main() -> Result<()> {
                 Err(eyre!("Errors encountered: {:?}", errors))
             }
         })
+}
+
+#[cfg(feature = "core")]
+fn setup_python() {
+    trace!("initializing Python");
+    Python::initialize();
+    trace!("Python initialized");
+}
+
+#[cfg(feature = "core")]
+fn setup_django() -> PyResult<()> {
+    Python::attach(|py| {
+        py.import("authentik.root.setup")?
+            .getattr("setup")?
+            .call0()?;
+
+        let debug = py.import("authentik.lib.debug")?;
+
+        debug.getattr("start_debug_server")?.call0()?;
+
+        debug
+            .getattr("start_pyroscope")?
+            .call1((Mode::get().to_string(),))?;
+
+        py.import("lifecycle.migrate")?
+            .getattr("run_migrations")?
+            .call0()?;
+
+        Ok(())
+    })
 }
