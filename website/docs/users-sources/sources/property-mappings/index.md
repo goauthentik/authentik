@@ -80,7 +80,7 @@ An identifier has to be a simple value such as a string. Entries that are not, s
 
 #### Object-shaped OpenID Connect group claims
 
-OpenID Connect does not define a standard `groups` claim or its value shape. Some identity providers return group objects instead of simple identifiers.
+The OpenID Connect standard does not define a standard `groups` claim or its value shape. Some identity providers return group objects instead of simple identifiers.
 
 The cleanest solution is to configure the identity provider to return an array of stable, unique identifiers:
 
