@@ -6,7 +6,8 @@ from uuid import uuid4
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.tests.utils import create_test_user
+from authentik.core.models import Session
+from authentik.core.tests.utils import create_test_session, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
@@ -213,6 +214,40 @@ class TestSCIMUsers(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_user_update_deactivate(self):
+        """Test user deactivated via update deletes their sessions"""
+        user = create_test_user()
+        session = create_test_session(user)
+        existing = SCIMSourceUser.objects.create(source=self.source, user=user, external_id=uuid4())
+        response = self.client.put(
+            reverse(
+                "authentik_sources_scim:v2-users",
+                kwargs={
+                    "source_slug": self.source.slug,
+                    "user_id": str(user.uuid),
+                },
+            ),
+            data=dumps(
+                {
+                    "id": str(existing.pk),
+                    "userName": user.username,
+                    "active": False,
+                    "emails": [
+                        {
+                            "primary": True,
+                            "value": user.email,
+                        }
+                    ],
+                }
+            ),
+            content_type=SCIM_CONTENT_TYPE,
+            HTTP_AUTHORIZATION=f"Bearer {self.source.token.key}",
+        )
+        self.assertEqual(response.status_code, 200)
+        user.refresh_from_db()
+        self.assertFalse(user.is_active)
+        self.assertFalse(Session.objects.filter(session_key=session.session.session_key).exists())
 
     def test_user_update_patch(self):
         """Test user update (patch)"""

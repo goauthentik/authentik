@@ -53,7 +53,12 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name_plural",
             "meta_model_name",
         ]
-        extra_kwargs = {
+        # This serializer is only a general read serializer for listing/reading
+        # providers without their specific type,
+        # setting whether authorization_flow/invalidation_flow are required
+        # is up to the child serializer
+        extra_kwargs = {}
+        extra_write_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
             "invalidation_flow": {"required": True, "allow_null": False},
         }
