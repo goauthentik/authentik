@@ -1,165 +1,44 @@
-## Project Overview
+# The authentik docs sites
 
-This is the **authentik documentation website** — the source for everything published under `goauthentik.io`. It is a TypeScript [NPM Workspace](https://docs.npmjs.com/cli/v11/using-npm/workspaces) at `./website` that builds **three separate [Docusaurus](https://docusaurus.io/) sites**, each its own workspace package with its own `docusaurus.config.esm.mjs`, `sidebar.mjs`, and `static/_redirects`:
+`website/` is a pnpm workspace that builds three separate Docusaurus sites, each its own package with its own `docusaurus.config.esm.mjs`, sidebar, and `static/_redirects`:
 
-- **Topics / "The Docs"** (`docs/`, pkg `@goauthentik/docs-topics`) → [docs.goauthentik.io](https://docs.goauthentik.io) — how to use and configure authentik.
-- **Integrations** (`integrations/`, pkg `@goauthentik/integration-docs`) → [integrations.goauthentik.io](https://integrations.goauthentik.io) — guides for integrating authentik with third-party services. Primarily for SSO.
-- **API** (`api/`, pkg `@goauthentik/api-docs`) → [api.goauthentik.io](https://api.goauthentik.io) — **generated** from the OpenAPI schema (`../schema.yml`); do not hand-edit reference pages.
+- `docs/` → [docs.goauthentik.io](https://docs.goauthentik.io), how to use and configure authentik.
+- `integrations/` → [integrations.goauthentik.io](https://integrations.goauthentik.io), per-service SSO setup guides.
+- `api/` → [api.goauthentik.io](https://api.goauthentik.io), generated from `../schema.yml`. Never hand-edit its reference pages.
 
-A shared `docusaurus-theme/` workspace package (`@goauthentik/docusaurus-theme`) holds common theme, redirect, and component code consumed by all three. Common dependencies (Docusaurus, React, MDX) are hoisted to the root `node_modules`.
+The shared `docusaurus-theme/` package holds the theme code all three consume, including swizzled overrides of Docusaurus internals. Prefer wrapping over ejecting, and re-check overrides on a Docusaurus upgrade, because they shadow theme components that upgrades are allowed to change. Scaffold a new one with `docusaurus swizzle @docusaurus/theme-classic <Component> --wrap`, then move it into `docusaurus-theme/theme/` so all three sites share it.
 
-Theme customizations live in `docusaurus-theme/theme/` as **swizzled** components — Docusaurus's mechanism for overriding a built-in theme component by shadowing it at the same import path (e.g. `theme/EditThisPage`, `theme/DocItem/Content`, `theme/NotFound`). Most are _wrappers_ (render the original and add to it); a few are _ejected_ (full replacements). Because these override theme internals, they can break on a Docusaurus upgrade — prefer wrapping over ejecting, keep overrides minimal, and re-check them when bumping Docusaurus. Scaffold a new one with the `docusaurus swizzle` CLI (`npm run --prefix website/docs docusaurus -- swizzle @docusaurus/theme-classic <ComponentName> --wrap`; use `--eject` only when wrapping cannot express the change), then move the result into `docusaurus-theme/theme/` so all three sites share it.
-
-You are most often editing **MDX content**, not application code. Treat documentation as a product: every page has a URL that is a promise to readers, and prose must pass the linters and the spell checker.
+Most work here is MDX content, not application code. A page's URL is a promise to readers, and the prose has to pass the linters.
 
 ## Commands
 
-All build/lint commands are driven from the **repo-root `Makefile`**, not from inside `website/`. Each target proxies to an NPM script via `corepack npm run --prefix website ...`. Run them from the repository root.
+Run everything from the repo root through `make`. The targets wrap `pnpm --dir website` with the right ordering (this is a pnpm workspace; older references to npm and corepack are stale). `make docs` and `make integrations` are lint-fix plus a full build, and CI runs the same, so run the one matching your change before pushing. `make docs-watch` and `make integrations-watch` give a live dev server, and `make docs-install` repairs the tooling after dependency changes or odd build failures.
 
-### Setup
+## Content is `.mdx` only
 
-```bash
-make docs-install      # Install/update all docs build tooling (run first, and after build failures)
-```
+All three sites dropped `.md`. Create new pages as `.mdx`, and rename with `git mv <file>.md <file>.mdx` plus a `_redirects` entry if the page was already published. Files that are not pages (notes, partials) stay out of the build by an `_` prefix, which Docusaurus already excludes.
 
-`make install` (the full dev environment) is a superset and also installs docs tooling.
+## Authoring
 
-### Topics docs (`docs/`)
+**`docs/developer-docs/docs/style-guide.mdx` is the source of truth. Read it before writing prose.** It covers terminology, voice, headings, frontmatter, callouts, and formatting; this file deliberately restates none of it, because a partial copy would drift. Page templates live in `docs/developer-docs/docs/templates/`, and `writing-documentation.mdx` next to the style guide covers routing, redirects, and the glossary field reference.
 
-```bash
-make docs              # lint-fix + build — ALWAYS run before pushing a PR (CI fails otherwise)
-make docs-watch        # Live dev server with hot reload
-```
+The rule no linter catches: the product name is always lowercase `authentik`, even at the start of a sentence. The company is Authentik Security, Inc., and Admin is capitalized only when naming the Admin interface.
 
-### Integration guides (`integrations/`)
+The two sites navigate differently, and mixing this up is the most common structural mistake:
 
-```bash
-make integrations        # lint-fix + build — run before pushing a PR
-make integrations-watch  # Live dev server with hot reload
-```
+- A new Topics page must be added to `docs/sidebar.mjs` by hand or it silently doesn't appear.
+- The integrations sidebar is generated from `integrations/categories.mjs`. Never edit it. A new guide starts as a copy of `integrations/template/service.mdx` into `integrations/<category>/<service>/index.mdx`, using the placeholder domains `authentik.company` and `<app-name>.company` (drop the service domain for SaaS).
 
-### API docs (`api/`)
-
-```bash
-make docs-api-watch    # Regenerate from schema + dev server
-make docs-api-build    # Build generated API reference
-make docs-api-clean    # Remove generated API reference
-```
-
-### Linting & spell check
-
-```bash
-make lint-spellcheck   # cspell over the repo (also part of docs-lint-fix)
-make docs-lint-fix     # spellcheck + prettier --write
-```
-
-Inside `website/` the underlying scripts are `npm run prettier`, `npm run lint` / `npm run lint-check` (ESLint), and `npm run check-types` (`tsc -b`). Prefer the `make` targets — they wire up the correct working directory and ordering.
-
-## Architecture
-
-### Directory structure
-
-```
-website/
-  docs/                 # Topics site (@goauthentik/docs-topics)
-    add-secure-apps/    # Applications, providers, flows, stages, etc.
-    core/               # Core concepts + glossary (core/glossary/terms/)
-    customize/          # Branding, blueprints, policies, theming
-    developer-docs/     # CONTRIBUTOR GUIDES — read these before authoring (see below)
-    enterprise/ install-config/ releases/ security/ sys-mgmt/
-    troubleshooting/ users-sources/ expressions/ endpoint-devices/
-    sidebar.mjs         # Hand-maintained nav for the Topics site
-    static/_redirects   # Netlify redirect rules for moved/renamed pages
-  integrations/         # Integrations site (@goauthentik/integration-docs)
-    <category>/<service>/index.mdx   # one folder per service
-    categories.mjs      # Category list — drives the AUTO-GENERATED sidebar
-    template/service.mdx # Template for a new integration guide
-    static/_redirects
-  api/                  # API site (@goauthentik/api-docs) — generated from ../schema.yml
-  docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
-    theme/              # Swizzled Docusaurus component overrides (shadow built-in theme)
-  scripts/              # Build/lint helper scripts (e.g. lint-runtime.mjs)
-  static/               # Shared static assets
-  package.json          # Root workspace definition
-```
-
-### Author-facing guides (source of truth — keep content consistent with these)
-
-- `docs/developer-docs/docs/writing-documentation.mdx` — setup, build commands, glossary, page routing & redirects.
-- `docs/developer-docs/docs/style-guide.mdx` — the canonical style guide (terminology, voice, formatting, accessibility, metadata).
-- `docs/developer-docs/docs/templates/` — `combo` / `procedural` / `conceptual` / `reference` templates (`*.tmpl.mdx`). Start from a template; default to **combo** unless the steps get buried, then split into procedural + conceptual.
-- `docs/developer-docs/contributing.mdx` — general contribution guidelines.
-
-When you change a documented workflow (commands, structure, conventions), update both this file **and** the corresponding author-facing guide so they don't drift.
-
-## Authoring conventions
-
-**`docs/developer-docs/docs/style-guide.mdx` is the single source of truth — read it before authoring prose, and follow it over any summary.** It covers terminology, voice and tense, sentence-case headings, frontmatter, callouts, code-block options, formatting of UI elements and placeholders, accessibility, and metadata. This file deliberately does not restate those rules; a partial copy would drift out of sync with the guide.
-
-The one rule the linters and spell checker cannot enforce, and the one most often gotten wrong: **the product name is always `authentik`** — lowercase `a`, even at the start of a sentence; the company is **Authentik Security, Inc.**, and **Admin** is capitalized only when naming the Admin interface.
-
-### Adding a Topics page
-
-1. Create the `.mdx` file under the appropriate `docs/<area>/` directory.
-2. **Add it to `docs/sidebar.mjs`** — otherwise it won't appear in the navigation.
-3. Run `make docs` before pushing.
-
-### Adding an integration guide
-
-1. Copy `integrations/template/service.mdx` into `integrations/<category>/<service>/index.mdx`. Pick a `<category>` from `integrations/categories.mjs`.
-2. Use placeholder domains `authentik.company` and `<app-name>.company` (drop the service domain for SaaS).
-3. **Do not edit the integrations sidebar** — it is auto-generated from `categories.mjs`.
-4. Run `make integrations` before pushing.
-
-### Adding a glossary term
-
-Create `docs/core/glossary/terms/<term>.mdx` with `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `authentikSpecific`, `shortDescription`, optional `longDescription`). See `writing-documentation.mdx` for the field reference.
+Glossary terms are pages too: `docs/core/glossary/terms/<term>.mdx`, driven by `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `shortDescription`). The field reference is in `writing-documentation.mdx`.
 
 ## URLs and redirects
 
-File path → URL: drop the `website/<site>` prefix, strip the extension, add a trailing slash (e.g. `website/docs/developer-docs/docs/style-guide.mdx` → `https://docs.goauthentik.io/developer-docs/docs/style-guide/`).
+File path → URL: strip the `website/<site>` prefix and the extension, add a trailing slash. Moving or renaming a page requires a rule in that site's `static/_redirects` (`/old/path  /new/path  301!`). Better organization rarely justifies breaking bookmarks, so don't move pages without a reason.
 
-**Every URL is a promise — `_redirects` exist so links never break.** When you move or rename a page:
+## Spell check
 
-1. Move the file and update its `sidebar.mjs` entry.
-2. Add a rule to the site's `static/_redirects` (`/old/path  /new/path  301!`).
-
-Avoid renaming/moving pages unless necessary; better organization rarely justifies breaking bookmarks.
-
-## Spell checking
-
-Spell checking uses **cspell** (`make lint-spellcheck`, config `../cspell.config.jsonc`) in typo-only mode (`unknownWords: "report-common-typos"`): it reports only words on the common-misspellings list (always with a suggested fix) and forbidden British spellings. Unknown words — product names, jargon, identifiers — pass silently, so a new integration or technology term needs **no** dictionary entry.
-
-If the checker flags a word whose spelling is intentional (a third-party API member, a deliberate misspelling in an example), either:
-
-- add it to `../locale/en/dictionaries/overrides.txt` if it may recur across files, or
-- use an inline comment scoped as tightly as possible for a true one-off: `<!-- spellchecker:ignore someword -->` in Markdown/MDX (`// spellchecker:ignore ...` in code), or `<!-- spellchecker:disable-next-line -->` for a single line.
-
-Never disable the checker for a whole page.
+cspell runs in typo-only mode. It flags known misspellings and British spellings, and lets unknown words pass silently, so a new integration or product name needs no dictionary entry. An intentional flagged spelling goes in `locale/en/dictionaries/overrides.txt` if it recurs, or a tightly scoped `<!-- spellchecker:ignore word -->` for a one-off. Never disable the checker for a whole page.
 
 ## Deployment
 
-Deployment is handled by Netlify plus GitHub Actions. Branches map to subdomains:
-
-| Subdomain                        | Branch           |
-| -------------------------------- | ---------------- |
-| `docs.goauthentik.io`            | current release  |
-| `main.goauthentik.io`            | `main`           |
-| `next.goauthentik.io`            | `next`           |
-| `version-YYYY-MM.goauthentik.io` | specific release |
-
-Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, and any Docusaurus-specific features before requesting review.
-
-## Tech Stack
-
-| Concern        | Tooling                                                                             |
-| -------------- | ----------------------------------------------------------------------------------- |
-| Site generator | Docusaurus 3.x (classic preset + Mermaid)                                           |
-| Content        | MDX + React                                                                         |
-| API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                      |
-| Build runtime  | Node ≥ 24, npm ≥ 11 (run via `corepack`)                                            |
-| Package layout | NPM Workspaces (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
-| Lint / format  | ESLint 9 (`@goauthentik/eslint-config`) + Prettier (`@goauthentik/prettier-config`) |
-| Spell check    | cspell (typo-only mode)                                                             |
-| Types          | TypeScript (`tsc -b`)                                                               |
-| Hosting        | Netlify + GitHub Actions                                                            |
+Netlify builds every PR into a Deploy Preview. Check rendering and links there before requesting review. `docs.goauthentik.io` tracks the current release, `main.goauthentik.io` tracks `main`, and `version-YYYY-MM.goauthentik.io` pins a release.
