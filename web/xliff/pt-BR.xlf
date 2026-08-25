@@ -8957,12 +8957,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
 </trans-unit>
@@ -11046,9 +11040,6 @@ por exemplo: <x id="0" equiv-text="&lt;code&gt;"/>oci://registry.domain.tld/path
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
