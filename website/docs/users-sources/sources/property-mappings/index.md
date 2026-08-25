@@ -36,7 +36,7 @@ return {
 }
 ```
 
-You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that for users, `groups` and `group_attributes` cannot be set.
+You can see that the expression returns a Python dictionary. The dictionary keys must match [User properties](../../user/user_ref.mdx#object-properties) or [Group properties](../../groups/group_ref.md#object-properties). Note that `group_attributes` cannot be set for users. A source user property mapping can return `groups` to synchronize source groups as described in [Group synchronization](#group-synchronization); it does not set a regular user object property.
 
 See each source documentation for a reference of the available data. See the authentik [expressions documentation](./expressions.md) for available data and functions.
 
@@ -78,25 +78,76 @@ The `groups` attribute is a special attribute that must contain group identifier
 
 An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
 
-There is no standard for what a `groups` claim contains, so authentik does not guess at object-shaped entries. Reduce them to identifiers yourself in a user property mapping, which runs before the identifiers are read:
+#### Object-shaped OpenID Connect group claims
+
+OpenID Connect does not define a standard `groups` claim or its value shape. Some identity providers return group objects instead of simple identifiers.
+
+The cleanest solution is to configure the identity provider to return an array of stable, unique identifiers:
+
+```json
+{
+    "groups": ["g1", "g2"]
+}
+```
+
+Use an immutable provider group ID where possible. Do not use a display name as the identifier unless it is guaranteed to be unique and stable.
+
+If the provider cannot return identifier values directly, create an OAuth source property mapping and attach it to the source's **User property mappings**. OAuth source property mappings receive the provider response data in the `info` variable.
+
+The following mapping supports an array-valued `groups` claim containing simple identifiers, objects, or both. It preserves simple identifier entries and extracts identifiers from object entries:
 
 ```python
 groups = []
+
 for group in info.get("groups", []):
     if isinstance(group, dict):
-        # Use whichever member your provider sends: SCIM names it `value`
-        # (RFC 7643 section 2.4), others use `id`.
-        groups.append(group.get("value") or group.get("id"))
+        # Replace these member names with those used by your provider.
+        # For example, some providers use "id"; SCIM group resources use "value".
+        group_id = group.get("value") or group.get("id")
     else:
-        groups.append(group)
+        group_id = group
+
+    if group_id is None:
+        continue
+
+    try:
+        hash(group_id)
+    except TypeError:
+        continue
+
+    groups.append(group_id)
+
 return {"groups": groups}
 ```
 
-The identifier is all that survives that step, so if you want the provider's own group names, recover them in a group property mapping, which receives `group_id` along with the original claim:
+Select a stable, unique identifier from each object because authentik uses it to recognize the synchronized group.
+
+The property mapping adds extracted identifiers to the source's initial `groups` property. List properties are merged rather than replaced, so the original object-shaped entries remain.
+
+authentik skips the original unhashable entries and records a **Configuration error** event. The extracted identifiers can still synchronize successfully, but this mapping does not remove the event.
+
+To avoid the event entirely, configure the provider to return identifier values in the `groups` claim. Alternatively, configure the provider to emit an identifier-only claim, map that claim to `groups`, and ensure that the original `groups` claim is absent or also contains only identifier values.
+
+Optionally, create another OAuth source property mapping and attach it to the source's **Group property mappings** to recover the provider's group name. The mapping receives both `group_id` and the original `info` data:
 
 ```python
 for group in info.get("groups", []):
-    if isinstance(group, dict) and (group.get("value") or group.get("id")) == group_id:
-        return {"name": group.get("display") or group.get("name") or group_id}
-return {"name": group_id}
+    if not isinstance(group, dict):
+        continue
+
+    # Use the same identifier member names as in the user property mapping.
+    candidate_id = group.get("value") or group.get("id")
+    if candidate_id != group_id:
+        continue
+
+    # Replace these member names with those used by your provider.
+    group_name = group.get("display") or group.get("name")
+    if group_name:
+        return {"name": group_name}
+
+    break
+
+return {"name": str(group_id)}
 ```
+
+Use the group property mapping only when the identifier is not an appropriate authentik group name.
