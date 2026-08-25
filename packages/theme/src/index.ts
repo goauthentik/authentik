@@ -23,6 +23,8 @@ import "./authentik/motion.js";
 import "./authentik/shape.js";
 import "./authentik/shadow.js";
 import "./authentik/fonts.js";
+import "./authentik/icons.js";
+import "./authentik/links.js";
 import "./authentik/z-index.js";
 import "./authentik/typography.js";
 import "./authentik/breakpoint.js";
@@ -31,14 +33,12 @@ import "./authentik/breakpoint.js";
  */
 import "./patternfly/palette.js";
 import "./patternfly/background-color.js";
-import "./patternfly/spacing.js";
+import "./patternfly/straight.js";
 import "./patternfly/gutters.js";
 import "./patternfly/motion.js";
 import "./patternfly/shape.js";
-import "./patternfly/shadow.js";
 import "./patternfly/fonts.js";
-import "./patternfly/z-index.js";
-import "./patternfly/breakpoint.js";
+import "./patternfly/links.js";
 
 import { instance } from "./shared.js";
 

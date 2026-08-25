@@ -1,5 +1,5 @@
 /**
- * @file Spacing tokens — single scale from xs (4px) to 4xl (80px) at 16px base.
+ * @file Gutter tokens — the horizontal inset a page frame reserves at its edges.
  */
 
 import { instance } from "../shared.js";
@@ -9,6 +9,6 @@ import { createUseVariable } from "@styleframe/theme";
 const useGutters = createUseVariable("gutter");
 
 export const gutter = useGutters(instance, {
-    "": "1rem",
-    "md": "1.5rem",
+    default: "1rem",
+    md: "1.5rem",
 });

@@ -1,5 +1,5 @@
 /**
- * @file Spacing tokens — single scale from xs (4px) to 4xl (80px) at 16px base.
+ * @file Spacing tokens — single scale from xs (¼rem) to 4xl (5rem).
  */
 
 import { instance } from "../shared.js";

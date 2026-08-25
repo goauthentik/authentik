@@ -81,7 +81,7 @@ for (const [key, value] of Object.entries(patternflyLightTheme)) {
 
     if (kind === "value") {
         console.log(
-            `${key}: ${`${resolution}` === `${value}` ? value : `MISMATCH: ${resolution} !== ${value}`}`
+            `${key}: ${`${resolution}` === `${value}` ? value : `MISMATCH: ${resolution} !== ${value}`}`,
         );
         continue;
     }

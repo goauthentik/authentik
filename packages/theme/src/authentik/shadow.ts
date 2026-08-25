@@ -72,8 +72,8 @@ export const liftedBoxShadows = useBoxShadowDesignTokens(
                 `0 ${mrem(0.0625 * cast_scale)} ${mrem(0.125 * cast_scale)} 0 ${shadow(cast_opacity)}, ` +
                 `0 0 ${mrem(0.125 * halo_scale)} 0 ${shadow(halo_opacity)}`,
         }),
-        {} as Record<string, string>
-    )
+        {} as Record<string, string>,
+    ),
 );
 
 // The "edged" ones are much more straightforward, *except* XL, which chickens out and doesn't
@@ -134,8 +134,8 @@ export const edgeBoxShadows = useBoxShadowDesignTokens(
             }
             return acc;
         },
-        {} as Record<string, string>
-    )
+        {} as Record<string, string>,
+    ),
 );
 
 export const insetBoxShadow = useBoxShadowDesignTokens(instance, {
