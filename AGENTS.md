@@ -61,8 +61,16 @@ A change spanning several `CODEOWNERS` teams usually wants one PR per owning tea
 ## Conventions
 
 - Commit subjects: `area: what changed` — `core:`, `web:`, `website/docs:`, `providers/saml:`, `outpost/proxy:`. Lowercase after the colon, no issue numbers in the subject. Match `git log`.
+- Keep commit messages and PR descriptions short and factual — a few sentences, not an essay.
 - AI-assisted contributions are governed by [`AI_POLICY.md`](AI_POLICY.md): disclose the tooling, and a human must understand every line.
 - Contributor docs (full dev setup, debugging, style guide) live at <https://docs.goauthentik.io/docs/developer-docs/>, sourced from `website/docs/developer-docs/`.
+
+## Do / Don't
+
+- **Do search for the existing helper, component, or pattern before writing a new one.** Duplicating something that already exists in `authentik/lib/`, `web/src/elements/`, or a sibling module is the most common review rejection.
+- **Do keep the diff minimal.** Fewest lines that solve the problem; no drive-by refactors, no speculative configurability, no per-model variants of something that can be written once against the general mechanism.
+- **Don't leave comments that talk to the reviewer.** A comment that restates the line, says where code was moved from, or argues the change is correct is noise the moment the change merges. Comments explain what the code can't.
+- **Don't "improve" scope you weren't asked to touch** — unrelated cleanup forces migrations, schema diffs, and review burden.
 
 ## Issue and PR guidelines
 

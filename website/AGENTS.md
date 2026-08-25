@@ -25,6 +25,10 @@ make lint-spellcheck     # cspell (also part of docs-lint-fix)
 - **`.mdx` only.** All three sites dropped `.md`. Rename with `git mv <file>.md <file>.mdx` plus a `_redirects` entry if the page was published. Non-page files (notes, partials) stay out of the build via an `_` prefix.
 - **`docs/developer-docs/docs/style-guide.mdx` is the source of truth for prose** — terminology, voice, headings, frontmatter, callouts, formatting. Read it before authoring; this file deliberately restates none of it. Page templates: `docs/developer-docs/docs/templates/`. Routing, redirects, and the glossary field reference: `writing-documentation.mdx` next to the style guide.
 - The rule no linter catches: the product name is always lowercase `authentik`, even at the start of a sentence. The company is Authentik Security, Inc. "Admin" is capitalized only when naming the Admin interface.
+- Don't add `:::info`/`:::warning` callouts that restate required steps — a field list is enough. Callouts are for surprising caveats that change what the reader should do.
+- Don't invent new placeholders. Integration guides use `authentik.company` and `<app-name>.company`; docs pages use concrete example URLs when the surrounding pages do.
+- Don't state the obvious or narrate what the reader can see ("the old value stops working, and everything using it has to be updated"). Say what's surprising, link the rest.
+- Release notes (`docs/releases/`, start from `_template.mdx`): a line or two per change with a link to the docs page, not a feature essay. Breaking changes get their own section, separate from new features. Mostly-internal changes don't get headline billing.
 
 ## Adding pages
 

@@ -11,6 +11,7 @@ Django 5 + DRF, split into focused apps: `core/` (users, applications, tokens �
 - No UI bundle ships in the repo — run `make web-build` once or a fresh checkout serves a broken interface.
 - `make migrate` is not `manage.py migrate`: it runs `lifecycle/migrate.py`, which takes an advisory lock and applies `lifecycle/system_migrations/` first.
 - The `ak` CLI is a bash script (`lifecycle/ak`) that forwards unknown subcommands to `manage.py` — hence `uv run ak makemigrations`.
+- `manage.py worker` refuses to run on purpose. The worker only runs supervised by the Rust binary (`ak worker` / `ak allinone`).
 
 ## Tests
 
@@ -29,6 +30,8 @@ uv run manage.py test --keepdb --randomly-seed=<n> <label> # reproduce a CI orde
 - `--doctest-modules` is in the pytest addopts: a `>>>` example in any docstring is a collected test.
 - `TypeError: 'datetime' object is not an instance of 'FakeDatetime'` = the known cryptography/freezegun flake class. The test plugin pre-warms against it; holding datetimes across freeze boundaries reintroduces it.
 - Blueprints apply asynchronously via scheduled tasks, so objects a test needs aren't there by default. Use `@apply_blueprint(...)` and `@reconcile_app("authentik_x")` from `authentik/blueprints/tests`.
+- CI runs the suite sharded across runners with `--parallel auto`, on Postgres 14 and 18. Tests that share global state or hardcode ports flake there even when they pass locally.
+- Local runs drop `unittest.xml` and `.coverage.*` shards at the repo root (pytest addopts + parallel coverage). They're gitignored — don't commit them, don't clean them up in a PR.
 - Size tests to the code: cover behavior and obvious edge cases, don't pad for coverage, test the general mechanism instead of copy-pasting one test per model.
 
 ## Migrations and the API schema
@@ -36,6 +39,9 @@ uv run manage.py test --keepdb --randomly-seed=<n> <label> # reproduce a CI orde
 - A model or serializer change is done only after both `uv run ak makemigrations` and `make gen` have run. CI checks pending migrations (`make ci-lint-pending-migrations`) and diffs the regenerated schema/clients separately; either fails the build.
 - Read the generated migration before committing — makemigrations regularly catches more than intended.
 - Don't hand-write migrations unless the task is explicitly a data migration or repair. Prefer a blueprint over a data migration for managed, idempotent objects.
+- `make gen-build` needs a migrated database (CI runs `make migrate gen-build`).
+- On a `@action` POST, DRF's `DjangoObjectPermissions` maps POST to `add_<model>`, and `get_object()` enforces it before the action body runs — a permission check written inside the action is too late. Non-create actions need their `perms_map` remapped on the permission class.
+- A body-less POST action needs `@extend_schema(request=None)`, or drf-spectacular infers the viewset's serializer as the request body and every generated client grows a phantom parameter.
 - **Docstrings on viewsets and serializers are public API documentation.** drf-spectacular lifts them into `schema.yml` as descriptions, from where they land in three generated clients and the API docs site. Write them for an API consumer or leave them off — a filler `"""FooViewSet"""` becomes a filler description in every client and schema-diff noise in review.
 
 ## Code conventions
@@ -44,6 +50,8 @@ uv run manage.py test --keepdb --randomly-seed=<n> <label> # reproduce a CI orde
 - Find the existing helper before writing one: `django.utils` and the auth framework first, then `authentik/lib/` and the app you're in.
 - Event contexts use `authentik.events.utils.model_to_dict` (returns app/model/pk/name only). Django's own `model_to_dict` serializes every field, secrets included.
 - New `authentik.*` apps wire themselves by convention: list in `SHARED_APPS`/`TENANT_APPS`, subclass `ManagedAppConfig`, and `settings.py`/`signals.py`/`tasks.py`/`checks.py` are imported automatically. Startup reconciliation = `@ManagedAppConfig.reconcile_global` / `reconcile_tenant`, not ad-hoc `ready()` code.
+- Function-local imports are an accepted pattern here (ruff's PLC0415 is disabled) — they break import cycles. Don't hoist them to the top of the file.
+- Line length is 100 (black and ruff). `make lint-fix` formats; don't hand-wrap.
 - Python is pinned to 3.14 and the code uses 3.14-only syntax (PEP 758 bare multi-exception `except` appears in the tree). Don't "fix" it or write for older versions.
 - mypy runs `--strict`, but an `ignore_errors` allowlist in `pyproject.toml` exempts most existing modules. New modules are outside the list and get full strict checking.
 
