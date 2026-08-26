@@ -75,6 +75,10 @@ export default defineConfig({
                         enabled: true,
                         provider: playwright(),
 
+                        // Headed runs steal focus on every local `vitest` call.
+                        // Override with `--browser.headless=false` to watch one.
+                        headless: true,
+
                         instances: [
                             {
                                 browser: "chromium",
