@@ -137,6 +137,19 @@ export class RoleViewPage extends WithLicenseSummary(AKElement) {
                         </ak-user-related-list>
                     </div>
                 </section>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-groups"
+                    id="page-groups"
+                    aria-label="${msg("Groups")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <ak-group-related-list .targetRole=${this.targetRole}>
+                        </ak-group-related-list>
+                    </div>
+                </section>
                 <ak-rbac-object-permission-page
                     role="tabpanel"
                     tabindex="0"

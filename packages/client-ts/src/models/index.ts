@@ -247,6 +247,7 @@ export * from "./GroupPlexSourceConnectionRequest";
 export * from "./GroupRequest";
 export * from "./GroupSAMLSourceConnection";
 export * from "./GroupSAMLSourceConnectionRequest";
+export * from "./GroupSerializerForRoleRequest";
 export * from "./GroupSourceConnection";
 export * from "./GroupSourceConnectionRequest";
 export * from "./GroupTelegramSourceConnection";
