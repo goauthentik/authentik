@@ -61,7 +61,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 
 # Stage: download Rust toolchain
 # TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:e048842e22989f2c0eaa7029d8a3d662a816504b0a9275917b5832a02e8cecda AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:cd66513ddc1a2735f120db27add7dffa409f601fec3ec813a69bba9b126e845e AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
@@ -85,7 +85,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 FROM ghcr.io/astral-sh/uv:0.11.32@sha256:df4cae8f3a96d175e2e5f992e597550000edbe78fdc2594d5cd8de1a217f504c AS uv
 # Stage: Base python image
 # TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:9f7cb71b77da3d38b3c7b77bb1cd913e9db90270137321771e97d25b9d07e8e8 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:395b057183f7e567f3cef6b06e7dffd5e10b7e8bedb94866b613449e1ca5ab28 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
