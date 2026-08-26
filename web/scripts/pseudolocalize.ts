@@ -1,12 +1,5 @@
-/// <reference types="node" />
-
 /**
  * @file Pseudo-localization script.
- *
- * @import { ConfigFile } from "@lit/localize-tools/lib/types/config.js"
- * @import { Config } from '@lit/localize-tools/lib/types/config.js';
- * @import { ProgramMessage } from "@lit/localize-tools/src/messages.js"
- * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
  */
 
 import { readFileSync } from "node:fs";
@@ -20,27 +13,27 @@ import { isMain } from "@goauthentik/core/scripting/node";
 import pseudolocale from "pseudolocale";
 
 import { makeFormatter } from "@lit/localize-tools/lib/formatters/index.js";
+import type { Message, ProgramMessage } from "@lit/localize-tools/lib/messages.js";
 import { sortProgramMessages } from "@lit/localize-tools/lib/messages.js";
 import { TransformLitLocalizer } from "@lit/localize-tools/lib/modes/transform.js";
+import type { Config, ConfigFile } from "@lit/localize-tools/lib/types/config.js";
+import type { Locale } from "@lit/localize-tools/lib/types/locale.js";
+import type { TransformOutputConfig } from "@lit/localize-tools/lib/types/modes.js";
 
-const pseudoLocale = /** @type {Locale} */ ("en-XA");
+const pseudoLocale = "en-XA" as Locale;
 const targetLocales = [pseudoLocale];
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-/**
- * @type {ConfigFile}
- */
-const baseConfig = JSON.parse(readFileSync(path.join(PackageRoot, "lit-localize.json"), "utf-8"));
+const baseConfig = JSON.parse(
+    readFileSync(path.join(PackageRoot, "lit-localize.json"), "utf-8"),
+) as ConfigFile;
 
 // Need to make some internal specifications to satisfy the transformer. It doesn't actually matter
 // which Localizer we use (transformer or runtime), because all of the functionality we care about
 // is in their common parent class, but I had to pick one.  Everything else here is just pure
 // exploitation of the lit/localize-tools internals.
 
-/**
- * @satisfies {Config}
- */
-const config = {
+const config: Config & { output: TransformOutputConfig } = {
     ...baseConfig,
     baseDir: path.join(__dirname, ".."),
     targetLocales,
@@ -48,15 +41,10 @@ const config = {
         ...baseConfig.output,
         mode: "transform",
     },
-    resolve: (path) => path,
+    resolve: (path: string) => path,
 };
 
-/**
- *
- * @param {ProgramMessage} message
- * @returns
- */
-const pseudoMessagify = (message) => ({
+const pseudoMessagify = (message: ProgramMessage): Message => ({
     name: message.name,
     contents: message.contents.map((content) =>
         typeof content === "string" ? pseudolocale(content, { prepend: "", append: "" }) : content,

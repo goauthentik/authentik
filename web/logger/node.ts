@@ -1,11 +1,9 @@
 /**
  * Application logger.
- *
- * @import { LoggerOptions, Logger, Level, ChildLoggerOptions } from "pino"
- * @import { PrettyOptions } from "pino-pretty"
  */
 
-import { pino } from "pino";
+import { type ChildLoggerOptions, type Level, type Logger, type LoggerOptions, pino } from "pino";
+import type { PrettyOptions } from "pino-pretty";
 
 //#region Constants
 
@@ -13,18 +11,17 @@ import { pino } from "pino";
  * Default options for creating a Pino logger.
  *
  * @category Logger
- * @satisfies {LoggerOptions<never, false>}
  */
 export const DEFAULT_PINO_LOGGER_OPTIONS = {
     enabled: true,
     level: "info",
     transport: {
-        target: "./transport.js",
-        options: /** @satisfies {PrettyOptions} */ ({
+        target: "./transport.ts",
+        options: {
             colorize: true,
-        }),
+        } satisfies PrettyOptions,
     },
-};
+} satisfies LoggerOptions<never, false>;
 
 //#endregion
 
@@ -32,24 +29,19 @@ export const DEFAULT_PINO_LOGGER_OPTIONS = {
 
 /**
  * Read the log level from the environment.
- * @return {Level}
  */
-export function readLogLevel() {
+export function readLogLevel(): Level {
     return process.env.AK_LOG_LEVEL || DEFAULT_PINO_LOGGER_OPTIONS.level;
 }
 
-/**
- * @typedef {Logger} FixtureLogger
- */
+export type FixtureLogger = Logger;
 
-/**
- * @this {Logger}
- * @param {string} fixtureName
- * @param {string} [testName]
- * @param {ChildLoggerOptions} [options]
- * @returns {FixtureLogger}
- */
-function createFixtureLogger(fixtureName, testName, options) {
+function createFixtureLogger(
+    this: Logger,
+    fixtureName: string,
+    testName?: string,
+    options?: ChildLoggerOptions,
+): FixtureLogger {
     return this.child(
         { name: fixtureName },
         {
@@ -59,28 +51,24 @@ function createFixtureLogger(fixtureName, testName, options) {
     );
 }
 
-/**
- * @typedef {object} CustomLoggerMethods
- * @property {typeof createFixtureLogger} fixture
- */
+export interface CustomLoggerMethods {
+    fixture: typeof createFixtureLogger;
+}
 
-/**
- * @typedef {Logger & CustomLoggerMethods} ConsoleLogger
- */
+export type ConsoleLogger = Logger & CustomLoggerMethods;
 
 /**
  * A singleton logger instance for Node.js.
  *
- * ```js
+ * ```ts
  * import { ConsoleLogger } from "#logger/node";
  *
  * ConsoleLogger.info("Hello, world!");
  * ```
  *
  * @runtime node
- * @type {ConsoleLogger}
  */
-export const ConsoleLogger = Object.assign(
+export const ConsoleLogger: ConsoleLogger = Object.assign(
     pino({
         ...DEFAULT_PINO_LOGGER_OPTIONS,
         level: readLogLevel(),
@@ -88,9 +76,7 @@ export const ConsoleLogger = Object.assign(
     { fixture: createFixtureLogger },
 );
 
-/**
- * @typedef {ReturnType<ConsoleLogger['child']>} ChildConsoleLogger
- */
+export type ChildConsoleLogger = ReturnType<ConsoleLogger["child"]>;
 
 //#region Aliases
 

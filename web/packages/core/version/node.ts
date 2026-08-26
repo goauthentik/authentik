@@ -11,16 +11,14 @@ import PackageJSON from "../../../../package.json" with { type: "json" };
 
 //#region Semantic Versioning
 
-/**
- * @typedef {`${number}.${number}.${number}${string}`} SemVerSource
- */
+export type SemVerSource = `${number}.${number}.${number}${string}`;
 
 /**
  * The current version of authentik in SemVer format.
  *
  * @runtime node
  */
-export const AuthentikVersion = /** @type {SemVerSource} */ (PackageJSON.version);
+export const AuthentikVersion = PackageJSON.version as SemVerSource;
 
 /**
  * A parsed SemVer object of the current version of authentik.
@@ -61,9 +59,9 @@ const prerelease = NodeEnvironment === "development" || !GIT_BUILD_HASH || GIT_B
  * @runtime node
  * @see {@link "authentik\_\_init\_\_.py"}
  */
-export const BuildIdentifier = /** @type {SemVerSource | `${SemVerSource}+${string}`} */ (
+export const BuildIdentifier = (
     GIT_BUILD_HASH ? [AuthentikVersion, GIT_BUILD_HASH].join("+") : AuthentikVersion
-);
+) as SemVerSource | `${SemVerSource}+${string}`;
 
 //#endregion
 
@@ -72,14 +70,14 @@ export const BuildIdentifier = /** @type {SemVerSource | `${SemVerSource}+${stri
 /**
  * The published subdomain for the current version of authentik.
  */
-export const VersionSubdomain = /** @type {`version-${number}-${number}`} */ (
-    ["version", major, minor].join("-")
-);
+export const VersionSubdomain = ["version", major, minor].join(
+    "-",
+) as `version-${number}-${number}`;
 
 /**
  * The published path to the current version of authentik.
  */
-export const VersionPath = /** @type {`${number}.${number}`} */ ([major, minor].join("."));
+export const VersionPath = [major, minor].join(".") as `${number}.${number}`;
 
 /**
  * A URL to the latest pre-release documentation.
@@ -95,11 +93,9 @@ export const CurrentReleaseDocsURL = prerelease
 /**
  * A URL to the latest release notes, if any are available.
  *
- * @type {URL}
- *
  * @runtime node
  */
-let ReleaseNotesURL;
+let ReleaseNotesURL: URL;
 
 if (prerelease) {
     ReleaseNotesURL = new URL("/releases", PreReleaseDocsURL);

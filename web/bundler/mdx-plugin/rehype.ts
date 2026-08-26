@@ -4,6 +4,7 @@
 
 import { CurrentReleaseDocsURL } from "@goauthentik/core/version/node";
 
+import type { Element, Root } from "hast";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
@@ -11,12 +12,8 @@ import { SKIP, visit } from "unist-util-visit";
  * runtime `MDXAnchor` used: take a `./...` href relative to the file's
  * `publicDirectory`, drop trailing `index`/`.md`/`.mdx`, and absolutize
  * against {@linkcode CurrentReleaseDocsURL}.
- *
- * @param {string} href
- * @param {string} publicDirectory
- * @returns {string}
  */
-function resolveDocsHref(href, publicDirectory) {
+function resolveDocsHref(href: string, publicDirectory: string): string {
     // `new URL(...)` against `file:///` lets us reuse the browser-style
     // path resolver while preserving the hash and any query string.
     const joined = `${publicDirectory}/${href}`.replace(/\/{2,}/g, "/");
@@ -26,6 +23,10 @@ function resolveDocsHref(href, publicDirectory) {
     next.search = placeholder.search;
     next.hash = placeholder.hash;
     return next.toString();
+}
+
+export interface RehypeAnchorsOptions {
+    publicDirectory: string;
 }
 
 /**
@@ -40,11 +41,9 @@ function resolveDocsHref(href, publicDirectory) {
  * `<ak-mdx>`'s shadow tree where the existing PatternFly link CSS in
  * `styles.css` applies. The wrapper itself uses `display: contents` so
  * it does not perturb inline-flow layout.
- *
- * @param {{ publicDirectory: string }} options
  */
-export function rehypeAnchors({ publicDirectory }) {
-    return (/** @type {import('hast').Root} */ tree) => {
+export function rehypeAnchors({ publicDirectory }: RehypeAnchorsOptions) {
+    return (tree: Root) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "a") return;
 
@@ -69,8 +68,7 @@ export function rehypeAnchors({ publicDirectory }) {
             // the visitor from descending into the freshly-stamped
             // child anchor (which would re-match this filter and
             // recurse forever).
-            /** @type {import('hast').Element} */
-            const original = {
+            const original: Element = {
                 type: "element",
                 tagName: "a",
                 properties: { ...props },
@@ -93,7 +91,7 @@ export function rehypeAnchors({ publicDirectory }) {
  * wrapper element is needed.
  */
 export function rehypeMermaid() {
-    return (/** @type {import('hast').Root} */ tree) => {
+    return (tree: Root) => {
         visit(tree, "element", (node) => {
             if (node.tagName !== "pre") return;
             const child = node.children?.[0];

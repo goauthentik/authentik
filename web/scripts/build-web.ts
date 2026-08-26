@@ -7,13 +7,8 @@ import "@goauthentik/core/environment/load/node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { copyAssets } from "./build-assets.mjs";
+import { copyAssets } from "./build-assets.ts";
 
-/**
- * @file ESBuild script for building the authentik web UI.
- *
- * @import { BuildOptions, Plugin } from "esbuild";
- */
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { styleLoaderPlugin } from "#bundler/style-loader-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
@@ -24,7 +19,7 @@ import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { BuildIdentifier } from "@goauthentik/core/version/node";
 
-import esbuild from "esbuild";
+import esbuild, { type BuildOptions, type PartialMessage, type Plugin } from "esbuild";
 
 /// <reference types="../types/esbuild.js" />
 
@@ -41,18 +36,12 @@ const entryPointNames = Object.keys(EntryPoint);
 const entryPoints = Object.values(EntryPoint);
 const entryPointsDescription = entryPointNames.join("\n\t");
 
-/**
- * @type {Plugin[]}
- */
-const BASE_ESBUILD_PLUGINS = [
+const BASE_ESBUILD_PLUGINS: Plugin[] = [
     {
         name: "copy",
         setup(build) {
             build.onEnd(async () => {
-                /**
-                 * @type {import('esbuild').PartialMessage[]}
-                 */
-                const errors = [];
+                const errors: PartialMessage[] = [];
 
                 await copyAssets();
 
@@ -83,10 +72,7 @@ const BASE_ESBUILD_PLUGINS = [
     }),
 ];
 
-/**
- * @type {BuildOptions}
- */
-const BASE_ESBUILD_OPTIONS = {
+const BASE_ESBUILD_OPTIONS: BuildOptions = {
     entryNames: `[dir]/[name]-${BuildIdentifier}`,
     chunkNames: "[dir]/chunks/[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
@@ -142,12 +128,11 @@ const BASE_ESBUILD_OPTIONS = {
 
 /**
  * Creates an ESBuild options, extending the base options with the given overrides.
- *
- * @param {BuildOptions["entryPoints"]} entryPoints
- * @param {Plugin[]} plugIns
- * @returns {BuildOptions}
  */
-export function createESBuildOptions(entryPoints, plugIns = []) {
+export function createESBuildOptions(
+    entryPoints: BuildOptions["entryPoints"],
+    plugIns: Plugin[] = [],
+): BuildOptions {
     const plugins = [...BASE_ESBUILD_PLUGINS, ...plugIns];
 
     return {
@@ -183,10 +168,9 @@ function doHelp() {
 }
 
 /**
- *
- * @returns {Promise<() => Promise<void>>} dispose
+ * @returns dispose
  */
-async function doWatch() {
+async function doWatch(): Promise<() => Promise<void>> {
     logger.info(`🤖 Watching entry points:\n\t${entryPointsDescription}`);
 
     const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
@@ -251,7 +235,7 @@ async function doProxy() {
     logger.info("Proxy build complete");
 }
 
-async function delegateCommand() {
+async function delegateCommand(): Promise<(() => Promise<void>) | void> {
     const command = process.argv[2];
 
     switch (command) {
@@ -279,10 +263,7 @@ await cleanDistDirectory()
                     process.exit(0);
                 }
 
-                /**
-                 * @type {Promise<void>}
-                 */
-                const signalListener = new Promise((resolve) => {
+                const signalListener = new Promise<void>((resolve) => {
                     // We prevent multiple attempts to dispose the context
                     // because ESBuild will repeatedly restart its internal clean-up logic.
                     // However, sending a second SIGINT will still exit the process immediately.

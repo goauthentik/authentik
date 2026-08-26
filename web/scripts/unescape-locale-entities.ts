@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 /**
  * @file Locale module post-process pass.
  *
@@ -24,8 +22,7 @@ const TEMPLATE_TAGS = new Set(["str", "html"]);
 const ENTITY_PATTERN = /&(?:lt|gt|quot|apos|amp);/g;
 const DOUBLE_ENCODED_PATTERN = /&amp;(lt|gt|quot|apos|amp);/g;
 
-/** @type {Record<string, string>} */
-const ENTITY_TABLE = {
+const ENTITY_TABLE: Record<string, string> = {
     "&lt;": "<",
     "&gt;": ">",
     "&quot;": '"',
@@ -34,16 +31,22 @@ const ENTITY_TABLE = {
 };
 
 /**
+ * The result of a rewrite pass: the new source, and how many entity
+ * references it replaced.
+ */
+export interface EntityRewrite {
+    output: string;
+    replacements: number;
+}
+
+/**
  * Decode the XML predefined entity refs. Repeats until stable so
  * doubly-encoded forms like `&amp;quot;` collapse to `"` in one call.
  *
  * Used for non-HTML templates: the result becomes raw text content in the
  * DOM, so the entity references have to disappear entirely.
- *
- * @param {string} input
- * @returns {{ output: string; replacements: number }}
  */
-function decodeXmlEntities(input) {
+function decodeXmlEntities(input: string): EntityRewrite {
     let current = input;
     let replacements = 0;
 
@@ -68,11 +71,8 @@ function decodeXmlEntities(input) {
  * HTML, so a legitimate `&gt;` must stay as `&gt;`, but a translator's
  * `&amp;gt;` (which renders to a visible `&gt;`) should collapse back to
  * `&gt;` (which renders to `>`).
- *
- * @param {string} input
- * @returns {{ output: string; replacements: number }}
  */
-function undoubleHtmlEntities(input) {
+function undoubleHtmlEntities(input: string): EntityRewrite {
     let replacements = 0;
     const output = input.replace(DOUBLE_ENCODED_PATTERN, (_match, name) => {
         replacements++;
@@ -87,11 +87,8 @@ function undoubleHtmlEntities(input) {
  *
  * Does not parse the file as TypeScript; the emitted shape from
  * `@lit/localize-tools` is regular enough to scan character-by-character.
- *
- * @param {string} source
- * @returns {{ output: string; replacements: number }}
  */
-export function sanitizeLocaleModule(source) {
+export function sanitizeLocaleModule(source: string): EntityRewrite {
     let output = "";
     let cursor = 0;
     let replacements = 0;
@@ -183,14 +180,20 @@ export function sanitizeLocaleModule(source) {
 }
 
 /**
+ * How many locale modules a sanitize pass rewrote, and how many entity
+ * references it replaced across them.
+ */
+export interface SanitizeSummary {
+    touched: number;
+    replacements: number;
+}
+
+/**
  * Run {@link sanitizeLocaleModule} over every `.ts` and `.js` file in the
  * emitted locales directory. Rewrites files in place when their contents
  * change.
- *
- * @param {string} directory
- * @returns {Promise<{ touched: number; replacements: number }>}
  */
-export async function unescapeOverescapedLitTemplates(directory) {
+export async function unescapeOverescapedLitTemplates(directory: string): Promise<SanitizeSummary> {
     const entries = await fs.readdir(directory, { withFileTypes: true });
 
     let touched = 0;

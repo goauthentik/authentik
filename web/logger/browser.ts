@@ -14,34 +14,31 @@
 
 //#region Functions
 
-/**
- * @typedef {object} Logger
- * @property {typeof console.info} info;
- * @property {typeof console.warn} warn;
- * @property {typeof console.error} error;
- * @property {typeof console.debug} debug;
- * @property {typeof console.trace} trace;
- */
+export interface Logger {
+    info: typeof console.info;
+    warn: typeof console.warn;
+    error: typeof console.error;
+    debug: typeof console.debug;
+    trace: typeof console.trace;
+}
 
 /**
  * Labels log levels in the browser console.
  */
-const LogLevelLabel = /** @type {const} */ ({
+const LogLevelLabel = {
     info: "[INFO]",
     warn: "[WARN]",
     error: "[ERROR]",
     debug: "[DEBUG]",
     trace: "[TRACE]",
-});
+} as const;
 
-/**
- * @typedef {keyof typeof LogLevelLabel} LogLevel
- */
+export type LogLevel = keyof typeof LogLevelLabel;
 
 /**
  * Predefined log levels.
  */
-const LogLevels = /** @type {LogLevel[]} */ (Object.keys(LogLevelLabel));
+const LogLevels = Object.keys(LogLevelLabel) as LogLevel[];
 
 /**
  * Colors for log levels in the browser console.
@@ -51,29 +48,21 @@ const LogLevels = /** @type {LogLevel[]} */ (Object.keys(LogLevelLabel));
  * The colors are derived from Carbon Design System's palette to ensure
  * sufficient contrast and accessibility across light and dark themes.
  */
-const LogLevelColors = /** @type {const} */ ({
+const LogLevelColors = {
     info: `light-dark(#0043CE, #4589FF)`,
     warn: `light-dark(#F1C21B, #F1C21B)`,
     error: `light-dark(#DA1E28, #FA4D56)`,
     debug: `light-dark(#8A3FFC, #A56EFF)`,
     trace: `light-dark(#8A3FFC, #A56EFF)`,
-});
+} as const;
 
 /**
  * Creates a logger with the given prefix.
- *
- * @param {string} [prefix]
- * @param {...string[]} args
- * @returns {Logger}
- *
  */
-export function createLogger(prefix, ...args) {
+export function createLogger(prefix?: string, ...args: string[][]): Logger {
     const suffix = prefix ? `(${prefix}):` : ":";
 
-    /**
-     * @type {Partial<Logger>}
-     */
-    const logger = {};
+    const logger: Partial<Logger> = {};
 
     for (const level of LogLevels) {
         const label = LogLevelLabel[level];
@@ -89,47 +78,39 @@ export function createLogger(prefix, ...args) {
         );
     }
 
-    return /** @type {Logger} */ (logger);
+    return logger as Logger;
 }
 
 //#endregion
 
 //#region Console Logger
 
-/**
- * @typedef {Logger & {prefix: (logPrefix: string) => Logger}} IConsoleLogger
- */
+export type IConsoleLogger = Logger & { prefix: (logPrefix: string) => Logger };
 
 /**
  * A singleton logger instance for the browser.
  *
- * ```js
+ * ```ts
  * import { ConsoleLogger } from "#logger/browser";
  *
  * ConsoleLogger.info("Hello, world!");
  * ```
  *
- * @implements {IConsoleLogger}
  * @runtime browser
  */
-// @ts-expect-error Logging properties are dynamically assigned.
 export class ConsoleLogger {
-    /** @type {typeof console.info} */
-    static info;
-    /** @type {typeof console.warn} */
-    static warn;
-    /** @type {typeof console.error} */
-    static error;
-    /** @type {typeof console.debug} */
-    static debug;
-    /** @type {typeof console.trace} */
-    static trace;
+    // Assigned below via `Object.assign` so the browser reports the caller's
+    // call site rather than a wrapper's.
+    declare static info: typeof console.info;
+    declare static warn: typeof console.warn;
+    declare static error: typeof console.error;
+    declare static debug: typeof console.debug;
+    declare static trace: typeof console.trace;
 
     /**
      * Creates a logger with the given prefix.
-     * @param {string} logPrefix
      */
-    static prefix(logPrefix) {
+    static prefix(logPrefix: string): Logger {
         return createLogger(logPrefix);
     }
 }
