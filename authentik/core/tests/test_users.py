@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
+from django.db import IntegrityError, transaction
 from django.http import HttpRequest
 from django.test.testcases import TestCase
 
@@ -82,19 +83,21 @@ class TestUsers(TestCase):
         user = User.objects.create(username=generate_id())
         self.assertEqual(user.locale(), "")
 
-    def test_password_stored_on_device(self):
-        """Test a new user's password is written to their password device"""
-        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
-        self.assertEqual(user.password, PasswordDevice.objects.get(user=user).password)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("initial"))
-
     def test_password_change_updates_device(self):
-        """Test changing a password updates the device instead of adding another one"""
+        """Test changing a password updates the user's single password device"""
         user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
         user.set_password("changed")
         user.save()
         self.assertEqual(PasswordDevice.objects.filter(user=user).count(), 1)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password("changed"))
+        user = User.objects.get(pk=user.pk)
+        self.assertTrue(user.check_password("changed"))
+        self.assertFalse(user.check_password("initial"))
+
+    def test_second_password_device_rejected(self):
+        """Test the database only allows one password device per user"""
+        user = User.objects.create_user(username=generate_id(), password="initial")  # nosec
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            PasswordDevice.objects.create(user=user, name="Password", password="second")
 
     def test_password_staged_until_save(self):
         """Test a password is only written to the device once the user is saved"""
