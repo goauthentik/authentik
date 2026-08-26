@@ -44,6 +44,7 @@ from authentik.stages.authenticator_validate.challenge import (
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 from authentik.stages.captcha.stage import (
     PLAN_CONTEXT_CAPTCHA_PRIVATE_KEY,
+    PLAN_CONTEXT_CAPTCHA_SITE_KEY,
     CaptchaChallenge,
     verify_captcha_token,
 )
@@ -330,7 +331,10 @@ class IdentificationStageView(ChallengeStageView):
                 "captcha_stage": (
                     {
                         "js_url": current_stage.captcha_stage.js_url,
-                        "site_key": current_stage.captcha_stage.public_key,
+                        "site_key": self.executor.plan.context.get(
+                            PLAN_CONTEXT_CAPTCHA_SITE_KEY,
+                            current_stage.captcha_stage.public_key,
+                        ),
                         "interactive": current_stage.captcha_stage.interactive,
                         "pending_user": "",
                         "pending_user_avatar": DEFAULT_AVATAR,
