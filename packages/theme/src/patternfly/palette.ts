@@ -7,6 +7,6 @@ createUseVariable("pf-global.palette")(
     instance,
     Object.keys(rawPalette).reduce(
         (acc, key) => ({ ...acc, [key]: `@palette.${key}` }),
-        {} satisfies Record<string, string>
-    )
+        {} satisfies Record<string, string>,
+    ),
 );

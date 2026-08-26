@@ -87,12 +87,12 @@ for (const [key, value] of Object.entries(patternflyLightTheme)) {
     }
 
     if (kind === "fallback") {
-        console.log(`${key}: Present but undefined in Authentik, using fallback '${value}'`);
+        console.log(`${key}: Present but undefined in authentik, using fallback '${value}'`);
         continue;
     }
 
     if (kind === "undefined") {
-        console.log(`${key}: Present but undefined in Authentik, no fallback.`);
+        console.log(`${key}: Present but undefined in authentik, no fallback.`);
         continue;
     }
 }

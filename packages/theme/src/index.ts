@@ -28,6 +28,7 @@ import "./authentik/links.js";
 import "./authentik/z-index.js";
 import "./authentik/typography.js";
 import "./authentik/breakpoint.js";
+import "./authentik/misc.js";
 /*
  * The patternfly bridges
  */
@@ -39,6 +40,7 @@ import "./patternfly/motion.js";
 import "./patternfly/shape.js";
 import "./patternfly/fonts.js";
 import "./patternfly/links.js";
+import "./patternfly/misc.js";
 
 import { instance } from "./shared.js";
 

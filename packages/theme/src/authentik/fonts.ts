@@ -17,9 +17,9 @@ import { createUseVariable } from "@styleframe/theme";
 
 const useFontFamily = createUseVariable("font-family");
 
+// prettier-ignore
 export const fontFamily = useFontFamily(instance, {
-    "sans-serif": '"RedHatText", helvetica, arial, sans-serif',
+    "sans-serif":    '"RedHatText", helvetica, arial, sans-serif',
     "display": '"RedHatDisplay", helvetica, arial, sans-serif',
-    "monospace":
-        '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace',
+    "monospace":    '"RedHatMono", "Liberation Mono", consolas, "SFMono-Regular", menlo, monaco, "Courier New", monospace',
 });

@@ -1,10 +1,12 @@
 import { createPfGlobal, instance } from "../shared.js";
 import { bridge } from "./bridge.js";
 
-createPfGlobal("FontFamily")(
-    instance,
-    bridge("@font-family")("sans-serif", "display", "monospace")
-);
+const usePfFontFamily = createPfGlobal("FontFamily");
+usePfFontFamily(instance, {
+    "sans-serif": "@font-family.sans-serif",
+    "heading.sans-serif": "@font-family.display",
+    "monospace": "@font-family.monospace",
+});
 
 const usePfFontWeight = createPfGlobal("FontWeight");
 usePfFontWeight(instance, bridge("@font-weight")("light", "normal", "semi-bold", "bold"));

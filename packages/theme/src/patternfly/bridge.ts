@@ -12,7 +12,7 @@ export const bridge =
             (Array.isArray(names) ? [...names, ...rest] : [names, ...rest]).map((name) => [
                 `${name}`,
                 `${prefix}${name ? "." : ""}${name}`,
-            ])
+            ]),
         );
 
 const extractKeys = (instance: ReturnType<typeof styleframe>, namespace: string): string[] =>
