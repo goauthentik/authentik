@@ -14,7 +14,7 @@ import { Application } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
 import { kebabCase } from "change-case";
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

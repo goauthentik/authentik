@@ -39,6 +39,17 @@ class TestEvaluator(TestCase):
         """Test expr_is_group_member"""
         self.assertFalse(BaseEvaluator.expr_is_group_member(create_test_admin_user(), name="test"))
 
+    def test_expr_obj_attr(self):
+        """Test expr_obj_attr"""
+        user = create_test_user()
+        user.attributes = {"locale": "en-US"}
+
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "locale", "en-GB"), "en-US")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "username"), user.username)
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", "en-GB"), "en-GB")
+        self.assertEqual(BaseEvaluator.expr_obj_attr(user, "missing", ""), "")
+        self.assertIsNone(BaseEvaluator.expr_obj_attr(user, "missing"))
+
     def test_expr_event_create(self):
         """Test expr_event_create"""
         evaluator = BaseEvaluator(generate_id())
