@@ -41,11 +41,9 @@ def fallback_names(app: str, model: str, field: str):
     return migrator
 
 
-def progress_bar(iterable: Iterable, total: int | None = None):
+def progress_bar(iterable: Iterable):
     """Call in a loop to create terminal progress bar
-    https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console
-
-    `total` must be given for iterables without a length, such as generators."""
+    https://stackoverflow.com/questions/3173320/text-progress-bar-in-the-console"""
 
     prefix = "Writing: "
     suffix = " finished"
@@ -54,8 +52,7 @@ def progress_bar(iterable: Iterable, total: int | None = None):
     fill = "█"
     print_end = "\r"
 
-    if total is None:
-        total = len(iterable)
+    total = len(iterable)
     if total < 1:
         return
 
