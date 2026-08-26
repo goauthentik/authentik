@@ -463,3 +463,30 @@ class TestEmailStage(FlowTestCase):
                 "Too many account verification attempts. Please try again after 5 minutes.",
                 message_list[-1].message,
             )
+
+    @patch(
+        "authentik.stages.email.models.EmailStage.backend_class",
+        PropertyMock(return_value=EmailBackend),
+    )
+    def test_initial_send_rate_limited_on_flow_restart(self):
+        """Tests that restarting the flow does not bypass the rate limit
+        applied to resending the email."""
+        self.stage.recovery_max_attempts = 2
+        self.stage.recovery_cache_timeout = "minutes=10"
+        self.stage.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        # Each iteration simulates a full flow restart by seeding a fresh plan,
+        # so the initial email is attempted every time
+        for expected_mails in (1, 2, 2):
+            plan = FlowPlan(
+                flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()]
+            )
+            plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+            session = self.client.session
+            session[SESSION_KEY_PLAN] = plan
+            session.save()
+
+            response = self.client.get(url)
+            self.assertStageResponse(response, self.flow, component="ak-stage-email")
+            self.assertEqual(len(mail.outbox), expected_mails)

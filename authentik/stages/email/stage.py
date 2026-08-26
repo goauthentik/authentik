@@ -156,6 +156,9 @@ class EmailStageView(ChallengeStageView):
             return self.executor.stage_invalid()
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
+            if minutes_left := self._is_rate_limited():
+                messages.error(self.request, self._rate_limit_error(minutes_left))
+                return super().get(request, *args, **kwargs)
             try:
                 self.send_email()
             except StageInvalidException as exc:
@@ -190,8 +193,9 @@ class EmailStageView(ChallengeStageView):
         cache_key = self._get_cache_key()
         attempts = cache.get(cache_key, [])
 
-        stage = self.executor.current_stage
-        stage.refresh_from_db()
+        # Fetch a fresh copy for the current rate limit configuration, without
+        # overwriting the rest of the stage config pickled into the flow plan
+        stage = EmailStage.objects.get(pk=self.executor.current_stage.pk)
         max_attempts = stage.recovery_max_attempts
         cache_timeout_delta = timedelta_from_string(stage.recovery_cache_timeout)
 
@@ -223,12 +227,14 @@ class EmailStageView(ChallengeStageView):
 
         return None
 
+    def _rate_limit_error(self, minutes_left: int) -> str:
+        return _(
+            "Too many account verification attempts. Please try again after {minutes} minutes."
+        ).format(minutes=minutes_left)
+
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         if minutes_left := self._is_rate_limited():
-            error = _(
-                "Too many account verification attempts. Please try again after {minutes} minutes."
-            ).format(minutes=minutes_left)
-            messages.error(self.request, error)
+            messages.error(self.request, self._rate_limit_error(minutes_left))
             return super().challenge_invalid(response)
 
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
