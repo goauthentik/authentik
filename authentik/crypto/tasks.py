@@ -91,7 +91,7 @@ class CertificateEventHandler(FileSystemEventHandler):
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 if Task.objects.filter(
-                    actor_name=certificate_discovery.actor_name, state=TaskState.QUEUED
+                    tenant=tenant, actor_name=certificate_discovery.actor_name, state=TaskState.QUEUED
                 ).exists():
                     continue
                 Schedule.dispatch_by_actor(certificate_discovery)
