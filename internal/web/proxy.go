@@ -76,6 +76,8 @@ func (ws *WebServer) configureProxy() {
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
 	rp := &httputil.ReverseProxy{
+		// This code is deprecated/replaced on main anyways, so this is fine
+		//nolint:staticcheck
 		Director:  director,
 		Transport: ws.upstreamHttpClient().Transport,
 	}
