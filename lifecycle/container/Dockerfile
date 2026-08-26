@@ -245,7 +245,8 @@ ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GOFIPS=1 \
-    RUST_BACKTRACE=full
+    RUST_BACKTRACE=full \
+    PYTHON_GIL=0
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 CMD [ "ak", "healthcheck" ]
 
