@@ -126,7 +126,7 @@ class TestEvaluator(TestCase):
             ak_message(ak_call_policy('{expr.name}').passing)
             """,
         )
-        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        proc = PolicyThread(PolicyBinding(policy=expr2), request=self.request)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, (True, False))
 
