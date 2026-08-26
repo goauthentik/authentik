@@ -412,9 +412,6 @@ mod websockets {
 
         let ws_accept = derive_accept_key(ws_key.as_bytes());
 
-        // The bridge relays frames unchanged and `tokio-tungstenite` is built
-        // without deflate support, so the application must not get the chance to
-        // negotiate an extension that changes the framing.
         request.headers_mut().remove(SEC_WEBSOCKET_EXTENSIONS);
 
         let path_q = request
@@ -431,17 +428,10 @@ mod websockets {
         }
         let ws_request = ws_request.body(())?;
 
-        // Connect upstream before answering the client, because the response has
-        // to name the subprotocol the application selected, which is only known
-        // once the upstream handshake completed.
         let stream = UnixStream::connect(socket_path).await?;
         let (upstream_ws, upstream_response) = match client_async(ws_request, stream).await {
             Ok(upstream) => upstream,
             Err(TungsteniteError::Http(upstream_response)) => {
-                // The application answered the handshake with a regular response
-                // instead of accepting it, for example when a consumer denies the
-                // connection. Pass the status on rather than switching protocols
-                // on a connection the application has already given up on.
                 return Ok((upstream_response.status(), "").into_response());
             }
             Err(err) => return Err(err.into()),
