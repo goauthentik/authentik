@@ -73,6 +73,12 @@ export interface GeoIPPolicy {
     readonly boundTo: number;
     /**
      *
+     * @type {Date}
+     * @memberof GeoIPPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
      * @type {Array<number>}
      * @memberof GeoIPPolicy
      */
@@ -162,6 +168,13 @@ export function instanceOfGeoIPPolicy(value: object): value is GeoIPPolicy {
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     if (!("countries" in value) || value["countries"] === undefined) return false;
     if (
         (!("countriesObj" in (value as Record<string, any>)) &&
@@ -190,6 +203,7 @@ export function GeoIPPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         asns: json["asns"] == null ? undefined : json["asns"],
         countries: (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
         countriesObj: (json["countries_obj"] as Array<any>).map(
@@ -223,6 +237,7 @@ export function GeoIPPolicyToJSONTyped(
         | "verboseNamePlural"
         | "metaModelName"
         | "boundTo"
+        | "lastUpdated"
         | "countriesObj"
     > | null,
     ignoreDiscriminator: boolean = false,

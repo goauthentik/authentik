@@ -68,6 +68,12 @@ export interface PasswordExpiryPolicy {
     readonly boundTo: number;
     /**
      *
+     * @type {Date}
+     * @memberof PasswordExpiryPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
      * @type {number}
      * @memberof PasswordExpiryPolicy
      */
@@ -115,6 +121,13 @@ export function instanceOfPasswordExpiryPolicy(value: object): value is Password
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     if (!("days" in value) || value["days"] === undefined) return false;
     return true;
 }
@@ -139,6 +152,7 @@ export function PasswordExpiryPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         days: json["days"],
         denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
     };
@@ -151,7 +165,13 @@ export function PasswordExpiryPolicyToJSON(json: any): PasswordExpiryPolicy {
 export function PasswordExpiryPolicyToJSONTyped(
     value?: Omit<
         PasswordExpiryPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

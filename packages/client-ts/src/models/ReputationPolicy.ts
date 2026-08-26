@@ -68,6 +68,12 @@ export interface ReputationPolicy {
     readonly boundTo: number;
     /**
      *
+     * @type {Date}
+     * @memberof ReputationPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
      * @type {boolean}
      * @memberof ReputationPolicy
      */
@@ -121,6 +127,13 @@ export function instanceOfReputationPolicy(value: object): value is ReputationPo
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -144,6 +157,7 @@ export function ReputationPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
         checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
         checkUsername: json["check_username"] == null ? undefined : json["check_username"],
         threshold: json["threshold"] == null ? undefined : json["threshold"],
@@ -157,7 +171,13 @@ export function ReputationPolicyToJSON(json: any): ReputationPolicy {
 export function ReputationPolicyToJSONTyped(
     value?: Omit<
         ReputationPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -66,6 +66,12 @@ export interface Policy {
      * @memberof Policy
      */
     readonly boundTo: number;
+    /**
+     *
+     * @type {Date}
+     * @memberof Policy
+     */
+    readonly lastUpdated: Date;
 }
 
 /**
@@ -103,6 +109,13 @@ export function instanceOfPolicy(value: object): value is Policy {
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -123,6 +136,7 @@ export function PolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): Po
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated: new Date(json["last_updated"]),
     };
 }
 
@@ -133,7 +147,13 @@ export function PolicyToJSON(json: any): Policy {
 export function PolicyToJSONTyped(
     value?: Omit<
         Policy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

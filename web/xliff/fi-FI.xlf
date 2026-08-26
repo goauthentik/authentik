@@ -12293,6 +12293,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="stages.source.match-failure.missing-property.label">
   <source>Missing property</source>
 </trans-unit>
+<trans-unit id="policy.column.last-updated">
+  <source>Last updated</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
