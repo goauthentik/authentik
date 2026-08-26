@@ -103,6 +103,10 @@ class PasswordDevice(Device):
     password = models.CharField(max_length=128)
     password_change_date = models.DateTimeField(default=now)
 
+    def __str__(self):
+        return str(self.name) or str(self.user_id)
+
     class Meta(Device.Meta):
         verbose_name = _("Password Device")
         verbose_name_plural = _("Password Devices")
+        indexes = [models.Index(fields=["password_change_date"])]
