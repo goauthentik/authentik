@@ -6,11 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0063_actor"),
-        ("authentik_stages_password", "0012_migrate_user_passwords"),
+        ("authentik_core", "0064_user_authentik_c_usernam_2f0e4b_idx"),
+        ("authentik_stages_password", "0011_passworddevice"),
     ]
 
     operations = [
+        # The columns stay in the database until a future release so this release can be
+        # downgraded, but nothing writes them anymore, so they have to become nullable for
+        # user inserts to keep working.
         migrations.AlterField(
             model_name="user",
             name="password",
