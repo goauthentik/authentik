@@ -14,7 +14,7 @@ draft: true
 
 ### Password lockout :ak-enterprise
 
-The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.md#password-lockout) can now password lock a user's account after a set number of consecutive failed attempts, using the new **Failed attempts before lockout** option. This is disabled by default.
+The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can now password lock a user's account after a set number of consecutive failed attempts, using the new **Failed attempts before lockout** option. This is disabled by default.
 
 When a user account is password locked, authentication is denied even if the correct password is entered. This prevents further guessing attempts and blocks use of a compromised password until an administrator unlocks it. The attempt count is tracked per user, retained across sessions and authentication flows, and cleared after a successful login. Only password-based authentication is affected; a password locked user can still sign in through a flow that does not run a Password stage.
 
