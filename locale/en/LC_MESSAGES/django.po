@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-23 00:09+0000\n"
+"POT-Creation-Date: 2026-08-26 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4336,6 +4336,22 @@ msgstr ""
 
 #: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS certificate verification failed."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS error."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "An internal error occurred while importing devices."
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py
