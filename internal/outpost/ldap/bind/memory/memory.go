@@ -49,11 +49,7 @@ func (sb *SessionBinder) Bind(username string, req *bind.Request) (ldap.LDAPResu
 		Password: req.Password,
 	})
 	if item != nil {
-		if item.Value() == ldap.LDAPResultSuccess {
-			sb.log.WithField("bindDN", req.BindDN).Info("authenticated from session")
-		} else {
-			sb.log.WithField("bindDN", req.BindDN).WithField("result", item.Value()).Info("returning cached non-success bind result")
-		}
+		sb.log.WithField("bindDN", req.BindDN).Info("authenticated from session")
 		return item.Value(), nil
 	}
 	sb.log.Debug("No session found for user, executing flow")
