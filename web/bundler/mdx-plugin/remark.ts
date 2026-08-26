@@ -6,6 +6,8 @@
  * either pipeline grows a new transform.
  */
 
+import type GithubSlugger from "github-slugger";
+import type { Root } from "mdast";
 import { visit } from "unist-util-visit";
 
 const ADMONITIONS = new Set(["info", "warning", "danger", "note", "caution", "tip"]);
@@ -14,7 +16,7 @@ const ADMONITIONS = new Set(["info", "warning", "danger", "note", "caution", "ti
  * `caution` and `tip` aren't first-class PatternFly alert levels — map
  * them onto the closest equivalent so PFAlert styles render correctly.
  */
-const ADMONITION_LEVEL = {
+const ADMONITION_LEVEL: Record<string, string> = {
     info: "pf-m-info",
     warning: "pf-m-warning",
     danger: "pf-m-danger",
@@ -38,11 +40,7 @@ const ADMONITION_BARE_LABEL_RE = new RegExp(
     "gm",
 );
 
-/**
- * @param {string} source
- * @returns {string}
- */
-export function normalizeAdmonitionLabels(source) {
+export function normalizeAdmonitionLabels(source: string): string {
     return source.replace(ADMONITION_BARE_LABEL_RE, "$1[$2]");
 }
 
@@ -54,7 +52,7 @@ export function normalizeAdmonitionLabels(source) {
  * element inside the slot.
  */
 export function remarkAdmonition() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (tree: Root) => {
         visit(tree, (node) => {
             if (
                 node.type !== "containerDirective" &&
@@ -71,12 +69,11 @@ export function remarkAdmonition() {
             data.hProperties = {
                 ...(data.hProperties || {}),
                 ...(node.attributes || {}),
-                level:
-                    /** @type {Record<string, string>} */ (ADMONITION_LEVEL)[node.name] ??
-                    `pf-m-${node.name}`,
+                level: ADMONITION_LEVEL[node.name] ?? `pf-m-${node.name}`,
             };
 
-            const children = /** @type {any[]} */ (node.children || []);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const children = (node.children || []) as any[];
             const labelIndex = children.findIndex(
                 (c) => c.type === "paragraph" && c.data?.directiveLabel,
             );
@@ -91,31 +88,24 @@ export function remarkAdmonition() {
     };
 }
 
-/**
- * @typedef {object} RemarkHeadingsOptions
- * @property {import("github-slugger").default} slugger
- */
+export interface RemarkHeadingsOptions {
+    slugger: GithubSlugger;
+}
 
 /**
  * Remark plugin: heading slugs into `id` attributes.
  *
  * Uses `github-slugger` to match the anchor IDs Docusaurus generates for the
  * same content.
- *
- * @param {RemarkHeadingsOptions} options
  */
-export function remarkHeadings({ slugger }) {
-    /**
-     * @param {{ value?: string, children?: any[] }} n
-     * @returns {string}
-     */
-    const flatten = (n) => {
+export function remarkHeadings({ slugger }: RemarkHeadingsOptions) {
+    const flatten = (n: { value?: string; children?: unknown[] }): string => {
         if (n.value) return n.value;
-        if (n.children) return n.children.map(flatten).join("");
+        if (n.children) return n.children.map((child) => flatten(child as typeof n)).join("");
         return "";
     };
 
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (tree: Root) => {
         visit(tree, "heading", (node) => {
             const id = slugger.slug(flatten(node));
             const data = node.data || (node.data = {});
@@ -128,7 +118,7 @@ export function remarkHeadings({ slugger }) {
  * Remark plugin: tag lists with PatternFly's content class.
  */
 export function remarkLists() {
-    return (/** @type {import('mdast').Root} */ tree) => {
+    return (tree: Root) => {
         visit(tree, "list", (node) => {
             const data = node.data || (node.data = {});
             data.hProperties = {

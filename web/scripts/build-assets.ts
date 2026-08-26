@@ -13,14 +13,9 @@ import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 const require = createRequire(import.meta.url);
 const logger = ConsoleLogger.child({ name: "Assets" });
 
-/**
- * @typedef {[from: string, to: string]} SourceDestinationPair
- */
+type SourceDestinationPair = [from: string, to: string];
 
-/**
- * @type {SourceDestinationPair[]}
- */
-const assets = [
+const assets: SourceDestinationPair[] = [
     [
         path.join(path.dirname(EntryPoint.StandaloneLoading.in), "startup"),
         path.dirname(EntryPoint.StandaloneLoading.out),
@@ -86,10 +81,7 @@ async function copyHexworld() {
 }
 
 export async function copyAssets() {
-    /**
-     * @param {SourceDestinationPair} pair
-     */
-    const copy = ([from, to]) => {
+    const copy = ([from, to]: SourceDestinationPair) => {
         const resolvedDestination = path.resolve(DistDirectory, to);
 
         logger.debug(`📋 Copying assets from ${from} to ${to}`);

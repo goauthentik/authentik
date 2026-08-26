@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 /**
  * @file Lit Localize build script.
  *
@@ -10,15 +8,14 @@
  * If they are not, it runs the locale building script, intercepting the
  * long spew of "this string is not translated" and replacing it with a
  * summary of how many strings are missing with respect to the source locale.
- *
- * @import { Stats } from "node:fs";
  */
 
+import type { Stats } from "node:fs";
 import * as fs from "node:fs/promises";
 import path, { resolve } from "node:path";
 
-import { generatePseudoLocaleModule } from "./pseudolocalize.mjs";
-import { unescapeOverescapedLitTemplates } from "./unescape-locale-entities.mjs";
+import { generatePseudoLocaleModule } from "./pseudolocalize.ts";
+import { unescapeOverescapedLitTemplates } from "./unescape-locale-entities.ts";
 
 import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
@@ -32,25 +29,32 @@ const missingMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sis\smissing/;
 const outdatedMessagePattern = /([\w_-]+)\smessage\s(?:[\w_.-]+)\sdoes\snot\sexist/;
 const logger = ConsoleLogger.child({ name: "Locales" });
 
-const localizeRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
+const configFileRules = readConfigFileAndWriteSchema(path.join(PackageRoot, "lit-localize.json"));
 
-if (localizeRules.interchange.format !== "xliff") {
+const { interchange, output } = configFileRules;
+
+if (interchange.format !== "xliff") {
     logger.error("Unsupported interchange type, expected 'xliff'");
     process.exit(1);
 }
 
-const { sourceLocale } = localizeRules;
+if (output.mode !== "runtime") {
+    logger.error("Unsupported output mode, expected 'runtime'");
+    process.exit(1);
+}
 
-localizeRules.targetLocales = localizeRules.targetLocales.filter((locale) => {
-    return locale !== sourceLocale;
-});
+const { sourceLocale } = configFileRules;
 
-const XLIFFPath = resolve(PackageRoot, localizeRules.interchange.xliffDir);
+const localizeRules = {
+    ...configFileRules,
+    interchange,
+    output,
+    targetLocales: configFileRules.targetLocales.filter((locale) => locale !== sourceLocale),
+};
 
-const EmittedLocalesDirectory = resolve(
-    PackageRoot,
-    /** @type {string} */ (localizeRules.output.outputDir),
-);
+const XLIFFPath = resolve(PackageRoot, interchange.xliffDir);
+
+const EmittedLocalesDirectory = resolve(PackageRoot, output.outputDir);
 
 const targetLocales = localizeRules.targetLocales.filter((localeCode) => {
     return localeCode !== "en-XA";
@@ -84,18 +88,12 @@ async function cleanEmittedLocales() {
  * generated file doesn't exist, or the XLF file is newer (has a higher date)
  * than the generated file.  The missing XLF file is important enough it
  * generates a unique error message and halts the build.
- *
- * @param {string} localeCode
- * @returns {Promise<boolean>}
  */
-async function checkIfEmittedFileCurrent(localeCode) {
+async function checkIfEmittedFileCurrent(localeCode: string): Promise<boolean> {
     const xliffPath = path.join(XLIFFPath, `${localeCode}.xlf`);
     const emittedPath = path.join(EmittedLocalesDirectory, `${localeCode}.ts`);
 
-    /**
-     * @type {Stats}
-     */
-    let xliffStat;
+    let xliffStat: Stats;
 
     try {
         xliffStat = await fs.stat(xliffPath);
@@ -104,10 +102,7 @@ async function checkIfEmittedFileCurrent(localeCode) {
         process.exit(1);
     }
 
-    /**
-     * @type {Stats}
-     */
-    let emittedStat;
+    let emittedStat: Stats;
 
     // If the generated file doesn't exist, of course it's not up to date.
     try {
@@ -128,9 +123,8 @@ async function checkIfEmittedFileCurrent(localeCode) {
 
 /**
  * Checks if all the locale source files are up-to-date with their XLIFF sources.
- * @returns {Promise<boolean>}
  */
-async function checkIfLocalesAreCurrent() {
+async function checkIfLocalesAreCurrent(): Promise<boolean> {
     logger.info("Reading locale configuration...");
 
     logger.info(`Checking ${targetLocales.length} source files...`);
@@ -157,15 +151,8 @@ export async function generateLocaleModules() {
 
     logger.info("Generating locale modules...");
 
-    /**
-     * @type {Map<string, number>}
-     */
-    const missingTranslationWarnings = new Map();
-
-    /**
-     * @type {Map<string, number>}
-     */
-    const outdatedTranslationWarnings = new Map();
+    const missingTranslationWarnings = new Map<string, number>();
+    const outdatedTranslationWarnings = new Map<string, number>();
 
     const initialConsoleWarn = console.warn;
 
@@ -202,7 +189,6 @@ export async function generateLocaleModules() {
         initialConsoleWarn(arg0, ...args);
     };
 
-    // @ts-expect-error: Type is too broad.
     const localizer = new RuntimeLitLocalizer(localizeRules);
 
     await localizer.build();

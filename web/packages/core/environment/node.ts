@@ -20,16 +20,28 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
 
 /**
  * A source environment variable, which can be a string, number, boolean, null, or undefined.
- * @typedef {string | number | boolean | null | undefined} EnvironmentVariable
  */
+export type EnvironmentVariable = string | number | boolean | null | undefined;
 
 /**
  * A type helper for serializing environment variables.
  *
  * @category Environment
- * @template {EnvironmentVariable} T
- * @typedef {T extends string ? `"${T}"` : T} JSONify
  */
+export type JSONify<T extends EnvironmentVariable> = T extends string ? `"${T}"` : T;
+
+/**
+ * A mapping of environment variable names to their source values.
+ */
+export type EnvRecord = Record<string, EnvironmentVariable>;
+
+/**
+ * The result of serializing an {@linkcode EnvRecord}, i.e. each key prefixed and
+ * each value replaced with its JSON representation.
+ */
+export type SerializedEnvRecord<R extends EnvRecord, Prefix extends string> = {
+    [K in keyof R & string as `${Prefix}${K}`]: JSONify<R[K]>;
+};
 
 //#endregion
 
@@ -43,26 +55,16 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
  *
  * @category Environment
  * @runtime node
- *
- * @typeParam {string} [Prefix='import.meta.env.']
- *
- * @typedef {Record<string, EnvironmentVariable>} EnvRecord
- * @typedef {string} Prefix
- *
- * @param {EnvRecord} input
- * @param {Prefix} [prefix='import.meta.env.']
- *
- * @returns {{[K in keyof EnvRecord as `${Prefix}${K}`]: JSONify<EnvRecord[K]>}}
  */
-export function serializeEnvironmentVars(
-    input,
-    prefix = /** @type {Prefix} */ ("import.meta.env."),
-) {
+export function serializeEnvironmentVars<
+    R extends EnvRecord,
+    Prefix extends string = "import.meta.env.",
+>(input: R, prefix: Prefix = "import.meta.env." as Prefix): SerializedEnvRecord<R, Prefix> {
     const env = Object.fromEntries(
         Object.entries(input).map(([key, value]) => [prefix + key, JSON.stringify(value ?? "")]),
     );
 
-    return /** @type {any} */ (env);
+    return env as SerializedEnvRecord<R, Prefix>;
 }
 
 //#endregion

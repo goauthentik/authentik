@@ -3,7 +3,7 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  */
 
-import { copyAssets } from "../scripts/build-assets.mjs";
+import { copyAssets } from "../scripts/build-assets.ts";
 
 /**
  * @param {TemplateStringsArray} strings

@@ -13,16 +13,14 @@ const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
 //#region Base paths
 
-/**
- * @typedef {'@goauthentik/web'} WebPackageIdentifier
- */
+export type WebPackageIdentifier = "@goauthentik/web";
 
 /**
  * The root of the web package.
  *
  * @runtime node
  */
-export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relativeDirname, ".."));
+export const PackageRoot = resolve(relativeDirname, "..") as WebPackageIdentifier;
 
 /**
  * Path to the web package's distribution directory.
@@ -31,29 +29,31 @@ export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relative
  *
  * @runtime node
  */
-export const DistDirectory = /** @type {`${WebPackageIdentifier}/${typeof DistDirectoryName}`} */ (
-    resolve(PackageRoot, DistDirectoryName)
-);
+export const DistDirectory = resolve(
+    PackageRoot,
+    DistDirectoryName,
+) as `${WebPackageIdentifier}/${typeof DistDirectoryName}`;
 
 //#endregion
 
 //#region Entry points
 
 /**
- * @typedef {{ in: string, out: string }} EntryPointTarget
- *
  * ESBuild entrypoint target.
+ *
  * Matches the type defined in the ESBuild context.
  */
+export interface EntryPointTarget {
+    in: string;
+    out: string;
+}
 
 /**
  * Entry points available for building.
  *
- * @satisfies {Record<string, EntryPointTarget>}
- *
  * @runtime node
  */
-export const EntryPoint = /** @type {const} */ ({
+export const EntryPoint = {
     Admin: {
         in: resolve(PackageRoot, "src", "admin", "index.entrypoint.ts"),
         out: resolve(DistDirectory, "admin", "AdminInterface"),
@@ -94,6 +94,6 @@ export const EntryPoint = /** @type {const} */ ({
         in: resolve(PackageRoot, "src", "styles", "flows.global.css"),
         out: resolve(DistDirectory, "styles", "flow"),
     },
-});
+} as const satisfies Record<string, EntryPointTarget>;
 
 //#endregion

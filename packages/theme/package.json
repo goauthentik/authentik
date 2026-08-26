@@ -178,7 +178,7 @@
     "#exports-comment": [
         "The TypeScript entry points resolve to src/ for tooling that can read",
         "TypeScript directly — tsc via `types`, node via jiti/tsgo, and bundlers",
-        "that opt into the `bundler` condition (see web/scripts/build-web.mjs).",
+        "that opt into the `bundler` condition (see web/scripts/build-web.ts).",
         "`default` keeps the built dist/ output for plain Node and any consumer",
         "that does not set a condition; publishConfig.exports points every entry",
         "at dist/ for the published tarball.",

@@ -12,51 +12,43 @@
  * over the existing fetch-then-set-innerHTML path used by `<ak-mdx>`. The
  * shape is `{ content, frontmatter, publicPath, publicDirectory }` where
  * `content` is now pre-rendered HTML rather than raw markdown source.
- *
- * @import {
- *   OnLoadArgs,
- *   OnLoadResult,
- *   OnResolveArgs,
- *   OnResolveResult,
- *   Plugin,
- *   PluginBuild
- * } from "esbuild"
  */
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { compileMarkdown } from "./compile.js";
+import { compileMarkdown } from "./compile.ts";
 
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 
+import type {
+    OnLoadArgs,
+    OnLoadResult,
+    OnResolveArgs,
+    OnResolveResult,
+    Plugin,
+    PluginBuild,
+} from "esbuild";
+
 const pluginName = "mdx-plugin";
 
-/**
- * @typedef MDXPluginOptions
- * @property {string} root Repository root.
- */
+export interface MDXPluginOptions {
+    /**
+     * Repository root.
+     */
+    root: string;
+}
 
 /**
  * Bundle markdown and MDX source into JSON modules.
- *
- * @param {MDXPluginOptions} options
- * @returns {Plugin}
  */
-export function mdxPlugin({ root }) {
+export function mdxPlugin({ root }: MDXPluginOptions): Plugin {
     const prefix = "~docs";
     // TODO: Replace with `resolvePackage` after NPM Workspaces support is added.
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
-    /**
-     * @param {PluginBuild} build
-     */
-    function setup(build) {
-        /**
-         * @param {OnResolveArgs} args
-         * @returns {Promise<OnResolveResult>}
-         */
-        async function resolveListener(args) {
+    function setup(build: PluginBuild) {
+        async function resolveListener(args: OnResolveArgs): Promise<OnResolveResult> {
             if (!args.path.startsWith("~")) return args;
 
             return {
@@ -65,11 +57,7 @@ export function mdxPlugin({ root }) {
             };
         }
 
-        /**
-         * @param {OnLoadArgs} args
-         * @returns {Promise<OnLoadResult>}
-         */
-        async function loadListener(args) {
+        async function loadListener(args: OnLoadArgs): Promise<OnLoadResult> {
             const source = String(await fs.readFile(args.path));
 
             const publicPath = path.resolve(

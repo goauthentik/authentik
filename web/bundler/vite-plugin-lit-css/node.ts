@@ -1,18 +1,16 @@
 /**
  * @file Vite plugin to inline CSS imports
- * @import { Plugin as VitePlugin } from "vite";
  */
+
+import type { Plugin as VitePlugin } from "vite";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
 
 export function inlineCSSPlugin() {
-    /**
-     * @satisfies {VitePlugin}
-     */
     const inlineCSSPlugin = {
         name: "inline-css-plugin",
-        transform: (source, id) => {
+        transform: (source: string, id: string) => {
             if (!JavaScriptFilePattern.test(id)) return;
 
             const code = source.replace(CSSImportPattern, (match) => {
@@ -23,7 +21,7 @@ export function inlineCSSPlugin() {
                 code,
             };
         },
-    };
+    } satisfies VitePlugin;
 
     return inlineCSSPlugin;
 }

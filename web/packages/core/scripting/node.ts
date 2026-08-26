@@ -6,12 +6,12 @@ import { fileURLToPath } from "node:url";
 /**
  * Predicate to determine if a module was run directly, i.e. not imported.
  *
- * @param {ImportMeta} meta The `import.meta` object of the module.
+ * @param meta The `import.meta` object of the module.
  *
- * @return {boolean} Whether the module was run directly.
+ * @return Whether the module was run directly.
  * @runtime node
  */
-export function isMain(meta) {
+export function isMain(meta: ImportMeta): boolean {
     // Are we not in a module context?
     if (!meta) return false;
 

@@ -6,9 +6,9 @@
     "scripts": {
         "build": "wireit",
         "build:sfe": "pnpm --filter @goauthentik/web-sfe run build",
-        "build-locales": "node scripts/build-locales.mjs",
+        "build-locales": "node scripts/build-locales.ts",
         "build-proxy": "wireit",
-        "bundler:watch": "node scripts/build-web.mjs --watch",
+        "bundler:watch": "node scripts/build-web.ts --watch",
         "extract-locales": "lit-localize extract",
         "format": "wireit",
         "lint": "eslint --fix .",
@@ -19,7 +19,7 @@
         "precommit": "wireit",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u .",
-        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
+        "pseudolocalize": "node ./scripts/pseudolocalize.ts",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
         "test": "vitest",
@@ -38,18 +38,9 @@
         "./locales/*": "./src/locales/*",
         "./user/*": "./src/user/*",
         "./admin/*": "./src/admin/*",
-        "./*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "./*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "./*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+        "./*/browser": "./*/browser.ts",
+        "./*/node": "./*/node.ts",
+        "./*": "./*/index.ts"
     },
     "imports": {
         "#styles/*.css": "./src/styles/*.css",
@@ -72,18 +63,9 @@
         "#e2e": "./e2e/index.ts",
         "#e2e/*": "./e2e/*.ts",
         "#types/*": "./types/*/index.d.ts",
-        "#*/browser": {
-            "types": "./out/*/browser.d.ts",
-            "import": "./*/browser.js"
-        },
-        "#*/node": {
-            "types": "./out/*/node.d.ts",
-            "import": "./*/node.js"
-        },
-        "#*": {
-            "types": "./out/*/index.d.ts",
-            "import": "./*/index.js"
-        }
+        "#*/browser": "./*/browser.ts",
+        "#*/node": "./*/node.ts",
+        "#*": "./*/index.ts"
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
@@ -211,7 +193,7 @@
     },
     "wireit": {
         "build": {
-            "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "command": "${NODE_RUNNER} scripts/build-web.ts",
             "dependencies": [
                 "build-locales"
             ],
@@ -249,7 +231,7 @@
             }
         },
         "build-proxy": {
-            "command": "node scripts/build-web.mjs --styles-only",
+            "command": "node scripts/build-web.ts --styles-only",
             "dependencies": [
                 "build-locales"
             ]
