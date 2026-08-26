@@ -1,10 +1,12 @@
 """authentik database backend"""
 
-from django.core.checks import Warning
+from django.core.checks import Error, Warning
 from django.db.backends.base.validation import BaseDatabaseValidation
 from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
 
 from authentik.lib.config import CONFIG, DIRECT_DB_ALIAS
+
+ENCODING_DOCS_URL = "https://docs.goauthentik.io/install-config/configuration/#postgresql-settings"
 
 
 class DatabaseValidation(BaseDatabaseValidation):
@@ -13,7 +15,7 @@ class DatabaseValidation(BaseDatabaseValidation):
         return self._check_encoding()
 
     def _check_encoding(self):
-        """Throw a warning when the server_encoding is not UTF-8 or
+        """Fail when the server_encoding is not UTF8, and warn when
         server_encoding and client_encoding are mismatched"""
         messages = []
         with self.connection.cursor() as cursor:
@@ -31,9 +33,12 @@ class DatabaseValidation(BaseDatabaseValidation):
                 )
             if server_encoding != "UTF8":
                 messages.append(
-                    Warning(
+                    Error(
                         f"PostgreSQL Server encoding is not UTF8: {server_encoding}",
-                        id="ak.db.W002",
+                        hint="authentik requires a UTF8 database. Dump the database, "
+                        "re-create it with `ENCODING 'UTF8'` and restore the dump. "
+                        f"See {ENCODING_DOCS_URL}",
+                        id="ak.db.E001",
                     )
                 )
         return messages
