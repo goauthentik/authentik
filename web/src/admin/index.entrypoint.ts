@@ -1,3 +1,4 @@
+import "#common/sentry/apply";
 import "#elements/messages/MessageContainer";
 import "#admin/ak-interface-admin";
 
