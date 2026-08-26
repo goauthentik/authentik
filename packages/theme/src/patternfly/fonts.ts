@@ -10,7 +10,3 @@ usePfFontFamily(instance, {
 
 const usePfFontWeight = createPfGlobal("FontWeight");
 usePfFontWeight(instance, bridge("@font-weight")("light", "normal", "semi-bold", "bold"));
-usePfFontWeight(instance, {
-    "overpass.semi-bold": "@font-weight.semi-bold",
-    "overpass.bold": "@font-weight.bold",
-});
