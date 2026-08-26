@@ -1,6 +1,10 @@
 module goauthentik.io
 
+<<<<<<< HEAD
 go 1.25.5
+=======
+go 1.27.0
+>>>>>>> 95e758670 (ci: bump golangci lint (#25513))
 
 require (
 	beryju.io/ldap v0.1.0
