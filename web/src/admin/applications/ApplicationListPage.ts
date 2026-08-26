@@ -24,7 +24,7 @@ import { AKApplicationWizard } from "#admin/applications/wizard/ak-application-w
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
-import MDApplication from "~docs/add-secure-apps/applications/index.md";
+import MDApplication from "~docs/add-secure-apps/applications/index.mdx";
 
 import { msg, str } from "@lit/localize";
 import { css, CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
