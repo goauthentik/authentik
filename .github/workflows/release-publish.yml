@@ -52,7 +52,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@78eb729dbdb4ef6480e85ff697b4410e22112583
+      - uses: regclient/actions/regctl-installer@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
       # logs in to ghcr.io by default
       - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
       - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
