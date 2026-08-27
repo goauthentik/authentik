@@ -36,11 +36,13 @@ authentik issues access tokens as JWTs signed with the provider's signing key, s
 
 Several modules exist, and they differ in how much they actually check:
 
-| Module                                                                           | Notes                                                                                                                                                                                                    |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator) (Percona)    | Validates JWTs against the provider's JWKS and lets you pick the claim that identifies the user. The most actively maintained of the three. Its authors currently describe the packages as experimental. |
-| [`oauth_validator`](https://github.com/TantorLabs/oauth_validator) (Tantor Labs) | Reads `sub` and `scope` straight out of the JWT payload without verifying the signature, so a forged token is accepted. Not suitable unless you add signature verification.                              |
-| [`pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator) (dvob)          | Verifies JWTs through OIDC discovery and JWKS, but is published as a proof of concept written to explore Kubernetes service account authentication.                                                      |
+| Module                                                                           | Notes                                                                                                                                                                                                       |
+| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator) (Percona)    | Version 1.1.0 validates JWTs against the provider's JWKS and lets you pick the claim that identifies the user. The most actively developed of the three. Its authors describe the packages as experimental. |
+| [`oauth_validator`](https://github.com/TantorLabs/oauth_validator) (Tantor Labs) | Reads `sub` and `scope` straight out of the JWT payload without verifying the signature, so a forged token is accepted. Not suitable unless you add signature verification.                                 |
+| [`pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator) (dvob)          | Verifies JWTs through OIDC discovery and JWKS, but is published as a proof of concept written to explore Kubernetes service account authentication.                                                         |
+
+These notes describe each project as of August 2026. None of them ships with PostgreSQL, and each is developed independently of it, so check the current state of the one you choose rather than relying on this comparison.
 
 This guide uses Percona's module. Whichever you pick, confirm that it verifies token signatures, and review it before using it in production.
 
@@ -106,7 +108,12 @@ curl -s "https://authentik.company/application/o/postgresql//.well-known/openid-
 ```
 
 :::note Why not the RFC 8414 URL
-authentik also serves the same metadata at `https://authentik.company/.well-known/oauth-authorization-server/application/o/postgresql/`, and that URL satisfies `libpq` on its own with no proxy changes. It does not work with `pg_oidc_validator`, which compares the token's `iss` claim against the `issuer` string from `pg_hba.conf` rather than against the issuer identifier derived from it. Setting `issuer` to the RFC 8414 URL makes the validator reject every token with `claim value does not match expected value`. A validator that derives the issuer identifier per RFC 8414, or that takes the expected issuer as its own separate setting, can use that URL and skip the proxy requirement.
+authentik also serves the same metadata at `https://authentik.company/.well-known/oauth-authorization-server/application/o/postgresql/`. That URL satisfies `libpq` on its own and would remove the proxy requirement, but `pg_oidc_validator` 1.1.0 cannot use it, for two separate reasons:
+
+- It builds the metadata URL by appending `/.well-known/openid-configuration` unless the configured issuer already ends with that exact suffix, so an RFC 8414 URL is mangled into a path that returns `404`.
+- It compares the token's `iss` claim against the `issuer` string from `pg_hba.conf` rather than against the issuer identifier derived from it, so even when the document is reachable, every token is rejected with `claim value does not match expected value`.
+
+`pg_hba.conf` accepts either an issuer identifier or a discovery document URI, so a validator that handles the second form can use this URL and skip the proxy requirement.
 :::
 
 ## PostgreSQL configuration
