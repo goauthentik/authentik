@@ -12,8 +12,9 @@ class TestRoot(TransactionTestCase):
         self.assertEqual(self.client.get(reverse("metrics")).status_code, 204)
 
     def test_monitoring_live(self):
-        """Test LiveView"""
-        self.assertEqual(self.client.get(reverse("health-live")).status_code, 200)
+        """Test liveness probe short-circuit (zero DB queries)"""
+        with self.assertNumQueries(0):
+            self.assertEqual(self.client.get("/-/health/live/").status_code, 200)
 
     def test_monitoring_ready(self):
         """Test ReadyView"""

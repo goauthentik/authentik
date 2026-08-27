@@ -30,6 +30,20 @@ ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 SIGNING_HASH = get_cookie_signing_key()
 
 
+class LivenessMiddleware:
+    """Short-circuit liveness probe requests to bypass database and tenant middleware."""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        if request.path == "/-/health/live/":
+            return HttpResponse(status=200)
+        return self.get_response(request)
+
+
 class SessionMiddleware(UpstreamSessionMiddleware):
     """Dynamically set SameSite depending if the upstream connection is TLS or not"""
 
@@ -358,7 +372,7 @@ class LoggingMiddleware:
     def log(self, request: HttpRequest, status_code: int, runtime: int, **kwargs):
         """Log request"""
         # Those are logged by the server above
-        if request.path in ("/-/metrics/", "/-/health/live/", "/-/health/ready/"):
+        if request.path in ("/-/metrics/", "/-/health/ready/"):
             return
         for header in self.headers_to_log:
             header_value = request.headers.get(header)
