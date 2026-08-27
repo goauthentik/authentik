@@ -3,6 +3,7 @@ import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
 import "#admin/users/UserOffboardingForm";
 import "#admin/users/UserPasswordForm";
+import "#admin/users/UserPasswordLockForm";
 import "#components/ak-status-label";
 import "#elements/forms/ConfirmationForm";
 import "#elements/forms/ModalForm";
@@ -22,6 +23,7 @@ import { ToggleUserActivationButton } from "#admin/users/UserActiveForm";
 import { UserForm } from "#admin/users/UserForm";
 import { UserImpersonateForm } from "#admin/users/UserImpersonateForm";
 import Styles from "#admin/users/UserInfoCard.css";
+import { ToggleUserPasswordLockButton } from "#admin/users/UserPasswordLockForm";
 
 import {
     LifecycleApi,
@@ -133,6 +135,10 @@ export class UserInfoCard extends AKElement {
             </button>
 
             ${ToggleUserActivationButton(user, { className: "pf-m-block" })}
+            ${ToggleUserPasswordLockButton(user, {
+                className: "pf-m-block",
+                hasEnterpriseLicense: this.hasEnterpriseLicense,
+            })}
             ${showEnterpriseActions
                 ? html`<button
                       class="pf-c-button pf-m-danger pf-m-block"

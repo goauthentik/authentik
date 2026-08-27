@@ -1,11 +1,15 @@
 import "#components/ak-text-input";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
+import "#components/ak-number-input";
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
+
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { AKLabel } from "#components/ak-label";
 
@@ -27,7 +31,7 @@ import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-password-form")
-export class PasswordStageForm extends BaseStageForm<PasswordStage> {
+export class PasswordStageForm extends WithLicenseSummary(BaseStageForm<PasswordStage>) {
     protected endpoints = {
         load: (stageUuid: string) => aki(StagesApi).stagesPasswordRetrieve({ stageUuid }),
         create: (passwordStageRequest: PasswordStage) =>
@@ -45,6 +49,55 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 return field === isField;
             }).length > 0
         );
+    }
+
+    protected renderLockoutSettings(): TemplateResult {
+        // Without an Enterprise license the lockout policy never runs; the settings
+        // stay visible but read-only.
+        const readOnly = !this.hasEnterpriseLicense;
+
+        return html`<ak-number-input
+                label=${msg("Failed attempts before lockout", {
+                    id: "password-stage.lockout-threshold.label",
+                })}
+                required
+                name="failedAttemptsBeforeLockout"
+                min=${0}
+                value="${this.instance?.failedAttemptsBeforeLockout ?? 0}"
+                ?readonly=${readOnly}
+                help=${readOnly
+                    ? msg("Password lockout requires an Enterprise license.", {
+                          id: "password-stage.lockout-threshold.enterprise",
+                      })
+                    : msg(
+                          "Lock password login after this many consecutive failed attempts, until an administrator unlocks it. Failed attempts against LDAP and Kerberos backends are not counted. Set to 0 to never lock.",
+                          { id: "password-stage.lockout-threshold.description" },
+                      )}
+            ></ak-number-input>
+            <ak-text-input
+                label=${msg("Last-attempt warning message", {
+                    id: "password-stage.last-attempt-warning-message.label",
+                })}
+                name="lastAttemptWarningMessage"
+                value=${this.instance?.lastAttemptWarningMessage ?? ""}
+                ?readonly=${readOnly}
+                help=${msg(
+                    "Warning shown when the user has one password attempt remaining. Leave blank to show no warning.",
+                    { id: "password-stage.last-attempt-warning-message.description" },
+                )}
+            ></ak-text-input>
+            <ak-text-input
+                label=${msg("Lockout message", {
+                    id: "password-stage.lockout-message.label",
+                })}
+                name="lockoutMessage"
+                value="${this.instance?.lockoutMessage ?? ""}"
+                ?readonly=${readOnly}
+                help=${msg(
+                    "Message shown when the user's password has been locked. Leave blank to show no message.",
+                    { id: "password-stage.lockout-message.description" },
+                )}
+            ></ak-text-input>`;
     }
 
     protected override renderForm(): TemplateResult {
@@ -165,10 +218,14 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                                "How many failed password attempts are allowed before the flow is canceled. This setting does not deactivate the user.",
+                                {
+                                    id: "password-stage.failed-attempts-before-cancel.description",
+                                },
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    ${this.renderLockoutSettings()}
                     <ak-switch-input
                         name="allowShowPassword"
                         label="Allow Show Password"
