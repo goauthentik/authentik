@@ -865,6 +865,7 @@ export interface SourcesSamlDestroyRequest {
 
 export interface SourcesSamlListRequest {
     allowIdpInitiated?: boolean;
+    audienceOverride?: string;
     authenticationFlow?: string;
     bindingType?: BindingTypeEnum;
     digestAlgorithm?: DigestAlgorithmEnum;
@@ -7720,6 +7721,10 @@ export class SourcesApi extends runtime.BaseAPI {
 
         if (requestParameters["allowIdpInitiated"] != null) {
             queryParameters["allow_idp_initiated"] = requestParameters["allowIdpInitiated"];
+        }
+
+        if (requestParameters["audienceOverride"] != null) {
+            queryParameters["audience_override"] = requestParameters["audienceOverride"];
         }
 
         if (requestParameters["authenticationFlow"] != null) {

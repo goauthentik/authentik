@@ -180,6 +180,12 @@ export interface SAMLSource {
      */
     issuerOverride?: string;
     /**
+     * Audience value this IdP sends for authentik.
+     * @type {string}
+     * @memberof SAMLSource
+     */
+    audienceOverride?: string;
+    /**
      * Get the resolved Issuer, falling back to the metadata URL when unset
      * @type {string}
      * @memberof SAMLSource
@@ -393,6 +399,7 @@ export function SAMLSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
+        audienceOverride: json["audience_override"] == null ? undefined : json["audience_override"],
         urlIssuer: json["url_issuer"],
         ssoUrl: json["sso_url"],
         sloUrl:
@@ -486,6 +493,7 @@ export function SAMLSourceToJSONTyped(
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
+        audience_override: value["audienceOverride"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

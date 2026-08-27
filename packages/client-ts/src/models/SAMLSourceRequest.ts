@@ -130,6 +130,12 @@ export interface SAMLSourceRequest {
      */
     issuerOverride?: string;
     /**
+     * Audience value this IdP sends for authentik.
+     * @type {string}
+     * @memberof SAMLSourceRequest
+     */
+    audienceOverride?: string;
+    /**
      * URL that the initial Login request is sent to.
      * @type {string}
      * @memberof SAMLSourceRequest
@@ -287,6 +293,7 @@ export function SAMLSourceRequestFromJSONTyped(
                 : GroupMatchingModeEnumFromJSON(json["group_matching_mode"]),
         preAuthenticationFlow: json["pre_authentication_flow"],
         issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
+        audienceOverride: json["audience_override"] == null ? undefined : json["audience_override"],
         ssoUrl: json["sso_url"],
         sloUrl:
             json["slo_url"] === undefined
@@ -368,6 +375,7 @@ export function SAMLSourceRequestToJSONTyped(
         group_matching_mode: GroupMatchingModeEnumToJSON(value["groupMatchingMode"]),
         pre_authentication_flow: value["preAuthenticationFlow"],
         issuer_override: value["issuerOverride"],
+        audience_override: value["audienceOverride"],
         sso_url: value["ssoUrl"],
         slo_url: value["sloUrl"],
         allow_idp_initiated: value["allowIdpInitiated"],

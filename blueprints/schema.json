@@ -15980,6 +15980,11 @@
                     "title": "Issuer override",
                     "description": "Also known as Entity ID. Defaults to the Metadata URL."
                 },
+                "audience_override": {
+                    "type": "string",
+                    "title": "Audience override",
+                    "description": "Audience value this IdP sends for authentik."
+                },
                 "sso_url": {
                     "type": "string",
                     "minLength": 1,

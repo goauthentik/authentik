@@ -26041,6 +26041,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: audience_override
+        schema:
+          type: string
+      - in: query
         name: authentication_flow
         schema:
           type: string
@@ -53423,6 +53427,9 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        audience_override:
+          type: string
+          description: Audience value this IdP sends for authentik.
         sso_url:
           type: string
           minLength: 1
@@ -57459,6 +57466,9 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        audience_override:
+          type: string
+          description: Audience value this IdP sends for authentik.
         url_issuer:
           type: string
           description: Get the resolved Issuer, falling back to the metadata URL when
@@ -57668,6 +57678,9 @@ components:
         issuer_override:
           type: string
           description: Also known as Entity ID. Defaults to the Metadata URL.
+        audience_override:
+          type: string
+          description: Audience value this IdP sends for authentik.
         sso_url:
           type: string
           minLength: 1
