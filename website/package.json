@@ -77,7 +77,6 @@
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
         "@goauthentik/api-docs": {
-            "openapi-to-postmanv2": "^5.0.0",
             "postman-collection": "^5.0.2",
             "postman-code-generators": {
                 "detect-package-manager": "file:./vendored/detect-package-manager",
