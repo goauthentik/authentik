@@ -66,24 +66,15 @@ function createSyncOutgoingTriggerModeOptions(): RadioOption<SyncOutgoingTrigger
 
 @customElement("ak-source-kerberos-form")
 export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
-    async loadInstance(pk: string): Promise<KerberosSource> {
-        return aki(SourcesApi).sourcesKerberosRetrieve({
-            slug: pk,
-        });
-    }
-
-    async send(data: KerberosSource): Promise<KerberosSource> {
-        if (this.instance) {
-            return aki(SourcesApi).sourcesKerberosPartialUpdate({
-                slug: this.instance.slug,
-                patchedKerberosSourceRequest: data,
-            });
-        }
-
-        return aki(SourcesApi).sourcesKerberosCreate({
-            kerberosSourceRequest: data as unknown as KerberosSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesKerberosRetrieve({ slug }),
+        create: (kerberosSource: KerberosSource) =>
+            aki(SourcesApi).sourcesKerberosCreate({
+                kerberosSourceRequest: kerberosSource as unknown as KerberosSourceRequest,
+            }),
+        update: (slug: string, patchedKerberosSourceRequest: KerberosSource) =>
+            aki(SourcesApi).sourcesKerberosPartialUpdate({ slug, patchedKerberosSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`<ak-text-input

@@ -13,6 +13,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/table/ak-table-filter-select";
 
 import { aki } from "#common/api/client";
 import { userTypeToLabel } from "#common/labels";
@@ -25,6 +26,7 @@ import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capab
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -98,36 +100,60 @@ export class UserListPage extends WithLicenseSummary(
     @property({ type: String })
     public order = "-last_login";
 
-    @property({ type: String, useDefault: true })
+    @property({ type: String, attribute: "active-path", useDefault: true })
     public activePath: string = DefaultUIConfig.defaults.userPath;
 
+    @property({ type: String, attribute: "default-active-path", useDefault: true })
+    public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
+
     @state()
-    protected hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    protected filterStatus = getURLParam<boolean | undefined>("filterStatus", undefined);
 
     @state()
     protected userPaths: UserPath | null = null;
 
     protected canImpersonate = false;
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
+    //#region Lifecycle
 
+    /**
+     * Synchronizes `activePath` and `defaultActivePath` from three sources in priority order:
+     *
+     * 1. URL param (explicit navigation)
+     * 2. Brand default user path (admin-configured override)
+     * 3. Compiled-in `DefaultUIConfig` default (fallback)
+     *
+     * `activePath` is set to `""` (show all users) when neither a URL param nor a
+     * brand-level override is present, avoiding silent list filtering.
+     * `defaultActivePath` always resolves to a value via the fallback chain.
+     */
+    protected synchronizeUserPaths(): void {
         this.canImpersonate = this.can(CapabilitiesEnum.CanImpersonate);
 
         const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
         const brandDefaultUserPath = this.uiConfig.defaults.userPath;
+        const defaultUserPath = brandDefaultUserPath || initialDefaultUserPath;
+        const userPathParam = getURLParam<string>("path", "");
 
-        this.activePath = getURLParam<string>(
-            "path",
-            brandDefaultUserPath || initialDefaultUserPath,
-        );
+        const pathPresent =
+            (userPathParam && userPathParam !== "") || defaultUserPath !== initialDefaultUserPath;
+
+        const resolvedUserPath = pathPresent ? userPathParam || defaultUserPath : "";
+
+        this.activePath = resolvedUserPath;
+        this.defaultActivePath = userPathParam || defaultUserPath;
+    }
+
+    public override connectedCallback(): void {
+        super.connectedCallback();
+        this.synchronizeUserPaths();
     }
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await this.#api.coreUsersList({
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: this.filterStatus,
             includeGroups: false,
         });
 
@@ -138,11 +164,22 @@ export class UserListPage extends WithLicenseSummary(
         return users;
     }
 
+    //#endregion
+
+    //#region Event Listeners
+
+    protected treeViewRefreshListener = (ev: CustomEvent<{ path: string }>) => {
+        this.activePath = ev.detail.path;
+        this.defaultActivePath = ev.detail.path;
+    };
+
+    //#endregion
+
     protected buildExportParams = async (): Promise<CoreUsersExportCreateRequest> => {
         return {
             ...(await this.defaultEndpointConfig()),
             pathStartswith: this.activePath,
-            isActive: this.hideDeactivated ? true : undefined,
+            isActive: this.filterStatus ? true : undefined,
         };
     };
 
@@ -167,7 +204,7 @@ export class UserListPage extends WithLicenseSummary(
         [msg("Actions"), null, msg("Row Actions")],
     ];
 
-    //#region Renderering
+    //#region Rendering
 
     protected override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
@@ -225,36 +262,33 @@ export class UserListPage extends WithLicenseSummary(
     protected override renderToolbarAfter(): TemplateResult {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
-                <div class="pf-c-input-group">
-                    <label
-                        class="pf-c-switch"
-                        for="hide-deactivated-users"
-                        aria-labelledby="hide-deactivated-users-label"
-                    >
-                        <input
-                            id="hide-deactivated-users"
-                            class="pf-c-switch__input"
-                            type="checkbox"
-                            ?checked=${!this.hideDeactivated}
-                            @change=${() => {
-                                this.hideDeactivated = !this.hideDeactivated;
-                                this.page = 1;
-                                this.fetch();
-                                updateURLParams({
-                                    hideDeactivated: this.hideDeactivated,
-                                });
-                            }}
-                        />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
-                            </span>
-                        </span>
-                        <span class="pf-c-switch__label" id="hide-deactivated-users-label">
-                            ${msg("Show deactivated users")}
-                        </span>
-                    </label>
-                </div>
+                <ak-table-filter-select
+                    .options=${[
+                        {
+                            label: msg("All"),
+                            value: undefined,
+                        },
+                        {
+                            label: msg("Active"),
+                            value: true,
+                        },
+                        {
+                            label: msg("Inactive"),
+                            value: false,
+                        },
+                    ]}
+                    group=${msg("User status")}
+                    .value=${this.filterStatus}
+                    @change=${(ev: CustomEvent<FilterOption<boolean | undefined>>) => {
+                        this.filterStatus = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                        updateURLParams({
+                            filterStatus: this.filterStatus,
+                        });
+                    }}
+                >
+                </ak-table-filter-select>
             </div>
         </div>`;
     }
@@ -346,15 +380,15 @@ export class UserListPage extends WithLicenseSummary(
     }
 
     protected renderObjectCreate(): SlottedTemplateResult {
-        const { activePath } = this;
+        const { defaultActivePath } = this;
 
-        return guard([activePath], () => {
+        return guard([defaultActivePath], () => {
             return [
                 html`<button
                     class="pf-c-button pf-m-primary"
                     type="button"
                     ${modalInvoker(AKUserWizard, {
-                        defaultPath: activePath,
+                        defaultPath: defaultActivePath,
                     })}
                     aria-description=${msg("Open the new user wizard")}
                 >
@@ -383,10 +417,8 @@ export class UserListPage extends WithLicenseSummary(
                     <ak-treeview
                         label=${msg("User paths")}
                         .items=${this.userPaths?.paths || []}
-                        activePath=${this.activePath}
-                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
-                            this.activePath = ev.detail.path;
-                        }}
+                        default-active-path=${this.activePath}
+                        @ak-refresh=${this.treeViewRefreshListener}
                     ></ak-treeview>
                 </div>
             </div>

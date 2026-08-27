@@ -15,9 +15,9 @@ AKQL is built on [DjangoQL](https://github.com/ivelum/djangoql).
 AKQL is available on lists and fields backed by the query language:
 
 - **Events** > **Logs**: See [Logging events](./events/logging-events.mdx#advanced-queries).
-- **Directory** > **Users**: See [Manage users](../users-sources/user/user_basic_operations.md#advanced-queries).
+- **Directory** > **Users**: See [Manage users](../users-sources/user/user_basic_operations.mdx#advanced-queries).
 - **Directory** > **Groups**: See [Manage groups](../users-sources/groups/manage_groups.mdx#advanced-queries).
-- **Event Matcher policies**: the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.md#what-it-matches).
+- **Event Matcher policies**: the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.mdx#what-it-matches).
 - **REST API list endpoints**: the `search` query parameter on endpoints that return an AKQL autocomplete schema. See [Use AKQL through the API](#use-akql-through-the-api).
 
 Each area exposes its own searchable fields. See [Searchable fields](#searchable-fields).
@@ -177,21 +177,21 @@ The fields available to AKQL are specific to each list.
 
 Available in **Events** > **Logs** and in the **Query** field on Event Matcher policies.
 
-| Field              | Type      | Description                                                                    |
-| ------------------ | --------- | ------------------------------------------------------------------------------ |
-| `action`           | Choice    | The [event action](./events/event-actions.md), such as `login`.                |
-| `event_uuid`       | String    | The event's unique identifier.                                                 |
-| `app`              | String    | The application or authentik component that emitted the event.                 |
-| `client_ip`        | String    | The client IP address associated with the event.                               |
-| `user.pk`          | Integer   | The acting user's primary key.                                                 |
-| `user.username`    | String    | The acting user's username.                                                    |
-| `user.email`       | String    | The acting user's email address.                                               |
-| `brand.pk`         | String    | The primary key of the [brand](../customize/branding.md) active for the event. |
-| `brand.app`        | String    | The brand's app label.                                                         |
-| `brand.name`       | String    | The brand's name.                                                              |
-| `brand.model_name` | String    | The brand's model name.                                                        |
-| `context.*`        | JSON      | Arbitrary event context.                                                       |
-| `created`          | Date/time | When the event occurred.                                                       |
+| Field              | Type      | Description                                                                           |
+| ------------------ | --------- | ------------------------------------------------------------------------------------- |
+| `action`           | Choice    | The [event action](./events/event-actions.mdx), such as `login`.                      |
+| `event_uuid`       | String    | The event's unique identifier.                                                        |
+| `app`              | String    | The application or authentik component that emitted the event.                        |
+| `client_ip`        | String    | The client IP address associated with the event.                                      |
+| `user.pk`          | Integer   | The acting user's primary key.                                                        |
+| `user.username`    | String    | The acting user's username.                                                           |
+| `user.email`       | String    | The acting user's email address.                                                      |
+| `brand.pk`         | String    | The primary key of the [brand](../customize/branding/index.mdx) active for the event. |
+| `brand.app`        | String    | The brand's app label.                                                                |
+| `brand.name`       | String    | The brand's name.                                                                     |
+| `brand.model_name` | String    | The brand's model name.                                                               |
+| `context.*`        | JSON      | Arbitrary event context.                                                              |
+| `created`          | Date/time | When the event occurred.                                                              |
 
 Common event context paths include:
 
@@ -281,7 +281,7 @@ The response pagination object includes an `autocomplete` field that describes t
 
 ## Use AKQL in an Event Matcher policy
 
-Use the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.md) to match events with AKQL.
+Use the **Query** field on an [Event Matcher policy](../customize/policies/types/event-matcher.mdx) to match events with AKQL.
 
 1. In the Admin interface, navigate to **Customization** > **Policies**.
 2. Create or edit an **Event Matcher Policy**.

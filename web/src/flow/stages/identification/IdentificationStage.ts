@@ -15,6 +15,11 @@ import CaptchaDisplayController from "#flow/stages/identification/controllers/Ca
 import RememberMeController from "#flow/stages/identification/controllers/RememberMeController";
 import WebauthnController from "#flow/stages/identification/controllers/WebauthnController";
 import Styles from "#flow/stages/identification/styles.css";
+import {
+    compareLoginSource,
+    formatUIFieldLabel,
+    OR_LIST_FORMATTERS,
+} from "#flow/stages/identification/utils";
 
 import {
     FlowDesignationEnum,
@@ -26,11 +31,10 @@ import {
 } from "@goauthentik/api";
 
 import { kebabCase } from "change-case";
-import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing, PropertyValues, ReactiveControllerHost } from "lit";
-import { createRef, ref } from "lit-html/directives/ref.js";
+import { ref } from "lit-html/directives/ref.js";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 
@@ -50,23 +54,6 @@ export const PasswordManagerPrefill: {
     password?: string;
     totp?: string;
 } = {};
-
-export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
-    style: "short",
-    type: "disjunction",
-});
-
-const UI_FIELDS: { [key: string]: string } = {
-    [UserFieldsEnum.Username]: msg("Username"),
-    [UserFieldsEnum.Email]: msg("Email"),
-    [UserFieldsEnum.Upn]: msg("UPN"),
-};
-
-const sortLoginSources = (a: LoginSource, b: LoginSource) =>
-    match([!!a.promoted, !!b.promoted])
-        .with([true, false], () => -1)
-        .with([false, true], () => 1)
-        .otherwise(() => 0);
 
 @customElement("ak-stage-identification")
 export class IdentificationStage extends BaseStage<
@@ -92,8 +79,6 @@ export class IdentificationStage extends BaseStage<
      */
     @property({ type: String, attribute: "input-id" })
     public inputID = "ak-identifier-input";
-
-    protected passwordFieldRef = createRef<HTMLInputElement>();
 
     #form?: HTMLFormElement;
 
@@ -131,12 +116,9 @@ export class IdentificationStage extends BaseStage<
             });
 
             this.#createHelperForm();
-        }
-    }
 
-    public override connectedCallback(): void {
-        super.connectedCallback();
-        this.addEventListener("focus", this.autofocusTarget.toEventListener());
+            this.focus();
+        }
     }
 
     public override disconnectedCallback(): void {
@@ -145,7 +127,9 @@ export class IdentificationStage extends BaseStage<
         cancelAnimationFrame(this.#prepareRememberMeFrame);
     }
 
-    public override firstUpdated(): void {
+    public override firstUpdated(changedProperties: PropertyValues<this>): void {
+        super.firstUpdated(changedProperties);
+
         this.focus();
     }
 
@@ -168,8 +152,8 @@ export class IdentificationStage extends BaseStage<
         if (!this.rememberMeController) {
             this.rememberMeController = new RememberMeController(this, {
                 identificationFieldID: this.inputID,
-                identificationFieldRef: this.autofocusTarget.reference,
-                passwordFieldRef: this.passwordFieldRef,
+                identificationFieldRef: this.primaryFocusTarget.reference,
+                passwordFieldRef: this.secondaryFocusTarget.reference,
                 pendingUserIdentifier,
             });
 
@@ -278,6 +262,13 @@ export class IdentificationStage extends BaseStage<
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
+
+        const passwordField = this.secondaryFocusTarget.target;
+
+        if (passwordField) {
+            passwordField.focus();
+            passwordField.select();
+        }
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
@@ -293,7 +284,7 @@ export class IdentificationStage extends BaseStage<
 
     protected renderUidField(
         id: string,
-        type: string,
+        type: "email" | "text",
         label: string,
         initialUserIdentification: string | null,
         passwordFields?: boolean,
@@ -306,7 +297,7 @@ export class IdentificationStage extends BaseStage<
         }
 
         return html`<input
-            ${ref(this.autofocusTarget.reference)}
+            ${ref(this.primaryFocusTarget.reference)}
             id=${id}
             type=${type}
             name="uidField"
@@ -326,13 +317,14 @@ export class IdentificationStage extends BaseStage<
     protected renderPasswordFields(challenge: IdentificationChallenge) {
         const { allowShowPassword } = challenge;
         return html`<ak-flow-input-password
-            .inputRef=${this.passwordFieldRef}
+            .inputRef=${this.secondaryFocusTarget.reference}
             label=${msg("Password")}
             input-id="ak-stage-identification-password"
             class="pf-c-form__group"
             .errors=${challenge.responseErrors?.password}
             ?allow-show-password=${allowShowPassword}
             prefill=${PasswordManagerPrefill.password ?? ""}
+            required
         ></ak-flow-input-password> `;
     }
 
@@ -341,6 +333,7 @@ export class IdentificationStage extends BaseStage<
             challenge;
 
         const fields = (userFields || []).sort();
+
         if (fields.length === 0) {
             return html`<p>${msg("Select one of the options below to continue.")}</p>`;
         }
@@ -353,7 +346,8 @@ export class IdentificationStage extends BaseStage<
 
         const offerRecovery = flowDesignation === FlowDesignationEnum.Recovery;
         const type = fields.length === 1 && fields[0] === UserFieldsEnum.Email ? "email" : "text";
-        const label = OR_LIST_FORMATTERS.format(fields.map((f) => UI_FIELDS[f]));
+
+        const label = OR_LIST_FORMATTERS.format(fields.map((field) => formatUIFieldLabel(field)));
 
         // prettier-ignore
         return html`${offerRecovery ? this.renderRecoveryMessage() : nothing}
@@ -440,7 +434,7 @@ export class IdentificationStage extends BaseStage<
         >
             <legend class="sr-only">${msg("Login sources")}</legend>
             ${repeat(
-                [...sources].sort(sortLoginSources),
+                [...sources].sort(compareLoginSource),
                 (source, idx) => source.name + idx,
                 (source) => this.renderLoginSource(source, showLabels),
             )}

@@ -2,6 +2,7 @@
 
 from django.http import HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 
 from authentik.events.models import Event, EventAction
@@ -15,6 +16,17 @@ from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
 PLAN_CONTEXT_DUO_ENROLL = "goauthentik.io/stages/authenticator_duo/enroll"
+DUO_USERNAME_EXISTS_ERROR = "username already exists"
+
+
+def duo_enrollment_error_message(exc: RuntimeError) -> str:
+    """Return a user-facing error message for Duo enrollment failures."""
+    if DUO_USERNAME_EXISTS_ERROR in str(exc).lower():
+        return _(
+            "A Duo user with this username already exists. Ask an administrator to import the "
+            "existing Duo authenticator or delete the Duo user before enrolling again."
+        )
+    return _("Failed to enroll with Duo. Please contact an administrator.")
 
 
 class AuthenticatorDuoChallenge(WithUserInfoChallenge):
@@ -49,7 +61,7 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 message=f"Failed to enroll user: {str(exc)}",
                 user=user,
             ).from_http(self.request, user)
-            raise InvalidStageError(str(exc)) from exc
+            raise InvalidStageError(duo_enrollment_error_message(exc)) from exc
         self.executor.plan.context[PLAN_CONTEXT_DUO_ENROLL] = enroll
         return enroll
 

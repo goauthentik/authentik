@@ -1,8 +1,16 @@
+from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.providers.saml.models import SAMLProvider
+
+
+class WSFederationSAMLVersion(models.TextChoices):
+    """SAML Assertion version issued by a WS-Federation provider"""
+
+    SAML_1_1 = "1.1", _("SAML 1.1")
+    SAML_2_0 = "2.0", _("SAML 2.0")
 
 
 class WSFederationProvider(SAMLProvider):
@@ -11,6 +19,15 @@ class WSFederationProvider(SAMLProvider):
     # Alias'd fields:
     # - acs_url -> reply_url
     # - audience -> realm / wtrealm
+
+    saml_version = models.TextField(
+        choices=WSFederationSAMLVersion.choices,
+        default=WSFederationSAMLVersion.SAML_2_0,
+        help_text=_(
+            "SAML assertion version to issue in the security token. Microsoft Entra ID and "
+            "classic ADFS-style relying parties typically require SAML 1.1."
+        ),
+    )
 
     @property
     def serializer(self) -> type[Serializer]:

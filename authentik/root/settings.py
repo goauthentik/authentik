@@ -5,13 +5,17 @@ from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
 
-import orjson
 from django.utils import http as utils_http
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import authentik_version
-from authentik.lib.config import CONFIG, django_db_config
+from authentik.lib.config import (
+    CONFIG,
+    DIRECT_DB_ALIAS,
+    django_db_config,
+    postgresql_direct_db_enabled,
+)
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -39,6 +43,10 @@ CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
+USER_SWITCHING_COOKIE_NAME = "authentik_user_switching"
+USER_SWITCHING_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.user_switching_age", "days=365")
+).total_seconds()
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
@@ -165,7 +173,12 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@goauthentik.io",
     },
-    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
+    "AUTHENTICATION_WHITELIST": [
+        "authentik.endpoints.connectors.agent.auth.AgentAuth",
+        "authentik.endpoints.connectors.agent.auth.AgentEnrollmentAuth",
+        "authentik.endpoints.connectors.agent.auth.DeviceAuthFedAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
+    ],
     "LICENSE": {
         "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
@@ -180,8 +193,15 @@ SPECTACULAR_SETTINGS = {
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
+        "FlowMessageLevelEnum": "authentik.flows.challenge.FLOW_MESSAGE_LEVELS",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
+        "OffboardingActionEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingAction"
+        ),
+        "OffboardingStatusEnum": (
+            "authentik.enterprise.lifecycle.offboarding.models.OffboardingStatus"
+        ),
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
         "PKCEMethodEnum": "authentik.sources.oauth.models.PKCEMethod",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
@@ -196,6 +216,9 @@ SPECTACULAR_SETTINGS = {
         "TaskAggregatedStatusEnum": "authentik.tasks.models.TaskStatus",
         "TaskStatusEnum": "django_dramatiq_postgres.models.TaskState",
         "TransportModeEnum": "authentik.events.models.TransportMode",
+        "RequestStatus": "authentik.enterprise.requests.models.RequestStatus",
+        "ClientTypeEnum": "authentik.providers.oauth2.models.ClientType",
+        "GrantTypeEnum": "authentik.providers.oauth2.models.GrantType",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
@@ -229,18 +252,14 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "drf_orjson_renderer.renderers.ORJSONRenderer",
-    ],
-    "ORJSON_RENDERER_OPTIONS": [
-        orjson.OPT_NON_STR_KEYS,
-        orjson.OPT_UTC_Z,
+        "authentik.api.renderers.MsgspecJSONRenderer",
     ],
     "DEFAULT_PARSER_CLASSES": [
-        "drf_orjson_renderer.parsers.ORJSONParser",
+        "authentik.api.parsers.MsgspecJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_CLASSES": ["authentik.api.throttle.LocalAnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
         "anon": CONFIG.get("throttle.default"),
     },
@@ -252,7 +271,16 @@ CACHES = {
         "BACKEND": "django_postgres_cache.backend.DatabaseCache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
-    }
+    },
+    # In-process cache for DRF throttle counters. Per-worker rather than
+    # cluster-wide, so the per-IP ceiling is ``throttle.default`` × (pods × workers)
+    "throttle": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "authentik-throttle",
+        "OPTIONS": {
+            "MAX_ENTRIES": 10000,
+        },
+    },
 }
 SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
@@ -263,7 +291,7 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.ws.storage.ChannelsStorage"
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
@@ -334,9 +362,13 @@ DATABASE_ROUTERS = (
 # We don't use HStore
 POSTGRES_EXTRA_AUTO_EXTENSION_SET_UP = False
 
+# When a direct endpoint is configured (postgresql.direct.*), route the
+# Channels Postgres layer through it — its LISTEN connection can't tolerate
+# a transaction pooler swapping the backend.
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "django_channels_postgres.layer.PostgresChannelLayer",
+        "CONFIG": ({"using": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}),
     },
 }
 
@@ -394,6 +426,11 @@ DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
     "channel_prefix": "authentik",
     "task_model": "authentik.tasks.models.Task",
+    # Route the broker's LISTEN connection and advisory-lock connection through
+    # the direct endpoint when configured. ORM queries continue via db_alias=default.
+    "broker_kwargs": (
+        {"direct_db_alias": DIRECT_DB_ALIAS} if postgresql_direct_db_enabled(CONFIG) else {}
+    ),
     "task_purge_interval": timedelta_from_string(
         CONFIG.get("worker.task_purge_interval")
     ).total_seconds(),
@@ -562,9 +599,6 @@ except ImportError:
 
 
 if DEBUG:
-    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
-        "rest_framework.renderers.BrowsableAPIRenderer"
-    )
     SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
     enable_debug_trace(True)
 

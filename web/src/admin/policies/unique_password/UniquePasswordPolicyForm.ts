@@ -15,23 +15,21 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-password-uniqueness-form")
 export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolicy> {
-    async loadInstance(pk: string): Promise<UniquePasswordPolicy> {
-        return aki(PoliciesApi).policiesUniquePasswordRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: UniquePasswordPolicy): Promise<UniquePasswordPolicy> {
-        if (this.instance) {
-            return aki(PoliciesApi).policiesUniquePasswordUpdate({
-                policyUuid: this.instance.pk || "",
-                uniquePasswordPolicyRequest: data,
-            });
-        }
-        return aki(PoliciesApi).policiesUniquePasswordCreate({
-            uniquePasswordPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesUniquePasswordRetrieve({
+                policyUuid,
+            }),
+        create: (uniquePasswordPolicyRequest: UniquePasswordPolicy) =>
+            aki(PoliciesApi).policiesUniquePasswordCreate({
+                uniquePasswordPolicyRequest,
+            }),
+        update: (policyUuid: string, uniquePasswordPolicyRequest: UniquePasswordPolicy) =>
+            aki(PoliciesApi).policiesUniquePasswordUpdate({
+                policyUuid,
+                uniquePasswordPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>

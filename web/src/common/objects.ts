@@ -57,3 +57,23 @@ export function trimMany<T extends object, K extends keyof T>(target: T, ...keys
 
     return output as Pick<T, K>;
 }
+
+/**
+ * Try to parse a JSON string, returning a fallback value if parsing fails or if the input is not a string.
+ *
+ * @param input The input to parse.
+ * @param fallback The fallback value to return if parsing fails or if the input is not a string. Defaults to `null`.
+ *
+ * @returns The parsed value, or the fallback value if parsing fails or if the input is not a string.
+ */
+export function tryParsingJSON<T = unknown>(input: unknown, fallback?: undefined): T | undefined;
+export function tryParsingJSON<T = unknown>(input: unknown, fallback: null): T | null;
+export function tryParsingJSON<T = unknown, F = null>(input: unknown, fallback?: F): T | F {
+    if (typeof input !== "string") return (fallback ?? null) as F;
+
+    try {
+        return JSON.parse(input);
+    } catch {
+        return (fallback ?? null) as F;
+    }
+}

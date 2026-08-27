@@ -3,19 +3,24 @@ from typing import TYPE_CHECKING, Any
 from uuid import uuid4
 
 from django.core.cache import cache
-from django.db import models
-from django.db.models import OuterRef, Subquery
+from django.db import models, transaction
+from django.db.models import OuterRef, Q, Subquery
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AttributesMixin, ExpiringModel
+from authentik.core.models import AttributesMixin
 from authentik.flows.models import Stage
 from authentik.flows.stage import StageView
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import InheritanceForeignKey, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InheritanceForeignKey,
+    InternallyManagedMixin,
+    SerializerModel,
+)
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -37,6 +42,15 @@ class Device(InternallyManagedMixin, ExpiringModel, AttributesMixin, PolicyBindi
     access_group = models.ForeignKey(
         "DeviceAccessGroup", null=True, on_delete=models.SET_DEFAULT, default=None
     )
+
+    @staticmethod
+    @transaction.atomic
+    def get_or_create(identifier: str, name: str, defaults: dict[str, Any] | None = None) -> Device:
+        defaults = defaults or {}
+        try:
+            return Device.objects.get(Q(identifier=identifier) | Q(name=name))
+        except Device.DoesNotExist:
+            return Device.objects.create(name=name, identifier=identifier, **defaults)
 
     @property
     def cache_key_facts(self):
@@ -81,7 +95,7 @@ class DeviceUserBinding(PolicyBinding):
     # by a connector and not manually
     connector = models.ForeignKey("Connector", on_delete=models.CASCADE, null=True)
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Device User binding")
         verbose_name_plural = _("Device User bindings")
 
@@ -162,10 +176,13 @@ class Connector(ScheduledModel, SerializerModel):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.endpoints.controller import Capabilities
+        from authentik.endpoints.controller import Capabilities, ConnectorSyncException
         from authentik.endpoints.tasks import endpoints_sync
 
-        if Capabilities.ENROLL_AUTOMATIC_API not in self.controller(self).capabilities():
+        try:
+            if Capabilities.ENROLL_AUTOMATIC_API not in self.controller(self).capabilities():
+                return []
+        except ConnectorSyncException:
             return []
         return [
             ScheduleSpec(
@@ -179,7 +196,6 @@ class Connector(ScheduledModel, SerializerModel):
 
 
 class DeviceAccessGroup(AttributesMixin, SerializerModel, PolicyBindingModel):
-
     name = models.TextField(unique=True)
 
     @property
@@ -223,6 +239,6 @@ class EndpointStage(Stage):
     def component(self) -> str:
         return "ak-endpoints-stage-form"
 
-    class Meta(PolicyBinding.Meta):
+    class Meta:
         verbose_name = _("Endpoint Stage")
         verbose_name_plural = _("Endpoint Stages")

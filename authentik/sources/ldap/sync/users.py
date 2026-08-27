@@ -62,6 +62,10 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             self._task.info("User syncing is disabled for this Source")
             return -1
         user_count = 0
+
+        ms_ad_syncer = MicrosoftActiveDirectory(self._source, self._task)
+        freeipa_syncer = FreeIPA(self._source, self._task)
+
         for user in page_data:
             if (attributes := self.get_attributes(user)) is None:
                 continue
@@ -138,8 +142,6 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             else:
                 self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
-                MicrosoftActiveDirectory(self._source, self._task).sync(
-                    attributes, ak_user, created
-                )
-                FreeIPA(self._source, self._task).sync(attributes, ak_user, created)
+                ms_ad_syncer.sync(attributes, ak_user, created)
+                freeipa_syncer.sync(attributes, ak_user, created)
         return user_count

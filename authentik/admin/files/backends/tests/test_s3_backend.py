@@ -1,12 +1,53 @@
 from unittest import skipUnless
+from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlsplit
 
 from botocore.exceptions import UnsupportedSignatureVersionError
 from django.test import TestCase
 
+from authentik.admin.files.backends.s3 import S3Backend
 from authentik.admin.files.tests.utils import FileTestS3BackendMixin, s3_test_server_available
 from authentik.admin.files.usage import FileUsage
 from authentik.lib.config import CONFIG
+
+
+class TestS3BackendClientCache(TestCase):
+    """Test S3 client caching."""
+
+    @CONFIG.patch("storage.s3.access_key", "accessKey1")
+    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
+    @CONFIG.patch("storage.s3.use_ssl", "true")
+    def test_client_reuses_boto_client(self):
+        """Test repeated client access reuses the same boto client."""
+        with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
+            session = session_cls.return_value
+            client = Mock()
+            session.client.return_value = client
+
+            backend = S3Backend(FileUsage.MEDIA)
+
+            self.assertIs(backend.client, client)
+            self.assertIs(backend.client, client)
+            session.client.assert_called_once()
+            self.assertIs(session.client.call_args.kwargs["use_ssl"], True)
+
+    @CONFIG.patch("storage.s3.access_key", "accessKey1")
+    @CONFIG.patch("storage.s3.secret_key", "secretKey1")
+    def test_client_refreshes_when_config_changes(self):
+        """Test client cache is invalidated when S3 client config changes."""
+        with CONFIG.patch("storage.s3.endpoint", "https://s3-1.example.com"):
+            with patch("authentik.admin.files.backends.s3.boto3.Session") as session_cls:
+                session = session_cls.return_value
+                first_client = Mock()
+                second_client = Mock()
+                session.client.side_effect = [first_client, second_client]
+
+                backend = S3Backend(FileUsage.MEDIA)
+
+                self.assertIs(backend.client, first_client)
+                with CONFIG.patch("storage.s3.endpoint", "https://s3-2.example.com"):
+                    self.assertIs(backend.client, second_client)
+                self.assertEqual(session.client.call_count, 2)
 
 
 @skipUnless(s3_test_server_available(), "S3 test server not available")

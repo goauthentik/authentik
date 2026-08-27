@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
@@ -21,23 +22,17 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-static-form")
 export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorStaticStage> {
-    loadInstance(pk: string): Promise<AuthenticatorStaticStage> {
-        return aki(StagesApi).stagesAuthenticatorStaticRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
-        if (this.instance) {
-            return aki(StagesApi).stagesAuthenticatorStaticUpdate({
-                stageUuid: this.instance.pk || "",
-                authenticatorStaticStageRequest: data,
-            });
-        }
-        return aki(StagesApi).stagesAuthenticatorStaticCreate({
-            authenticatorStaticStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) =>
+            aki(StagesApi).stagesAuthenticatorStaticRetrieve({ stageUuid }),
+        create: (authenticatorStaticStageRequest: AuthenticatorStaticStage) =>
+            aki(StagesApi).stagesAuthenticatorStaticCreate({ authenticatorStaticStageRequest }),
+        update: (stageUuid: string, authenticatorStaticStageRequest: AuthenticatorStaticStage) =>
+            aki(StagesApi).stagesAuthenticatorStaticUpdate({
+                stageUuid,
+                authenticatorStaticStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -45,14 +40,18 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}

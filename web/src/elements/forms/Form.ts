@@ -27,6 +27,7 @@ import {
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { reportInvalidFields } from "#elements/forms/errors";
+import { AKFormSubmittedEvent } from "#elements/forms/events";
 import Styles from "#elements/forms/Form.css";
 import { reportValidityDeep } from "#elements/forms/FormGroup";
 import { PreventFormSubmit } from "#elements/forms/helpers";
@@ -78,7 +79,7 @@ export interface AKFormSubmitEvent<T> extends SubmitEvent {
  *
  * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires ak-refresh - Dispatched when the form has been successfully submitted and data has changed.
- * @fires ak-submitted - Dispatched when the form is submitted.
+ * @fires ak-form-submitted - Dispatched after a successful submission, carrying the `send()` response.
  * @fires submit - The native submit event, re-dispatched after a successful submission for parent components to listen for.
  * @csspart partname - description
  *
@@ -146,6 +147,13 @@ export class Form<T = Record<string, unknown>, D = T>
      */
     public static submittingVerb: string = msg("Creating", {
         id: "form.submit.verb.creating",
+    });
+
+    /**
+     * The past-tense verb to use in the default success message, e.g. "Created" or "Updated".
+     */
+    public static submittedVerb: string = msg("Created", {
+        id: "form.submit.verb.created",
     });
 
     //#region Modal helpers
@@ -240,6 +248,14 @@ export class Form<T = Record<string, unknown>, D = T>
     @property({ type: String, attribute: "submitting-label", useDefault: true })
     public submittingLabel: string | null = null;
 
+    /**
+     * The message shown after the form has been successfully submitted. If not provided,
+     * a default label will be generated based on `submittedVerb` and `verboseName`,
+     * falling back to "Created".
+     */
+    @property({ type: String, attribute: "submitted-label", useDefault: true })
+    public submittedLabel: string | null = null;
+
     @property({ type: String, attribute: "cancel-label", useDefault: true })
     public cancelButtonLabel: string | null = msg("Cancel");
 
@@ -289,7 +305,7 @@ export class Form<T = Record<string, unknown>, D = T>
      *
      * Overrides the static `verboseName` property for this instance.
      */
-    @property({ type: String, attribute: "entity-singular" })
+    @property({ type: String, attribute: "verbose-name" })
     public set verboseName(value: string | null) {
         this.#verboseName = value;
 
@@ -309,7 +325,7 @@ export class Form<T = Record<string, unknown>, D = T>
      *
      * Overrides the static `verboseNamePlural` property for this instance.
      */
-    @property({ type: String, attribute: "entity-plural" })
+    @property({ type: String, attribute: "verbose-name-plural" })
     public set verboseNamePlural(value: string | null) {
         this.#verboseNamePlural = value;
 
@@ -425,6 +441,26 @@ export class Form<T = Record<string, unknown>, D = T>
             id: "form.submitting",
             desc: "The message shown while a form is being submitted.",
         });
+    }
+
+    /**
+     * An overridable method for formatting the message shown after the form has been
+     * successfully submitted.
+     */
+    protected formatSubmittedLabel(submittedLabel = this.submittedLabel): string {
+        if (submittedLabel) {
+            return submittedLabel;
+        }
+
+        const noun = this.verboseName;
+        const verb = (this.constructor as typeof Form).submittedVerb;
+
+        return noun
+            ? msg(str`${verb} ${noun}`, {
+                  id: "form.submitted.verb-entity",
+                  desc: "The message shown after a form is successfully submitted.",
+              })
+            : verb;
     }
 
     //#endregion
@@ -564,6 +600,8 @@ export class Form<T = Record<string, unknown>, D = T>
                         composed: true,
                     }),
                 );
+
+                this.dispatchEvent(new AKFormSubmittedEvent(response));
 
                 // Re-dispatch the submit event so that parent components can listen for it.
                 this.dispatchEvent(submitEvent);

@@ -6,7 +6,7 @@ GID = $(shell id -g)
 build:
 	rm -rf "${PWD}"/*.go
 	"${PWD}/../../scripts/api_filter_schema.py" "${PWD}/../../schema.yml" "${PWD}/schema.yml" "${PWD}/operation_ids"
-	docker compose run --rm --user "${UID}:${GID}" gen \
+	docker compose run --rm -T --user "${UID}:${GID}" gen \
 		generate \
 		-i /local/schema.yml \
 		-g go \

@@ -57,6 +57,9 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     @property({ type: Array })
     public typeNotices: PolicyBindingNotice[] = [];
 
+    @property({ type: Boolean, attribute: "no-wizard" })
+    public noWizard = false;
+
     public override checkbox = true;
     public override clearOnRefresh = true;
 
@@ -175,7 +178,7 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
     }
 
     protected renderNewPolicyButton(): SlottedTemplateResult {
-        if (!this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)) {
+        if (this.noWizard || !this.allowedTypes.includes(PolicyBindingCheckTarget.Policy)) {
             return html`<button
                 type="button"
                 class="pf-c-button pf-m-primary"
