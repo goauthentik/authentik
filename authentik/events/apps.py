@@ -68,4 +68,8 @@ class AuthentikEventsConfig(ManagedAppConfig):
         from authentik.events.models import Event
 
         for message in connection.validation.check():
-            Event.log_deprecation("authentik.db.encoding", message.msg)
+            if message.id != "ak.db.W002":
+                continue
+            Event.log_deprecation(
+                "authentik.db.encoding", f"{message.msg} {message.hint}", cause=message.msg
+            )
