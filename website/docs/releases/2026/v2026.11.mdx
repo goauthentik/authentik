@@ -6,9 +6,27 @@ draft: true
 
 ## Highlights
 
+- **Password lockout**: :ak-enterprise Password lock a user's account after a configurable number of consecutive failed login attempts.
+
 <!-- ## Breaking changes -->
 
 ## New features and improvements
+
+### Password lockout :ak-enterprise
+
+The [Password stage](../../add-secure-apps/flows-stages/stages/password/index.mdx#password-lockout) can now password lock a user's account after a set number of consecutive failed attempts, using the new **Failed attempts before lockout** option. This is disabled by default.
+
+When a user account is password locked, authentication is denied even if the correct password is entered. This prevents further guessing attempts and blocks use of a compromised password until an administrator unlocks it. The attempt count is tracked per user, retained across sessions and authentication flows, and cleared after a successful login. Only password-based authentication is affected; a password locked user can still sign in through a flow that does not run a Password stage.
+
+By default the login prompt returns the same error as it does for an incorrect password, preventing it from disclosing whether an account exists or is password locked. Optional last-attempt warning and lockout messages can be configured on the stage. Password lock and unlock actions are logged as `password_locked` and `password_unlocked` events.
+
+Administrators can lock and unlock a user's password from that user's page in the Admin interface, and users can lock their own password to enforce passwordless sign-in. Changing the password clears the failure count but not the lock.
+
+### Passwords stored as authenticator devices
+
+A user's password hash now lives on a password device belonging to that user, rather than in a column on the user record, which brings passwords in line with every other authenticator. Existing passwords are migrated automatically on upgrade, and no configuration changes are required.
+
+Password devices are deliberately excluded from multi-factor authentication: they do not appear in the device APIs and cannot be selected by an authenticator validation stage.
 
 ## Upgrading
 
