@@ -1,110 +1,187 @@
 import "#flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { StageHost } from "#flow/types";
 
-interface TestableWebAuthnStage extends HTMLElement {
-    authenticating: boolean;
-    challenge: object | null;
-    deviceChallenge: { challenge: object };
-    errorMessage?: string;
-    authenticate(): Promise<boolean>;
-    tryAuthenticating(): Promise<unknown>;
-    updateComplete: Promise<boolean>;
-    updated(changedProperties: Map<PropertyKey, unknown>): void;
+import {
+    AuthenticatorValidationChallenge,
+    DeviceChallenge,
+    DeviceClassesEnum,
+} from "@goauthentik/api";
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const deviceChallenge: DeviceChallenge = {
+    deviceClass: DeviceClassesEnum.Webauthn,
+    deviceUid: "1",
+    challenge: { challenge: "AA==" },
+    lastUsed: new Date(),
+};
+
+function challengeOf(
+    overrides: Partial<AuthenticatorValidationChallenge> = {},
+): AuthenticatorValidationChallenge {
+    return {
+        pendingUser: "akadmin",
+        pendingUserAvatar: "",
+        deviceChallenges: [deviceChallenge],
+        configurationStages: [],
+        ...overrides,
+    };
+}
+
+/**
+ * A minimal stand-in for the credential an authenticator would hand back.
+ *
+ * The stage narrows the result with `instanceof PublicKeyCredential`, whose constructor is
+ * not callable, so the stand-in borrows the real prototype. Own properties are declared
+ * first, shadowing the prototype's getter-only accessors.
+ */
+function assertionOf(): PublicKeyCredential {
+    const bytes = () => Uint8Array.from([1, 2, 3]).buffer;
+
+    return Object.setPrototypeOf(
+        {
+            id: "credential-id",
+            type: "public-key",
+            rawId: bytes(),
+            response: {
+                clientDataJSON: bytes(),
+                authenticatorData: bytes(),
+                signature: bytes(),
+                userHandle: null,
+            },
+            getClientExtensionResults: () => ({}),
+        },
+        PublicKeyCredential.prototype,
+    ) as PublicKeyCredential;
 }
 
 const mounted: HTMLElement[] = [];
 
-function createStage(): TestableWebAuthnStage {
-    const stage = document.createElement(
-        "ak-stage-authenticator-validate-webauthn",
-    ) as unknown as TestableWebAuthnStage;
+let submit: ReturnType<typeof vi.fn>;
+let credentialsGet: ReturnType<typeof vi.fn>;
+
+beforeEach(() => {
+    submit = vi.fn().mockResolvedValue(true);
+    credentialsGet = vi.fn().mockResolvedValue(assertionOf());
+
+    vi.stubGlobal("navigator", {
+        ...navigator,
+        credentials: { get: credentialsGet },
+    });
+});
+
+afterEach(() => {
+    vi.unstubAllGlobals();
+
+    for (const element of mounted.splice(0)) {
+        element.remove();
+    }
+});
+
+function createStage() {
+    const stage = document.createElement("ak-stage-authenticator-validate-webauthn");
+
+    stage.host = { submit } as unknown as StageHost;
+    stage.deviceChallenge = deviceChallenge;
+
     document.body.append(stage);
     mounted.push(stage);
 
     return stage;
 }
 
-afterEach(() => {
-    for (const element of mounted.splice(0)) element.remove();
-});
+const retryButton = (stage: HTMLElement) =>
+    Array.from(stage.shadowRoot?.querySelectorAll("button") ?? []).find((button) =>
+        button.textContent?.includes("Retry authentication"),
+    );
+
+const spinning = (stage: HTMLElement) =>
+    stage.shadowRoot?.querySelector("ak-empty-state")?.hasAttribute("loading") ?? false;
 
 describe("AuthenticatorValidateStageWebAuthn", () => {
-    it("renders as authenticating before the initial challenge update", () => {
+    it("renders a spinner and no retry before the first challenge", async () => {
         const stage = createStage();
-        expect(stage.authenticating).toBe(true);
-    });
 
-    it("does not expose retry without an authentication error", async () => {
-        const stage = createStage();
-        stage.authenticating = false;
         await stage.updateComplete;
 
         expect(stage.shadowRoot?.textContent).toContain("Authenticating...");
-        expect(stage.shadowRoot?.textContent).not.toContain("Retry authentication");
-        expect(stage.shadowRoot?.querySelector("ak-empty-state")?.hasAttribute("loading")).toBe(
-            true,
-        );
+        expect(spinning(stage)).toBe(true);
+        expect(retryButton(stage)).toBeUndefined();
     });
 
-    it("remains authenticating after the flow advances successfully", async () => {
+    it("submits the assertion and keeps spinning while the flow advances", async () => {
         const stage = createStage();
-        stage.authenticating = false;
-        stage.authenticate = vi.fn().mockResolvedValue(true);
-        await stage.tryAuthenticating();
-        expect(stage.authenticating).toBe(true);
+
+        stage.challenge = challengeOf();
+
+        await vi.waitFor(() => expect(submit).toHaveBeenCalledOnce());
+        await stage.updateComplete;
+
+        expect(credentialsGet).toHaveBeenCalledOnce();
+        expect(submit.mock.calls[0][0]).toMatchObject({ webauthn: { id: "credential-id" } });
+        expect(submit.mock.calls[0][1]).toEqual({ invisible: true });
+
+        // The regression: no retry button, no error, no flicker out of the spinner.
+        expect(retryButton(stage)).toBeUndefined();
+        expect(spinning(stage)).toBe(true);
     });
 
-    it("remains authenticating until a rejected assertion challenge is rendered", async () => {
+    it("offers retry when the ceremony fails", async () => {
+        credentialsGet.mockRejectedValue(new DOMException("denied", "NotAllowedError"));
+
         const stage = createStage();
-        stage.authenticating = false;
-        stage.authenticate = vi.fn().mockResolvedValue(false);
-        await stage.tryAuthenticating();
-        expect(stage.authenticating).toBe(true);
+
+        stage.challenge = challengeOf();
+
+        await vi.waitFor(() => expect(retryButton(stage)).toBeDefined());
+
+        expect(spinning(stage)).toBe(false);
+        expect(stage.shadowRoot?.textContent).toContain("cancelled or timed out");
+        expect(submit).not.toHaveBeenCalled();
     });
 
-    it("stops authenticating when a new challenge contains response errors", () => {
-        const stage = createStage();
-        stage.authenticating = true;
-        stage.challenge = {
-            responseErrors: {
-                webauthn: [{ code: "invalid", string: "Invalid assertion" }],
-            },
-        };
-        stage.deviceChallenge = { challenge: { challenge: "AA==" } };
-        stage.authenticate = vi.fn().mockResolvedValue(true);
-        stage.updated(new Map([["challenge", {}]]));
+    it("starts a single new ceremony per retry click", async () => {
+        credentialsGet.mockRejectedValue(new DOMException("denied", "NotAllowedError"));
 
-        expect(stage.authenticating).toBe(false);
-        expect(stage.errorMessage).toBe("Invalid assertion");
-        expect(stage.authenticate).not.toHaveBeenCalled();
+        const stage = createStage();
+
+        stage.challenge = challengeOf();
+
+        await vi.waitFor(() => expect(retryButton(stage)).toBeDefined());
+
+        credentialsGet.mockReturnValue(new Promise(() => {}));
+
+        retryButton(stage)!.click();
+        await stage.updateComplete;
+        retryButton(stage)?.click();
+
+        expect(credentialsGet).toHaveBeenCalledTimes(2);
     });
 
-    it("uses a fallback for an empty response error", () => {
+    it("renders a response error instead of re-running the ceremony", async () => {
         const stage = createStage();
-        stage.challenge = {
-            responseErrors: {
-                webauthn: [{ code: "invalid", string: "" }],
-            },
-        };
-        stage.deviceChallenge = { challenge: { challenge: "AA==" } };
-        stage.authenticate = vi.fn().mockResolvedValue(true);
-        stage.updated(new Map([["challenge", {}]]));
 
-        expect(stage.authenticating).toBe(false);
-        expect(stage.errorMessage).toBe("Failed to authenticate");
+        stage.challenge = challengeOf({
+            responseErrors: { webauthn: [{ code: "invalid", string: "Invalid assertion" }] },
+        });
+
+        await stage.updateComplete;
+
+        expect(stage.shadowRoot?.textContent).toContain("Invalid assertion");
+        expect(retryButton(stage)).toBeDefined();
+        expect(credentialsGet).not.toHaveBeenCalled();
     });
 
-    it("starts authentication again when the element receives a new challenge", () => {
+    it("falls back to a generic message for an empty response error", async () => {
         const stage = createStage();
-        stage.authenticating = true;
-        stage.challenge = {};
-        stage.deviceChallenge = { challenge: { challenge: "AA==" } };
-        stage.errorMessage = "Previous error";
-        stage.authenticate = vi.fn().mockResolvedValue(true);
-        stage.updated(new Map([["challenge", {}]]));
 
-        expect(stage.authenticate).toHaveBeenCalledOnce();
-        expect(stage.errorMessage).toBeUndefined();
+        stage.challenge = challengeOf({
+            responseErrors: { webauthn: [{ code: "invalid", string: "" }] },
+        });
+
+        await stage.updateComplete;
+
+        expect(stage.shadowRoot?.textContent).toContain("Failed to authenticate");
     });
 });
