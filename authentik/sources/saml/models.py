@@ -266,6 +266,12 @@ class SAMLSource(Source):
             return self.build_full_url(request, view="metadata")
         return self.issuer_override
 
+    def get_audience(self, request: HttpRequest) -> str:
+        """Get the Audience expected in incoming assertions, falling back to the Issuer"""
+        if not self.audience_override:
+            return self.get_issuer(request)
+        return self.audience_override
+
     def build_full_url(self, request: HttpRequest, view: str = "acs") -> str:
         """Build Full ACS URL to be used in IDP"""
         return request.build_absolute_uri(

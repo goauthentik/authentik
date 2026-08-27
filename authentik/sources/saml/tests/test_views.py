@@ -23,6 +23,7 @@ class TestViews(TestCase):
             name=generate_id(),
             slug=generate_id(),
             issuer_override="authentik",
+            audience_override="https://accounts.google.com/o/saml2?idpid=",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )

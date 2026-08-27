@@ -1,5 +1,6 @@
 """SAML Source tests"""
 
+import re
 from base64 import b64encode
 
 from django.test import TestCase
@@ -16,7 +17,11 @@ from authentik.core.tests.utils import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    MismatchedAudience,
+)
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
@@ -34,6 +39,7 @@ class TestResponseProcessor(TestCase):
             name=generate_id(),
             slug=generate_id(),
             issuer_override="authentik",
+            audience_override="http://sp.example.com/demo1/metadata.php",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -61,6 +67,7 @@ class TestResponseProcessor(TestCase):
     @freeze_time("2022-10-14T14:15:00")
     def test_success(self):
         """Test success"""
+        self.source.audience_override = "https://accounts.google.com/o/saml2?idpid="
         request = self.factory.post(
             "/",
             data={
@@ -88,6 +95,7 @@ class TestResponseProcessor(TestCase):
     @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
         """Test success with StatusMessage and StatusDetail present (should not raise error)"""
+        self.source.audience_override = "https://accounts.google.com/o/saml2?idpid="
         request = self.factory.post(
             "/",
             data={
@@ -129,6 +137,7 @@ class TestResponseProcessor(TestCase):
             key_data=key,
         )
         self.source.encryption_kp = kp
+        self.source.audience_override = "authentik-saml-encrypt"
         request = self.factory.post(
             "/",
             data={
@@ -554,6 +563,7 @@ class TestResponseProcessor(TestCase):
         self.source.encryption_kp = ekp
         self.source.signed_response = True
         self.source.signed_assertion = False
+        self.source.audience_override = "https://sp.example.org/shibboleth/POST"
         request = self.factory.post(
             "/",
             data={
@@ -577,6 +587,7 @@ class TestResponseProcessor(TestCase):
         self.source.verification_kp = vkp
         self.source.signed_response = True
         self.source.signed_assertion = False
+        self.source.audience_override = "https://sp.example.org/shibboleth"
         request = self.factory.post(
             "/",
             data={
@@ -589,3 +600,44 @@ class TestResponseProcessor(TestCase):
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         parser.prepare_flow_manager()
+
+    def _parse_success(self, audience: str | None = "https://accounts.google.com/o/saml2?idpid="):
+        fixture = load_fixture("fixtures/response_success.xml")
+        if audience is None:
+            fixture = re.sub(
+                r"<saml2:AudienceRestriction>.*?</saml2:AudienceRestriction>",
+                "",
+                fixture,
+                flags=re.DOTALL,
+            )
+        else:
+            fixture = fixture.replace("https://accounts.google.com/o/saml2?idpid=", audience)
+        request = self.factory.post(
+            "/", data={"SAMLResponse": b64encode(fixture.encode()).decode()}
+        )
+        ResponseProcessor(self.source, request).parse()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_mismatch(self):
+        """Test that an assertion for a different audience is rejected"""
+        with self.assertRaises(MismatchedAudience):
+            self._parse_success()
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_missing(self):
+        """Test that an assertion without an AudienceRestriction is accepted"""
+        self._parse_success(audience=None)
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_issuer_override(self):
+        """Test that the audience falls back to the issuer override"""
+        self.source.audience_override = ""
+        self._parse_success(audience=self.source.issuer_override)
+
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_default_issuer(self):
+        """Test that the audience falls back to the generated metadata URL"""
+        self.source.audience_override = ""
+        self.source.issuer_override = ""
+        request = self.factory.get("/")
+        self._parse_success(audience=self.source.get_issuer(request))

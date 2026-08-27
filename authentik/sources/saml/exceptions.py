@@ -32,6 +32,12 @@ class MismatchedRequestID(SAMLException):
     default_message = "The SAML Response ID does not match the original request ID."
 
 
+class MismatchedAudience(SAMLException):
+    """Exception raised when the assertion's audience doesn't match the source's audience."""
+
+    default_message = "The SAML Assertion's Audience does not match this source."
+
+
 class MissingSAMLResponse(SAMLException):
     """Exception raised when request does not contain SAML Response."""
 
