@@ -208,7 +208,11 @@ class YAMLTag:
     """Base class for all YAML Tags"""
 
     def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        # resolve() may raise; a repr must never raise (called by the log sanitizer).
+        try:
+            return str(self.resolve(BlueprintEntry(""), Blueprint()))
+        except Exception as exc:  # noqa: BLE001 - a repr must never raise
+            return f"<{self.__class__.__name__}> (failed to resolve: {exc})"
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
@@ -264,7 +268,11 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key) or self.default
+        if env := getenv(self.key):
+            return env
+        if isinstance(self.default, YAMLTag):
+            return self.default.resolve(entry, blueprint)
+        return self.default
 
 
 class File(YAMLTag):
@@ -460,12 +468,14 @@ class FindObject(Find):
 class Condition(YAMLTag):
     """Convert all values to a single boolean"""
 
-    mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
+    mode: Literal["EQ", "NEQ", "AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
     args: list[Any]
 
     _COMPARATORS = {
         # Using all and any here instead of from operator import iand, ior
         # to improve performance
+        "EQ": lambda args: all(x == args[0] for x in args),
+        "NEQ": lambda args: not all(x == args[0] for x in args),
         "AND": all,
         "NAND": lambda args: not all(args),
         "OR": any,

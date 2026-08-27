@@ -1,12 +1,9 @@
-import "#admin/common/ak-license-notice";
-
-import { WithCapabilitiesConfig } from "../mixins/capabilities";
-import { WithLicenseSummary } from "../mixins/license";
-
 import { ROUTE_SEPARATOR } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
 import { listen } from "#elements/decorators/listen";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import Styles from "#elements/sidebar/SidebarItem.css";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -113,7 +110,7 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         this.#scrollBehavior ??= "smooth";
     };
 
-    @listen("hashchange")
+    @listen("hashchange", { target: window })
     public synchronize = (): void => {
         const activePath = window.location.hash.slice(1).split(ROUTE_SEPARATOR)[0];
         this.childItems.forEach((item) => {

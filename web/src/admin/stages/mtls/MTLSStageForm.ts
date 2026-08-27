@@ -1,11 +1,12 @@
 import "#admin/common/ak-crypto-certificate-search";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { certificateProvider, certificateSelector } from "#admin/brands/Certificates";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -21,39 +22,32 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
-    loadInstance(pk: string): Promise<MutualTLSStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: MutualTLSStage): Promise<MutualTLSStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesMtlsUpdate({
-                stageUuid: this.instance.pk || "",
-                mutualTLSStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesMtlsCreate({
-            mutualTLSStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesMtlsRetrieve({ stageUuid }),
+        create: (mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsCreate({ mutualTLSStageRequest }),
+        update: (stageUuid: string, mutualTLSStageRequest: MutualTLSStage) =>
+            aki(StagesApi).stagesMtlsUpdate({ stageUuid, mutualTLSStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html`
             <span> ${msg("Client-certificate/mTLS authentication/enrollment.")}</span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Mode")} required name="mode">

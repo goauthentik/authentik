@@ -6,19 +6,24 @@
 <!DOCTYPE html>
 <html
     lang="{{ LANGUAGE_CODE }}"
+    {% if safe_mode %}class="{% if ui_theme == "dark" %}pf-theme-dark{% endif %} ak-m-safe-mode"{% endif %}
     data-theme="{% if ui_theme == "dark" %}dark{% else %}light{% endif %}"
     data-theme-choice="{% if ui_theme == "dark" %}dark{% elif ui_theme == "light" %}light{% else %}auto{% endif %}"
 >
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred colour-scheme #}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred color-scheme #}
         <meta name="darkreader-lock">
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
         <link rel="icon" href="{{ brand.branding_favicon_url }}">
         <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
 
         {% block head_before %}
+        {% endblock %}
+
+        {% block interface_stylesheet %}
+        <link rel="stylesheet" type="text/css" href="{% versioned_script 'dist/styles/interface-%v.css' %}" />
         {% endblock %}
 
         {% include "base/theme.html" %}
@@ -36,5 +41,13 @@
         {% endblock %}
         {% block scripts %}
         {% endblock %}
+        {% if safe_mode %}
+        <div class="pf-c-banner pf-m-warning ak-c-safe-mode">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+            <p>
+            {% trans "Recovery session is active. Custom branding is disabled." %}
+            </p>
+        </div>
+        {% endif %}
     </body>
 </html>

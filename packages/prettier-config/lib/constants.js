@@ -36,7 +36,7 @@ const overrides = [
         },
     },
     {
-        files: "tsconfig.json",
+        files: ["tsconfig.json", "*.jsonc"],
         options: {
             trailingComma: "none",
         },

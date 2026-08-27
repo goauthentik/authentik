@@ -28,7 +28,7 @@ class TestLogoutIntegration(TestCase):
             authorization_flow=self.flow,
             acs_url="https://sp.example.com/acs",
             sls_url="https://sp.example.com/sls",
-            issuer="https://idp.example.com",
+            issuer_override="https://idp.example.com",
             sp_binding="redirect",
             sls_binding="redirect",
             signature_algorithm=RSA_SHA256,
@@ -57,7 +57,7 @@ class TestLogoutIntegration(TestCase):
         parsed = self.parser.parse(encoded)
 
         # Verify all fields match
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
         self.assertEqual(parsed.name_id, "test@example.com")
         self.assertEqual(parsed.name_id_format, SAML_NAME_ID_FORMAT_EMAIL)
         self.assertEqual(parsed.session_index, "test-session-123")
@@ -72,7 +72,7 @@ class TestLogoutIntegration(TestCase):
         parsed = self.parser.parse_detached(encoded)
 
         # Verify all fields match
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
         self.assertEqual(parsed.name_id, "test@example.com")
         self.assertEqual(parsed.name_id_format, SAML_NAME_ID_FORMAT_EMAIL)
         self.assertEqual(parsed.session_index, "test-session-123")
@@ -106,7 +106,7 @@ class TestLogoutIntegration(TestCase):
         parsed = parser.parse(encoded)
 
         # Verify all fields match
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
         self.assertEqual(parsed.name_id, "signed@example.com")
         self.assertEqual(parsed.name_id_format, SAML_NAME_ID_FORMAT_EMAIL)
         self.assertEqual(parsed.session_index, "signed-session-456")
@@ -125,7 +125,7 @@ class TestLogoutIntegration(TestCase):
         parsed = self.parser.parse_detached(saml_request)
 
         # Verify parsing succeeded
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
         self.assertEqual(parsed.name_id, "test@example.com")
         self.assertEqual(parsed.name_id_format, SAML_NAME_ID_FORMAT_EMAIL)
 
@@ -164,7 +164,7 @@ class TestLogoutIntegration(TestCase):
 
         # Parse the SAMLRequest (unsigned XML)
         parsed = self.parser.parse_detached(params["SAMLRequest"][0])
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
 
     def test_form_data_can_be_parsed(self):
         """Test that form data generates parseable POST request"""
@@ -175,7 +175,7 @@ class TestLogoutIntegration(TestCase):
         parsed = self.parser.parse(form_data["SAMLRequest"])
 
         # Verify parsing succeeded
-        self.assertEqual(parsed.issuer, self.provider.issuer)
+        self.assertEqual(parsed.issuer, self.provider.issuer_override)
         self.assertEqual(parsed.name_id, "test@example.com")
         self.assertEqual(parsed.name_id_format, SAML_NAME_ID_FORMAT_EMAIL)
         self.assertEqual(parsed.session_index, "test-session-123")
@@ -244,4 +244,4 @@ class TestLogoutIntegration(TestCase):
 
         # But same issuer
         self.assertEqual(parsed1.issuer, parsed2.issuer)
-        self.assertEqual(parsed1.issuer, self.provider.issuer)
+        self.assertEqual(parsed1.issuer, self.provider.issuer_override)

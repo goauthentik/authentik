@@ -6,7 +6,7 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import ExpiringModel, User, default_token_key
+from authentik.core.models import User, default_token_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.endpoints.models import (
     Connector,
@@ -17,8 +17,14 @@ from authentik.endpoints.models import (
 )
 from authentik.flows.stage import StageView
 from authentik.lib.generators import generate_key
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.stages.authenticator.models import Device as Authenticator
 
 if TYPE_CHECKING:
     from authentik.endpoints.connectors.agent.controller import AgentConnectorController
@@ -40,7 +46,10 @@ class AgentConnector(Connector):
         "authentik_flows.Flow", null=True, on_delete=models.SET_DEFAULT, default=None
     )
     jwt_federation_providers = models.ManyToManyField(
-        "authentik_providers_oauth2.OAuth2Provider", blank=True, default=None
+        "authentik_providers_oauth2.OAuth2Provider",
+        blank=True,
+        default=None,
+        through="AgentConnectorJWTFederationProvider",
     )
 
     nss_uid_offset = models.PositiveIntegerField(default=1000)
@@ -87,6 +96,29 @@ class AgentConnector(Connector):
         verbose_name_plural = _("Agent Connectors")
 
 
+class AgentConnectorJWTFederationProvider(SimpleThroughModel):
+    agent_connector = models.ForeignKey(
+        AgentConnector, on_delete=models.CASCADE, db_column="agentconnector_id"
+    )
+    oauth2_provider = models.ForeignKey(
+        "authentik_providers_oauth2.OAuth2Provider",
+        on_delete=models.CASCADE,
+        db_column="oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_endpoints_connectors_agent_agentconnector_jwt_fed2bc6"
+        unique_together = (("agent_connector", "oauth2_provider"),)
+        verbose_name = _("Agent Connector JWT Federation Provider")
+        verbose_name_plural = _("Agent Connector JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"AgentConnectorJWTFederationProvider for AgentConnector {self.agent_connector_id} "
+            f"and OAuth2Provider {self.oauth2_provider_id}."
+        )
+
+
 class AgentDeviceConnection(DeviceConnection):
 
     apple_key_exchange_key = models.TextField()
@@ -100,6 +132,10 @@ class AgentDeviceUserBinding(DeviceUserBinding):
 
     apple_secure_enclave_key = models.TextField()
     apple_enclave_key_id = models.TextField()
+
+    class Meta:
+        verbose_name = _("Agent Device User binding")
+        verbose_name_plural = _("Agent Device User bindings")
 
 
 class DeviceToken(InternallyManagedMixin, ExpiringModel):
@@ -172,3 +208,17 @@ class AppleNonce(InternallyManagedMixin, ExpiringModel):
     class Meta(ExpiringModel.Meta):
         verbose_name = _("Apple Nonce")
         verbose_name_plural = _("Apple Nonces")
+
+
+class AppleIndependentSecureEnclave(Authenticator):
+    """A device-independent secure enclave key, used by Tap-to-login"""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
+
+    apple_secure_enclave_key = models.TextField()
+    apple_enclave_key_id = models.TextField()
+    device_type = models.TextField()
+
+    class Meta:
+        verbose_name = _("Apple Independent Secure Enclave")
+        verbose_name_plural = _("Apple Independent Secure Enclaves")

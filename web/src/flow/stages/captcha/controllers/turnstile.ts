@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference types="turnstile-types"/>
-import { ifPresent } from "#elements/utils/attributes";
-
 import { CaptchaController } from "#flow/stages/captcha/controllers/CaptchaController";
 
 import { TurnstileObject } from "turnstile-types";
@@ -20,7 +18,16 @@ export class TurnstileController extends CaptchaController {
     public prepareURL = (): URL | null => {
         const input = this.host.challenge?.jsUrl;
 
-        return input && URL.canParse(input) ? new URL(input) : null;
+        if (!input || !URL.canParse(input)) return null;
+
+        const url = new URL(input);
+
+        // Use explicit rendering to prevent Turnstile's 3-hour self-upgrade
+        // from calling implicitRenderAll() and duplicating widgets.
+        url.searchParams.set("render", "explicit");
+        url.searchParams.set("onload", "onTurnstileReady");
+
+        return url;
     };
 
     /**
@@ -33,25 +40,34 @@ export class TurnstileController extends CaptchaController {
     /**
      * Renders the Turnstile captcha frame.
      *
+     * Uses explicit rendering to avoid Turnstile's self-upgrade mechanism
+     * (every ~3 hours) from calling `implicitRenderAll()` and duplicating widgets.
+     *
      * @remarks
      *
-     * Turnstile will log a warning if the `data-language` attribute
+     * Turnstile will log a warning if the `language` option
      * is not in lower-case format.
      *
      * @see {@link https://developers.cloudflare.com/turnstile/reference/supported-languages/ Turnstile Supported Languages}
      */
     public interactive = () => {
-        const languageTag = this.host.activeLanguageTag.toLowerCase();
+        const siteKey = this.host.challenge?.siteKey ?? "";
+        const theme = this.host.activeTheme;
+        const language = this.host.activeLanguageTag.toLowerCase();
 
-        return html`<div
-            id="ak-container"
-            class="cf-turnstile"
-            data-sitekey=${ifPresent(this.host.challenge?.siteKey)}
-            data-theme=${this.host.activeTheme}
-            data-callback="callback"
-            data-size="flexible"
-            data-language=${ifPresent(languageTag)}
-        ></div>`;
+        return html`<div id="ak-container"></div>
+            <script>
+                function onTurnstileReady() {
+                    turnstile.render("#ak-container", {
+                        sitekey: "${siteKey}",
+                        theme: "${theme}",
+                        language: "${language}",
+                        size: "flexible",
+                        callback,
+                    });
+                    loadListener();
+                }
+            </script>`;
     };
 
     public refreshInteractive = async () => {

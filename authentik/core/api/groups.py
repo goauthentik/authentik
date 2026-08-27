@@ -7,6 +7,7 @@ from django.http import Http404
 from django.utils.translation import gettext as _
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
+from djangoql.schema import BoolField, StrField
 from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
@@ -18,20 +19,107 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.relations import ManyRelatedField, PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import TokenAuthentication
+from authentik.api.search.fields import (
+    JSONSearchField,
+)
 from authentik.api.validation import validate
+from authentik.core.api.object_attributes import AttributesMixinSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.endpoints.connectors.agent.auth import AgentAuth
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
+
+
+class RawPKList(list):
+    """List of raw PKs that can be returned without child object serialization."""
+
+
+class BulkManyRelatedField(ManyRelatedField):
+    """ManyRelatedField that validates all PKs in a single query instead of one per PK."""
+
+    def get_attribute(self, instance):
+        prefetched_pk_list = getattr(instance, f"_{self.field_name}_pk_list", None)
+        if prefetched_pk_list is not None:
+            return RawPKList(prefetched_pk_list)
+        return super().get_attribute(instance)
+
+    def to_internal_value(self, data):
+        if isinstance(data, str) or not hasattr(data, "__iter__"):
+            self.fail("not_a_list", input_type=type(data).__name__)
+        if not self.allow_empty and len(data) == 0:
+            self.fail("empty")
+
+        child = self.child_relation
+        pk_field = child.pk_field
+        # Coerce PKs through pk_field if defined
+        pk_map = {}
+        for item in data:
+            if isinstance(item, bool):
+                self.fail("incorrect_type", data_type=type(item).__name__)
+            pk = pk_field.to_internal_value(item) if pk_field else item
+            pk_map[pk] = item  # map coerced PK -> original value for error reporting
+
+        queryset = child.get_queryset()
+        # Use count to validate all PKs exist in a single query
+        found_count = queryset.filter(pk__in=pk_map.keys()).count()
+        if found_count < len(pk_map):
+            # Some PKs not found — fall back to per-PK checks for error reporting.
+            # This only runs when there's an actual validation error (rare path).
+            for pk, original in pk_map.items():
+                if not queryset.filter(pk=pk).exists():
+                    child.fail("does_not_exist", pk_value=original)
+
+        # Return raw PKs — Django's M2M set() accepts both objects and PKs,
+        # using get_prep_value() for type coercion. This avoids loading all
+        # objects into memory and avoids triggering post_init signals.
+        return list(pk_map.keys())
+
+    def to_representation(self, iterable):
+        if isinstance(iterable, RawPKList):
+            return list(iterable)
+        # For non-prefetched querysets, get PKs directly without loading model instances.
+        # When prefetched, _result_cache is a list (possibly empty); when not, it's None.
+        if hasattr(iterable, "values_list") and getattr(iterable, "_result_cache", None) is None:
+            return list(iterable.values_list("pk", flat=True))
+        return super().to_representation(iterable)
+
+
+class BulkPrimaryKeyRelatedField(PrimaryKeyRelatedField):
+    """PrimaryKeyRelatedField that uses bulk validation when many=True."""
+
+    @classmethod
+    def many_init(cls, *args, **kwargs):
+        allow_empty = kwargs.pop("allow_empty", None)
+        max_length = kwargs.pop("max_length", None)
+        min_length = kwargs.pop("min_length", None)
+        child_relation = cls(*args, **kwargs)
+        list_kwargs = {
+            "child_relation": child_relation,
+        }
+        if allow_empty is not None:
+            list_kwargs["allow_empty"] = allow_empty
+        if max_length is not None:
+            list_kwargs["max_length"] = max_length
+        if min_length is not None:
+            list_kwargs["min_length"] = min_length
+        list_kwargs.update(
+            {
+                key: value
+                for key, value in kwargs.items()
+                if key in ("required", "default", "source")
+            }
+        )
+        return BulkManyRelatedField(**list_kwargs)
+
 
 PARTIAL_USER_SERIALIZER_MODEL_FIELDS = [
     "pk",
@@ -71,10 +159,11 @@ class RelatedGroupSerializer(ModelSerializer):
         ]
 
 
-class GroupSerializer(ModelSerializer):
+class GroupSerializer(AttributesMixinSerializer, ModelSerializer):
     """Group Serializer"""
 
     attributes = JSONDictField(required=False)
+    users = BulkPrimaryKeyRelatedField(queryset=User.objects.all(), many=True, default=list)
     parents = PrimaryKeyRelatedField(queryset=Group.objects.all(), many=True, required=False)
     parents_obj = SerializerMethodField(allow_null=True)
     children_obj = SerializerMethodField(allow_null=True)
@@ -170,6 +259,25 @@ class GroupSerializer(ModelSerializer):
                 )
         return superuser
 
+    def validate_users(self, users: list) -> list:
+        """Require add_user_to_group permission when adding new members via group PATCH."""
+        request: Request = self.context.get("request", None)
+        if not request:
+            return users
+        if not self.instance:
+            return users
+        # BulkManyRelatedField returns raw PKs, not model instances
+        current_user_pks = set(self.instance.users.values_list("pk", flat=True))
+        new_users = [u for u in users if u not in current_user_pks]
+        if not new_users:
+            return users
+        has_perm = request.user.has_perm(
+            "authentik_core.add_user_to_group"
+        ) or request.user.has_perm("authentik_core.add_user_to_group", self.instance)
+        if not has_perm:
+            raise ValidationError(_("User does not have permission to add members to this group."))
+        return users
+
     class Meta:
         model = Group
         fields = [
@@ -189,9 +297,6 @@ class GroupSerializer(ModelSerializer):
             "children_obj",
         ]
         extra_kwargs = {
-            "users": {
-                "default": list,
-            },
             "children": {
                 "required": False,
                 "default": list,
@@ -221,6 +326,7 @@ class GroupFilter(FilterSet):
     members_by_pk = ModelMultipleChoiceFilter(
         field_name="users",
         queryset=User.objects.all(),
+        distinct=False,
     )
 
     def filter_attributes(self, queryset, name, value):
@@ -265,12 +371,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ]
 
     def get_ql_fields(self):
-        from djangoql.schema import BoolField, StrField
-
-        from authentik.enterprise.search.fields import (
-            JSONSearchField,
-        )
-
         return [
             StrField(Group, "name"),
             BoolField(Group, "is_superuser", nullable=True),
@@ -278,7 +378,8 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().prefetch_related("roles")
+        # Always prefetch parents and children since their PKs are always serialized
+        base_qs = Group.objects.all().prefetch_related("roles", "parents", "children")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
             # Only fetch fields needed by PartialUserSerializer to reduce DB load and instantiation
@@ -289,18 +390,24 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
                     queryset=User.objects.all().only(*PARTIAL_USER_SERIALIZER_MODEL_FIELDS),
                 )
             )
-        else:
-            base_qs = base_qs.prefetch_related(
-                Prefetch("users", queryset=User.objects.all().only("id"))
-            )
-
-        if self.serializer_class(context={"request": self.request})._should_include_children:
-            base_qs = base_qs.prefetch_related("children")
-
-        if self.serializer_class(context={"request": self.request})._should_include_parents:
-            base_qs = base_qs.prefetch_related("parents")
-
         return base_qs
+
+    def _attach_user_pk_lists(self, groups: list[Group]) -> None:
+        """Batch-load user PKs without materializing User objects."""
+        group_pks = {group.pk for group in groups}
+        if not group_pks:
+            return
+
+        users_by_group = {group_pk: [] for group_pk in group_pks}
+
+        through = User.groups.through
+        for group_pk, user_pk in through.objects.filter(group_id__in=group_pks).values_list(
+            "group_id", "user_id"
+        ):
+            users_by_group[group_pk].append(user_pk)
+
+        for group in groups:
+            group._users_pk_list = users_by_group[group.pk]
 
     @extend_schema(
         parameters=[
@@ -311,7 +418,21 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
         ]
     )
     def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
+        if self.serializer_class(context={"request": self.request})._should_include_users:
+            return super().list(request, *args, **kwargs)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            groups = list(page)
+            self._attach_user_pk_lists(groups)
+            serializer = self.get_serializer(groups, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        groups = list(queryset)
+        self._attach_user_pk_lists(groups)
+        serializer = self.get_serializer(groups, many=True)
+        return Response(serializer.data)
 
     @extend_schema(
         parameters=[

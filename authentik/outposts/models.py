@@ -13,7 +13,7 @@ from django.db import IntegrityError, models, transaction
 from django.db.models.base import Model
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
-from packaging.version import Version, parse
+from packaging.version import parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -31,7 +31,7 @@ from authentik.core.models import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/add-secure-apps/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.mdx
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
@@ -81,6 +81,7 @@ class OutpostConfig:
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
     kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = field(default=None)
+    kubernetes_disable_x509_strict: bool = field(default=False)
 
 
 class OutpostModel(Model):
@@ -280,7 +281,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     _config = models.JSONField(default=default_outpost_config)
 
-    providers = models.ManyToManyField(Provider)
+    providers = models.ManyToManyField(Provider, through="OutpostProvider")
 
     @property
     def serializer(self) -> Serializer:
@@ -403,7 +404,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     def token(self) -> Token:
         """Get/create token for auto-generated user"""
         managed = f"goauthentik.io/outpost/{self.token_identifier}"
-        tokens = Token.filter_not_expired(
+        tokens = Token.objects.filter(
             identifier=self.token_identifier,
             intent=TokenIntents.INTENT_API,
             managed=managed,
@@ -456,6 +457,20 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
         verbose_name_plural = _("Outposts")
 
 
+class OutpostProvider(SimpleThroughModel):
+    outpost = models.ForeignKey(Outpost, on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_outposts_outpost_providers"
+        unique_together = (("outpost", "provider"),)
+        verbose_name = _("Outpost Provider")
+        verbose_name_plural = _("Outpost Providers")
+
+    def __str__(self):
+        return f"OutpostProvider for Outpost {self.outpost_id} and Provider {self.provider_id}."
+
+
 @dataclass
 class OutpostState:
     """Outpost instance state, last_seen and version"""
@@ -463,7 +478,6 @@ class OutpostState:
     uid: str
     last_seen: datetime | None = field(default=None)
     version: str | None = field(default=None)
-    version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     golang_version: str = field(default="")
     openssl_enabled: bool = field(default=False)

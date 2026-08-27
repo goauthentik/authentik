@@ -40,6 +40,19 @@ class MetadataProcessor:
         self.force_binding = None
         self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
+    def _get_issuer_value(self) -> str:
+        """Get issuer value, with fallback to generated URL if empty"""
+        # If user has set an override issuer, use it
+        if self.provider.issuer_override:
+            return self.provider.issuer_override
+
+        return self.http_request.build_absolute_uri(
+            reverse(
+                "authentik_providers_saml:metadata-download",
+                kwargs={"application_slug": self.provider.application.slug},
+            )
+        )
+
     # Using type unions doesn't work with cython types (which is what lxml is)
     def get_signing_key_descriptor(self) -> Element | None:
         """Get Signing KeyDescriptor, if enabled for the provider"""
@@ -68,54 +81,35 @@ class MetadataProcessor:
             element.text = name_id_format
             yield element
 
+    def _get_unified_url(self) -> str:
+        """Get the unified SAML endpoint URL"""
+        return self.http_request.build_absolute_uri(
+            reverse(
+                "authentik_providers_saml:base",
+                kwargs={"application_slug": self.provider.application.slug},
+            )
+        )
+
     def get_sso_bindings(self) -> Iterator[Element]:
-        """Get all Bindings supported"""
-        binding_url_map = {
-            (SAML_BINDING_REDIRECT, "SingleSignOnService"): self.http_request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_saml:sso-redirect",
-                    kwargs={"application_slug": self.provider.application.slug},
-                )
-            ),
-            (SAML_BINDING_POST, "SingleSignOnService"): self.http_request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_saml:sso-post",
-                    kwargs={"application_slug": self.provider.application.slug},
-                )
-            ),
-        }
-        for binding_svc, url in binding_url_map.items():
-            binding, svc = binding_svc
+        """Get all SSO Bindings - both point to unified endpoint"""
+        unified_url = self._get_unified_url()
+        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
             if self.force_binding and self.force_binding != binding:
                 continue
-            element = Element(f"{{{NS_SAML_METADATA}}}{svc}")
+            element = Element(f"{{{NS_SAML_METADATA}}}SingleSignOnService")
             element.attrib["Binding"] = binding
-            element.attrib["Location"] = url
+            element.attrib["Location"] = unified_url
             yield element
 
     def get_slo_bindings(self) -> Iterator[Element]:
-        """Get all Bindings supported"""
-        binding_url_map = {
-            (SAML_BINDING_REDIRECT, "SingleLogoutService"): self.http_request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_saml:slo-redirect",
-                    kwargs={"application_slug": self.provider.application.slug},
-                )
-            ),
-            (SAML_BINDING_POST, "SingleLogoutService"): self.http_request.build_absolute_uri(
-                reverse(
-                    "authentik_providers_saml:slo-post",
-                    kwargs={"application_slug": self.provider.application.slug},
-                )
-            ),
-        }
-        for binding_svc, url in binding_url_map.items():
-            binding, svc = binding_svc
+        """Get all SLO Bindings - both point to unified endpoint"""
+        unified_url = self._get_unified_url()
+        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
             if self.force_binding and self.force_binding != binding:
                 continue
-            element = Element(f"{{{NS_SAML_METADATA}}}{svc}")
+            element = Element(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
             element.attrib["Binding"] = binding
-            element.attrib["Location"] = url
+            element.attrib["Location"] = unified_url
             yield element
 
     def _prepare_signature(self, entity_descriptor: _Element):
@@ -189,7 +183,7 @@ class MetadataProcessor:
         """Build full EntityDescriptor"""
         entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
         entity_descriptor.attrib["ID"] = self.xml_id
-        entity_descriptor.attrib["entityID"] = self.provider.issuer
+        entity_descriptor.attrib["entityID"] = self._get_issuer_value()
 
         if self.provider.signing_kp:
             self._prepare_signature(entity_descriptor)

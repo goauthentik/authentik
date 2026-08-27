@@ -22,12 +22,12 @@ LOGGER = get_logger()
 def update_well_known_jwks():
     self = CurrentTask.get_task()
     session = get_http_session()
-    for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):
+    for source in OAuthSource.objects.all().filter(enabled=True).exclude(oidc_well_known_url=""):
         try:
             well_known_config = session.get(source.oidc_well_known_url)
             well_known_config.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             LOGGER.warning("Failed to update well_known", source=source, exc=exc, text=text)
             self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
@@ -60,12 +60,12 @@ def update_well_known_jwks():
             LOGGER.info("Updating sources' OpenID Configuration", source=source)
             source.save()
 
-    for source in OAuthSource.objects.all().exclude(oidc_jwks_url=""):
+    for source in OAuthSource.objects.all().filter(enabled=True).exclude(oidc_jwks_url=""):
         try:
             jwks_config = session.get(source.oidc_jwks_url)
             jwks_config.raise_for_status()
         except RequestException as exc:
-            text = exc.response.text if exc.response else str(exc)
+            text = exc.response.text if exc.response is not None else str(exc)
             LOGGER.warning("Failed to update JWKS", source=source, exc=exc, text=text)
             self.info(f"Failed to update JWKS for {source.slug}")
             continue

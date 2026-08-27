@@ -1,0 +1,18 @@
+---
+globalProperties:
+  supportingFiles: ""
+  apis: ""
+  models: ""
+  apiDocs: false
+  apiTests: false
+  modelDocs: false
+  modelTests: false
+additionalProperties:
+  packageName: authentik-client
+  avoidBoxedModels: true
+  bestFitInt: true
+  preferUnsignedInt: true
+  library: reqwest
+  supportAsync: true
+  supportMiddleware: true
+  repositoryUrl: https://github.com/authentik-community/client-rust.git

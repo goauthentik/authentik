@@ -1,9 +1,10 @@
+import "#components/ak-text-input";
 import "#elements/forms/Radio";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#elements/forms/FormGroup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
 
@@ -19,40 +20,33 @@ import {
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-endpoints-stage-form")
 export class EndpointStageForm extends BaseStageForm<EndpointStage> {
-    loadInstance(pk: string): Promise<EndpointStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: EndpointStage): Promise<EndpointStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEndpointsUpdate({
-                stageUuid: this.instance.pk || "",
-                endpointStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesEndpointsCreate({
-            endpointStageRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesEndpointsRetrieve({ stageUuid }),
+        create: (endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsCreate({ endpointStageRequest }),
+        update: (stageUuid: string, endpointStageRequest: EndpointStage) =>
+            aki(StagesApi).stagesEndpointsUpdate({ stageUuid, endpointStageRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
                 ${msg("Stage which associates the currently used device with the current session.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Connector")} required name="connector">
@@ -64,9 +58,7 @@ export class EndpointStageForm extends BaseStageForm<EndpointStage> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const users = await new EndpointsApi(
-                                    DEFAULT_CONFIG,
-                                ).endpointsConnectorsList(args);
+                                const users = await aki(EndpointsApi).endpointsConnectorsList(args);
                                 return users.results;
                             }}
                             .renderElement=${(connector: Connector): string => {

@@ -41,7 +41,7 @@ export const DefaultIgnorePatterns = [
     "**/storybook-static",
     "**/locale-codes.ts",
     "**/src/locales",
-    "**/gen-ts-api",
+    "packages/client-ts",
 ];
 
 /**

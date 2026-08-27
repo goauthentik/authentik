@@ -3,7 +3,7 @@ import "#components/ak-radio-input";
 import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-toggle-group";
+import "#elements/ToggleGroup";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -11,6 +11,8 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
+
+import { ToggleGroupEvent } from "#elements/ToggleGroup";
 
 import {
     oauth2ProviderSelector,
@@ -21,12 +23,7 @@ import {
     oauth2SourcesSelector,
 } from "#admin/providers/oauth2/OAuth2Sources";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    ProxyMode,
-    ProxyProvider,
-    ValidationError,
-} from "@goauthentik/api";
+import { FlowDesignationEnum, ProxyMode, ProxyProvider, ValidationError } from "@goauthentik/api";
 
 import { match } from "ts-pattern";
 
@@ -34,8 +31,7 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export type ProxyModeValue = { value: ProxyMode };
-export type SetMode = (ev: CustomEvent<ProxyModeValue>) => void;
+export type SetMode = (ev: ToggleGroupEvent<ProxyMode>) => void;
 export type SetShowHttpBasic = (ev: Event) => void;
 
 export interface ProxyModeExtraArgs {
@@ -225,12 +221,12 @@ export function renderForm({ provider = {}, errors = {}, args }: ProxyProviderFo
         ></ak-text-input>
 
         <ak-form-element-horizontal
-            label=${msg("Authorization flow")}
+            label=${msg("Authorization Flow")}
             required
             name="authorizationFlow"
         >
             <ak-flow-search
-                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                flowType=${FlowDesignationEnum.Authorization}
                 .currentFlow=${provider.authorizationFlow}
                 required
             ></ak-flow-search>
@@ -339,7 +335,7 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Federated OIDC Providers")}
+                    label=${msg("Federated OAuth2/OpenID Providers")}
                     name="jwtFederationProviders"
                 >
                     <ak-dual-select-dynamic-selected
@@ -360,11 +356,11 @@ ${provider.skipPathRegex}</textarea
         <ak-form-group label="${msg("Advanced flow settings")}">
             <div class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${msg("Authentication flow")}
+                    label=${msg("Authentication Flow")}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                        flowType=${FlowDesignationEnum.Authentication}
                         .currentFlow=${provider.authenticationFlow}
                     ></ak-flow-search>
                     <p class="pf-c-form__helper-text">
@@ -374,12 +370,12 @@ ${provider.skipPathRegex}</textarea
                     </p>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${msg("Invalidation flow")}
+                    label=${msg("Invalidation Flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
-                        flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                        flowType=${FlowDesignationEnum.Invalidation}
                         .currentFlow=${provider.invalidationFlow}
                         defaultFlowSlug="default-provider-invalidation-flow"
                         required

@@ -5,7 +5,7 @@ import "#elements/forms/SearchSelect/index";
 import "#components/ak-text-input";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { dateTimeLocal } from "#common/temporal";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -16,12 +16,21 @@ import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthe
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 const EXPIRATION_DURATION = 30 * 60 * 1000; // 30 minutes
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
+    public static override verboseName = msg("Token");
+    public static override verboseNamePlural = msg("Tokens");
+
+    /**
+     * Pre-selected user for new tokens, e.g. when creating a token from a user's detail page.
+     */
+    @property({ attribute: false })
+    public defaultUser: User | null = null;
+
     protected expirationMinimumDate = new Date();
 
     @state()
@@ -34,7 +43,7 @@ export class TokenForm extends ModelForm<Token, string> {
     }
 
     async loadInstance(pk: string): Promise<Token> {
-        const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+        const token = await aki(CoreApi).coreTokensRetrieve({
             identifier: pk,
         });
 
@@ -53,12 +62,12 @@ export class TokenForm extends ModelForm<Token, string> {
 
     async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
+            return aki(CoreApi).coreTokensUpdate({
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
         }
-        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+        return aki(CoreApi).coreTokensCreate({
             tokenRequest: data,
         });
     }
@@ -100,6 +109,7 @@ export class TokenForm extends ModelForm<Token, string> {
 
             <ak-form-element-horizontal label=${msg("User")} required name="user">
                 <ak-search-select
+                    placeholder=${msg("Select a user...")}
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -109,8 +119,8 @@ export class TokenForm extends ModelForm<Token, string> {
                             args.search = query;
                         }
 
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
-                        const instanceUser = this.instance?.userObj;
+                        const users = await aki(CoreApi).coreUsersList(args);
+                        const instanceUser = this.instance?.userObj ?? this.defaultUser;
 
                         if (!instanceUser) {
                             return users.results;
@@ -132,7 +142,11 @@ export class TokenForm extends ModelForm<Token, string> {
                         return user?.pk;
                     }}
                     .selected=${(user: User): boolean => {
-                        return this.instance?.user === user.pk;
+                        if (this.instance) {
+                            return this.instance.user === user.pk;
+                        }
+
+                        return this.defaultUser?.pk === user.pk;
                     }}
                 >
                 </ak-search-select>

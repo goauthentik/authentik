@@ -114,6 +114,31 @@ export function styleLoaderPlugin({
             });
 
             /**
+             * Handle plain `.css` text imports, i.e. a component's `static styles`.
+             *
+             * These bypass ESBuild's CSS pipeline entirely, so their authored source —
+             * native nesting included — reaches ShadyCSS verbatim. Lower the nesting
+             * here for the same reason the bundled path does.
+             *
+             * @see {@linkcode CSSNamespace.Bundled} for the rationale.
+             */
+            build.onLoad({ filter: /\.css$/, namespace: "file" }, async (args) => {
+                const cssContent = await readFile(args.path, "utf8");
+
+                const { code } = await build.esbuild.transform(cssContent, {
+                    loader: "css",
+                    minify: build.initialOptions.minify || false,
+                    supported: { nesting: false },
+                    logLevel: "silent",
+                });
+
+                return {
+                    contents: code,
+                    loader: "text",
+                };
+            });
+
+            /**
              * Handle `with { type: "bundled-text" }` imports.
              *
              * Bundle the CSS and return as text...
@@ -135,6 +160,21 @@ export function styleLoaderPlugin({
                     bundle: true,
                     write: false,
                     minify: build.initialOptions.minify || false,
+                    /**
+                     * Lower (un-nest) native CSS nesting in component shadow styles.
+                     *
+                     * Flattening here keeps declarations and nested rules in separate
+                     * top-level rules that ShadyCSS can process intact.
+                     *
+                     * ShadyCSS predates native CSS nesting.
+                     * Internally, `stringify` drops a rule's own declarations whenever
+                     * that rule also contains nested rules, discarding them while retaining the nested rules.
+                     *
+                     * We should remove this after compatibility mode drops.
+                     *
+                     * @expires 2026-12-01
+                     */
+                    supported: { nesting: false },
                     logLevel: "silent",
                     loader: { ".woff": "empty", ".woff2": "empty" },
                     plugins: [

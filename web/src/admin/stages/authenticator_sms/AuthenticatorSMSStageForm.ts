@@ -1,10 +1,11 @@
 import "#components/ak-switch-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -13,8 +14,8 @@ import {
     AuthenticatorSMSStage,
     AuthTypeEnum,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     NotificationWebhookMapping,
     PropertymappingsApi,
@@ -30,7 +31,7 @@ import { customElement, property } from "lit/decorators.js";
 @customElement("ak-stage-authenticator-sms-form")
 export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSStage> {
     loadInstance(pk: string): Promise<AuthenticatorSMSStage> {
-        return new StagesApi(DEFAULT_CONFIG)
+        return aki(StagesApi)
             .stagesAuthenticatorSmsRetrieve({
                 stageUuid: pk,
             })
@@ -49,12 +50,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
 
     async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
+            return aki(StagesApi).stagesAuthenticatorSmsUpdate({
                 stageUuid: this.instance.pk || "",
                 authenticatorSMSStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
+        return aki(StagesApi).stagesAuthenticatorSmsCreate({
             authenticatorSMSStageRequest: data,
         });
     }
@@ -169,14 +170,18 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -248,9 +253,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                                 if (query) {
                                     args.search = query;
                                 }
-                                const items = await new PropertymappingsApi(
-                                    DEFAULT_CONFIG,
-                                ).propertymappingsNotificationList(args);
+                                const items =
+                                    await aki(PropertymappingsApi).propertymappingsNotificationList(
+                                        args,
+                                    );
                                 return items.results;
                             }}
                             .renderElement=${(item: NotificationWebhookMapping): string => {
@@ -285,15 +291,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

@@ -3,7 +3,6 @@
 import traceback
 from collections.abc import Callable
 from importlib import import_module
-from inspect import ismethod
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -72,12 +71,19 @@ class ManagedAppConfig(AppConfig):
 
     def _reconcile(self, prefix: str) -> None:
         for meth_name in dir(self):
-            meth = getattr(self, meth_name)
-            if not ismethod(meth):
+            # Check the attribute on the class to avoid evaluating @property descriptors.
+            # Using getattr(self, ...) on a @property would evaluate it, which can trigger
+            # expensive side effects (e.g. tenant_schedule_specs iterating all providers
+            # and running PolicyEngine queries for every user).
+            class_attr = getattr(type(self), meth_name, None)
+            if class_attr is None or isinstance(class_attr, property):
                 continue
-            category = getattr(meth, "_authentik_managed_reconcile", None)
+            if not callable(class_attr):
+                continue
+            category = getattr(class_attr, "_authentik_managed_reconcile", None)
             if category != prefix:
                 continue
+            meth = getattr(self, meth_name)
             name = meth_name.replace(prefix, "")
             try:
                 self.logger.debug("Starting reconciler", name=name)

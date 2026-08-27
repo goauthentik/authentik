@@ -1,6 +1,8 @@
 """WebAuthn stage"""
 
+from cryptography.x509 import Certificate, load_pem_x509_certificate
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields.array import ArrayField
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
@@ -11,7 +13,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import InternallyManagedMixin, SerializerModel
+from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -67,6 +69,24 @@ class AuthenticatorAttachment(models.TextChoices):
     CROSS_PLATFORM = "cross-platform"
 
 
+class WebAuthnHint(models.TextChoices):
+    """Hints to guide the browser in prioritizing the preferred authenticator during
+    WebAuthn registration and authentication. Unlike authenticatorAttachment, hints are
+    advisory and browsers may ignore them.
+
+    Members:
+        `SECURITY_KEY`: A portable FIDO2 authenticator, like a YubiKey
+        `CLIENT_DEVICE`: The device WebAuthn is being called on, like TouchID or Windows Hello
+        `HYBRID`: A platform authenticator on a mobile device, accessed via QR code
+
+    https://w3c.github.io/webauthn/#enumdef-publickeycredentialhint
+    """
+
+    SECURITY_KEY = "security-key"
+    CLIENT_DEVICE = "client-device"
+    HYBRID = "hybrid"
+
+
 class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup WebAuthn-based authentication for the user."""
 
@@ -82,7 +102,15 @@ class AuthenticatorWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
         choices=AuthenticatorAttachment.choices, default=None, null=True
     )
 
-    device_type_restrictions = models.ManyToManyField("WebAuthnDeviceType", blank=True)
+    hints = ArrayField(
+        models.TextField(choices=WebAuthnHint.choices),
+        default=list,
+        blank=True,
+    )
+
+    device_type_restrictions = models.ManyToManyField(
+        "WebAuthnDeviceType", blank=True, through="AuthenticatorWebAuthnStageDeviceTypeRestriction"
+    )
 
     max_attempts = models.PositiveIntegerField(default=0)
 
@@ -134,6 +162,8 @@ class WebAuthnDevice(SerializerModel, Device):
     created_on = models.DateTimeField(auto_now_add=True)
     last_t = models.DateTimeField(default=now)
 
+    attestation_certificate_pem = models.TextField(null=True, default=None)
+    attestation_certificate_fingerprint = models.TextField(null=True, default=None)
     aaguid = models.TextField(default=UNKNOWN_DEVICE_TYPE_AAGUID)
     device_type = models.ForeignKey(
         "WebAuthnDeviceType", on_delete=models.SET_DEFAULT, null=True, default=None
@@ -143,6 +173,12 @@ class WebAuthnDevice(SerializerModel, Device):
     def descriptor(self) -> PublicKeyCredentialDescriptor:
         """Get a publickeydescriptor for this device"""
         return PublicKeyCredentialDescriptor(id=base64url_to_bytes(self.credential_id))
+
+    @property
+    def attestation_certificate(self) -> Certificate | None:
+        if not self.attestation_certificate_pem:
+            return None
+        return load_pem_x509_certificate(self.attestation_certificate_pem.encode())
 
     def set_sign_count(self, sign_count: int) -> None:
         """Set the sign_count and update the last_t datetime."""
@@ -186,3 +222,29 @@ class WebAuthnDeviceType(InternallyManagedMixin, SerializerModel):
 
     def __str__(self) -> str:
         return f"WebAuthn device type {self.description} ({self.aaguid})"
+
+
+class AuthenticatorWebAuthnStageDeviceTypeRestriction(SimpleThroughModel):
+    authenticator_webauthn_stage = models.ForeignKey(
+        AuthenticatorWebAuthnStage,
+        on_delete=models.CASCADE,
+        db_column="authenticatorwebauthnstage_id",
+    )
+    device_type_restriction = models.ForeignKey(
+        WebAuthnDeviceType,
+        on_delete=models.CASCADE,
+        db_column="webauthndevicetype_id",
+    )
+
+    class Meta:
+        db_table = "authentik_stages_authenticator_webauthn_authenticatorwebaute3a7"
+        unique_together = (("authenticator_webauthn_stage", "device_type_restriction"),)
+        verbose_name = _("Authenticator WebAuthn Stage Device Type Restriction")
+        verbose_name_plural = _("Authenticator WebAuthn Stage Device Type Restrictions")
+
+    def __str__(self):
+        return (
+            "AuthenticatorWebAuthnStageDeviceTypeRestriction for AuthenticatorWebAuthnStage "
+            f"{self.authenticator_webauthn_stage_id} "
+            f"and WebAuthnDeviceType {self.device_type_restriction_id}."
+        )

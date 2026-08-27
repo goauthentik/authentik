@@ -10,6 +10,8 @@
 
 import { fixture, prefix } from "./shared.js";
 
+export * from "./shared.js";
+
 let warnedAboutPino = false;
 
 const { pino } = await import("pino").catch(() => {

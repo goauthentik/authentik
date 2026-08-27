@@ -1,7 +1,8 @@
 """authentik core signals"""
 
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
+from contextlib import contextmanager
+from contextvars import ContextVar
+
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.db.models import Model
@@ -14,20 +15,64 @@ from authentik.core.models import (
     Application,
     AuthenticatedSession,
     BackchannelProvider,
-    ExpiringModel,
     Session,
     User,
     default_token_duration,
 )
-from authentik.flows.apps import RefreshOtherFlowsAfterAuthentication
-from authentik.root.ws.consumer import build_device_group
+from authentik.lib.models import ExpiringModel
 
-# Arguments: user: User, password: str
 password_changed = Signal()
-# Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
+"""Arguments: user: User, password: str"""
+password_hash_changed = Signal()
+"""Arguments: user: User, request: HttpRequest | None"""
 login_failed = Signal()
+"""Arguments: credentials: dict[str, any], request: HttpRequest,
+stage: Stage, context: dict[str, any]"""
+admin_authenticated_session_deleted = Signal()
+"""Arguments: instance: AuthenticatedSession, request: HttpRequest"""
 
 LOGGER = get_logger()
+
+_CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP = ContextVar[bool](
+    "authentik_core_inhibit_deactivation_session_cleanup",
+    default=False,
+)
+_CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP = ContextVar[bool](
+    "authentik_core_inhibit_deactivation_token_cleanup",
+    default=False,
+)
+
+
+@contextmanager
+def deactivation_inhibit_cleanup(*, sessions: bool = True, tokens: bool = True):
+    """
+    Prevent the automatic cleanup that runs when a deactivated user is saved,
+    for callers that revoke sessions and/or tokens themselves (e.g. enterprise
+    revocation). `sessions` inhibits session deletion, `tokens` inhibits
+    provider token revocation; both are inhibited by default. Nested uses can
+    add inhibition but not remove the outer context's.
+    """
+    reset_sessions = _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.set(
+        _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.get() or sessions
+    )
+    reset_tokens = _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.set(
+        _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.get() or tokens
+    )
+    try:
+        yield
+    finally:
+        _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.reset(reset_sessions)
+        _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.reset(reset_tokens)
+
+
+def deactivation_session_cleanup_inhibited() -> bool:
+    """Whether deactivation session cleanup is inhibited in the current context"""
+    return _CTX_INHIBIT_DEACTIVATION_SESSION_CLEANUP.get()
+
+
+def deactivation_token_cleanup_inhibited() -> bool:
+    """Whether deactivation token cleanup is inhibited in the current context"""
+    return _CTX_INHIBIT_DEACTIVATION_TOKEN_CLEANUP.get()
 
 
 @receiver(post_save, sender=Application)
@@ -47,19 +92,18 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
-    session = AuthenticatedSession.from_request(request, user)
-    if session:
-        session.save()
+    AuthenticatedSession.create_from_request(request, user)
 
-    if not RefreshOtherFlowsAfterAuthentication.get():
+
+@receiver(post_save, sender=User)
+def user_deactivated_delete_sessions(sender: type[Model], instance: User, **_):
+    """Delete all of a user's sessions when they are deactivated"""
+    if instance.is_active:
         return
-    layer = get_channel_layer()
-    device_cookie = request.COOKIES.get("authentik_device")
-    if device_cookie:
-        async_to_sync(layer.group_send)(
-            build_device_group(device_cookie),
-            {"type": "event.session.authenticated"},
-        )
+    if deactivation_session_cleanup_inhibited():
+        return
+    Session.objects.filter(authenticatedsession__user=instance).delete()
+    LOGGER.debug("Deleted deactivated user's sessions", user=instance.username)
 
 
 @receiver(post_delete, sender=AuthenticatedSession)

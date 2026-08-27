@@ -1,7 +1,7 @@
 import "#flow/FormStatic";
 import "#flow/components/ak-flow-card";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -48,9 +48,7 @@ export class AuthenticatorDuoStage extends BaseStage<
     }
 
     #checkEnrollStatus = async (): Promise<boolean> => {
-        const status = await new StagesApi(
-            DEFAULT_CONFIG,
-        ).stagesAuthenticatorDuoEnrollmentStatusCreate({
+        const status = await aki(StagesApi).stagesAuthenticatorDuoEnrollmentStatusCreate({
             stageUuid: this.challenge?.stageUuid || "",
         });
         console.debug(
@@ -87,7 +85,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                     </p>
                     <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
-                    <fieldset class="pf-c-form__group pf-m-action">
+                    <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                         <legend class="sr-only">${msg("Form actions")}</legend>
                         <button
                             type="button"

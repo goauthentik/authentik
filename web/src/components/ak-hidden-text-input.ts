@@ -6,10 +6,11 @@ import {
     HorizontalLightComponentProps,
 } from "./HorizontalLightComponent.js";
 
+import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { ifPresent } from "#elements/utils/attributes";
 
 import { msg } from "@lit/localize";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -63,6 +64,13 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
      */
     @property({ type: Boolean, reflect: true })
     public revealed = false;
+
+    /**
+     * @property
+     * @attribute
+     */
+    @property({ type: Boolean, reflect: true })
+    public copyable = false;
 
     /**
      * Text for when the input has no set value
@@ -127,6 +135,14 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         />`;
     }
 
+    protected renderCopyButton() {
+        return IconCopyButton({
+            source: this.value ?? null,
+            buttonLabel: msg("Copy value"),
+            entityLabel: msg("Token"),
+        });
+    }
+
     protected override renderControl() {
         const code = this.inputHint === "code";
         const setValue: InputListener = (ev) => {
@@ -143,6 +159,7 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
                 hide-message=${this.hideMessage}
                 @click=${() => (this.revealed = !this.revealed)}
             ></ak-visibility-toggle>
+            ${this.copyable ? this.renderCopyButton() : nothing}
         </div>`;
     }
 }

@@ -209,7 +209,7 @@ Full example:
 
 ```yaml
 required: !Condition [
-    AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
+    AND, # Valid modes are: EQ, NEQ, AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
     !Find [authentik_flows.flow, [slug, default-password-change],
     "My string",
@@ -222,7 +222,7 @@ Requires at least one argument after the mode selection.
 
 If only a single argument is provided, its boolean representation will be returned for all normal modes and its negated boolean representation will be returned for all negated modes.
 
-Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.md)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
+Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.mdx)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
 
 #### `!Enumerate`, `!Index` and `!Value`
 
@@ -390,8 +390,8 @@ value_in_mapping: !AtIndex [{ "foo": "bar", "other": "value" }, "foo"] # Resolve
 Example with default value:
 
 ```yaml
-default_value: !AtIndex [["first"], 100, "default"]  # Resolves to "default"
-default_value: !AtIndex [["first"], 100]  # Throws an error
+default_value: !AtIndex [["first"], 100, "default"] # Resolves to "default"
+default_value: !AtIndex [["first"], 100] # Throws an error
 ```
 
 Resolves to the value at a specific index in a sequence or a mapping.

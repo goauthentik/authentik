@@ -27,7 +27,7 @@ from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, SimpleThroughModel
 from authentik.policies.models import Policy
 
 CHOICES_CONTEXT_SUFFIX = "__choices"
@@ -38,7 +38,7 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
-    # update website/docs/add-secure-apps/flows-stages/stages/prompt/index.md
+    # update website/docs/add-secure-apps/flows-stages/stages/prompt/index.mdx
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -86,6 +86,11 @@ class FieldTypes(models.TextChoices):
     SEPARATOR = "separator", _("Separator: Static Separator Line")
     HIDDEN = "hidden", _("Hidden: Hidden field, can be used to insert data into form.")
     STATIC = "static", _("Static: Static value, displayed as-is.")
+
+    # Alert box types for displaying styled messages
+    ALERT_INFO = "alert_info", _("Alert (Info): Static alert box with info styling")
+    ALERT_WARNING = "alert_warning", _("Alert (Warning): Static alert box with warning styling")
+    ALERT_DANGER = "alert_danger", _("Alert (Danger): Static alert box with danger styling")
 
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
 
@@ -299,7 +304,12 @@ class Prompt(SerializerModel):
                 field_class = HiddenField
                 kwargs["required"] = False
                 kwargs["default"] = self.placeholder
-            case FieldTypes.STATIC:
+            case (
+                FieldTypes.STATIC
+                | FieldTypes.ALERT_INFO
+                | FieldTypes.ALERT_WARNING
+                | FieldTypes.ALERT_DANGER
+            ):
                 kwargs["default"] = self.placeholder
                 kwargs["required"] = False
                 kwargs["label"] = ""
@@ -341,9 +351,11 @@ class Prompt(SerializerModel):
 class PromptStage(Stage):
     """Prompt the user to enter information."""
 
-    fields = models.ManyToManyField(Prompt)
+    fields = models.ManyToManyField(Prompt, through="PromptStageField")
 
-    validation_policies = models.ManyToManyField(Policy, blank=True)
+    validation_policies = models.ManyToManyField(
+        Policy, blank=True, through="PromptStageValidationPolicy"
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -364,3 +376,45 @@ class PromptStage(Stage):
     class Meta:
         verbose_name = _("Prompt Stage")
         verbose_name_plural = _("Prompt Stages")
+
+
+class PromptStageField(SimpleThroughModel):
+    prompt_stage = models.ForeignKey(
+        PromptStage,
+        on_delete=models.CASCADE,
+        db_column="promptstage_id",
+    )
+    prompt = models.ForeignKey(Prompt, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_stages_prompt_promptstage_fields"
+        unique_together = (("prompt_stage", "prompt"),)
+        verbose_name = _("Prompt Stage Field")
+        verbose_name_plural = _("Prompt Stage Fields")
+
+    def __str__(self):
+        return (
+            f"PromptStageField for PromptStage {self.prompt_stage_id} "
+            f"and Field {self.prompt_id}."
+        )
+
+
+class PromptStageValidationPolicy(SimpleThroughModel):
+    prompt_stage = models.ForeignKey(
+        PromptStage,
+        on_delete=models.CASCADE,
+        db_column="promptstage_id",
+    )
+    policy = models.ForeignKey(Policy, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_stages_prompt_promptstage_validation_policies"
+        unique_together = (("prompt_stage", "policy"),)
+        verbose_name = _("Prompt Stage Validation Policy")
+        verbose_name_plural = _("Prompt Stage Validation Policys")
+
+    def __str__(self):
+        return (
+            f"PromptStageValidationPolicy for PromptStage {self.prompt_stage_id} "
+            f"and Policy {self.policy_id}."
+        )

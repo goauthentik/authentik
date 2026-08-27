@@ -2,6 +2,7 @@
 
 import re
 import socket
+from copy import deepcopy
 from ipaddress import ip_address, ip_network
 from smtplib import SMTPException
 from textwrap import indent
@@ -10,7 +11,9 @@ from typing import TYPE_CHECKING, Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.db.models import Model
 from django.http import HttpRequest
+from django.utils.functional import SimpleLazyObject
 from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
@@ -22,12 +25,14 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.policies.utils import delete_none_values
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
@@ -58,8 +63,8 @@ class BaseEvaluator:
 
     def __init__(self, filename: str | None = None):
         self._filename = filename if filename else "BaseEvaluator"
-        # update website/docs/expressions/_objects.md
-        # update website/docs/expressions/_functions.md
+        # update website/docs/expressions/reference/_objects.mdx
+        # update website/docs/expressions/reference/_functions.mdx
         self._globals = {
             "ak_call_policy": self.expr_func_call_policy,
             "ak_create_event": self.expr_event_create,
@@ -70,15 +75,17 @@ class BaseEvaluator:
             "ak_send_email": self.expr_send_email,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
+            "ak_obj_attr": BaseEvaluator.expr_obj_attr,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
             "regex_match": BaseEvaluator.expr_regex_match,
             "regex_replace": BaseEvaluator.expr_regex_replace,
-            "requests": get_http_session(),
+            "requests": SimpleLazyObject(get_http_session),
             "resolve_dns": BaseEvaluator.expr_resolve_dns,
             "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "slugify": slugify,
+            "delete_none_values": delete_none_values,
         }
         self._context = {}
 
@@ -162,6 +169,16 @@ class BaseEvaluator:
             return False
         return len(list(user_devices)) > 0
 
+    @staticmethod
+    def expr_obj_attr(obj: Model, attr_key: str, fallback: str | None = None) -> Any:
+        """Get an attribute of the given object if set by its dotted path, otherwise
+        return fallback value."""
+        attrs = getattr(obj, "attributes", {})
+        value = get_path_from_dict(attrs, attr_key)
+        if value is None and fallback is not None:
+            return getattr(obj, fallback, fallback)
+        return value
+
     def expr_event_create(self, action: str, **kwargs):
         """Create event with supplied data and try to extract as much relevant data
         from the context"""
@@ -191,7 +208,7 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = self._context["request"]
+            req = deepcopy(self._context["request"])
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
@@ -234,7 +251,7 @@ class BaseEvaluator:
         kwargs["aud"] = provider.client_id
         return provider.encode(kwargs)
 
-    def expr_send_email(  # noqa: PLR0913
+    def expr_send_email(  # noqa: PLR0913, PLR0917
         self,
         address: str | list[str],
         subject: str,

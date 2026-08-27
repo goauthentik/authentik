@@ -7,7 +7,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
         <link rel="icon" href="{{ brand.branding_favicon_url }}">
         <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
@@ -23,7 +23,7 @@
             height: 100%;
           }
           body {
-            background-image: url("{{ flow_background_url }}");
+            background-image: url("{{ flow_background_url|iriencode|safe }}");
             background-repeat: no-repeat;
             background-size: cover;
           }

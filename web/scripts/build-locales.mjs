@@ -18,6 +18,7 @@ import * as fs from "node:fs/promises";
 import path, { resolve } from "node:path";
 
 import { generatePseudoLocaleModule } from "./pseudolocalize.mjs";
+import { unescapeOverescapedLitTemplates } from "./unescape-locale-entities.mjs";
 
 import { ConsoleLogger } from "#logger/node";
 import { PackageRoot } from "#paths/node";
@@ -205,6 +206,15 @@ export async function generateLocaleModules() {
     const localizer = new RuntimeLitLocalizer(localizeRules);
 
     await localizer.build();
+
+    const sanitized = await unescapeOverescapedLitTemplates(EmittedLocalesDirectory);
+
+    if (sanitized.touched > 0) {
+        logger.info(
+            `Sanitized ${sanitized.replacements.toLocaleString()} over-escaped entity ` +
+                `reference(s) across ${sanitized.touched} locale module(s).`,
+        );
+    }
 
     const missingTranslationsReport = Array.from(missingTranslationWarnings)
         .filter(([, count]) => count)

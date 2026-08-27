@@ -2,104 +2,94 @@
 title: Identification stage
 ---
 
-This stage provides a ready-to-go form for users to identify themselves.
+The Identification stage is the primary user-identification step in most authentik login flows.
 
-## User Fields
+## About the identification stage
 
-Select which fields the user can use to identify themselves. Multiple fields can be selected. If no fields are selected, only sources will be shown.
+This stage lets the user identify themselves by username, email address, UPN, or external source. You can also embed password entry, CAPTCHA verification, and passkey autofill directly into the identification step.
 
-- Username
-- Email
-- UPN
+## Configuration options
 
-    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](../../../../users-sources/sources/protocols/ldap/index.md)
+- **User Fields**: which identifiers the user can enter.
+    - **Username**
+    - **Email**
+    - **UPN**
+- **Password stage**: optional [Password stage](../password/index.mdx) to render inline instead of as a separate step.
+- **Captcha stage**: optional [Captcha stage](../captcha/index.mdx) to run as part of identification.
+- **WebAuthn Authenticator Validation Stage**: optional [Authenticator Validation stage](../authenticator_validate/index.mdx) used for passkey autofill.
+- **Case-insensitive matching**: match identifiers regardless of case.
+- **Show matched user**: display the matched user's username and avatar after a valid identifier is entered.
+- **Pretend user exists**: continue even when the entered identifier does not match a real user.
+- **Enable remember me on this device**: allow the browser to remember the entered username and jump directly to password entry later.
+- **Enrollment flow**: optional flow linked as a sign-up path.
+- **Recovery flow**: optional flow linked as a recovery path.
+- **Passwordless flow**: optional flow linked as a dedicated passwordless sign-in path.
+- **Sources**: which OAuth or SAML sources should be shown.
+- **Show source labels**: show labels in addition to source icons.
 
-## Password stage
+## Flow integration
 
-To prompt users for their password on the same step as identifying themselves, a Password stage can be selected here. If a Password stage is selected in the Identification stage, the Password stage should not be bound to the flow.
+This stage usually appears first in authentication and recovery flows.
 
-## CAPTCHA stage
+- If **Password stage** is configured here, do not also bind that Password stage separately in the same flow.
+- If **Captcha stage** is configured here, do not also bind that Captcha stage separately in the same flow.
+- If no user fields are selected, the stage acts as a source-only entry point.
 
-:::warning
-The CAPTCHA stage you use must be configured to use the "Invisible" mode, otherwise the widget will be rendered incorrectly.
-:::
+## Notes
 
-To run a CAPTCHA process in the background while the user is entering their identification, a CAPTCHA stage can be selected here. If a CAPTCHA stage is selected in the Identification stage, the CAPTCHA stage should not be bound to the flow.
+### User fields
 
-## Passkey autofill (WebAuthn conditional UI):ak-version[2025.12]
+If no user fields are selected, only the configured sources are shown.
 
-When configured, the Identification stage can offer passkey login directly from the browser's passkey/autofill UI (also known as "conditional UI"). This allows a user to select a passkey without first typing their username.
+For **UPN**, authentik matches against the `upn` attribute on the user, which is commonly populated from an LDAP source.
 
-authentik will automatically fall back to the normal identification flow when passkey autofill is not available.
+### Password and CAPTCHA embedding
 
-### Requirements
+If you set a **Password stage** here, the password prompt appears on the same step as identification instead of as a later stage.
 
-- **HTTPS** is required for WebAuthn (except on `localhost`).
-- **Browser support** for WebAuthn conditional mediation is required.
-- Users must have a compatible **discoverable credential (aka resident key)** (most passkeys created by platform authenticators and password managers are discoverable).
-- **Correct domain**: users must access authentik using the same hostname the passkey was created for.
+If you set a **Captcha stage** here, configure that CAPTCHA for invisible or background use so it renders correctly inside the identification form.
 
-### Configuration
+### Pretend user exists
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Flows and Stages** > **Stages** and either create or edit an [Authenticator validation stage](../authenticator_validate/index.mdx) that allows the **WebAuthn** device class.
-3. Navigate to **Flows and Stages** > **Stages** and edit your Identification stage. Under **Passkey settings** set **WebAuthn Authenticator Validation Stage** to the Authenticator validation stage from step 2.
-4. Click **Update** to save the changes.
-5. Ensure users have enrolled a passkey/WebAuthn device (for example using the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.mdx)).
+When enabled, invalid identifiers still let the flow continue as long as the format is valid for the selected field type. Stages such as [Password](../password/index.mdx) and [Email](../email/index.mdx) are aware of this behavior and handle the synthetic pending user safely.
 
-### Notes
+### Source behavior
 
-- The passkey prompt is triggered by the browser when the user focuses the username field.
-- If a user has multiple passkeys, the browser will show a picker.
-- If passkey login is used, the flow context will have `auth_method` set to `auth_webauthn_pwl`.
-- In the default authentication flow blueprint, authentik skips the MFA validation stage after passkey login using an expression policy. If you want passkey login to still require an additional factor, disable or adjust that policy binding on the MFA stage.
+Selected OAuth and SAML sources are shown below the local identification form. If no user fields are selected and exactly one source is configured, authentik can redirect to that source automatically as long as **Passwordless flow** is not configured.
 
-### Troubleshooting
+By default, sources are shown by icon only. Enable **Show source labels** if the source name should be shown alongside the icon.
 
-- **No passkey prompt appears**
-    - Ensure the Identification stage has **WebAuthn Authenticator Validation Stage** set.
-    - Ensure you're using **HTTPS** (except on `localhost`).
-    - Check browser support for conditional UI.
-    - Ensure the login page is not embedded in an iframe as some browsers block conditional UI outside top-level browsing contexts.
+Sources can also be marked as **Promoted** in their source configuration. Promoted sources are shown as prominent full-width buttons on the login page instead of small icon buttons.
 
-- **Passkey prompt appears, but login falls back to username/password**
-    - Ensure the referenced Authenticator validation stage allows the **WebAuthn** device class.
-    - Ensure the user has a valid, confirmed WebAuthn device enrolled.
+### Linked flows
 
-## Enrollment/Recovery Flow
+The **Enrollment flow** and **Recovery flow** settings control the links shown below the identification form. The passwordless flow setting adds a direct link to a separate passwordless authentication flow.
 
-These fields specify if and which flows are linked on the form. The enrollment flow is linked as `Need an account? Sign up.`, and the recovery flow is linked as `Forgot username or password?`.
+When **Enable remember me on this device** is enabled, authentik can store the username locally and jump to the password field on later visits. Users can still select **Not you?** to enter a different username or disable the remembered value.
 
-## Pretend user exists
+### Passkey autofill (WebAuthn conditional UI):ak-version[2025.12]
 
-When enabled, any user identifier will be accepted as valid (as long as they match the correct format, i.e. when [User fields](#user-fields) is set to only allow Emails, then the identifier still needs to be an Email). The stage will succeed and the flow will continue to the next stage. Stages like the [Password stage](../password/index.md) and [Email stage](../email/index.mdx) are aware of this "pretend" user and will behave the same as if the user would exist.
+When configured, the Identification stage can offer passkey login directly from the browser's passkey or autofill UI without requiring the user to type a username first.
 
-## Enable "Remember me on this device":ak-version[2025.4]
+authentik automatically falls back to the normal identification flow when passkey autofill is not available.
 
-When enabled, users will be given the option at login of having their username stored on the device. If selected, on future logins this stage will automatically fill in the username and fast-forward to the password field. Users will still have the options of clicking "Not you?" and going back to provide a different username or disable this feature.
+#### Requirements
 
-## Source settings
+- **HTTPS** is required except on `localhost`.
+- The browser must support WebAuthn conditional mediation.
+- The user must have a compatible discoverable credential, also known as a resident key.
+- The user must access authentik on the same hostname the passkey was created for.
 
-Some sources (like the [OAuth Source](../../../../users-sources/sources/protocols/oauth/index.mdx) and [SAML Source](../../../../users-sources/sources/protocols/saml/index.md)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).
+#### Configuration
 
-By default, sources are only shown with their icon, which can be changed with the _Show sources' labels_ option.
+1. Create or edit an [Authenticator Validation stage](../authenticator_validate/index.mdx) that allows the **WebAuthn** device class.
+2. Set the Identification stage's **WebAuthn Authenticator Validation Stage** to that stage.
+3. Make sure users have already enrolled a WebAuthn authenticator, for example with the [WebAuthn / FIDO2 / Passkeys Authenticator setup stage](../authenticator_webauthn/index.mdx).
 
-Furthermore, it is also possible to deselect any [user field option](#user-fields) for an Identification stage, which will result in users only being able to use currently configured sources.
+If the user has multiple passkeys, the browser shows its own picker. In the default authentication flow, authentik skips the MFA validation stage after a passkey login with an expression policy; adjust that policy if you still want a second factor after passkey login.
 
-:::info
-Starting with authentik 2023.5, when no user fields are selected and only one source is selected, authentik will automatically redirect the user to that source. This only applies when the **Passwordless flow** option is _not_ configured.
-:::
+#### Troubleshooting
 
-## Flow settings
-
-### Passwordless flow
-
-See [Passwordless authentication](../authenticator_validate/index.mdx#passwordless-authentication).
-
-### Enrollment flow
-
-Optionally can be set to a flow with the designation of _Enrollment_, which will allow users to sign up.
-
-### Recovery flow
-
-Optionally can be set to a flow with the designation of _Recovery_, which will allow users to recover their credentials.
+- If no passkey prompt appears, check HTTPS, browser support, and that the validation stage is configured. The browser normally triggers the passkey suggestion when the user focuses the username field.
+- If no passkey prompt appears, make sure the login page is not embedded in an iframe because some browsers block conditional UI outside top-level browsing contexts.
+- If the prompt appears but falls back to username/password, check that the referenced validation stage allows WebAuthn and that the user has a valid enrolled authenticator.

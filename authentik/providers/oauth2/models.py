@@ -15,10 +15,13 @@ from cryptography.hazmat.primitives.asymmetric.ec import (
     SECP521R1,
     EllipticCurvePrivateKey,
 )
+from cryptography.hazmat.primitives.asymmetric.ed448 import Ed448PrivateKey
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
 from dacite.core import from_dict
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.http import HttpRequest
@@ -33,18 +36,34 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
-from authentik.common.oauth.constants import SubModes
+from authentik.common.oauth.constants import (
+    GRANT_TYPE_AUTHORIZATION_CODE,
+    GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_DEVICE_CODE,
+    GRANT_TYPE_HYBRID,
+    GRANT_TYPE_IMPLICIT,
+    GRANT_TYPE_PASSWORD,
+    GRANT_TYPE_REFRESH_TOKEN,
+    GRANT_TYPE_TOKEN_EXCHANGE,
+    SubModes,
+)
 from authentik.core.models import (
     AuthenticatedSession,
-    ExpiringModel,
     PropertyMapping,
     Provider,
     User,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin, SerializerModel
+from authentik.lib.models import (
+    DomainlessURLValidator,
+    ExpiringModel,
+    InternallyManagedMixin,
+    SerializerModel,
+    SimpleThroughModel,
+)
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.policies.models import PolicyBindingModel
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -58,7 +77,7 @@ def generate_client_secret() -> str:
     return generate_id(128)
 
 
-class ClientTypes(models.TextChoices):
+class ClientType(models.TextChoices):
     """Confidential clients are capable of maintaining the confidentiality
     of their credentials. Public clients are incapable."""
 
@@ -66,12 +85,23 @@ class ClientTypes(models.TextChoices):
     PUBLIC = "public", _("Public")
 
 
-class GrantTypes(models.TextChoices):
+class GrantType(models.TextChoices):
     """OAuth2 Grant types we support"""
 
-    AUTHORIZATION_CODE = "authorization_code"
-    IMPLICIT = "implicit"
-    HYBRID = "hybrid"
+    AUTHORIZATION_CODE = GRANT_TYPE_AUTHORIZATION_CODE
+    IMPLICIT = GRANT_TYPE_IMPLICIT
+    HYBRID = GRANT_TYPE_HYBRID
+    REFRESH_TOKEN = GRANT_TYPE_REFRESH_TOKEN
+    CLIENT_CREDENTIALS = GRANT_TYPE_CLIENT_CREDENTIALS
+    PASSWORD = GRANT_TYPE_PASSWORD
+    DEVICE_CODE = GRANT_TYPE_DEVICE_CODE
+    TOKEN_EXCHANGE = GRANT_TYPE_TOKEN_EXCHANGE
+
+
+# Fallback for decoding previous sessions from 2026.2 to 2026.5
+# https://github.com/goauthentik/authentik/issues/22588
+# TODO: Remove after 2026.8
+GrantTypes = GrantType
 
 
 class ResponseMode(models.TextChoices):
@@ -97,6 +127,11 @@ class RedirectURIMatchingMode(models.TextChoices):
     REGEX = "regex", _("Regular Expression URL matching")
 
 
+class RedirectURIType(models.TextChoices):
+    AUTHORIZATION = "authorization", _("Authorization")
+    LOGOUT = "logout", _("Logout")
+
+
 class OAuth2LogoutMethod(models.TextChoices):
     """OAuth2/OIDC Logout methods"""
 
@@ -110,6 +145,7 @@ class RedirectURI:
 
     matching_mode: RedirectURIMatchingMode
     url: str
+    redirect_uri_type: RedirectURIType = RedirectURIType.AUTHORIZATION
 
 
 class ResponseTypes(models.TextChoices):
@@ -131,6 +167,7 @@ class JWTAlgorithms(models.TextChoices):
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
     ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
     ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+    EDDSA = "EdDSA", _("EdDSA (Asymmetric Encryption)")
 
     @classmethod
     def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
@@ -144,6 +181,8 @@ class JWTAlgorithms(models.TextChoices):
                 return cls.ES384
             if isinstance(curve, SECP521R1):
                 return cls.ES512
+        if isinstance(private_key, Ed25519PrivateKey | Ed448PrivateKey):
+            return cls.EDDSA
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
@@ -182,14 +221,15 @@ class OAuth2Provider(WebfingerProvider, Provider):
 
     client_type = models.CharField(
         max_length=30,
-        choices=ClientTypes.choices,
-        default=ClientTypes.CONFIDENTIAL,
+        choices=ClientType.choices,
+        default=ClientType.CONFIDENTIAL,
         verbose_name=_("Client Type"),
         help_text=_(
             "Confidential clients are capable of maintaining the confidentiality "
             "of their credentials. Public clients are incapable"
         ),
     )
+    grant_types = ArrayField(models.TextField(choices=GrantType.choices), default=list)
     client_id = models.CharField(
         max_length=255,
         unique=True,
@@ -220,7 +260,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
             "Frontchannel uses iframes in your browser"
         ),
     )
-
     include_claims_in_id_token = models.BooleanField(
         default=True,
         verbose_name=_("Include claims in id_token"),
@@ -307,8 +346,11 @@ class OAuth2Provider(WebfingerProvider, Provider):
         related_name="oauth2_providers",
         default=None,
         blank=True,
+        through="OAuth2ProviderJWTFederationSource",
     )
-    jwt_federation_providers = models.ManyToManyField("OAuth2Provider", blank=True, default=None)
+    jwt_federation_providers = models.ManyToManyField(
+        "OAuth2Provider", blank=True, default=None, through="OAuth2ProviderJWTFederationProvider"
+    )
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
@@ -343,7 +385,12 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 from_dict(
                     RedirectURI,
                     entry,
-                    config=Config(type_hooks={RedirectURIMatchingMode: RedirectURIMatchingMode}),
+                    config=Config(
+                        type_hooks={
+                            RedirectURIMatchingMode: RedirectURIMatchingMode,
+                            RedirectURIType: RedirectURIType,
+                        }
+                    ),
                 )
             )
         return uris
@@ -356,9 +403,23 @@ class OAuth2Provider(WebfingerProvider, Provider):
         self._redirect_uris = cleansed
 
     @property
+    def authorization_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri
+            for uri in self.redirect_uris
+            if uri.redirect_uri_type == RedirectURIType.AUTHORIZATION
+        ]
+
+    @property
+    def post_logout_redirect_uris(self) -> list[RedirectURI]:
+        return [
+            uri for uri in self.redirect_uris if uri.redirect_uri_type == RedirectURIType.LOGOUT
+        ]
+
+    @property
     def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
-        redirects = self.redirect_uris
+        redirects = self.authorization_redirect_uris
         if len(redirects) < 1:
             return None
         main_url = redirects[0].url
@@ -444,6 +505,54 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name_plural = _("OAuth2/OpenID Providers")
 
 
+class OAuth2ProviderJWTFederationSource(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider, on_delete=models.CASCADE, db_column="oauth2provider_id"
+    )
+    oauth_source = models.ForeignKey(
+        OAuthSource, on_delete=models.CASCADE, db_column="oauthsource_id"
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_so2b48"
+        unique_together = (("oauth2_provider", "oauth_source"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Source")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Sources")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationSource for OAuth2Provider {self.oauth2_provider_id} "
+            f"and OauthSource {self.oauth_source_id}."
+        )
+
+
+class OAuth2ProviderJWTFederationProvider(SimpleThroughModel):
+    oauth2_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="jwt_federation_provider_m2m_objects",
+        db_column="from_oauth2provider_id",
+    )
+    jwt_federation_provider = models.ForeignKey(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="oauth2_provider_m2m_objects",
+        db_column="to_oauth2provider_id",
+    )
+
+    class Meta:
+        db_table = "authentik_providers_oauth2_oauth2provider_jwt_federation_pr9002"
+        unique_together = (("oauth2_provider", "jwt_federation_provider"),)
+        verbose_name = _("OAuth2 Provider JWT Federation Provider")
+        verbose_name_plural = _("OAuth2 Provider JWT Federation Providers")
+
+    def __str__(self):
+        return (
+            f"OAuth2ProviderJWTFederationProvider for OAuth2Provider {self.oauth2_provider_id} "
+            f"and JWTFederationProvider {self.jwt_federation_provider_id}."
+        )
+
+
 class BaseGrantModel(models.Model):
     """Base Model for all grants"""
 
@@ -454,6 +563,18 @@ class BaseGrantModel(models.Model):
     auth_time = models.DateTimeField(verbose_name="Authentication time")
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.CASCADE, default=None
+    )
+    # RFC 8693 §4.1 delegation: set when this grant was obtained via a token-exchange
+    # request presenting an `actor_token` (e.g. an Actor's own API token) alongside the
+    # `subject_token` -- `user` above stays the subject (unchanged), `actor` records who
+    # is actually exercising the token, and is mirrored into the issued token's `act` claim.
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="actor_for_%(class)ss",
+        null=True,
+        blank=True,
+        default=None,
     )
 
     class Meta:
@@ -477,6 +598,9 @@ class AuthorizationCode(InternallyManagedMixin, SerializerModel, ExpiringModel, 
     code_challenge = models.CharField(max_length=255, null=True, verbose_name=_("Code Challenge"))
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
+    )
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
     )
 
     class Meta:
@@ -557,6 +681,9 @@ class RefreshToken(InternallyManagedMixin, SerializerModel, ExpiringModel, BaseG
 
     token = models.TextField(default=generate_client_secret)
     _id_token = models.TextField(verbose_name=_("ID Token"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     # Shadow the `session` field from `BaseGrantModel` as we want refresh tokens to persist even
     # when the session is terminated.
     session = models.ForeignKey(
@@ -602,6 +729,9 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
     device_code = models.TextField(default=generate_key)
     user_code = models.TextField(default=generate_code_fixed_length)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    dpop_jkt = models.CharField(
+        max_length=255, null=True, default=None, verbose_name=_("DPoP JWK Thumbprint")
+    )
     session = models.ForeignKey(
         AuthenticatedSession, null=True, on_delete=models.SET_DEFAULT, default=None
     )
@@ -622,3 +752,107 @@ class DeviceToken(InternallyManagedMixin, ExpiringModel):
 
     def __str__(self):
         return f"Device Token for {self.provider_id}"
+
+
+class OAuth2DynamicClientRegistration(SerializerModel, PolicyBindingModel):
+    """Configuration for Dynamic Client Registration (RFC 7591) on an OAuth2Provider."""
+
+    provider = models.OneToOneField(
+        OAuth2Provider,
+        on_delete=models.CASCADE,
+        related_name="dcr_configuration",
+        verbose_name=_("Provider"),
+    )
+
+    default_application_group = models.TextField(
+        blank=True,
+        default="",
+        verbose_name=_("Default application group"),
+        help_text=_("Group to assign to automatically created applications."),
+    )
+
+    override_authorization_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override authorization flow"),
+        help_text=_("Authorization flow applied to dynamically registered clients."),
+        related_name="dcr_override_authorization_flow",
+    )
+    override_invalidation_flow = models.ForeignKey(
+        "authentik_flows.Flow",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Override invalidation flow"),
+        related_name="dcr_override_invalidation_flow",
+    )
+    override_property_mappings = models.ManyToManyField(
+        ScopeMapping,
+        blank=True,
+        verbose_name=_("Override property mappings"),
+        help_text=_("Scope mappings applied to dynamically registered clients."),
+        through="DynamicClientRegistrationPropertyMapping",
+    )
+
+    access_token_validity = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Access token validity"),
+        help_text=_(
+            "Maximum access token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_validity = models.TextField(
+        default="days=30",
+        validators=[timedelta_string_validator],
+        verbose_name=_("Refresh token validity"),
+        help_text=_(
+            "Maximum refresh token validity for registered clients "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+
+    allowed_grant_types = ArrayField(
+        models.TextField(choices=GrantType.choices),
+        default=list,
+        blank=True,
+        verbose_name=_("Allowed grant types"),
+        help_text=_("If empty, all grant types are allowed."),
+    )
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.oauth2.api.dcr import (
+            OAuth2DynamicClientRegistrationSerializer,
+        )
+
+        return OAuth2DynamicClientRegistrationSerializer
+
+    def __str__(self):
+        return f"DCR Configuration for {self.provider_id}"
+
+    class Meta:
+        verbose_name = _("OAuth2 Dynamic Client Registration")
+        verbose_name_plural = _("OAuth2 Dynamic Client Registrations")
+
+
+class DynamicClientRegistrationPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(ScopeMapping, on_delete=models.CASCADE)
+    dynamic_client_registration = models.ForeignKey(
+        OAuth2DynamicClientRegistration, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("property_mapping", "dynamic_client_registration"),)
+        verbose_name = _("Dynamic Client Registration Property Mapping")
+        verbose_name_plural = _("Dynamic Client Registration Property Mappings")
+
+    def __str__(self):
+        return (
+            "DynamicClientRegistrationPropertyMapping for DCR "
+            f"{self.dynamic_client_registration_id} and PropertyMapping "
+            f"{self.property_mapping_id}."
+        )

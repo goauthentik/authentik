@@ -19,8 +19,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.lib.api import model_choices
 from authentik.lib.validators import RequiredTogetherValidator
-from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.models import Role
 
 

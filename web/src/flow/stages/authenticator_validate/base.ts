@@ -31,7 +31,7 @@ export class BaseDeviceStage<Tin extends StageChallengeLike, Tout> extends BaseS
         this.host?.reset?.();
     };
 
-    renderReturnToDevicePicker() {
+    protected renderReturnToDevicePicker() {
         if (!this.showBackButton) {
             return nothing;
         }

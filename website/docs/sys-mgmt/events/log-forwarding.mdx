@@ -1,0 +1,21 @@
+---
+title: Log forwarding
+---
+
+authentik records system, user, and admin activity as events. You can keep those events in authentik for investigation and audit workflows, or forward them to another system when you need longer retention, centralized search, alerting, or correlation with infrastructure and application logs.
+
+## Forward all event logs
+
+Every authentik event creation is written to the container logs at the `info` log level. To collect all events, forward the log output from all authentik containers to your logging platform. This is the recommended option when you want a complete copy of authentik events outside authentik.
+
+When another system becomes the long-term event store, consider reducing authentik's internal event retention period in **System** > **Settings**. For example, set the retention period to `days=1` if authentik only needs to keep a short local buffer.
+
+## Forward selected events
+
+To send selected events to another system, create an event matcher policy, a notification transport, and a notification rule. This forwards only events that match the notification rule, which is useful for security alerts, high-value audit events, or integrations that should receive a narrower event stream.
+
+Notification transports can send events locally, by email, or to a webhook. Webhook transports can be adapted to systems that accept HTTP event ingestion.
+
+## Log forwarding integrations
+
+For an example of integrating with a log forwarder, see [Forward events to Splunk Enterprise](/integrations/log-forwarding/splunk-enterprise/). That guide uses Splunk HTTP Event Collector (HEC), a generic webhook notification transport, and a notification rule to forward matching authentik events.

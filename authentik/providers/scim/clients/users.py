@@ -1,10 +1,11 @@
 """User client"""
 
+from copy import deepcopy
 from typing import Any
 
 from django.db import transaction
+from django.db.models import Q
 from django.utils.http import urlencode
-from orjson import dumps
 from pydantic import ValidationError
 
 from authentik.core.models import User
@@ -74,7 +75,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                     "GET",
                     f"/Users?{urlencode({'filter': f'userName eq "{scim_user.userName}"'})}",
                 )
-                users_res = users.get("Resources", [])
+                users_res = self.lower_case_keys(users.get("resources", []))
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(
@@ -95,10 +96,9 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         """Check if a user is different than what we last wrote to the remote system.
         Returns true if there is a difference in data."""
         local_known = connection.attributes
-        local_updated = {}
-        MERGE_LIST_UNIQUE.merge(local_updated, local_known)
+        local_updated = deepcopy(local_known)
         MERGE_LIST_UNIQUE.merge(local_updated, local_created)
-        return dumps(local_updated) != dumps(local_known)
+        return self._json_encoder.encode(local_updated) != self._json_encoder.encode(local_known)
 
     def update(self, user: User, connection: SCIMProviderUser):
         """Update existing user"""
@@ -118,3 +118,27 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         )
         connection.attributes = response
         connection.save()
+
+    def discover(self):
+        for user in self.paginate_resources("/Users"):
+            try:
+                self._discover_user_single(user)
+            except ValidationError:
+                self.logger.warning("failed to discover user", scim_user=user.get("externalId"))
+
+    def _discover_user_single(self, user: dict):
+        scim_user = SCIMUserSchema.model_validate(user)
+        if SCIMProviderUser.objects.filter(scim_id=scim_user.id, provider=self.provider).exists():
+            return
+        user_query = Q(username=scim_user.userName)
+        for email in scim_user.emails or []:
+            user_query |= Q(username=email.value) | Q(email=email.value)
+        ak_user = User.objects.filter(user_query).first()
+        if not ak_user:
+            return
+        SCIMProviderUser.objects.create(
+            provider=self.provider,
+            user=ak_user,
+            scim_id=scim_user.id,
+            attributes=user,
+        )

@@ -1,3 +1,7 @@
+import type { FlowChallengeResponseRequestBody, SubmitOptions, SubmitRequest } from "#flow/types";
+
+import { ChallengeTypes } from "@goauthentik/api";
+
 /**
  * @file Flow event utilities.
  */
@@ -33,19 +37,7 @@ export class AKFlowInspectorChangeEvent extends Event {
     public static dispatchOpen() {
         window.dispatchEvent(new AKFlowInspectorChangeEvent(true));
     }
-
-    //#endregion
 }
-
-declare global {
-    interface WindowEventMap {
-        [AKFlowInspectorChangeEvent.eventName]: AKFlowInspectorChangeEvent;
-    }
-}
-
-//#endregion
-
-//#region Flow Inspector
 
 /**
  * Event dispatched when the state of the interface drawers changes.
@@ -58,10 +50,49 @@ export class AKFlowAdvanceEvent extends Event {
     }
 }
 
-declare global {
-    interface WindowEventMap {
-        [AKFlowAdvanceEvent.eventName]: AKFlowAdvanceEvent;
+//#endregion
+
+//#region Executor control
+
+/**
+ * Event dispatched to request that the challenge be progressed from the client side.
+ */
+export class AKFlowUpdateChallengeRequest extends Event {
+    public static readonly eventName = "ak-flow-update-challenge";
+    public challenge: ChallengeTypes;
+
+    constructor(challenge: ChallengeTypes) {
+        super(AKFlowUpdateChallengeRequest.eventName, { bubbles: true, composed: true });
+        this.challenge = challenge;
+    }
+}
+
+export class AKFlowSubmitRequest extends Event {
+    public static readonly eventName = "ak-flow-submit-request";
+    public readonly request: SubmitRequest;
+
+    constructor(
+        payload: FlowChallengeResponseRequestBody,
+        options: SubmitOptions = { invisible: false },
+    ) {
+        super(AKFlowSubmitRequest.eventName, { bubbles: true, composed: true });
+        this.request = {
+            payload,
+            options,
+        };
     }
 }
 
 //#endregion
+
+declare global {
+    interface WindowEventMap {
+        [AKFlowAdvanceEvent.eventName]: AKFlowAdvanceEvent;
+        [AKFlowInspectorChangeEvent.eventName]: AKFlowInspectorChangeEvent;
+    }
+
+    interface HTMLElementEventMap {
+        [AKFlowSubmitRequest.eventName]: AKFlowSubmitRequest;
+        [AKFlowUpdateChallengeRequest.eventName]: AKFlowUpdateChallengeRequest;
+    }
+}
