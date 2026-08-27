@@ -6607,10 +6607,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, tyyppiä <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>Näytä vapaavalintaisia kenttiä käyttäjälle, esimerkiksi rekisteröitymisen yhteydessä. Tiedot tallennetaan prosessin kontekstiin 'prompt_data'-muuttujaan.</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>Kentät</target>
@@ -9336,9 +9332,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s4cbbb47ef050cd0e">
   <source>Paste your CAPTCHA secret key...</source>
 </trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
-</trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
 </trans-unit>
@@ -10972,9 +10965,6 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 <trans-unit id="s5ba577d0cda2bad2">
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
 </trans-unit>
@@ -12292,6 +12282,17 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
 </trans-unit>
 <trans-unit id="stages.source.match-failure.missing-property.label">
   <source>Missing property</source>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
 </trans-unit>
 </body>
 </file>
