@@ -16,7 +16,7 @@
  */
 
 import "./authentik/palette.js";
-import "./authentik/background-color.js";
+import "./authentik/color.js";
 import "./authentik/spacing.js";
 import "./authentik/gutters.js";
 import "./authentik/motion.js";
@@ -33,7 +33,7 @@ import "./authentik/misc.js";
  * The patternfly bridges
  */
 import "./patternfly/palette.js";
-import "./patternfly/background-color.js";
+import "./patternfly/color.js";
 import "./patternfly/straight.js";
 import "./patternfly/gutters.js";
 import "./patternfly/motion.js";
