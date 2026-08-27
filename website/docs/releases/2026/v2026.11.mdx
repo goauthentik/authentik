@@ -6,13 +6,7 @@ draft: true
 
 ## Highlights
 
-## Breaking changes
-
-### Databases that are not `UTF8` are now rejected
-
-authentik has required the PostgreSQL database to use the `UTF8` encoding [since 2025.8](../2025/v2025.8.mdx#database-encoding-requirements), and logged a warning on startup when it did not. That warning is now an error, so authentik no longer starts against a database with any other encoding.
-
-Run `SHOW server_encoding;` to check. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
+<!-- ## Breaking changes -->
 
 ## New features and improvements
 
@@ -45,6 +39,14 @@ Upgrade the Helm Chart to the new version, using the following commands:
 helm repo update
 helm upgrade authentik authentik/authentik -f values.yaml --version ^xxxx.x
 ```
+
+## Deprecations
+
+### Databases that are not `UTF8` are deprecated
+
+authentik has required the PostgreSQL database to use the `UTF8` encoding [since 2025.8](../2025/v2025.8.mdx#database-encoding-requirements). Support for other encodings is deprecated and will be removed in an upcoming version, at which point authentik will no longer start against such a database.
+
+Run `SHOW server_encoding;` to check. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
 
 ## Minor changes/fixes
 
