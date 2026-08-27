@@ -15,34 +15,23 @@ class DatabaseValidation(BaseDatabaseValidation):
         return self._check_encoding()
 
     def _check_encoding(self):
-        """Warn when the server_encoding is not UTF8, or when
-        server_encoding and client_encoding are mismatched"""
-        messages = []
+        """Warn when the server_encoding is not UTF8. The client encoding is always
+        UTF8, as Django sets it on every connection."""
         with self.connection.cursor() as cursor:
             cursor.execute("SHOW server_encoding;")
             server_encoding = cursor.fetchone()[0]
-            cursor.execute("SHOW client_encoding;")
-            client_encoding = cursor.fetchone()[0]
-            if server_encoding != client_encoding:
-                messages.append(
-                    Warning(
-                        "PostgreSQL Server and Client encoding are mismatched: Server: "
-                        f"{server_encoding}, Client: {client_encoding}",
-                        id="ak.db.W001",
-                    )
-                )
-            if server_encoding != "UTF8":
-                messages.append(
-                    Warning(
-                        f"PostgreSQL Server encoding is not UTF8: {server_encoding}. "
-                        "Support for other encodings is deprecated and will be removed "
-                        "in an upcoming version.",
-                        hint="Dump the database, re-create it with `ENCODING 'UTF8'` "
-                        f"and restore the dump. See {ENCODING_DOCS_URL}",
-                        id="ak.db.W002",
-                    )
-                )
-        return messages
+        if server_encoding == "UTF8":
+            return []
+        return [
+            Warning(
+                f"PostgreSQL Server encoding is not UTF8: {server_encoding}. "
+                "Support for other encodings is deprecated and will be removed "
+                "in an upcoming version.",
+                hint="Dump the database, re-create it with `ENCODING 'UTF8'` "
+                f"and restore the dump. See {ENCODING_DOCS_URL}",
+                id="ak.db.W002",
+            )
+        ]
 
 
 class DatabaseWrapper(BaseDatabaseWrapper):
