@@ -596,6 +596,8 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             device = PasswordDevice(user=self, name="Password")
             self.password_device = device
         device.password = password_hash
+        # A new password restarts the failed-attempt count towards lockout
+        device.failed_attempts = 0
         self._password_device_dirty = True
 
     @property

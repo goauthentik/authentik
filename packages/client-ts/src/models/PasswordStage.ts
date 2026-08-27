@@ -78,11 +78,29 @@ export interface PasswordStage {
      */
     configureFlow?: string | null;
     /**
-     * How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.
+     * How many attempts a user has before the flow is canceled. This only cancels the flow, it does not lock the user's password.
      * @type {number}
      * @memberof PasswordStage
      */
     failedAttemptsBeforeCancel?: number;
+    /**
+     * How many consecutive failed attempts lock the user's password until an administrator unlocks it. Set to 0 to never lock.
+     * @type {number}
+     * @memberof PasswordStage
+     */
+    failedAttemptsBeforeLockout?: number;
+    /**
+     * Warning shown when the user has one password attempt remaining. Leave blank to show no warning.
+     * @type {string}
+     * @memberof PasswordStage
+     */
+    lastAttemptWarningMessage?: string;
+    /**
+     * Message shown when the user's password has been locked. Leave blank to show no message.
+     * @type {string}
+     * @memberof PasswordStage
+     */
+    lockoutMessage?: string;
     /**
      * When enabled, provides a 'show password' button with the password input field.
      * @type {boolean}
@@ -157,6 +175,15 @@ export function PasswordStageFromJSONTyped(json: any, ignoreDiscriminator: boole
             json["failed_attempts_before_cancel"] == null
                 ? undefined
                 : json["failed_attempts_before_cancel"],
+        failedAttemptsBeforeLockout:
+            json["failed_attempts_before_lockout"] == null
+                ? undefined
+                : json["failed_attempts_before_lockout"],
+        lastAttemptWarningMessage:
+            json["last_attempt_warning_message"] == null
+                ? undefined
+                : json["last_attempt_warning_message"],
+        lockoutMessage: json["lockout_message"] == null ? undefined : json["lockout_message"],
         allowShowPassword:
             json["allow_show_password"] == null ? undefined : json["allow_show_password"],
     };
@@ -182,6 +209,9 @@ export function PasswordStageToJSONTyped(
         backends: (value["backends"] as Array<any>).map(BackendsEnumToJSON),
         configure_flow: value["configureFlow"],
         failed_attempts_before_cancel: value["failedAttemptsBeforeCancel"],
+        failed_attempts_before_lockout: value["failedAttemptsBeforeLockout"],
+        last_attempt_warning_message: value["lastAttemptWarningMessage"],
+        lockout_message: value["lockoutMessage"],
         allow_show_password: value["allowShowPassword"],
     };
 }

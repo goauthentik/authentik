@@ -6,6 +6,7 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import AnonymousUser, Permission
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q
 from django.db.transaction import atomic
@@ -108,6 +109,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.password.models import PasswordDevice
 
 LOGGER = get_logger()
 
@@ -160,6 +162,14 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
         validators=[UniqueValidator(queryset=User.objects.all().order_by("username"))],
     )
     password_change_date = DateTimeField(read_only=True)
+    password_locked = SerializerMethodField()
+
+    def get_password_locked(self, user: User) -> bool:
+        """Whether the user's password currently refuses authentication."""
+        try:
+            return user.password_device.locked
+        except ObjectDoesNotExist:
+            return False
 
     @property
     def _should_include_groups(self) -> bool:
@@ -352,6 +362,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             "type",
             "uuid",
             "password_change_date",
+            "password_locked",
             "last_updated",
         ]
         extra_kwargs = {
@@ -631,6 +642,7 @@ class UsersFilter(FilterSet):
 
 
 class UserViewSet(
+    ConditionalInheritance("authentik.enterprise.stages.password.api.UserPasswordLockoutMixin"),
     ConditionalInheritance(
         "authentik.enterprise.stages.account_lockdown.api.UserAccountLockdownMixin"
     ),
@@ -663,7 +675,7 @@ class UserViewSet(
         ]
 
     def get_queryset(self):
-        base_qs = User.objects.all().exclude_anonymous()
+        base_qs = User.objects.all().exclude_anonymous().select_related("password_device")
         # Always prefetch groups since group PKs are always serialized.
         # Use full prefetch when include_groups=true (for groups_obj), ID-only otherwise.
         if self.serializer_class(context={"request": self.request})._should_include_groups:
@@ -965,6 +977,21 @@ class UserViewSet(
             LOGGER.debug("Failed to set password hash", exc=exc)
             return Response(status=400)
         self._update_session_hash_after_password_change(request, user)
+        return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        request=None,
+        responses={204: OpenApiResponse(description="Successfully unlocked password")},
+    )
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def unlock_password(self, request: Request, pk: int) -> Response:
+        """Allow a locked password to authenticate again"""
+        user: User = self.get_object()
+        device = PasswordDevice.objects.filter(user=user, locked_at__isnull=False).first()
+        if device:
+            device.unlock()
+            Event.new(EventAction.PASSWORD_UNLOCKED, affected_user=user).from_http(request)
         return Response(status=204)
 
     @permission_required("authentik_core.reset_user_password")
