@@ -59,3 +59,13 @@ class AuthentikEventsConfig(ManagedAppConfig):
                 replacement_env=replace_env,
                 message=msg,
             ).save()
+
+    @ManagedAppConfig.reconcile_global
+    def check_db_encoding(self):
+        """Check for deprecated database encoding"""
+        from django.db import connection
+
+        from authentik.events.models import Event
+
+        for message in connection.validation.check():
+            Event.log_deprecation("authentik.db.encoding", message.msg)
