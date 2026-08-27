@@ -1,4 +1,4 @@
-import { AkControlElement } from "#elements/AkControlElement";
+import { AKControlElement } from "#elements/ControlElement";
 import { type Spread } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -22,7 +22,7 @@ const hasLegalScheme = (url: string) =>
     LEGAL_SCHEMES.some((scheme) => url.substr(0, scheme.length).toLowerCase() === scheme);
 
 @customElement("ak-admin-settings-footer-link")
-export class FooterLinkInput extends AkControlElement<FooterLink> {
+export class FooterLinkInput extends AKControlElement<FooterLink> {
     static styles = [
         PFInputGroup,
         PFFormControl,
@@ -43,14 +43,17 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
+    @property({ type: String })
+    public name: string | null = null;
+
+    toJSON(): FooterLink {
         return Object.fromEntries(
             Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
         ) as unknown as FooterLink;
     }
 
-    get isValid() {
-        const href = this.json()?.href ?? "";
+    get valid() {
+        const href = this.toJSON()?.href ?? "";
         return hasLegalScheme(href) && URL.canParse(href);
     }
 

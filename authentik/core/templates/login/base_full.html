@@ -12,7 +12,7 @@
 {% block head %}
 <style data-id="static-styles">
     :root {
-        --ak-global--background-image: url("{{ request.brand.branding_default_flow_background_url }}");
+        --ak-global--background-image: url("{{ request.brand.branding_default_flow_background_url|iriencode|safe }}");
     }
 </style>
 

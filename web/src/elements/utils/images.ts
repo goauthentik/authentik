@@ -6,11 +6,18 @@ import { ifPresent } from "#elements/utils/attributes";
 import type { ThemedUrls } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { ImgHTMLAttributes } from "react";
+import type { ImgHTMLAttributes } from "react";
 
 import { html, nothing } from "lit";
 
 export const FontAwesomeProtocol = "fa://";
+
+/**
+ * The default background image for flows, used when no specific background is set.
+ *
+ * @todo This feels fragile, especially with theme variables and asset management.
+ */
+export const DefaultFlowBackground = "/static/dist/assets/images/flow_background.jpg";
 
 export interface ThemedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
     /**

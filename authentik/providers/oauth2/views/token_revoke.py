@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from django.db.models import Q
 from django.http import Http404, HttpRequest, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -9,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
-from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, ClientType, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import (
     TokenResponse,
     authenticate_provider,
@@ -32,15 +33,27 @@ class TokenRevocationParams:
         raw_token = request.POST.get("token")
 
         provider, _, _ = provider_from_request(request)
-        if provider and provider.client_type == ClientTypes.CONFIDENTIAL:
+        if provider and provider.client_type == ClientType.CONFIDENTIAL:
             provider = authenticate_provider(request)
         if not provider:
             raise TokenRevocationError("invalid_client")
+        # By default clients can only revoke their own tokens
+        query = Q(provider=provider, token=raw_token)
+        if provider.client_type == ClientType.CONFIDENTIAL:
+            provider = authenticate_provider(request)
+            if not provider:
+                raise TokenRevocationError("invalid_client")
+            # If the request is authenticated by a confidential provider, it can also
+            # revoke federated tokens
+            query = Q(
+                Q(provider=provider) | Q(provider__jwt_federation_providers__in=[provider]),
+                token=raw_token,
+            )
 
-        access_token = AccessToken.objects.filter(token=raw_token).first()
+        access_token = AccessToken.objects.filter(query).first()
         if access_token:
             return TokenRevocationParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(token=raw_token).first()
+        refresh_token = RefreshToken.objects.filter(query).first()
         if refresh_token:
             return TokenRevocationParams(refresh_token, provider)
         LOGGER.debug("Token does not exist", token=raw_token)

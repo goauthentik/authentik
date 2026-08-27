@@ -1,6 +1,7 @@
 # Prettier Ignorefile
 
 ## Static Files
+CODEOWNERS
 **/LICENSE
 
 authentik/stages/**/*
@@ -21,6 +22,10 @@ website/api/reference
 
 ## Yarn
 .yarn/**/*
+
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml
 
 ## Node
 node_modules
@@ -49,4 +54,3 @@ src/locales/
 # Storybook
 storybook-static/
 .storybook/css-import-maps*
-

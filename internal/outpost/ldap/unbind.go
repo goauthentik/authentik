@@ -13,7 +13,9 @@ import (
 )
 
 func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode, error) {
-	req, span := bind.NewRequest(boundDN, "", conn)
+	req, span := bind.NewRequest(ldap.BindRequest{
+		BindDN: boundDN,
+	}, conn)
 	selectedApp := ""
 	defer func() {
 		span.Finish()

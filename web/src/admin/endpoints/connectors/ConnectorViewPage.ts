@@ -1,9 +1,10 @@
 import "#admin/endpoints/connectors/agent/AgentConnectorViewPage";
 import "#admin/endpoints/connectors/fleet/FleetConnectorViewPage";
+import "#admin/endpoints/connectors/gdtc/GoogleChromeConnectorViewPage";
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 
@@ -21,7 +22,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 export class ConnectorViewPage extends AKElement {
     @property({ type: String })
     set connectorID(value: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsConnectorsRetrieve({
                 connectorUuid: value,
             })
@@ -46,6 +47,10 @@ export class ConnectorViewPage extends AKElement {
                 return html`<ak-endpoints-connector-fleet-view
                     connectorID=${ifDefined(this.connector.connectorUuid)}
                 ></ak-endpoints-connector-fleet-view>`;
+            case "ak-endpoints-connector-gdtc-form":
+                return html`<ak-endpoints-connector-google-chrome-view
+                    connectorID=${ifDefined(this.connector.connectorUuid)}
+                ></ak-endpoints-connector-google-chrome-view>`;
             default:
                 return html`<p>Invalid connector type ${this.connector?.component}</p>`;
         }

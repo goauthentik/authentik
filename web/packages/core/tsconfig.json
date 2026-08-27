@@ -3,7 +3,6 @@
     "compilerOptions": {
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "resolveJsonModule": true,
-        "baseUrl": ".",
         "checkJs": true,
         "allowJs": true,
         "emitDeclarationOnly": true

@@ -1,5 +1,6 @@
 """authentik flows app config"""
 
+from django.utils.translation import gettext_lazy as _
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
@@ -23,16 +24,11 @@ HIST_FLOWS_PLAN_TIME = Histogram(
 )
 
 
-class RefreshOtherFlowsAfterAuthentication(Flag[bool], key="flows_refresh_others"):
-
-    default = False
-    visibility = "public"
-
-
 class ContinuousLogin(Flag[bool], key="flows_continuous_login"):
 
     default = False
     visibility = "public"
+    description = _("Upon successful authentication, re-start authentication in other open tabs.")
 
 
 class AuthentikFlowsConfig(ManagedAppConfig):

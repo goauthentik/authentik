@@ -1,10 +1,11 @@
 import "#components/ak-secret-text-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -20,7 +21,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {
     async loadInstance(pk: string): Promise<EmailStage> {
-        const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
+        const stage = await aki(StagesApi).stagesEmailRetrieve({
             stageUuid: pk,
         });
         this.showConnectionSettings = !stage.useGlobalSettings;
@@ -28,7 +29,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
     }
 
     async load(): Promise<void> {
-        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+        this.templates = await aki(StagesApi).stagesEmailTemplatesList();
     }
 
     templates?: TypeCreate[];
@@ -38,12 +39,12 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
 
     async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
+            return aki(StagesApi).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",
                 patchedEmailStageRequest: data,
             });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesEmailCreate({
+        return aki(StagesApi).stagesEmailCreate({
             emailStageRequest: data,
         });
     }
@@ -124,14 +125,18 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-switch-input

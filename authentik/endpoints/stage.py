@@ -1,4 +1,4 @@
-from authentik.endpoints.models import EndpointStage, StageMode
+from authentik.endpoints.models import Connector, EndpointStage, StageMode
 from authentik.flows.stage import StageView
 
 PLAN_CONTEXT_ENDPOINT_CONNECTOR = "endpoint_connector"
@@ -8,7 +8,10 @@ class EndpointStageView(StageView):
 
     def _get_inner(self) -> StageView | None:
         stage: EndpointStage = self.executor.current_stage
-        inner_stage: type[StageView] | None = stage.connector.stage
+        connector: Connector = stage.connector
+        if not connector.enabled:
+            return None
+        inner_stage: type[StageView] | None = connector.stage
         if not inner_stage:
             return None
         return inner_stage(self.executor, request=self.request)

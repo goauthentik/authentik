@@ -1,7 +1,6 @@
 """authentik URL Configuration"""
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from authentik.core.api.application_entitlements import ApplicationEntitlementViewSet
@@ -9,6 +8,7 @@ from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
+from authentik.core.api.object_attributes import ObjectAttributeViewSet
 from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.sources import (
@@ -19,6 +19,7 @@ from authentik.core.api.sources import (
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
+from authentik.core.setup.views import SetupView
 from authentik.core.views.apps import RedirectToAppLaunch
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import (
@@ -26,16 +27,16 @@ from authentik.core.views.interface import (
     InterfaceView,
     RootRedirectView,
 )
+from authentik.events.consumer import ClientConsumer
 from authentik.flows.views.interface import FlowInterfaceView
 from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.middleware import ChannelsLoggingMiddleware
-from authentik.root.ws.consumer import MessageConsumer
 from authentik.tenants.channels import TenantsAwareMiddleware
 
 urlpatterns = [
     path(
         "",
-        login_required(RootRedirectView.as_view()),
+        RootRedirectView.as_view(),
         name="root-redirect",
     ),
     path(
@@ -51,9 +52,19 @@ urlpatterns = [
         name="if-admin",
     ),
     path(
+        "if/admin/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/admin.html"),
+        name="if-admin-path",
+    ),
+    path(
         "if/user/",
         BrandDefaultRedirectView.as_view(template_name="if/user.html"),
         name="if-user",
+    ),
+    path(
+        "if/user/<path:path>",
+        BrandDefaultRedirectView.as_view(template_name="if/user.html"),
+        name="if-user-path",
     ),
     path(
         "if/flow/<slug:flow_slug>/",
@@ -61,6 +72,11 @@ urlpatterns = [
         # of the reverse calls to be adjusted
         FlowInterfaceView.as_view(),
         name="if-flow",
+    ),
+    path(
+        "setup",
+        SetupView.as_view(),
+        name="setup",
     ),
     # Fallback for WS
     path("ws/outpost/<uuid:pk>/", InterfaceView.as_view(template_name="if/admin.html")),
@@ -82,6 +98,7 @@ api_urlpatterns = [
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
+    ("core/object_attributes", ObjectAttributeViewSet),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
     ("sources/group_connections/all", GroupSourceConnectionViewSet),
@@ -99,7 +116,7 @@ websocket_urlpatterns = [
     path(
         "ws/client/",
         ChannelsLoggingMiddleware(
-            TenantsAwareMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi()))
+            TenantsAwareMiddleware(AuthMiddlewareStack(ClientConsumer.as_asgi()))
         ),
     ),
 ]

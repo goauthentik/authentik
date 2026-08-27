@@ -1,11 +1,13 @@
 import "#components/ak-slug-input";
+import "#components/ak-text-input";
+import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -19,57 +21,38 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-source-scim-form")
 export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
-    async loadInstance(pk: string): Promise<SCIMSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
-            .sourcesScimRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                return source;
-            });
-    }
-
-    async send(data: SCIMSource): Promise<SCIMSource> {
-        if (this.instance?.slug) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesScimPartialUpdate({
-                slug: this.instance.slug,
-                patchedSCIMSourceRequest: data,
-            });
-        }
-        return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
-            sCIMSourceRequest: data as unknown as SCIMSourceRequest,
-        });
-    }
+    protected endpoints = {
+        load: (slug: string) => aki(SourcesApi).sourcesScimRetrieve({ slug }),
+        create: (sCIMSource: SCIMSource) =>
+            aki(SourcesApi).sourcesScimCreate({
+                sCIMSourceRequest: sCIMSource as unknown as SCIMSourceRequest,
+            }),
+        update: (slug: string, patchedSCIMSourceRequest: SCIMSource) =>
+            aki(SourcesApi).sourcesScimPartialUpdate({ slug, patchedSCIMSourceRequest }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
-
+        return html`<ak-text-input
+                label=${msg("Source Name")}
+                placeholder=${msg("Type a name for this source...")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name)}"
+            ></ak-text-input>
             <ak-slug-input
                 name="slug"
+                placeholder=${msg("e.g. my-scim-source")}
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 input-hint="code"
             ></ak-slug-input>
+            <ak-switch-input
+                name="enabled"
+                label=${msg("Enabled")}
+                ?checked=${this.instance?.enabled ?? true}
+            ></ak-switch-input>
 
-            <ak-form-element-horizontal name="enabled">
-                <div class="pf-c-check">
-                    <input
-                        type="checkbox"
-                        class="pf-c-check__input"
-                        ?checked=${this.instance?.enabled ?? true}
-                    />
-                    <label class="pf-c-check__label"> ${msg("Enabled")} </label>
-                </div>
-            </ak-form-element-horizontal>
             <ak-form-group open label="${msg("SCIM Attribute mapping")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal
@@ -118,8 +101,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }
 

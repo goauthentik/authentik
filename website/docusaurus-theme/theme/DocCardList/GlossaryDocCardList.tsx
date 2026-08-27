@@ -141,21 +141,8 @@ function GlossaryTermCard({
         return matchesLong && !matchesTitle && !matchesShort;
     }, [searchFilter, cachedData]);
 
-    const [isExpanded, setIsExpanded] = React.useState(false);
-    const userToggledRef = React.useRef(false);
-
-    // Auto-expand only when match is exclusively in long description (not visible otherwise)
-    // Once user manually toggles, never auto-control this term again
-    React.useEffect(() => {
-        if (userToggledRef.current) {
-            return;
-        }
-        if (shouldAutoExpand) {
-            setIsExpanded(true);
-        } else if (!searchFilter) {
-            setIsExpanded(false);
-        }
-    }, [shouldAutoExpand, searchFilter]);
+    const [manualExpanded, setManualExpanded] = React.useState<boolean | null>(null);
+    const isExpanded = manualExpanded ?? shouldAutoExpand;
 
     // Ensure item has a valid docId and cached data before rendering
     if (!item.docId) {
@@ -240,8 +227,7 @@ function GlossaryTermCard({
                             <button
                                 className={sharedStyles.expandButton}
                                 onClick={() => {
-                                    setIsExpanded(!isExpanded);
-                                    userToggledRef.current = true;
+                                    setManualExpanded(!isExpanded);
                                 }}
                                 aria-expanded={isExpanded}
                                 aria-controls={`${anchorId}-details`}

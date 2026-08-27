@@ -57,8 +57,8 @@ export class LoadingOverlay extends AKElement implements ILoadingOverlay {
     render() {
         // Nested slots. Can get a little cognitively heavy, so be careful if you're editing here...
         return html`<ak-empty-state ?loading=${!this.noSpinner} icon=${ifPresent(this.icon)}>
-            ${this.hasSlotted(null) ? html`<span><slot></slot></span>` : nothing}
-            ${this.hasSlotted("body")
+            ${this.findSlotted() ? html`<span><slot></slot></span>` : nothing}
+            ${this.findSlotted("body")
                 ? html`<span slot="body"><slot name="body"></slot></span>`
                 : nothing}
         </ak-empty-state>`;

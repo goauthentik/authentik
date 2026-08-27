@@ -4,14 +4,13 @@ import "#elements/user/sources/SourceSettingsPlex";
 import "#elements/user/sources/SourceSettingsSAML";
 import "#elements/user/sources/SourceSettingsTelegram";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
+import { renderSourceIcon } from "#elements/sources/utils";
 import Styles from "#elements/user/sources/SourceSettings.css";
 import { ifPresent } from "#elements/utils/attributes";
-
-import { renderSourceIcon } from "#admin/sources/utils";
 
 import { SourcesApi, UserSetting, UserSourceConnection } from "@goauthentik/api";
 
@@ -42,7 +41,7 @@ export class UserSourceSettingsPage extends AKElement {
         this.#abortController?.abort();
         this.#abortController = new AbortController();
 
-        const sourcesAPI = new SourcesApi(DEFAULT_CONFIG);
+        const sourcesAPI = aki(SourcesApi);
 
         const [sourceSettings, connections] = await Promise.all([
             sourcesAPI.sourcesAllUserSettingsList({

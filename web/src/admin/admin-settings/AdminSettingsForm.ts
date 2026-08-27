@@ -8,17 +8,19 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 import "#elements/utils/TimeDeltaHelp";
 import "./AdminSettingsFooterLinks.js";
+import "#elements/Alert";
 
 import { akFooterLinkInput, IFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { css, CSSResult, html, TemplateResult } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -49,17 +51,41 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     }
 
     async send(settingsRequest: SettingsRequest): Promise<Settings> {
-        const result = await new AdminApi(DEFAULT_CONFIG).adminSettingsUpdate({
+        const result = await aki(AdminApi).adminSettingsUpdate({
             settingsRequest,
         });
 
         return result;
     }
 
-    protected override renderForm(): TemplateResult {
+    public override submitLabel = msg("Save changes");
+
+    public override renderHeader() {
+        return html`<div class="ak-c-form__header">
+            <h2 class="pf-c-title pf-m-2xl sr-only">${msg("Edit Settings")}</h2>
+            <div part="form-actions">${this.renderSubmitButton()}</div>
+        </div>`;
+    }
+
+    public override renderActions(): SlottedTemplateResult {
+        return null;
+    }
+
+    protected override renderForm(): SlottedTemplateResult {
         const { settings } = this;
 
         return html`
+            <ak-text-input
+                name="baseUrl"
+                label=${msg("Base URL", { id: "settings.base-url.label" })}
+                value="${ifDefined(settings.baseUrl)}"
+                input-hint="code"
+                help=${msg(
+                    "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik).",
+                    { id: "settings.base-url.description" },
+                )}
+            >
+            </ak-text-input>
             <ak-text-input
                 name="avatars"
                 label=${msg("Avatars")}
@@ -262,25 +288,16 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-form-group
                 label=${msg("Flags")}
                 description=${msg(
-                    "Flags allow you to enable new functionality and behaviour in authentik early.",
+                    "Flags allow you to enable new functionality and behavior in authentik early.",
                 )}
             >
                 <div class="pf-c-form">
                     <ak-switch-input
-                        name="flags.policiesBufferedAccessView"
-                        ?checked=${settings?.flags.policiesBufferedAccessView ?? false}
-                        label=${msg("Buffer PolicyAccessView requests")}
+                        name="flags.coreDefaultAppAccess"
+                        ?checked=${settings?.flags.coreDefaultAppAccess ?? true}
+                        label=${msg("Allow application access with no policies")}
                         help=${msg(
-                            "When enabled, parallel requests for application authorization will be buffered instead of conflicting with other flows.",
-                        )}
-                    >
-                    </ak-switch-input>
-                    <ak-switch-input
-                        name="flags.flowsRefreshOthers"
-                        ?checked=${settings?.flags.flowsRefreshOthers ?? false}
-                        label=${msg("Refresh other flow tabs upon authentication")}
-                        help=${msg(
-                            "When enabled, other flow tabs in a session will refresh upon a successful authentication.",
+                            "Applications with no policies bound can be accessed by any user..",
                         )}
                     >
                     </ak-switch-input>
@@ -297,6 +314,9 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                         name="flags.flowsContinuousLogin"
                         ?checked=${settings?.flags.flowsContinuousLogin ?? false}
                         label=${msg("Continuous Login")}
+                        help=${msg(
+                            "Upon successful authentication, re-start authentication in other open tabs.",
+                        )}
                     >
                     </ak-switch-input>
                 </div>

@@ -1,12 +1,19 @@
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 
-import { ModelForm } from "#elements/forms/ModelForm";
 import { WithBrandConfig } from "#elements/mixins/branding";
 
-import { DeviceAccessGroup, DeviceAccessGroupRequest, EndpointsApi } from "@goauthentik/api";
+import { ObjectAttributeModelForm } from "#admin/object-attributes/renderAttributes";
+
+import {
+    DeviceAccessGroup,
+    DeviceAccessGroupRequest,
+    EndpointsApi,
+    ModelEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -19,39 +26,48 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * @prop {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-endpoints-device-access-groups-form")
-export class DeviceAccessGroupForm extends WithBrandConfig(ModelForm<DeviceAccessGroup, string>) {
-    loadInstance(pk: string): Promise<DeviceAccessGroup> {
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsRetrieve({
-            pbmUuid: pk,
-        });
-    }
+export class DeviceAccessGroupForm extends WithBrandConfig(
+    ObjectAttributeModelForm<DeviceAccessGroup, string>,
+) {
+    public model = ModelEnum.AuthentikEndpointsDeviceaccessgroup;
 
-    getSuccessMessage(): string {
+    public static override verboseName = msg("Device Access Group");
+    public static override verboseNamePlural = msg("Device Access Groups");
+
+    public override size = PFSize.Small;
+
+    protected endpoints = {
+        load: (pbmUuid: string) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsRetrieve({
+                pbmUuid,
+            }),
+        create: (data: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsCreate({
+                deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
+            }),
+        update: (pbmUuid: string, patchedDeviceAccessGroupRequest: DeviceAccessGroup) =>
+            aki(EndpointsApi).endpointsDeviceAccessGroupsPartialUpdate({
+                pbmUuid,
+                patchedDeviceAccessGroupRequest,
+            }),
+    };
+
+    public override getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated group.")
             : msg("Successfully created group.");
     }
 
-    async send(data: DeviceAccessGroup): Promise<DeviceAccessGroup> {
-        if (this.instance) {
-            return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsPartialUpdate({
-                pbmUuid: this.instance.pbmUuid,
-                patchedDeviceAccessGroupRequest: data,
-            });
-        }
-        return new EndpointsApi(DEFAULT_CONFIG).endpointsDeviceAccessGroupsCreate({
-            deviceAccessGroupRequest: data as unknown as DeviceAccessGroupRequest,
-        });
-    }
-
-    renderForm() {
+    protected override renderForm() {
         return html`<ak-text-input
-            name="name"
-            placeholder=${msg("Group name...")}
-            label=${msg("Group name")}
-            value=${ifDefined(this.instance?.name)}
-            required
-        ></ak-text-input>`;
+                name="name"
+                autocomplete="off"
+                placeholder=${msg("Type a group name...")}
+                label=${msg("Group Name")}
+                value=${ifDefined(this.instance?.name)}
+                required
+            ></ak-text-input>
+            ${this.renderObjectAttributes(this.objAttributes, this.instance)}`;
     }
 }
 

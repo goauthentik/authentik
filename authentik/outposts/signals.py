@@ -118,7 +118,7 @@ for subclass in OutpostModel.__subclasses__():
 
 def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Brand, **_):
     for field in instance._meta.get_fields():
-        # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
+        # Each field is checked if it has a `related_model` attribute (when ForeignKeys or M2Ms)
         # are used, and if it has a value
         if not hasattr(field, "related_model"):
             continue
@@ -163,4 +163,5 @@ def outpost_pre_delete_cleanup(sender, instance: Outpost, **_):
 @receiver(pre_delete, sender=AuthenticatedSession)
 def outpost_logout_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
-    outpost_session_end.send(instance.session.session_key)
+    if Outpost.objects.exists():
+        outpost_session_end.send(instance.session.session_key)

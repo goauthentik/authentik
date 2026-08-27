@@ -1,0 +1,5970 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Pathom Udomtin, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-11 00:14+0000\n"
+"PO-Revision-Date: 2025-12-01 19:09+0000\n"
+"Last-Translator: Pathom Udomtin, 2026\n"
+"Language-Team: Thai (Thailand) (https://app.transifex.com/authentik/teams/119923/th_TH/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: th_TH\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: authentik/admin/files/api.py
+#, python-brace-format
+msgid "File size ({file.size}B) exceeds maximum allowed "
+msgstr "ขนาดไฟล์ ({file.size}B) เกินขนาดสูงสุดที่อนุญาต "
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot be empty"
+msgstr "ชื่อไฟล์ต้องไม่เว้นว่าง"
+
+#: authentik/admin/files/validation.py
+#, python-format
+msgid ""
+"File name can only contain letters (a-z, A-Z), numbers (0-9), dots (.), "
+"hyphens (-), underscores (_), forward slashes (/), and the placeholder "
+"%(theme)s for theme-specific files"
+msgstr ""
+"ชื่อไฟล์ใช้ได้เฉพาะตัวอักษร (a-z, A-Z) ตัวเลข (0-9) จุด (.) ขีดกลาง (-) "
+"ขีดล่าง (_) เครื่องหมายทับ (/) และ placeholder %(theme)s "
+"สำหรับไฟล์ที่เจาะจงตามธีม"
+
+#: authentik/admin/files/validation.py
+msgid "File name cannot contain duplicate /"
+msgstr "ชื่อไฟล์ต้องไม่มี / ซ้ำติดกัน"
+
+#: authentik/admin/files/validation.py
+msgid "Absolute paths are not allowed"
+msgstr "ไม่อนุญาตให้ใช้พาธแบบสัมบูรณ์"
+
+#: authentik/admin/files/validation.py
+msgid "Parent directory references ('..') are not allowed"
+msgstr "ไม่อนุญาตให้อ้างอิงไดเรกทอรีระดับบน ('..')"
+
+#: authentik/admin/files/validation.py
+msgid "Paths cannot start with '.'"
+msgstr "พาธต้องไม่เริ่มต้นด้วย '.'"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "File name too long (max {MAX_FILE_NAME_LENGTH} characters)"
+msgstr "ชื่อไฟล์ยาวเกินไป (สูงสุด {MAX_FILE_NAME_LENGTH} อักขระ)"
+
+#: authentik/admin/files/validation.py
+#, python-brace-format
+msgid "Path component too long (max {MAX_PATH_COMPONENT_LENGTH} characters)"
+msgstr "ส่วนของพาธยาวเกินไป (สูงสุด {MAX_PATH_COMPONENT_LENGTH} อักขระ)"
+
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "ประวัติเวอร์ชัน"
+
+#: authentik/admin/tasks.py
+msgid "Update latest version info."
+msgstr "อัปเดตข้อมูลเวอร์ชันล่าสุด"
+
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "มีเวอร์ชันใหม่ {version} พร้อมใช้งาน!"
+
+#: authentik/api/v3/schema/query.py
+msgid "Which field to use when ordering the results."
+msgstr "ฟิลด์ที่ใช้เรียงลำดับผลลัพธ์"
+
+#: authentik/api/v3/schema/query.py
+msgid "A page number within the paginated result set."
+msgstr "หมายเลขหน้าในชุดผลลัพธ์แบบแบ่งหน้า"
+
+#: authentik/api/v3/schema/query.py
+msgid "Number of results to return per page."
+msgstr "จำนวนผลลัพธ์ที่ส่งกลับต่อหน้า"
+
+#: authentik/api/v3/schema/query.py
+msgid "A search term."
+msgstr "คำค้นหา"
+
+#: authentik/api/v3/schema/response.py
+msgid "Generic API Error"
+msgstr "ข้อผิดพลาด API ทั่วไป"
+
+#: authentik/api/v3/schema/response.py
+msgid "Validation Error"
+msgstr "ข้อผิดพลาดในการตรวจสอบความถูกต้อง"
+
+#: authentik/blueprints/api.py
+msgid "Blueprint file does not exist"
+msgstr "ไม่พบไฟล์ Blueprint"
+
+#: authentik/blueprints/api.py
+msgid "Context must be valid JSON"
+msgstr "บริบทต้องเป็น JSON ที่ถูกต้อง"
+
+#: authentik/blueprints/api.py
+msgid "Context must be a JSON object"
+msgstr "บริบทต้องเป็นอ็อบเจกต์ JSON"
+
+#: authentik/blueprints/api.py
+msgid "Failed to validate blueprint"
+msgstr "ตรวจสอบความถูกต้องของ Blueprint ไม่สำเร็จ"
+
+#: authentik/blueprints/api.py
+msgid "Either path or content must be set."
+msgstr "ต้องระบุพาธหรือเนื้อหาอย่างใดอย่างหนึ่ง"
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr "ผู้ใช้ไม่มีสิทธิ์สร้าง {model}"
+
+#: authentik/blueprints/api.py
+#, python-brace-format
+msgid "Invalid blueprint file: {exc}"
+msgstr "ไฟล์ Blueprint ไม่ถูกต้อง: {exc}"
+
+#: authentik/blueprints/models.py
+msgid "Managed by authentik"
+msgstr "จัดการโดย authentik"
+
+#: authentik/blueprints/models.py
+msgid ""
+"Objects that are managed by authentik. These objects are created and updated"
+" automatically. This flag only indicates that an object can be overwritten "
+"by migrations. You can still modify the objects via the API, but expect "
+"changes to be overwritten in a later update."
+msgstr ""
+"อ็อบเจกต์ที่จัดการโดย authentik "
+"อ็อบเจกต์เหล่านี้ถูกสร้างและอัปเดตโดยอัตโนมัติ "
+"แฟล็กนี้ระบุเพียงว่าอ็อบเจกต์อาจถูกเขียนทับได้จากการ migrate "
+"คุณยังแก้ไขอ็อบเจกต์ผ่าน API ได้ "
+"แต่การเปลี่ยนแปลงอาจถูกเขียนทับในการอัปเดตครั้งถัดไป"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instance"
+msgstr "อินสแตนซ์ Blueprint"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instances"
+msgstr "อินสแตนซ์ Blueprint"
+
+#: authentik/blueprints/v1/exporter.py
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "การส่งออกจาก authentik - {date}"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints as `blueprints_find` does, but return a safe dict."
+msgstr ""
+"ค้นหา Blueprint เช่นเดียวกับ `blueprints_find` แต่คืนค่าเป็น dict ที่ปลอดภัย"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Find blueprints and check if they need to be created in the database."
+msgstr "ค้นหา Blueprint และตรวจสอบว่าต้องสร้างในฐานข้อมูลหรือไม่"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Apply single blueprint."
+msgstr "ใช้งาน Blueprint รายการเดียว"
+
+#: authentik/blueprints/v1/tasks.py
+msgid "Remove blueprints which couldn't be fetched."
+msgstr "ลบ Blueprint ที่ดึงข้อมูลไม่ได้"
+
+#: authentik/brands/models.py
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+"โดเมนที่เปิดใช้แบรนด์นี้ สามารถครอบคลุมโดเมนย่อยได้ เช่น `a.b` สำหรับ `aa.b`"
+" และ `ba.b`"
+
+#: authentik/brands/models.py
+#, python-brace-format
+msgid ""
+"URL template for the vector tile source used by the events map. Supports XYZ"
+" templates with {z}, {x} and {y} placeholders, or pmtiles:// archive URLs. "
+"When empty, the frontend uses the bundled hexworld basemap. This value is "
+"part of the brand information served to unauthenticated clients; do not "
+"embed API keys or other credentials in it."
+msgstr ""
+"เทมเพลต URL ของแหล่ง vector tile ที่ใช้ในแผนที่เหตุการณ์ รองรับเทมเพลตแบบ "
+"XYZ ด้วย placeholder {z}, {x} และ {y} หรือ URL แบบ pmtiles:// เมื่อเว้นว่าง "
+"ฝั่งหน้าเว็บจะใช้ basemap hexworld ที่มาพร้อมระบบ "
+"ค่านี้เป็นส่วนหนึ่งของข้อมูลแบรนด์ที่ส่งให้ไคลเอนต์ที่ยังไม่ยืนยันตัวตน "
+"อย่าฝัง API key หรือข้อมูลรับรองอื่นไว้ในค่านี้"
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"เมื่อตั้งค่าไว้ "
+"ผู้ใช้ภายนอกจะถูกเปลี่ยนเส้นทางไปยังแอปพลิเคชันนี้หลังยืนยันตัวตน"
+
+#: authentik/brands/models.py
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr "ใบรับรองเว็บที่ใช้โดยเว็บเซิร์ฟเวอร์ของ authentik Core"
+
+#: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "ใบรับรองที่ใช้สำหรับการยืนยันตัวตนของไคลเอนต์"
+
+#: authentik/brands/models.py
+msgid "Brand"
+msgstr "แบรนด์"
+
+#: authentik/brands/models.py
+msgid "Brands"
+msgstr "แบรนด์"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificate"
+msgstr "ใบรับรองไคลเอนต์ของแบรนด์"
+
+#: authentik/brands/models.py
+msgid "Brand Client Certificates"
+msgstr "ใบรับรองไคลเอนต์ของแบรนด์"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the Hashed User ID"
+msgstr "อ้างอิงจาก User ID ที่ถูกแฮช"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user ID"
+msgstr "อ้างอิงจาก user ID"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on user UUID"
+msgstr "อ้างอิงจาก user UUID"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the username"
+msgstr "อ้างอิงจากชื่อผู้ใช้"
+
+#: authentik/common/oauth/constants.py
+msgid "Based on the User's Email. This is recommended over the UPN method."
+msgstr "อ้างอิงจากอีเมลของผู้ใช้ แนะนำให้ใช้วิธีนี้มากกว่าวิธี UPN"
+
+#: authentik/common/oauth/constants.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"อ้างอิงจาก UPN ของผู้ใช้ ใช้ได้เฉพาะเมื่อผู้ใช้มีการตั้งค่าแอตทริบิวต์ 'upn'"
+" ใช้วิธีนี้เฉพาะเมื่อโดเมน UPN และโดเมนอีเมลของคุณต่างกัน"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr "ผู้ใช้ไม่มีสิทธิ์เข้าถึงแอปพลิเคชัน"
+
+#: authentik/core/api/applications.py
+#, python-brace-format
+msgid "The slug '{slug}' is reserved and cannot be used for applications."
+msgstr "สลัก '{slug}' ถูกสงวนไว้ และไม่สามารถใช้กับแอปพลิเคชันได้"
+
+#: authentik/core/api/groups.py
+msgid "User does not have permission to add members to this group."
+msgstr "ผู้ใช้ไม่มีสิทธิ์เพิ่มสมาชิกเข้ากลุ่มนี้"
+
+#: authentik/core/api/object_attributes.py
+msgid "Unique cannot be enabled for arrays."
+msgstr "ไม่สามารถเปิดใช้ค่าไม่ซ้ำกับอาร์เรย์ได้"
+
+#: authentik/core/api/providers.py
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"เมื่อไม่ได้ตั้งค่า จะคืนผู้ให้บริการทั้งหมด เมื่อตั้งเป็น true "
+"จะคืนเฉพาะผู้ให้บริการแบบ backchannel เมื่อตั้งเป็น false "
+"จะไม่รวมผู้ให้บริการแบบ backchannel"
+
+#: authentik/core/api/users.py
+msgid "No leading or trailing slashes allowed."
+msgstr "ไม่อนุญาตให้มีเครื่องหมายทับนำหน้าหรือต่อท้าย"
+
+#: authentik/core/api/users.py
+msgid "No empty segments in user path allowed."
+msgstr "ไม่อนุญาตให้มีส่วนที่ว่างเปล่าในพาธผู้ใช้"
+
+#: authentik/core/api/users.py
+msgid "Can't create internal service accounts"
+msgstr "ไม่สามารถสร้างบัญชีบริการภายในได้"
+
+#: authentik/core/api/users.py
+msgid "Can't change internal service account to other user type."
+msgstr "ไม่สามารถเปลี่ยนบัญชีบริการภายในเป็นประเภทผู้ใช้อื่นได้"
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to add members to a superuser group."
+msgstr "ผู้ใช้ไม่มีสิทธิ์เพิ่มสมาชิกเข้ากลุ่ม superuser"
+
+#: authentik/core/api/users.py
+msgid "User does not have permission to assign roles."
+msgstr "ผู้ใช้ไม่มีสิทธิ์กำหนดบทบาท"
+
+#: authentik/core/api/users.py
+msgid "Cannot set both password and password_hash. Use only one."
+msgstr ""
+"ไม่สามารถตั้งค่าทั้ง password และ password_hash ได้ "
+"ให้ใช้เพียงอย่างใดอย่างหนึ่ง"
+
+#: authentik/core/api/users.py
+msgid "Can't modify internal service account users"
+msgstr "ไม่สามารถแก้ไขผู้ใช้ที่เป็นบัญชีบริการภายในได้"
+
+#: authentik/core/api/users.py
+msgid "This field is required."
+msgstr "ฟิลด์นี้จำเป็นต้องกรอก"
+
+#: authentik/core/api/users.py
+msgid "filter: failed to parse JSON"
+msgstr "filter: แปลงค่า JSON ไม่สำเร็จ"
+
+#: authentik/core/api/users.py
+msgid "filter: value must be key:value mapping"
+msgstr "filter: ค่าต้องเป็นการแมปแบบ key:value"
+
+#: authentik/core/api/users.py
+msgid "No recovery flow set."
+msgstr "ยังไม่ได้ตั้งค่าโฟลว์การกู้คืน"
+
+#: authentik/core/api/users.py
+msgid "Recovery flow not applicable to user"
+msgstr "โฟลว์การกู้คืนใช้กับผู้ใช้นี้ไม่ได้"
+
+#: authentik/core/api/users.py
+msgid "A user/group with these details already exists"
+msgstr "มีผู้ใช้/กลุ่มที่มีรายละเอียดเหล่านี้อยู่แล้ว"
+
+#: authentik/core/api/users.py
+msgid "Unable to create user"
+msgstr "ไม่สามารถสร้างผู้ใช้ได้"
+
+#: authentik/core/api/users.py
+msgid "Unknown error occurred"
+msgstr "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ"
+
+#: authentik/core/api/users.py
+msgid "User does not have an email address set."
+msgstr "ผู้ใช้ยังไม่ได้ตั้งค่าที่อยู่อีเมล"
+
+#: authentik/core/api/users.py
+msgid "Email stage not found."
+msgstr "ไม่พบสเตจอีเมล"
+
+#: authentik/core/apps.py
+msgid "Applications with no policies bound can be accessed by any user."
+msgstr "แอปพลิเคชันที่ไม่มีการผูกนโยบายจะเข้าถึงได้โดยผู้ใช้ทุกคน"
+
+#: authentik/core/models.py
+msgid "name"
+msgstr "ชื่อ"
+
+#: authentik/core/models.py
+msgid "Users added to this group will be superusers."
+msgstr "ผู้ใช้ที่ถูกเพิ่มเข้ากลุ่มนี้จะกลายเป็น superuser"
+
+#: authentik/core/models.py
+msgid "Group"
+msgstr "กลุ่ม"
+
+#: authentik/core/models.py
+msgid "Groups"
+msgstr "กลุ่ม"
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr "เพิ่มผู้ใช้เข้ากลุ่ม"
+
+#: authentik/core/models.py
+msgid "Remove user from group"
+msgstr "นำผู้ใช้ออกจากกลุ่ม"
+
+#: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr "เปิดใช้สถานะ superuser"
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr "ปิดใช้สถานะ superuser"
+
+#: authentik/core/models.py
+msgid "Group Parentage Node"
+msgstr "โหนดลำดับชั้นของกลุ่ม"
+
+#: authentik/core/models.py
+msgid "Group Parentage Nodes"
+msgstr "โหนดลำดับชั้นของกลุ่ม"
+
+#: authentik/core/models.py
+msgid "User's display name."
+msgstr "ชื่อที่แสดงของผู้ใช้"
+
+#: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/providers/saml/models.py
+msgid "User"
+msgstr "ผู้ใช้"
+
+#: authentik/core/models.py
+msgid "Users"
+msgstr "ผู้ใช้"
+
+#: authentik/core/models.py
+#: authentik/stages/email/templates/email/password_reset.html
+msgid "Reset Password"
+msgstr "รีเซ็ตรหัสผ่าน"
+
+#: authentik/core/models.py
+msgid "Can impersonate other users"
+msgstr "สามารถสวมตัวตนผู้ใช้อื่นได้"
+
+#: authentik/core/models.py
+msgid "Can preview user data sent to providers"
+msgstr "สามารถดูตัวอย่างข้อมูลผู้ใช้ที่ส่งไปยังผู้ให้บริการได้"
+
+#: authentik/core/models.py
+msgid "View applications the user has access to"
+msgstr "ดูแอปพลิเคชันที่ผู้ใช้มีสิทธิ์เข้าถึง"
+
+#: authentik/core/models.py
+msgid ""
+"Flow used for authentication when the associated application is accessed by "
+"an un-authenticated user."
+msgstr ""
+"โฟลว์ที่ใช้ยืนยันตัวตนเมื่อผู้ใช้ที่ยังไม่ยืนยันตัวตนเข้าถึงแอปพลิเคชันที่เกี่ยวข้อง"
+
+#: authentik/core/models.py
+msgid "Flow used when authorizing this provider."
+msgstr "โฟลว์ที่ใช้เมื่ออนุญาตผู้ให้บริการนี้"
+
+#: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "โฟลว์ที่ใช้เมื่อสิ้นสุดเซสชันจากผู้ให้บริการ"
+
+#: authentik/core/models.py
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr ""
+"เข้าถึงจากแอปพลิเคชัน; ผู้ให้บริการแบบ backchannel ซึ่งไม่บังคับ "
+"สำหรับโปรโตคอลอย่าง LDAP และ SCIM"
+
+#: authentik/core/models.py
+msgid "Application's display Name."
+msgstr "ชื่อที่แสดงของแอปพลิเคชัน"
+
+#: authentik/core/models.py
+msgid "Internal application name, used in URLs."
+msgstr "ชื่อแอปพลิเคชันภายใน ใช้ใน URL"
+
+#: authentik/core/models.py
+msgid "Open launch URL in a new browser tab or window."
+msgstr "เปิด URL เริ่มใช้งานในแท็บหรือหน้าต่างเบราว์เซอร์ใหม่"
+
+#: authentik/core/models.py
+msgid "Hide this application from the user's My applications page."
+msgstr "ซ่อนแอปพลิเคชันนี้จากหน้าแอปพลิเคชันของฉันของผู้ใช้"
+
+#: authentik/core/models.py
+msgid "Application"
+msgstr "แอปพลิเคชัน"
+
+#: authentik/core/models.py
+msgid "Applications"
+msgstr "แอปพลิเคชัน"
+
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr "สิทธิ์การใช้งานแอปพลิเคชัน"
+
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr "สิทธิ์การใช้งานแอปพลิเคชัน"
+
+#: authentik/core/models.py
+msgid "Use the source-specific identifier"
+msgstr "ใช้ตัวระบุเฉพาะของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical email address. Can have security implications "
+"when a source doesn't validate email addresses."
+msgstr ""
+"เชื่อมโยงกับผู้ใช้ที่มีที่อยู่อีเมลตรงกัน "
+"อาจมีผลด้านความปลอดภัยหากแหล่งที่มาไม่ตรวจสอบที่อยู่อีเมล"
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's email address, but deny enrollment when the email address "
+"already exists."
+msgstr ""
+"ใช้ที่อยู่อีเมลของผู้ใช้ "
+"แต่ปฏิเสธการลงทะเบียนเมื่อมีที่อยู่อีเมลนั้นอยู่แล้ว"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical username. Can have security implications when "
+"a username is used with another source."
+msgstr ""
+"เชื่อมโยงกับผู้ใช้ที่มีชื่อผู้ใช้ตรงกัน "
+"อาจมีผลด้านความปลอดภัยหากชื่อผู้ใช้นั้นถูกใช้กับแหล่งที่มาอื่น"
+
+#: authentik/core/models.py
+msgid ""
+"Use the user's username, but deny enrollment when the username already "
+"exists."
+msgstr ""
+"ใช้ชื่อผู้ใช้ของผู้ใช้ แต่ปฏิเสธการลงทะเบียนเมื่อมีชื่อผู้ใช้นั้นอยู่แล้ว"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"เชื่อมโยงกับกลุ่มที่มีชื่อตรงกัน "
+"อาจมีผลด้านความปลอดภัยหากชื่อกลุ่มนั้นถูกใช้กับแหล่งที่มาอื่น"
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr "ใช้ชื่อกลุ่ม แต่ปฏิเสธการลงทะเบียนเมื่อมีชื่อนั้นอยู่แล้ว"
+
+#: authentik/core/models.py
+msgid "Source's display Name."
+msgstr "ชื่อที่แสดงของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid "Internal source name, used in URLs."
+msgstr "ชื่อแหล่งที่มาภายใน ใช้ใน URL"
+
+#: authentik/core/models.py
+msgid ""
+"When enabled, this source will be displayed as a prominent button on the "
+"login page, instead of a small icon."
+msgstr ""
+"เมื่อเปิดใช้ แหล่งที่มานี้จะแสดงเป็นปุ่มเด่นบนหน้าเข้าสู่ระบบ "
+"แทนไอคอนขนาดเล็ก"
+
+#: authentik/core/models.py
+msgid "Flow to use when authenticating existing users."
+msgstr "โฟลว์ที่ใช้เมื่อยืนยันตัวตนผู้ใช้ที่มีอยู่แล้ว"
+
+#: authentik/core/models.py
+msgid "Flow to use when enrolling new users."
+msgstr "โฟลว์ที่ใช้เมื่อลงทะเบียนผู้ใช้ใหม่"
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing user should be authenticated or a "
+"new user enrolled."
+msgstr ""
+"วิธีที่แหล่งที่มาใช้ตัดสินว่าจะยืนยันตัวตนผู้ใช้ที่มีอยู่ "
+"หรือลงทะเบียนผู้ใช้ใหม่"
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr "วิธีที่แหล่งที่มาใช้ตัดสินว่าจะใช้กลุ่มที่มีอยู่ หรือสร้างกลุ่มใหม่"
+
+#: authentik/core/models.py authentik/providers/scim/models.py
+msgid "Token"
+msgstr "โทเคน"
+
+#: authentik/core/models.py
+msgid "Tokens"
+msgstr "โทเคน"
+
+#: authentik/core/models.py authentik/endpoints/connectors/agent/models.py
+msgid "View token's key"
+msgstr "ดูคีย์ของโทเคน"
+
+#: authentik/core/models.py
+msgid "Set a token's key"
+msgstr "ตั้งค่าคีย์ของโทเคน"
+
+#: authentik/core/models.py
+msgid "Property Mapping"
+msgstr "การแมปคุณสมบัติ"
+
+#: authentik/core/models.py
+msgid "Property Mappings"
+msgstr "การแมปคุณสมบัติ"
+
+#: authentik/core/models.py
+msgid "Source User Property Mapping"
+msgstr "การแมปคุณสมบัติผู้ใช้ของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid "Source User Property Mappings"
+msgstr "การแมปคุณสมบัติผู้ใช้ของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mapping"
+msgstr "การแมปคุณสมบัติกลุ่มของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid "Source Group Property Mappings"
+msgstr "การแมปคุณสมบัติกลุ่มของแหล่งที่มา"
+
+#: authentik/core/models.py
+msgid "Provider Property Mapping"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ"
+
+#: authentik/core/models.py
+msgid "Provider Property Mappings"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ"
+
+#: authentik/core/models.py
+msgid "User Role"
+msgstr "บทบาทของผู้ใช้"
+
+#: authentik/core/models.py
+msgid "User Roles"
+msgstr "บทบาทของผู้ใช้"
+
+#: authentik/core/models.py
+msgid "Group Role"
+msgstr "บทบาทของกลุ่ม"
+
+#: authentik/core/models.py
+msgid "Group Roles"
+msgstr "บทบาทของกลุ่ม"
+
+#: authentik/core/models.py
+msgid "User Group"
+msgstr "กลุ่มของผู้ใช้"
+
+#: authentik/core/models.py
+msgid "User Groups"
+msgstr "กลุ่มของผู้ใช้"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr "ข้อมูลเซสชัน"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "เซสชัน"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "เซสชัน"
+
+#: authentik/core/models.py
+msgid "User Switching Session"
+msgstr "เซสชันการสลับผู้ใช้"
+
+#: authentik/core/models.py
+msgid "User Switching Sessions"
+msgstr "เซสชันการสลับผู้ใช้"
+
+#: authentik/core/models.py
+msgid "Authenticated Session"
+msgstr "เซสชันที่ยืนยันตัวตนแล้ว"
+
+#: authentik/core/models.py
+msgid "Authenticated Sessions"
+msgstr "เซสชันที่ยืนยันตัวตนแล้ว"
+
+#: authentik/core/models.py
+msgid "This field is required"
+msgstr "ฟิลด์นี้จำเป็นต้องกรอก"
+
+#: authentik/core/models.py
+msgid "Value must be an array."
+msgstr "ค่าต้องเป็นอาร์เรย์"
+
+#: authentik/core/models.py
+msgid "Value does not match configured pattern."
+msgstr "ค่าไม่ตรงกับรูปแบบที่กำหนดไว้"
+
+#: authentik/core/models.py
+msgid "Value is not unique."
+msgstr "ค่านี้ซ้ำกับที่มีอยู่แล้ว"
+
+#: authentik/core/models.py
+msgid "Object Attribute"
+msgstr "แอตทริบิวต์ของอ็อบเจกต์"
+
+#: authentik/core/models.py
+msgid "Object Attributes"
+msgstr "แอตทริบิวต์ของอ็อบเจกต์"
+
+#: authentik/core/models.py
+msgid "Mirror policy engine"
+msgstr "สะท้อนเอนจินนโยบาย"
+
+#: authentik/core/models.py
+msgid "Copy policy bindings"
+msgstr "คัดลอกการผูกนโยบาย"
+
+#: authentik/core/models.py
+msgid "Don't inherit any policy bindings"
+msgstr "ไม่สืบทอดการผูกนโยบายใด ๆ"
+
+#: authentik/core/models.py
+msgid "Actor"
+msgstr "ผู้กระทำ"
+
+#: authentik/core/models.py
+msgid "Actors"
+msgstr "ผู้กระทำ"
+
+#: authentik/core/models.py
+msgid "Policy behavior cannot be changed after creation."
+msgstr "ไม่สามารถเปลี่ยนพฤติกรรมของนโยบายหลังสร้างแล้ว"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid ""
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
+msgstr ""
+"คำขอยืนยันตัวตนด้วย {source} ถูกปฏิเสธ "
+"กรุณายืนยันตัวตนด้วยแหล่งที่มาที่คุณลงทะเบียนไว้ก่อนหน้านี้"
+
+#: authentik/core/sources/flow_manager.py
+msgid "Configured flow does not exist."
+msgstr "โฟลว์ที่ตั้งค่าไว้ไม่มีอยู่"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "ยืนยันตัวตนด้วย {source} สำเร็จ!"
+
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "เชื่อมโยง {source} สำเร็จ!"
+
+#: authentik/core/sources/flow_manager.py
+msgid "Source is not configured for enrollment."
+msgstr "แหล่งที่มานี้ไม่ได้ตั้งค่าสำหรับการลงทะเบียน"
+
+#: authentik/core/tasks.py
+msgid "Remove expired objects."
+msgstr "ลบอ็อบเจกต์ที่หมดอายุ"
+
+#: authentik/core/tasks.py
+msgid "Remove temporary users created by SAML Sources."
+msgstr "ลบผู้ใช้ชั่วคราวที่สร้างโดยแหล่งที่มาแบบ SAML"
+
+#: authentik/core/templates/base/skeleton.html
+msgid "Recovery session is active. Custom branding is disabled."
+msgstr "เซสชันการกู้คืนกำลังใช้งานอยู่ การปรับแต่งแบรนด์ถูกปิดใช้"
+
+#: authentik/core/templates/if/error.html
+#: authentik/policies/templates/policies/denied.html
+msgid "Go home"
+msgstr "กลับหน้าแรก"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Site footer"
+msgstr "ส่วนท้ายของเว็บไซต์"
+
+#: authentik/core/templates/login/base_full.html
+msgid "Flow links"
+msgstr "ลิงก์โฟลว์"
+
+#: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
+msgid "Powered by authentik"
+msgstr "ขับเคลื่อนโดย authentik"
+
+#: authentik/core/views/apps.py
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/oauth2/views/device_init.py
+#: authentik/providers/saml/views/sso.py
+#, python-format
+msgid "You're about to sign into %(application)s."
+msgstr "คุณกำลังจะเข้าสู่ระบบ %(application)s"
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "อินเทอร์เฟซนี้เข้าถึงได้เฉพาะผู้ใช้ภายในเท่านั้น"
+
+#: authentik/core/views/user_switch.py
+msgid "User switching is disabled."
+msgstr "การสลับผู้ใช้ถูกปิดใช้"
+
+#: authentik/core/views/user_switch.py
+msgid "User switching disabled"
+msgstr "การสลับผู้ใช้ถูกปิดใช้"
+
+#: authentik/crypto/api.py
+msgid "Subject-alt name"
+msgstr "ชื่อสำรองของ subject"
+
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed25519"
+msgstr "Ed25519"
+
+#: authentik/crypto/builder.py authentik/crypto/models.py
+msgid "Ed448"
+msgstr "Ed448"
+
+#: authentik/crypto/models.py
+msgid "RSA"
+msgstr "RSA"
+
+#: authentik/crypto/models.py
+msgid "Elliptic Curve"
+msgstr "Elliptic Curve"
+
+#: authentik/crypto/models.py
+msgid "DSA"
+msgstr "DSA"
+
+#: authentik/crypto/models.py
+msgid "PEM-encoded Certificate data"
+msgstr "ข้อมูลใบรับรองที่เข้ารหัสแบบ PEM"
+
+#: authentik/crypto/models.py
+msgid ""
+"Optional Private Key. If this is set, you can use this keypair for "
+"encryption."
+msgstr ""
+"คีย์ส่วนตัว ไม่บังคับ หากตั้งค่าไว้ "
+"คุณสามารถใช้คู่คีย์นี้สำหรับการเข้ารหัสได้"
+
+#: authentik/crypto/models.py
+msgid "Key algorithm type detected from the certificate's public key"
+msgstr "ประเภทอัลกอริทึมของคีย์ที่ตรวจพบจากคีย์สาธารณะของใบรับรอง"
+
+#: authentik/crypto/models.py
+msgid "Certificate expiry date"
+msgstr "วันหมดอายุของใบรับรอง"
+
+#: authentik/crypto/models.py
+msgid "Certificate subject as RFC4514 string"
+msgstr "Subject ของใบรับรองในรูปแบบสตริง RFC4514"
+
+#: authentik/crypto/models.py
+msgid "SHA256 fingerprint of the certificate"
+msgstr "ลายนิ้วมือ SHA256 ของใบรับรอง"
+
+#: authentik/crypto/models.py
+msgid "SHA1 fingerprint of the certificate"
+msgstr "ลายนิ้วมือ SHA1 ของใบรับรอง"
+
+#: authentik/crypto/models.py
+msgid "Key ID generated from private key"
+msgstr "Key ID ที่สร้างจากคีย์ส่วนตัว"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pair"
+msgstr "คู่ใบรับรองและคีย์"
+
+#: authentik/crypto/models.py
+msgid "Certificate-Key Pairs"
+msgstr "คู่ใบรับรองและคีย์"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's certificate"
+msgstr "ดูใบรับรองของคู่ใบรับรองและคีย์"
+
+#: authentik/crypto/models.py
+msgid "View Certificate-Key pair's private key"
+msgstr "ดูคีย์ส่วนตัวของคู่ใบรับรองและคีย์"
+
+#: authentik/crypto/tasks.py
+msgid "Discover, import and update certificates from the filesystem."
+msgstr "ค้นหา นำเข้า และอัปเดตใบรับรองจากระบบไฟล์"
+
+#: authentik/endpoints/api/stages.py
+msgid "Selected connector is not compatible with this stage."
+msgstr "ตัวเชื่อมต่อที่เลือกไม่รองรับสเตจนี้"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Selected platform not supported"
+msgstr "แพลตฟอร์มที่เลือกไม่ได้รับการรองรับ"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Token is expired"
+msgstr "โทเคนหมดอายุแล้ว"
+
+#: authentik/endpoints/connectors/agent/api/connectors.py
+msgid "Invalid token for connector"
+msgstr "โทเคนไม่ถูกต้องสำหรับตัวเชื่อมต่อนี้"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector"
+msgstr "ตัวเชื่อมต่อ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connectors"
+msgstr "ตัวเชื่อมต่อ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Provider"
+msgstr "ผู้ให้บริการ JWT Federation ของตัวเชื่อมต่อ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Connector JWT Federation Providers"
+msgstr "ผู้ให้บริการ JWT Federation ของตัวเชื่อมต่อ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User binding"
+msgstr "การผูกผู้ใช้กับอุปกรณ์ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Agent Device User bindings"
+msgstr "การผูกผู้ใช้กับอุปกรณ์ Agent"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "โทเคนอุปกรณ์"
+
+#: authentik/endpoints/connectors/agent/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "โทเคนอุปกรณ์"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Token"
+msgstr "โทเคนการลงทะเบียน"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Enrollment Tokens"
+msgstr "โทเคนการลงทะเบียน"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication token"
+msgstr "โทเคนยืนยันตัวตนอุปกรณ์"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Device authentication tokens"
+msgstr "โทเคนยืนยันตัวตนอุปกรณ์"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonce"
+msgstr "Apple Nonce"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Nonces"
+msgstr "Apple Nonce"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclave"
+msgstr "Apple Independent Secure Enclave"
+
+#: authentik/endpoints/connectors/agent/models.py
+msgid "Apple Independent Secure Enclaves"
+msgstr "Apple Independent Secure Enclave"
+
+#: authentik/endpoints/facts.py
+msgid "Operating System name, such as 'Server 2022' or 'Ubuntu'"
+msgstr "ชื่อระบบปฏิบัติการ เช่น 'Server 2022' หรือ 'Ubuntu'"
+
+#: authentik/endpoints/facts.py
+msgid ""
+"Operating System version, must always be the version number but may contain "
+"build name"
+msgstr ""
+"เวอร์ชันระบบปฏิบัติการ ต้องเป็นหมายเลขเวอร์ชันเสมอ "
+"แต่อาจมีชื่อบิลด์รวมอยู่ด้วย"
+
+#: authentik/endpoints/models.py
+msgid "Device"
+msgstr "อุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Devices"
+msgstr "อุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device User binding"
+msgstr "การผูกผู้ใช้กับอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device User bindings"
+msgstr "การผูกผู้ใช้กับอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device connection"
+msgstr "การเชื่อมต่อของอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device connections"
+msgstr "การเชื่อมต่อของอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshot"
+msgstr "สแนปช็อตข้อมูลอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device fact snapshots"
+msgstr "สแนปช็อตข้อมูลอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device access group"
+msgstr "กลุ่มการเข้าถึงอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Device access groups"
+msgstr "กลุ่มการเข้าถึงอุปกรณ์"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stage"
+msgstr "สเตจ Endpoint"
+
+#: authentik/endpoints/models.py
+msgid "Endpoint Stages"
+msgstr "สเตจ Endpoint"
+
+#: authentik/endpoints/tasks.py
+msgid "Sync endpoints."
+msgstr "ซิงค์ endpoint"
+
+#: authentik/enterprise/agents/api.py
+msgid "You can only create agents for yourself."
+msgstr "คุณสร้าง agent ได้สำหรับตัวคุณเองเท่านั้น"
+
+#: authentik/enterprise/agents/api.py
+msgid "Self-service agent creation is not enabled."
+msgstr "การสร้าง agent แบบบริการตนเองไม่ได้เปิดใช้"
+
+#: authentik/enterprise/agents/api.py
+msgid "Only internal user accounts can create agents."
+msgstr "เฉพาะบัญชีผู้ใช้ภายในเท่านั้นที่สร้าง agent ได้"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agent"
+msgstr "Agent"
+
+#: authentik/enterprise/agents/models.py
+msgid "Agents"
+msgstr "Agent"
+
+#: authentik/enterprise/agents/models.py
+msgid "Add an agent user (self-service)"
+msgstr "เพิ่มผู้ใช้ agent (บริการตนเอง)"
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to create/update this object."
+msgstr "ต้องมี Enterprise เพื่อสร้าง/อัปเดตอ็อบเจกต์นี้"
+
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to use this endpoint."
+msgstr "ต้องมี Enterprise เพื่อใช้ endpoint นี้"
+
+#: authentik/enterprise/audit/apps.py
+msgid ""
+"Include additional information in audit logs, may incur a performance "
+"penalty."
+msgstr "รวมข้อมูลเพิ่มเติมในบันทึกการตรวจสอบ อาจส่งผลต่อประสิทธิภาพ"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"ตั้งค่าเฮดเดอร์เพิ่มเติมที่จะส่งไป การแมปควรคืนค่าเป็น dictionary ของคู่ "
+"key-value"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connector"
+msgstr "ตัวเชื่อมต่อ Fleet"
+
+#: authentik/enterprise/endpoints/connectors/fleet/models.py
+msgid "Fleet Connectors"
+msgstr "ตัวเชื่อมต่อ Fleet"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connector"
+msgstr "ตัวเชื่อมต่อ Google Device Trust"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/models.py
+msgid "Google Device Trust Connectors"
+msgstr "ตัวเชื่อมต่อ Google Device Trust"
+
+#: authentik/enterprise/endpoints/connectors/google_chrome/stage.py
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "กำลังตรวจสอบเบราว์เซอร์ของคุณ..."
+
+#: authentik/enterprise/lifecycle/offboarding/actions.py
+#, python-format
+msgid "User %(username)s was offboarded (%(action)s)"
+msgstr "ผู้ใช้ %(username)s ถูกปลดออกจากระบบ (%(action)s)"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "This user already has a pending offboarding scheduled."
+msgstr "ผู้ใช้นี้มีการปลดออกจากระบบที่รอดำเนินการอยู่แล้ว"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Offboarding must be scheduled in the future."
+msgstr "ต้องตั้งเวลาการปลดออกจากระบบเป็นเวลาในอนาคต"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Internal service accounts cannot be offboarded."
+msgstr "ไม่สามารถปลดบัญชีบริการภายในออกจากระบบได้"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot offboard your own account."
+msgstr "คุณไม่สามารถปลดบัญชีของตัวเองออกจากระบบได้"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "You cannot cancel your own offboarding."
+msgstr "คุณไม่สามารถยกเลิกการปลดออกจากระบบของตัวเองได้"
+
+#: authentik/enterprise/lifecycle/offboarding/api.py
+msgid "Only a pending offboarding can be cancelled."
+msgstr "ยกเลิกได้เฉพาะการปลดออกจากระบบที่รอดำเนินการ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Deactivate"
+msgstr "ปิดการใช้งาน"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Delete"
+msgstr "ลบ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Pending"
+msgstr "รอดำเนินการ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Completed"
+msgstr "เสร็จสิ้น"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Failed"
+msgstr "ล้มเหลว"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Canceled"
+msgstr "ยกเลิกแล้ว"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Absolute time at which the offboarding action is executed."
+msgstr "เวลาที่แน่นอนที่จะดำเนินการปลดออกจากระบบ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's sessions when offboarding."
+msgstr "เพิกถอนเซสชันทั้งหมดของผู้ใช้เมื่อปลดออกจากระบบ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Revoke all of the user's tokens when offboarding."
+msgstr "เพิกถอนโทเคนทั้งหมดของผู้ใช้เมื่อปลดออกจากระบบ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "Number of times execution has been attempted and failed."
+msgstr "จำนวนครั้งที่พยายามดำเนินการแล้วล้มเหลว"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboarding"
+msgstr "การปลดผู้ใช้ออกจากระบบ"
+
+#: authentik/enterprise/lifecycle/offboarding/models.py
+msgid "User Offboardings"
+msgstr "การปลดผู้ใช้ออกจากระบบ"
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute due user offboardings."
+msgstr "ดำเนินการปลดผู้ใช้ออกจากระบบที่ถึงกำหนด"
+
+#: authentik/enterprise/lifecycle/offboarding/tasks.py
+msgid "Execute a single user offboarding."
+msgstr "ดำเนินการปลดผู้ใช้ออกจากระบบรายการเดียว"
+
+#: authentik/enterprise/lifecycle/review/api/reviews.py
+msgid "You are not allowed to submit a review for this object."
+msgstr "คุณไม่ได้รับอนุญาตให้ส่งผลการตรวจทานสำหรับอ็อบเจกต์นี้"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Object does not exist"
+msgstr "อ็อบเจกต์ไม่มีอยู่"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Either a reviewer group or a reviewer must be set."
+msgstr "ต้องกำหนดกลุ่มผู้ตรวจทานหรือผู้ตรวจทานอย่างใดอย่างหนึ่ง"
+
+#: authentik/enterprise/lifecycle/review/api/rules.py
+msgid "Grace period must be shorter than the interval."
+msgstr "ระยะผ่อนผันต้องสั้นกว่าช่วงเวลาที่กำหนด"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Select which transports should be used to notify the reviewers. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"เลือกช่องทางส่งที่จะใช้แจ้งผู้ตรวจทาน หากไม่เลือกเลย "
+"การแจ้งเตือนจะแสดงเฉพาะใน UI ของ authentik"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Group"
+msgstr "กลุ่มผู้ตรวจทานของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer Groups"
+msgstr "กลุ่มผู้ตรวจทานของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewer"
+msgstr "ผู้ตรวจทานของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Reviewers"
+msgstr "ผู้ตรวจทานของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transport"
+msgstr "ช่องทางแจ้งเตือนของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Lifecycle Rule Notification Transports"
+msgstr "ช่องทางแจ้งเตือนของกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Reviewed"
+msgstr "ตรวจทานแล้ว"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Overdue"
+msgstr "เกินกำหนด"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid "Go to {self._get_model_name()}"
+msgstr "ไปที่ {self._get_model_name()}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is due for {self.content_type.name.lower()} {object_label}"
+msgstr ""
+"ถึงกำหนดตรวจทานการเข้าถึงสำหรับ {self.content_type.name.lower()} "
+"{object_label}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review is overdue for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"เกินกำหนดตรวจทานการเข้าถึงสำหรับ {self.content_type.name} {str(self.object)}"
+
+#: authentik/enterprise/lifecycle/review/models.py
+msgid ""
+"Access review completed for {self.content_type.name} {str(self.object)}"
+msgstr ""
+"ตรวจทานการเข้าถึงสำหรับ {self.content_type.name} {str(self.object)} "
+"เสร็จสิ้นแล้ว"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Dispatch tasks to apply lifecycle rules."
+msgstr "ส่งงานเพื่อใช้งานกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Apply lifecycle rule."
+msgstr "ใช้งานกฎวงจรชีวิต"
+
+#: authentik/enterprise/lifecycle/review/tasks.py
+msgid "Send lifecycle rule notification."
+msgstr "ส่งการแจ้งเตือนของกฎวงจรชีวิต"
+
+#: authentik/enterprise/models.py
+msgid "License"
+msgstr "ไลเซนส์"
+
+#: authentik/enterprise/models.py
+msgid "Licenses"
+msgstr "ไลเซนส์"
+
+#: authentik/enterprise/models.py
+msgid "License Usage"
+msgstr "การใช้งานไลเซนส์"
+
+#: authentik/enterprise/models.py
+msgid "License Usage Records"
+msgstr "บันทึกการใช้งานไลเซนส์"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"คีย์ของฟิลด์ที่จะตรวจสอบ สามารถใช้คีย์ฟิลด์ที่กำหนดไว้ในสเตจ Prompt ได้"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "จำนวนรหัสผ่านที่จะใช้ตรวจสอบเทียบ"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "ไม่ได้ตั้งค่ารหัสผ่านในบริบท"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr "รหัสผ่านนี้เคยใช้มาก่อน กรุณาเลือกรหัสผ่านอื่น"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "นโยบายความไม่ซ้ำของรหัสผ่าน"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "นโยบายความไม่ซ้ำของรหัสผ่าน"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "ประวัติรหัสผ่านของผู้ใช้"
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid ""
+"Check if any UniquePasswordPolicy exists, and if not, purge the password "
+"history table."
+msgstr ""
+"ตรวจสอบว่ามี UniquePasswordPolicy อยู่หรือไม่ หากไม่มี "
+"ให้ล้างตารางประวัติรหัสผ่าน"
+
+#: authentik/enterprise/policies/unique_password/tasks.py
+msgid "Remove user password history that are too old."
+msgstr "ลบประวัติรหัสผ่านของผู้ใช้ที่เก่าเกินไป"
+
+#: authentik/enterprise/policy.py
+msgid "Enterprise required to access this feature."
+msgstr "ต้องมี Enterprise เพื่อเข้าถึงฟีเจอร์นี้"
+
+#: authentik/enterprise/policy.py
+msgid "Feature only accessible for internal users."
+msgstr "ฟีเจอร์นี้เข้าถึงได้เฉพาะผู้ใช้ภายใน"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "ผู้ใช้ของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "ผู้ใช้ของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "กลุ่มของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "กลุ่มของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr "การแมปคุณสมบัติที่ใช้ในการสร้าง/อัปเดตกลุ่ม"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "ผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "ผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Group"
+msgstr "กลุ่มการแมปคุณสมบัติของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Property Mappings Groups"
+msgstr "กลุ่มการแมปคุณสมบัติของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "การแมปของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "การแมปของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync Google Workspace provider objects."
+msgstr "ซิงค์อ็อบเจกต์ของผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Full sync for Google Workspace provider."
+msgstr "ซิงค์ทั้งหมดสำหรับผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a direct object (user, group) for Google Workspace provider."
+msgstr ""
+"ซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Google Workspace "
+"providers."
+msgstr "ส่งงานลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Delete an object (user, group) for Google Workspace provider."
+msgstr "ลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Google Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Google Workspace "
+"providers."
+msgstr ""
+"ส่งงานซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Google "
+"Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid "Sync a related object (memberships) for Google Workspace provider."
+msgstr ""
+"ซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ Google "
+"Workspace"
+
+#: authentik/enterprise/providers/google_workspace/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Google Workspace "
+"providers."
+msgstr ""
+"ส่งงานซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ Google "
+"Workspace"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "ผู้ใช้ของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "กลุ่มของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "กลุ่มของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "ผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "ผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Group"
+msgstr "กลุ่มการแมปคุณสมบัติของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Property Mappings Groups"
+msgstr "กลุ่มการแมปคุณสมบัติของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "การแมปของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "การแมปของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync Microsoft Entra provider objects."
+msgstr "ซิงค์อ็อบเจกต์ของผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Full sync for Microsoft Entra provider."
+msgstr "ซิงค์ทั้งหมดสำหรับผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a direct object (user, group) for Microsoft Entra provider."
+msgstr ""
+"ซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a direct object (user, group) for Microsoft Entra "
+"providers."
+msgstr ""
+"ส่งงานซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Microsoft "
+"Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Delete an object (user, group) for Microsoft Entra provider."
+msgstr "ลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch deletions for an object (user, group) for Microsoft Entra "
+"providers."
+msgstr "ส่งงานลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ Microsoft Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid "Sync a related object (memberships) for Microsoft Entra provider."
+msgstr ""
+"ซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ Microsoft "
+"Entra"
+
+#: authentik/enterprise/providers/microsoft_entra/tasks.py
+msgid ""
+"Dispatch syncs for a related object (memberships) for Microsoft Entra "
+"providers."
+msgstr ""
+"ส่งงานซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ "
+"Microsoft Entra"
+
+#: authentik/enterprise/providers/radius/api.py
+msgid "Enterprise is required to use EAP-TLS."
+msgstr "ต้องมี Enterprise เพื่อใช้ EAP-TLS"
+
+#: authentik/enterprise/providers/scim/api.py
+msgid "Enterprise is required to use the OAuth mode."
+msgstr "ต้องมี Enterprise เพื่อใช้โหมด OAuth"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Push"
+msgstr "SSF RFC Push"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF RFC Pull"
+msgstr "SSF RFC Pull"
+
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "คีย์สำหรับลงนาม"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr "คีย์ที่ใช้ลงนามเหตุการณ์ SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr "ผู้ให้บริการ Shared Signals Framework"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr "ผู้ให้บริการ Shared Signals Framework"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr "เพิ่มสตรีมให้ผู้ให้บริการ SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Provider"
+msgstr "ผู้ให้บริการยืนยันตัวตน OIDC ของผู้ให้บริการ SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Provider OIDC Auth Providers"
+msgstr "ผู้ให้บริการยืนยันตัวตน OIDC ของผู้ให้บริการ SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr "สตรีม SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr "สตรีม SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr "เหตุการณ์ของสตรีม SSF"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr "เหตุการณ์ของสตรีม SSF"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Dispatch SSF events."
+msgstr "ส่งเหตุการณ์ SSF"
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Send an SSF event."
+msgstr "ส่งเหตุการณ์ SSF หนึ่งรายการ"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 1.1"
+msgstr "SAML 1.1"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "SAML 2.0"
+msgstr "SAML 2.0"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid ""
+"SAML assertion version to issue in the security token. Microsoft Entra ID "
+"and classic ADFS-style relying parties typically require SAML 1.1."
+msgstr ""
+"เวอร์ชันของ SAML assertion ที่จะออกใน security token โดยทั่วไป Microsoft "
+"Entra ID และ relying party แบบ ADFS ดั้งเดิมต้องใช้ SAML 1.1"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Provider"
+msgstr "ผู้ให้บริการ WS-Federation"
+
+#: authentik/enterprise/providers/ws_federation/models.py
+msgid "WS-Federation Providers"
+msgstr "ผู้ให้บริการ WS-Federation"
+
+#: authentik/enterprise/providers/ws_federation/views.py
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "กำลังเปลี่ยนเส้นทางไปยัง {app}..."
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Export"
+msgstr "การส่งออกข้อมูล"
+
+#: authentik/enterprise/reports/models.py
+msgid "Data Exports"
+msgstr "การส่งออกข้อมูล"
+
+#: authentik/enterprise/reports/models.py
+#, python-brace-format
+msgid "{model_verbose_name} export generated successfully"
+msgstr "สร้างไฟล์ส่งออก {model_verbose_name} สำเร็จ"
+
+#: authentik/enterprise/reports/models.py
+msgid "Download"
+msgstr "ดาวน์โหลด"
+
+#: authentik/enterprise/reports/tasks.py
+msgid "Generate data export."
+msgstr "สร้างไฟล์ส่งออกข้อมูล"
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents can request access through this endpoint."
+msgstr "เฉพาะ agent เท่านั้นที่ขอสิทธิ์เข้าถึงผ่าน endpoint นี้ได้"
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "This agent has no owner who could approve its request."
+msgstr "agent นี้ไม่มีเจ้าของที่จะอนุมัติคำขอได้"
+
+#: authentik/enterprise/requests/api/grant_requests.py
+msgid "Only agents with an expiry can request access."
+msgstr "เฉพาะ agent ที่มีวันหมดอายุเท่านั้นที่ขอสิทธิ์เข้าถึงได้"
+
+#: authentik/enterprise/requests/models.py
+msgid "Everyone who can approve"
+msgstr "ทุกคนที่มีสิทธิ์อนุมัติ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Only individually-selected reviewers"
+msgstr "เฉพาะผู้ตรวจทานที่เลือกไว้รายบุคคล"
+
+#: authentik/enterprise/requests/models.py
+msgid "A random subset of size min_reviewers, from everyone who can approve"
+msgstr "กลุ่มย่อยแบบสุ่มจำนวน min_reviewers คน จากทุกคนที่มีสิทธิ์อนุมัติ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Binding"
+msgstr "การผูกย่อยของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Child Bindings"
+msgstr "การผูกย่อยของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid ""
+"How long a request against this binding stays pending before it "
+"automatically lapses if not approved or denied."
+msgstr ""
+"ระยะเวลาที่คำขอตามการผูกนี้จะรอดำเนินการ "
+"ก่อนหมดอายุอัตโนมัติหากไม่ได้รับการอนุมัติหรือปฏิเสธ"
+
+#: authentik/enterprise/requests/models.py
+msgid "The maximum duration a grant approved against this binding can last."
+msgstr "ระยะเวลาสูงสุดที่การให้สิทธิ์ซึ่งอนุมัติตามการผูกนี้จะคงอยู่ได้"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Binding"
+msgstr "การผูกของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Bindings"
+msgstr "การผูกของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule"
+msgstr "กฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rules"
+msgstr "กฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transport"
+msgstr "ช่องทางแจ้งเตือนของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Request Rule Notification Transports"
+msgstr "ช่องทางแจ้งเตือนของกฎคำขอ"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request"
+msgstr "คำขอสิทธิ์"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Requests"
+msgstr "คำขอสิทธิ์"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can create a grant request"
+msgstr "สามารถสร้างคำขอสิทธิ์ได้"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can fulfill (approve/deny) a grant request"
+msgstr "สามารถดำเนินการ (อนุมัติ/ปฏิเสธ) คำขอสิทธิ์ได้"
+
+#: authentik/enterprise/requests/models.py
+msgid "Can revoke a grant request"
+msgstr "สามารถเพิกถอนคำขอสิทธิ์ได้"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Target"
+msgstr "เป้าหมายของคำขอสิทธิ์"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Targets"
+msgstr "เป้าหมายของคำขอสิทธิ์"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approval"
+msgstr "การอนุมัติคำขอสิทธิ์"
+
+#: authentik/enterprise/requests/models.py
+msgid "Grant Request Approvals"
+msgstr "การอนุมัติคำขอสิทธิ์"
+
+#: authentik/enterprise/requests/tasks.py
+msgid "Send access-request review notification."
+msgstr "ส่งการแจ้งเตือนให้ตรวจทานคำขอสิทธิ์เข้าถึง"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "User to lock. If omitted, locks the current user (self-service)."
+msgstr "ผู้ใช้ที่จะล็อก หากไม่ระบุ จะล็อกผู้ใช้ปัจจุบัน (บริการตนเอง)"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured."
+msgstr "ไม่ได้ตั้งค่าโฟลว์การล็อกบัญชี"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Lockdown flow is not applicable."
+msgstr "โฟลว์การล็อกบัญชีใช้ไม่ได้ในกรณีนี้"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Choose the target account, then return a flow link."
+msgstr "เลือกบัญชีเป้าหมาย แล้วคืนค่าลิงก์โฟลว์"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "No lockdown flow configured or the flow is not applicable"
+msgstr "ไม่ได้ตั้งค่าโฟลว์การล็อกบัญชี หรือโฟลว์ใช้ไม่ได้ในกรณีนี้"
+
+#: authentik/enterprise/stages/account_lockdown/api.py
+msgid "Permission denied (when targeting another user)"
+msgstr "ไม่ได้รับอนุญาต (เมื่อระบุเป้าหมายเป็นผู้ใช้อื่น)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Deactivate the user account (set is_active to False)"
+msgstr "ปิดการใช้งานบัญชีผู้ใช้ (ตั้ง is_active เป็น False)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Set an unusable password for the user"
+msgstr "ตั้งรหัสผ่านที่ใช้งานไม่ได้ให้ผู้ใช้"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Delete all active sessions for the user"
+msgstr "ลบเซสชันที่ใช้งานอยู่ทั้งหมดของผู้ใช้"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Revoke all tokens for the user (API, app password, recovery, verification, "
+"OAuth)"
+msgstr ""
+"เพิกถอนโทเคนทั้งหมดของผู้ใช้ (API, รหัสผ่านแอป, การกู้คืน, การยืนยัน, OAuth)"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid ""
+"Flow to redirect users to after self-service lockdown. This flow should not "
+"require authentication since the user's session is deleted."
+msgstr ""
+"โฟลว์ที่จะเปลี่ยนเส้นทางผู้ใช้ไปหลังล็อกบัญชีด้วยตนเอง "
+"โฟลว์นี้ไม่ควรต้องยืนยันตัวตน เนื่องจากเซสชันของผู้ใช้ถูกลบไปแล้ว"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stage"
+msgstr "สเตจล็อกบัญชี"
+
+#: authentik/enterprise/stages/account_lockdown/models.py
+msgid "Account Lockdown Stages"
+msgstr "สเตจล็อกบัญชี"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "No target user specified for account lockdown"
+msgstr "ไม่ได้ระบุผู้ใช้เป้าหมายสำหรับการล็อกบัญชี"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "You do not have permission to lock down this account."
+msgstr "คุณไม่มีสิทธิ์ล็อกบัญชีนี้"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Account lockdown failed for this account."
+msgstr "การล็อกบัญชีนี้ล้มเหลว"
+
+#: authentik/enterprise/stages/account_lockdown/stage.py
+msgid "Self-service account lockdown requires a completion flow."
+msgstr "การล็อกบัญชีด้วยตนเองต้องมีโฟลว์สำหรับสิ้นสุดกระบวนการ"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "สเตจตัวยืนยันตัวตน Endpoint แบบ Google Device Trust Connector"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "สเตจตัวยืนยันตัวตน Endpoint แบบ Google Device Trust Connector"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "อุปกรณ์ Endpoint"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "อุปกรณ์ Endpoint"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"ตั้งค่าผู้ออกใบรับรองที่จะใช้ตรวจสอบใบรับรอง "
+"ตัวเลือกนี้มีลำดับความสำคัญสูงกว่าตัวเลือก `client_certificate` บน `Brand`"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "สเตจ Mutual TLS"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "สเตจ Mutual TLS"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "สิทธิ์ในการส่งใบรับรองให้ Outpost"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authority"
+msgstr "ผู้ออกใบรับรองของสเตจ Mutual TLS"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage Certificate Authoritys"
+msgstr "ผู้ออกใบรับรองของสเตจ Mutual TLS"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "จำเป็นต้องมีใบรับรอง แต่ไม่ได้รับใบรับรอง"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "ไม่พบผู้ใช้สำหรับใบรับรองนี้"
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"ระยะเวลาที่ผู้ใช้สามารถใช้ในการกลับจากแหล่งที่มาเพื่อดำเนินโฟลว์ต่อ (รูปแบบ:"
+" hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr "สเตจแหล่งที่มา"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr "สเตจแหล่งที่มา"
+
+#: authentik/enterprise/tasks.py
+msgid "Update enterprise license status."
+msgstr "อัปเดตสถานะไลเซนส์ Enterprise"
+
+#: authentik/events/models.py
+msgid "Event"
+msgstr "เหตุการณ์"
+
+#: authentik/events/models.py
+msgid "Events"
+msgstr "เหตุการณ์"
+
+#: authentik/events/models.py
+msgid "authentik inbuilt notifications"
+msgstr "การแจ้งเตือนในตัวของ authentik"
+
+#: authentik/events/models.py
+msgid "Generic Webhook"
+msgstr "Webhook ทั่วไป"
+
+#: authentik/events/models.py
+msgid "Slack Webhook (Slack/Discord)"
+msgstr "Slack Webhook (Slack/Discord)"
+
+#: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
+msgid "Email"
+msgstr "อีเมล"
+
+#: authentik/events/models.py
+msgid ""
+"Only send notification once, for example when sending a webhook into a chat "
+"channel."
+msgstr "ส่งการแจ้งเตือนเพียงครั้งเดียว เช่น เมื่อส่ง Webhook เข้าไปในช่องแชท"
+
+#: authentik/events/models.py
+msgid ""
+"When set, the selected certificate is used to validate the certificate of "
+"the webhook server."
+msgstr ""
+"เมื่อตั้งค่าไว้ ใบรับรองที่เลือกจะถูกใช้ตรวจสอบใบรับรองของเซิร์ฟเวอร์ "
+"Webhook"
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr "ปรับแต่งเนื้อหาของคำขอ การแมปควรคืนค่าข้อมูลที่แปลงเป็น JSON ได้"
+
+#: authentik/events/models.py
+msgid "Severity"
+msgstr "ระดับความรุนแรง"
+
+#: authentik/events/models.py
+msgid "Dispatched for user"
+msgstr "ส่งสำหรับผู้ใช้"
+
+#: authentik/events/models.py
+msgid "Event user"
+msgstr "ผู้ใช้ของเหตุการณ์"
+
+#: authentik/events/models.py
+msgid "Notification Transport"
+msgstr "ช่องทางแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notification Transports"
+msgstr "ช่องทางแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notice"
+msgstr "แจ้งให้ทราบ"
+
+#: authentik/events/models.py
+msgid "Warning"
+msgstr "คำเตือน"
+
+#: authentik/events/models.py
+msgid "Alert"
+msgstr "แจ้งเตือนสำคัญ"
+
+#: authentik/events/models.py
+msgid "Notification"
+msgstr "การแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notifications"
+msgstr "การแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid ""
+"Select which transports should be used to notify the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"เลือกช่องทางส่งที่จะใช้แจ้งผู้ใช้ หากไม่เลือกเลย การแจ้งเตือนจะแสดงเฉพาะใน "
+"UI ของ authentik"
+
+#: authentik/events/models.py
+msgid "Controls which severity level the created notifications will have."
+msgstr "กำหนดระดับความรุนแรงของการแจ้งเตือนที่สร้างขึ้น"
+
+#: authentik/events/models.py
+msgid ""
+"Define which group of users this notification should be sent and shown to. "
+"If left empty, Notification won't ben sent."
+msgstr ""
+"กำหนดกลุ่มผู้ใช้ที่จะได้รับและเห็นการแจ้งเตือนนี้ หากเว้นว่าง "
+"จะไม่ส่งการแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid ""
+"When enabled, notification will be sent to user the user that triggered the "
+"event.When destination_group is configured, notification is sent to both."
+msgstr ""
+"เมื่อเปิดใช้ การแจ้งเตือนจะถูกส่งไปยังผู้ใช้ที่ทำให้เกิดเหตุการณ์ หากตั้งค่า"
+" destination_group ไว้ด้วย จะส่งไปทั้งสองทาง"
+
+#: authentik/events/models.py
+msgid "Notification Rule"
+msgstr "กฎการแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notification Rules"
+msgstr "กฎการแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transport"
+msgstr "ช่องทางแจ้งเตือนของกฎการแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Notification Rule Notification Transports"
+msgstr "ช่องทางแจ้งเตือนของกฎการแจ้งเตือน"
+
+#: authentik/events/models.py
+msgid "Webhook Mapping"
+msgstr "การแมป Webhook"
+
+#: authentik/events/models.py
+msgid "Webhook Mappings"
+msgstr "การแมป Webhook"
+
+#: authentik/events/tasks.py
+msgid "Dispatch new event notifications."
+msgstr "ส่งการแจ้งเตือนเหตุการณ์ใหม่"
+
+#: authentik/events/tasks.py
+msgid ""
+"Check if policies attached to NotificationRule match event and dispatch "
+"notification tasks."
+msgstr ""
+"ตรวจสอบว่านโยบายที่ผูกกับ NotificationRule ตรงกับเหตุการณ์หรือไม่ "
+"และส่งงานแจ้งเตือน"
+
+#: authentik/events/tasks.py
+msgid "Send notification."
+msgstr "ส่งการแจ้งเตือน"
+
+#: authentik/events/tasks.py
+msgid "Cleanup events for GDPR compliance."
+msgstr "ล้างเหตุการณ์เพื่อให้สอดคล้องกับ GDPR"
+
+#: authentik/events/tasks.py
+msgid "Cleanup seen notifications and notifications whose event expired."
+msgstr "ล้างการแจ้งเตือนที่อ่านแล้วและการแจ้งเตือนที่เหตุการณ์หมดอายุ"
+
+#: authentik/flows/api/flows.py
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
+msgstr "โฟลว์ใช้กับผู้ใช้/คำขอปัจจุบันไม่ได้: {messages}"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "นโยบาย ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "การผูก {order}"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy passed"
+msgstr "นโยบายผ่าน"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "สเตจ ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy denied"
+msgstr "นโยบายปฏิเสธ"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "End of the flow"
+msgstr "สิ้นสุดโฟลว์"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement not fulfilled"
+msgstr "ไม่เป็นไปตามข้อกำหนด"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Flow authentication requirement"
+msgstr "ข้อกำหนดการยืนยันตัวตนของโฟลว์"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement fulfilled"
+msgstr "เป็นไปตามข้อกำหนด"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Pre-flow policies"
+msgstr "นโยบายก่อนเริ่มโฟลว์"
+
+#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
+msgid "Flow"
+msgstr "โฟลว์"
+
+#: authentik/flows/apps.py
+msgid "Refresh other tabs after successful authentication."
+msgstr "รีเฟรชแท็บอื่นหลังยืนยันตัวตนสำเร็จ"
+
+#: authentik/flows/apps.py
+msgid ""
+"Upon successful authentication, re-start authentication in other open tabs."
+msgstr ""
+"เมื่อยืนยันตัวตนสำเร็จ ให้เริ่มการยืนยันตัวตนใหม่ในแท็บอื่นที่เปิดอยู่"
+
+#: authentik/flows/exceptions.py
+msgid "Flow does not apply to current user."
+msgstr "โฟลว์นี้ใช้กับผู้ใช้ปัจจุบันไม่ได้"
+
+#: authentik/flows/models.py
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "สเตจแบบไดนามิกในหน่วยความจำ: {doc}"
+
+#: authentik/flows/models.py
+msgid "Visible in the URL."
+msgstr "แสดงใน URL"
+
+#: authentik/flows/models.py
+msgid "Shown as the Title in Flow pages."
+msgstr "แสดงเป็นหัวเรื่องในหน้าโฟลว์"
+
+#: authentik/flows/models.py
+msgid ""
+"Decides what this Flow is used for. For example, the Authentication flow is "
+"redirect to when an un-authenticated user visits authentik."
+msgstr ""
+"กำหนดว่าโฟลว์นี้ใช้เพื่ออะไร ตัวอย่างเช่น "
+"โฟลว์การยืนยันตัวตนจะถูกเปลี่ยนเส้นทางไปเมื่อผู้ใช้ที่ยังไม่ยืนยันตัวตนเข้าใช้"
+" authentik"
+
+#: authentik/flows/models.py
+msgid "Background shown during execution"
+msgstr "ภาพพื้นหลังที่แสดงระหว่างดำเนินการ"
+
+#: authentik/flows/models.py
+msgid ""
+"Enable compatibility mode, increases compatibility with password managers on"
+" mobile devices."
+msgstr ""
+"เปิดใช้โหมดความเข้ากันได้ "
+"เพื่อเพิ่มความเข้ากันได้กับโปรแกรมจัดการรหัสผ่านบนอุปกรณ์มือถือ"
+
+#: authentik/flows/models.py
+msgid "Configure what should happen when a flow denies access to a user."
+msgstr "ตั้งค่าว่าจะให้เกิดอะไรขึ้นเมื่อโฟลว์ปฏิเสธการเข้าถึงของผู้ใช้"
+
+#: authentik/flows/models.py
+msgid "Required level of authentication and authorization to access a flow."
+msgstr "ระดับการยืนยันตัวตนและการอนุญาตที่จำเป็นสำหรับการเข้าถึงโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Flows"
+msgstr "โฟลว์"
+
+#: authentik/flows/models.py
+msgid "Can export a Flow"
+msgstr "สามารถส่งออกโฟลว์ได้"
+
+#: authentik/flows/models.py
+msgid "Can inspect a Flow's execution"
+msgstr "สามารถตรวจสอบการทำงานของโฟลว์ได้"
+
+#: authentik/flows/models.py
+msgid "View Flow's cache metrics"
+msgstr "ดูเมตริกแคชของโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Clear Flow's cache metrics"
+msgstr "ล้างเมตริกแคชของโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Evaluate policies during the Flow planning process."
+msgstr "ประเมินนโยบายระหว่างขั้นตอนวางแผนโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr "ประเมินนโยบายเมื่อแสดงสเตจให้ผู้ใช้"
+
+#: authentik/flows/models.py
+msgid ""
+"Configure how the flow executor should handle an invalid response to a "
+"challenge. RETRY returns the error message and a similar challenge to the "
+"executor. RESTART restarts the flow from the beginning, and "
+"RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
+msgstr ""
+"ตั้งค่าว่าตัวดำเนินการโฟลว์ควรจัดการกับการตอบกลับ challenge "
+"ที่ไม่ถูกต้องอย่างไร RETRY จะคืนข้อความข้อผิดพลาดและ challenge "
+"ที่คล้ายกันให้ตัวดำเนินการ RESTART จะเริ่มโฟลว์ใหม่ตั้งแต่ต้น และ "
+"RESTART_WITH_CONTEXT จะเริ่มโฟลว์ใหม่โดยคงบริบทปัจจุบันไว้"
+
+#: authentik/flows/models.py
+msgid "Flow Stage Binding"
+msgstr "การผูกสเตจกับโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Flow Stage Bindings"
+msgstr "การผูกสเตจกับโฟลว์"
+
+#: authentik/flows/models.py
+msgid ""
+"Flow used by an authenticated user to configure this Stage. If empty, user "
+"will not be able to configure this stage."
+msgstr ""
+"โฟลว์ที่ผู้ใช้ซึ่งยืนยันตัวตนแล้วใช้ตั้งค่าสเตจนี้ หากเว้นว่าง "
+"ผู้ใช้จะไม่สามารถตั้งค่าสเตจนี้ได้"
+
+#: authentik/flows/models.py
+msgid "Flow Token"
+msgstr "โทเคนของโฟลว์"
+
+#: authentik/flows/models.py
+msgid "Flow Tokens"
+msgstr "โทเคนของโฟลว์"
+
+#: authentik/flows/planner.py
+msgid "This link is invalid or has expired. Please request a new one."
+msgstr "ลิงก์นี้ไม่ถูกต้องหรือหมดอายุแล้ว กรุณาขอลิงก์ใหม่"
+
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "URL ถัดไปไม่ถูกต้อง"
+
+#: authentik/lib/sync/incoming/models.py
+msgid "When to trigger sync for outgoing providers"
+msgstr "เวลาที่จะเริ่มซิงค์สำหรับผู้ให้บริการขาออก"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Controls the number of objects synced in a single task"
+msgstr "กำหนดจำนวนอ็อบเจกต์ที่ซิงค์ในหนึ่งงาน"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid "Timeout for synchronization of a single page"
+msgstr "เวลาหมดสำหรับการซิงค์หนึ่งหน้า"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, authentik will attempt to discover existing resources in the "
+"remote system."
+msgstr ""
+"เมื่อเปิดใช้ authentik จะพยายามค้นหาทรัพยากรที่มีอยู่แล้วในระบบปลายทาง"
+
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr "เมื่อเปิดใช้ ผู้ให้บริการจะไม่แก้ไขหรือสร้างอ็อบเจกต์ในระบบปลายทาง"
+
+#: authentik/lib/utils/time.py
+#, python-format
+msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
+msgstr "%(value)s ไม่อยู่ในรูปแบบที่ถูกต้อง 'hours=3;minutes=1'"
+
+#: authentik/lib/validators.py
+msgid "Invalid password hash format. Must be a valid Django password hash."
+msgstr "รูปแบบแฮชรหัสผ่านไม่ถูกต้อง ต้องเป็นแฮชรหัสผ่านของ Django ที่ถูกต้อง"
+
+#: authentik/lib/validators.py
+#, python-brace-format
+msgid "The fields {field_names} must be used together."
+msgstr "ต้องใช้ฟิลด์ {field_names} ร่วมกัน"
+
+#: authentik/outposts/api/service_connections.py
+msgid ""
+"You can only use an empty kubeconfig when connecting to a local cluster."
+msgstr ""
+"ใช้ kubeconfig ว่างได้เฉพาะเมื่อเชื่อมต่อกับคลัสเตอร์ในเครื่องเท่านั้น"
+
+#: authentik/outposts/api/service_connections.py
+msgid "Invalid kubeconfig"
+msgstr "kubeconfig ไม่ถูกต้อง"
+
+#: authentik/outposts/models.py
+msgid ""
+"If enabled, use the local connection. Required Docker socket/Kubernetes "
+"Integration"
+msgstr ""
+"หากเปิดใช้ จะใช้การเชื่อมต่อภายในเครื่อง ต้องมีการเชื่อมต่อ Docker "
+"socket/Kubernetes"
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connection"
+msgstr "การเชื่อมต่อบริการของ Outpost"
+
+#: authentik/outposts/models.py
+msgid "Outpost Service-Connections"
+msgstr "การเชื่อมต่อบริการของ Outpost"
+
+#: authentik/outposts/models.py
+msgid ""
+"Can be in the format of 'unix://<path>' when connecting to a local docker "
+"daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+msgstr ""
+"อยู่ในรูปแบบ 'unix://<path>' เมื่อเชื่อมต่อกับ docker daemon ในเครื่อง หรือ "
+"'https://<hostname>:2376' เมื่อเชื่อมต่อกับระบบระยะไกล"
+
+#: authentik/outposts/models.py
+msgid ""
+"CA which the endpoint's Certificate is verified against. Can be left empty "
+"for no validation."
+msgstr "CA ที่ใช้ตรวจสอบใบรับรองของ endpoint เว้นว่างได้หากไม่ต้องการตรวจสอบ"
+
+#: authentik/outposts/models.py
+msgid ""
+"Certificate/Key used for authentication. Can be left empty for no "
+"authentication."
+msgstr "ใบรับรอง/คีย์ที่ใช้ยืนยันตัวตน เว้นว่างได้หากไม่ต้องการยืนยันตัวตน"
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connection"
+msgstr "การเชื่อมต่อบริการ Docker"
+
+#: authentik/outposts/models.py
+msgid "Docker Service-Connections"
+msgstr "การเชื่อมต่อบริการ Docker"
+
+#: authentik/outposts/models.py
+msgid ""
+"Paste your kubeconfig here. authentik will automatically use the currently "
+"selected context."
+msgstr ""
+"วาง kubeconfig ของคุณที่นี่ authentik จะใช้ context "
+"ที่เลือกอยู่ปัจจุบันโดยอัตโนมัติ"
+
+#: authentik/outposts/models.py
+msgid "Verify SSL Certificates of the Kubernetes API endpoint"
+msgstr "ตรวจสอบใบรับรอง SSL ของ endpoint Kubernetes API"
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connection"
+msgstr "การเชื่อมต่อบริการ Kubernetes"
+
+#: authentik/outposts/models.py
+msgid "Kubernetes Service-Connections"
+msgstr "การเชื่อมต่อบริการ Kubernetes"
+
+#: authentik/outposts/models.py
+msgid ""
+"Select Service-Connection authentik should use to manage this outpost. Leave"
+" empty if authentik should not handle the deployment."
+msgstr ""
+"เลือกการเชื่อมต่อบริการที่ authentik ควรใช้จัดการ Outpost นี้ "
+"เว้นว่างหากไม่ต้องการให้ authentik จัดการการดีพลอย"
+
+#: authentik/outposts/models.py
+msgid "Outpost"
+msgstr "Outpost"
+
+#: authentik/outposts/models.py
+msgid "Outposts"
+msgstr "Outpost"
+
+#: authentik/outposts/models.py
+msgid "Outpost Provider"
+msgstr "ผู้ให้บริการของ Outpost"
+
+#: authentik/outposts/models.py
+msgid "Outpost Providers"
+msgstr "ผู้ให้บริการของ Outpost"
+
+#: authentik/outposts/tasks.py
+msgid "Update cached state of service connection."
+msgstr "อัปเดตสถานะที่แคชไว้ของการเชื่อมต่อบริการ"
+
+#: authentik/outposts/tasks.py
+msgid "Create/update/monitor/delete the deployment of an Outpost."
+msgstr "สร้าง/อัปเดต/ตรวจสอบ/ลบการดีพลอยของ Outpost"
+
+#: authentik/outposts/tasks.py
+msgid "Ensure that all Outposts have valid Service Accounts and Tokens."
+msgstr "ตรวจสอบให้ Outpost ทุกตัวมีบัญชีบริการและโทเคนที่ถูกต้อง"
+
+#: authentik/outposts/tasks.py
+msgid "Send update to outpost"
+msgstr "ส่งการอัปเดตไปยัง Outpost"
+
+#: authentik/outposts/tasks.py
+msgid "Checks the local environment and create Service connections."
+msgstr "ตรวจสอบสภาพแวดล้อมในเครื่องและสร้างการเชื่อมต่อบริการ"
+
+#: authentik/outposts/tasks.py
+msgid "Terminate session on all outposts."
+msgstr "สิ้นสุดเซสชันบน Outpost ทั้งหมด"
+
+#: authentik/policies/denied.py
+msgid "Access denied"
+msgstr "การเข้าถึงถูกปฏิเสธ"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policy"
+msgstr "นโยบาย Dummy"
+
+#: authentik/policies/dummy/models.py
+msgid "Dummy Policies"
+msgstr "นโยบาย Dummy"
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+"จับคู่เหตุการณ์ที่สร้างโดยแอปพลิเคชันที่เลือก หากเว้นว่าง "
+"จะจับคู่ทุกแอปพลิเคชัน"
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected model. When left empty, all models are "
+"matched. When an app is selected, all the application's models are matched."
+msgstr ""
+"จับคู่เหตุการณ์ที่สร้างโดยโมเดลที่เลือก หากเว้นว่าง จะจับคู่ทุกโมเดล "
+"และเมื่อเลือกแอปไว้ จะจับคู่ทุกโมเดลของแอปนั้น"
+
+#: authentik/policies/event_matcher/api.py
+msgid "At least one criteria must be set."
+msgstr "ต้องกำหนดเงื่อนไขอย่างน้อยหนึ่งข้อ"
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match created events with this action type. When left empty, all action "
+"types will be matched."
+msgstr ""
+"จับคู่เหตุการณ์ที่สร้างขึ้นกับประเภทการกระทำนี้ หากเว้นว่าง "
+"จะจับคู่ทุกประเภทการกระทำ"
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Matches Event's Client IP (strict matching, for network matching use an "
+"Expression Policy)"
+msgstr ""
+"จับคู่กับ IP ของไคลเอนต์ในเหตุการณ์ (จับคู่แบบตรงตัว "
+"หากต้องการจับคู่ระดับเครือข่ายให้ใช้นโยบายนิพจน์)"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policy"
+msgstr "นโยบายจับคู่เหตุการณ์"
+
+#: authentik/policies/event_matcher/models.py
+msgid "Event Matcher Policies"
+msgstr "นโยบายจับคู่เหตุการณ์"
+
+#: authentik/policies/expiry/models.py
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr "รหัสผ่านหมดอายุไปแล้ว {days} วัน กรุณาอัปเดตรหัสผ่านของคุณ"
+
+#: authentik/policies/expiry/models.py
+msgid "Password has expired."
+msgstr "รหัสผ่านหมดอายุแล้ว"
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policy"
+msgstr "นโยบายวันหมดอายุรหัสผ่าน"
+
+#: authentik/policies/expiry/models.py
+msgid "Password Expiry Policies"
+msgstr "นโยบายวันหมดอายุรหัสผ่าน"
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policy"
+msgstr "นโยบายนิพจน์"
+
+#: authentik/policies/expression/models.py
+msgid "Expression Policies"
+msgstr "นโยบายนิพจน์"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP: ไม่พบ IP ของไคลเอนต์ในฐานข้อมูล ASN"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "IP ของไคลเอนต์ไม่อยู่ใน autonomous system ที่อนุญาต"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP: ไม่พบที่อยู่ IP ของไคลเอนต์ในฐานข้อมูล City"
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "IP ของไคลเอนต์ไม่อยู่ในประเทศที่อนุญาต"
+
+#: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr "ระยะทางจากการยืนยันตัวตนครั้งก่อนมากกว่าค่าที่กำหนด"
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr "ระยะทางไกลเกินกว่าที่จะเป็นไปได้"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "นโยบาย GeoIP"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "นโยบาย GeoIP"
+
+#: authentik/policies/models.py
+msgid "all, all policies must pass"
+msgstr "ทั้งหมด — ทุกนโยบายต้องผ่าน"
+
+#: authentik/policies/models.py
+msgid "any, any policy must pass"
+msgstr "ใดก็ได้ — มีนโยบายใดผ่านก็เพียงพอ"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Model"
+msgstr "โมเดลการผูกนโยบาย"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Models"
+msgstr "โมเดลการผูกนโยบาย"
+
+#: authentik/policies/models.py
+msgid "Negates the outcome of the policy. Messages are unaffected."
+msgstr "กลับผลลัพธ์ของนโยบาย โดยข้อความไม่ได้รับผลกระทบ"
+
+#: authentik/policies/models.py
+msgid "Timeout after which Policy execution is terminated."
+msgstr "ระยะเวลาที่เมื่อหมดแล้วจะยุติการทำงานของนโยบาย"
+
+#: authentik/policies/models.py
+msgid "Result if the Policy execution fails."
+msgstr "ผลลัพธ์เมื่อการทำงานของนโยบายล้มเหลว"
+
+#: authentik/policies/models.py
+msgid "Policy Binding"
+msgstr "การผูกนโยบาย"
+
+#: authentik/policies/models.py
+msgid "Policy Bindings"
+msgstr "การผูกนโยบาย"
+
+#: authentik/policies/models.py
+msgid ""
+"When this option is enabled, all executions of this policy will be logged. "
+"By default, only execution errors are logged."
+msgstr ""
+"เมื่อเปิดใช้ตัวเลือกนี้ การทำงานของนโยบายนี้ทั้งหมดจะถูกบันทึกไว้ "
+"โดยค่าเริ่มต้นจะบันทึกเฉพาะข้อผิดพลาด"
+
+#: authentik/policies/models.py
+msgid "Policy"
+msgstr "นโยบาย"
+
+#: authentik/policies/models.py
+msgid "Policies"
+msgstr "นโยบาย"
+
+#: authentik/policies/models.py
+msgid "View Policy's cache metrics"
+msgstr "ดูเมตริกแคชของนโยบาย"
+
+#: authentik/policies/models.py
+msgid "Clear Policy's cache metrics"
+msgstr "ล้างเมตริกแคชของนโยบาย"
+
+#: authentik/policies/password/models.py
+msgid "How many times the password hash is allowed to be on haveibeenpwned"
+msgstr "จำนวนครั้งที่อนุญาตให้แฮชรหัสผ่านปรากฏบน haveibeenpwned"
+
+#: authentik/policies/password/models.py
+msgid ""
+"If the zxcvbn score is equal or less than this value, the policy will fail."
+msgstr "หากคะแนน zxcvbn เท่ากับหรือน้อยกว่าค่านี้ นโยบายจะไม่ผ่าน"
+
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr "รหัสผ่านไม่ถูกต้อง"
+
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr "รหัสผ่านนี้ปรากฏอยู่ในรายการออนไลน์ {count} รายการ"
+
+#: authentik/policies/password/models.py
+msgid "Password is too weak."
+msgstr "รหัสผ่านคาดเดาง่ายเกินไป"
+
+#: authentik/policies/password/models.py
+msgid "Password Policy"
+msgstr "นโยบายรหัสผ่าน"
+
+#: authentik/policies/password/models.py
+msgid "Password Policies"
+msgstr "นโยบายรหัสผ่าน"
+
+#: authentik/policies/reputation/api.py
+msgid "Either IP or Username must be checked"
+msgstr "ต้องเลือกตรวจสอบ IP หรือชื่อผู้ใช้อย่างน้อยหนึ่งอย่าง"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policy"
+msgstr "นโยบายความน่าเชื่อถือ"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Policies"
+msgstr "นโยบายความน่าเชื่อถือ"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Score"
+msgstr "คะแนนความน่าเชื่อถือ"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Scores"
+msgstr "คะแนนความน่าเชื่อถือ"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Permission denied"
+msgstr "ไม่ได้รับอนุญาต"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "User's avatar"
+msgstr "รูปโปรไฟล์ของผู้ใช้"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Not you?"
+msgstr "ไม่ใช่คุณ?"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Error"
+msgstr "ข้อผิดพลาด"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Request has been denied."
+msgstr "คำขอถูกปฏิเสธ"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Messages:"
+msgstr "ข้อความ:"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Explanation:"
+msgstr "คำอธิบาย:"
+
+#: authentik/policies/templates/policies/denied.html
+#, python-format
+msgid ""
+"\n"
+"                    Policy binding '%(name)s' returned result '%(result)s'\n"
+"                    "
+msgstr ""
+"\n"
+"                    การผูกนโยบาย '%(name)s' คืนผลลัพธ์ '%(result)s'\n"
+"                    "
+
+#: authentik/policies/views.py
+msgid "Failed to resolve application"
+msgstr "ไม่สามารถระบุแอปพลิเคชันได้"
+
+#: authentik/providers/ldap/models.py
+msgid "DN under which objects are accessible."
+msgstr "DN ที่ใช้เข้าถึงอ็อบเจกต์"
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for uidNumbers, this number is added to the user.pk to make sure "
+"that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
+"that we don't collide with local users uidNumber"
+msgstr ""
+"ค่าเริ่มต้นของ uidNumber ตัวเลขนี้จะถูกบวกเข้ากับ user.pk "
+"เพื่อให้แน่ใจว่าค่าไม่ต่ำเกินไปสำหรับผู้ใช้ POSIX ค่าเริ่มต้นคือ 2000 "
+"เพื่อไม่ให้ชนกับ uidNumber ของผู้ใช้ในเครื่อง"
+
+#: authentik/providers/ldap/models.py
+msgid ""
+"The start for gidNumbers, this number is added to a number generated from "
+"the group.pk to make sure that the numbers aren't too low for POSIX groups. "
+"Default is 4000 to ensure that we don't collide with local groups or users "
+"primary groups gidNumber"
+msgstr ""
+"ค่าเริ่มต้นของ gidNumber ตัวเลขนี้จะถูกบวกเข้ากับค่าที่สร้างจาก group.pk "
+"เพื่อให้แน่ใจว่าค่าไม่ต่ำเกินไปสำหรับกลุ่ม POSIX ค่าเริ่มต้นคือ 4000 "
+"เพื่อไม่ให้ชนกับ gidNumber ของกลุ่มในเครื่องหรือกลุ่มหลักของผู้ใช้"
+
+#: authentik/providers/ldap/models.py authentik/providers/radius/models.py
+msgid ""
+"When enabled, code-based multi-factor authentication can be used by "
+"appending a semicolon and the TOTP code to the password. This should only be"
+" enabled if all users that will bind to this provider have a TOTP device "
+"configured, as otherwise a password may incorrectly be rejected if it "
+"contains a semicolon."
+msgstr ""
+"เมื่อเปิดใช้ จะสามารถใช้การยืนยันตัวตนหลายปัจจัยแบบรหัสได้ "
+"โดยต่อท้ายรหัสผ่านด้วยเครื่องหมายอัฒภาคและรหัส TOTP "
+"ควรเปิดใช้เฉพาะเมื่อผู้ใช้ทุกคนที่จะ bind กับผู้ให้บริการนี้มีอุปกรณ์ TOTP "
+"ตั้งค่าไว้แล้ว "
+"ไม่เช่นนั้นรหัสผ่านที่มีเครื่องหมายอัฒภาคอาจถูกปฏิเสธอย่างไม่ถูกต้อง"
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Provider"
+msgstr "ผู้ให้บริการ LDAP"
+
+#: authentik/providers/ldap/models.py
+msgid "LDAP Providers"
+msgstr "ผู้ให้บริการ LDAP"
+
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "ค้นหาไดเรกทอรี LDAP ทั้งหมด"
+
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr "รูปแบบ Regex ไม่ถูกต้อง: {url}"
+
+#: authentik/providers/oauth2/models.py
+msgid "Confidential"
+msgstr "Confidential"
+
+#: authentik/providers/oauth2/models.py
+msgid "Public"
+msgstr "Public"
+
+#: authentik/providers/oauth2/models.py
+msgid "Same identifier is used for all providers"
+msgstr "ใช้ตัวระบุเดียวกันสำหรับผู้ให้บริการทั้งหมด"
+
+#: authentik/providers/oauth2/models.py
+msgid "Each provider has a different issuer, based on the application slug."
+msgstr "ผู้ให้บริการแต่ละรายมี issuer ต่างกัน โดยอ้างอิงจากสลักของแอปพลิเคชัน"
+
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr "เปรียบเทียบ URL แบบตรงทั้งหมด"
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr "จับคู่ URL ด้วย Regular Expression"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization"
+msgstr "การอนุญาต"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout"
+msgstr "ออกจากระบบ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Back-channel"
+msgstr "Back-channel"
+
+#: authentik/providers/oauth2/models.py
+msgid "Front-channel"
+msgstr "Front-channel"
+
+#: authentik/providers/oauth2/models.py
+msgid "code (Authorization Code Flow)"
+msgstr "code (Authorization Code Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token (Implicit Flow)"
+msgstr "id_token (Implicit Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "id_token token (Implicit Flow)"
+msgstr "id_token token (Implicit Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code token (Hybrid Flow)"
+msgstr "code token (Hybrid Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token (Hybrid Flow)"
+msgstr "code id_token (Hybrid Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "code id_token token (Hybrid Flow)"
+msgstr "code id_token token (Hybrid Flow)"
+
+#: authentik/providers/oauth2/models.py
+msgid "HS256 (Symmetric Encryption)"
+msgstr "HS256 (การเข้ารหัสแบบสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "RS256 (Asymmetric Encryption)"
+msgstr "RS256 (การเข้ารหัสแบบอสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256 (การเข้ารหัสแบบอสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr "ES384 (การเข้ารหัสแบบอสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr "ES512 (การเข้ารหัสแบบอสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "EdDSA (Asymmetric Encryption)"
+msgstr "EdDSA (การเข้ารหัสแบบอสมมาตร)"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope used by the client"
+msgstr "Scope ที่ไคลเอนต์ใช้"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Description shown to the user when consenting. If left empty, the user won't"
+" be informed."
+msgstr ""
+"คำอธิบายที่แสดงให้ผู้ใช้เห็นเมื่อให้ความยินยอม หากเว้นว่าง "
+"ผู้ใช้จะไม่ได้รับแจ้ง"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mapping"
+msgstr "การแมป Scope"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope Mappings"
+msgstr "การแมป Scope"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Type"
+msgstr "ประเภทไคลเอนต์"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Confidential clients are capable of maintaining the confidentiality of their"
+" credentials. Public clients are incapable"
+msgstr ""
+"ไคลเอนต์แบบ Confidential สามารถเก็บรักษาความลับของข้อมูลรับรองได้ "
+"ส่วนไคลเอนต์แบบ Public ทำไม่ได้"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client ID"
+msgstr "Client ID"
+
+#: authentik/providers/oauth2/models.py
+msgid "Client Secret"
+msgstr "Client Secret"
+
+#: authentik/providers/oauth2/models.py
+msgid "Redirect URIs"
+msgstr "Redirect URI"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout URI"
+msgstr "Logout URI"
+
+#: authentik/providers/oauth2/models.py
+msgid "Logout Method"
+msgstr "วิธีออกจากระบบ"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Backchannel logs out with server to server calls. Frontchannel uses iframes "
+"in your browser"
+msgstr ""
+"Backchannel จะออกจากระบบด้วยการเรียกแบบเซิร์ฟเวอร์ต่อเซิร์ฟเวอร์ ส่วน "
+"Frontchannel ใช้ iframe ในเบราว์เซอร์ของคุณ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Include claims in id_token"
+msgstr "รวม claim ไว้ใน id_token"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Include User claims from scopes in the id_token, for applications that don't"
+" access the userinfo endpoint."
+msgstr ""
+"รวม claim ของผู้ใช้จาก scope ไว้ใน id_token สำหรับแอปพลิเคชันที่ไม่เรียก "
+"endpoint userinfo"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Access codes not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"รหัสเข้าถึงจะใช้ไม่ได้ตั้งแต่เวลาปัจจุบัน + ค่านี้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Tokens not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"โทเคนจะใช้ไม่ได้ตั้งแต่เวลาปัจจุบัน + ค่านี้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"When refreshing a token, if the refresh token is valid for less than this "
+"duration, it will be renewed. When set to seconds=0, token will always be "
+"renewed. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"เมื่อรีเฟรชโทเคน หาก refresh token เหลืออายุน้อยกว่าระยะเวลานี้ "
+"ระบบจะต่ออายุให้ หากตั้งเป็น seconds=0 จะต่ออายุโทเคนทุกครั้ง (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Configure what data should be used as unique User Identifier. For most "
+"cases, the default should be fine."
+msgstr ""
+"ตั้งค่าว่าจะใช้ข้อมูลใดเป็นตัวระบุผู้ใช้ที่ไม่ซ้ำกัน "
+"โดยทั่วไปค่าเริ่มต้นก็เพียงพอ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Configure how the issuer field of the ID Token should be filled."
+msgstr "ตั้งค่าวิธีเติมค่าฟิลด์ issuer ของ ID Token"
+
+#: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "คีย์ที่ใช้ลงนามโทเคน"
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "คีย์เข้ารหัส"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr ""
+"คีย์ที่ใช้เข้ารหัสโทเคน เมื่อตั้งค่าไว้ โทเคนจะถูกเข้ารหัสและคืนค่าเป็น JWE"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Any JWT signed by the JWK of the selected source can be used to "
+"authenticate."
+msgstr ""
+"JWT ใดก็ตามที่ลงนามด้วย JWK ของแหล่งที่มาที่เลือกสามารถใช้ยืนยันตัวตนได้"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Provider"
+msgstr "ผู้ให้บริการ OAuth2/OpenID"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2/OpenID Providers"
+msgstr "ผู้ให้บริการ OAuth2/OpenID"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Source"
+msgstr "แหล่งที่มา JWT Federation ของผู้ให้บริการ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Sources"
+msgstr "แหล่งที่มา JWT Federation ของผู้ให้บริการ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Provider"
+msgstr "ผู้ให้บริการ JWT Federation ของผู้ให้บริการ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Provider JWT Federation Providers"
+msgstr "ผู้ให้บริการ JWT Federation ของผู้ให้บริการ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scopes"
+msgstr "Scope"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code"
+msgstr "รหัส"
+
+#: authentik/providers/oauth2/models.py
+msgid "Nonce"
+msgstr "Nonce"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge"
+msgstr "Code Challenge"
+
+#: authentik/providers/oauth2/models.py
+msgid "Code Challenge Method"
+msgstr "วิธี Code Challenge"
+
+#: authentik/providers/oauth2/models.py
+msgid "DPoP JWK Thumbprint"
+msgstr "DPoP JWK Thumbprint"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Code"
+msgstr "Authorization Code"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization Codes"
+msgstr "Authorization Code"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Token"
+msgstr "โทเคนเข้าถึง OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Tokens"
+msgstr "โทเคนเข้าถึง OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "ID Token"
+msgstr "ID Token"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Token"
+msgstr "โทเคนรีเฟรช OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Tokens"
+msgstr "โทเคนรีเฟรช OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "Provider"
+msgstr "ผู้ให้บริการ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Default application group"
+msgstr "กลุ่มแอปพลิเคชันเริ่มต้น"
+
+#: authentik/providers/oauth2/models.py
+msgid "Group to assign to automatically created applications."
+msgstr "กลุ่มที่จะกำหนดให้แอปพลิเคชันที่สร้างขึ้นอัตโนมัติ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Override authorization flow"
+msgstr "แทนที่โฟลว์การอนุญาต"
+
+#: authentik/providers/oauth2/models.py
+msgid "Authorization flow applied to dynamically registered clients."
+msgstr "โฟลว์การอนุญาตที่ใช้กับไคลเอนต์ที่ลงทะเบียนแบบไดนามิก"
+
+#: authentik/providers/oauth2/models.py
+msgid "Override invalidation flow"
+msgstr "แทนที่โฟลว์การยกเลิกเซสชัน"
+
+#: authentik/providers/oauth2/models.py
+msgid "Override property mappings"
+msgstr "แทนที่การแมปคุณสมบัติ"
+
+#: authentik/providers/oauth2/models.py
+msgid "Scope mappings applied to dynamically registered clients."
+msgstr "การแมป Scope ที่ใช้กับไคลเอนต์ที่ลงทะเบียนแบบไดนามิก"
+
+#: authentik/providers/oauth2/models.py
+msgid "Access token validity"
+msgstr "อายุของ access token"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum access token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"อายุสูงสุดของ access token สำหรับไคลเอนต์ที่ลงทะเบียนไว้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/oauth2/models.py
+msgid "Refresh token validity"
+msgstr "อายุของ refresh token"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Maximum refresh token validity for registered clients (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"อายุสูงสุดของ refresh token สำหรับไคลเอนต์ที่ลงทะเบียนไว้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/oauth2/models.py
+msgid "Allowed grant types"
+msgstr "ประเภท grant ที่อนุญาต"
+
+#: authentik/providers/oauth2/models.py
+msgid "If empty, all grant types are allowed."
+msgstr "หากเว้นว่าง จะอนุญาตทุกประเภท grant"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registration"
+msgstr "การลงทะเบียนไคลเอนต์แบบไดนามิกของ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Dynamic Client Registrations"
+msgstr "การลงทะเบียนไคลเอนต์แบบไดนามิกของ OAuth2"
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mapping"
+msgstr "การแมปคุณสมบัติของการลงทะเบียนไคลเอนต์แบบไดนามิก"
+
+#: authentik/providers/oauth2/models.py
+msgid "Dynamic Client Registration Property Mappings"
+msgstr "การแมปคุณสมบัติของการลงทะเบียนไคลเอนต์แบบไดนามิก"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Send a back-channel logout request to the registered client"
+msgstr "ส่งคำขอออกจากระบบแบบ back-channel ไปยังไคลเอนต์ที่ลงทะเบียนไว้"
+
+#: authentik/providers/oauth2/tasks.py
+msgid "Handle backchannel logout notifications dispatched via signal"
+msgstr "จัดการการแจ้งเตือนออกจากระบบแบบ backchannel ที่ส่งผ่าน signal"
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid "Redirecting..."
+msgstr "กำลังเปลี่ยนเส้นทาง..."
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+msgid ""
+"Your browser does not support JavaScript, please click below to continue."
+msgstr ""
+"เบราว์เซอร์ของคุณไม่รองรับ JavaScript กรุณาคลิกด้านล่างเพื่อดำเนินการต่อ"
+
+#: authentik/providers/oauth2/templates/if/oauth_form_post.html
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr "ดำเนินการต่อ"
+
+#: authentik/providers/oauth2/views/device_init.py
+msgid "Invalid code"
+msgstr "รหัสไม่ถูกต้อง"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your User Information"
+msgstr "ความเข้ากันได้กับ GitHub: เข้าถึงข้อมูลผู้ใช้ของคุณ"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access you Email addresses"
+msgstr "ความเข้ากันได้กับ GitHub: เข้าถึงที่อยู่อีเมลของคุณ"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your Groups"
+msgstr "ความเข้ากันได้กับ GitHub: เข้าถึงกลุ่มของคุณ"
+
+#: authentik/providers/proxy/api.py
+msgid "User and password attributes must be set when basic auth is enabled."
+msgstr "ต้องตั้งค่าแอตทริบิวต์ผู้ใช้และรหัสผ่านเมื่อเปิดใช้ basic auth"
+
+#: authentik/providers/proxy/api.py
+msgid "Internal host cannot be empty when forward auth is disabled."
+msgstr "internal host ต้องไม่เว้นว่างเมื่อปิดใช้ forward auth"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Session"
+msgstr "เซสชันพร็อกซี"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Sessions"
+msgstr "เซสชันพร็อกซี"
+
+#: authentik/providers/proxy/models.py
+msgid "Validate SSL Certificates of upstream servers"
+msgstr "ตรวจสอบใบรับรอง SSL ของเซิร์ฟเวอร์ต้นทาง"
+
+#: authentik/providers/proxy/models.py
+msgid "Internal host SSL Validation"
+msgstr "การตรวจสอบ SSL ของ internal host"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
+"with internal_host."
+msgstr ""
+"เปิดใช้การรองรับ forwardAuth ใน traefik และ auth_request ของ nginx "
+"ใช้ร่วมกับ internal_host ไม่ได้"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Regular expressions for which authentication is not required. Each new line "
+"is interpreted as a new Regular Expression."
+msgstr ""
+"Regular expression ที่ไม่ต้องยืนยันตัวตน แต่ละบรรทัดใหม่จะถือเป็น Regular "
+"Expression หนึ่งรายการ"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"When enabled, this provider will intercept the authorization header and "
+"authenticate requests based on its value."
+msgstr ""
+"เมื่อเปิดใช้ ผู้ให้บริการนี้จะดักอ่านเฮดเดอร์ authorization "
+"และยืนยันตัวตนคำขอตามค่าในเฮดเดอร์นั้น"
+
+#: authentik/providers/proxy/models.py
+msgid "Set HTTP-Basic Authentication"
+msgstr "ตั้งค่า HTTP-Basic Authentication"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"Set a custom HTTP-Basic Authentication header based on values from "
+"authentik."
+msgstr "ตั้งเฮดเดอร์ HTTP-Basic Authentication แบบกำหนดเองจากค่าใน authentik"
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Username Key"
+msgstr "คีย์ชื่อผู้ใช้ของ HTTP-Basic"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
+" set, the user's Email address is used."
+msgstr ""
+"แอตทริบิวต์ผู้ใช้/กลุ่มที่ใช้เป็นส่วนผู้ใช้ของเฮดเดอร์ HTTP-Basic "
+"หากไม่ตั้งค่า จะใช้ที่อยู่อีเมลของผู้ใช้"
+
+#: authentik/providers/proxy/models.py
+msgid "HTTP-Basic Password Key"
+msgstr "คีย์รหัสผ่านของ HTTP-Basic"
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgstr "แอตทริบิวต์ผู้ใช้/กลุ่มที่ใช้เป็นส่วนรหัสผ่านของเฮดเดอร์ HTTP-Basic"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Provider"
+msgstr "ผู้ให้บริการพร็อกซี"
+
+#: authentik/providers/proxy/models.py
+msgid "Proxy Providers"
+msgstr "ผู้ให้บริการพร็อกซี"
+
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"กำหนดว่าเซสชันจะอยู่นานเท่าใด ค่าเริ่มต้น 0 "
+"หมายถึงเซสชันจะอยู่จนกว่าจะปิดเบราว์เซอร์ (รูปแบบ: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr "เมื่อตั้งเป็น true โทเคนการเชื่อมต่อจะถูกลบเมื่อยกเลิกการเชื่อมต่อ"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "ผู้ให้บริการ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "ผู้ให้บริการ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "Endpoint ของ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "Endpoint ของ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mapping"
+msgstr "การแมปคุณสมบัติของ Endpoint"
+
+#: authentik/providers/rac/models.py
+msgid "Endpoint Property Mappings"
+msgstr "การแมปคุณสมบัติของ Endpoint"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "โทเคนการเชื่อมต่อ RAC"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "โทเคนการเชื่อมต่อ RAC"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "ถึงขีดจำกัดจำนวนการเชื่อมต่อสูงสุดแล้ว"
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(คุณเชื่อมต่ออยู่แล้วในแท็บ/หน้าต่างอื่น)"
+
+#: authentik/providers/radius/models.py
+msgid "Shared secret between clients and server to hash packets."
+msgstr "ความลับร่วมระหว่างไคลเอนต์กับเซิร์ฟเวอร์สำหรับแฮชแพ็กเก็ต"
+
+#: authentik/providers/radius/models.py
+msgid ""
+"List of CIDRs (comma-separated) that clients can connect from. A more "
+"specific CIDR will match before a looser one. Clients connecting from a non-"
+"specified CIDR will be dropped."
+msgstr ""
+"รายการ CIDR (คั่นด้วยจุลภาค) ที่ไคลเอนต์สามารถเชื่อมต่อได้ CIDR "
+"ที่เจาะจงกว่าจะถูกจับคู่ก่อน CIDR ที่กว้างกว่า ไคลเอนต์ที่เชื่อมต่อจาก CIDR "
+"ที่ไม่ได้ระบุจะถูกตัดการเชื่อมต่อ"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider"
+msgstr "ผู้ให้บริการ Radius"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Providers"
+msgstr "ผู้ให้บริการ Radius"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ Radius"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ Radius"
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"เมื่อเลือกคู่คีย์สำหรับลงนามไว้ ต้องเลือกอย่างน้อยหนึ่งอย่างระหว่าง 'Sign "
+"assertion' และ 'Sign Response'"
+
+#: authentik/providers/saml/api/providers.py
+msgid "Only RSA, EC, and DSA key types are supported for SAML signing."
+msgstr "การลงนาม SAML รองรับเฉพาะคีย์ประเภท RSA, EC และ DSA"
+
+#: authentik/providers/saml/api/providers.py
+msgid "Invalid XML Syntax"
+msgstr "ไวยากรณ์ XML ไม่ถูกต้อง"
+
+#: authentik/providers/saml/api/providers.py
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "นำเข้า Metadata ไม่สำเร็จ: {messages}"
+
+#: authentik/providers/saml/models.py
+msgid "ACS URL"
+msgstr "ACS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Service Provider Binding"
+msgstr "การผูกของ Service Provider"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the response back to the Service "
+"Provider."
+msgstr "กำหนดวิธีที่ authentik ส่งการตอบกลับไปยัง Service Provider"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+"ค่าของฟิลด์ audience restriction ใน assertion หากเว้นว่าง จะไม่เพิ่มการจำกัด"
+" audience"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Also known as EntityID. Providing a value overrides the default issuer "
+"generated by authentik."
+msgstr ""
+"หรือที่เรียกว่า EntityID การระบุค่านี้จะแทนที่ issuer เริ่มต้นที่ authentik "
+"สร้างขึ้น"
+
+#: authentik/providers/saml/models.py
+msgid "SLS URL"
+msgstr "SLS URL"
+
+#: authentik/providers/saml/models.py
+msgid "Single Logout Service URL where the logout response should be sent."
+msgstr "URL ของ Single Logout Service ที่จะส่งการตอบกลับการออกจากระบบไป"
+
+#: authentik/providers/saml/models.py
+msgid "SLS Binding"
+msgstr "การผูกของ SLS"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the logout response back to the Service "
+"Provider."
+msgstr ""
+"กำหนดวิธีที่ authentik ส่งการตอบกลับการออกจากระบบไปยัง Service Provider"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Method to use for logout. Front-channel iframe loads all logout URLs "
+"simultaneously in hidden iframes. Front-channel native uses your active "
+"browser tab to send post requests and redirect to providers. Back-channel "
+"sends logout requests directly from the server without user interaction "
+"(requires POST SLS binding)."
+msgstr ""
+"วิธีที่ใช้ออกจากระบบ Front-channel iframe จะโหลด URL "
+"ออกจากระบบทั้งหมดพร้อมกันใน iframe ที่ซ่อนไว้ Front-channel native "
+"จะใช้แท็บเบราว์เซอร์ที่ใช้งานอยู่ส่งคำขอแบบ post "
+"และเปลี่ยนเส้นทางไปยังผู้ให้บริการ Back-channel "
+"จะส่งคำขอออกจากระบบจากเซิร์ฟเวอร์โดยตรงโดยไม่ต้องมีการโต้ตอบจากผู้ใช้ "
+"(ต้องใช้การผูก SLS แบบ POST)"
+
+#: authentik/providers/saml/models.py
+msgid "NameID Property Mapping"
+msgstr "การแมปคุณสมบัติ NameID"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the NameID value will be created. When left empty, the "
+"NameIDPolicy of the incoming request will be considered"
+msgstr ""
+"ตั้งค่าวิธีสร้างค่า NameID หากเว้นว่าง ระบบจะพิจารณา NameIDPolicy "
+"จากคำขอที่เข้ามา"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr "การแมปคุณสมบัติ AuthnContextClassRef"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+"ตั้งค่าวิธีสร้างค่า AuthnContextClassRef หากเว้นว่าง ค่า "
+"AuthnContextClassRef จะถูกกำหนดตามวิธีการยืนยันตัวตนที่ผู้ใช้ใช้"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion valid not before current time + this value (Format: "
+"hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+"assertion จะยังใช้ไม่ได้ก่อนเวลาปัจจุบัน + ค่านี้ (รูปแบบ: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"assertion จะใช้ไม่ได้ตั้งแต่เวลาปัจจุบัน + ค่านี้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"เซสชันจะใช้ไม่ได้ตั้งแต่เวลาปัจจุบัน + ค่านี้ (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA1"
+msgstr "SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA256"
+msgstr "SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA384"
+msgstr "SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "SHA512"
+msgstr "SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA1"
+msgstr "RSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA256"
+msgstr "RSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA384"
+msgstr "RSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "RSA-SHA512"
+msgstr "RSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "DSA-SHA1"
+msgstr "DSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertion's Signatures will be validated against "
+"this certificate. To allow unsigned Requests, leave on default."
+msgstr ""
+"เมื่อเลือกไว้ ลายเซ็นของ assertion ที่เข้ามาจะถูกตรวจสอบกับใบรับรองนี้ "
+"หากต้องการอนุญาตคำขอที่ไม่ได้ลงนาม ให้คงค่าเริ่มต้นไว้"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Verification Certificate"
+msgstr "ใบรับรองสำหรับตรวจสอบ"
+
+#: authentik/providers/saml/models.py
+msgid "Keypair used to sign outgoing Responses going to the Service Provider."
+msgstr "คู่คีย์ที่ใช้ลงนามการตอบกลับที่ส่งออกไปยัง Service Provider"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Signing Keypair"
+msgstr "คู่คีย์สำหรับลงนาม"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"เมื่อเลือกไว้ assertion ที่เข้ามาจะถูกเข้ารหัสโดย IdP "
+"ด้วยคีย์สาธารณะของคู่คีย์เข้ารหัส และ SP จะถอดรหัส assertion ด้วยคีย์ส่วนตัว"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "คู่คีย์เข้ารหัส"
+
+#: authentik/providers/saml/models.py
+msgid "Default relay_state value for IDP-initiated logins"
+msgstr "ค่า relay_state เริ่มต้นสำหรับการเข้าสู่ระบบที่เริ่มจาก IdP"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider"
+msgstr "ผู้ให้บริการ SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers"
+msgstr "ผู้ให้บริการ SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mapping"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mappings"
+msgstr "การแมปคุณสมบัติของผู้ให้บริการ SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "ผู้ให้บริการ SAML จาก Metadata"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "ผู้ให้บริการ SAML จาก Metadata"
+
+#: authentik/providers/saml/models.py
+msgid "Link to the user's authenticated session"
+msgstr "ลิงก์ไปยังเซสชันที่ยืนยันตัวตนแล้วของผู้ใช้"
+
+#: authentik/providers/saml/models.py
+msgid "SAML SessionIndex for this session"
+msgstr "SAML SessionIndex ของเซสชันนี้"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID value for this session"
+msgstr "ค่า SAML NameID ของเซสชันนี้"
+
+#: authentik/providers/saml/models.py
+msgid "SAML NameID format"
+msgstr "รูปแบบ SAML NameID"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Issuer used for this session"
+msgstr "SAML Issuer ที่ใช้สำหรับเซสชันนี้"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Session"
+msgstr "เซสชัน SAML"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Sessions"
+msgstr "เซสชัน SAML"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (Silent)"
+msgstr "OAuth (แบบเงียบ)"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth (interactive)"
+msgstr "OAuth (แบบมีการโต้ตอบ)"
+
+#: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "ค่าเริ่มต้น"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
+msgid "Salesforce"
+msgstr "Salesforce"
+
+#: authentik/providers/scim/models.py
+msgid "GitLab"
+msgstr "GitLab"
+
+#: authentik/providers/scim/models.py
+msgid "Webex"
+msgstr "Webex"
+
+#: authentik/providers/scim/models.py
+msgid "vCenter"
+msgstr "vCenter"
+
+#: authentik/providers/scim/models.py
+msgid "Group filters used to define sync-scope for groups."
+msgstr "ตัวกรองกลุ่มที่ใช้กำหนดขอบเขตการซิงค์ของกลุ่ม"
+
+#: authentik/providers/scim/models.py
+msgid "Base URL to SCIM requests, usually ends in /v2"
+msgstr "Base URL สำหรับคำขอ SCIM โดยทั่วไปลงท้ายด้วย /v2"
+
+#: authentik/providers/scim/models.py
+msgid "Authentication token"
+msgstr "โทเคนสำหรับยืนยันตัวตน"
+
+#: authentik/providers/scim/models.py
+msgid "OAuth Source used for authentication"
+msgstr "แหล่งที่มา OAuth ที่ใช้ยืนยันตัวตน"
+
+#: authentik/providers/scim/models.py
+msgid "Additional OAuth parameters, such as grant_type"
+msgstr "พารามิเตอร์ OAuth เพิ่มเติม เช่น grant_type"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr "โหมดความเข้ากันได้ของ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr "ปรับพฤติกรรมของ authentik ให้เข้ากับการใช้งาน SCIM เฉพาะของผู้จำหน่าย"
+
+#: authentik/providers/scim/models.py
+msgid ""
+"Cache duration for ServiceProviderConfig responses. Set minutes=0 to "
+"disable."
+msgstr ""
+"ระยะเวลาแคชสำหรับการตอบกลับ ServiceProviderConfig ตั้ง minutes=0 เพื่อปิดใช้"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider"
+msgstr "ผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Providers"
+msgstr "ผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filter"
+msgstr "ตัวกรองกลุ่มของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Group Filters"
+msgstr "ตัวกรองกลุ่มของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mapping"
+msgstr "การแมปคุณสมบัติกลุ่มของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIMProvider Group Property Mappings"
+msgstr "การแมปคุณสมบัติกลุ่มของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mapping"
+msgstr "การแมปของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mappings"
+msgstr "การแมปของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync SCIM provider objects."
+msgstr "ซิงค์อ็อบเจกต์ของผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Full sync for SCIM provider."
+msgstr "ซิงค์ทั้งหมดสำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a direct object (user, group) for SCIM provider."
+msgstr "ซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a direct object (user, group) for SCIM providers."
+msgstr "ส่งงานซิงค์อ็อบเจกต์โดยตรง (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Delete an object (user, group) for SCIM provider."
+msgstr "ลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch deletions for an object (user, group) for SCIM providers."
+msgstr "ส่งงานลบอ็อบเจกต์ (ผู้ใช้, กลุ่ม) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Sync a related object (memberships) for SCIM provider."
+msgstr "ซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/providers/scim/tasks.py
+msgid "Dispatch syncs for a related object (memberships) for SCIM providers."
+msgstr ""
+"ส่งงานซิงค์อ็อบเจกต์ที่เกี่ยวข้อง (การเป็นสมาชิก) สำหรับผู้ให้บริการ SCIM"
+
+#: authentik/rbac/models.py
+msgid "Role"
+msgstr "บทบาท"
+
+#: authentik/rbac/models.py
+msgid "Roles"
+msgstr "บทบาท"
+
+#: authentik/rbac/models.py
+msgid "Can assign permissions to roles"
+msgstr "สามารถกำหนดสิทธิ์ให้บทบาทได้"
+
+#: authentik/rbac/models.py
+msgid "Can unassign permissions from roles"
+msgstr "สามารถถอนสิทธิ์จากบทบาทได้"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "สิทธิ์เริ่มต้น"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permission"
+msgstr "สิทธิ์ในชุดสิทธิ์เริ่มต้น"
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions Permissions"
+msgstr "สิทธิ์ในชุดสิทธิ์เริ่มต้น"
+
+#: authentik/rbac/models.py
+msgid "System permission"
+msgstr "สิทธิ์ระบบ"
+
+#: authentik/rbac/models.py
+msgid "System permissions"
+msgstr "สิทธิ์ระบบ"
+
+#: authentik/rbac/models.py
+msgid "Can view system info"
+msgstr "สามารถดูข้อมูลระบบได้"
+
+#: authentik/rbac/models.py
+msgid "Can access admin interface"
+msgstr "สามารถเข้าถึงอินเทอร์เฟซผู้ดูแลระบบได้"
+
+#: authentik/rbac/models.py
+msgid "Can view system settings"
+msgstr "สามารถดูการตั้งค่าระบบได้"
+
+#: authentik/rbac/models.py
+msgid "Can edit system settings"
+msgstr "สามารถแก้ไขการตั้งค่าระบบได้"
+
+#: authentik/rbac/models.py
+msgid "Can view media files"
+msgstr "สามารถดูไฟล์สื่อได้"
+
+#: authentik/rbac/models.py
+msgid "Can manage media files"
+msgstr "สามารถจัดการไฟล์สื่อได้"
+
+#: authentik/recovery/management/commands/create_admin_group.py
+msgid "Create admin group if the default group gets deleted."
+msgstr "สร้างกลุ่มผู้ดูแลระบบหากกลุ่มเริ่มต้นถูกลบ"
+
+#: authentik/recovery/management/commands/create_recovery_key.py
+msgid "Create a Key which can be used to restore access to authentik."
+msgstr "สร้างคีย์ที่ใช้กู้คืนการเข้าถึง authentik ได้"
+
+#: authentik/recovery/views.py
+msgid "Used recovery-link to authenticate."
+msgstr "ใช้ลิงก์กู้คืนเพื่อยืนยันตัวตน"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "realm ของ Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr "krb5.conf แบบกำหนดเองที่จะใช้ โดยค่าเริ่มต้นจะใช้ของระบบ"
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr "ประเภทเซิร์ฟเวอร์ KAdmin"
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "ซิงค์ผู้ใช้จาก Kerberos เข้ามาใน authentik"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr "เมื่อผู้ใช้เปลี่ยนรหัสผ่าน ให้ซิงค์กลับไปยัง Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "principal ที่ใช้ยืนยันตัวตนกับ kadmin สำหรับการซิงค์"
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "รหัสผ่านที่ใช้ยืนยันตัวตนกับ kadmin สำหรับการซิงค์"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"keytab ที่ใช้ยืนยันตัวตนกับ kadmin สำหรับการซิงค์ ต้องเข้ารหัสแบบ base64 "
+"หรืออยู่ในรูปแบบ TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"แคชข้อมูลรับรองที่ใช้ยืนยันตัวตนกับ kadmin สำหรับการซิงค์ ต้องอยู่ในรูปแบบ "
+"TYPE:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"บังคับใช้ชื่อเซิร์ฟเวอร์ที่ระบุสำหรับ SPNEGO ต้องอยู่ในรูปแบบ HTTP@hostname"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr ""
+"keytab ของ SPNEGO แบบเข้ารหัส base64 หรือพาธไปยัง keytab ในรูปแบบ FILE:path"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "แคชข้อมูลรับรองที่ใช้สำหรับ SPNEGO ในรูปแบบ type:residual"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"หากเปิดใช้ รหัสผ่านที่เก็บไว้ใน authentik จะถูกอัปเดตเมื่อเข้าสู่ระบบด้วย "
+"backend รหัสผ่านของ Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "แหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "แหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Check connectivity for Kerberos sources."
+msgstr "ตรวจสอบการเชื่อมต่อของแหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/tasks.py
+msgid "Sync Kerberos source."
+msgstr "ซิงค์แหล่งที่มา Kerberos"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "ต้องยืนยันตัวตนด้วย SPNEGO"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    ตรวจสอบว่าคุณมี ticket ที่ใช้งานได้ (ขอได้ด้วย kinit)\n"
+"                    และตั้งค่าเบราว์เซอร์อย่างถูกต้องแล้ว\n"
+"                    หากยังมีปัญหา กรุณาติดต่อผู้ดูแลระบบ\n"
+"                "
+
+#: authentik/sources/ldap/api/sources.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr "อนุญาตให้มีแหล่งที่มา LDAP ที่ซิงค์รหัสผ่านได้เพียงแหล่งเดียว"
+
+#: authentik/sources/ldap/models.py
+msgid "Server URI"
+msgstr "Server URI"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Optionally verify the LDAP Server's Certificate against the CA Chain in this"
+" keypair."
+msgstr ""
+"เลือกได้ว่าจะตรวจสอบใบรับรองของเซิร์ฟเวอร์ LDAP กับ CA Chain "
+"ในคู่คีย์นี้หรือไม่"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Client certificate to authenticate against the LDAP Server's Certificate."
+msgstr "ใบรับรองไคลเอนต์ที่ใช้ยืนยันตัวตนกับใบรับรองของเซิร์ฟเวอร์ LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Bind CN"
+msgstr "Bind CN"
+
+#: authentik/sources/ldap/models.py
+msgid "Enable Start TLS"
+msgstr "เปิดใช้ Start TLS"
+
+#: authentik/sources/ldap/models.py
+msgid "Use Server URI for SNI verification"
+msgstr "ใช้ Server URI สำหรับการตรวจสอบ SNI"
+
+#: authentik/sources/ldap/models.py
+msgid "Base DN"
+msgstr "Base DN"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for User-queries."
+msgstr "ต่อไว้ด้านหน้า Base DN สำหรับการค้นหาผู้ใช้"
+
+#: authentik/sources/ldap/models.py
+msgid "Addition User DN"
+msgstr "DN ผู้ใช้เพิ่มเติม"
+
+#: authentik/sources/ldap/models.py
+msgid "Prepended to Base DN for Group-queries."
+msgstr "ต่อไว้ด้านหน้า Base DN สำหรับการค้นหากลุ่ม"
+
+#: authentik/sources/ldap/models.py
+msgid "Addition Group DN"
+msgstr "DN กลุ่มเพิ่มเติม"
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Users."
+msgstr "ถือว่าอ็อบเจกต์ที่ตรงกับตัวกรองนี้เป็นผู้ใช้"
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "แอตทริบิวต์ที่ตรงกับค่าของ `group_membership_field`"
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains members of a group."
+msgstr "ฟิลด์ที่เก็บสมาชิกของกลุ่ม"
+
+#: authentik/sources/ldap/models.py
+msgid "Consider Objects matching this filter to be Groups."
+msgstr "ถือว่าอ็อบเจกต์ที่ตรงกับตัวกรองนี้เป็นกลุ่ม"
+
+#: authentik/sources/ldap/models.py
+msgid "Field which contains a unique Identifier."
+msgstr "ฟิลด์ที่เก็บตัวระบุที่ไม่ซ้ำกัน"
+
+#: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr "อัปเดตรหัสผ่านภายในของ authentik เมื่อเข้าสู่ระบบด้วย LDAP สำเร็จ"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"When a user changes their password, sync it back to LDAP. This can only be "
+"enabled on a single LDAP source."
+msgstr ""
+"เมื่อผู้ใช้เปลี่ยนรหัสผ่าน ให้ซิงค์กลับไปยัง LDAP เปิดใช้ได้กับแหล่งที่มา "
+"LDAP เพียงแหล่งเดียว"
+
+#: authentik/sources/ldap/models.py
+msgid "Sync group parentage/hierarchy from LDAP directories."
+msgstr "ซิงค์ลำดับชั้นของกลุ่มจากไดเรกทอรี LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+"ค้นหาการเป็นสมาชิกกลุ่มจากแอตทริบิวต์ของผู้ใช้แทนแอตทริบิวต์ของกลุ่ม "
+"ช่วยให้รองรับกลุ่มซ้อนกันในระบบอย่าง FreeIPA และ Active Directory"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+"ลบผู้ใช้และกลุ่มใน authentik ที่เคยมาจากแหล่งที่มานี้ "
+"แต่ปัจจุบันไม่มีอยู่ในแหล่งที่มาแล้ว"
+
+#: authentik/sources/ldap/models.py
+msgid "N/A"
+msgstr "ไม่มีข้อมูล"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source"
+msgstr "แหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Sources"
+msgstr "แหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr "ID ที่ไม่ซ้ำกัน ใช้ตรวจสอบว่าอ็อบเจกต์นี้ยังมีอยู่ในไดเรกทอรีหรือไม่"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/signals.py
+msgid "Password does not match Active Directory Complexity."
+msgstr "รหัสผ่านไม่ตรงตามข้อกำหนดความซับซ้อนของ Active Directory"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Check connectivity for LDAP source."
+msgstr "ตรวจสอบการเชื่อมต่อของแหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync LDAP source."
+msgstr "ซิงค์แหล่งที่มา LDAP"
+
+#: authentik/sources/ldap/tasks.py
+msgid "Sync page for LDAP source."
+msgstr "ซิงค์ข้อมูลหนึ่งหน้าของแหล่งที่มา LDAP"
+
+#: authentik/sources/oauth/clients/oauth2.py
+msgid "No token received."
+msgstr "ไม่ได้รับโทเคน"
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "HTTP Basic Authentication"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "ส่ง client ID และ secret เป็นพารามิเตอร์ของคำขอ"
+
+#: authentik/sources/oauth/models.py
+msgid "No PKCE"
+msgstr "ไม่ใช้ PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid "Plain"
+msgstr "Plain"
+
+#: authentik/sources/oauth/models.py
+msgid "S256"
+msgstr "S256"
+
+#: authentik/sources/oauth/models.py
+msgid "Request Token URL"
+msgstr "Request Token URL"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"URL used to request the initial token. This URL is only required for OAuth "
+"1."
+msgstr "URL ที่ใช้ขอโทเคนเริ่มต้น จำเป็นเฉพาะกับ OAuth 1"
+
+#: authentik/sources/oauth/models.py
+msgid "Authorization URL"
+msgstr "Authorization URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL the user is redirect to to conest the flow."
+msgstr "URL ที่ผู้ใช้จะถูกเปลี่ยนเส้นทางไปเพื่อให้ความยินยอมในโฟลว์"
+
+#: authentik/sources/oauth/models.py
+msgid "Access Token URL"
+msgstr "Access Token URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to retrieve tokens."
+msgstr "URL ที่ authentik ใช้ดึงโทเคน"
+
+#: authentik/sources/oauth/models.py
+msgid "Profile URL"
+msgstr "Profile URL"
+
+#: authentik/sources/oauth/models.py
+msgid "URL used by authentik to get user information."
+msgstr "URL ที่ authentik ใช้ดึงข้อมูลผู้ใช้"
+
+#: authentik/sources/oauth/models.py
+msgid "Additional Scopes"
+msgstr "Scope เพิ่มเติม"
+
+#: authentik/sources/oauth/models.py
+msgid "PKCE"
+msgstr "PKCE"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr "วิธียืนยันตัวตนระหว่างโฟลว์ขอโทเคนแบบ authorization_code"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source"
+msgstr "แหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Sources"
+msgstr "แหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ GitHub"
+
+#: authentik/sources/oauth/models.py
+msgid "GitHub OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ GitHub"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ GitLab"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ GitLab"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Twitch"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Twitch"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Mailcow"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Mailcow"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Twitter"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitter OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Twitter"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Facebook"
+
+#: authentik/sources/oauth/models.py
+msgid "Facebook OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Facebook"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Discord"
+
+#: authentik/sources/oauth/models.py
+msgid "Discord OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Discord"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Slack"
+
+#: authentik/sources/oauth/models.py
+msgid "Slack OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Slack"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Patreon"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Patreon"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Google"
+
+#: authentik/sources/oauth/models.py
+msgid "Google OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Google"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Entra ID"
+
+#: authentik/sources/oauth/models.py
+msgid "Entra ID OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Entra ID"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ OpenID"
+
+#: authentik/sources/oauth/models.py
+msgid "OpenID OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ OpenID"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Apple"
+
+#: authentik/sources/oauth/models.py
+msgid "Apple OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Apple"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Okta"
+
+#: authentik/sources/oauth/models.py
+msgid "Okta OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Okta"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ Reddit"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ Reddit"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Source"
+msgstr "แหล่งที่มา OAuth ของ WeChat"
+
+#: authentik/sources/oauth/models.py
+msgid "WeChat OAuth Sources"
+msgstr "แหล่งที่มา OAuth ของ WeChat"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "User OAuth Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา OAuth"
+
+#: authentik/sources/oauth/tasks.py
+msgid ""
+"Update OAuth sources' config from well_known, and JWKS info from the "
+"configured URL."
+msgstr ""
+"อัปเดตการตั้งค่าของแหล่งที่มา OAuth จาก well_known และข้อมูล JWKS จาก URL "
+"ที่ตั้งไว้"
+
+#: authentik/sources/oauth/views/callback.py
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "ยืนยันตัวตนไม่สำเร็จ: {reason}"
+
+#: authentik/sources/plex/models.py
+msgid "Client identifier used to talk to Plex."
+msgstr "ตัวระบุไคลเอนต์ที่ใช้สื่อสารกับ Plex"
+
+#: authentik/sources/plex/models.py
+msgid ""
+"Which servers a user has to be a member of to be granted access. Empty list "
+"allows every server."
+msgstr ""
+"เซิร์ฟเวอร์ที่ผู้ใช้ต้องเป็นสมาชิกจึงจะได้รับสิทธิ์เข้าถึง "
+"หากปล่อยว่างจะอนุญาตทุกเซิร์ฟเวอร์"
+
+#: authentik/sources/plex/models.py
+msgid "Allow friends to authenticate, even if you don't share a server."
+msgstr "อนุญาตให้เพื่อนยืนยันตัวตนได้ แม้ไม่ได้ใช้เซิร์ฟเวอร์ร่วมกัน"
+
+#: authentik/sources/plex/models.py
+msgid "Plex token used to check friends"
+msgstr "โทเคน Plex ที่ใช้ตรวจสอบรายชื่อเพื่อน"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source"
+msgstr "แหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Sources"
+msgstr "แหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "User Plex Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Plex"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Plex"
+
+#: authentik/sources/plex/tasks.py
+msgid "Check the validity of a Plex source."
+msgstr "ตรวจสอบความถูกต้องของแหล่งที่มา Plex"
+
+#: authentik/sources/saml/api/source.py
+msgid ""
+"With a Verification Certificate selected, at least one of 'Verify Assertion "
+"Signature' or 'Verify Response Signature' must be selected."
+msgstr ""
+"เมื่อเลือกใบรับรองสำหรับตรวจสอบไว้ ต้องเลือกอย่างน้อยหนึ่งอย่างระหว่าง "
+"'Verify Assertion Signature' หรือ 'Verify Response Signature'"
+
+#: authentik/sources/saml/models.py
+msgid "Redirect Binding"
+msgstr "การผูกแบบ Redirect"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding"
+msgstr "การผูกแบบ POST"
+
+#: authentik/sources/saml/models.py
+msgid "POST Binding with auto-confirmation"
+msgstr "การผูกแบบ POST พร้อมยืนยันอัตโนมัติ"
+
+#: authentik/sources/saml/models.py authentik/sources/telegram/models.py
+msgid "Flow used before authentication."
+msgstr "โฟลว์ที่ใช้ก่อนการยืนยันตัวตน"
+
+#: authentik/sources/saml/models.py
+msgid "Also known as Entity ID. Defaults to the Metadata URL."
+msgstr "หรือที่เรียกว่า Entity ID ค่าเริ่มต้นคือ URL ของ Metadata"
+
+#: authentik/sources/saml/models.py
+msgid "SSO URL"
+msgstr "SSO URL"
+
+#: authentik/sources/saml/models.py
+msgid "URL that the initial Login request is sent to."
+msgstr "URL ที่จะส่งคำขอเข้าสู่ระบบครั้งแรกไป"
+
+#: authentik/sources/saml/models.py
+msgid "SLO URL"
+msgstr "SLO URL"
+
+#: authentik/sources/saml/models.py
+msgid "Optional URL if your IDP supports Single-Logout."
+msgstr "URL เพิ่มเติม หาก IdP ของคุณรองรับ Single-Logout"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Allows authentication flows initiated by the IdP. This can be a security "
+"risk, as no validation of the request ID is done."
+msgstr ""
+"อนุญาตโฟลว์การยืนยันตัวตนที่เริ่มจาก IdP ซึ่งอาจมีความเสี่ยงด้านความปลอดภัย "
+"เพราะไม่มีการตรวจสอบ request ID"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"When enabled, the IdP will re-authenticate the user even if a session "
+"exists."
+msgstr "เมื่อเปิดใช้ IdP จะให้ผู้ใช้ยืนยันตัวตนใหม่ แม้จะมีเซสชันอยู่แล้ว"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
+"sent."
+msgstr "NameID Policy ที่ส่งไปยัง IdP เว้นว่างได้ ซึ่งจะไม่ส่ง Policy ไป"
+
+#: authentik/sources/saml/models.py
+msgid "Delete temporary users after"
+msgstr "ลบผู้ใช้ชั่วคราวหลังจาก"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Time offset when temporary users should be deleted. This only applies if "
+"your IDP uses the NameID Format 'transient', and the user doesn't log out "
+"manually. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"ระยะเวลาก่อนที่ผู้ใช้ชั่วคราวจะถูกลบ ใช้เฉพาะเมื่อ IdP ของคุณใช้รูปแบบ "
+"NameID เป็น 'transient' และผู้ใช้ไม่ได้ออกจากระบบด้วยตนเอง (รูปแบบ: "
+"hours=1;minutes=2;seconds=3)"
+
+#: authentik/sources/saml/models.py
+msgid ""
+"Keypair used to sign outgoing Responses going to the Identity Provider."
+msgstr "คู่คีย์ที่ใช้ลงนามการตอบกลับที่ส่งออกไปยัง Identity Provider"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source"
+msgstr "แหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Sources"
+msgstr "แหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา SAML"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา SAML"
+
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "ดำเนินการต่อไปยัง {source_name}"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr "แหล่งที่มา SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr "แหล่งที่มา SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา SCIM"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา SCIM"
+
+#: authentik/sources/telegram/api/source.py
+msgid "This Telegram account is already connected to another user."
+msgstr "บัญชี Telegram นี้เชื่อมต่อกับผู้ใช้อื่นอยู่แล้ว"
+
+#: authentik/sources/telegram/models.py authentik/sources/telegram/stage.py
+msgid "Telegram bot username"
+msgstr "ชื่อผู้ใช้ของบอท Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram bot token"
+msgstr "โทเคนของบอท Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Request access to send messages from your bot."
+msgstr "ขอสิทธิ์ในการส่งข้อความจากบอทของคุณ"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source"
+msgstr "แหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Sources"
+msgstr "แหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mapping"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Telegram Source Property Mappings"
+msgstr "การแมปคุณสมบัติของแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connection"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "User Telegram Source Connections"
+msgstr "การเชื่อมต่อผู้ใช้กับแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connection"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/models.py
+msgid "Group Telegram Source Connections"
+msgstr "การเชื่อมต่อกลุ่มกับแหล่งที่มา Telegram"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Authentication date is too old"
+msgstr "วันที่ยืนยันตัวตนเก่าเกินไป"
+
+#: authentik/sources/telegram/telegram.py
+msgid "Invalid hash"
+msgstr "แฮชไม่ถูกต้อง"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน Duo"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน Duo"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Device"
+msgstr "อุปกรณ์ Duo"
+
+#: authentik/stages/authenticator_duo/models.py
+msgid "Duo Devices"
+msgstr "อุปกรณ์ Duo"
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid ""
+"A Duo user with this username already exists. Ask an administrator to import"
+" the existing Duo authenticator or delete the Duo user before enrolling "
+"again."
+msgstr ""
+"มีผู้ใช้ Duo ที่ใช้ชื่อผู้ใช้นี้อยู่แล้ว "
+"กรุณาให้ผู้ดูแลระบบนำเข้าตัวยืนยันตัวตน Duo ที่มีอยู่ หรือลบผู้ใช้ Duo "
+"ก่อนลงทะเบียนอีกครั้ง"
+
+#: authentik/stages/authenticator_duo/stage.py
+msgid "Failed to enroll with Duo. Please contact an administrator."
+msgstr "ลงทะเบียนกับ Duo ไม่สำเร็จ กรุณาติดต่อผู้ดูแลระบบ"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"เมื่อเปิดใช้ ระบบจะใช้การตั้งค่าการเชื่อมต่ออีเมลแบบรวม "
+"และจะไม่ใช้การตั้งค่าการเชื่อมต่อด้านล่าง"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
+"ระยะเวลาที่โทเคนซึ่งส่งไปยังใช้งานได้ (รูปแบบ: "
+"hours=3,minutes=17,seconds=300)"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนทางอีเมล"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนทางอีเมล"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "เกิดข้อผิดพลาดระหว่างเรนเดอร์เทมเพลตอีเมล"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr "อุปกรณ์อีเมล"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr "อุปกรณ์อีเมล"
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
+msgid "Code does not match"
+msgstr "รหัสไม่ตรงกัน"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr "อีเมลไม่ถูกต้อง"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "The user already has an email address registered for MFA."
+msgstr "ผู้ใช้มีที่อยู่อีเมลที่ลงทะเบียนสำหรับ MFA อยู่แล้ว"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"      สวัสดี %(username)s,\n"
+"      "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+"\n"
+"          รหัส MFA ทางอีเมล\n"
+"          "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"    หากคุณไม่ได้ขอรหัสนี้ กรุณาเพิกเฉยต่ออีเมลฉบับนี้ รหัสด้านบนใช้ได้ภายใน %(expires)s\n"
+"    "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "สวัสดี %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+"\n"
+"รหัส MFA ทางอีเมล\n"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"หากคุณไม่ได้ขอรหัสนี้ กรุณาเพิกเฉยต่ออีเมลฉบับนี้ รหัสด้านบนใช้ได้ภายใน %(expires)s\n"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid ""
+"When enabled, the Phone number is only used during enrollment to verify the "
+"users authenticity. Only a hash of the phone number is saved to ensure it is"
+" not reused in the future."
+msgstr ""
+"เมื่อเปิดใช้ "
+"หมายเลขโทรศัพท์จะถูกใช้เฉพาะระหว่างการลงทะเบียนเพื่อยืนยันตัวตนของผู้ใช้ "
+"และจะบันทึกเฉพาะค่าแฮชของหมายเลข เพื่อป้องกันการนำกลับมาใช้ซ้ำในอนาคต"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "Optionally modify the payload being sent to custom providers."
+msgstr "เลือกปรับแก้ payload ที่ส่งไปยังผู้ให้บริการแบบกำหนดเองได้"
+
+#: authentik/stages/authenticator_sms/models.py
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "ใช้รหัสนี้เพื่อยืนยันตัวตนใน authentik: {token}"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนทาง SMS"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนทาง SMS"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Device"
+msgstr "อุปกรณ์ SMS"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Devices"
+msgstr "อุปกรณ์ SMS"
+
+#: authentik/stages/authenticator_sms/stage.py
+msgid "Invalid phone number"
+msgstr "หมายเลขโทรศัพท์ไม่ถูกต้อง"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนแบบ Static"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตนแบบ Static"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Device"
+msgstr "อุปกรณ์ Static"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Devices"
+msgstr "อุปกรณ์ Static"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Token"
+msgstr "โทเคน Static"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Tokens"
+msgstr "โทเคน Static"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "6 digits, widely compatible"
+msgstr "6 หลัก รองรับได้กว้าง"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "8 digits, not compatible with apps like Google Authenticator"
+msgstr "8 หลัก ใช้กับแอปอย่าง Google Authenticator ไม่ได้"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน TOTP"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน TOTP"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Device"
+msgstr "อุปกรณ์ TOTP"
+
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Devices"
+msgstr "อุปกรณ์ TOTP"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+"โทเคนไม่ถูกต้อง กรุณาตรวจสอบว่าเวลาบนอุปกรณ์ของคุณถูกต้อง แล้วลองอีกครั้ง"
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr ""
+"ประเภทอุปกรณ์ไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบ {brand} เพื่อขอความช่วยเหลือ"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Static"
+msgstr "Static"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "TOTP"
+msgstr "TOTP"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "WebAuthn"
+msgstr "WebAuthn"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Duo"
+msgstr "Duo"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "SMS"
+msgstr "SMS"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Stages used to configure Authenticator when user doesn't have any compatible"
+" devices. After this configuration Stage passes, the user is not prompted "
+"again."
+msgstr ""
+"สเตจที่ใช้ตั้งค่าตัวยืนยันตัวตนเมื่อผู้ใช้ไม่มีอุปกรณ์ที่รองรับ "
+"หลังจากผ่านสเตจการตั้งค่านี้แล้ว ระบบจะไม่ถามผู้ใช้อีก"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Device classes which can be used to authenticate"
+msgstr "ประเภทอุปกรณ์ที่ใช้ยืนยันตัวตนได้"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"If any of the user's device has been used within this threshold, this stage "
+"will be skipped"
+msgstr "หากมีอุปกรณ์ของผู้ใช้ถูกใช้ภายในช่วงเวลานี้ สเตจนี้จะถูกข้าม"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Enforce user verification for WebAuthn devices."
+msgstr "บังคับการยืนยันตัวผู้ใช้สำหรับอุปกรณ์ WebAuthn"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stage"
+msgstr "สเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validation Stages"
+msgstr "สเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stage"
+msgstr "สเตจการตั้งค่าของสเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage Configuration Stages"
+msgstr "สเตจการตั้งค่าของสเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Type"
+msgstr "ประเภทอุปกรณ์ WebAuthn ที่อนุญาตของสเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Authenticator Validate Stage WebAuthn Allowed Device Types"
+msgstr "ประเภทอุปกรณ์ WebAuthn ที่อนุญาตของสเตจตรวจสอบตัวยืนยันตัวตน"
+
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "ไม่มีตัวยืนยันตัวตน MFA ที่ตั้งค่าไว้หรือที่ได้รับอนุญาต"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stage"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Authenticator Setup Stages"
+msgstr "สเตจตั้งค่าตัวยืนยันตัวตน WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device"
+msgstr "อุปกรณ์ WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Devices"
+msgstr "อุปกรณ์ WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "ประเภทอุปกรณ์ WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "ประเภทอุปกรณ์ WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restriction"
+msgstr "ข้อจำกัดประเภทอุปกรณ์ของสเตจตัวยืนยันตัวตน WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "Authenticator WebAuthn Stage Device Type Restrictions"
+msgstr "ข้อจำกัดประเภทอุปกรณ์ของสเตจตัวยืนยันตัวตน WebAuthn"
+
+#: authentik/stages/authenticator_webauthn/tasks.py
+msgid ""
+"Background task to import FIDO Alliance MDS blob and AAGUIDs into database."
+msgstr ""
+"งานเบื้องหลังสำหรับนำเข้า FIDO Alliance MDS blob และ AAGUID เข้าฐานข้อมูล"
+
+#: authentik/stages/captcha/models.py
+msgid "Form encoded"
+msgstr "Form encoded"
+
+#: authentik/stages/captcha/models.py
+msgid "JSON"
+msgstr "JSON"
+
+#: authentik/stages/captcha/models.py
+msgid "Public key, acquired your captcha Provider."
+msgstr "คีย์สาธารณะที่ได้จากผู้ให้บริการ captcha ของคุณ"
+
+#: authentik/stages/captcha/models.py
+msgid "Private key, acquired your captcha Provider."
+msgstr "คีย์ส่วนตัวที่ได้จากผู้ให้บริการ captcha ของคุณ"
+
+#: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"เมื่อเปิดใช้ และคะแนน captcha ที่ได้รับอยู่นอกช่วงที่กำหนด "
+"สเตจจะแสดงข้อความข้อผิดพลาด เมื่อไม่เปิดใช้ โฟลว์จะดำเนินต่อ แต่ข้อมูลจาก "
+"captcha จะอยู่ในบริบทเพื่อใช้ตัดสินตามนโยบาย"
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stage"
+msgstr "สเตจ Captcha"
+
+#: authentik/stages/captcha/models.py
+msgid "Captcha Stages"
+msgstr "สเตจ Captcha"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "การตอบกลับ captcha ไม่ถูกต้อง การลองใหม่อาจช่วยแก้ปัญหานี้ได้"
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "การตอบกลับ captcha ไม่ถูกต้อง"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "ตรวจสอบโทเคนไม่สำเร็จ"
+
+#: authentik/stages/consent/models.py
+msgid ""
+"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"ระยะเวลาก่อนที่ความยินยอมจะหมดอายุ (รูปแบบ: hours=1;minutes=2;seconds=3)"
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stage"
+msgstr "สเตจความยินยอม"
+
+#: authentik/stages/consent/models.py
+msgid "Consent Stages"
+msgstr "สเตจความยินยอม"
+
+#: authentik/stages/consent/models.py
+msgid "User Consent"
+msgstr "ความยินยอมของผู้ใช้"
+
+#: authentik/stages/consent/models.py
+msgid "User Consents"
+msgstr "ความยินยอมของผู้ใช้"
+
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr "โทเคนความยินยอมไม่ถูกต้อง กำลังแสดงคำขออีกครั้ง"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stage"
+msgstr "สเตจปฏิเสธ"
+
+#: authentik/stages/deny/models.py
+msgid "Deny Stages"
+msgstr "สเตจปฏิเสธ"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stage"
+msgstr "สเตจ Dummy"
+
+#: authentik/stages/dummy/models.py
+msgid "Dummy Stages"
+msgstr "สเตจ Dummy"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "ดำเนินการต่อเพื่อยืนยันที่อยู่อีเมลนี้"
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr "ลิงก์นี้ถูกใช้ไปแล้ว กรุณาขอลิงก์ใหม่"
+
+#: authentik/stages/email/models.py
+msgid "Password Reset"
+msgstr "การรีเซ็ตรหัสผ่าน"
+
+#: authentik/stages/email/models.py
+msgid "Account Confirmation"
+msgstr "การยืนยันบัญชี"
+
+#: authentik/stages/email/models.py
+msgid "Email OTP"
+msgstr "OTP ทางอีเมล"
+
+#: authentik/stages/email/models.py
+msgid "Event Notification"
+msgstr "การแจ้งเตือนเหตุการณ์"
+
+#: authentik/stages/email/models.py authentik/stages/invitation/models.py
+msgid "Invitation"
+msgstr "คำเชิญ"
+
+#: authentik/stages/email/models.py
+msgid ""
+"The time window used to count recent account recovery attempts. If the "
+"number of attempts exceed recovery_max_attempts within this period, further "
+"attempts will be rate-limited. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"ช่วงเวลาที่ใช้นับจำนวนครั้งการกู้คืนบัญชีล่าสุด หากจำนวนครั้งเกิน "
+"recovery_max_attempts ภายในช่วงเวลานี้ การพยายามครั้งต่อไปจะถูกจำกัดอัตรา "
+"(รูปแบบ: hours=1;minutes=2;seconds=3)"
+
+#: authentik/stages/email/models.py
+msgid "Activate users upon completion of stage."
+msgstr "เปิดใช้งานผู้ใช้เมื่อสเตจเสร็จสิ้น"
+
+#: authentik/stages/email/models.py
+msgid "Email Stage"
+msgstr "สเตจอีเมล"
+
+#: authentik/stages/email/models.py
+msgid "Email Stages"
+msgstr "สเตจอีเมล"
+
+#: authentik/stages/email/stage.py
+msgid "Successfully verified Email."
+msgstr "ยืนยันอีเมลสำเร็จ"
+
+#: authentik/stages/email/stage.py
+msgid "No pending user."
+msgstr "ไม่มีผู้ใช้ที่รอดำเนินการ"
+
+#: authentik/stages/email/stage.py
+msgid "Email sent."
+msgstr "ส่งอีเมลแล้ว"
+
+#: authentik/stages/email/stage.py
+#, python-brace-format
+msgid ""
+"Too many account verification attempts. Please try again after {minutes} "
+"minutes."
+msgstr "พยายามยืนยันบัญชีบ่อยเกินไป กรุณาลองอีกครั้งในอีก {minutes} นาที"
+
+#: authentik/stages/email/stage.py
+msgid "Email Successfully sent."
+msgstr "ส่งอีเมลสำเร็จ"
+
+#: authentik/stages/email/tasks.py
+msgid "Send email."
+msgstr "ส่งอีเมล"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid "Welcome!"
+msgstr "ยินดีต้อนรับ!"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just press the button below."
+msgstr ""
+"เรายินดีที่คุณเริ่มใช้งาน ขั้นแรกคุณต้องยืนยันบัญชีของคุณ "
+"เพียงกดปุ่มด้านล่าง"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+msgid "Confirm Account"
+msgstr "ยืนยันบัญชี"
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#, python-format
+msgid ""
+"\n"
+"    If that doesn't work, copy and paste the following link in your browser: %(url)s\n"
+"    "
+msgstr ""
+"\n"
+"    หากไม่ได้ผล กรุณาคัดลอกลิงก์นี้ไปวางในเบราว์เซอร์: %(url)s\n"
+"    "
+
+#: authentik/stages/email/templates/email/account_confirmation.txt
+msgid ""
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just open the link below."
+msgstr ""
+"เรายินดีที่คุณเริ่มใช้งาน ขั้นแรกคุณต้องยืนยันบัญชีของคุณ "
+"เพียงเปิดลิงก์ด้านล่าง"
+
+#: authentik/stages/email/templates/email/event_notification.html
+#, python-format
+msgid ""
+"\n"
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
+msgstr ""
+"\n"
+"    อีเมลฉบับนี้ส่งจากช่องทางแจ้งเตือน <code>%(name)s</code>\n"
+"    "
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Dear authentik user,"
+msgstr "เรียนผู้ใช้ authentik"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "The following notification was created:"
+msgstr "มีการแจ้งเตือนต่อไปนี้เกิดขึ้น:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Additional attributes:"
+msgstr "แอตทริบิวต์เพิ่มเติม:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
+#, python-format
+msgid ""
+"\n"
+"This email was sent from the notification transport %(name)s.\n"
+msgstr ""
+"\n"
+"อีเมลฉบับนี้ส่งจากช่องทางแจ้งเตือน %(name)s\n"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"      You're Invited!\n"
+"      "
+msgstr ""
+"\n"
+"      คุณได้รับคำเชิญ!\n"
+"      "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          You have been invited to join %(host)s. Click the button below to get started.\n"
+"          "
+msgstr ""
+"\n"
+"          คุณได้รับคำเชิญให้เข้าร่วม %(host)s คลิกปุ่มด้านล่างเพื่อเริ่มต้น\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#, python-format
+msgid ""
+"\n"
+"          This invitation expires %(expires)s.\n"
+"          "
+msgstr ""
+"\n"
+"          คำเชิญนี้จะหมดอายุ %(expires)s\n"
+"          "
+
+#: authentik/stages/email/templates/email/invitation.html
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "Accept Invitation"
+msgstr "ยอมรับคำเชิญ"
+
+#: authentik/stages/email/templates/email/invitation.html
+msgid ""
+"\n"
+"    If you cannot click the button above, please copy and paste the following URL into your browser:\n"
+"    "
+msgstr ""
+"\n"
+"    หากคลิกปุ่มด้านบนไม่ได้ กรุณาคัดลอก URL ต่อไปนี้ไปวางในเบราว์เซอร์:\n"
+"    "
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid "You're Invited!"
+msgstr "คุณได้รับคำเชิญ!"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid ""
+"You have been invited to join %(host)s. Use the link below to get started."
+msgstr "คุณได้รับคำเชิญให้เข้าร่วม %(host)s ใช้ลิงก์ด้านล่างเพื่อเริ่มต้น"
+
+#: authentik/stages/email/templates/email/invitation.txt
+#, python-format
+msgid "This invitation expires %(expires)s."
+msgstr "คำเชิญนี้จะหมดอายุ %(expires)s"
+
+#: authentik/stages/email/templates/email/invitation.txt
+msgid ""
+"If you cannot click the link above, please copy and paste the following URL "
+"into your browser:"
+msgstr "หากคลิกลิงก์ด้านบนไม่ได้ กรุณาคัดลอก URL ต่อไปนี้ไปวางในเบราว์เซอร์:"
+
+#: authentik/stages/email/templates/email/password_reset.html
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"          คุณได้ขอเปลี่ยนรหัสผ่านของบัญชี authentik เมื่อเร็ว ๆ นี้ ใช้ปุ่มด้านล่างเพื่อตั้งรหัสผ่านใหม่\n"
+"          "
+
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+"\n"
+"    หากคุณไม่ได้ขอเปลี่ยนรหัสผ่าน กรุณาเพิกเฉยต่ออีเมลฉบับนี้ ลิงก์ด้านบนใช้ได้ภายใน %(expires)s\n"
+"    "
+
+#: authentik/stages/email/templates/email/password_reset.txt
+msgid ""
+"\n"
+"You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
+msgstr ""
+"\n"
+"คุณได้ขอเปลี่ยนรหัสผ่านของบัญชี authentik เมื่อเร็ว ๆ นี้ ใช้ลิงก์ด้านล่างเพื่อตั้งรหัสผ่านใหม่\n"
+
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+msgstr ""
+"\n"
+"หากคุณไม่ได้ขอเปลี่ยนรหัสผ่าน กรุณาเพิกเฉยต่ออีเมลฉบับนี้ ลิงก์ด้านบนใช้ได้ภายใน %(expires)s\n"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid "authentik Test-Email"
+msgstr "อีเมลทดสอบจาก authentik"
+
+#: authentik/stages/email/templates/email/setup.html
+msgid ""
+"\n"
+"                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
+"                    "
+msgstr ""
+"\n"
+"                    นี่คืออีเมลทดสอบ เพื่อแจ้งให้ทราบว่าคุณตั้งค่าอีเมลของ authentik สำเร็จแล้ว\n"
+"                    "
+
+#: authentik/stages/email/templates/email/setup.txt
+msgid ""
+"\n"
+"This is a test email to inform you, that you've successfully configured authentik emails.\n"
+msgstr ""
+"\n"
+"นี่คืออีเมลทดสอบ เพื่อแจ้งให้ทราบว่าคุณตั้งค่าอีเมลของ authentik สำเร็จแล้ว\n"
+
+#: authentik/stages/identification/api.py
+msgid "When no user fields are selected, at least one source must be selected"
+msgstr ""
+"เมื่อไม่ได้เลือกฟิลด์ผู้ใช้ใดเลย ต้องเลือกแหล่งที่มาอย่างน้อยหนึ่งแหล่ง"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Fields of the user object to match against. (Hold shift to select multiple "
+"options)"
+msgstr ""
+"ฟิลด์ของอ็อบเจกต์ผู้ใช้ที่จะใช้จับคู่ (กด shift ค้างเพื่อเลือกหลายตัวเลือก)"
+
+#: authentik/stages/identification/models.py
+msgid "When enabled, user fields are matched regardless of their casing."
+msgstr "เมื่อเปิดใช้ การจับคู่ฟิลด์ผู้ใช้จะไม่คำนึงถึงตัวพิมพ์เล็ก-ใหญ่"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When a valid username/email has been entered, and this option is enabled, "
+"the user's username and avatar will be shown. Otherwise, the text that the "
+"user entered will be shown"
+msgstr ""
+"เมื่อกรอกชื่อผู้ใช้/อีเมลที่ถูกต้องและเปิดใช้ตัวเลือกนี้ "
+"ระบบจะแสดงชื่อผู้ใช้และรูปโปรไฟล์ของผู้ใช้ "
+"มิฉะนั้นจะแสดงข้อความที่ผู้ใช้กรอกไว้"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When enabled, the stage will succeed and continue even when incorrect user "
+"info is entered."
+msgstr ""
+"เมื่อเปิดใช้ สเตจจะถือว่าสำเร็จและดำเนินต่อ แม้จะกรอกข้อมูลผู้ใช้ไม่ถูกต้อง"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+"แสดงตัวเลือก 'จำฉันไว้ในอุปกรณ์นี้' ให้ผู้ใช้ "
+"เพื่อให้ผู้ใช้เดิมข้ามไปกรอกรหัสผ่านได้ทันที"
+
+#: authentik/stages/identification/models.py
+msgid "Optional enrollment flow, which is linked at the bottom of the page."
+msgstr "โฟลว์การลงทะเบียน ไม่บังคับ โดยจะแสดงเป็นลิงก์ที่ด้านล่างของหน้า"
+
+#: authentik/stages/identification/models.py
+msgid "Optional recovery flow, which is linked at the bottom of the page."
+msgstr "โฟลว์การกู้คืน ไม่บังคับ โดยจะแสดงเป็นลิงก์ที่ด้านล่างของหน้า"
+
+#: authentik/stages/identification/models.py
+msgid "Optional passwordless flow, which is linked at the bottom of the page."
+msgstr "โฟลว์แบบไม่ใช้รหัสผ่าน ไม่บังคับ โดยจะแสดงเป็นลิงก์ที่ด้านล่างของหน้า"
+
+#: authentik/stages/identification/models.py
+msgid "Specify which sources should be shown."
+msgstr "ระบุแหล่งที่มาที่ต้องการให้แสดง"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage"
+msgstr "สเตจระบุตัวตน"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stages"
+msgstr "สเตจระบุตัวตน"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Source"
+msgstr "แหล่งที่มาของสเตจระบุตัวตน"
+
+#: authentik/stages/identification/models.py
+msgid "Identification Stage Sources"
+msgstr "แหล่งที่มาของสเตจระบุตัวตน"
+
+#: authentik/stages/identification/stage.py
+msgid "No identification data provided."
+msgstr "ไม่ได้ระบุข้อมูลสำหรับระบุตัวตน"
+
+#: authentik/stages/identification/stage.py
+msgid "Failed to authenticate."
+msgstr "ยืนยันตัวตนไม่สำเร็จ"
+
+#: authentik/stages/identification/stage.py
+msgid "Log in"
+msgstr "เข้าสู่ระบบ"
+
+#: authentik/stages/invitation/models.py
+msgid ""
+"If this flag is set, this Stage will jump to the next Stage when no "
+"Invitation is given. By default this Stage will cancel the Flow when no "
+"invitation is given."
+msgstr ""
+"หากตั้งค่าแฟล็กนี้ สเตจนี้จะข้ามไปยังสเตจถัดไปเมื่อไม่มีคำเชิญ "
+"โดยค่าเริ่มต้นสเตจนี้จะยกเลิกโฟลว์เมื่อไม่มีคำเชิญ"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stage"
+msgstr "สเตจคำเชิญ"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitation Stages"
+msgstr "สเตจคำเชิญ"
+
+#: authentik/stages/invitation/models.py
+msgid "When set, only the configured flow can use this invitation."
+msgstr "เมื่อตั้งค่าไว้ จะมีเพียงโฟลว์ที่กำหนดเท่านั้นที่ใช้คำเชิญนี้ได้"
+
+#: authentik/stages/invitation/models.py
+msgid "When enabled, the invitation will be deleted after usage."
+msgstr "เมื่อเปิดใช้ คำเชิญจะถูกลบหลังใช้งาน"
+
+#: authentik/stages/invitation/models.py
+msgid "Optional fixed data to enforce on user enrollment."
+msgstr "ข้อมูลคงที่ ไม่บังคับ ที่จะบังคับใช้เมื่อผู้ใช้ลงทะเบียน"
+
+#: authentik/stages/invitation/models.py
+msgid "Invitations"
+msgstr "คำเชิญ"
+
+#: authentik/stages/invitation/stage.py
+msgid "Invalid invite/invite not found"
+msgstr "คำเชิญไม่ถูกต้องหรือไม่พบคำเชิญ"
+
+#: authentik/stages/password/models.py
+msgid "User database + standard password"
+msgstr "ฐานข้อมูลผู้ใช้ + รหัสผ่านมาตรฐาน"
+
+#: authentik/stages/password/models.py
+msgid "User database + app passwords"
+msgstr "ฐานข้อมูลผู้ใช้ + รหัสผ่านแอป"
+
+#: authentik/stages/password/models.py
+msgid "User database + LDAP password"
+msgstr "ฐานข้อมูลผู้ใช้ + รหัสผ่าน LDAP"
+
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "ฐานข้อมูลผู้ใช้ + รหัสผ่าน Kerberos"
+
+#: authentik/stages/password/models.py
+msgid "Selection of backends to test the password against."
+msgstr "เลือก backend ที่จะใช้ตรวจสอบรหัสผ่าน"
+
+#: authentik/stages/password/models.py
+msgid ""
+"How many attempts a user has before the flow is canceled. To lock the user "
+"out, use a reputation policy and a user_write stage."
+msgstr ""
+"จำนวนครั้งที่ผู้ใช้ลองได้ก่อนโฟลว์จะถูกยกเลิก หากต้องการล็อกผู้ใช้ "
+"ให้ใช้นโยบายความน่าเชื่อถือร่วมกับสเตจ user_write"
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr "เมื่อเปิดใช้ จะมีปุ่ม 'แสดงรหัสผ่าน' อยู่กับช่องกรอกรหัสผ่าน"
+
+#: authentik/stages/password/models.py
+msgid "Password Stage"
+msgstr "สเตจรหัสผ่าน"
+
+#: authentik/stages/password/models.py
+msgid "Password Stages"
+msgstr "สเตจรหัสผ่าน"
+
+#: authentik/stages/password/stage.py
+msgid "Invalid password"
+msgstr "รหัสผ่านไม่ถูกต้อง"
+
+#: authentik/stages/prompt/models.py
+msgid "Text: Simple Text input"
+msgstr "Text: ช่องกรอกข้อความธรรมดา"
+
+#: authentik/stages/prompt/models.py
+msgid "Text area: Multiline Text Input."
+msgstr "Text area: ช่องกรอกข้อความหลายบรรทัด"
+
+#: authentik/stages/prompt/models.py
+msgid "Text (read-only): Simple Text input, but cannot be edited."
+msgstr "Text (อ่านได้เท่านั้น): ช่องกรอกข้อความธรรมดา แต่แก้ไขไม่ได้"
+
+#: authentik/stages/prompt/models.py
+msgid "Text area (read-only): Multiline Text input, but cannot be edited."
+msgstr "Text area (อ่านได้เท่านั้น): ช่องกรอกข้อความหลายบรรทัด แต่แก้ไขไม่ได้"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Username: Same as Text input, but checks for and prevents duplicate "
+"usernames."
+msgstr "Username: เหมือนช่องกรอกข้อความ แต่จะตรวจสอบและป้องกันชื่อผู้ใช้ซ้ำ"
+
+#: authentik/stages/prompt/models.py
+msgid "Email: Text field with Email type."
+msgstr "Email: ช่องข้อความชนิดอีเมล"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password: Masked input, multiple inputs of this type on the same prompt need"
+" to be identical."
+msgstr ""
+"Password: ช่องกรอกแบบปิดบัง หากมีช่องชนิดนี้หลายช่องในคำขอเดียวกัน "
+"ค่าต้องตรงกัน"
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a group of radio buttons."
+msgstr "ฟิลด์ตัวเลือกคงที่ แสดงเป็นกลุ่มปุ่มตัวเลือก"
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a dropdown."
+msgstr "ฟิลด์ตัวเลือกคงที่ แสดงเป็นเมนูแบบเลื่อนลง"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"File: File upload for arbitrary files. File content will be available in "
+"flow context as data-URI"
+msgstr ""
+"File: อัปโหลดไฟล์ได้ทุกชนิด เนื้อหาไฟล์จะอยู่ในบริบทของโฟลว์ในรูปแบบ data-"
+"URI"
+
+#: authentik/stages/prompt/models.py
+msgid "Separator: Static Separator Line"
+msgstr "Separator: เส้นคั่นแบบคงที่"
+
+#: authentik/stages/prompt/models.py
+msgid "Hidden: Hidden field, can be used to insert data into form."
+msgstr "Hidden: ฟิลด์ที่ซ่อนไว้ ใช้แทรกข้อมูลเข้าฟอร์มได้"
+
+#: authentik/stages/prompt/models.py
+msgid "Static: Static value, displayed as-is."
+msgstr "Static: ค่าคงที่ แสดงตามที่กำหนดไว้"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Info): Static alert box with info styling"
+msgstr "Alert (Info): กล่องแจ้งเตือนแบบคงที่ สไตล์ข้อมูล"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Warning): Static alert box with warning styling"
+msgstr "Alert (Warning): กล่องแจ้งเตือนแบบคงที่ สไตล์คำเตือน"
+
+#: authentik/stages/prompt/models.py
+msgid "Alert (Danger): Static alert box with danger styling"
+msgstr "Alert (Danger): กล่องแจ้งเตือนแบบคงที่ สไตล์อันตราย"
+
+#: authentik/stages/prompt/models.py
+msgid "authentik: Selection of locales authentik supports"
+msgstr "authentik: ตัวเลือกภาษาที่ authentik รองรับ"
+
+#: authentik/stages/prompt/models.py
+msgid "Name of the form field, also used to store the value"
+msgstr "ชื่อของฟิลด์ในฟอร์ม ใช้เก็บค่าด้วย"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally provide a short hint that describes the expected input value. "
+"When creating a fixed choice field, enable interpreting as expression and "
+"return a list to return multiple choices."
+msgstr ""
+"เลือกใส่คำใบ้สั้น ๆ ที่อธิบายค่าที่ควรกรอกได้ เมื่อสร้างฟิลด์ตัวเลือกคงที่ "
+"ให้เปิดใช้การตีความเป็นนิพจน์และคืนค่าเป็นลิสต์เพื่อให้ได้หลายตัวเลือก"
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally pre-fill the input with an initial value. When creating a fixed "
+"choice field, enable interpreting as expression and return a list to return "
+"multiple default choices."
+msgstr ""
+"เลือกเติมค่าเริ่มต้นในช่องกรอกได้ เมื่อสร้างฟิลด์ตัวเลือกคงที่ "
+"ให้เปิดใช้การตีความเป็นนิพจน์และคืนค่าเป็นลิสต์เพื่อให้ได้ค่าเริ่มต้นหลายตัวเลือก"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt"
+msgstr "Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompts"
+msgstr "Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage"
+msgstr "สเตจ Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stages"
+msgstr "สเตจ Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Field"
+msgstr "ฟิลด์ของสเตจ Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Fields"
+msgstr "ฟิลด์ของสเตจ Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policy"
+msgstr "นโยบายตรวจสอบของสเตจ Prompt"
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt Stage Validation Policys"
+msgstr "นโยบายตรวจสอบของสเตจ Prompt"
+
+#: authentik/stages/prompt/stage.py
+msgid "Passwords don't match."
+msgstr "รหัสผ่านไม่ตรงกัน"
+
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr "ต้องระบุ URL เป้าหมายเมื่อโหมดเป็น Static"
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr "ต้องระบุโฟลว์เป้าหมายเมื่อโหมดเป็น Flow"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr "สเตจเปลี่ยนเส้นทาง"
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr "สเตจเปลี่ยนเส้นทาง"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stage"
+msgstr "สเตจลบผู้ใช้"
+
+#: authentik/stages/user_delete/models.py
+msgid "User Delete Stages"
+msgstr "สเตจลบผู้ใช้"
+
+#: authentik/stages/user_delete/stage.py
+msgid "No Pending User."
+msgstr "ไม่มีผู้ใช้ที่รอดำเนินการ"
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured network"
+msgstr "ผูกเซสชันที่สร้างโดยสเตจนี้กับเครือข่ายที่กำหนดไว้"
+
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured GeoIP location"
+msgstr "ผูกเซสชันที่สร้างโดยสเตจนี้กับตำแหน่ง GeoIP ที่กำหนดไว้"
+
+#: authentik/stages/user_login/models.py
+msgid "Terminate all other sessions of the user logging in."
+msgstr "สิ้นสุดเซสชันอื่นทั้งหมดของผู้ใช้ที่กำลังเข้าสู่ระบบ"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"Offset the session will be extended by when the user picks the remember me "
+"option. Default of 0 means that the remember me option will not be shown. "
+"(Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"ระยะเวลาที่จะขยายเซสชันเมื่อผู้ใช้เลือกตัวเลือกจำฉันไว้ ค่าเริ่มต้น 0 "
+"หมายถึงจะไม่แสดงตัวเลือกจำฉันไว้ (รูปแบบ: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"When set to a non-zero value, authentik will save a cookie with a longer "
+"expiry,to remember the device the user is logging in from. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"เมื่อตั้งเป็นค่าที่ไม่ใช่ศูนย์ authentik จะบันทึกคุกกี้ที่มีอายุนานขึ้น "
+"เพื่อจดจำอุปกรณ์ที่ผู้ใช้ใช้เข้าสู่ระบบ (รูปแบบ: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stage"
+msgstr "สเตจเข้าสู่ระบบของผู้ใช้"
+
+#: authentik/stages/user_login/models.py
+msgid "User Login Stages"
+msgstr "สเตจเข้าสู่ระบบของผู้ใช้"
+
+#: authentik/stages/user_login/stage.py
+msgid "No Pending user to login."
+msgstr "ไม่มีผู้ใช้ที่รอเข้าสู่ระบบ"
+
+#: authentik/stages/user_login/stage.py
+msgid "The selected session is no longer available. Please try again."
+msgstr "เซสชันที่เลือกไม่พร้อมใช้งานแล้ว กรุณาลองอีกครั้ง"
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stage"
+msgstr "สเตจออกจากระบบของผู้ใช้"
+
+#: authentik/stages/user_logout/models.py
+msgid "User Logout Stages"
+msgstr "สเตจออกจากระบบของผู้ใช้"
+
+#: authentik/stages/user_write/models.py
+msgid "When set, newly created users are inactive and cannot login."
+msgstr "เมื่อตั้งค่าไว้ ผู้ใช้ที่สร้างใหม่จะไม่ใช้งานและเข้าสู่ระบบไม่ได้"
+
+#: authentik/stages/user_write/models.py
+msgid "Optionally add newly created users to this group."
+msgstr "เลือกเพิ่มผู้ใช้ที่สร้างใหม่เข้ากลุ่มนี้ได้"
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stage"
+msgstr "สเตจเขียนข้อมูลผู้ใช้"
+
+#: authentik/stages/user_write/models.py
+msgid "User Write Stages"
+msgstr "สเตจเขียนข้อมูลผู้ใช้"
+
+#: authentik/stages/user_write/stage.py
+msgid "No Pending data."
+msgstr "ไม่มีข้อมูลที่รอดำเนินการ"
+
+#: authentik/stages/user_write/stage.py
+msgid "No user found and can't create new user."
+msgstr "ไม่พบผู้ใช้ และไม่สามารถสร้างผู้ใช้ใหม่ได้"
+
+#: authentik/stages/user_write/stage.py
+msgid "Failed to update user. Please try again later."
+msgstr "อัปเดตผู้ใช้ไม่สำเร็จ กรุณาลองอีกครั้งในภายหลัง"
+
+#: authentik/tasks/models.py
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks that must complete for this task to run."
+msgstr "งานที่ต้องเสร็จสิ้นก่อนงานนี้จะเริ่มทำงานได้"
+
+#: authentik/tasks/models.py
+msgid "Tenant this task belongs to"
+msgstr "เทแนนท์ที่งานนี้สังกัดอยู่"
+
+#: authentik/tasks/models.py
+msgid "Retry failed task"
+msgstr "ลองงานที่ล้มเหลวใหม่"
+
+#: authentik/tasks/models.py
+msgid "Task dependency"
+msgstr "การพึ่งพาของงาน"
+
+#: authentik/tasks/models.py
+msgid "Task dependencies"
+msgstr "การพึ่งพาของงาน"
+
+#: authentik/tasks/models.py
+msgid "Task log"
+msgstr "บันทึกของงาน"
+
+#: authentik/tasks/models.py
+msgid "Task logs"
+msgstr "บันทึกของงาน"
+
+#: authentik/tasks/models.py
+msgid "Worker status"
+msgstr "สถานะของ worker"
+
+#: authentik/tasks/models.py
+msgid "Worker statuses"
+msgstr "สถานะของ worker"
+
+#: authentik/tasks/schedules/models.py
+msgid "Unique schedule identifier"
+msgstr "ตัวระบุตารางเวลาที่ไม่ซ้ำกัน"
+
+#: authentik/tasks/schedules/models.py
+msgid "User schedule identifier"
+msgstr "ตัวระบุตารางเวลาของผู้ใช้"
+
+#: authentik/tasks/schedules/models.py
+msgid "Manually trigger a schedule"
+msgstr "เรียกใช้ตารางเวลาด้วยตนเอง"
+
+#: authentik/tasks/tasks.py
+msgid "Remove old worker statuses."
+msgstr "ลบสถานะของ worker ที่เก่า"
+
+#: authentik/tenants/api/settings.py
+#, python-brace-format
+msgid "Value for flag {flag_key} needs to be of type {type}."
+msgstr "ค่าของแฟล็ก {flag_key} ต้องเป็นชนิด {type}"
+
+#: authentik/tenants/models.py
+msgid ""
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
+msgstr ""
+"ชื่อสคีมาต้องเริ่มด้วย t_ ประกอบด้วยตัวอักษรพิมพ์เล็กและตัวเลขเท่านั้น "
+"และยาวไม่ถึง 63 อักขระ"
+
+#: authentik/tenants/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr "ตั้งค่าว่า authentik ควรแสดงรูปโปรไฟล์ของผู้ใช้อย่างไร"
+
+#: authentik/tenants/models.py
+msgid ""
+"Configure the base URL under which this authentik instance is reachable, "
+"e.g. https://authentik.company"
+msgstr ""
+"ตั้งค่า base URL ที่ใช้เข้าถึงอินสแตนซ์ authentik นี้ เช่น "
+"https://authentik.company"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "เปิดใช้ให้ผู้ใช้เปลี่ยนชื่อของตนเองได้"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "เปิดใช้ให้ผู้ใช้เปลี่ยนที่อยู่อีเมลของตนเองได้"
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "เปิดใช้ให้ผู้ใช้เปลี่ยนชื่อผู้ใช้ของตนเองได้"
+
+#: authentik/tenants/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"เหตุการณ์จะถูกลบหลังจากระยะเวลานี้ (รูปแบบ: "
+"weeks=3;days=2;hours=3,seconds=2)"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "คะแนนความน่าเชื่อถือจะลดต่ำกว่าค่านี้ไม่ได้ ต้องเป็นศูนย์หรือค่าลบ"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+"คะแนนความน่าเชื่อถือจะเพิ่มสูงกว่าค่านี้ไม่ได้ ต้องเป็นศูนย์หรือค่าบวก"
+
+#: authentik/tenants/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr "ตัวเลือกนี้ใช้ตั้งค่าลิงก์ส่วนท้ายบนหน้าดำเนินการโฟลว์"
+
+#: authentik/tenants/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr "เมื่อเปิดใช้ เหตุการณ์ทั้งหมดที่เกิดจากผู้ใช้จะถูกลบเมื่อผู้ใช้ถูกลบ"
+
+#: authentik/tenants/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "เปิด/ปิดใช้การสวมตัวตนทั้งระบบ"
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr "กำหนดให้ผู้ดูแลระบบต้องระบุเหตุผลในการสวมตัวตนผู้ใช้"
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "อายุโทเคนเริ่มต้น"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "ความยาวโทเคนเริ่มต้น"
+
+#: authentik/tenants/models.py
+msgid "Default page size for API responses, if no size was requested."
+msgstr "ขนาดหน้าเริ่มต้นของการตอบกลับ API หากไม่ได้ระบุขนาดมา"
+
+#: authentik/tenants/models.py
+msgid "Maximum page size"
+msgstr "ขนาดหน้าสูงสุด"
+
+#: authentik/tenants/models.py
+msgid "Tenant"
+msgstr "เทแนนท์"
+
+#: authentik/tenants/models.py
+msgid "Tenants"
+msgstr "เทแนนท์"
+
+#: authentik/tenants/models.py
+msgid "Domain"
+msgstr "โดเมน"
+
+#: authentik/tenants/models.py
+msgid "Domains"
+msgstr "โดเมน"
+
+#: packages/ak-guardian/guardian/models.py
+msgid "object ID"
+msgstr "ID ของอ็อบเจกต์"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channel"
+msgstr "ช่องของกลุ่ม"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Group channels"
+msgstr "ช่องของกลุ่ม"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Message"
+msgstr "ข้อความ"
+
+#: packages/django-channels-postgres/django_channels_postgres/models.py
+msgid "Messages"
+msgstr "ข้อความ"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Queue name"
+msgstr "ชื่อคิว"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor name"
+msgstr "ชื่อ actor ของ Dramatiq"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Message body"
+msgstr "เนื้อหาข้อความ"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task status"
+msgstr "สถานะของงาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task last modified time"
+msgstr "เวลาที่แก้ไขงานล่าสุด"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Number of retries"
+msgstr "จำนวนครั้งที่ลองใหม่"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Planned execution time"
+msgstr "เวลาที่กำหนดให้ทำงาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task result"
+msgstr "ผลลัพธ์ของงาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Result expiry time"
+msgstr "เวลาหมดอายุของผลลัพธ์"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Task"
+msgstr "งาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Tasks"
+msgstr "งาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+#, python-format
+msgid "%(value)s is not a valid crontab"
+msgstr "%(value)s ไม่ใช่ crontab ที่ถูกต้อง"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Dramatiq actor to call"
+msgstr "actor ของ Dramatiq ที่จะเรียก"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Args to send to the actor"
+msgstr "args ที่จะส่งไปยัง actor"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Kwargs to send to the actor"
+msgstr "kwargs ที่จะส่งไปยัง actor"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Options to send to the actor"
+msgstr "ตัวเลือกที่จะส่งไปยัง actor"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "When to schedule tasks"
+msgstr "เวลาที่จะกำหนดให้งานทำงาน"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Pause this schedule"
+msgstr "หยุดตารางเวลานี้ชั่วคราว"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedule"
+msgstr "ตารางเวลา"
+
+#: packages/django-dramatiq-postgres/django_dramatiq_postgres/models.py
+msgid "Schedules"
+msgstr "ตารางเวลา"

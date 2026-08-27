@@ -15,7 +15,7 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.http import get_http_session
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.stages.captcha.models import CaptchaStage
+from authentik.stages.captcha.models import CaptchaRequestContentType, CaptchaStage
 
 LOGGER = get_logger()
 PLAN_CONTEXT_CAPTCHA = "captcha"
@@ -35,17 +35,23 @@ class CaptchaChallenge(WithUserInfoChallenge):
 
 def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str, key: str | None = None):
     """Validate captcha token"""
+    payload = {
+        "secret": key or stage.private_key,
+        "response": token,
+        "remoteip": remote_ip,
+    }
+    body_kwargs = (
+        {"json": payload}
+        if stage.request_content_type == CaptchaRequestContentType.JSON
+        else {"data": payload}
+    )
     try:
         response = get_http_session().post(
             stage.api_url,
             headers={
-                "Content-type": "application/x-www-form-urlencoded",
+                "Content-Type": stage.request_content_type,
             },
-            data={
-                "secret": key or stage.private_key,
-                "response": token,
-                "remoteip": remote_ip,
-            },
+            **body_kwargs,
         )
         response.raise_for_status()
         data = response.json()

@@ -50,7 +50,7 @@ export class PasswordStage extends BaseStage<
                     </p>
                 </div>
 
-                <fieldset class="pf-c-form__group pf-m-action">
+                <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button name="remember-me" type="submit" class="pf-c-button pf-m-primary">
                         ${msg("Yes")}

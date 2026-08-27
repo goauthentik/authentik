@@ -17,7 +17,7 @@ export class ApplicationWizardBindingsToolbar extends AKElement {
     static styles = [PFButton, PFToolbar];
 
     @property({ type: Boolean, attribute: "can-delete", reflect: true })
-    canDelete = false;
+    public canDelete = false;
 
     notify(eventName: string) {
         this.dispatchEvent(new Event(eventName, { bubbles: true, composed: true }));

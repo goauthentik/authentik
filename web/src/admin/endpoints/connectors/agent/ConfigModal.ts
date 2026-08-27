@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/buttons/ActionButton/index";
 import "#elements/Expand";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
@@ -52,7 +52,7 @@ export class ConfigModal extends ModalButton {
         super.connectedCallback();
         this.addEventListener("ak-modal-show", () => {
             if (!this.request) return;
-            new EndpointsApi(DEFAULT_CONFIG)
+            aki(EndpointsApi)
                 .endpointsAgentsConnectorsMdmConfigCreate(this.request)
                 .then((e) => {
                     this.config = e;
@@ -86,11 +86,16 @@ export class ConfigModal extends ModalButton {
                     ></ak-codemirror>
                 </ak-expand>
             </div>
-            <footer class="pf-c-modal-box__footer pf-m-align-left">
-                <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
-                    ${msg("Download")}
-                </ak-action-button>
-                &nbsp;
+            <fieldset class="ak-c-fieldset pf-c-modal-box__footer">
+                <legend class="sr-only">${msg("Form actions")}</legend>
+                <button
+                    class="pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.open = false;
+                    }}
+                >
+                    ${msg("Close")}
+                </button>
                 <ak-action-button
                     class="pf-m-secondary"
                     .apiRequest=${() => {
@@ -107,16 +112,10 @@ export class ConfigModal extends ModalButton {
                 >
                     ${msg("Copy")}
                 </ak-action-button>
-                &nbsp;
-                <button
-                    class="pf-c-button pf-m-secondary"
-                    @click=${() => {
-                        this.open = false;
-                    }}
-                >
-                    ${msg("Close")}
-                </button>
-            </footer>`;
+                <ak-action-button class="pf-m-primary" .apiRequest=${this.#downloadConnectorConfig}>
+                    ${msg("Download")}
+                </ak-action-button>
+            </fieldset>`;
     }
 }
 

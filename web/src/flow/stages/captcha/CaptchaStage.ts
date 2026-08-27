@@ -12,6 +12,7 @@ import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
 import Styles from "#flow/stages/captcha/CaptchaStage.css";
+import { CapController, isCapWidgetURL } from "#flow/stages/captcha/controllers/cap";
 import {
     CaptchaController,
     CaptchaControllerConstructor,
@@ -53,7 +54,14 @@ interface LoadMessage {
     message: "load";
 }
 
-type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage>;
+interface ErrorMessage {
+    source?: string;
+    context?: string;
+    message: "error";
+    error: string;
+}
+
+type IframeMessageEvent = MessageEvent<CaptchaMessage | LoadMessage | ErrorMessage>;
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage
@@ -79,6 +87,7 @@ export class CaptchaStage
         HCaptchaController,
         GReCaptchaController,
         TurnstileController,
+        CapController,
     ]);
 
     #logger = ConsoleLogger.prefix("flow:captcha");
@@ -165,6 +174,9 @@ export class CaptchaStage
         return match(data)
             .with({ message: "captcha" }, ({ token }) => this.onTokenChange(token))
             .with({ message: "load" }, this.#loadListener)
+            .with({ message: "error" }, ({ error }) => {
+                this.error = error;
+            })
             .otherwise(({ message }) => {
                 this.#logger.debug(`Unknown message: ${message}`);
             });
@@ -183,12 +195,18 @@ export class CaptchaStage
         }
 
         if (this.challenge?.interactive) {
+            // Cap renders its own framed widget, so the generic iframe loading shimmer looks like
+            // an extra CAPTCHA box flashing behind it.
+            const isCapChallenge =
+                URL.canParse(this.challenge.jsUrl) && isCapWidgetURL(new URL(this.challenge.jsUrl));
+
             return html`
                 <iframe
                     aria-label=${msg("CAPTCHA challenge")}
                     ${ref(this.iframeRef)}
                     style="height: ${this.iframeHeight}px;"
                     data-ready=${this.#iframeLoaded ? "ready" : "loading"}
+                    data-transparent-loading=${isCapChallenge ? "true" : "false"}
                     class="ak-interactive-challenge"
                     id="ak-captcha"
                 ></iframe>
@@ -306,8 +324,13 @@ export class CaptchaStage
 
         // Then, load the new script...
         const scriptElement = document.createElement("script");
+        const matchedController = Array.from(CaptchaStage.controllers).find((Controller) =>
+            Controller.matchesURL(challengeURL),
+        );
 
         scriptElement.src = challengeURL.toString();
+        scriptElement.type =
+            matchedController?.scriptType === "module" ? "module" : "text/javascript";
         scriptElement.async = true;
         scriptElement.defer = true;
         scriptElement.onload = this.#scriptLoadListener;
@@ -362,9 +385,12 @@ export class CaptchaStage
 
         let synchronizeHeight: () => void;
 
-        if (this.activeController instanceof GReCaptchaController) {
-            // reCAPTCHA's use of nested iframes prevents their internal resize observer from
-            // reporting the correct height back to our iframe, so we have to do it ourselves.
+        if (
+            this.activeController instanceof GReCaptchaController ||
+            this.activeController instanceof HCaptchaController
+        ) {
+            // reCAPTCHA and hCaptcha use nested iframes that prevent their internal resize
+            // observer from reporting the correct height back to our iframe, so we have to do it ourselves.
 
             synchronizeHeight = () => {
                 if (!this.iframeRef) return;
@@ -373,38 +399,38 @@ export class CaptchaStage
 
                 if (!target) return;
 
-                const innerIFrame = contentDocument.querySelector<HTMLIFrameElement>(
-                    'iframe[style~="height:"]',
-                );
+                // Check all iframes. hCaptcha appends the step-2 challenge popup as a
+                // second iframe directly on the body
+                let maxHeight = target.clientHeight;
+                for (const iframe of contentDocument.querySelectorAll("iframe")) {
+                    const styleHeight = parseFloat(iframe.style.height);
+                    const rectBottom = iframe.getBoundingClientRect().bottom;
+                    maxHeight = Math.max(maxHeight, styleHeight || 0, rectBottom);
 
-                const innerBottom = innerIFrame?.getBoundingClientRect().bottom ?? 0;
-
-                const actualHeight = Math.max(innerBottom, target.clientHeight);
-
-                this.iframeHeight = Math.round(actualHeight * 1.1);
-
-                if (innerIFrame?.parentElement) {
-                    innerIFrame.parentElement.style.height = `${actualHeight}px`;
+                    if (iframe.parentElement) {
+                        const height = styleHeight || iframe.getBoundingClientRect().height;
+                        if (height > 0) iframe.parentElement.style.height = `${height}px`;
+                    }
                 }
+
+                this.iframeHeight = Math.round(maxHeight * 1.1);
             };
 
-            // We watch for any newly inserted iframes, as they may alter the height
-            // of the parent iframe...
+            // Watch for new iframes AND style changes on existing iframes.
+            // hCaptcha sometimes resizes its popup by mutating the style attribute
+            // rather than replacing the element entirely.
             this.#mutationObserver = new MutationObserver((mutations) => {
                 for (const mutation of mutations) {
-                    if (mutation.type !== "childList") continue;
-
-                    for (const node of mutation.addedNodes as NodeListOf<HTMLElement>) {
-                        if (node.tagName !== "IFRAME") continue;
-
-                        // And then resize the iframe to match the new size.
-                        //
-                        // This doesn't fix the issue entirely since the challenge frame
-                        // doesn't yet know the correct height, but at least the user can
-                        // try to load the challenge again with the correct height.
-
-                        this.#resizeObserver?.observe(node as HTMLIFrameElement);
-
+                    if (mutation.type === "childList") {
+                        for (const node of mutation.addedNodes as NodeListOf<HTMLElement>) {
+                            if (node.tagName !== "IFRAME") continue;
+                            this.#resizeObserver?.observe(node as HTMLIFrameElement);
+                            requestAnimationFrame(synchronizeHeight);
+                        }
+                    } else if (
+                        mutation.type === "attributes" &&
+                        mutation.target instanceof HTMLIFrameElement
+                    ) {
                         requestAnimationFrame(synchronizeHeight);
                     }
                 }
@@ -413,6 +439,8 @@ export class CaptchaStage
             this.#mutationObserver.observe(contentDocument.body, {
                 childList: true,
                 subtree: true,
+                attributes: true,
+                attributeFilter: ["style"],
             });
         } else {
             synchronizeHeight = () => {
@@ -464,9 +492,7 @@ export class CaptchaStage
             rest.some((C) => C !== GReCaptchaController)
         ) {
             this.#logger.debug(
-                `Other CAPTCHA providers were also available: ${rest
-                    .map((C) => C?.globalName ?? "unknown")
-                    .join(", ")}`,
+                `Other CAPTCHA providers were also available: ${rest.map((C) => C?.globalName ?? "unknown").join(", ")}`,
             );
         }
 
@@ -529,6 +555,8 @@ export class CaptchaStage
         const template = iframeTemplate(captchaElement, {
             challengeURL: challengeURL.toString(),
             theme: this.activeTheme,
+            scriptOnLoad: !(controller instanceof TurnstileController),
+            scriptType: controller.scriptType,
         });
 
         if (

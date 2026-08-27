@@ -1,9 +1,10 @@
 import "#components/ak-secret-text-input";
+import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { RenderFlowOption } from "#admin/flows/utils";
 import { BaseStageForm } from "#admin/stages/BaseStageForm";
@@ -12,8 +13,8 @@ import {
     AuthenticatorDuoStage,
     AuthenticatorDuoStageRequest,
     Flow,
+    FlowDesignationEnum,
     FlowsApi,
-    FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     StagesApi,
 } from "@goauthentik/api";
@@ -24,23 +25,19 @@ import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-form")
 export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
-    loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
-            stageUuid: pk,
-        });
-    }
-
-    async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
-        if (this.instance) {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoPartialUpdate({
-                stageUuid: this.instance.pk || "",
-                patchedAuthenticatorDuoStageRequest: data,
-            });
-        }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
-            authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
-        });
-    }
+    protected endpoints = {
+        load: (stageUuid: string) => aki(StagesApi).stagesAuthenticatorDuoRetrieve({ stageUuid }),
+        create: (authenticatorDuoStageRequest: AuthenticatorDuoStage) =>
+            aki(StagesApi).stagesAuthenticatorDuoCreate({
+                authenticatorDuoStageRequest:
+                    authenticatorDuoStageRequest as unknown as AuthenticatorDuoStageRequest,
+            }),
+        update: (stageUuid: string, patchedAuthenticatorDuoStageRequest: AuthenticatorDuoStage) =>
+            aki(StagesApi).stagesAuthenticatorDuoPartialUpdate({
+                stageUuid,
+                patchedAuthenticatorDuoStageRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
         return html` <span>
@@ -48,14 +45,18 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -142,15 +143,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
                                     ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
+                                    designation: FlowDesignationEnum.StageConfiguration,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
+                                const flows = await aki(FlowsApi).flowsInstancesList(args);
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {

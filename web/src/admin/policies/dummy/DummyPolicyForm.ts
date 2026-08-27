@@ -1,8 +1,9 @@
+import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
@@ -15,38 +16,38 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-policy-dummy-form")
 export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
-    loadInstance(pk: string): Promise<DummyPolicy> {
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyRetrieve({
-            policyUuid: pk,
-        });
-    }
-
-    async send(data: DummyPolicy): Promise<DummyPolicy> {
-        if (this.instance) {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
-                policyUuid: this.instance.pk || "",
-                dummyPolicyRequest: data,
-            });
-        }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-            dummyPolicyRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (policyUuid: string) =>
+            aki(PoliciesApi).policiesDummyRetrieve({
+                policyUuid,
+            }),
+        create: (dummyPolicyRequest: DummyPolicy) =>
+            aki(PoliciesApi).policiesDummyCreate({
+                dummyPolicyRequest,
+            }),
+        update: (policyUuid: string, dummyPolicyRequest: DummyPolicy) =>
+            aki(PoliciesApi).policiesDummyUpdate({
+                policyUuid,
+                dummyPolicyRequest,
+            }),
+    };
 
     protected override renderForm(): TemplateResult {
-        return html` <span>
+        return html`<span>
                 ${msg(
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Policy Name")}
+                required
+                name="name"
+                value="${ifDefined(this.instance?.name || "")}"
+                placeholder=${msg("Type a policy name...")}
+                autocomplete="off"
+                autofocus
+            >
+            </ak-text-input>
             <ak-switch-input
                 name="executionLogging"
                 label=${msg("Execution logging")}
