@@ -1,2 +1,72 @@
-a built-in management service included with every individual Nutanix cluster
-https://www.nutanixbible.com/3a-book-of-prism-architecture.html
+---
+title: Integrate with Nutanix Prism Element
+sidebar_label: Nutanix Prism Element
+support_level: community
+---
+
+## What is Nutanix Prism Element?
+
+> Nutanix Prism Element, also known as Nutanix PE, is a built-in management service included with every individual Nutanix cluster
+>
+> -- https://www.nutanixbible.com/3a-book-of-prism-architecture.html
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `ldap.company` is the FQDN of the authentik LDAP outpost.
+
+Prisn Element authenticates users against LDAP. Nutanix PE must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
+
+## authentik configuration
+
+### Create access groups
+
+Create groups that Prisn Element uses to allow login and to grant administrator privileges. The user filter permits members of either group to log in, while the admin filter grants administrator privileges only to members of `npe-admins`.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set **Name** to `npe-users` and click **Create**.
+4. Open the group, select the **Users** tab, and add the users who should have non-administrative access to Prisn Element.
+5. Repeat these steps with the name `npe-admins`, and add the users who should have administrator privileges.
+
+### Create the LDAP resources
+
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create or reuse an LDAP application and provider, create a service account with LDAP search permissions, and create an LDAP outpost.
+
+Use the following NPE-specific settings while completing the LDAP provider setup:
+
+- Use `npe-ldap` as the service account username. Note its password and full DN for NPE configuration.
+- The LDAP provider's **Base DN** is represented as `<base_dn>`. Replace this correspondingly.
+- On the LDAP provider, set **Certificate** to the certificate that NPE should trust for `ldap.company`.
+- Select the NPE LDAP application on the outpost and expose the outpost as `ldap.company`.
+
+If you configure application bindings, ensure that `npe-ldap` as well as the `npe-users` and `npe-admins` groups have access to the LDAP application.
+
+## Prisn Element configuration
+
+### Configure LDAP authentication
+
+:::info Dual Authentication
+After you save LDAP as the authentication method, Prisn Element will continue allowing local accounts to authenticate.
+:::
+
+1. Log in to Prisn Element as a user with administrator privileges.
+2. Click the Gear icon on the top right and navigate to **Users and Roles** --> **Authentication**
+
+
+### Add Role Mappings
+
+
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Prisn Element, open the NPE UI and log in with an authentik username and password. A user in `npe-users` should reach the NPE dashboard without administrator privileges, and a user in `npe-admins` should have administrator privileges.
+
+## Resources
+
+- [Prisn Element documentation - Configuring OpenLDAP Authentication](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-openldap-authentication-wc-t.html)
+- [Prisn Element documentation - UI Navigation](https://www.nutanixbible.com/3b-book-of-prism-navigation.html)
+
+
+
