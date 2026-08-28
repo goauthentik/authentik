@@ -16,3 +16,9 @@
 /usr/local/bin/xmlsec1-config
 /usr/local/bin/xmlsec1
 /usr/local/lib/xmlsec1Conf.sh
+
+# Non-package directories that confuse scanners
+/ak-root/.venv/lib/python3.14/site-packages/docs
+/ak-root/.venv/lib/python3.14/site-packages/examples
+/ak-root/.venv/lib/python3.14/site-packages/dts_test_project
+/ak-root/.venv/lib/python3.14/site-packages/example
