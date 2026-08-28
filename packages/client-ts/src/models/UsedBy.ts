@@ -23,32 +23,22 @@ import { UsedByActionEnumFromJSON, UsedByActionEnumToJSON } from "./UsedByAction
 export interface UsedBy {
     /**
      *
-     * @type {string}
-     * @memberof UsedBy
      */
     app: string;
     /**
      *
-     * @type {string}
-     * @memberof UsedBy
      */
     modelName: string;
     /**
      *
-     * @type {string}
-     * @memberof UsedBy
      */
     pk: string;
     /**
      *
-     * @type {string}
-     * @memberof UsedBy
      */
     name: string;
     /**
      *
-     * @type {UsedByActionEnum}
-     * @memberof UsedBy
      */
     action: UsedByActionEnum;
 }

@@ -20,8 +20,6 @@
 export interface OAuthDeviceCodeFinishChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof OAuthDeviceCodeFinishChallengeResponseRequest
      */
     component?: string;
 }

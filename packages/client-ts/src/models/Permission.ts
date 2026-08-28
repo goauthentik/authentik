@@ -20,44 +20,30 @@
 export interface Permission {
     /**
      *
-     * @type {number}
-     * @memberof Permission
      */
     readonly id: number;
     /**
      *
-     * @type {string}
-     * @memberof Permission
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof Permission
      */
     codename: string;
     /**
      *
-     * @type {string}
-     * @memberof Permission
      */
     readonly model: string;
     /**
      *
-     * @type {string}
-     * @memberof Permission
      */
     readonly appLabel: string;
     /**
      * Human-readable app label
-     * @type {string}
-     * @memberof Permission
      */
     readonly appLabelVerbose: string;
     /**
      * Human-readable model name
-     * @type {string}
-     * @memberof Permission
      */
     readonly modelVerbose: string;
 }

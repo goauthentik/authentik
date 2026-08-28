@@ -20,8 +20,6 @@
 export interface AgentAuthenticationResponse {
     /**
      *
-     * @type {string}
-     * @memberof AgentAuthenticationResponse
      */
     url: string;
 }

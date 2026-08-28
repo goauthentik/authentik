@@ -25,20 +25,14 @@ import { UniquePasswordPolicyFromJSON, UniquePasswordPolicyToJSON } from "./Uniq
 export interface PaginatedUniquePasswordPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUniquePasswordPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UniquePasswordPolicy>}
-     * @memberof PaginatedUniquePasswordPolicyList
      */
     results: Array<UniquePasswordPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUniquePasswordPolicyList
      */
     autocomplete: { [key: string]: any };
 }

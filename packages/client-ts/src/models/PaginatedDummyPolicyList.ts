@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedDummyPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedDummyPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<DummyPolicy>}
-     * @memberof PaginatedDummyPolicyList
      */
     results: Array<DummyPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDummyPolicyList
      */
     autocomplete: { [key: string]: any };
 }

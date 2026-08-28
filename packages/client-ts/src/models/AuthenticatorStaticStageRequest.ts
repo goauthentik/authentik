@@ -20,32 +20,22 @@
 export interface AuthenticatorStaticStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorStaticStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorStaticStageRequest
      */
     tokenCount?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorStaticStageRequest
      */
     tokenLength?: number;
 }

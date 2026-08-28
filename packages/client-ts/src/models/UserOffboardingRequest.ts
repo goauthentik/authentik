@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { OffboardingActionEnum } from "./OffboardingActionEnum";
 import {
     OffboardingActionEnumFromJSON,
@@ -27,32 +28,22 @@ import {
 export interface UserOffboardingRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserOffboardingRequest
      */
     user: number;
     /**
      * Absolute time at which the offboarding action is executed.
-     * @type {Date}
-     * @memberof UserOffboardingRequest
      */
     scheduledAt: Date;
     /**
      *
-     * @type {OffboardingActionEnum}
-     * @memberof UserOffboardingRequest
      */
     action?: OffboardingActionEnum;
     /**
      * Revoke all of the user's sessions when offboarding.
-     * @type {boolean}
-     * @memberof UserOffboardingRequest
      */
     revokeSessions?: boolean;
     /**
      * Revoke all of the user's tokens when offboarding.
-     * @type {boolean}
-     * @memberof UserOffboardingRequest
      */
     revokeTokens?: boolean;
 }
@@ -85,7 +76,10 @@ export function UserOffboardingRequestFromJSONTyped(
     }
     return {
         user: json["user"],
-        scheduledAt: new Date(json["scheduled_at"]),
+        scheduledAt:
+            json["scheduled_at"] == null
+                ? json["scheduled_at"]
+                : parseDateTime(json["scheduled_at"]),
         action: json["action"] == null ? undefined : OffboardingActionEnumFromJSON(json["action"]),
         revokeSessions: json["revoke_sessions"] == null ? undefined : json["revoke_sessions"],
         revokeTokens: json["revoke_tokens"] == null ? undefined : json["revoke_tokens"],
@@ -106,7 +100,10 @@ export function UserOffboardingRequestToJSONTyped(
 
     return {
         user: value["user"],
-        scheduled_at: value["scheduledAt"].toISOString(),
+        scheduled_at:
+            value["scheduledAt"] == null
+                ? value["scheduledAt"]
+                : serializeDateTime(value["scheduledAt"]),
         action: OffboardingActionEnumToJSON(value["action"]),
         revoke_sessions: value["revokeSessions"],
         revoke_tokens: value["revokeTokens"],

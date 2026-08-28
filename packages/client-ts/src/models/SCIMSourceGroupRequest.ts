@@ -20,32 +20,22 @@
 export interface SCIMSourceGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroupRequest
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroupRequest
      */
     externalId: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroupRequest
      */
     group: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceGroupRequest
      */
     source: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMSourceGroupRequest
      */
     attributes?: { [key: string]: any };
 }

@@ -20,50 +20,34 @@
 export interface SAMLSourcePropertyMapping {
     /**
      *
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     readonly pk: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     expression: string;
     /**
      * Get object's component so that we know how to edit the object
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SAMLSourcePropertyMapping
      */
     readonly metaModelName: string;
 }

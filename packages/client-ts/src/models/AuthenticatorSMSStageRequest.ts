@@ -25,68 +25,46 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 export interface AuthenticatorSMSStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {ProviderEnum}
-     * @memberof AuthenticatorSMSStageRequest
      */
     provider: ProviderEnum;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     fromNumber: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     accountSid: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     auth: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     authPassword?: string;
     /**
      *
-     * @type {AuthTypeEnum}
-     * @memberof AuthenticatorSMSStageRequest
      */
     authType?: AuthTypeEnum;
     /**
      * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-     * @type {boolean}
-     * @memberof AuthenticatorSMSStageRequest
      */
     verifyOnly?: boolean;
     /**
      * Optionally modify the payload being sent to custom providers.
-     * @type {string}
-     * @memberof AuthenticatorSMSStageRequest
      */
     mapping?: string | null;
 }

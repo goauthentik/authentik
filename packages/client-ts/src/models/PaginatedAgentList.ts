@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAgentList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAgentList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Agent>}
-     * @memberof PaginatedAgentList
      */
     results: Array<Agent>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAgentList
      */
     autocomplete: { [key: string]: any };
 }

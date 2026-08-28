@@ -20,32 +20,22 @@
 export interface SCIMSourceUserRequest {
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUserRequest
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUserRequest
      */
     externalId: string;
     /**
      *
-     * @type {number}
-     * @memberof SCIMSourceUserRequest
      */
     user: number;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSourceUserRequest
      */
     source: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMSourceUserRequest
      */
     attributes?: { [key: string]: any };
 }

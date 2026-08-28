@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGeoIPPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGeoIPPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GeoIPPolicy>}
-     * @memberof PaginatedGeoIPPolicyList
      */
     results: Array<GeoIPPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGeoIPPolicyList
      */
     autocomplete: { [key: string]: any };
 }

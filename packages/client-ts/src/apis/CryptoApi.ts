@@ -35,53 +35,116 @@ import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
 export interface CryptoCertificatekeypairsCreateRequest {
+    /**
+     *
+     */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
 
 export interface CryptoCertificatekeypairsDestroyRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
 }
 
 export interface CryptoCertificatekeypairsGenerateCreateRequest {
+    /**
+     *
+     */
     certificateGenerationRequest: CertificateGenerationRequest;
 }
 
 export interface CryptoCertificatekeypairsListRequest {
+    /**
+     * Only return certificate-key pairs with keys
+     */
     hasKey?: boolean;
+    /**
+     *
+     */
     keyType?: Array<KeyTypeEnum>;
+    /**
+     *
+     */
     managed?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface CryptoCertificatekeypairsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
+    /**
+     *
+     */
     patchedCertificateKeyPairRequest?: PatchedCertificateKeyPairRequest;
 }
 
 export interface CryptoCertificatekeypairsRetrieveRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
 }
 
 export interface CryptoCertificatekeypairsUpdateRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
+    /**
+     *
+     */
     certificateKeyPairRequest: CertificateKeyPairRequest;
 }
 
 export interface CryptoCertificatekeypairsUsedByListRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
 }
 
 export interface CryptoCertificatekeypairsViewCertificateRetrieveRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
+    /**
+     *
+     */
     download?: boolean;
 }
 
 export interface CryptoCertificatekeypairsViewPrivateKeyRetrieveRequest {
+    /**
+     * A UUID string identifying this Certificate-Key Pair.
+     */
     kpUuid: string;
+    /**
+     *
+     */
     download?: boolean;
 }
 

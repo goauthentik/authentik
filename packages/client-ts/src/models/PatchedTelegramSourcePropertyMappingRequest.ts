@@ -20,20 +20,14 @@
 export interface PatchedTelegramSourcePropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedTelegramSourcePropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedTelegramSourcePropertyMappingRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedTelegramSourcePropertyMappingRequest
      */
     expression?: string;
 }

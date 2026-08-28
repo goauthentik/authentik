@@ -20,62 +20,42 @@
 export interface PatchedDeviceUserBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     user?: number | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     target?: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     order?: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     failureResult?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedDeviceUserBindingRequest
      */
     isPrimary?: boolean;
 }

@@ -25,14 +25,10 @@ import { GrantRequestFromJSON } from "./GrantRequest";
 export interface AgentGrantRequestCreated {
     /**
      *
-     * @type {GrantRequest}
-     * @memberof AgentGrantRequestCreated
      */
     readonly grantRequest: GrantRequest;
     /**
      *
-     * @type {string}
-     * @memberof AgentGrantRequestCreated
      */
     readonly fulfillUrl: string;
 }

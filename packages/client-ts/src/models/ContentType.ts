@@ -20,32 +20,22 @@
 export interface ContentType {
     /**
      *
-     * @type {number}
-     * @memberof ContentType
      */
     readonly id: number;
     /**
      *
-     * @type {string}
-     * @memberof ContentType
      */
     readonly appLabel: string;
     /**
      *
-     * @type {string}
-     * @memberof ContentType
      */
     readonly model: string;
     /**
      *
-     * @type {string}
-     * @memberof ContentType
      */
     readonly verboseNamePlural: string;
     /**
      *
-     * @type {string}
-     * @memberof ContentType
      */
     readonly fullyQualifiedModel: string;
 }
