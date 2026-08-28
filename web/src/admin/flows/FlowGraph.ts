@@ -11,7 +11,7 @@ import { match } from "ts-pattern";
 import { msg, str } from "@lit/localize";
 
 export interface CompiledFlowGraph {
-    source: string;
+    diagram: string;
     nodes: ReadonlyMap<string, DiagramNode>;
 }
 

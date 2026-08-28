@@ -26,10 +26,7 @@ def nodes_by_identifier(graph: dict) -> dict[str, dict]:
 
 
 def edge_set(graph: dict) -> set[tuple[str, str, str]]:
-    return {
-        (edge["origin"], edge["target"], edge["type"])
-        for edge in graph["edges"]
-    }
+    return {(edge["origin"], edge["target"], edge["type"]) for edge in graph["edges"]}
 
 
 class TestFlowsAPI(APITestCase):
@@ -40,9 +37,7 @@ class TestFlowsAPI(APITestCase):
 
     def test_api_serializer(self):
         obj = DummyStage()
-        self.assertEqual(
-            StageSerializer().get_component(obj), "ak-stage-dummy-form"
-        )
+        self.assertEqual(StageSerializer().get_component(obj), "ak-stage-dummy-form")
         self.assertEqual(StageSerializer().get_verbose_name(obj), "Dummy Stage")
 
     def test_api_viewset(self):
@@ -68,9 +63,7 @@ class TestFlowsAPI(APITestCase):
 
     def policy(self, target, name: str, order: int = 0) -> PolicyBinding:
         return PolicyBinding.objects.create(
-            policy=DummyPolicy.objects.create(
-                name=name, result=False, wait_min=1, wait_max=2
-            ),
+            policy=DummyPolicy.objects.create(name=name, result=False, wait_min=1, wait_max=2),
             target=target,
             order=order,
         )
@@ -78,9 +71,7 @@ class TestFlowsAPI(APITestCase):
     def test_api_diagram_stage_carries_stage_and_binding_identity(self):
         flow = self.diagram_flow()
         stage = DummyStage.objects.create(name="dummy1")
-        binding = FlowStageBinding.objects.create(
-            target=flow, stage=stage, order=0
-        )
+        binding = FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
 
         node = nodes_by_identifier(self.diagram(flow))["stage_0"]
 
@@ -90,9 +81,7 @@ class TestFlowsAPI(APITestCase):
         self.assertEqual(node["model"], "authentik_stages_dummy.dummystage")
         self.assertEqual(node["pk"], str(stage.pk))
         self.assertEqual(node["component"], "ak-stage-dummy-form")
-        self.assertEqual(
-            node["binding_model"], "authentik_flows.flowstagebinding"
-        )
+        self.assertEqual(node["binding_model"], "authentik_flows.flowstagebinding")
         self.assertEqual(node["binding_pk"], str(binding.pk))
         self.assertEqual(node["binding_order"], 0)
 
@@ -111,9 +100,7 @@ class TestFlowsAPI(APITestCase):
         self.assertEqual(node["model"], "authentik_policies_dummy.dummypolicy")
         self.assertEqual(node["pk"], str(policy_binding.policy.pk))
         self.assertEqual(node["component"], "ak-policy-dummy-form")
-        self.assertEqual(
-            node["binding_model"], "authentik_policies.policybinding"
-        )
+        self.assertEqual(node["binding_model"], "authentik_policies.policybinding")
         self.assertEqual(node["binding_pk"], str(policy_binding.pk))
         self.assertEqual(node["binding_order"], 3)
 
@@ -151,9 +138,7 @@ class TestFlowsAPI(APITestCase):
             if order == 0:
                 self.policy(binding, "dummy1-policy")
 
-        identifiers = [
-            node["identifier"] for node in self.diagram(flow)["nodes"]
-        ]
+        identifiers = [node["identifier"] for node in self.diagram(flow)["nodes"]]
 
         self.assertCountEqual(identifiers, set(identifiers))
 
@@ -168,9 +153,7 @@ class TestFlowsAPI(APITestCase):
         nodes = nodes_by_identifier(graph)
 
         self.assertEqual(nodes["flow_pre"]["type"], "pre-flow-policies")
-        self.assertEqual(
-            nodes["flow_policy_0"]["binding_pk"], str(policy_binding.pk)
-        )
+        self.assertEqual(nodes["flow_policy_0"]["binding_pk"], str(policy_binding.pk))
         self.assertEqual(nodes["flow_policy_0"]["binding_order"], 2)
         self.assertEqual(
             edge_set(graph),
@@ -184,9 +167,7 @@ class TestFlowsAPI(APITestCase):
         )
 
     def test_api_diagram_auth_requirement_controls_entry(self):
-        flow = self.diagram_flow(
-            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
-        )
+        flow = self.diagram_flow(authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED)
         FlowStageBinding.objects.create(
             target=flow, stage=DummyStage.objects.create(name="dummy1"), order=0
         )
@@ -219,9 +200,7 @@ class TestFlowsAPI(APITestCase):
         self.client.force_login(user)
 
         flow = create_test_flow()
-        response = self.client.get(
-            reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug})
-        )
+        response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
         self.assertEqual(
             body["background_url"],
@@ -230,13 +209,9 @@ class TestFlowsAPI(APITestCase):
 
         flow.background = "https://goauthentik.io/img/icon.png"
         flow.save()
-        response = self.client.get(
-            reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug})
-        )
+        response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
-        self.assertEqual(
-            body["background"], "https://goauthentik.io/img/icon.png"
-        )
+        self.assertEqual(body["background"], "https://goauthentik.io/img/icon.png")
 
     def test_api_diagram_no_stages(self):
         """Test flow diagram with no stages."""
