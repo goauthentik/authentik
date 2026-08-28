@@ -12,13 +12,11 @@ from prometheus_client.values import MultiProcessValue
 
 from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
-from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.setup import setup
-from lifecycle.migrate import run_migrations
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -75,10 +73,6 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
     from prometheus_client import values
 
     values.ValueClass = MultiProcessValue(lambda: worker._worker_id)
-
-    from authentik.lib.debug import start_pyroscope
-
-    start_pyroscope("server", worker_id=str(worker._worker_id))
 
 
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
@@ -159,6 +153,3 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
 
         except Exception:  # nosec # noqa
             pass
-
-start_debug_server()
-run_migrations()

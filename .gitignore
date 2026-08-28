@@ -105,9 +105,6 @@ target/
 profile_default/
 ipython_config.py
 
-# pyenv
-.python-version
-
 # SageMath parsed files
 *.sage.py
 

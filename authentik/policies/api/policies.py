@@ -24,7 +24,7 @@ from authentik.core.api.utils import (
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.policies.api.exec import PolicyTestResultSerializer, PolicyTestSerializer
 from authentik.policies.models import Policy, PolicyBinding
-from authentik.policies.process import PolicyProcess
+from authentik.policies.process import PolicyThread
 from authentik.policies.types import CACHE_PREFIX, PolicyRequest
 from authentik.rbac.decorators import permission_required
 
@@ -146,12 +146,12 @@ class PolicyViewSet(
         p_request.set_http_request(self.request)
         p_request.context = body.validated_data.get("context", {})
 
-        proc = PolicyProcess(PolicyBinding(policy=policy), p_request, None)
+        proc = PolicyThread(PolicyBinding(policy=policy), p_request)
         with capture_logs() as logs:
             result = proc.execute()
         log_messages = []
         for log in logs:
-            if log.attributes.get("process", "") == "PolicyProcess":
+            if log.attributes.get("process", "") == "PolicyThread":
                 continue
             log_messages.append(LogEventSerializer(log).data)
         result.log_messages = log_messages
