@@ -154,6 +154,7 @@ export interface CoreApplicationEntitlementsDestroyRequest {
 
 export interface CoreApplicationEntitlementsListRequest {
     app?: string;
+    forUser?: number;
     name?: string;
     ordering?: string;
     page?: number;
@@ -770,6 +771,10 @@ export class CoreApi extends runtime.BaseAPI {
             queryParameters["app"] = requestParameters["app"];
         }
 
+        if (requestParameters["forUser"] != null) {
+            queryParameters["for_user"] = requestParameters["forUser"];
+        }
+
         if (requestParameters["name"] != null) {
             queryParameters["name"] = requestParameters["name"];
         }
@@ -816,7 +821,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * ApplicationEntitlement Viewset
+     * List application entitlements, optionally scoped to a user via `for_user`.
      */
     async coreApplicationEntitlementsListRaw(
         requestParameters: CoreApplicationEntitlementsListRequest,
@@ -832,7 +837,7 @@ export class CoreApi extends runtime.BaseAPI {
     }
 
     /**
-     * ApplicationEntitlement Viewset
+     * List application entitlements, optionally scoped to a user via `for_user`.
      */
     async coreApplicationEntitlementsList(
         requestParameters: CoreApplicationEntitlementsListRequest = {},

@@ -484,21 +484,23 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     def app_entitlements(self, app: Application | None) -> QuerySet[ApplicationEntitlement]:
         """Get all entitlements this user has for `app`."""
         if not app:
-            return []
-        all_groups = self.all_groups()
-        qs = app.applicationentitlement_set.filter(
-            Q(
-                Q(bindings__user=self) | Q(bindings__group__in=all_groups),
-                bindings__negate=False,
-            )
-            | Q(
-                Q(~Q(bindings__user=self), bindings__user__isnull=False)
-                | Q(~Q(bindings__group__in=all_groups), bindings__group__isnull=False),
-                bindings__negate=True,
-            ),
-            bindings__enabled=True,
-        ).order_by("name")
-        return qs
+            return ApplicationEntitlement.objects.none()
+        return self._app_entitlements_for(ApplicationEntitlement.objects.filter(app=app))
+
+    def all_app_entitlements(self) -> QuerySet[ApplicationEntitlement]:
+        """Get all entitlements this user has, across all applications."""
+        return self._app_entitlements_for(ApplicationEntitlement.objects.all())
+
+    def _app_entitlements_for(
+        self, queryset: QuerySet[ApplicationEntitlement]
+    ) -> QuerySet[ApplicationEntitlement]:
+        from authentik.policies.engine import ListPolicyEngine
+
+        engine = ListPolicyEngine(queryset, self)
+        # An entitlement with no bindings is granted to no one
+        engine.empty_result = False
+        engine.build()
+        return engine.result.order_by("name")
 
     def app_entitlements_attributes(self, app: Application | None) -> dict:
         """Get a dictionary containing all merged attributes from app entitlements for `app`."""

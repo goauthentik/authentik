@@ -179,7 +179,6 @@ export class UserViewPage extends WithLazyTabs(
                     slot="page-applications"
                     id="page-applications"
                     aria-label=${msg("Applications")}
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
                     @activate=${() => this.activateTab("page-applications")}
                 >
                     ${this.renderWhenActive(
