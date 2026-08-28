@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { LicenseFlagsEnum } from "./LicenseFlagsEnum";
 import { LicenseFlagsEnumFromJSON, LicenseFlagsEnumToJSON } from "./LicenseFlagsEnum";
 import type { LicenseSummaryStatusEnum } from "./LicenseSummaryStatusEnum";
@@ -28,32 +29,22 @@ import {
 export interface LicenseSummary {
     /**
      *
-     * @type {number}
-     * @memberof LicenseSummary
      */
     internalUsers: number;
     /**
      *
-     * @type {number}
-     * @memberof LicenseSummary
      */
     externalUsers: number;
     /**
      *
-     * @type {LicenseSummaryStatusEnum}
-     * @memberof LicenseSummary
      */
     status: LicenseSummaryStatusEnum;
     /**
      *
-     * @type {Date}
-     * @memberof LicenseSummary
      */
     latestValid: Date;
     /**
      *
-     * @type {Array<LicenseFlagsEnum>}
-     * @memberof LicenseSummary
      */
     licenseFlags: Array<LicenseFlagsEnum>;
 }
@@ -109,7 +100,10 @@ export function LicenseSummaryFromJSONTyped(
         internalUsers: json["internal_users"],
         externalUsers: json["external_users"],
         status: LicenseSummaryStatusEnumFromJSON(json["status"]),
-        latestValid: new Date(json["latest_valid"]),
+        latestValid:
+            json["latest_valid"] == null
+                ? json["latest_valid"]
+                : parseDateTime(json["latest_valid"]),
         licenseFlags: (json["license_flags"] as Array<any>).map(LicenseFlagsEnumFromJSON),
     };
 }
@@ -130,7 +124,10 @@ export function LicenseSummaryToJSONTyped(
         internal_users: value["internalUsers"],
         external_users: value["externalUsers"],
         status: LicenseSummaryStatusEnumToJSON(value["status"]),
-        latest_valid: value["latestValid"].toISOString(),
+        latest_valid:
+            value["latestValid"] == null
+                ? value["latestValid"]
+                : serializeDateTime(value["latestValid"]),
         license_flags: (value["licenseFlags"] as Array<any>).map(LicenseFlagsEnumToJSON),
     };
 }

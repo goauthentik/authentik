@@ -30,218 +30,146 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface LDAPSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LDAPSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof LDAPSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof LDAPSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof LDAPSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     serverUri: string;
     /**
      * Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     peerCertificate?: string | null;
     /**
      * Client certificate to authenticate against the LDAP Server's Certificate.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     clientCertificate?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     bindCn?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     bindPassword?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     startTls?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     sni?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     baseDn: string;
     /**
      * Prepended to Base DN for User-queries.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     additionalUserDn?: string;
     /**
      * Prepended to Base DN for Group-queries.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     additionalGroupDn?: string;
     /**
      * Consider Objects matching this filter to be Users.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     userObjectFilter?: string;
     /**
      * Consider Objects matching this filter to be Groups.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     groupObjectFilter?: string;
     /**
      * Field which contains members of a group.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     groupMembershipField?: string;
     /**
      * Attribute which matches the value of `group_membership_field`.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     userMembershipAttribute?: string;
     /**
      * Field which contains a unique Identifier.
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     objectUniquenessField?: string;
     /**
      * Update internal authentik password when login succeeds with LDAP
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     syncUsers?: boolean;
     /**
      * When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     syncUsersPassword?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     syncGroups?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof LDAPSourceRequest
      */
     syncParentGroup?: string | null;
     /**
      * Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     lookupGroupsFromUser?: boolean;
     /**
      * Delete authentik users and groups which were previously supplied by this source, but are now missing from it.
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     deleteNotFoundObjects?: boolean;
     /**
      * When to trigger sync for outgoing providers
-     * @type {SyncOutgoingTriggerModeEnum}
-     * @memberof LDAPSourceRequest
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
     /**
      * Sync group parentage/hierarchy from LDAP directories.
-     * @type {boolean}
-     * @memberof LDAPSourceRequest
      */
     syncGroupHierarchy?: boolean;
 }

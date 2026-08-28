@@ -20,8 +20,6 @@
 export interface RoleRequest {
     /**
      *
-     * @type {string}
-     * @memberof RoleRequest
      */
     name: string;
 }

@@ -21,32 +21,68 @@ import { type PatchedAgentRequest, PatchedAgentRequestToJSON } from "../models/P
 import * as runtime from "../runtime";
 
 export interface AgentsAgentsCreateRequest {
+    /**
+     *
+     */
     agentCreateRequest?: AgentCreateRequest;
 }
 
 export interface AgentsAgentsDestroyRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
 }
 
 export interface AgentsAgentsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     parent?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface AgentsAgentsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
+    /**
+     *
+     */
     patchedAgentRequest?: PatchedAgentRequest;
 }
 
 export interface AgentsAgentsRetrieveRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
 }
 
 export interface AgentsAgentsUpdateRequest {
+    /**
+     * A unique integer value identifying this Agent.
+     */
     id: number;
+    /**
+     *
+     */
     agentRequest: AgentRequest;
 }
 

@@ -29,68 +29,46 @@ import { UserAttributeEnumFromJSON, UserAttributeEnumToJSON } from "./UserAttrib
 export interface MutualTLSStage {
     /**
      *
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof MutualTLSStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof MutualTLSStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {StageModeEnum}
-     * @memberof MutualTLSStage
      */
     mode: StageModeEnum;
     /**
      * Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`.
-     * @type {Array<string>}
-     * @memberof MutualTLSStage
      */
     certificateAuthorities?: Array<string>;
     /**
      *
-     * @type {CertAttributeEnum}
-     * @memberof MutualTLSStage
      */
     certAttribute: CertAttributeEnum;
     /**
      *
-     * @type {UserAttributeEnum}
-     * @memberof MutualTLSStage
      */
     userAttribute: UserAttributeEnum;
 }

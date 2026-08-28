@@ -20,56 +20,38 @@
 export interface GoogleChromeConnector {
     /**
      *
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof GoogleChromeConnector
      */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleChromeConnector
      */
     credentials: { [key: string]: any };
     /**
      * Full URL to be used in Google Workspace configuration
-     * @type {string}
-     * @memberof GoogleChromeConnector
      */
     readonly chromeUrl: string | null;
 }

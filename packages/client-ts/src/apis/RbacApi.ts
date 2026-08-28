@@ -62,127 +62,304 @@ import {
 import * as runtime from "../runtime";
 
 export interface RbacInitialPermissionsCreateRequest {
+    /**
+     *
+     */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
 
 export interface RbacInitialPermissionsDestroyRequest {
+    /**
+     * A unique integer value identifying this Initial Permissions.
+     */
     id: number;
 }
 
 export interface RbacInitialPermissionsListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface RbacInitialPermissionsPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Initial Permissions.
+     */
     id: number;
+    /**
+     *
+     */
     patchedInitialPermissionsRequest?: PatchedInitialPermissionsRequest;
 }
 
 export interface RbacInitialPermissionsRetrieveRequest {
+    /**
+     * A unique integer value identifying this Initial Permissions.
+     */
     id: number;
 }
 
 export interface RbacInitialPermissionsUpdateRequest {
+    /**
+     * A unique integer value identifying this Initial Permissions.
+     */
     id: number;
+    /**
+     *
+     */
     initialPermissionsRequest: InitialPermissionsRequest;
 }
 
 export interface RbacInitialPermissionsUsedByListRequest {
+    /**
+     * A unique integer value identifying this Initial Permissions.
+     */
     id: number;
 }
 
 export interface RbacPermissionsAssignedByRolesAssignRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     permissionAssignRequest: PermissionAssignRequest;
 }
 
 export interface RbacPermissionsAssignedByRolesListRequest {
+    /**
+     *
+     */
     model: string;
+    /**
+     *
+     */
     objectPk?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface RbacPermissionsAssignedByRolesUnassignPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedPermissionAssignRequest?: PatchedPermissionAssignRequest;
 }
 
 export interface RbacPermissionsListRequest {
+    /**
+     *
+     */
     codename?: string;
+    /**
+     *
+     */
     contentTypeAppLabel?: string;
+    /**
+     *
+     */
     contentTypeModel?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     role?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface RbacPermissionsRetrieveRequest {
+    /**
+     * A unique integer value identifying this permission.
+     */
     id: number;
 }
 
 export interface RbacPermissionsRolesListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     uuid?: string;
 }
 
 export interface RbacRolesAddUserCreateRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
 
 export interface RbacRolesCreateRequest {
+    /**
+     *
+     */
     roleRequest: RoleRequest;
 }
 
 export interface RbacRolesDestroyRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
 }
 
 export interface RbacRolesListRequest {
+    /**
+     *
+     */
     groups?: string;
+    /**
+     * Include inherited roles (requires users or groups filter)
+     */
     inherited?: boolean;
+    /**
+     *
+     */
     managed?: Array<string>;
+    /**
+     *
+     */
     managedIsnull?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     users?: number;
 }
 
 export interface RbacRolesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRoleRequest?: PatchedRoleRequest;
 }
 
 export interface RbacRolesRemoveUserCreateRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     userAccountSerializerForRoleRequest: UserAccountSerializerForRoleRequest;
 }
 
 export interface RbacRolesRetrieveRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
 }
 
 export interface RbacRolesUpdateRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
+    /**
+     *
+     */
     roleRequest: RoleRequest;
 }
 
 export interface RbacRolesUsedByListRequest {
+    /**
+     * A UUID string identifying this Role.
+     */
     uuid: string;
 }
 

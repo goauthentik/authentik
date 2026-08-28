@@ -20,14 +20,10 @@
 export interface DummyStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof DummyStageRequest
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof DummyStageRequest
      */
     throwError?: boolean;
 }

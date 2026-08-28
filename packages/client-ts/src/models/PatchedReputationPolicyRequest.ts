@@ -20,32 +20,22 @@
 export interface PatchedReputationPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedReputationPolicyRequest
      */
     name?: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PatchedReputationPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedReputationPolicyRequest
      */
     checkIp?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedReputationPolicyRequest
      */
     checkUsername?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PatchedReputationPolicyRequest
      */
     threshold?: number;
 }

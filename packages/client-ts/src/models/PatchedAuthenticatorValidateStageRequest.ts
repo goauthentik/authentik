@@ -32,74 +32,50 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface PatchedAuthenticatorValidateStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     name?: string;
     /**
      *
-     * @type {NotConfiguredActionEnum}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
-     * @type {Array<DeviceClassesEnum>}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
      * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
-     * @type {Array<string>}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     configurationStages?: Array<string>;
     /**
      * If any of the user's device has been used within this threshold, this stage will be skipped
-     * @type {string}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     lastAuthThreshold?: string;
     /**
      * Enforce user verification for WebAuthn devices.
-     * @type {UserVerificationEnum}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     webauthnUserVerification?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     webauthnHints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     webauthnAllowedDeviceTypes?: Array<string>;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     emailOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     smsOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     totpOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAuthenticatorValidateStageRequest
      */
     staticOtpThrottlingFactor?: number;
 }

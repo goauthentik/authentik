@@ -23,68 +23,46 @@ import { TransportModeEnumFromJSON, TransportModeEnumToJSON } from "./TransportM
 export interface NotificationTransport {
     /**
      *
-     * @type {string}
-     * @memberof NotificationTransport
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof NotificationTransport
      */
     name: string;
     /**
      *
-     * @type {TransportModeEnum}
-     * @memberof NotificationTransport
      */
     mode?: TransportModeEnum;
     /**
      * Return selected mode with a UI Label
-     * @type {string}
-     * @memberof NotificationTransport
      */
     readonly modeVerbose: string;
     /**
      *
-     * @type {string}
-     * @memberof NotificationTransport
      */
     webhookUrl?: string;
     /**
      * When set, the selected certificate is used to validate the certificate of the webhook server.
-     * @type {string}
-     * @memberof NotificationTransport
      */
     webhookCa?: string | null;
     /**
      * Customize the body of the request. Mapping should return data that is JSON-serializable.
-     * @type {string}
-     * @memberof NotificationTransport
      */
     webhookMappingBody?: string | null;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-     * @type {string}
-     * @memberof NotificationTransport
      */
     webhookMappingHeaders?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof NotificationTransport
      */
     emailSubjectPrefix?: string;
     /**
      *
-     * @type {string}
-     * @memberof NotificationTransport
      */
     emailTemplate?: string;
     /**
      * Only send notification once, for example when sending a webhook into a chat channel.
-     * @type {boolean}
-     * @memberof NotificationTransport
      */
     sendOnce?: boolean;
 }

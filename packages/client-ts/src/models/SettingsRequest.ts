@@ -26,104 +26,70 @@ import {
 export interface SettingsRequest {
     /**
      * Configure how authentik should show avatars for users.
-     * @type {string}
-     * @memberof SettingsRequest
      */
     avatars?: string;
     /**
      * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
-     * @type {string}
-     * @memberof SettingsRequest
      */
     baseUrl?: string;
     /**
      * Enable the ability for users to change their name.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     defaultUserChangeName?: boolean;
     /**
      * Enable the ability for users to change their email address.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     defaultUserChangeEmail?: boolean;
     /**
      * Enable the ability for users to change their username.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     defaultUserChangeUsername?: boolean;
     /**
      * Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).
-     * @type {string}
-     * @memberof SettingsRequest
      */
     eventRetention?: string;
     /**
      * Reputation cannot decrease lower than this value. Zero or negative.
-     * @type {number}
-     * @memberof SettingsRequest
      */
     reputationLowerLimit?: number;
     /**
      * Reputation cannot increase higher than this value. Zero or positive.
-     * @type {number}
-     * @memberof SettingsRequest
      */
     reputationUpperLimit?: number;
     /**
      *
-     * @type {any}
-     * @memberof SettingsRequest
      */
     footerLinks?: any | null;
     /**
      * When enabled, all the events caused by a user will be deleted upon the user's deletion.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     gdprCompliance?: boolean;
     /**
      * Globally enable/disable impersonation.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     impersonation?: boolean;
     /**
      * Require administrators to provide a reason for impersonating a user.
-     * @type {boolean}
-     * @memberof SettingsRequest
      */
     impersonationRequireReason?: boolean;
     /**
      * Default token duration
-     * @type {string}
-     * @memberof SettingsRequest
      */
     defaultTokenDuration?: string;
     /**
      * Default token length
-     * @type {number}
-     * @memberof SettingsRequest
      */
     defaultTokenLength?: number;
     /**
      * Default page size for API responses, if no size was requested.
-     * @type {number}
-     * @memberof SettingsRequest
      */
     paginationDefaultPageSize?: number;
     /**
      * Maximum page size
-     * @type {number}
-     * @memberof SettingsRequest
      */
     paginationMaxPageSize?: number;
     /**
      *
-     * @type {PatchedSettingsRequestFlags}
-     * @memberof SettingsRequest
      */
     flags: PatchedSettingsRequestFlags;
 }

@@ -25,20 +25,14 @@ import { TelegramSourceFromJSON, TelegramSourceToJSON } from "./TelegramSource";
 export interface PaginatedTelegramSourceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedTelegramSourceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<TelegramSource>}
-     * @memberof PaginatedTelegramSourceList
      */
     results: Array<TelegramSource>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedTelegramSourceList
      */
     autocomplete: { [key: string]: any };
 }

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Flow } from "./Flow";
 import { FlowFromJSON } from "./Flow";
 import type { PartialUser } from "./PartialUser";
@@ -25,50 +26,34 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface Invitation {
     /**
      *
-     * @type {string}
-     * @memberof Invitation
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Invitation
      */
     name: string;
     /**
      *
-     * @type {Date}
-     * @memberof Invitation
      */
     expires?: Date | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Invitation
      */
     fixedData?: { [key: string]: any };
     /**
      *
-     * @type {PartialUser}
-     * @memberof Invitation
      */
     readonly createdBy: PartialUser;
     /**
      * When enabled, the invitation will be deleted after usage.
-     * @type {boolean}
-     * @memberof Invitation
      */
     singleUse?: boolean;
     /**
      * When set, only the configured flow can use this invitation.
-     * @type {string}
-     * @memberof Invitation
      */
     flow?: string | null;
     /**
      *
-     * @type {Flow}
-     * @memberof Invitation
      */
     readonly flowObj: Flow;
 }
@@ -112,7 +97,7 @@ export function InvitationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         fixedData: json["fixed_data"] == null ? undefined : json["fixed_data"],
         createdBy: PartialUserFromJSON(json["created_by"]),
         singleUse: json["single_use"] == null ? undefined : json["single_use"],
@@ -135,7 +120,7 @@ export function InvitationToJSONTyped(
 
     return {
         name: value["name"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         fixed_data: value["fixedData"],
         single_use: value["singleUse"],
         flow: value["flow"],

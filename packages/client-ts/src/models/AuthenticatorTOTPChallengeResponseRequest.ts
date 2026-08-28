@@ -20,14 +20,10 @@
 export interface AuthenticatorTOTPChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallengeResponseRequest
      */
     code: string;
 }

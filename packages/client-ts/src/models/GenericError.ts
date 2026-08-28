@@ -20,14 +20,10 @@
 export interface GenericError {
     /**
      *
-     * @type {string}
-     * @memberof GenericError
      */
     detail: string;
     /**
      *
-     * @type {string}
-     * @memberof GenericError
      */
     code?: string;
 }

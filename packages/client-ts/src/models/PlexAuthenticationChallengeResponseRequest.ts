@@ -20,8 +20,6 @@
 export interface PlexAuthenticationChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof PlexAuthenticationChallengeResponseRequest
      */
     component?: string;
 }

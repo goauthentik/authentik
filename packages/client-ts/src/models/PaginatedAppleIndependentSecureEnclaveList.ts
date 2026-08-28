@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAppleIndependentSecureEnclaveList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAppleIndependentSecureEnclaveList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<AppleIndependentSecureEnclave>}
-     * @memberof PaginatedAppleIndependentSecureEnclaveList
      */
     results: Array<AppleIndependentSecureEnclave>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAppleIndependentSecureEnclaveList
      */
     autocomplete: { [key: string]: any };
 }

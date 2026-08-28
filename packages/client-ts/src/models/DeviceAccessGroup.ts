@@ -20,20 +20,14 @@
 export interface DeviceAccessGroup {
     /**
      *
-     * @type {string}
-     * @memberof DeviceAccessGroup
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceAccessGroup
      */
     name: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof DeviceAccessGroup
      */
     attributes?: { [key: string]: any };
 }

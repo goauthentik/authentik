@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { LastTaskStatusEnum } from "./LastTaskStatusEnum";
 import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
 
@@ -23,74 +24,50 @@ import { LastTaskStatusEnumFromJSON } from "./LastTaskStatusEnum";
 export interface Schedule {
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     readonly id: string;
     /**
      * Unique schedule identifier
-     * @type {string}
-     * @memberof Schedule
      */
     readonly identifier: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     readonly uid: string;
     /**
      * Dramatiq actor to call
-     * @type {string}
-     * @memberof Schedule
      */
     readonly actorName: string;
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     readonly relObjAppLabel: string;
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     readonly relObjModel: string;
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     relObjId?: string | null;
     /**
      * When to schedule tasks
-     * @type {string}
-     * @memberof Schedule
      */
     crontab: string;
     /**
      * Pause this schedule
-     * @type {boolean}
-     * @memberof Schedule
      */
     paused?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof Schedule
      */
     readonly nextRun: Date;
     /**
      *
-     * @type {string}
-     * @memberof Schedule
      */
     readonly description: string | null;
     /**
      *
-     * @type {LastTaskStatusEnum}
-     * @memberof Schedule
      */
     readonly lastTaskStatus: LastTaskStatusEnum | null;
 }
@@ -165,7 +142,7 @@ export function ScheduleFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
                   : json["rel_obj_id"],
         crontab: json["crontab"],
         paused: json["paused"] == null ? undefined : json["paused"],
-        nextRun: new Date(json["next_run"]),
+        nextRun: json["next_run"] == null ? json["next_run"] : parseDateTime(json["next_run"]),
         description: json["description"],
         lastTaskStatus: LastTaskStatusEnumFromJSON(json["last_task_status"]),
     };

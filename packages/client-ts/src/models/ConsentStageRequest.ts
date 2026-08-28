@@ -23,20 +23,14 @@ import { ConsentModeEnumFromJSON, ConsentModeEnumToJSON } from "./ConsentModeEnu
 export interface ConsentStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof ConsentStageRequest
      */
     name: string;
     /**
      *
-     * @type {ConsentModeEnum}
-     * @memberof ConsentStageRequest
      */
     mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof ConsentStageRequest
      */
     consentExpireIn?: string;
 }

@@ -27,122 +27,82 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface Source {
     /**
      *
-     * @type {string}
-     * @memberof Source
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof Source
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof Source
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Source
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof Source
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof Source
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof Source
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Source
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Source
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Source
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Source
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Source
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Source
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof Source
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof Source
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof Source
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Source
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof Source
      */
     icon?: string;
     /**
      * Get the URL to the source icon
-     * @type {string}
-     * @memberof Source
      */
     readonly iconUrl: string | null;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof Source
      */
     readonly iconThemedUrls: ThemedUrls | null;
 }

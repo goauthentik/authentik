@@ -39,158 +39,106 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface PatchedOAuthSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     name?: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     slug?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedOAuthSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PatchedOAuthSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedOAuthSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedOAuthSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedOAuthSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PatchedOAuthSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof PatchedOAuthSourceRequest
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      *
-     * @type {ProviderTypeEnum}
-     * @memberof PatchedOAuthSourceRequest
      */
     providerType?: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     requestTokenUrl?: string | null;
     /**
      * URL the user is redirect to to conest the flow.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     authorizationUrl?: string | null;
     /**
      * URL used by authentik to retrieve tokens.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     accessTokenUrl?: string | null;
     /**
      * URL used by authentik to get user information.
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     profileUrl?: string | null;
     /**
      *
-     * @type {PKCEMethodEnum}
-     * @memberof PatchedOAuthSourceRequest
      */
     pkce?: PKCEMethodEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     consumerKey?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     consumerSecret?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     additionalScopes?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     oidcWellKnownUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuthSourceRequest
      */
     oidcJwksUrl?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedOAuthSourceRequest
      */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow
-     * @type {AuthorizationCodeAuthMethodEnum}
-     * @memberof PatchedOAuthSourceRequest
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
 }

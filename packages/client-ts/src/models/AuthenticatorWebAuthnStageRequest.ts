@@ -30,56 +30,38 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface AuthenticatorWebAuthnStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     userVerification?: UserVerificationEnum;
     /**
      *
-     * @type {AuthenticatorAttachmentEnum}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     residentKeyRequirement?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     hints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     deviceTypeRestrictions?: Array<string>;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorWebAuthnStageRequest
      */
     maxAttempts?: number;
 }
