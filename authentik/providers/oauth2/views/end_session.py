@@ -14,10 +14,11 @@ from authentik.common.oauth.constants import (
     PLAN_CONTEXT_OIDC_LOGOUT_IFRAME_SESSIONS,
     PLAN_CONTEXT_POST_LOGOUT_REDIRECT_URI,
 )
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application, AuthenticatedSession, Provider
 from authentik.flows.models import Flow, in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
+    FlowPlan,
     FlowPlanner,
 )
 from authentik.flows.stage import SessionEndStage
@@ -118,16 +119,29 @@ class EndSessionView(PolicyAccessView):
             )
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Return early when a flow plan is already executing in this session.
+        """Return early when this provider's invalidation flow is already executing.
 
         Front-channel logout iframes navigate to this endpoint while the invalidation flow
         is still running, and `UserLogoutStage` has already made the request anonymous.
         Falling through to `PolicyAccessView` would plan an authentication flow and store it
         in `SESSION_KEY_PLAN`, replacing the invalidation plan and discarding every stage
         queued after the iframe logout stage.
+
+        The plan has to belong to the flow this request would run. Any other plan means the
+        session is simply mid-flow elsewhere — most commonly the authentication flow stored
+        when a logout in another tab landed the user on the login screen — and answering
+        those with an empty body rendered a blank page instead of logging the user out
+        (#25545).
         """
-        if SESSION_KEY_PLAN in request.session:
-            return HttpResponse(status=200)
+        plan: FlowPlan | None = request.session.get(SESSION_KEY_PLAN)
+        if plan is not None:
+            try:
+                self.resolve_provider_application()
+            except Application.DoesNotExist, Provider.DoesNotExist, Http404:
+                # Let PolicyAccessView build the canonical error response.
+                return super().dispatch(request, *args, **kwargs)
+            if plan.flow_pk == self.flow.pk.hex:
+                return HttpResponse(status=200)
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

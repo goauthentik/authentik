@@ -255,6 +255,38 @@ class TestEndSessionView(OAuthTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.client.session[SESSION_KEY_PLAN].flow_pk, plan.flow_pk)
 
+    def test_unrelated_flow_plan_does_not_return_blank(self):
+        """A plan for a different flow must not short-circuit end-session (#25545).
+
+        After logging out in another tab the user lands on the login screen, which
+        stores an *authentication* flow plan in SESSION_KEY_PLAN. A logout triggered
+        from a second application then hit the early return meant for front-channel
+        logout iframes and rendered an empty 200 — a blank white page — instead of
+        running the invalidation flow.
+        """
+        self._brand_authentication_flow()
+        other_flow = create_test_flow(FlowDesignation.AUTHENTICATION)
+        plan = FlowPlan(flow_pk=other_flow.pk.hex)
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.get(
+            reverse(
+                "authentik_providers_oauth2:end-session",
+                kwargs={"application_slug": self.app.slug},
+            ),
+            HTTP_HOST=self.brand.domain,
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(f"/if/flow/{self.invalidation_flow.slug}/", response.url)
+        # The unrelated plan must be replaced by this request's invalidation plan,
+        # not left in place for the executor to resume.
+        self.assertEqual(
+            self.client.session[SESSION_KEY_PLAN].flow_pk, self.invalidation_flow.pk.hex
+        )
+
     def test_frontchannel_iframe_callback_preserves_injected_stages(self):
         """Stages injected into the logout plan survive the iframe's end-session hit.
 
