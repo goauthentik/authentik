@@ -393,7 +393,7 @@ requires-dist = [
     { name = "docker", specifier = "==7.2.0" },
     { name = "drf-spectacular", specifier = "==0.29.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
-    { name = "duo-client", specifier = "==5.6.1" },
+    { name = "duo-client", specifier = "==5.7.0" },
     { name = "fido2", specifier = "==2.2.1" },
     { name = "geoip2", specifier = "==5.3.0" },
     { name = "geopy", specifier = "==2.5.0" },
@@ -1514,14 +1514,14 @@ wheels = [
 
 [[package]]
 name = "duo-client"
-version = "5.6.1"
+version = "5.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "setuptools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c8/20/48842c3cc8b2c60129e1e52f0ab5c72ac0a30a3a345ea6d6e9aa8c94c093/duo_client-5.6.1.tar.gz", hash = "sha256:5b9bfba3bd995178cebf51db605190bdc84fec8e4b6935210e7abde4ae97cef5", size = 95447, upload-time = "2026-02-26T16:38:53.369Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/23/8e65f0b414eb5cf90c0c30dcee023935a954fdc81cfb6e284483533a4be7/duo_client-5.7.0.tar.gz", hash = "sha256:8ae0feb93226b13e9b7b29f6970118a52386b9500d410c2b9775fd21a34dd293", size = 96552, upload-time = "2026-08-20T13:18:11.828Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/db/798547ea1a4af7be4454d621f8c23dbbad153dc7d9c57285fbcde03abd42/duo_client-5.6.1-py3-none-any.whl", hash = "sha256:ec7fa30548b7b8e3b7983948d08d167ada4df7a1b54b4723e7a02ee4635bb513", size = 52001, upload-time = "2026-02-26T16:38:51.85Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/f4/5d0e9634b611b5bd66ce17a0cbe8e0c2a7716c0f6008552c598702bc64b8/duo_client-5.7.0-py3-none-any.whl", hash = "sha256:cc46ba464eb9be98bc6507be0b2a7c610190201b921e6237b79cc4b06b3dd946", size = 52307, upload-time = "2026-08-20T13:18:10.604Z" },
 ]
 
 [[package]]

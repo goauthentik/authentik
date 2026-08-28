@@ -31,7 +31,7 @@ dependencies = [
   "docker==7.2.0",
   "drf-spectacular==0.29.0",
   "dumb-init==1.2.5.post1",
-  "duo-client==5.6.1",
+  "duo-client==5.7.0",
   "fido2==2.2.1",
   "geoip2==5.3.0",
   "geopy==2.5.0",
