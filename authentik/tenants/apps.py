@@ -49,9 +49,9 @@ class AuthentikTenantsConfig(ManagedAppConfig):
         from authentik.outposts.models import Outpost
         from authentik.tenants.models import Tenant
         from authentik.tenants.utils import (
+            BASE_URL_VALIDATOR,
             get_current_tenant,
             normalize_base_url,
-            validate_base_url,
         )
 
         tenant = get_current_tenant()
@@ -64,7 +64,7 @@ class AuthentikTenantsConfig(ManagedAppConfig):
                 base_url = normalize_base_url(outpost.config.authentik_host)
         if base_url:
             try:
-                validate_base_url(base_url)
+                BASE_URL_VALIDATOR(base_url)
             except ValidationError:
                 self.logger.warning(
                     "Discarding invalid base_url", base_url=base_url, tenant=tenant.schema_name

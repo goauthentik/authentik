@@ -35,7 +35,7 @@ def normalize_base_url(value: str | None) -> str:
     return (value or "").strip().rstrip("/")
 
 
-validate_base_url = DomainlessURLValidator(
+BASE_URL_VALIDATOR = DomainlessURLValidator(
     schemes=("http", "https"),
     message=_("Enter a valid URL, for example https://authentik.company"),
 )

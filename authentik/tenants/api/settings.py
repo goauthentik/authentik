@@ -15,7 +15,7 @@ from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.flags import Flag
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import normalize_base_url, validate_base_url
+from authentik.tenants.utils import BASE_URL_VALIDATOR, normalize_base_url
 
 
 class FlagJSONField(JSONDictField):
@@ -73,22 +73,16 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
         return build_object_type(props, required=required)
 
 
-class BaseURLField(CharField):
-    """Needed because 'URLValidator' from 'serializers.URLField' is too strict"""
-
-    def to_internal_value(self, data) -> str:
-        return normalize_base_url(super().to_internal_value(data))
-
-
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
 
-    base_url = BaseURLField(
+    # the model field is a URLField, and URLValidator rejects internal hostnames.
+    base_url = CharField(
         required=False,
         allow_blank=True,
         max_length=200,
         help_text=Tenant._meta.get_field("base_url").help_text,
-        validators=[validate_base_url],
+        validators=[BASE_URL_VALIDATOR],
     )
     footer_links = JSONField(required=False)
     flags = FlagJSONField()
@@ -114,6 +108,9 @@ class SettingsSerializer(ModelSerializer):
             "pagination_max_page_size",
             "flags",
         ]
+
+    def validate_base_url(self, value: str) -> str:
+        return normalize_base_url(value)
 
 
 class SettingsView(RetrieveUpdateAPIView):

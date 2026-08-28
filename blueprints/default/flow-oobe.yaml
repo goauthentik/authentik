@@ -110,13 +110,13 @@ entries:
 - attrs:
     expression: |
       from django.core.exceptions import ValidationError
-      from authentik.tenants.utils import normalize_base_url, validate_base_url
+      from authentik.tenants.utils import BASE_URL_VALIDATOR, normalize_base_url
 
       base_url = normalize_base_url((request.context.get("prompt_data") or {}).get("base_url"))
       if not base_url:
           return True
       try:
-          validate_base_url(base_url)
+          BASE_URL_VALIDATOR(base_url)
       except ValidationError:
           ak_message("Enter a valid URL, for example https://authentik.company")
           return False

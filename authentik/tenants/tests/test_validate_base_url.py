@@ -3,11 +3,11 @@
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase
 
-from authentik.tenants.utils import validate_base_url
+from authentik.tenants.utils import BASE_URL_VALIDATOR
 
 
 class TestValidateBaseURL(SimpleTestCase):
-    """validate_base_url accepts an http or https URL whose host needs no domain part"""
+    """BASE_URL_VALIDATOR accepts an http or https URL whose host needs no domain part"""
 
     def test_validate(self):
         cases = {
@@ -42,7 +42,7 @@ class TestValidateBaseURL(SimpleTestCase):
         for value, valid in cases.items():
             with self.subTest(value=value):
                 if valid:
-                    validate_base_url(value)
+                    BASE_URL_VALIDATOR(value)
                     continue
                 with self.assertRaises(ValidationError):
-                    validate_base_url(value)
+                    BASE_URL_VALIDATOR(value)
