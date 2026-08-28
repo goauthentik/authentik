@@ -24,20 +24,14 @@ import { UserSelfFromJSON, UserSelfToJSON } from "./UserSelf";
 export interface SessionUser {
     /**
      *
-     * @type {UserSelf}
-     * @memberof SessionUser
      */
     user: UserSelf;
     /**
      *
-     * @type {UserSelf}
-     * @memberof SessionUser
      */
     original?: UserSelf;
     /**
      *
-     * @type {Array<UserSelf>}
-     * @memberof SessionUser
      */
     users: Array<UserSelf>;
 }

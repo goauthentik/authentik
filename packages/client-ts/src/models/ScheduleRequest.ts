@@ -20,20 +20,14 @@
 export interface ScheduleRequest {
     /**
      *
-     * @type {string}
-     * @memberof ScheduleRequest
      */
     relObjId?: string | null;
     /**
      * When to schedule tasks
-     * @type {string}
-     * @memberof ScheduleRequest
      */
     crontab: string;
     /**
      * Pause this schedule
-     * @type {boolean}
-     * @memberof ScheduleRequest
      */
     paused?: boolean;
 }

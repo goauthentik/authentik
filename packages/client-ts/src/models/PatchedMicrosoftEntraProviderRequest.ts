@@ -26,86 +26,58 @@ import {
 export interface PatchedMicrosoftEntraProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     name?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     clientId?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     clientSecret?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     tenantId?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     excludeUsersServiceAccount?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     filterGroup?: string | null;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     syncPageSize?: number;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     discoveryEnabled?: boolean;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof PatchedMicrosoftEntraProviderRequest
      */
     dryRun?: boolean;
 }

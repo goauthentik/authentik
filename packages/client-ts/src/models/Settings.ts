@@ -26,104 +26,70 @@ import {
 export interface Settings {
     /**
      * Configure how authentik should show avatars for users.
-     * @type {string}
-     * @memberof Settings
      */
     avatars?: string;
     /**
      * Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
-     * @type {string}
-     * @memberof Settings
      */
     baseUrl?: string;
     /**
      * Enable the ability for users to change their name.
-     * @type {boolean}
-     * @memberof Settings
      */
     defaultUserChangeName?: boolean;
     /**
      * Enable the ability for users to change their email address.
-     * @type {boolean}
-     * @memberof Settings
      */
     defaultUserChangeEmail?: boolean;
     /**
      * Enable the ability for users to change their username.
-     * @type {boolean}
-     * @memberof Settings
      */
     defaultUserChangeUsername?: boolean;
     /**
      * Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).
-     * @type {string}
-     * @memberof Settings
      */
     eventRetention?: string;
     /**
      * Reputation cannot decrease lower than this value. Zero or negative.
-     * @type {number}
-     * @memberof Settings
      */
     reputationLowerLimit?: number;
     /**
      * Reputation cannot increase higher than this value. Zero or positive.
-     * @type {number}
-     * @memberof Settings
      */
     reputationUpperLimit?: number;
     /**
      *
-     * @type {any}
-     * @memberof Settings
      */
     footerLinks?: any | null;
     /**
      * When enabled, all the events caused by a user will be deleted upon the user's deletion.
-     * @type {boolean}
-     * @memberof Settings
      */
     gdprCompliance?: boolean;
     /**
      * Globally enable/disable impersonation.
-     * @type {boolean}
-     * @memberof Settings
      */
     impersonation?: boolean;
     /**
      * Require administrators to provide a reason for impersonating a user.
-     * @type {boolean}
-     * @memberof Settings
      */
     impersonationRequireReason?: boolean;
     /**
      * Default token duration
-     * @type {string}
-     * @memberof Settings
      */
     defaultTokenDuration?: string;
     /**
      * Default token length
-     * @type {number}
-     * @memberof Settings
      */
     defaultTokenLength?: number;
     /**
      * Default page size for API responses, if no size was requested.
-     * @type {number}
-     * @memberof Settings
      */
     paginationDefaultPageSize?: number;
     /**
      * Maximum page size
-     * @type {number}
-     * @memberof Settings
      */
     paginationMaxPageSize?: number;
     /**
      *
-     * @type {PatchedSettingsRequestFlags}
-     * @memberof Settings
      */
     flags: PatchedSettingsRequestFlags;
 }

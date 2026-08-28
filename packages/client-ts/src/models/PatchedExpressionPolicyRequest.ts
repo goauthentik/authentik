@@ -20,20 +20,14 @@
 export interface PatchedExpressionPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedExpressionPolicyRequest
      */
     name?: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PatchedExpressionPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedExpressionPolicyRequest
      */
     expression?: string;
 }

@@ -20,92 +20,62 @@
 export interface PasswordPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicyRequest
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PasswordPolicyRequest
      */
     executionLogging?: boolean;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof PasswordPolicyRequest
      */
     passwordField?: string;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     amountDigits?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     amountUppercase?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     amountLowercase?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     amountSymbols?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     lengthMin?: number;
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicyRequest
      */
     symbolCharset?: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicyRequest
      */
     errorMessage?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicyRequest
      */
     checkStaticRules?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicyRequest
      */
     checkHaveIBeenPwned?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicyRequest
      */
     checkZxcvbn?: boolean;
     /**
      * How many times the password hash is allowed to be on haveibeenpwned
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     hibpAllowedCount?: number;
     /**
      * If the zxcvbn score is equal or less than this value, the policy will fail.
-     * @type {number}
-     * @memberof PasswordPolicyRequest
      */
     zxcvbnScoreThreshold?: number;
 }

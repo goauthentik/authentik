@@ -20,26 +20,18 @@
 export interface AuthenticatedSessionUserAgentUserAgent {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentUserAgent
      */
     family: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentUserAgent
      */
     major: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentUserAgent
      */
     minor: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentUserAgent
      */
     patch: string;
 }

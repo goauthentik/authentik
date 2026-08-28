@@ -20,62 +20,42 @@
 export interface GlobalTaskStatus {
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly queued: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly consumed: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly preprocess: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly running: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly postprocess: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly rejected: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly done: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly info: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly warning: number;
     /**
      *
-     * @type {number}
-     * @memberof GlobalTaskStatus
      */
     readonly error: number;
 }

@@ -28,46 +28,97 @@ import { type VersionHistory, VersionHistoryFromJSON } from "../models/VersionHi
 import * as runtime from "../runtime";
 
 export interface AdminFileCreateRequest {
+    /**
+     *
+     */
     file: Blob;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     usage?: string;
 }
 
 export interface AdminFileDestroyRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     usage?: UsageEnum;
 }
 
 export interface AdminFileListRequest {
+    /**
+     *
+     */
     manageableOnly?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     usage?: UsageEnum;
 }
 
 export interface AdminFileUsedByListRequest {
+    /**
+     *
+     */
     name?: string;
 }
 
 export interface AdminModelsListRequest {
+    /**
+     *
+     */
     filterHasAttributes?: boolean | null;
 }
 
 export interface AdminSettingsPartialUpdateRequest {
+    /**
+     *
+     */
     patchedSettingsRequest?: PatchedSettingsRequest;
 }
 
 export interface AdminSettingsUpdateRequest {
+    /**
+     *
+     */
     settingsRequest: SettingsRequest;
 }
 
 export interface AdminVersionHistoryListRequest {
+    /**
+     *
+     */
     build?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     version?: string;
 }
 
 export interface AdminVersionHistoryRetrieveRequest {
+    /**
+     * A unique integer value identifying this Version history.
+     */
     id: number;
 }
 

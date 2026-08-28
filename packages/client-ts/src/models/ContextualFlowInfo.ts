@@ -30,38 +30,26 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 export interface ContextualFlowInfo {
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     title?: string;
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     background?: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof ContextualFlowInfo
      */
     backgroundThemedUrls?: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof ContextualFlowInfo
      */
     cancelUrl: string;
     /**
      *
-     * @type {ContextualFlowInfoLayoutEnum}
-     * @memberof ContextualFlowInfo
      */
     layout: ContextualFlowInfoLayoutEnum;
     /**
      *
-     * @type {Array<FlowMessage>}
-     * @memberof ContextualFlowInfo
      */
     messages?: Array<FlowMessage>;
 }

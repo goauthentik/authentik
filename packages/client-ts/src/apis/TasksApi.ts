@@ -31,56 +31,146 @@ import { type Worker, WorkerFromJSON } from "../models/Worker";
 import * as runtime from "../runtime";
 
 export interface TasksSchedulesListRequest {
+    /**
+     *
+     */
     actorName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     paused?: boolean;
+    /**
+     *
+     */
     relObjContentTypeAppLabel?: string;
+    /**
+     *
+     */
     relObjContentTypeModel?: string;
+    /**
+     *
+     */
     relObjId?: string;
+    /**
+     *
+     */
     relObjIdIsnull?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface TasksSchedulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Schedule.
+     */
     id: string;
+    /**
+     *
+     */
     patchedScheduleRequest?: PatchedScheduleRequest;
 }
 
 export interface TasksSchedulesRetrieveRequest {
+    /**
+     * A UUID string identifying this Schedule.
+     */
     id: string;
 }
 
 export interface TasksSchedulesSendCreateRequest {
+    /**
+     * A UUID string identifying this Schedule.
+     */
     id: string;
 }
 
 export interface TasksSchedulesUpdateRequest {
+    /**
+     * A UUID string identifying this Schedule.
+     */
     id: string;
+    /**
+     *
+     */
     scheduleRequest: ScheduleRequest;
 }
 
 export interface TasksTasksListRequest {
+    /**
+     *
+     */
     actorName?: string;
+    /**
+     *
+     */
     aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     queueName?: string;
+    /**
+     *
+     */
     relObjContentTypeAppLabel?: string;
+    /**
+     *
+     */
     relObjContentTypeModel?: string;
+    /**
+     *
+     */
     relObjId?: string;
+    /**
+     *
+     */
     relObjIdIsnull?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     state?: TaskStatusEnum;
 }
 
 export interface TasksTasksRetrieveRequest {
+    /**
+     * A UUID string identifying this Task.
+     */
     messageId: string;
 }
 
 export interface TasksTasksRetryCreateRequest {
+    /**
+     * A UUID string identifying this Task.
+     */
     messageId: string;
 }
 

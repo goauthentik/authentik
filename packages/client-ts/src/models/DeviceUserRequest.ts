@@ -20,26 +20,18 @@
 export interface DeviceUserRequest {
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserRequest
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserRequest
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserRequest
      */
     home?: string;
 }

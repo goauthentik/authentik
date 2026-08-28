@@ -28,20 +28,14 @@ import {
 export interface PaginatedSAMLSourcePropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSAMLSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SAMLSourcePropertyMapping>}
-     * @memberof PaginatedSAMLSourcePropertyMappingList
      */
     results: Array<SAMLSourcePropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSAMLSourcePropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

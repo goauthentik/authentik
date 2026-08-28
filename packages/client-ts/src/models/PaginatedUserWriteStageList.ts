@@ -25,20 +25,14 @@ import { UserWriteStageFromJSON, UserWriteStageToJSON } from "./UserWriteStage";
 export interface PaginatedUserWriteStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserWriteStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserWriteStage>}
-     * @memberof PaginatedUserWriteStageList
      */
     results: Array<UserWriteStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserWriteStageList
      */
     autocomplete: { [key: string]: any };
 }

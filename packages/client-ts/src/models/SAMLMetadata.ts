@@ -20,14 +20,10 @@
 export interface SAMLMetadata {
     /**
      *
-     * @type {string}
-     * @memberof SAMLMetadata
      */
     metadata: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLMetadata
      */
     downloadUrl?: string | null;
 }
