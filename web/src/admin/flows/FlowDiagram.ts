@@ -4,6 +4,8 @@ import { aki } from "#common/api/client";
 
 import { Diagram } from "#elements/Diagram/ak-diagram";
 
+import { compileFlowGraph } from "#admin/flows/FlowGraph";
+
 import { FlowsApi } from "@goauthentik/api";
 
 import { observes } from "@patternfly/pfe-core/decorators/observes.js";
@@ -21,8 +23,8 @@ export class FlowDiagram extends Diagram {
             .flowsInstancesDiagramRetrieve({
                 slug: this.flowSlug || "",
             })
-            .then((data) => {
-                this.diagram = data.diagram;
+            .then((graph) => {
+                this.diagram = compileFlowGraph(graph).diagram;
             });
     }
 }
