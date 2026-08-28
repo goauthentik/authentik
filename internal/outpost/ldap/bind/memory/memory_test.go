@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -91,39 +92,97 @@ func newBindRequest(t *testing.T, dn, password string) *bind.Request {
 	return req
 }
 
+func writeJSON(w http.ResponseWriter, body string) {
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write([]byte(body))
+}
+
 // Regression test for the session-cache-poisoning bug: DirectBinder.Bind never
 // returns a non-nil error for a rejected bind (it encodes every outcome, success or
 // not, as an ldap.LDAPResultCode with a nil error). Before the fix, SessionBinder
 // cached on `err == nil` alone, so a single transient failure (e.g. the flow API
-// being unreachable) got cached and replayed as that same failure for the whole
-// session TTL, even once the underlying cause was gone.
+// being unreachable, or the access-check/user-info calls that follow a passed flow)
+// got cached and replayed as that same failure for the whole session TTL, even once
+// the underlying cause was gone.
 func TestSessionBinder_Bind_DoesNotCacheNonSuccess(t *testing.T) {
-	var calls int32
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		atomic.AddInt32(&calls, 1)
-		w.WriteHeader(http.StatusInternalServerError)
-	}))
-	defer ts.Close()
+	cases := []struct {
+		name    string
+		result  ldap.LDAPResultCode
+		handler func(w http.ResponseWriter, r *http.Request)
+	}{
+		{
+			// DirectBinder.Bind: fe.Execute() itself errors (flow API unreachable).
+			name:   "flow execution error",
+			result: ldap.LDAPResultInvalidCredentials,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				w.WriteHeader(http.StatusInternalServerError)
+			},
+		},
+		{
+			// DirectBinder.Bind: flow passes (redirect challenge), but the access
+			// check comes back with Passing == false.
+			name:   "access denied",
+			result: ldap.LDAPResultInsufficientAccessRights,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				switch {
+				case strings.Contains(r.URL.Path, "/flows/executor/"):
+					writeJSON(w, `{"component":"xak-flow-redirect","to":"/"}`)
+				case strings.Contains(r.URL.Path, "/check_access/"):
+					writeJSON(w, `{"access":{"passing":false,"messages":[],"log_messages":[]}}`)
+				default:
+					w.WriteHeader(http.StatusInternalServerError)
+				}
+			},
+		},
+		{
+			// DirectBinder.Bind: flow passes, access check passes, but fetching the
+			// user info afterwards fails - this is the transient failure that
+			// motivated the fix: correct credentials, momentary API blip.
+			name:   "user info fetch fails after access granted",
+			result: ldap.LDAPResultOperationsError,
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				switch {
+				case strings.Contains(r.URL.Path, "/flows/executor/"):
+					writeJSON(w, `{"component":"xak-flow-redirect","to":"/"}`)
+				case strings.Contains(r.URL.Path, "/check_access/"):
+					writeJSON(w, `{"access":{"passing":true,"messages":[],"log_messages":[]}}`)
+				default: // /core/users/me/
+					w.WriteHeader(http.StatusInternalServerError)
+				}
+			},
+		},
+	}
 
-	si := newFakeInstance(ts.URL)
-	sb := NewSessionBinder(si, nil)
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			var calls int32
+			ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				atomic.AddInt32(&calls, 1)
+				tc.handler(w, r)
+			}))
+			defer ts.Close()
 
-	dn := "cn=user,dc=test"
-	password := "password"
+			si := newFakeInstance(ts.URL)
+			sb := NewSessionBinder(si, nil)
 
-	result, err := sb.Bind("user", newBindRequest(t, dn, password))
-	require.NoError(t, err)
-	assert.EqualValues(t, ldap.LDAPResultInvalidCredentials, result)
-	assert.Equal(t, 0, sb.sessions.Len(), "a non-success bind result must not be cached")
-	assert.Equal(t, int32(1), atomic.LoadInt32(&calls))
+			dn := "cn=user,dc=test"
+			password := "password"
 
-	// Retrying with the same (correct) credentials must execute the flow again,
-	// not be served the stale rejection from the cache.
-	result, err = sb.Bind("user", newBindRequest(t, dn, password))
-	require.NoError(t, err)
-	assert.EqualValues(t, ldap.LDAPResultInvalidCredentials, result)
-	assert.Equal(t, 0, sb.sessions.Len())
-	assert.Equal(t, int32(2), atomic.LoadInt32(&calls), "the flow must be re-executed instead of served from cache")
+			result, err := sb.Bind("user", newBindRequest(t, dn, password))
+			require.NoError(t, err)
+			assert.EqualValues(t, tc.result, result)
+			assert.Equal(t, 0, sb.sessions.Len(), "a non-success bind result must not be cached")
+
+			// Retrying with the same (correct) credentials must execute the flow
+			// again, not be served the stale rejection from the cache.
+			before := atomic.LoadInt32(&calls)
+			result, err = sb.Bind("user", newBindRequest(t, dn, password))
+			require.NoError(t, err)
+			assert.EqualValues(t, tc.result, result)
+			assert.Equal(t, 0, sb.sessions.Len())
+			assert.Greater(t, atomic.LoadInt32(&calls), before, "the flow must be re-executed instead of served from cache")
+		})
+	}
 }
 
 // A previously cached successful bind must still be served from the session cache
