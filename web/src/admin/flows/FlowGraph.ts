@@ -56,8 +56,8 @@ function edgeLabel(edge: DiagramEdge, target?: DiagramNode): string {
         .with(D.Proceed, () => "")
         .with(D.PolicyPassed, () => msg("Policy passed"))
         .with(D.PolicyDenied, () => msg("Policy denied"))
-        .with(D.RequirementFulfilled, () => msg("Requirement fulfilled"))
-        .with(D.RequirementUnfulfilled, () => msg("Requirement not fulfilled"))
+        .with(D.RequirementFulfilled, () => msg("Requirement Met"))
+        .with(D.RequirementUnfulfilled, () => msg("Denied"))
         .with(D.Binding, () => (order ? msg(str`Binding: ${order}`) : ""))
         .with(D.UnknownDefaultOpenApi, () => "")
         .exhaustive();
@@ -86,5 +86,8 @@ export function compileFlowGraph(graph: FlowDiagram): CompiledFlowGraph {
     ];
 
     const nodes = new Map(graph.nodes.map((node, index) => [`n${index}`, node] as const));
-    return { diagram: lines.join("\n"), nodes };
+    return {
+        diagram: lines.join("\n"),
+        nodes,
+    };
 }
