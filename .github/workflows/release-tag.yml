@@ -319,7 +319,7 @@ jobs:
           name: Release ${{ needs.check-inputs.outputs.version }}
           draft: true
           prerelease: ${{ inputs.release_reason == 'prerelease' }}
-          generate_release_notes: true
+          generate_release_notes: false
           body: |
             See ${{ needs.check-inputs.outputs.changelog-url }}
           files: |

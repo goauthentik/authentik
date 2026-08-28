@@ -53,10 +53,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@78eb729dbdb4ef6480e85ff697b4410e22112583
+      - uses: regclient/actions/regctl-installer@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
-      - uses: regclient/actions/regctl-login@78eb729dbdb4ef6480e85ff697b4410e22112583
+      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
@@ -104,7 +104,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
       - name: Login to GitHub Container Registry
         uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
