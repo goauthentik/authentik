@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -23,50 +24,34 @@ import { SourceFromJSON } from "./Source";
 export interface UserOAuthSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof UserOAuthSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {number}
-     * @memberof UserOAuthSourceConnection
      */
     readonly user: number;
     /**
      *
-     * @type {string}
-     * @memberof UserOAuthSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof UserOAuthSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof UserOAuthSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof UserOAuthSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof UserOAuthSourceConnection
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof UserOAuthSourceConnection
      */
     expires?: Date;
 }
@@ -116,9 +101,12 @@ export function UserOAuthSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
     };
 }
 
@@ -140,6 +128,6 @@ export function UserOAuthSourceConnectionToJSONTyped(
     return {
         source: value["source"],
         identifier: value["identifier"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

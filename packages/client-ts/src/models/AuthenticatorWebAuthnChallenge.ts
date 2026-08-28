@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AuthenticatorWebAuthnChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorWebAuthnChallenge
      */
     registration: { [key: string]: any };
 }

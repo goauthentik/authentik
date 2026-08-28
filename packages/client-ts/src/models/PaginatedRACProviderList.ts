@@ -25,20 +25,14 @@ import { RACProviderFromJSON, RACProviderToJSON } from "./RACProvider";
 export interface PaginatedRACProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRACProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RACProvider>}
-     * @memberof PaginatedRACProviderList
      */
     results: Array<RACProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRACProviderList
      */
     autocomplete: { [key: string]: any };
 }

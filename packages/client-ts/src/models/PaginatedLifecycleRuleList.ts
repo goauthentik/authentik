@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedLifecycleRuleList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedLifecycleRuleList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<LifecycleRule>}
-     * @memberof PaginatedLifecycleRuleList
      */
     results: Array<LifecycleRule>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLifecycleRuleList
      */
     autocomplete: { [key: string]: any };
 }

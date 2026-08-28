@@ -23,26 +23,18 @@ import { EventRequestFromJSON, EventRequestToJSON } from "./EventRequest";
 export interface PatchedNotificationRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedNotificationRequest
      */
     hyperlink?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedNotificationRequest
      */
     hyperlinkLabel?: string | null;
     /**
      *
-     * @type {EventRequest}
-     * @memberof PatchedNotificationRequest
      */
     event?: EventRequest;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedNotificationRequest
      */
     seen?: boolean;
 }

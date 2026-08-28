@@ -25,20 +25,14 @@ import { RedirectURITypeEnumFromJSON, RedirectURITypeEnumToJSON } from "./Redire
 export interface RedirectURIRequest {
     /**
      *
-     * @type {MatchingModeEnum}
-     * @memberof RedirectURIRequest
      */
     matchingMode: MatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof RedirectURIRequest
      */
     url: string;
     /**
      *
-     * @type {RedirectURITypeEnum}
-     * @memberof RedirectURIRequest
      */
     redirectUriType?: RedirectURITypeEnum;
 }

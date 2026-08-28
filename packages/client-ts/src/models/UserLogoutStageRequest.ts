@@ -20,8 +20,6 @@
 export interface UserLogoutStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserLogoutStageRequest
      */
     name: string;
 }

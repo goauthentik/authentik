@@ -20,20 +20,14 @@
 export interface UserPlexSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserPlexSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof UserPlexSourceConnectionRequest
      */
     identifier: string;
     /**
      *
-     * @type {string}
-     * @memberof UserPlexSourceConnectionRequest
      */
     plexToken: string;
 }

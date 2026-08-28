@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
+
 /**
  * Partial User Serializer, does not include child relations.
  * @export
@@ -20,50 +22,34 @@
 export interface PartialUser {
     /**
      *
-     * @type {number}
-     * @memberof PartialUser
      */
     readonly pk: number;
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof PartialUser
      */
     username: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof PartialUser
      */
     name: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof PartialUser
      */
     isActive?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PartialUser
      */
     lastLogin?: Date | null;
     /**
      *
-     * @type {string}
-     * @memberof PartialUser
      */
     email?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PartialUser
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof PartialUser
      */
     readonly uid: string;
 }
@@ -97,7 +83,7 @@ export function PartialUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
+                  : parseDateTime(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         uid: json["uid"],
@@ -121,7 +107,7 @@ export function PartialUserToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         email: value["email"],
         attributes: value["attributes"],
     };

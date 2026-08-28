@@ -20,14 +20,10 @@
 export interface PatchedDummyStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedDummyStageRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedDummyStageRequest
      */
     throwError?: boolean;
 }

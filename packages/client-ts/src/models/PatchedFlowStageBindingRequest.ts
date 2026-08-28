@@ -28,44 +28,30 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface PatchedFlowStageBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedFlowStageBindingRequest
      */
     target?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedFlowStageBindingRequest
      */
     stage?: string;
     /**
      * Evaluate policies during the Flow planning process.
-     * @type {boolean}
-     * @memberof PatchedFlowStageBindingRequest
      */
     evaluateOnPlan?: boolean;
     /**
      * Evaluate policies when the Stage is presented to the user.
-     * @type {boolean}
-     * @memberof PatchedFlowStageBindingRequest
      */
     reEvaluatePolicies?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PatchedFlowStageBindingRequest
      */
     order?: number;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedFlowStageBindingRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-     * @type {InvalidResponseActionEnum}
-     * @memberof PatchedFlowStageBindingRequest
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }

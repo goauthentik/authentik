@@ -32,122 +32,82 @@ import {
 export interface PatchedWSFederationProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     name?: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     authorizationFlow?: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     invalidationFlow?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedWSFederationProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     replyUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     wtrealm?: string;
     /**
      * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     assertionValidNotBefore?: string;
     /**
      * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     assertionValidNotOnOrAfter?: string;
     /**
      * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     sessionValidNotOnOrAfter?: string;
     /**
      * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     nameIdMapping?: string | null;
     /**
      * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     authnContextClassRefMapping?: string | null;
     /**
      * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
-     * @type {SamlVersionEnum}
-     * @memberof PatchedWSFederationProviderRequest
      */
     samlVersion?: SamlVersionEnum;
     /**
      *
-     * @type {DigestAlgorithmEnum}
-     * @memberof PatchedWSFederationProviderRequest
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof PatchedWSFederationProviderRequest
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     signingKp?: string | null;
     /**
      * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof PatchedWSFederationProviderRequest
      */
     encryptionKp?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedWSFederationProviderRequest
      */
     signAssertion?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedWSFederationProviderRequest
      */
     signLogoutRequest?: boolean;
     /**
      *
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof PatchedWSFederationProviderRequest
      */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
 }

@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedOAuth2ProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedOAuth2ProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<OAuth2Provider>}
-     * @memberof PaginatedOAuth2ProviderList
      */
     results: Array<OAuth2Provider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedOAuth2ProviderList
      */
     autocomplete: { [key: string]: any };
 }

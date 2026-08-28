@@ -20,38 +20,26 @@
 export interface PatchedGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupRequest
      */
     name?: string;
     /**
      * Users added to this group will be superusers.
-     * @type {boolean}
-     * @memberof PatchedGroupRequest
      */
     isSuperuser?: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedGroupRequest
      */
     parents?: Array<string>;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedGroupRequest
      */
     users?: Array<number>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedGroupRequest
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedGroupRequest
      */
     roles?: Array<string>;
 }

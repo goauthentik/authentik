@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { PartialUser } from "./PartialUser";
@@ -27,92 +28,62 @@ import { PolicyFromJSON } from "./Policy";
 export interface PolicyBinding {
     /**
      *
-     * @type {string}
-     * @memberof PolicyBinding
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof PolicyBinding
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PolicyBinding
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof PolicyBinding
      */
     user?: number | null;
     /**
      *
-     * @type {Policy}
-     * @memberof PolicyBinding
      */
     readonly policyObj: Policy | null;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof PolicyBinding
      */
     readonly groupObj: PartialGroup | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof PolicyBinding
      */
     readonly userObj: PartialUser | null;
     /**
      *
-     * @type {string}
-     * @memberof PolicyBinding
      */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PolicyBinding
      */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof PolicyBinding
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     failureResult?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PolicyBinding
      */
     readonly expires: Date | null;
     /**
      *
-     * @type {boolean}
-     * @memberof PolicyBinding
      */
     readonly expiring: boolean;
 }
@@ -178,7 +149,7 @@ export function PolicyBindingFromJSONTyped(json: any, ignoreDiscriminator: boole
         order: json["order"],
         timeout: json["timeout"] == null ? undefined : json["timeout"],
         failureResult: json["failure_result"] == null ? undefined : json["failure_result"],
-        expires: json["expires"] == null ? null : new Date(json["expires"]),
+        expires: json["expires"] == null ? null : parseDateTime(json["expires"]),
         expiring: json["expiring"],
     };
 }

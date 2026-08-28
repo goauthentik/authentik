@@ -20,8 +20,6 @@
 export interface TenantAdminGroupRequestRequest {
     /**
      *
-     * @type {string}
-     * @memberof TenantAdminGroupRequestRequest
      */
     user: string;
 }

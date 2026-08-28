@@ -20,8 +20,6 @@
 export interface UserSwitchResponse {
     /**
      *
-     * @type {string}
-     * @memberof UserSwitchResponse
      */
     readonly redirect: string;
 }

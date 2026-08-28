@@ -20,8 +20,6 @@
 export interface PermissionAssignResult {
     /**
      *
-     * @type {string}
-     * @memberof PermissionAssignResult
      */
     id: string;
 }
