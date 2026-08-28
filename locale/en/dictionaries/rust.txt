@@ -14,3 +14,4 @@ tcpv
 tungstenite
 unseparated
 zstd
+uvicorn
