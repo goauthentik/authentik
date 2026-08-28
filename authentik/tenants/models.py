@@ -62,8 +62,6 @@ class Tenant(InternallyManagedMixin, TenantMixin, SerializerModel):
         help_text=_("Configure how authentik should show avatars for users."),
         default="gravatar,initials",
     )
-    # Not a URLField: DRF strips every URLValidator from a models.URLField and appends its
-    # own strict one, which rejects hostnames without a domain part. See #25546.
     base_url = models.CharField(
         max_length=200,
         default="",
