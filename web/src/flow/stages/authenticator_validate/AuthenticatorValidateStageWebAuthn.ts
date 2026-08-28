@@ -1,6 +1,6 @@
 import "#elements/EmptyState";
 
-import { parseAPIResponseError } from "#common/errors/network";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import {
     assertWebAuthnSupported,
     ensurePublicKeyCredential,
@@ -11,7 +11,7 @@ import {
 
 import { SlottedTemplateResult } from "#elements/types";
 
-import { AKFormErrors, ErrorProp } from "#components/ak-field-errors";
+import { ErrorProp } from "#components/ak-field-errors";
 
 import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
 
@@ -23,6 +23,7 @@ import {
 import { msg } from "@lit/localize";
 import { html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 
 @customElement("ak-stage-authenticator-validate-webauthn")
 export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
@@ -92,6 +93,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             return;
         }
 
+        this.errorMessages = null;
         this.authenticating = true;
 
         return this.#authenticate();
@@ -119,6 +121,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             this.errorMessages = responseErrors.some((error) => error.string)
                 ? responseErrors
                 : [msg("Failed to authenticate")];
+
             this.authenticating = false;
 
             return;
@@ -142,6 +145,42 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
     // #region Rendering
 
+    protected renderAuthenticationActions(): SlottedTemplateResult {
+        const errorMessages = this.errorMessages ?? [];
+
+        if (!errorMessages.length && !this.showBackButton) {
+            return null;
+        }
+
+        return html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
+            <legend class="sr-only">${msg("Form actions")}</legend>
+            ${errorMessages.length
+                ? html`<button
+                      class="pf-c-button pf-m-primary pf-m-block"
+                      @click=${this.tryAuthenticating}
+                      type="button"
+                  >
+                      ${msg("Retry authentication")}
+                  </button>`
+                : null}
+            ${this.renderReturnToDevicePicker()}
+        </fieldset>`;
+    }
+
+    protected renderAuthenticationStatus(): SlottedTemplateResult {
+        const { errorMessages } = this;
+
+        if (!errorMessages?.length) {
+            return html`<div>${msg("Authenticating...")}</div>`;
+        }
+
+        return map(errorMessages, (error) => {
+            const detail = pluckErrorDetail(error);
+
+            return html`<p role="alert">${detail}</p>`;
+        });
+    }
+
     protected override render(): SlottedTemplateResult {
         const hasError = !!this.errorMessages?.length;
         const loading = this.authenticating || !hasError;
@@ -149,27 +188,9 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         return html`<form class="pf-c-form">
             ${this.renderUserInfo()}
             <ak-empty-state ?loading=${loading} icon="fa-times">
-                <div>
-                    ${this.errorMessages?.length
-                        ? AKFormErrors({ errors: this.errorMessages })
-                        : msg("Authenticating...")}
-                </div>
+                ${this.renderAuthenticationStatus()}
             </ak-empty-state>
-            ${hasError || this.showBackButton
-                ? html`<fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
-                      <legend class="sr-only">${msg("Form actions")}</legend>
-                      ${hasError
-                          ? html`<button
-                                class="pf-c-button pf-m-primary pf-m-block"
-                                @click=${this.tryAuthenticating}
-                                type="button"
-                            >
-                                ${msg("Retry authentication")}
-                            </button>`
-                          : null}
-                      ${this.renderReturnToDevicePicker()}
-                  </fieldset>`
-                : null}
+            ${this.renderAuthenticationActions()}
         </form>`;
     }
 
