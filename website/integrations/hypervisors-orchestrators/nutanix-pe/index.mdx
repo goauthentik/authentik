@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Nutanix Prism Element?
 
-> Nutanix Prism Element, also known as Nutanix PE, is a built-in management service included with every individual Nutanix cluster
+> Localized cluster manager responsible for local cluster management and operations. Every Nutanix Cluster has Prism Element built-in.
 >
 > -- https://www.nutanixbible.com/3a-book-of-prism-architecture.html
 
@@ -16,82 +16,87 @@ The following placeholders are used in this guide:
 
 - `ldap.company` is the FQDN of the authentik LDAP outpost.
 
-Prisn Element authenticates users against LDAP. Nutanix PE must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
+Prism Element authenticates users over LDAP, so it must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
+
+This guide uses the default LDAP provider **Base DN** of `dc=ldap,dc=goauthentik,dc=io`. If you use a different Base DN, adjust the distinguished names below to match.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
+To support the integration of Prism Element with authentik, you need groups for the Prism Element roles, an LDAP application/provider pair, a service account for LDAP binding, LDAP search permissions for that service account, and an LDAP outpost.
+
 ### Create access groups
 
-Create groups that Prisn Element uses to allow login and to grant administrator privileges. The user filter permits members of either group to log in, while the admin filter grants administrator privileges only to members of `npe-admins`.
+Prism Element grants roles to directory groups, so create one group in authentik for each Prism Element role that you want to assign.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set **Name** to `npe-users` and click **Create**.
-4. Open the group, select the **Users** tab, and add the users who should have non-administrative access to Prisn Element.
-5. Repeat these steps with the name `npe-admins`, and add the users who should have administrator privileges.
+3. Set **Name** to `nutanix-users` and click **Create**.
+4. Click the name of the group, open the **Users** tab, and add the users that should have non-administrative access to Prism Element.
+5. Repeat these steps for a `nutanix-admins` group, and add the users that should have administrator access.
 
 ### Create the LDAP resources
 
-Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create or reuse an LDAP application and provider, create a service account with LDAP search permissions, and create an LDAP outpost.
+Follow the [LDAP provider documentation](/docs/add-secure-apps/providers/ldap/create-ldap-provider) to create the remaining resources, and use the following Prism Element-specific settings:
 
-Use the following NPE-specific settings while completing the LDAP provider setup:
+- On the LDAP provider, set **Certificate** to the certificate that Prism Element will trust for `ldap.company`.
+- On the LDAP provider, set **TLS Server Name** to `ldap.company`.
+- For the LDAP bind service account name, use a descriptive name such as `nutanix-user`.
+- If you configure application bindings, ensure that the LDAP bind service account and the `nutanix-users` and `nutanix-admins` groups have access to the application.
 
-- Use `npe-ldap` as the service account username. Note its password and full DN for NPE configuration.
-- The LDAP provider's **Base DN** is represented as `<base_dn>`. Replace this correspondingly.
-- On the LDAP provider, set **Certificate** to the certificate that NPE should trust for `ldap.company`.
-- Select the NPE LDAP application on the outpost and expose the outpost as `ldap.company`.
+## Nutanix Prism Element configuration
 
-If you configure application bindings, ensure that `npe-ldap` as well as the `npe-users` and `npe-admins` groups have access to the LDAP application.
+### Add the directory
 
-## Prisn Element configuration
-
-### Configure LDAP authentication
-
-:::info Dual Authentication
-After you save LDAP as the authentication method, Prisn Element will continue allowing local accounts to authenticate.
-:::
-
-1. Log in to Prisn Element as a user with administrator privileges.
-2. Click the gear icon on the top right and navigate to **Users and Roles** --> **Authentication**
-3. Click **Add** in the **Directory List** tab
-4. Configure the following settings. Replace `<base_dn>` with the **Base DN** of the authentik LDAP provider.
+1. Log in to Prism Element as a user with administrator privileges.
+2. Click the gear icon in the top right and navigate to **Users and Roles** > **Authentication**.
+3. On the **Directory List** tab, click **New Directory**.
+4. Configure the directory with the following settings:
     - **Directory Type**: `OpenLDAP`
-    - **Name**: Give it a name
-    - **Domain**: Your combined base dn (like `ldap.goauthentik.io`)
-    - **Directory URL**: `ldaps://IP:636`
-    - **Search Type**: Non-recursive (Default)
+    - **Name**: `authentik`
+    - **Domain**: `ldap.goauthentik.io`
+    - **Directory URL**: `ldaps://ldap.company:636`
     - **User Object Class**: `user`
     - **User Search Base**: `ou=users,dc=ldap,dc=goauthentik,dc=io`
     - **Username Attribute**: `cn`
-    - **Group Object Class**:  `group`
+    - **Group Object Class**: `group`
     - **Group Search Base**: `ou=groups,dc=ldap,dc=goauthentik,dc=io`
     - **Group Member Attribute**: `member`
     - **Group Member Attribute Value**: `dn`
-    - **Service Account**: `cn=npe-ldap,ou=users,dc=ldap,dc=goauthentik,dc=io`
-    - **Service Account Password**: the password for the `npe-ldap` service account
-5. **Save** your changes, then navigate to **Authentication Types** and check **Directory Service**. Save your changes.
+    - **Service Account**: `cn=nutanix-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **Service Account Password**: the password for the `nutanix-user` service account
 
+5. Click **Save**.
+6. Open the **Authentication Types** tab, select **Directory Service**, and click **Save**.
 
-### Add Role Mappings
+**Domain** is the Base DN written in dotted form, and users append it to their username when they log in. With the default Base DN, `akadmin` logs in as `akadmin@ldap.goauthentik.io`.
 
-Role Mappings are required for RBAC on NPE. 
-1. Click the gear icon on the top right and navigate to **Users and Roles** --> **Role Mapping**.
-2. Click **New Mapping**
-3. Select your Directory from the **Directory or Provider** dropdown menu
-4. Select `group` as the type in the **Type** dropdown menu
-5. The value should be the name of the group as represented in Authentik. For example, if your group is `npe-admins`, put `npe-admins` in this box. Spaces are only required for groups with a space in the name, like `authentik Admins`.
-6. Select a Role. For more information on roles, refer to the [Nutanix Role Mapping documentation](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-security-role-permissions-wc-t.html).
-7. Click Save
+:::info Local accounts stay enabled
+Selecting **Directory Service** adds LDAP as an authentication type. Prism Element keeps accepting local accounts.
+:::
 
+### Map groups to roles
+
+Directory users receive no permissions until a role mapping grants them one.
+
+1. Click the gear icon in the top right and navigate to **Users and Roles** > **Role Mapping**.
+2. Click **New Mapping**.
+3. Select the directory that you created in **Directory or Provider**.
+4. Select `Group` in **Type**.
+5. Enter the group name exactly as it appears in authentik, for example `nutanix-admins`.
+6. Select the role to grant, then click **Save**.
+7. Repeat these steps for each remaining group.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Prisn Element, click the **Test** button in the **Directory List** menu. Enter a user and append `@<base_dn>` in the username box, and enter their password in the password box. If everything was done correctly, a green banner should pop up saying **Authentication test successful.**
+To confirm that authentik is properly configured with Prism Element, open Prism Element and log in as `akadmin@ldap.goauthentik.io` with the authentik password for that user.
 
-## Logging in
-To log in via LDAP, specify a username and then append `@<base_dn` to it. For example, `akadmin@ldap.goauthentik.io` would attempt to authenticate the `akadmin` user via LDAP. The password field remains the same.
+You can also test the directory without logging out. On the **Directory List** tab, click **Test**, then enter the same username and password. Prism Element reports **Authentication test successful** when the directory is reachable and the credentials are accepted.
 
 ## Resources
 
-- [Prisn Element documentation - Configuring OpenLDAP Authentication](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-openldap-authentication-wc-t.html)
-- [Prisn Element documentation - UI Navigation](https://www.nutanixbible.com/3b-book-of-prism-navigation.html)
+- [Nutanix Security Guide - Configuring OpenLDAP Authentication](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-openldap-authentication-wc-t.html)
+- [Nutanix Security Guide - Role permissions](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-security-role-permissions-wc-t.html)

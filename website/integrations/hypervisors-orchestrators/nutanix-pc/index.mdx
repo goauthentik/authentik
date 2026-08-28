@@ -16,7 +16,7 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 The following placeholders are used in this guide:
 
-- `prismcentral.company` is the FQDN of the Prism Central instance that manages the Nutanix AHV cluster.
+- `prismcentral.company` is the FQDN of the Prism Central installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -27,7 +27,7 @@ This guide follows the authorization policy workflow available in Prism Central 
 
 ## authentik configuration
 
-To support the integration of Nutanix AHV with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
+To support the integration of Prism Central with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
 
 ### Create property mappings
 
@@ -79,9 +79,7 @@ To support the integration of Nutanix AHV with authentik, you need to create two
 1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
 
-## Nutanix AHV configuration
-
-Authentication for Nutanix AHV clusters is configured in Prism Central.
+## Nutanix Prism Central configuration
 
 ### Add the identity provider
 
@@ -111,7 +109,7 @@ On earlier Prism Central versions, select or create a role, then use **Actions**
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Nutanix AHV, open Prism Central and select the authentik configuration on the login screen. Complete the authentik authentication flow and confirm that Prism Central opens with the expected role.
+To confirm that authentik is properly configured with Prism Central, open Prism Central and select the authentik configuration on the login screen. Complete the authentik authentication flow and confirm that Prism Central opens with the expected role.
 
 ## Resources
 
