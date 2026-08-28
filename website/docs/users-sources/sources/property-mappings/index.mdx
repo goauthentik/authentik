@@ -78,6 +78,83 @@ The `groups` attribute is a special attribute that must contain group identifier
 
 An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
 
+#### Disabling group synchronization
+
+Returning an empty list does **not** disable group synchronization. The
+`groups` a source collects (from the OpenID Connect `groups` claim, or the
+SAML group attribute) are placed into the base user properties before any
+property mapping runs, and mapping results are merged into them with a
+unique-append strategy. `return {"groups": []}` therefore appends nothing and
+the provider's groups are still imported.
+
+To discard the collected groups, return `None` for the attribute. As described
+in [Expression semantics](#expression-semantics), an attribute set to `None` is
+dropped entirely:
+
+```python
+return {"groups": None}
+```
+
+#### Overriding the collected groups
+
+Because results are merged rather than substituted, returning a list _adds to_
+the provider's groups instead of replacing them. There are two ways to end up
+with an exact set of groups and drop whatever the source collected.
+
+**Two ordered mappings (recommended).** Property mappings run in alphabetical
+order by name. Setting an attribute to `None` drops it (see
+[Expression semantics](#expression-semantics)); a later mapping can then set it
+to the value you want. Assign both as user property mappings on the source:
+
+- `aa - discard source groups`
+
+```python
+  return {"groups": None}
+```
+
+- `ab - set groups`
+
+```python
+  return {"groups": ["group1", "group2"]}
+```
+
+The first mapping clears the collected groups, the second sets the final list.
+Because it runs last, its value wins. The second mapping's list can also be
+built dynamically. This approach uses only documented return values; the names
+just need to sort so that the discarding mapping runs first.
+
+**Single mapping via the accumulator.** Alternatively, write to the
+`properties` accumulator directly and return `None` so nothing is merged
+afterwards:
+
+```python
+properties["groups"] = ["group1", "group2"]
+return None
+```
+
+`properties` is the object authentik builds the final result from, so assigning
+to it replaces the value outright, bypassing the merge.
+
+:::note Groups created or linked by a source are managed by that source
+When a source creates or links a group, authentik records the association per
+group and source, not per user. On every login through that source, authentik
+removes the user from every group they are in that is linked to that source,
+then re-adds only the groups the mappings return for this login. Groups the
+source has never created or linked — for example groups you created and
+assigned manually — are left untouched.
+
+Two consequences are easy to miss, because the group view does not show which
+source (if any) manages a group:
+
+- To keep a user in a source-linked group, the mappings must return it on every
+  login. If they stop returning it, the user is removed from it on the next
+  login through that source.
+- With the **Name link** group matching mode, a manually-created group becomes
+  source-managed the first time its name matches a group the source collects.
+  From then on, its membership for all of its members is reconciled on every
+  login through that source.
+  :::
+
 #### Object-shaped OpenID Connect group claims
 
 OpenID Connect does not define a `groups` claim, so providers are free to put anything in one. Some return group objects instead of plain identifiers.
