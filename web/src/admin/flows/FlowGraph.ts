@@ -10,7 +10,7 @@ import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 
-export interface CompiledFlowGraph {
+export interface FlowGraph {
     diagram: string;
     nodes: ReadonlyMap<string, DiagramNode>;
 }
@@ -63,7 +63,7 @@ function edgeLabel(edge: DiagramEdge, target?: DiagramNode): string {
         .exhaustive();
 }
 
-export function compileFlowGraph(graph: FlowDiagram): CompiledFlowGraph {
+export function buildFlowGraph(graph: FlowDiagram): FlowGraph {
     const ids = new Map(graph.nodes.map((node, index) => [node.identifier, `n${index}`]));
     const byIdentifier = new Map(graph.nodes.map((node) => [node.identifier, node]));
 

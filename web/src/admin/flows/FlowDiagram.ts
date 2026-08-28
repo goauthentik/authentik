@@ -4,7 +4,7 @@ import { aki } from "#common/api/client";
 
 import { Diagram } from "#elements/Diagram/ak-diagram";
 
-import { compileFlowGraph } from "#admin/flows/FlowGraph";
+import { buildFlowGraph } from "#admin/flows/FlowGraph";
 
 import { FlowsApi } from "@goauthentik/api";
 
@@ -24,7 +24,7 @@ export class FlowDiagram extends Diagram {
                 slug: this.flowSlug || "",
             })
             .then((graph) => {
-                this.diagram = compileFlowGraph(graph).diagram;
+                this.diagram = buildFlowGraph(graph).diagram;
             });
     }
 }

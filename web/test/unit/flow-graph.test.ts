@@ -1,4 +1,4 @@
-import { compileFlowGraph } from "#admin/flows/FlowGraph";
+import { buildFlowGraph } from "#admin/flows/FlowGraph";
 
 import {
     DiagramEdge,
@@ -39,7 +39,7 @@ function makeGraph(nodes: DiagramNode[], edges: DiagramEdge[]) {
 }
 
 function compileEdge(type: DiagramEdgeTypeEnum, target?: Partial<DiagramNode>): string {
-    const { diagram } = compileFlowGraph(
+    const { diagram } = buildFlowGraph(
         makeGraph(
             [
                 makeNode("a", DiagramNodeTypeEnum.FlowStart),
@@ -52,15 +52,15 @@ function compileEdge(type: DiagramEdgeTypeEnum, target?: Partial<DiagramNode>): 
     return diagram.split("\n").at(-1)!;
 }
 
-describe("compileFlowGraph", () => {
+describe("buildFlowGraph", () => {
     it("emits a top-down flowchart header for an empty graph", () => {
-        const { diagram } = compileFlowGraph(makeGraph([], []));
+        const { diagram } = buildFlowGraph(makeGraph([], []));
 
         expect(diagram).toBe("graph TD");
     });
 
     it("declares a flow-start node as a subroutine labeled with the flow name", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode("flow_start", DiagramNodeTypeEnum.FlowStart, {
@@ -75,7 +75,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("declares a flow-end node as a subroutine labeled with the end of the flow", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph([makeNode("done", DiagramNodeTypeEnum.FlowEnd)], []),
         );
 
@@ -83,7 +83,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("declares a pre-flow-policies node as a subroutine labeled with the policy phase", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph([makeNode("flow_pre", DiagramNodeTypeEnum.PreFlowPolicies)], []),
         );
 
@@ -91,7 +91,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("declares an authentication-requirement node as a rectangle labeled with the requirement", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode(
@@ -112,7 +112,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("declares a stage node as a stadium labeled with its type and name", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode("stage_0", DiagramNodeTypeEnum.Stage, {
@@ -133,7 +133,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("declares a policy node as a hexagon labeled with its type and name", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode("flow_policy_0", DiagramNodeTypeEnum.Policy, {
@@ -153,7 +153,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("connects a proceed edge with an unlabeled arrow between the minted node ids", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode("flow_start", DiagramNodeTypeEnum.FlowStart, { name: "Log out" }),
@@ -203,7 +203,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("escapes double quotes in a label so they cannot close the mermaid string", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [
                     makeNode("stage_0", DiagramNodeTypeEnum.Stage, {
@@ -222,7 +222,7 @@ describe("compileFlowGraph", () => {
 
     it("returns each node keyed by the mermaid id it was assigned", () => {
         const stage = makeNode("stage_0", DiagramNodeTypeEnum.Stage, { pk: "stage-pk" });
-        const { nodes } = compileFlowGraph(
+        const { nodes } = buildFlowGraph(
             makeGraph([makeNode("flow_start", DiagramNodeTypeEnum.FlowStart), stage], []),
         );
 
@@ -291,7 +291,7 @@ describe("compileFlowGraph", () => {
             ],
         );
 
-        const { diagram } = compileFlowGraph(graph);
+        const { diagram } = buildFlowGraph(graph);
 
         expect(diagram).toBe(
             [
@@ -321,7 +321,7 @@ describe("compileFlowGraph", () => {
     });
 
     it("drops an edge that names a node the graph never declared", () => {
-        const { diagram } = compileFlowGraph(
+        const { diagram } = buildFlowGraph(
             makeGraph(
                 [makeNode("flow_start", DiagramNodeTypeEnum.FlowStart, { name: "Log out" })],
                 [makeEdge("flow_start", "a stage that isn't here")],
