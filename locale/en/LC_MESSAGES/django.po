@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-11 00:14+0000\n"
+"POT-Creation-Date: 2026-08-26 00:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -704,6 +704,10 @@ msgstr ""
 
 #: authentik/core/sources/flow_manager.py
 msgid "Source is not configured for enrollment."
+msgstr ""
+
+#: authentik/core/sources/matcher.py
+msgid "Missing property"
 msgstr ""
 
 #: authentik/core/tasks.py
@@ -1799,6 +1803,10 @@ msgid ""
 msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
+msgid "Source matching failure reasons for which the flow should resume."
+msgstr ""
+
+#: authentik/enterprise/stages/source/models.py
 msgid "Source Stage"
 msgstr ""
 
@@ -2010,10 +2018,6 @@ msgstr ""
 
 #: authentik/flows/api/flows_diagram.py authentik/flows/models.py
 msgid "Flow"
-msgstr ""
-
-#: authentik/flows/apps.py
-msgid "Refresh other tabs after successful authentication."
 msgstr ""
 
 #: authentik/flows/apps.py
@@ -4175,6 +4179,10 @@ msgid "Also known as Entity ID. Defaults to the Metadata URL."
 msgstr ""
 
 #: authentik/sources/saml/models.py
+msgid "Audience value this IdP sends for authentik."
+msgstr ""
+
+#: authentik/sources/saml/models.py
 msgid "SSO URL"
 msgstr ""
 
@@ -4328,6 +4336,22 @@ msgstr ""
 
 #: authentik/sources/telegram/telegram.py
 msgid "Invalid hash"
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS certificate verification failed."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo: TLS error."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "Failed to connect to Duo."
+msgstr ""
+
+#: authentik/stages/authenticator_duo/api.py
+msgid "An internal error occurred while importing devices."
 msgstr ""
 
 #: authentik/stages/authenticator_duo/models.py

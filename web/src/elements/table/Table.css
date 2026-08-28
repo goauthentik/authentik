@@ -196,6 +196,11 @@ time {
     display: contents;
 }
 
+[part="table-container"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 .pf-c-table {
     @container (width > 1200px) {
         --pf-c-table--cell--MinWidth: 9em;
