@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 
 Prism Element authenticates users over LDAP, so it must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
 
-This guide uses the default LDAP provider **Base DN** of `dc=ldap,dc=goauthentik,dc=io`. If you use a different Base DN, adjust the distinguished names below to match.
+This guide uses the default LDAP provider **Base DN** of `DC=ldap,DC=goauthentik,DC=io`. If you use a different Base DN, adjust the distinguished names below to match.
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -53,26 +53,26 @@ Follow the [LDAP provider documentation](/docs/add-secure-apps/providers/ldap/cr
 
 1. Log in to Prism Element as a user with administrator privileges.
 2. Click the gear icon in the top right and navigate to **Users and Roles** > **Authentication**.
-3. On the **Directory List** tab, click **New Directory**.
+3. On the **Directory List** tab, click **Add**.
 4. Configure the directory with the following settings:
     - **Directory Type**: `OpenLDAP`
     - **Name**: `authentik`
     - **Domain**: `ldap.goauthentik.io`
     - **Directory URL**: `ldaps://ldap.company:636`
     - **User Object Class**: `user`
-    - **User Search Base**: `ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **User Search Base**: `OU=users,DC=ldap,DC=goauthentik,DC=io`
     - **Username Attribute**: `cn`
     - **Group Object Class**: `group`
-    - **Group Search Base**: `ou=groups,dc=ldap,dc=goauthentik,dc=io`
+    - **Group Search Base**: `OU=groups,DC=ldap,DC=goauthentik,DC=io`
     - **Group Member Attribute**: `member`
     - **Group Member Attribute Value**: `dn`
-    - **Service Account**: `cn=nutanix-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **Service Account**: `CN=nutanix-user,OU=users,DC=ldap,DC=goauthentik,DC=io`
     - **Service Account Password**: the password for the `nutanix-user` service account
 
 5. Click **Save**.
 6. Open the **Authentication Types** tab, select **Directory Service**, and click **Save**.
 
-**Domain** is the Base DN written in dotted form, and users append it to their username when they log in. With the default Base DN, `akadmin` logs in as `akadmin@ldap.goauthentik.io`.
+**Domain** is the Base DN written in dotted form, and users append it to their username when they log in. With the default Base DN, the user `akadmin` logs in as `akadmin@ldap.goauthentik.io`.
 
 :::info Local accounts stay enabled
 Selecting **Directory Service** adds LDAP as an authentication type. Prism Element keeps accepting local accounts.
@@ -92,7 +92,7 @@ Directory users receive no permissions until a role mapping grants them one.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Prism Element, open Prism Element and log in as `akadmin@ldap.goauthentik.io` with the authentik password for that user.
+To confirm that authentik is properly configured with Prism Element, open Prism Element and log in as a member of `nutanix-admins`, appending `@ldap.goauthentik.io` to their username.
 
 You can also test the directory without logging out. On the **Directory List** tab, click **Test**, then enter the same username and password. Prism Element reports **Authentication test successful** when the directory is reachable and the credentials are accepted.
 
