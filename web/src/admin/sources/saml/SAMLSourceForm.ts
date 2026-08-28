@@ -303,6 +303,19 @@ export class SAMLSourceForm extends BaseSourceForm<SAMLSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Audience override")}
+                        name="audienceOverride"
+                    >
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.audienceOverride)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Audience value this IdP sends for authentik.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
                         required
                         name="nameIdPolicy"
