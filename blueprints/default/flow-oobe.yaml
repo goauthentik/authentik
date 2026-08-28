@@ -110,15 +110,16 @@ entries:
 - attrs:
     expression: |
       from django.core.exceptions import ValidationError
-      from authentik.tenants.utils import BASE_URL_VALIDATOR, normalize_base_url
+      from authentik.tenants.models import Tenant
+      from authentik.tenants.utils import normalize_base_url
 
       base_url = normalize_base_url((request.context.get("prompt_data") or {}).get("base_url"))
       if not base_url:
           return True
       try:
-          BASE_URL_VALIDATOR(base_url)
-      except ValidationError:
-          ak_message("Enter a valid URL, for example https://authentik.company")
+          Tenant._meta.get_field("base_url").run_validators(base_url)
+      except ValidationError as exc:
+          ak_message(exc.messages[0])
           return False
       return True
   id: policy-default-oobe-base-url-valid

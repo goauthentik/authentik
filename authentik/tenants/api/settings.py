@@ -7,7 +7,7 @@ from django_tenants.utils import get_public_schema_name
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type, build_object_type
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, JSONField
+from rest_framework.fields import JSONField
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import SAFE_METHODS
 
@@ -15,7 +15,7 @@ from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.flags import Flag
 from authentik.tenants.models import Tenant
-from authentik.tenants.utils import BASE_URL_VALIDATOR, normalize_base_url
+from authentik.tenants.utils import normalize_base_url
 
 
 class FlagJSONField(JSONDictField):
@@ -76,14 +76,6 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
 class SettingsSerializer(ModelSerializer):
     """Settings Serializer"""
 
-    # the model field is a URLField, and URLValidator rejects internal hostnames.
-    base_url = CharField(
-        required=False,
-        allow_blank=True,
-        max_length=200,
-        help_text=Tenant._meta.get_field("base_url").help_text,
-        validators=[BASE_URL_VALIDATOR],
-    )
     footer_links = JSONField(required=False)
     flags = FlagJSONField()
 

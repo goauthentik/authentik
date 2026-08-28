@@ -1,11 +1,9 @@
 """Tenant utils"""
 
 from django.db import connection
-from django.utils.translation import gettext_lazy as _
 from django_tenants.utils import get_public_schema_name
 
 from authentik.lib.config import CONFIG
-from authentik.lib.models import DomainlessURLValidator
 from authentik.root.install_id import get_install_id
 from authentik.tenants.models import Tenant
 
@@ -33,9 +31,3 @@ def get_unique_identifier() -> str:
 def normalize_base_url(value: str | None) -> str:
     """Normalize a configured base URL: strip whitespace and trailing slashes."""
     return (value or "").strip().rstrip("/")
-
-
-BASE_URL_VALIDATOR = DomainlessURLValidator(
-    schemes=("http", "https"),
-    message=_("Enter a valid URL, for example https://authentik.company"),
-)

@@ -1,15 +1,16 @@
-"""Tests for the validate_base_url helper"""
+"""Tests for the base_url field validators"""
 
 from django.core.exceptions import ValidationError
 from django.test import SimpleTestCase
 
-from authentik.tenants.utils import BASE_URL_VALIDATOR
+from authentik.tenants.models import Tenant
 
 
 class TestValidateBaseURL(SimpleTestCase):
-    """BASE_URL_VALIDATOR accepts an http or https URL whose host needs no domain part"""
+    """base_url accepts an http or https URL whose host needs no domain part"""
 
     def test_validate(self):
+        field = Tenant._meta.get_field("base_url")
         cases = {
             "https://authentik.company": True,
             "http://authentik.company": True,
@@ -42,7 +43,7 @@ class TestValidateBaseURL(SimpleTestCase):
         for value, valid in cases.items():
             with self.subTest(value=value):
                 if valid:
-                    BASE_URL_VALIDATOR(value)
+                    field.run_validators(value)
                     continue
                 with self.assertRaises(ValidationError):
-                    BASE_URL_VALIDATOR(value)
+                    field.run_validators(value)
