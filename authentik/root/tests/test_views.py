@@ -13,7 +13,10 @@ class TestRoot(TransactionTestCase):
 
     def test_monitoring_live(self):
         """Test LiveView"""
-        self.assertEqual(self.client.get(reverse("health-live")).status_code, 200)
+
+        # The liveness probe should not make any database queries
+        with self.assertNumQueries(0):
+            self.assertEqual(self.client.get(reverse("health-live")).status_code, 200)
 
     def test_monitoring_ready(self):
         """Test ReadyView"""

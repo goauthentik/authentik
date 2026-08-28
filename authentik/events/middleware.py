@@ -153,6 +153,10 @@ class AuditMiddleware:
         m2m_changed.disconnect(dispatch_uid=request.request_id)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        # Skip for liveness probe
+        if request.path == "/-/health/live/":
+            return self.get_response(request)
+
         _CTX_REQUEST.set(request)
         self.connect(request)
 
