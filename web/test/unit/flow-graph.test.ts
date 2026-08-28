@@ -29,7 +29,7 @@ function makeNode(identifier: string, type: DiagramNodeTypeEnum, rest?: Partial<
 function makeEdge(
     origin: string,
     target: string,
-    type: DiagramEdgeTypeEnum = DiagramEdgeTypeEnum.Proceed
+    type: DiagramEdgeTypeEnum = DiagramEdgeTypeEnum.Proceed,
 ) {
     return { origin, target, type } satisfies DiagramEdge;
 }
@@ -45,8 +45,8 @@ function compileEdge(type: DiagramEdgeTypeEnum, target?: Partial<DiagramNode>): 
                 makeNode("a", DiagramNodeTypeEnum.FlowStart),
                 makeNode("b", DiagramNodeTypeEnum.FlowEnd, target),
             ],
-            [makeEdge("a", "b", type)]
-        )
+            [makeEdge("a", "b", type)],
+        ),
     );
 
     return diagram.split("\n").at(-1)!;
@@ -67,8 +67,8 @@ describe("compileFlowGraph", () => {
                         name: "Logged out of application",
                     }),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         expect(diagram).toBe(["graph TD", 'n0[["Flow\nLogged out of application"]]'].join("\n"));
@@ -76,7 +76,7 @@ describe("compileFlowGraph", () => {
 
     it("declares a flow-end node as a subroutine labeled with the end of the flow", () => {
         const { diagram } = compileFlowGraph(
-            makeGraph([makeNode("done", DiagramNodeTypeEnum.FlowEnd)], [])
+            makeGraph([makeNode("done", DiagramNodeTypeEnum.FlowEnd)], []),
         );
 
         expect(diagram).toBe(["graph TD", 'n0[["End of the flow"]]'].join("\n"));
@@ -84,7 +84,7 @@ describe("compileFlowGraph", () => {
 
     it("declares a pre-flow-policies node as a subroutine labeled with the policy phase", () => {
         const { diagram } = compileFlowGraph(
-            makeGraph([makeNode("flow_pre", DiagramNodeTypeEnum.PreFlowPolicies)], [])
+            makeGraph([makeNode("flow_pre", DiagramNodeTypeEnum.PreFlowPolicies)], []),
         );
 
         expect(diagram).toBe(["graph TD", 'n0[["Pre-flow policies"]]'].join("\n"));
@@ -99,15 +99,15 @@ describe("compileFlowGraph", () => {
                         DiagramNodeTypeEnum.AuthenticationRequirement,
                         {
                             name: "require_superuser",
-                        }
+                        },
                     ),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0["Flow authentication requirement\nrequire_superuser"]'].join("\n")
+            ["graph TD", 'n0["Flow authentication requirement\nrequire_superuser"]'].join("\n"),
         );
     });
 
@@ -120,15 +120,15 @@ describe("compileFlowGraph", () => {
                         verboseName: "Identification Stage",
                     }),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         expect(diagram).toBe(
             [
                 "graph TD",
                 'n0(["Stage (Identification Stage)\ndefault-authentication-identification"])',
-            ].join("\n")
+            ].join("\n"),
         );
     });
 
@@ -141,14 +141,14 @@ describe("compileFlowGraph", () => {
                         verboseName: "Expression Policy",
                     }),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         expect(diagram).toBe(
             ["graph TD", 'n0{{"Policy (Expression Policy)\ndefault-oobe-password-usable"}}'].join(
-                "\n"
-            )
+                "\n",
+            ),
         );
     });
 
@@ -159,12 +159,14 @@ describe("compileFlowGraph", () => {
                     makeNode("flow_start", DiagramNodeTypeEnum.FlowStart, { name: "Log out" }),
                     makeNode("done", DiagramNodeTypeEnum.FlowEnd),
                 ],
-                [makeEdge("flow_start", "done")]
-            )
+                [makeEdge("flow_start", "done")],
+            ),
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0[["Flow\nLog out"]]', 'n1[["End of the flow"]]', "n0 --> n1"].join("\n")
+            ["graph TD", 'n0[["Flow\nLog out"]]', 'n1[["End of the flow"]]', "n0 --> n1"].join(
+                "\n",
+            ),
         );
     });
 
@@ -179,19 +181,19 @@ describe("compileFlowGraph", () => {
 
         it("labels a requirement-fulfilled edge with the fulfilled requirement", () => {
             expect(compileEdge(DiagramEdgeTypeEnum.RequirementFulfilled)).toBe(
-                "n0 --Requirement met--> n1"
+                "n0 --Requirement met--> n1",
             );
         });
 
         it("labels a requirement-unfulfilled edge with the unmet requirement", () => {
             expect(compileEdge(DiagramEdgeTypeEnum.RequirementUnfulfilled)).toBe(
-                "n0 --Denied--> n1"
+                "n0 --Denied--> n1",
             );
         });
 
         it("labels a binding edge with the binding order of the node it points at", () => {
             expect(compileEdge(DiagramEdgeTypeEnum.Binding, { bindingOrder: 3 })).toBe(
-                "n0 --Binding: 3--> n1"
+                "n0 --Binding: 3--> n1",
             );
         });
     });
@@ -209,19 +211,19 @@ describe("compileFlowGraph", () => {
                         verboseName: "Prompt Stage",
                     }),
                 ],
-                []
-            )
+                [],
+            ),
         );
 
         expect(diagram).toBe(
-            ["graph TD", 'n0(["Stage (Prompt Stage)\nthe #quot;special#quot; stage"])'].join("\n")
+            ["graph TD", 'n0(["Stage (Prompt Stage)\nthe #quot;special#quot; stage"])'].join("\n"),
         );
     });
 
     it("returns each node keyed by the mermaid id it was assigned", () => {
         const stage = makeNode("stage_0", DiagramNodeTypeEnum.Stage, { pk: "stage-pk" });
         const { nodes } = compileFlowGraph(
-            makeGraph([makeNode("flow_start", DiagramNodeTypeEnum.FlowStart), stage], [])
+            makeGraph([makeNode("flow_start", DiagramNodeTypeEnum.FlowStart), stage], []),
         );
 
         expect(nodes.get("n1")).toBe(stage);
@@ -270,12 +272,12 @@ describe("compileFlowGraph", () => {
                 makeEdge(
                     "flow_auth_requirement",
                     "done",
-                    DiagramEdgeTypeEnum.RequirementUnfulfilled
+                    DiagramEdgeTypeEnum.RequirementUnfulfilled,
                 ),
                 makeEdge(
                     "flow_auth_requirement",
                     "flow_start",
-                    DiagramEdgeTypeEnum.RequirementFulfilled
+                    DiagramEdgeTypeEnum.RequirementFulfilled,
                 ),
                 makeEdge("flow_pre", "flow_policy_0", DiagramEdgeTypeEnum.Binding),
                 makeEdge("flow_policy_0", "done", DiagramEdgeTypeEnum.PolicyDenied),
@@ -286,7 +288,7 @@ describe("compileFlowGraph", () => {
                 makeEdge("stage_1", "stage_2"),
                 makeEdge("stage_1_policy_0", "stage_2", DiagramEdgeTypeEnum.PolicyDenied),
                 makeEdge("stage_2", "done"),
-            ]
+            ],
         );
 
         const { diagram } = compileFlowGraph(graph);
@@ -314,7 +316,7 @@ describe("compileFlowGraph", () => {
                 "n6 --> n7",
                 "n5 --Policy denied--> n7",
                 "n7 --> n8",
-            ].join("\n")
+            ].join("\n"),
         );
     });
 
@@ -322,8 +324,8 @@ describe("compileFlowGraph", () => {
         const { diagram } = compileFlowGraph(
             makeGraph(
                 [makeNode("flow_start", DiagramNodeTypeEnum.FlowStart, { name: "Log out" })],
-                [makeEdge("flow_start", "a stage that isn't here")]
-            )
+                [makeEdge("flow_start", "a stage that isn't here")],
+            ),
         );
 
         expect(diagram).toBe(["graph TD", 'n0[["Flow\nLog out"]]'].join("\n"));
