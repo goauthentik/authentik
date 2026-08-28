@@ -77,9 +77,7 @@ class BaseURLField(CharField):
     """Needed because 'URLValidator' from 'serializers.URLField' is too strict"""
 
     def to_internal_value(self, data) -> str:
-        value = normalize_base_url(super().to_internal_value(data))
-        validate_base_url(value)
-        return value
+        return normalize_base_url(super().to_internal_value(data))
 
 
 class SettingsSerializer(ModelSerializer):
@@ -90,6 +88,7 @@ class SettingsSerializer(ModelSerializer):
         allow_blank=True,
         max_length=200,
         help_text=Tenant._meta.get_field("base_url").help_text,
+        validators=[validate_base_url],
     )
     footer_links = JSONField(required=False)
     flags = FlagJSONField()

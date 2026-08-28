@@ -7,32 +7,37 @@ from authentik.tenants.utils import validate_base_url
 
 
 class TestValidateBaseURL(SimpleTestCase):
-    """validate_base_url only requires an http(s) scheme followed by something"""
+    """validate_base_url accepts an http or https URL whose host needs no domain part"""
 
     def test_validate(self):
         cases = {
-            # Empty means the base URL has not been configured, which is allowed.
-            "": True,
             "https://authentik.company": True,
             "http://authentik.company": True,
             "HTTPS://authentik.company": True,
             "https://authentik.company/authentik": True,
-            # Hostnames Django's URLValidator rejects.
+            # Hostnames Django's own URLValidator rejects
             "https://auth.svr001": True,
             "https://auth": True,
             "https://auth.s1": True,
-            "https://my_host.example.com": True,
             "http://localhost:9000": True,
             "https://192.168.1.5:9443": True,
             "https://[fd00::1]:9443": True,
-            # Simple mistakes, which are the only thing this rejects.
+            # Not a URL at all.
             "authentik.company": False,
             "//authentik.company": False,
             "not a url": False,
-            "ftp://authentik.company": False,
-            "javascript:alert(1)": False,
             "https://": False,
             "http://": False,
+            # Only http and https.
+            "ftp://authentik.company": False,
+            "javascript:alert(1)": False,
+            # A host that is not a host.
+            "http:///nohost": False,
+            "https://.": False,
+            "https://auth svr001": False,
+            "https://my_host.example.com": False,
+            "https://auth.svr001\nBcc: someone@example.com": False,
+            "https://auth.svr001\tfoo": False,
         }
         for value, valid in cases.items():
             with self.subTest(value=value):

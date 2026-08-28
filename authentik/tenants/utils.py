@@ -1,11 +1,11 @@
 """Tenant utils"""
 
-from django.core.exceptions import ValidationError
 from django.db import connection
 from django.utils.translation import gettext_lazy as _
 from django_tenants.utils import get_public_schema_name
 
 from authentik.lib.config import CONFIG
+from authentik.lib.models import DomainlessURLValidator
 from authentik.root.install_id import get_install_id
 from authentik.tenants.models import Tenant
 
@@ -35,10 +35,7 @@ def normalize_base_url(value: str | None) -> str:
     return (value or "").strip().rstrip("/")
 
 
-def validate_base_url(value: str) -> None:
-    """Validate a base URL: an http or https scheme, followed by something."""
-    if not value:
-        return
-    scheme, separator, rest = value.partition("://")
-    if scheme.lower() not in ("http", "https") or not separator or not rest:
-        raise ValidationError(_("Enter a valid URL, for example https://authentik.company"))
+validate_base_url = DomainlessURLValidator(
+    schemes=("http", "https"),
+    message=_("Enter a valid URL, for example https://authentik.company"),
+)
