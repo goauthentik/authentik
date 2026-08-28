@@ -52,21 +52,46 @@ After you save LDAP as the authentication method, Prisn Element will continue al
 :::
 
 1. Log in to Prisn Element as a user with administrator privileges.
-2. Click the Gear icon on the top right and navigate to **Users and Roles** --> **Authentication**
+2. Click the gear icon on the top right and navigate to **Users and Roles** --> **Authentication**
+3. Click **Add** in the **Directory List** tab
+4. Configure the following settings. Replace `<base_dn>` with the **Base DN** of the authentik LDAP provider.
+    - **Directory Type**: `OpenLDAP`
+    - **Name**: Give it a name
+    - **Domain**: Your combined base dn (like `ldap.goauthentik.io`)
+    - **Directory URL**: `ldaps://IP:636`
+    - **Search Type**: Non-recursive (Default)
+    - **User Object Class**: `user`
+    - **User Search Base**: `ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **Username Attribute**: `cn`
+    - **Group Object Class**:  `group`
+    - **Group Search Base**: `ou=groups,dc=ldap,dc=goauthentik,dc=io`
+    - **Group Member Attribute**: `member`
+    - **Group Member Attribute Value**: `dn`
+    - **Service Account**: `cn=npe-ldap,ou=users,dc=ldap,dc=goauthentik,dc=io`
+    - **Service Account Password**: the password for the `npe-ldap` service account
+5. **Save** your changes, then navigate to **Authentication Types** and check **Directory Service**. Save your changes.
 
 
 ### Add Role Mappings
 
+Role Mappings are required for RBAC on NPE. 
+1. Click the gear icon on the top right and navigate to **Users and Roles** --> **Role Mapping**.
+2. Click **New Mapping**
+3. Select your Directory from the **Directory or Provider** dropdown menu
+4. Select `group` as the type in the **Type** dropdown menu
+5. The value should be the name of the group as represented in Authentik. For example, if your group is `npe-admins`, put `npe-admins` in this box. Spaces are only required for groups with a space in the name, like `authentik Admins`.
+6. Select a Role. For more information on roles, refer to the [Nutanix Role Mapping documentation](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-security-role-permissions-wc-t.html).
+7. Click Save
 
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Prisn Element, open the NPE UI and log in with an authentik username and password. A user in `npe-users` should reach the NPE dashboard without administrator privileges, and a user in `npe-admins` should have administrator privileges.
+To confirm that authentik is properly configured with Prisn Element, click the **Test** button in the **Directory List** menu. Enter a user and append `@<base_dn>` in the username box, and enter their password in the password box. If everything was done correctly, a green banner should pop up saying **Authentication test successful.**
+
+## Logging in
+To log in via LDAP, specify a username and then append `@<base_dn` to it. For example, `akadmin@ldap.goauthentik.io` would attempt to authenticate the `akadmin` user via LDAP. The password field remains the same.
 
 ## Resources
 
 - [Prisn Element documentation - Configuring OpenLDAP Authentication](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Security-Guide-v7_6:wc-openldap-authentication-wc-t.html)
 - [Prisn Element documentation - UI Navigation](https://www.nutanixbible.com/3b-book-of-prism-navigation.html)
-
-
-
