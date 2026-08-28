@@ -53741,7 +53741,6 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           maxLength: 200
@@ -58833,7 +58832,6 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           maxLength: 200
@@ -58921,7 +58919,6 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
           maxLength: 200

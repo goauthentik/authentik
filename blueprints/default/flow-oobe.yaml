@@ -109,16 +109,14 @@ entries:
   model: authentik_policies_expression.expressionpolicy
 - attrs:
     expression: |
-      # Validate the base URL entered during setup
       from django.core.exceptions import ValidationError
-      from django.core.validators import URLValidator
+      from authentik.tenants.utils import normalize_base_url, validate_base_url
 
-      base_url = ((request.context.get("prompt_data") or {}).get("base_url") or "").strip()
-      # Empty is handled by the field's own `required` flag; only check non-empty values.
+      base_url = normalize_base_url((request.context.get("prompt_data") or {}).get("base_url"))
       if not base_url:
           return True
       try:
-          URLValidator()(base_url)
+          validate_base_url(base_url)
       except ValidationError:
           ak_message("Enter a valid URL, for example https://authentik.company")
           return False

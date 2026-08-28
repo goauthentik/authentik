@@ -43,10 +43,16 @@ class AuthentikTenantsConfig(ManagedAppConfig):
         """Backfill base_url when it hasn't been set yet. Sources: AUTHENTIK_WEB__BASE_URL config
         value, then the embedded outpost's configured host. When neither is available, warn that
         the base URL must be set before it becomes required in a future release."""
+        from django.core.exceptions import ValidationError
+
         from authentik.events.models import Event
         from authentik.outposts.models import Outpost
         from authentik.tenants.models import Tenant
-        from authentik.tenants.utils import get_current_tenant, normalize_base_url
+        from authentik.tenants.utils import (
+            get_current_tenant,
+            normalize_base_url,
+            validate_base_url,
+        )
 
         tenant = get_current_tenant()
         if tenant.base_url:
@@ -56,6 +62,14 @@ class AuthentikTenantsConfig(ManagedAppConfig):
             outpost = Outpost.objects.filter(managed=MANAGED_OUTPOST).first()
             if outpost:
                 base_url = normalize_base_url(outpost.config.authentik_host)
+        if base_url:
+            try:
+                validate_base_url(base_url)
+            except ValidationError:
+                self.logger.warning(
+                    "Discarding invalid base_url", base_url=base_url, tenant=tenant.schema_name
+                )
+                base_url = ""
         if not base_url:  # No source available
             if Setup.get(tenant=tenant):  # Only nag instances that have finished setup
                 self.logger.warning("Base URL is not configured", tenant=tenant.schema_name)

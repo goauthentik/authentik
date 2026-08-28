@@ -1,6 +1,8 @@
 """Tenant utils"""
 
+from django.core.exceptions import ValidationError
 from django.db import connection
+from django.utils.translation import gettext_lazy as _
 from django_tenants.utils import get_public_schema_name
 
 from authentik.lib.config import CONFIG
@@ -31,3 +33,12 @@ def get_unique_identifier() -> str:
 def normalize_base_url(value: str | None) -> str:
     """Normalize a configured base URL: strip whitespace and trailing slashes."""
     return (value or "").strip().rstrip("/")
+
+
+def validate_base_url(value: str) -> None:
+    """Validate a base URL: an http or https scheme, followed by something."""
+    if not value:
+        return
+    scheme, separator, rest = value.partition("://")
+    if scheme.lower() not in ("http", "https") or not separator or not rest:
+        raise ValidationError(_("Enter a valid URL, for example https://authentik.company"))
