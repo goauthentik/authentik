@@ -56,7 +56,7 @@ function edgeLabel(edge: DiagramEdge, target?: DiagramNode): string {
         .with(D.Proceed, () => "")
         .with(D.PolicyPassed, () => msg("Policy passed"))
         .with(D.PolicyDenied, () => msg("Policy denied"))
-        .with(D.RequirementFulfilled, () => msg("Requirement Met"))
+        .with(D.RequirementFulfilled, () => msg("Requirement met"))
         .with(D.RequirementUnfulfilled, () => msg("Denied"))
         .with(D.Binding, () => (order ? msg(str`Binding: ${order}`) : ""))
         .with(D.UnknownDefaultOpenApi, () => "")

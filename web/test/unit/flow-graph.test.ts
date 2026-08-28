@@ -181,13 +181,13 @@ describe("compileFlowGraph", () => {
 
         it("labels a requirement-fulfilled edge with the fulfilled requirement", () => {
             expect(compileEdge(DiagramEdgeTypeEnum.RequirementFulfilled)).toBe(
-                "n0 --Requirement fulfilled--> n1",
+                "n0 --Requirement met--> n1",
             );
         });
 
         it("labels a requirement-unfulfilled edge with the unmet requirement", () => {
             expect(compileEdge(DiagramEdgeTypeEnum.RequirementUnfulfilled)).toBe(
-                "n0 --Requirement not fulfilled--> n1",
+                "n0 --Denied--> n1",
             );
         });
 
@@ -305,9 +305,9 @@ describe("compileFlowGraph", () => {
                 'n6(["Stage (User Write Stage)\ndefault-password-change-write"])',
                 'n7(["Stage (User Login Stage)\ndefault-authentication-login"])',
                 'n8[["End of the flow"]]',
-                "n0 --Requirement not fulfilled--> n8",
-                "n0 --Requirement fulfilled--> n3",
-                "n1 --Binding 0--> n2",
+                "n0 --Denied--> n8",
+                "n0 --Requirement met--> n3",
+                "n1 --> n2",
                 "n2 --Policy denied--> n8",
                 "n2 --> n3",
                 "n3 --> n4",
