@@ -36,12 +36,12 @@ playwright-traces
 test-results
 *.lcov
 
+# Vitest browser mode writes these on a failing test
+.vitest-attachments/
+**/__screenshots__/
+
 # nyc test coverage
 .nyc_output
-
-# Vitest browser-mode failure artifacts
-.vitest-attachments
-**/__screenshots__/
 
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
