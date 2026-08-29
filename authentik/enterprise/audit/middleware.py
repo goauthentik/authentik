@@ -118,6 +118,16 @@ class EnterpriseAuditMiddleware(AuditMiddleware):
             thread_kwargs["diff"] = diff
         return super().post_save_handler(request, sender, instance, created, thread_kwargs, **_)
 
+    def pre_delete_handler(self, request: HttpRequest, sender, instance: Model, **_):
+        """Signal handler for all object's pre_delete"""
+        if not should_log_model(instance):  # pragma: no cover
+            return None
+        # Get current state
+        model_state = self.serialize_simple(instance)
+        sanitized_model_state = sanitize_item(model_state)
+        thread_kwargs = {"model_state": sanitized_model_state}
+        return super().pre_delete_handler(request, sender, instance, thread_kwargs, **_)
+
     def m2m_changed_handler(  # noqa: PLR0913
         self,
         request: HttpRequest,
