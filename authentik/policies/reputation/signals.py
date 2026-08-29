@@ -48,6 +48,18 @@ def update_score(request: HttpRequest, identifier: str, amount: int):
     LOGGER.info("Updated score", amount=reputation.score, for_user=identifier, for_ip=remote_ip)
 
 
+def reset_score(request: HttpRequest, identifier: str):
+    """Reset a negative score for IP and User back to 0. Scores of 0 or above are
+    left untouched, and no entry is created if none exists yet."""
+    remote_ip = ClientIPMiddleware.get_client_ip(request)
+
+    updated = Reputation.objects.filter(ip=remote_ip, identifier=identifier, score__lt=0).update(
+        score=0
+    )
+    if updated:
+        LOGGER.info("Reset score", for_user=identifier, for_ip=remote_ip)
+
+
 @receiver(login_failed)
 def handle_failed_login(sender, request, credentials, **_):
     """Lower Score for failed login attempts"""
@@ -63,5 +75,5 @@ def handle_identification_failed(sender, request, uid_field: str, **_):
 
 @receiver(user_logged_in)
 def handle_successful_login(sender, request, user, **_):
-    """Raise score for successful attempts"""
-    update_score(request, user.username, 1)
+    """Reset negative score for successful attempts"""
+    reset_score(request, user.username)

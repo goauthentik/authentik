@@ -13,7 +13,7 @@ Use a Reputation policy when you want authentik to react to repeated failed auth
 authentik tracks a reputation score over time:
 
 - failed logins decrease the score
-- successful logins increase the score
+- a successful login resets a negative score back to 0, for that username and client IP pair
 
 The policy passes when the score is at or below the configured threshold.
 

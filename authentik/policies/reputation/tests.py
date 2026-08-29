@@ -6,7 +6,11 @@ from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
-from authentik.policies.reputation.signals import update_score
+from authentik.policies.reputation.signals import (
+    handle_successful_login,
+    reset_score,
+    update_score,
+)
 from authentik.policies.types import PolicyRequest
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import authenticate
@@ -61,6 +65,47 @@ class TestReputationPolicy(TestCase):
         self.assertEqual(
             Reputation.objects.get(identifier=self.username).score, DEFAULT_REPUTATION_UPPER_LIMIT
         )
+
+    def test_reset_reputation(self):
+        """test that a successful login resets a negative score"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        reset_score(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
+
+    def test_reset_reputation_keeps_positive(self):
+        """test that a successful login leaves a zero or positive score untouched"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=3)
+        reset_score(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 3)
+
+    def test_reset_reputation_no_entry(self):
+        """test that a successful login does not create an entry"""
+        reset_score(self.request, identifier=self.username)
+        self.assertFalse(Reputation.objects.filter(identifier=self.username).exists())
+
+    def test_reset_reputation_other_identifier(self):
+        """test that only the matching identifier is reset for a shared IP"""
+        other_username = generate_id()
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        Reputation.objects.create(identifier=other_username, ip=self.ip, score=-3)
+        reset_score(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
+        self.assertEqual(Reputation.objects.get(identifier=other_username).score, -3)
+
+    def test_reset_reputation_other_ip(self):
+        """test that only the matching IP is reset for the same identifier"""
+        Reputation.objects.create(identifier=self.username, ip=self.ip, score=-3)
+        Reputation.objects.create(identifier=self.username, ip="10.0.0.1", score=-3)
+        reset_score(self.request, identifier=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username, ip=self.ip).score, 0)
+        self.assertEqual(Reputation.objects.get(identifier=self.username, ip="10.0.0.1").score, -3)
+
+    def test_reset_reputation_on_successful_login(self):
+        """test that a failed login followed by a successful one ends at 0"""
+        authenticate(self.request, self.backends, username=self.username, password=self.username)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, -1)
+        handle_successful_login(None, self.request, self.user)
+        self.assertEqual(Reputation.objects.get(identifier=self.username).score, 0)
 
     def test_policy(self):
         """Test Policy"""
