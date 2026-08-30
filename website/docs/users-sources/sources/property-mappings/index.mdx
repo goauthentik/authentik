@@ -80,9 +80,7 @@ An identifier has to be a simple value such as a string. Entries that are not, s
 
 #### Disabling group synchronization
 
-The source collects its groups before any property mapping runs, and results are merged into them as described in [Object construction process](#object-construction-process). A mapping that returns `{"groups": []}` therefore appends nothing and leaves the collected groups in place, and one that returns a list of its own adds to them.
-
-To drop the collected groups, return `None` for the attribute:
+The source collects its groups before any property mapping runs, and mapping results are merged into them as described in [Object construction process](#object-construction-process). To drop the collected groups, return `None` for the attribute:
 
 ```python
 return {"groups": None}
