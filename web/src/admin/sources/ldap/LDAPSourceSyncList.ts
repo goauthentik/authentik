@@ -45,6 +45,7 @@ export class LDAPSourceSyncList extends Table<LDAPSourceSync> {
             [msg("User count"), "users_count"],
             [msg("Group count"), "groups_count"],
             [msg("Membership count"), "membership_count"],
+            [msg("Group hierarchy count"), "group_hierarchy_count"],
             [msg("User deleted count"), "user_deletions_count"],
             [msg("Group deleted count"), "group_deletions_count"],
         ];
@@ -58,6 +59,7 @@ export class LDAPSourceSyncList extends Table<LDAPSourceSync> {
             html`${item.usersCount}`,
             html`${item.groupsCount}`,
             html`${item.membershipCount}`,
+            html`${item.groupHierarchyCount}`,
             html`${item.userDeletionsCount}`,
             html`${item.groupDeletionsCount}`,
         ];
