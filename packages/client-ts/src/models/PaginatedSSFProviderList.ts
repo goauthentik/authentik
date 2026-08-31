@@ -25,20 +25,14 @@ import { SSFProviderFromJSON, SSFProviderToJSON } from "./SSFProvider";
 export interface PaginatedSSFProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSSFProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SSFProvider>}
-     * @memberof PaginatedSSFProviderList
      */
     results: Array<SSFProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSSFProviderList
      */
     autocomplete: { [key: string]: any };
 }

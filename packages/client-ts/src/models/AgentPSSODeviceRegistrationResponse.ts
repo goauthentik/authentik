@@ -20,38 +20,26 @@
 export interface AgentPSSODeviceRegistrationResponse {
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     issuer: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     tokenEndpoint: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     jwksEndpoint: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     audience: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationResponse
      */
     nonceEndpoint: string;
 }

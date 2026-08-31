@@ -25,20 +25,14 @@ import { TokenModelFromJSON, TokenModelToJSON } from "./TokenModel";
 export interface PaginatedTokenModelList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedTokenModelList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<TokenModel>}
-     * @memberof PaginatedTokenModelList
      */
     results: Array<TokenModel>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedTokenModelList
      */
     autocomplete: { [key: string]: any };
 }

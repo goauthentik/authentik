@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAuthenticatorSMSStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAuthenticatorSMSStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<AuthenticatorSMSStage>}
-     * @memberof PaginatedAuthenticatorSMSStageList
      */
     results: Array<AuthenticatorSMSStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAuthenticatorSMSStageList
      */
     autocomplete: { [key: string]: any };
 }

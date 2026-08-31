@@ -20,14 +20,10 @@
 export interface PatchedDenyStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedDenyStageRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedDenyStageRequest
      */
     denyMessage?: string;
 }

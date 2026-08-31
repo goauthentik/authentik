@@ -39,158 +39,106 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface OAuthSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof OAuthSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof OAuthSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuthSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuthSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof OAuthSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof OAuthSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof OAuthSourceRequest
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      *
-     * @type {ProviderTypeEnum}
-     * @memberof OAuthSourceRequest
      */
     providerType: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     requestTokenUrl?: string | null;
     /**
      * URL the user is redirect to to conest the flow.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     authorizationUrl?: string | null;
     /**
      * URL used by authentik to retrieve tokens.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     accessTokenUrl?: string | null;
     /**
      * URL used by authentik to get user information.
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     profileUrl?: string | null;
     /**
      *
-     * @type {PKCEMethodEnum}
-     * @memberof OAuthSourceRequest
      */
     pkce?: PKCEMethodEnum;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     consumerKey: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     consumerSecret: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     additionalScopes?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     oidcWellKnownUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSourceRequest
      */
     oidcJwksUrl?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof OAuthSourceRequest
      */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow
-     * @type {AuthorizationCodeAuthMethodEnum}
-     * @memberof OAuthSourceRequest
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
 }

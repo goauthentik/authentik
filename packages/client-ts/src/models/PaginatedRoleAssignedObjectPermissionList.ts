@@ -28,20 +28,14 @@ import {
 export interface PaginatedRoleAssignedObjectPermissionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRoleAssignedObjectPermissionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RoleAssignedObjectPermission>}
-     * @memberof PaginatedRoleAssignedObjectPermissionList
      */
     results: Array<RoleAssignedObjectPermission>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRoleAssignedObjectPermissionList
      */
     autocomplete: { [key: string]: any };
 }

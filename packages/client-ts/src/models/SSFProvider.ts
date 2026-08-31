@@ -25,80 +25,54 @@ import { TokenFromJSON } from "./Token";
 export interface SSFProvider {
     /**
      *
-     * @type {number}
-     * @memberof SSFProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof SSFProvider
      */
     name: string;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof SSFProvider
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SSFProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SSFProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SSFProvider
      */
     readonly metaModelName: string;
     /**
      * Key used to sign the SSF Events.
-     * @type {string}
-     * @memberof SSFProvider
      */
     signingKey: string;
     /**
      *
-     * @type {Token}
-     * @memberof SSFProvider
      */
     readonly tokenObj: Token;
     /**
      *
-     * @type {Array<number>}
-     * @memberof SSFProvider
      */
     oidcAuthProviders?: Array<number>;
     /**
      *
-     * @type {Array<Provider>}
-     * @memberof SSFProvider
      */
     readonly oidcAuthProvidersObj: Array<Provider>;
     /**
      *
-     * @type {string}
-     * @memberof SSFProvider
      */
     readonly ssfUrl: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SSFProvider
      */
     eventRetention?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SSFProvider
      */
     pushVerifyCertificates?: boolean;
 }

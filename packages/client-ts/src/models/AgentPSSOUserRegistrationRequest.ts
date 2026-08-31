@@ -20,20 +20,14 @@
 export interface AgentPSSOUserRegistrationRequest {
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
      */
     userAuth: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
      */
     userSecureEnclaveKey: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSOUserRegistrationRequest
      */
     enclaveKeyId: string;
 }

@@ -24,62 +24,42 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface SessionEndChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof SessionEndChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof SessionEndChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     applicationName?: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     applicationLaunchUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     invalidationFlowUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     overviewUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof SessionEndChallenge
      */
     brandName: string;
 }

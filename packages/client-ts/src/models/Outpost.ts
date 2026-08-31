@@ -27,68 +27,46 @@ import { ServiceConnectionFromJSON } from "./ServiceConnection";
 export interface Outpost {
     /**
      *
-     * @type {string}
-     * @memberof Outpost
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Outpost
      */
     name: string;
     /**
      *
-     * @type {OutpostTypeEnum}
-     * @memberof Outpost
      */
     type: OutpostTypeEnum;
     /**
      *
-     * @type {Array<number>}
-     * @memberof Outpost
      */
     providers: Array<number>;
     /**
      *
-     * @type {Array<Provider>}
-     * @memberof Outpost
      */
     readonly providersObj: Array<Provider>;
     /**
      * Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
-     * @type {string}
-     * @memberof Outpost
      */
     serviceConnection?: string | null;
     /**
      *
-     * @type {ServiceConnection}
-     * @memberof Outpost
      */
     readonly serviceConnectionObj: ServiceConnection | null;
     /**
      *
-     * @type {number}
-     * @memberof Outpost
      */
     readonly refreshIntervalS: number;
     /**
      * Get Token identifier
-     * @type {string}
-     * @memberof Outpost
      */
     readonly tokenIdentifier: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Outpost
      */
     config: { [key: string]: any };
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof Outpost
      */
     managed?: string | null;
 }

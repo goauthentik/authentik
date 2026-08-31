@@ -20,68 +20,46 @@
 export interface FleetConnector {
     /**
      *
-     * @type {string}
-     * @memberof FleetConnector
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof FleetConnector
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof FleetConnector
      */
     enabled?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof FleetConnector
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof FleetConnector
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof FleetConnector
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof FleetConnector
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof FleetConnector
      */
     url: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-     * @type {string}
-     * @memberof FleetConnector
      */
     headersMapping?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof FleetConnector
      */
     mapUsers?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof FleetConnector
      */
     mapTeamsAccessGroup?: boolean;
 }

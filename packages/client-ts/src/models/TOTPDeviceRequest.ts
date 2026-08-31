@@ -20,8 +20,6 @@
 export interface TOTPDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof TOTPDeviceRequest
      */
     name: string;
 }

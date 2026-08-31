@@ -23,20 +23,14 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 export interface PermissionAssignRequest {
     /**
      *
-     * @type {Array<string>}
-     * @memberof PermissionAssignRequest
      */
     permissions: Array<string>;
     /**
      *
-     * @type {ModelEnum}
-     * @memberof PermissionAssignRequest
      */
     model?: ModelEnum;
     /**
      *
-     * @type {string}
-     * @memberof PermissionAssignRequest
      */
     objectPk?: string;
 }

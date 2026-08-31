@@ -24,32 +24,22 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface TelegramLoginChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof TelegramLoginChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof TelegramLoginChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof TelegramLoginChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof TelegramLoginChallenge
      */
     botUsername: string;
     /**
      *
-     * @type {boolean}
-     * @memberof TelegramLoginChallenge
      */
     requestMessageAccess: boolean;
 }

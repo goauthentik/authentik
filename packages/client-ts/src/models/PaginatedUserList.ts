@@ -25,20 +25,14 @@ import { UserFromJSON, UserToJSON } from "./User";
 export interface PaginatedUserList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<User>}
-     * @memberof PaginatedUserList
      */
     results: Array<User>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserList
      */
     autocomplete: { [key: string]: any };
 }

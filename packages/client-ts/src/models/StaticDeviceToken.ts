@@ -20,8 +20,6 @@
 export interface StaticDeviceToken {
     /**
      *
-     * @type {string}
-     * @memberof StaticDeviceToken
      */
     token: string;
 }

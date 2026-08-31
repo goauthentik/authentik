@@ -20,14 +20,10 @@
 export interface GroupOAuthSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupOAuthSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupOAuthSourceConnectionRequest
      */
     identifier: string;
 }

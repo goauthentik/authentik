@@ -28,68 +28,46 @@ import {
 export interface RedirectStage {
     /**
      *
-     * @type {string}
-     * @memberof RedirectStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof RedirectStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof RedirectStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof RedirectStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof RedirectStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof RedirectStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof RedirectStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {boolean}
-     * @memberof RedirectStage
      */
     keepContext?: boolean;
     /**
      *
-     * @type {RedirectStageModeEnum}
-     * @memberof RedirectStage
      */
     mode: RedirectStageModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof RedirectStage
      */
     targetStatic?: string;
     /**
      *
-     * @type {string}
-     * @memberof RedirectStage
      */
     targetFlow?: string | null;
 }
