@@ -381,6 +381,7 @@ class LDAPSourceSync(Sync):
     users_count = models.PositiveBigIntegerField(default=0)
     groups_count = models.PositiveBigIntegerField(default=0)
     membership_count = models.PositiveBigIntegerField(default=0)
+    group_hierarchy_count = models.PositiveBigIntegerField(default=0)
     user_deletions_count = models.PositiveBigIntegerField(default=0)
     group_deletions_count = models.PositiveBigIntegerField(default=0)
 

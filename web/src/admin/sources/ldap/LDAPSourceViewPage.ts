@@ -3,11 +3,11 @@
  */
 
 import "#admin/rbac/ak-rbac-object-permission-page";
-import "#admin/sources/ldap/LDAPSourceConnectivity";
+import "#admin/sources/ldap/LDAPSourceStatus";
+import "#admin/sources/ldap/LDAPSourceSyncList";
 import "#admin/sources/ldap/LDAPSourceUserList";
 import "#admin/sources/ldap/LDAPSourceGroupList";
 import "#admin/events/ObjectChangelog";
-import "#components/sync/SyncStatusCard";
 import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
@@ -97,53 +97,44 @@ export class LDAPSourceViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList(
-                                    [
-                                        [msg("Name"), html`${this.source?.name}`],
-                                        [msg("Server URI"), html`${this.source?.serverUri}`],
-                                        [msg("Base DN"), html`${this.source?.baseDn}`],
-                                        [
-                                            msg("Status"),
-                                            html`<ak-status-label
+            [
+                [msg("Name"), html`${this.source?.name}`],
+                [msg("Server URI"), html`${this.source?.serverUri}`],
+                [msg("Base DN"), html`${this.source?.baseDn}`],
+                [
+                    msg("Status"),
+                    html`<ak-status-label
                                                 type="neutral"
                                                 ?good=${this.source?.enabled}
                                                 good-label=${msg("Enabled")}
                                                 bad-label=${msg("Disabled")}
                                             ></ak-status-label>`,
-                                        ],
-                                        [
-                                            msg("Related actions"),
-                                            html`<button
+                ],
+                [
+                    msg("Related actions"),
+                    html`<button
                                                 class="pf-c-button pf-m-primary pf-m-block"
                                                 ${modalInvoker(LDAPSourceForm, {
-                                                    instancePk: this.source?.slug,
-                                                })}
+                        instancePk: this.source?.slug,
+                    })}
                                             >
                                                 ${msg("Edit")}
                                             </button>`,
-                                        ],
-                                    ],
-                                    { twocolumn: true },
-                                )}
+                ],
+            ],
+            { twocolumn: true },
+        )}
                             </div>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
-                            <ak-sync-status-card
-                                .fetch=${() => {
-                                    if (!this.source) return Promise.reject();
-                                    return aki(SourcesApi).sourcesLdapSyncStatusRetrieve({
-                                        slug: this.source.slug,
-                                    });
-                                }}
-                            ></ak-sync-status-card>
-                        </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
                             <div class="pf-c-card__title">
-                                <p>${msg("Connectivity")}</p>
+                                <p>${msg("Status")}</p>
                             </div>
                             <div class="pf-c-card__body">
-                                <ak-source-ldap-connectivity
+                                <ak-source-ldap-status
                                     .connectivity=${this.source?.connectivity}
-                                ></ak-source-ldap-connectivity>
+                                    .lastSync=${this.source?.lastSync}
+                                ></ak-source-ldap-status>
                             </div>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col">
@@ -151,6 +142,18 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <section
+                    role="tabpanel"
+                    tabindex="0"
+                    slot="page-syncs"
+                    id="page-syncs"
+                    aria-label="${msg("Previous synchronisations")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-l-grid pf-m-gutter">
+                        <ak-source-ldap-sync-list .source=${this.source}></ak-source-ldap-sync-list>
+                    </div>
+                </section>
                 <section
                     role="tabpanel"
                     tabindex="0"

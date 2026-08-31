@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from django.db import models
+from django.db.models.aggregates import Count
 from django_dramatiq_postgres.models import TaskState
 from dramatiq.broker import get_broker
 from dramatiq.message import Message
