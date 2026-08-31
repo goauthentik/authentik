@@ -140,6 +140,16 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                             args.search = query;
                         }
                         const stages = await aki(StagesApi).stagesAllList(args);
+                        // The list is paginated, so the currently-bound stage may not appear on
+                        // the first page. Merge it in so it renders as selected without the user
+                        // having to search for it first.
+                        const selectedStage = this.instance?.stageObj;
+                        if (
+                            selectedStage &&
+                            !stages.results.some((stage) => stage.pk === selectedStage.pk)
+                        ) {
+                            return [selectedStage, ...stages.results];
+                        }
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {
