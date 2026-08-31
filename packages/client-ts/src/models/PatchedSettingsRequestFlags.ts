@@ -21,15 +21,15 @@ export interface PatchedSettingsRequestFlags {
     /**
      * Applications with no policies bound can be accessed by any user.
      */
-    coreDefaultAppAccess: boolean;
+    coreDefaultAppAccess?: boolean;
     /**
      * Include additional information in audit logs, may incur a performance penalty.
      */
-    enterpriseAuditIncludeExpandedDiff: boolean;
+    enterpriseAuditIncludeExpandedDiff?: boolean;
     /**
      * Upon successful authentication, re-start authentication in other open tabs.
      */
-    flowsContinuousLogin: boolean;
+    flowsContinuousLogin?: boolean;
 }
 
 /**
@@ -38,27 +38,6 @@ export interface PatchedSettingsRequestFlags {
 export function instanceOfPatchedSettingsRequestFlags(
     value: object,
 ): value is PatchedSettingsRequestFlags {
-    if (
-        (!("coreDefaultAppAccess" in (value as Record<string, any>)) &&
-            !("core_default_app_access" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["coreDefaultAppAccess"] === undefined &&
-            (value as Record<string, any>)["core_default_app_access"] === undefined)
-    )
-        return false;
-    if (
-        (!("enterpriseAuditIncludeExpandedDiff" in (value as Record<string, any>)) &&
-            !("enterprise_audit_include_expanded_diff" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["enterpriseAuditIncludeExpandedDiff"] === undefined &&
-            (value as Record<string, any>)["enterprise_audit_include_expanded_diff"] === undefined)
-    )
-        return false;
-    if (
-        (!("flowsContinuousLogin" in (value as Record<string, any>)) &&
-            !("flows_continuous_login" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["flowsContinuousLogin"] === undefined &&
-            (value as Record<string, any>)["flows_continuous_login"] === undefined)
-    )
-        return false;
     return true;
 }
 
@@ -74,9 +53,14 @@ export function PatchedSettingsRequestFlagsFromJSONTyped(
         return json;
     }
     return {
-        coreDefaultAppAccess: json["core_default_app_access"],
-        enterpriseAuditIncludeExpandedDiff: json["enterprise_audit_include_expanded_diff"],
-        flowsContinuousLogin: json["flows_continuous_login"],
+        coreDefaultAppAccess:
+            json["core_default_app_access"] == null ? undefined : json["core_default_app_access"],
+        enterpriseAuditIncludeExpandedDiff:
+            json["enterprise_audit_include_expanded_diff"] == null
+                ? undefined
+                : json["enterprise_audit_include_expanded_diff"],
+        flowsContinuousLogin:
+            json["flows_continuous_login"] == null ? undefined : json["flows_continuous_login"],
     };
 }
 

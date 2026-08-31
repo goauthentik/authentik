@@ -53815,10 +53815,6 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-          required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
-          - flows_continuous_login
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -58905,10 +58901,6 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-          required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
-          - flows_continuous_login
       required:
       - flags
     SettingsRequest:
@@ -58995,10 +58987,6 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-          required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
-          - flows_continuous_login
       required:
       - flags
     SeverityEnum:
