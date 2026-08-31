@@ -25,6 +25,25 @@ const (
 	maxBodyBytes = 32 * 1024 * 1024
 )
 
+var djangoHTTPMethods = map[string]struct{}{
+	http.MethodGet:     {},
+	http.MethodHead:    {},
+	http.MethodPost:    {},
+	http.MethodPut:     {},
+	http.MethodPatch:   {},
+	http.MethodDelete:  {},
+	http.MethodOptions: {},
+	http.MethodTrace:   {},
+}
+
+func handleUnsupportedHTTPMethod(rw http.ResponseWriter, r *http.Request) bool {
+	if _, ok := djangoHTTPMethods[r.Method]; ok {
+		return false
+	}
+	http.Error(rw, "Unsupported HTTP method.", http.StatusNotImplemented)
+	return true
+}
+
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
 	director := func(req *http.Request) {
@@ -57,6 +76,8 @@ func (ws *WebServer) configureProxy() {
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
 	rp := &httputil.ReverseProxy{
+		// This code is deprecated/replaced on main anyways, so this is fine
+		//nolint:staticcheck
 		Director:  director,
 		Transport: ws.upstreamHttpClient().Transport,
 	}
@@ -81,6 +102,10 @@ func (ws *WebServer) configureProxy() {
 			Requests.With(prometheus.Labels{
 				"dest": "embedded_outpost",
 			}).Observe(float64(elapsed) / float64(time.Second))
+			return
+		}
+
+		if handleUnsupportedHTTPMethod(rw, r) {
 			return
 		}
 

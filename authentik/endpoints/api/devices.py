@@ -22,10 +22,13 @@ class EndpointDeviceSerializer(ModelSerializer):
 
     access_group_obj = DeviceAccessGroupSerializer(source="access_group", required=False)
 
-    facts = SerializerMethodField()
+    facts = SerializerMethodField(allow_null=True)
 
     def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
-        return DeviceFactSnapshotSerializer(instance.cached_facts).data
+        try:
+            return DeviceFactSnapshotSerializer(instance.cached_facts).data
+        except KeyError, AttributeError:
+            return None
 
     class Meta:
         model = Device
@@ -47,7 +50,10 @@ class EndpointDeviceDetailsSerializer(EndpointDeviceSerializer):
     connections_obj = DeviceConnectionSerializer(many=True, source="deviceconnection_set")
 
     def get_facts(self, instance: Device) -> DeviceFactSnapshotSerializer:
-        return DeviceFactSnapshotSerializer(instance.facts).data
+        try:
+            return DeviceFactSnapshotSerializer(instance.facts).data
+        except KeyError, AttributeError:
+            return None
 
     class Meta(EndpointDeviceSerializer.Meta):
         fields = EndpointDeviceSerializer.Meta.fields + [

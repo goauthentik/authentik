@@ -29,6 +29,8 @@ func (a *Application) configureProxy() error {
 	}
 	rsp := sentry.StartSpan(context.TODO(), "authentik.outposts.proxy.application_transport")
 	rp := &httputil.ReverseProxy{
+		// This code is deprecated/replaced on main anyways, so this is fine
+		//nolint:staticcheck
 		Director:       a.proxyModifyRequest(u),
 		Transport:      web.NewTracingTransport(rsp.Context(), a.getUpstreamTransport()),
 		ErrorHandler:   a.newProxyErrorHandler(),
