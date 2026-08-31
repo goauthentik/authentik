@@ -56,9 +56,6 @@ export class TaskList extends Table<Task> {
     taskIds?: string[];
 
     @property()
-    taskIds?: string[];
-
-    @property()
     relObjAppLabel?: string;
 
     @property()
@@ -89,22 +86,22 @@ export class TaskList extends Table<Task> {
             typeof this.taskIds !== "undefined"
                 ? undefined
                 : typeof this.relObjId !== "undefined"
-                  ? undefined
-                  : this.showOnlyStandalone
-                    ? true
-                    : undefined;
+                    ? undefined
+                    : this.showOnlyStandalone
+                        ? true
+                        : undefined;
         const aggregatedStatus = this.excludeSuccessful
             ? [
-                  TaskAggregatedStatusEnum.WaitingForDependencies,
-                  TaskAggregatedStatusEnum.Queued,
-                  TaskAggregatedStatusEnum.Consumed,
-                  TaskAggregatedStatusEnum.Preprocess,
-                  TaskAggregatedStatusEnum.Running,
-                  TaskAggregatedStatusEnum.Postprocess,
-                  TaskAggregatedStatusEnum.Rejected,
-                  TaskAggregatedStatusEnum.Warning,
-                  TaskAggregatedStatusEnum.Error,
-              ]
+                TaskAggregatedStatusEnum.WaitingForDependencies,
+                TaskAggregatedStatusEnum.Queued,
+                TaskAggregatedStatusEnum.Consumed,
+                TaskAggregatedStatusEnum.Preprocess,
+                TaskAggregatedStatusEnum.Running,
+                TaskAggregatedStatusEnum.Postprocess,
+                TaskAggregatedStatusEnum.Rejected,
+                TaskAggregatedStatusEnum.Warning,
+                TaskAggregatedStatusEnum.Error,
+            ]
             : undefined;
         if (this.includeOverview) {
             this.status = await aki(TasksApi).tasksTasksStatusRetrieve();
@@ -144,34 +141,34 @@ export class TaskList extends Table<Task> {
         return html`<div class="pf-c-toolbar__group pf-m-filter-group">
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 ${this.relObjId === undefined && this.taskIds === undefined
-                    ? html`<ak-table-filter-select
+                ? html`<ak-table-filter-select
                           .options=${[
-                              { label: msg("Show only standalone tasks"), value: true },
-                              { label: msg("Show all tasks"), value: false },
-                          ]}
+                        { label: msg("Show only standalone tasks"), value: true },
+                        { label: msg("Show all tasks"), value: false },
+                    ]}
                           group=${msg("Standalone")}
                           .value=${this.showOnlyStandalone}
                           @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
-                              this.showOnlyStandalone = ev.detail.value;
-                              this.page = 1;
-                              this.fetch();
-                          }}
+                        this.showOnlyStandalone = ev.detail.value;
+                        this.page = 1;
+                        this.fetch();
+                    }}
                       ></ak-table-filter-select>`
-                    : nothing}
+                : nothing}
             </div>
             <div class="pf-c-toolbar__item pf-m-search-filter">
                 <ak-table-filter-select
                     .options=${[
-                        { label: msg("Exclude successful tasks"), value: true },
-                        { label: msg("Include successful tasks"), value: false },
-                    ]}
+                { label: msg("Exclude successful tasks"), value: true },
+                { label: msg("Include successful tasks"), value: false },
+            ]}
                     group=${msg("Successful tasks")}
                     .value=${this.excludeSuccessful}
                     @change=${(ev: CustomEvent<FilterOption<boolean>>) => {
-                        this.excludeSuccessful = ev.detail.value;
-                        this.page = 1;
-                        this.fetch();
-                    }}
+                this.excludeSuccessful = ev.detail.value;
+                this.page = 1;
+                this.fetch();
+            }}
                 ></ak-table-filter-select>
             </div>
         </div>`;
@@ -190,19 +187,19 @@ export class TaskList extends Table<Task> {
                 ? html`<ak-action-button
                       class="pf-m-plain"
                       .apiRequest=${() => {
-                          return aki(TasksApi)
-                              .tasksTasksRetryCreate({
-                                  messageId: item.messageId ?? "",
-                              })
-                              .then(() => {
-                                  this.dispatchEvent(
-                                      new CustomEvent(EVENT_REFRESH, {
-                                          bubbles: true,
-                                          composed: true,
-                                      }),
-                                  );
-                              });
-                      }}
+                        return aki(TasksApi)
+                            .tasksTasksRetryCreate({
+                                messageId: item.messageId ?? "",
+                            })
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    }),
+                                );
+                            });
+                    }}
                   >
                       <pf-tooltip position="top" content=${msg("Retry task")}>
                           <i class="fas fa-redo" aria-hidden="true"></i>
