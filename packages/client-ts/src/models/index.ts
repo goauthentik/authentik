@@ -289,6 +289,8 @@ export * from "./LDAPSource";
 export * from "./LDAPSourcePropertyMapping";
 export * from "./LDAPSourcePropertyMappingRequest";
 export * from "./LDAPSourceRequest";
+export * from "./LDAPSourceSync";
+export * from "./LDAPSourceSyncStatusEnum";
 export * from "./LangEnum";
 export * from "./LastTaskStatusEnum";
 export * from "./License";

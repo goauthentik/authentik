@@ -206,6 +206,10 @@ export interface LDAPSource {
      * Sync group parentage/hierarchy from LDAP directories.
      */
     syncGroupHierarchy?: boolean;
+    /**
+     *
+     */
+    readonly lastSync: string;
 }
 
 /**
@@ -267,6 +271,13 @@ export function instanceOfLDAPSource(value: object): value is LDAPSource {
     )
         return false;
     if (!("connectivity" in value) || value["connectivity"] === undefined) return false;
+    if (
+        (!("lastSync" in (value as Record<string, any>)) &&
+            !("last_sync" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastSync"] === undefined &&
+            (value as Record<string, any>)["last_sync"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -376,6 +387,7 @@ export function LDAPSourceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 : SyncOutgoingTriggerModeEnumFromJSON(json["sync_outgoing_trigger_mode"]),
         syncGroupHierarchy:
             json["sync_group_hierarchy"] == null ? undefined : json["sync_group_hierarchy"],
+        lastSync: json["last_sync"],
     };
 }
 
@@ -395,6 +407,7 @@ export function LDAPSourceToJSONTyped(
         | "iconUrl"
         | "iconThemedUrls"
         | "connectivity"
+        | "lastSync"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

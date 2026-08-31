@@ -25398,8 +25398,8 @@ paths:
           $ref: '#/components/responses/GenericErrorResponse'
   /sources/ldap/{slug}/sync/status/:
     get:
-      operationId: sources_ldap_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: sources_ldap_sync_status_list
+      description: Get provider's sync statuses
       parameters:
       - in: path
         name: slug
@@ -25416,7 +25416,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                type: array
+                items:
+                  $ref: '#/components/schemas/LDAPSourceSync'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -44365,12 +44367,16 @@ components:
         sync_group_hierarchy:
           type: boolean
           description: Sync group parentage/hierarchy from LDAP directories.
+        last_sync:
+          type: string
+          readOnly: true
       required:
       - base_dn
       - component
       - connectivity
       - icon_themed_urls
       - icon_url
+      - last_sync
       - managed
       - meta_model_name
       - name
@@ -44592,6 +44598,75 @@ components:
       - name
       - server_uri
       - slug
+    LDAPSourceSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/LDAPSourceSyncStatusEnum'
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        groups_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        membership_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        user_deletions_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        group_deletions_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - finished_at
+      - pk
+      - source
+      - started_at
+      - status
+      - tasks
+    LDAPSourceSyncStatusEnum:
+      enum:
+      - running
+      - error
+      - warning
+      - done
+      type: string
     LangEnum:
       type: string
       enum:
