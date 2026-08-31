@@ -20,20 +20,14 @@
 export interface GoogleWorkspaceProviderUserRequest {
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderUserRequest
      */
     googleId: string;
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderUserRequest
      */
     user: number;
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderUserRequest
      */
     provider: number;
 }

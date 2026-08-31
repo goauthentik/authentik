@@ -28,20 +28,14 @@ import {
 export interface PaginatedUserPlexSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserPlexSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserPlexSourceConnection>}
-     * @memberof PaginatedUserPlexSourceConnectionList
      */
     results: Array<UserPlexSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserPlexSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

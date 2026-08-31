@@ -20,8 +20,6 @@
 export interface PatchedWebAuthnDeviceRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedWebAuthnDeviceRequest
      */
     name?: string;
 }

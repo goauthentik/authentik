@@ -20,14 +20,10 @@
 export interface EventStats {
     /**
      *
-     * @type {number}
-     * @memberof EventStats
      */
     uniqueUsers: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EventStats
      */
     countStep: { [key: string]: any };
 }

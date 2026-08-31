@@ -25,194 +25,130 @@ import { RedirectURIFromJSON } from "./RedirectURI";
 export interface ProxyProvider {
     /**
      *
-     * @type {number}
-     * @memberof ProxyProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof ProxyProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     readonly clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     internalHost?: string;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     externalHost: string;
     /**
      * Validate SSL Certificates of upstream servers
-     * @type {boolean}
-     * @memberof ProxyProvider
      */
     internalHostSslValidation?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     certificate?: string | null;
     /**
      * Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     skipPathRegex?: string;
     /**
      * Set a custom HTTP-Basic Authentication header based on values from authentik.
-     * @type {boolean}
-     * @memberof ProxyProvider
      */
     basicAuthEnabled?: boolean;
     /**
      * User/Group Attribute used for the password part of the HTTP-Basic Header.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     basicAuthPasswordAttribute?: string;
     /**
      * User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.
-     * @type {string}
-     * @memberof ProxyProvider
      */
     basicAuthUserAttribute?: string;
     /**
      * Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
-     * @type {ProxyMode}
-     * @memberof ProxyProvider
      */
     mode?: ProxyMode;
     /**
      * When enabled, this provider will intercept the authorization header and authenticate requests based on its value.
-     * @type {boolean}
-     * @memberof ProxyProvider
      */
     interceptHeaderAuth?: boolean;
     /**
      *
-     * @type {Array<RedirectURI>}
-     * @memberof ProxyProvider
      */
     readonly redirectUris: Array<RedirectURI>;
     /**
      *
-     * @type {string}
-     * @memberof ProxyProvider
      */
     cookieDomain?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof ProxyProvider
      */
     jwtFederationSources?: Array<string>;
     /**
      *
-     * @type {Array<number>}
-     * @memberof ProxyProvider
      */
     jwtFederationProviders?: Array<number>;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof ProxyProvider
      */
     accessTokenValidity?: string;
     /**
      * Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof ProxyProvider
      */
     refreshTokenValidity?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof ProxyProvider
      */
     readonly outpostSet: Array<string>;
 }

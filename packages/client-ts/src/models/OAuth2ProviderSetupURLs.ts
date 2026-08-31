@@ -20,50 +20,34 @@
 export interface OAuth2ProviderSetupURLs {
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly issuer: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly authorize: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly token: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly userInfo: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly providerInfo: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly logout: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly jwks: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuth2ProviderSetupURLs
      */
     readonly dcrRegistration: string | null;
 }

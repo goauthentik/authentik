@@ -20,26 +20,18 @@
 export interface PasswordExpiryPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof PasswordExpiryPolicyRequest
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PasswordExpiryPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof PasswordExpiryPolicyRequest
      */
     days: number;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordExpiryPolicyRequest
      */
     denyOnly?: boolean;
 }

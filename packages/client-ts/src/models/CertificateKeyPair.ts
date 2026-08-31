@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { CertificateKeyPairKeyTypeEnum } from "./CertificateKeyPairKeyTypeEnum";
 import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTypeEnum";
 
@@ -23,68 +24,46 @@ import { CertificateKeyPairKeyTypeEnumFromJSON } from "./CertificateKeyPairKeyTy
 export interface CertificateKeyPair {
     /**
      *
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     name: string;
     /**
      * SHA256 fingerprint of the certificate
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly fingerprintSha256: string | null;
     /**
      * SHA1 fingerprint of the certificate
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly fingerprintSha1: string | null;
     /**
      * Certificate expiry date
-     * @type {Date}
-     * @memberof CertificateKeyPair
      */
     readonly certExpiry: Date | null;
     /**
      * Certificate subject as RFC4514 string
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly certSubject: string | null;
     /**
      * Show if this keypair has a private key configured or not
-     * @type {boolean}
-     * @memberof CertificateKeyPair
      */
     readonly privateKeyAvailable: boolean;
     /**
      * Key algorithm type detected from the certificate's public key
-     * @type {CertificateKeyPairKeyTypeEnum}
-     * @memberof CertificateKeyPair
      */
     readonly keyType: CertificateKeyPairKeyTypeEnum | null;
     /**
      * Get URL to download certificate
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly certificateDownloadUrl: string;
     /**
      * Get URL to download private key
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly privateKeyDownloadUrl: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof CertificateKeyPair
      */
     readonly managed: string | null;
 }
@@ -171,7 +150,7 @@ export function CertificateKeyPairFromJSONTyped(
         name: json["name"],
         fingerprintSha256: json["fingerprint_sha256"],
         fingerprintSha1: json["fingerprint_sha1"],
-        certExpiry: json["cert_expiry"] == null ? null : new Date(json["cert_expiry"]),
+        certExpiry: json["cert_expiry"] == null ? null : parseDateTime(json["cert_expiry"]),
         certSubject: json["cert_subject"],
         privateKeyAvailable: json["private_key_available"],
         keyType: CertificateKeyPairKeyTypeEnumFromJSON(json["key_type"]),

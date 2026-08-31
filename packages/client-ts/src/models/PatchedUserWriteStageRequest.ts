@@ -25,38 +25,26 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 export interface PatchedUserWriteStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserWriteStageRequest
      */
     name?: string;
     /**
      *
-     * @type {UserCreationModeEnum}
-     * @memberof PatchedUserWriteStageRequest
      */
     userCreationMode?: UserCreationModeEnum;
     /**
      * When set, newly created users are inactive and cannot login.
-     * @type {boolean}
-     * @memberof PatchedUserWriteStageRequest
      */
     createUsersAsInactive?: boolean;
     /**
      * Optionally add newly created users to this group.
-     * @type {string}
-     * @memberof PatchedUserWriteStageRequest
      */
     createUsersGroup?: string | null;
     /**
      *
-     * @type {UserTypeEnum}
-     * @memberof PatchedUserWriteStageRequest
      */
     userType?: UserTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserWriteStageRequest
      */
     userPathTemplate?: string;
 }

@@ -20,50 +20,34 @@
 export interface TelegramChallengeResponseRequest {
     /**
      *
-     * @type {number}
-     * @memberof TelegramChallengeResponseRequest
      */
     id: number;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     firstName?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     lastName?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     photoUrl?: string;
     /**
      *
-     * @type {number}
-     * @memberof TelegramChallengeResponseRequest
      */
     authDate: number;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     hash: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramChallengeResponseRequest
      */
     component?: string;
 }

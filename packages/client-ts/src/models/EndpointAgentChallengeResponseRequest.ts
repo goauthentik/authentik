@@ -20,14 +20,10 @@
 export interface EndpointAgentChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof EndpointAgentChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointAgentChallengeResponseRequest
      */
     response?: string | null;
 }

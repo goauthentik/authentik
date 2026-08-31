@@ -20,14 +20,10 @@
 export interface AuthenticatorWebAuthnChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorWebAuthnChallengeResponseRequest
      */
     response: { [key: string]: any };
 }

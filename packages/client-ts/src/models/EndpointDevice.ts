@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroup } from "./DeviceAccessGroup";
 import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
 import type { DeviceFactSnapshot } from "./DeviceFactSnapshot";
@@ -25,56 +26,38 @@ import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 export interface EndpointDevice {
     /**
      *
-     * @type {string}
-     * @memberof EndpointDevice
      */
     deviceUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDevice
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDevice
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDevice
      */
     accessGroup?: string | null;
     /**
      *
-     * @type {DeviceAccessGroup}
-     * @memberof EndpointDevice
      */
     accessGroupObj?: DeviceAccessGroup;
     /**
      *
-     * @type {boolean}
-     * @memberof EndpointDevice
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof EndpointDevice
      */
     expires?: Date | null;
     /**
      *
-     * @type {DeviceFactSnapshot}
-     * @memberof EndpointDevice
      */
     readonly facts: DeviceFactSnapshot | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EndpointDevice
      */
     attributes?: { [key: string]: any };
 }
@@ -126,7 +109,7 @@ export function EndpointDeviceFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
@@ -150,7 +133,7 @@ export function EndpointDeviceToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
     };
 }

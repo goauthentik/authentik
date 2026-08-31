@@ -39,200 +39,134 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface KerberosSource {
     /**
      *
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof KerberosSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof KerberosSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof KerberosSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof KerberosSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof KerberosSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof KerberosSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof KerberosSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof KerberosSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof KerberosSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof KerberosSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof KerberosSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof KerberosSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof KerberosSource
      */
     readonly iconUrl: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof KerberosSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof KerberosSource
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Kerberos realm
-     * @type {string}
-     * @memberof KerberosSource
      */
     realm: string;
     /**
      * Custom krb5.conf to use. Uses the system one by default
-     * @type {string}
-     * @memberof KerberosSource
      */
     krb5Conf?: string;
     /**
      * KAdmin server type
-     * @type {KadminTypeEnum}
-     * @memberof KerberosSource
      */
     kadminType?: KadminTypeEnum;
     /**
      * Sync users from Kerberos into authentik
-     * @type {boolean}
-     * @memberof KerberosSource
      */
     syncUsers?: boolean;
     /**
      * When a user changes their password, sync it back to Kerberos
-     * @type {boolean}
-     * @memberof KerberosSource
      */
     syncUsersPassword?: boolean;
     /**
      * Principal to authenticate to kadmin for sync.
-     * @type {string}
-     * @memberof KerberosSource
      */
     syncPrincipal?: string;
     /**
      * Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
-     * @type {string}
-     * @memberof KerberosSource
      */
     syncCcache?: string;
     /**
      * Get cached source connectivity
-     * @type {{ [key: string]: string; }}
-     * @memberof KerberosSource
      */
     readonly connectivity: { [key: string]: string } | null;
     /**
      * Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
-     * @type {string}
-     * @memberof KerberosSource
      */
     spnegoServerName?: string;
     /**
      * Credential cache to use for SPNEGO in form type:residual
-     * @type {string}
-     * @memberof KerberosSource
      */
     spnegoCcache?: string;
     /**
      * If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
-     * @type {boolean}
-     * @memberof KerberosSource
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**
      * When to trigger sync for outgoing providers
-     * @type {SyncOutgoingTriggerModeEnum}
-     * @memberof KerberosSource
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
 }

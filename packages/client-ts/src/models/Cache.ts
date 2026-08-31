@@ -20,8 +20,6 @@
 export interface Cache {
     /**
      *
-     * @type {number}
-     * @memberof Cache
      */
     readonly count: number;
 }
