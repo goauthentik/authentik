@@ -262,16 +262,12 @@ export class IdentificationStage extends BaseStage<
 
     protected override onSubmitFailure(): void {
         this.#captcha.onFailure();
-<<<<<<< HEAD
-=======
-
         const passwordField = this.secondaryFocusTarget.target;
 
         if (passwordField) {
             passwordField.focus();
             passwordField.select();
         }
->>>>>>> e964e5452 (web: Fix issues surrounding text field focus behavior. (#25159))
     }
 
     #dispatchChallengeToHost = (challenge: LoginChallengeTypes) => {
