@@ -349,7 +349,7 @@ class Importer:
             try:
                 retry_serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                self.logger.warning("Entry invalid on retry", entry=entry, error=exc)
+                self.logger.warning(f"Entry invalid on retry: {exc}", entry=entry, error=exc)
                 if raise_errors:
                     raise exc
                 return None
@@ -407,7 +407,7 @@ class Importer:
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     serializer = exc.serializer
                 else:
-                    self.logger.warning("Entry invalid", entry=entry, error=exc)
+                    self.logger.warning(f"Entry invalid: {exc}", entry=entry, error=exc)
                     if raise_errors:
                         raise exc
                     return False
