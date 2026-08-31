@@ -32,6 +32,7 @@ class FlagJSONField(JSONDictField):
             # Exclude any system flags that aren't modifiable
             if _flag.visibility == "system":
                 new_value.pop(_flag.key, None)
+                continue
             # Explicitly present unset flags as if they were set to default
             if _flag.key not in new_value:
                 new_value[_flag.key] = _flag.default
