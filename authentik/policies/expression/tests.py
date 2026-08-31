@@ -111,6 +111,25 @@ class TestEvaluator(TestCase):
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 
+    def test_call_policy_kwargs_pollute(self):
+        """test ak_call_policy"""
+        expr = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression="return context.get('subkey', False)",
+        )
+        expr2 = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression=f"""
+            ak_message(ak_call_policy('{expr.name}', subkey=True).passing)
+            ak_message(ak_call_policy('{expr.name}').passing)
+            """,
+        )
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        res = proc.profiling_wrapper()
+        self.assertEqual(res.messages, (True, False))
+
     def test_call_policy_test_like(self):
         """test ak_call_policy without `obj` set, as if it was when testing policies"""
         expr = ExpressionPolicy.objects.create(
