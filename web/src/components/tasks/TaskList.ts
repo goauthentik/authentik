@@ -52,7 +52,7 @@ export class TaskList extends Table<Task> {
     expandable = true;
     clearOnRefresh = true;
 
-    @property()
+    @property({ type: Array })
     taskIds?: string[];
 
     @property()
