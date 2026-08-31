@@ -13,8 +13,7 @@ from yaml import load
 try:
     import readline
 except ImportError:  # pragma: no cover
-    # The production image ships no libreadline. Line editing and history are a
-    # convenience for this interactive command, so degrade instead of failing.
+    # There's no libreadline in the production image, degrade instead of failing
     readline = None
 
 from authentik.blueprints.v1.common import BlueprintLoader, EntryInvalidError
