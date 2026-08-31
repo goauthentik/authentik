@@ -85,7 +85,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
 FROM ghcr.io/astral-sh/uv:0.12.7@sha256:95f2aa1fe59274951cfe9b0cbc7972e879ff1004bc8945d130a32eb0dbd85945 AS uv
 # Stage: Base python image
 # TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
-FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:9f7cb71b77da3d38b3c7b77bb1cd913e9db90270137321771e97d25b9d07e8e8 AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips-pr-178@sha256:395b057183f7e567f3cef6b06e7dffd5e10b7e8bedb94866b613449e1ca5ab28 AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
