@@ -61,7 +61,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 
 # Stage: download Rust toolchain
 # TEMPORARY: pinned to goauthentik/fips#178 (remove wget/curl). Revert before merge.
-FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:e048842e22989f2c0eaa7029d8a3d662a816504b0a9275917b5832a02e8cecda AS rust-toolchain
+FROM ghcr.io/goauthentik/fips-debian:trixie-slim-fips-pr-178@sha256:cd66513ddc1a2735f120db27add7dffa409f601fec3ec813a69bba9b126e845e AS rust-toolchain
 
 ARG TARGETARCH
 ARG TARGETVARIANT
