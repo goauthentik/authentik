@@ -86,7 +86,7 @@ The source collects its groups before any property mapping runs, and mapping res
 return {"groups": None}
 ```
 
-This only stops groups from being imported. authentik reconciles source-linked memberships on every login, so the user is still removed from the groups that source created or linked.
+This stops groups from being imported. However, authentik reconciles source-linked memberships on every login, so users are still removed from groups that were created by or linked through the source.
 
 #### Object-shaped OpenID Connect group claims
 
