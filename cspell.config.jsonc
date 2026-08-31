@@ -8,64 +8,64 @@
     "cache": {
         "useCache": true,
         "cacheLocation": "./.cspellcache",
-        "cacheStrategy": "content"
+        "cacheStrategy": "content",
     },
     "reporters": [
         "default",
         [
             "@cspell/cspell-json-reporter",
             {
-                "outFile": "./cspell-report.json"
-            }
-        ]
+                "outFile": "./cspell-report.json",
+            },
+        ],
     ],
     "dictionaryDefinitions": [
         {
             "name": "en-x-authentik-software-terms",
             "path": "./locale/en/dictionaries/software-terms.txt",
             "description": "English software-related terms",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-idp",
             "path": "./locale/en/dictionaries/idp.txt",
             "description": "English IdP words",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-python",
             "path": "./locale/en/dictionaries/python.txt",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-rust",
             "path": "./locale/en/dictionaries/rust.txt",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-golang",
             "path": "./locale/en/dictionaries/golang.txt",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-people",
             "path": "./locale/en/dictionaries/people.txt",
             "description": "People names relevant to authentik",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-integrations",
             "path": "./locale/en/dictionaries/integrations.txt",
             "description": "English integration names",
-            "addWords": true
+            "addWords": true,
         },
         {
             "name": "en-x-authentik-ignore",
             "path": "./locale/en/dictionaries/ignore.txt",
             "description": "English ignore list for authentik",
             "addWords": true,
-            "noSuggest": true
-        }
+            "noSuggest": true,
+        },
     ],
     "dictionaries": [
         "en-x-authentik-software-terms",
@@ -78,7 +78,7 @@
         "software-tools",
         "computing-acronyms",
         "companies",
-        "cpp-compound-words"
+        "cpp-compound-words",
     ],
     "allowCompoundWords": true,
     // British spellings to reject in favor of American variants. The `->` form
@@ -155,19 +155,19 @@
         "programme->program",
         "grey->gray",
         "artefact->artifact",
-        "artefacts->artifacts"
+        "artefacts->artifacts",
     ],
     "patterns": [
         {
             "name": "EncodedURI",
             "description": "Encoded URIs, which are common in authentik's codebase and often contain many false positives.",
-            "pattern": "[a-zA-Z]+%3A%2F%2F.+"
+            "pattern": "[a-zA-Z]+%3A%2F%2F.+",
         },
         {
             "name": "ConfSuffix",
             "description": "Variables with `conf` or `config` suffix",
-            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"]
-        }
+            "pattern": ["\\w+(conf|config)\\b", "\\b(conf|config)\\w+"],
+        },
     ],
     "ignoreRegExpList": [
         // DB Migrations
@@ -221,7 +221,10 @@
         "Urls",
         "analyse-phase", // UK Spelling
         "href",
-        "lit-analyse" // UK Spelling
+        "lit-analyse", // UK Spelling,
+        "jqmq", // Token in the GHSA reference space
+        "fqxr", // Token in the GHSA reference space
+        "jxxj", // Token in the GHSA reference space
     ],
     "languageSettings": [
         {
@@ -229,15 +232,15 @@
             "dictionaries": [
                 "en-x-authentik-python",
                 "en-x-authentik-rust",
-                "en-x-authentik-golang"
+                "en-x-authentik-golang",
             ],
             "ignoreRegExpList": [
                 // Fenced code blocks
                 "/^\\s*```[\\s\\S]*?^\\s*```/gm",
                 // Markdown inline codeblocks
                 "`[^`\\s]+`",
-                "`\\w+[^`]*?\\w+`"
-            ]
+                "`\\w+[^`]*?\\w+`",
+            ],
         },
         {
             "languageId": "typescript,javascript,typescriptreact,javascriptreact,mdx,astro",
@@ -255,37 +258,37 @@
                 "js-hex-escape",
                 "js-unicode-escape",
                 "js-regexp-flags",
-                "js-hex-number"
-            ]
+                "js-hex-number",
+            ],
         },
         {
             "languageId": "python",
             "dictionaries": ["en-x-authentik-python"],
-            "includeRegExpList": ["comments"]
+            "includeRegExpList": ["comments"],
         },
         {
             "languageId": "rust",
-            "dictionaries": ["en-x-authentik-rust"]
+            "dictionaries": ["en-x-authentik-rust"],
         },
         {
             "languageId": "go",
-            "dictionaries": ["en-x-authentik-golang"]
+            "dictionaries": ["en-x-authentik-golang"],
         },
         {
             "languageId": "makefile,toml,yaml",
             "dictionaries": [
                 "en-x-authentik-python",
                 "en-x-authentik-rust",
-                "en-x-authentik-golang"
-            ]
+                "en-x-authentik-golang",
+            ],
         },
         {
             "languageId": "css,scss",
             "ignoreRegExpList": [
                 // data URIs, which are common in CSS and often contain many false positives.
-                "data:.+"
-            ]
-        }
+                "data:.+",
+            ],
+        },
     ],
     "ignorePaths": [
         //#region i18n
@@ -366,12 +369,12 @@
         "./data", // Media files
         "./media", // Legacy media files
         "*.{png,jpg,pdf,svg}", // Binary files
-        "*dashboard.json" // Dashboards
+        "*dashboard.json", // Dashboards
         //#endregion
     ],
     "useGitignore": true,
     "features": {
-        "weighted-suggestions": true
+        "weighted-suggestions": true,
     },
-    "failFast": false
+    "failFast": false,
 }
