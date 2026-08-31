@@ -61,6 +61,10 @@ export interface LDAPSourceSync {
     /**
      *
      */
+    groupHierarchyCount?: number;
+    /**
+     *
+     */
     userDeletionsCount?: number;
     /**
      *
@@ -115,6 +119,8 @@ export function LDAPSourceSyncFromJSONTyped(
         usersCount: json["users_count"] == null ? undefined : json["users_count"],
         groupsCount: json["groups_count"] == null ? undefined : json["groups_count"],
         membershipCount: json["membership_count"] == null ? undefined : json["membership_count"],
+        groupHierarchyCount:
+            json["group_hierarchy_count"] == null ? undefined : json["group_hierarchy_count"],
         userDeletionsCount:
             json["user_deletions_count"] == null ? undefined : json["user_deletions_count"],
         groupDeletionsCount:
@@ -139,6 +145,7 @@ export function LDAPSourceSyncToJSONTyped(
         users_count: value["usersCount"],
         groups_count: value["groupsCount"],
         membership_count: value["membershipCount"],
+        group_hierarchy_count: value["groupHierarchyCount"],
         user_deletions_count: value["userDeletionsCount"],
         group_deletions_count: value["groupDeletionsCount"],
     };

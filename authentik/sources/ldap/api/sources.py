@@ -124,6 +124,7 @@ class LDAPSourceSyncSerializer(SyncSerializer):
             "users_count",
             "groups_count",
             "membership_count",
+            "group_hierarchy_count",
             "user_deletions_count",
             "group_deletions_count",
         ]
@@ -172,8 +173,6 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     @action(
         methods=["GET"],
         detail=True,
-        pagination_class=None,
-        url_path="sync/status",
         filter_backends=[ObjectFilter],
     )
     def syncs(self, request: Request, slug: str) -> Response:

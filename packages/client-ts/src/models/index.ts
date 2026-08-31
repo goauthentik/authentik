@@ -446,6 +446,7 @@ export * from "./PaginatedLDAPOutpostConfigList";
 export * from "./PaginatedLDAPProviderList";
 export * from "./PaginatedLDAPSourceList";
 export * from "./PaginatedLDAPSourcePropertyMappingList";
+export * from "./PaginatedLDAPSourceSyncList";
 export * from "./PaginatedLicenseList";
 export * from "./PaginatedLifecycleIterationList";
 export * from "./PaginatedLifecycleRuleList";

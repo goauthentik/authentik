@@ -80,7 +80,6 @@ import {
 import { type LDAPDebug, LDAPDebugFromJSON } from "../models/LDAPDebug";
 import { type LDAPSource, LDAPSourceFromJSON } from "../models/LDAPSource";
 import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPSourceRequest";
-import { type LDAPSourceSync, LDAPSourceSyncFromJSON } from "../models/LDAPSourceSync";
 import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource";
 import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest";
 import {
@@ -119,6 +118,10 @@ import {
     type PaginatedLDAPSourceList,
     PaginatedLDAPSourceListFromJSON,
 } from "../models/PaginatedLDAPSourceList";
+import {
+    type PaginatedLDAPSourceSyncList,
+    PaginatedLDAPSourceSyncListFromJSON,
+} from "../models/PaginatedLDAPSourceSyncList";
 import {
     type PaginatedOAuthSourceList,
     PaginatedOAuthSourceListFromJSON,
@@ -1245,11 +1248,19 @@ export interface SourcesLdapRetrieveRequest {
     slug: string;
 }
 
-export interface SourcesLdapSyncStatusListRequest {
+export interface SourcesLdapSyncsListRequest {
     /**
      *
      */
     slug: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
 }
 
 export interface SourcesLdapUpdateRequest {
@@ -7481,19 +7492,27 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesLdapSyncStatusList without sending the request
+     * Creates request options for sourcesLdapSyncsList without sending the request
      */
-    async sourcesLdapSyncStatusListRequestOpts(
-        requestParameters: SourcesLdapSyncStatusListRequest,
+    async sourcesLdapSyncsListRequestOpts(
+        requestParameters: SourcesLdapSyncsListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
                 "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncStatusList().',
+                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncsList().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -7506,7 +7525,7 @@ export class SourcesApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/sources/ldap/{slug}/sync/status/`;
+        let urlPath = `/sources/ldap/{slug}/syncs/`;
         urlPath = urlPath.replace("{slug}", encodeURIComponent(String(requestParameters["slug"])));
 
         return {
@@ -7520,26 +7539,26 @@ export class SourcesApi extends runtime.BaseAPI {
     /**
      * Get provider\'s sync statuses
      */
-    async sourcesLdapSyncStatusListRaw(
-        requestParameters: SourcesLdapSyncStatusListRequest,
+    async sourcesLdapSyncsListRaw(
+        requestParameters: SourcesLdapSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<Array<LDAPSourceSync>>> {
-        const requestOptions = await this.sourcesLdapSyncStatusListRequestOpts(requestParameters);
+    ): Promise<runtime.ApiResponse<PaginatedLDAPSourceSyncList>> {
+        const requestOptions = await this.sourcesLdapSyncsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) =>
-            jsonValue.map(LDAPSourceSyncFromJSON),
+            PaginatedLDAPSourceSyncListFromJSON(jsonValue),
         );
     }
 
     /**
      * Get provider\'s sync statuses
      */
-    async sourcesLdapSyncStatusList(
-        requestParameters: SourcesLdapSyncStatusListRequest,
+    async sourcesLdapSyncsList(
+        requestParameters: SourcesLdapSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<Array<LDAPSourceSync>> {
-        const response = await this.sourcesLdapSyncStatusListRaw(requestParameters, initOverrides);
+    ): Promise<PaginatedLDAPSourceSyncList> {
+        const response = await this.sourcesLdapSyncsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
