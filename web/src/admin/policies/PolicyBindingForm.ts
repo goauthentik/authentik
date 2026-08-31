@@ -193,9 +193,6 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const policies = await aki(PoliciesApi).policiesAllList(args);
-                        // The list is paginated, so the currently-bound policy may not appear on
-                        // the first page. Merge it in so it renders as selected without the user
-                        // having to search for it first.
                         const selectedPolicy = this.instance?.policyObj;
                         if (
                             selectedPolicy &&
@@ -232,10 +229,6 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const groups = await aki(CoreApi).coreGroupsList(args);
-                        // The list is paginated, so the currently-bound group may not appear on
-                        // the first page. Merge it in so it renders as selected without the user
-                        // having to search for it first. The binding carries a PartialGroup, which
-                        // exposes every field this selector reads (pk, name).
                         const selectedGroup = this.instance?.groupObj;
                         if (
                             selectedGroup &&
@@ -273,10 +266,6 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
-                        // The list is paginated, so the currently-bound user may not appear on
-                        // the first page. Merge it in so it renders as selected without the user
-                        // having to search for it first. The binding carries a PartialUser, which
-                        // exposes every field this selector reads (pk, username, name).
                         const selectedUser = this.instance?.userObj;
                         if (
                             selectedUser &&
