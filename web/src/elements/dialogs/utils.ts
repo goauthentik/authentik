@@ -10,6 +10,7 @@ import { DialogInit } from "#elements/dialogs/shared";
 import { RouteChangeEvent } from "#elements/router/events";
 import { ifPresent } from "#elements/utils/attributes";
 
+import { msg } from "@lit/localize";
 import { html, render } from "lit";
 
 //#region Rendering
@@ -160,9 +161,92 @@ export function renderDialog(
  */
 export function renderModal(renderable: unknown, init?: DialogInit): Promise<void> {
     return renderDialog(
-        html`<ak-modal size=${ifPresent(init?.size)}>${renderable}</ak-modal>`,
+        html`<ak-modal size=${ifPresent(init?.size)} headline=${ifPresent(init?.headline)}
+            >${renderable}</ak-modal
+        >`,
         init,
     );
+}
+
+export interface ConfirmationInit extends DialogInit {
+    /** Label of the confirming button, e.g. "Rotate". */
+    action: string;
+}
+
+/**
+ * Renders a confirmation for a destructive action, running `confirm` when the person accepts.
+ *
+ * @remarks
+ * A rejected `confirm` leaves the dialog open so the person can try again; reporting it is the
+ * caller's job, since only the caller knows what failed.
+ *
+ * While `confirm` is running the dialog cannot be dismissed or accepted again, so the returned
+ * value always describes what actually happened.
+ *
+ * @returns Whether the action ran and succeeded.
+ */
+export function renderConfirmation(
+    body: unknown,
+    confirm: () => Promise<unknown>,
+    { action, ...init }: ConfirmationInit,
+): Promise<boolean> {
+    let confirmed = false;
+    let pending = false;
+
+    const dialogOf = (event: Event) => (event.currentTarget as HTMLElement).closest("dialog");
+
+    const accept = (event: Event) => {
+        // Read the dialog before awaiting: event targets inside a shadow tree are cleared once
+        // dispatch finishes.
+        const dialog = dialogOf(event);
+
+        // A second run would leave the caller holding whichever response landed last, which need
+        // not be the one the action settled on.
+        if (pending) return;
+        pending = true;
+
+        // Dismissing while the action is in flight would report it as declined, even though it
+        // has already taken effect.
+        const actions = dialog?.querySelectorAll<HTMLButtonElement>('button[slot="actions"]');
+        const closedBy = dialog?.closedBy;
+
+        actions?.forEach((button) => (button.disabled = true));
+
+        if (dialog) dialog.closedBy = "none";
+
+        const release = () => {
+            pending = false;
+            actions?.forEach((button) => (button.disabled = false));
+
+            if (dialog && closedBy) dialog.closedBy = closedBy;
+        };
+
+        return confirm().then(
+            () => {
+                confirmed = true;
+                release();
+                dialog?.close();
+            },
+            // Reported by the caller; the dialog stays open for another try.
+            release,
+        );
+    };
+
+    return renderModal(
+        html`<div class="pf-c-content">${body}</div>
+            <button
+                slot="actions"
+                type="button"
+                class="pf-c-button pf-m-link"
+                @click=${(event: Event) => dialogOf(event)?.close()}
+            >
+                ${msg("Cancel", { id: "common.actions.cancel.label" })}
+            </button>
+            <button slot="actions" type="button" class="pf-c-button pf-m-danger" @click=${accept}>
+                ${action}
+            </button>`,
+        init,
+    ).then(() => confirmed);
 }
 
 //#endregion

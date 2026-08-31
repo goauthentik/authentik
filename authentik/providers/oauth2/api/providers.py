@@ -32,6 +32,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import is_all_vschar
 from authentik.rbac.decorators import permission_required
+from authentik.secrets.models import Secret
 
 
 class RedirectURISerializer(PassiveSerializer):
@@ -54,8 +55,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             raise ValidationError("Client ID must consist of only ASCII characters.")
         return secret
 
-    def validate_client_secret(self, secret: str) -> str:
-        if not is_all_vschar(secret):
+    def validate_secret(self, secret: Secret) -> Secret:
+        if not is_all_vschar(secret.get_value()):
             raise ValidationError("Client secret must consist of only ASCII characters.")
         return secret
 
@@ -78,7 +79,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_type",
             "grant_types",
             "client_id",
-            "client_secret",
+            "secret",
             "access_code_validity",
             "access_token_validity",
             "refresh_token_validity",

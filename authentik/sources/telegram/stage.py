@@ -16,7 +16,7 @@ class TelegramChallengeResponse(TelegramAuth, ChallengeResponse):
     component = CharField(default="ak-source-telegram")
 
     def get_bot_token(self) -> str:
-        return self.stage.source.bot_token
+        return self.stage.source.secret.get_value()
 
     def validate(self, attrs: dict) -> dict:
         attrs_to_check = attrs.copy()

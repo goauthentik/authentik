@@ -12,6 +12,7 @@ from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
+from authentik.secrets.tests.utils import create_test_secret
 
 
 @patch("authentik.providers.scim.clients.base.SCIMClient.can_discover", False)
@@ -25,7 +26,7 @@ class SCIMClientTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
         )
         self.app: Application = Application.objects.create(
             name=generate_id(),

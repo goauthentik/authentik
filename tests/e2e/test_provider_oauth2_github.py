@@ -19,6 +19,7 @@ from authentik.providers.oauth2.models import (
     RedirectURI,
     RedirectURIMatchingMode,
 )
+from authentik.secrets.tests.utils import create_test_secret
 from tests.decorators import retry
 from tests.selenium import SeleniumTestCase
 
@@ -78,7 +79,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
@@ -136,7 +137,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
@@ -210,7 +211,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=self.client_id,
-            client_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
             client_type=ClientType.CONFIDENTIAL,
             redirect_uris=[
                 RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")

@@ -25,6 +25,8 @@ import {
     FlowDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
+    ResponseError,
+    SecretsApi,
     SourcesApi,
     UsageEnum,
     UserMatchingModeEnum,
@@ -41,13 +43,26 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         const source = await aki(SourcesApi).sourcesPlexRetrieve({
             slug: pk,
         });
-        this.plexToken = source.plexToken;
-        this.loadServers();
+        if (source.secret) {
+            try {
+                const { value } = await aki(SecretsApi).secretsSecretsViewValueRetrieve({
+                    secretUuid: source.secret,
+                });
+                this.plexToken = value;
+                this.initialToken = value;
+                this.loadServers();
+            } catch {
+                // Without permission to view the secret's value, re-authentication with
+                // Plex is required before servers can be listed.
+            }
+        }
         return source;
     }
 
     @property()
     plexToken?: string;
+
+    private initialToken?: string;
 
     @property({ attribute: false })
     plexResources?: PlexResource[];
@@ -59,7 +74,12 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     async send(data: PlexSource): Promise<PlexSource> {
-        data.plexToken = this.plexToken || "";
+        if (this.instance?.secret) {
+            data.secret = this.instance.secret;
+        }
+        if (this.plexToken && this.plexToken !== this.initialToken) {
+            data.secret = await this.saveTokenSecret(data.name || this.instance?.name || "Plex");
+        }
         if (this.instance?.pk) {
             return aki(SourcesApi).sourcesPlexUpdate({
                 slug: this.instance.slug,
@@ -70,6 +90,46 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         return aki(SourcesApi).sourcesPlexCreate({
             plexSourceRequest: data,
         });
+    }
+
+    // A secret created for a not-yet-saved source, so a retry after a failed source
+    // save reuses it instead of leaving an orphan and creating another.
+    private createdSecretPk?: string;
+
+    /**
+     * Store the token from the Plex popup in a secret: update the source's existing one,
+     * reuse a secret already created this session, or create one named after the source
+     * (suffixing the name only when that specific name is taken).
+     */
+    private async saveTokenSecret(sourceName: string): Promise<string> {
+        const target = this.instance?.secret ?? this.createdSecretPk;
+        if (target) {
+            await aki(SecretsApi).secretsSecretsPartialUpdate({
+                secretUuid: target,
+                patchedSecretRequest: { value: this.plexToken },
+            });
+            return target;
+        }
+        const base = `${sourceName} Plex token`;
+        for (let idx = 1; ; idx++) {
+            const name = idx === 1 ? base : `${base} (${idx})`;
+            try {
+                const secret = await aki(SecretsApi).secretsSecretsCreate({
+                    secretRequest: { name, value: this.plexToken },
+                });
+                this.createdSecretPk = secret.pk;
+                return secret.pk;
+            } catch (error) {
+                let body: unknown;
+                if (error instanceof ResponseError && error.response.status === 400) {
+                    body = await error.response.clone().json();
+                }
+                const nameTaken = typeof body === "object" && body !== null && "name" in body;
+                if (!nameTaken) {
+                    throw error;
+                }
+            }
+        }
     }
 
     async doAuth(): Promise<void> {

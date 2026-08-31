@@ -1,4 +1,4 @@
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
@@ -9,6 +9,7 @@ import "#admin/common/ak-crypto-certificate-search";
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import { ifPresent } from "#elements/utils/attributes";
 
 import {
     EventsApi,
@@ -139,15 +140,18 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-hidden-text-input
-                name="webhookUrl"
+            <ak-secret-search-input
+                name="secret"
                 label=${msg("Webhook URL")}
-                value="${this.instance?.webhookUrl || ""}"
-                input-hint="code"
-                ?hidden=${!this.showWebhook}
+                value=${ifPresent(this.instance?.secret ?? undefined)}
+                blankable
                 ?required=${this.showWebhook}
-            >
-            </ak-hidden-text-input>
+                ?hidden=${!this.showWebhook}
+                help=${msg(
+                    "URL the notification is sent to. Create or select the secret holding the value.",
+                    { id: "event.transport.form.secret.description" },
+                )}
+            ></ak-secret-search-input>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook Certificate Authority")}

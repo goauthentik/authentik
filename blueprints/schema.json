@@ -3064,6 +3064,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_secrets.secret"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_secrets.secret_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_secrets.secret"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_secrets.secret"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_sources_kerberos.groupkerberossourceconnection"
                         },
                         "id": {
@@ -6242,6 +6282,12 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_secrets.add_secret",
+                            "authentik_secrets.change_secret",
+                            "authentik_secrets.delete_secret",
+                            "authentik_secrets.rotate_secret",
+                            "authentik_secrets.view_secret",
+                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -7636,6 +7682,12 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_secrets.add_secret",
+                            "authentik_secrets.change_secret",
+                            "authentik_secrets.delete_secret",
+                            "authentik_secrets.rotate_secret",
+                            "authentik_secrets.view_secret",
+                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -8551,10 +8603,10 @@
                     "minLength": 1,
                     "title": "Url"
                 },
-                "token": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Token"
+                    "format": "uuid",
+                    "title": "Fleet API Token"
                 },
                 "headers_mapping": {
                     "type": "string",
@@ -9197,10 +9249,10 @@
                     "minLength": 1,
                     "title": "Client id"
                 },
-                "client_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Client secret"
+                    "format": "uuid",
+                    "title": "Client Secret"
                 },
                 "tenant_id": {
                     "type": "string",
@@ -10439,9 +10491,10 @@
                     ],
                     "title": "Mode"
                 },
-                "webhook_url": {
+                "secret": {
                     "type": "string",
-                    "title": "Webhook url"
+                    "format": "uuid",
+                    "title": "Webhook URL"
                 },
                 "webhook_ca": {
                     "type": "string",
@@ -11074,6 +11127,7 @@
                         "authentik.api",
                         "authentik.core",
                         "authentik.crypto",
+                        "authentik.secrets",
                         "authentik.endpoints",
                         "authentik.endpoints.connectors.agent",
                         "authentik.enterprise",
@@ -11169,6 +11223,7 @@
                         "authentik_core.objectattribute",
                         "authentik_core.actor",
                         "authentik_crypto.certificatekeypair",
+                        "authentik_secrets.secret",
                         "authentik_endpoints.deviceuserbinding",
                         "authentik_endpoints.deviceaccessgroup",
                         "authentik_endpoints.endpointstage",
@@ -12304,9 +12359,9 @@
                     "minLength": 1,
                     "title": "Client ID"
                 },
-                "client_secret": {
+                "secret": {
                     "type": "string",
-                    "maxLength": 255,
+                    "format": "uuid",
                     "title": "Client Secret"
                 },
                 "access_code_validity": {
@@ -12923,10 +12978,10 @@
                     "title": "Client networks",
                     "description": "List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped."
                 },
-                "shared_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Shared secret",
+                    "format": "uuid",
+                    "title": "Shared Secret",
                     "description": "Shared secret between clients and server to hash packets."
                 },
                 "mfa_support": {
@@ -13386,8 +13441,9 @@
                     "type": "boolean",
                     "title": "Verify certificates"
                 },
-                "token": {
+                "secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Token",
                     "description": "Authentication token"
                 },
@@ -14136,6 +14192,12 @@
                             "authentik_requests.view_requestrulebinding",
                             "authentik_requests.view_requestrulechildbinding",
                             "authentik_requests.view_requestrulenotificationtransport",
+                            "authentik_secrets.add_secret",
+                            "authentik_secrets.change_secret",
+                            "authentik_secrets.delete_secret",
+                            "authentik_secrets.rotate_secret",
+                            "authentik_secrets.view_secret",
+                            "authentik_secrets.view_secret_value",
                             "authentik_sources_kerberos.add_groupkerberossourceconnection",
                             "authentik_sources_kerberos.add_kerberossource",
                             "authentik_sources_kerberos.add_kerberossourcepropertymapping",
@@ -14477,6 +14539,58 @@
                 }
             }
         },
+        "model_authentik_secrets.secret": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "text",
+                        "multiline",
+                        "file"
+                    ],
+                    "title": "Type"
+                },
+                "value": {
+                    "type": "string",
+                    "title": "Value"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_secrets.secret_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_secret",
+                            "change_secret",
+                            "delete_secret",
+                            "rotate_secret",
+                            "view_secret",
+                            "view_secret_value"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_sources_kerberos.groupkerberossourceconnection": {
             "type": "object",
             "properties": {
@@ -14645,8 +14759,9 @@
                     "title": "Sync principal",
                     "description": "Principal to authenticate to kadmin for sync."
                 },
-                "sync_password": {
+                "secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Sync password",
                     "description": "Password to authenticate to kadmin for sync"
                 },
@@ -14956,8 +15071,9 @@
                     "type": "string",
                     "title": "Bind CN"
                 },
-                "bind_password": {
+                "secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Bind password"
                 },
                 "start_tls": {
@@ -15384,9 +15500,9 @@
                     "minLength": 1,
                     "title": "Consumer key"
                 },
-                "consumer_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Consumer secret"
                 },
                 "additional_scopes": {
@@ -15703,9 +15819,9 @@
                     "title": "Allow friends",
                     "description": "Allow friends to authenticate, even if you don't share a server."
                 },
-                "plex_token": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Plex token",
                     "description": "Plex token used to check friends"
                 }
@@ -16454,9 +16570,9 @@
                     "title": "Bot username",
                     "description": "Telegram bot username"
                 },
-                "bot_token": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Bot token",
                     "description": "Telegram bot token"
                 },
@@ -16616,9 +16732,9 @@
                     "minLength": 1,
                     "title": "Client id"
                 },
-                "client_secret": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Client secret"
                 },
                 "api_hostname": {
@@ -16630,8 +16746,9 @@
                     "type": "string",
                     "title": "Admin integration key"
                 },
-                "admin_secret_key": {
+                "admin_secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Admin secret key"
                 }
             },
@@ -16740,9 +16857,10 @@
                     "type": "string",
                     "title": "Username"
                 },
-                "password": {
+                "secret": {
                     "type": "string",
-                    "title": "Password"
+                    "format": "uuid",
+                    "title": "SMTP password"
                 },
                 "use_tls": {
                     "type": "boolean",
@@ -16885,13 +17003,14 @@
                     "minLength": 1,
                     "title": "Account sid"
                 },
-                "auth": {
+                "auth_secret": {
                     "type": "string",
-                    "minLength": 1,
-                    "title": "Auth"
+                    "format": "uuid",
+                    "title": "Auth token"
                 },
-                "auth_password": {
+                "auth_password_secret": {
                     "type": "string",
+                    "format": "uuid",
                     "title": "Auth password"
                 },
                 "auth_type": {
@@ -17455,9 +17574,9 @@
                     "title": "Public key",
                     "description": "Public key, acquired your captcha Provider."
                 },
-                "private_key": {
+                "secret": {
                     "type": "string",
-                    "minLength": 1,
+                    "format": "uuid",
                     "title": "Private key",
                     "description": "Private key, acquired your captcha Provider."
                 },
@@ -17687,9 +17806,10 @@
                     "type": "string",
                     "title": "Username"
                 },
-                "password": {
+                "secret": {
                     "type": "string",
-                    "title": "Password"
+                    "format": "uuid",
+                    "title": "SMTP password"
                 },
                 "use_tls": {
                     "type": "boolean",

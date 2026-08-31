@@ -63,8 +63,16 @@ class OAuthSource(NonCreatableType, Source):
         default="", blank=True, verbose_name=_("Additional Scopes")
     )
     consumer_key = models.TextField()
-    consumer_secret = models.TextField()
-
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Consumer secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="oauth_sources",
+    )
+    _consumer_secret = models.TextField(db_column="consumer_secret")
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)

@@ -37,7 +37,7 @@ class SCIMProviderSerializer(
             "meta_model_name",
             "url",
             "verify_certificates",
-            "token",
+            "secret",
             "auth_mode",
             "auth_oauth",
             "auth_oauth_params",

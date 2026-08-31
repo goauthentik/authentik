@@ -64,7 +64,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret + "foo",
+                "client_secret": self.provider.secret.get_value() + "foo",
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -87,7 +87,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -114,7 +114,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": SCOPE_OPENID,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -135,7 +135,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE} extra_scope",
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -177,7 +177,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -213,7 +213,7 @@ class TestTokenClientCredentialsStandard(OAuthTestCase):
                 "grant_type": GRANT_TYPE_PASSWORD,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 200)

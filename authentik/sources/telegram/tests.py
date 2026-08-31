@@ -15,6 +15,7 @@ from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.telegram.models import UserTelegramSourceConnection
 from authentik.sources.telegram.stage import TelegramChallengeResponse
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -24,7 +25,7 @@ class MockTelegramResponseMixin:
     def _add_hash(self, response):
         to_hash = "\n".join([f"{key}={value}" for key, value in sorted(response.items())])
         response["hash"] = hmac.new(
-            hashlib.sha256(self.source.bot_token.encode("utf-8")).digest(),
+            hashlib.sha256(self.source.secret.get_value().encode("utf-8")).digest(),
             to_hash.encode("utf-8"),
             "sha256",
         ).hexdigest()
@@ -57,7 +58,7 @@ class TestTelegramSource(MockTelegramResponseMixin, TestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            bot_token="modern_token",  # nosec
+            secret=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -128,7 +129,7 @@ class TestTelegramViews(MockTelegramResponseMixin, FlowTestCase):
             name="test",
             slug="test",
             bot_username="test_bot",
-            bot_token="modern_token",  # nosec
+            secret=create_test_secret("modern_token"),  # nosec
             request_message_access=True,
             enrollment_flow=create_test_flow(),
             pre_authentication_flow=self.pre_auth_flow,

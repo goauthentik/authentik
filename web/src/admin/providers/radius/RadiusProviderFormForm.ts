@@ -3,7 +3,7 @@ import "#components/ak-switch-input";
 import "#admin/common/ak-crypto-certificate-search";
 import "#admin/common/ak-flow-search/ak-branded-flow-search";
 import "#admin/common/ak-flow-search/ak-flow-search";
-import "#components/ak-hidden-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-text-input";
 import "#elements/forms/FormGroup";
 import "#elements/forms/HorizontalFormElement";
@@ -11,8 +11,6 @@ import "#elements/forms/SearchSelect/index";
 import "#elements/LicenseNotice";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RadiusProviderFormHelpers.js";
-
-import { ascii_letters, digits, randomString } from "#common/utils";
 
 import { ifPresent } from "#elements/utils/attributes";
 
@@ -91,14 +89,20 @@ export function renderForm({ provider, errors, brand }: RADIUSProviderFormProps)
 
         <ak-form-group open label="${msg("Protocol settings")}">
             <div class="pf-c-form">
-                <ak-hidden-text-input
-                    name="sharedSecret"
+                <ak-secret-search-input
+                    name="secret"
                     label=${msg("Shared secret")}
-                    .errorMessages=${errors.sharedSecret}
-                    value=${provider.sharedSecret ?? randomString(128, ascii_letters + digits)}
-                    required
-                    input-hint="code"
-                ></ak-hidden-text-input>
+                    value=${ifPresent(provider.secret)}
+                    blankable
+                    help=${provider.pk
+                        ? msg("Secret between clients and server to hash packets.", {
+                              id: "provider.radius.form.secret.description.edit",
+                          })
+                        : msg(
+                              "Secret between clients and server to hash packets. Leave empty to create one for this provider.",
+                              { id: "provider.radius.form.secret.description.create" },
+                          )}
+                ></ak-secret-search-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}

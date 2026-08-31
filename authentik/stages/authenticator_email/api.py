@@ -22,7 +22,7 @@ class AuthenticatorEmailStageSerializer(StageSerializer):
             "host",
             "port",
             "username",
-            "password",
+            "secret",
             "use_tls",
             "use_ssl",
             "timeout",
@@ -38,7 +38,22 @@ class AuthenticatorEmailStageViewSet(UsedByMixin, ModelViewSet):
 
     queryset = AuthenticatorEmailStage.objects.all()
     serializer_class = AuthenticatorEmailStageSerializer
-    filterset_fields = "__all__"
+    filterset_fields = [
+        "name",
+        "configure_flow",
+        "friendly_name",
+        "use_global_settings",
+        "host",
+        "port",
+        "username",
+        "use_tls",
+        "use_ssl",
+        "timeout",
+        "from_address",
+        "subject",
+        "token_expiry",
+        "template",
+    ]
     ordering = ["name"]
     search_fields = ["name"]
 

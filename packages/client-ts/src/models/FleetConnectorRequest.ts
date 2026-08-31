@@ -37,7 +37,7 @@ export interface FleetConnectorRequest {
     /**
      *
      */
-    token: string;
+    secret: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
      */
@@ -58,7 +58,7 @@ export interface FleetConnectorRequest {
 export function instanceOfFleetConnectorRequest(value: object): value is FleetConnectorRequest {
     if (!("name" in value) || value["name"] === undefined) return false;
     if (!("url" in value) || value["url"] === undefined) return false;
-    if (!("token" in value) || value["token"] === undefined) return false;
+    if (!("secret" in value) || value["secret"] === undefined) return false;
     return true;
 }
 
@@ -78,7 +78,7 @@ export function FleetConnectorRequestFromJSONTyped(
         name: json["name"],
         enabled: json["enabled"] == null ? undefined : json["enabled"],
         url: json["url"],
-        token: json["token"],
+        secret: json["secret"],
         headersMapping:
             json["headers_mapping"] === undefined
                 ? undefined
@@ -108,7 +108,7 @@ export function FleetConnectorRequestToJSONTyped(
         name: value["name"],
         enabled: value["enabled"],
         url: value["url"],
-        token: value["token"],
+        secret: value["secret"],
         headers_mapping: value["headersMapping"],
         map_users: value["mapUsers"],
         map_teams_access_group: value["mapTeamsAccessGroup"],

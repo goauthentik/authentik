@@ -83,23 +83,6 @@ class TestAPI(APITestCase):
             {"client_id": ["Client ID must consist of only ASCII characters."]},
         )
 
-    def test_validate_client_secret(self):
-        """Test redirect_uris API"""
-        response = self.client.post(
-            reverse("authentik_api:oauth2provider-list"),
-            data={
-                "name": generate_id(),
-                "authorization_flow": create_test_flow().pk,
-                "invalidation_flow": create_test_flow().pk,
-                "client_secret": "ú",
-                "redirect_uris": [],
-            },
-        )
-        self.assertJSONEqual(
-            response.content,
-            {"client_secret": ["Client secret must consist of only ASCII characters."]},
-        )
-
     def test_validate_redirect_uris(self):
         """Test redirect_uris API"""
         response = self.client.post(

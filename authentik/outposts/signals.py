@@ -1,6 +1,11 @@
 """authentik outpost signals"""
 
+from functools import partial
+from uuid import UUID
+
 from django.core.cache import cache
+from django.db import transaction
+from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -15,6 +20,7 @@ from authentik.outposts.tasks import (
     outpost_send_update,
     outpost_session_end,
 )
+from authentik.secrets.models import Secret, secret_value_changed
 
 LOGGER = get_logger()
 
@@ -146,6 +152,33 @@ def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Bra
 
 post_save.connect(outpost_reverse_related_post_save, sender=Brand, weak=False)
 post_save.connect(outpost_reverse_related_post_save, sender=CertificateKeyPair, weak=False)
+
+
+@receiver(secret_value_changed, sender=Secret)
+def outpost_secret_value_changed(sender, secret: Secret, **_):
+    """Send new credentials to affected outposts after the database commit."""
+    transaction.on_commit(partial(_send_outpost_updates_for_secret, secret))
+
+
+def _send_outpost_updates_for_secret(secret: Secret) -> None:
+    """Find outpost providers with direct or inherited references to a Secret."""
+    outpost_ids: set[UUID] = set()
+    for provider_model in OutpostModel.__subclasses__():
+        query = Q()
+        for field in provider_model._meta.concrete_fields:
+            if field.many_to_one and field.related_model is Secret:
+                query |= Q(**{field.name: secret})
+        if not query:
+            continue
+        for provider in provider_model.objects.filter(query):
+            outpost_ids.update(provider.outpost_set.values_list("pk", flat=True))
+
+    for outpost in Outpost.objects.filter(pk__in=outpost_ids):
+        outpost_send_update.send_with_options(
+            args=(outpost.pk,),
+            rel_obj=outpost,
+            uid=outpost.name,
+        )
 
 
 @receiver(pre_delete, sender=Outpost)

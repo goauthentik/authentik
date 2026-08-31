@@ -1,6 +1,7 @@
 """proxy provider tests"""
 
 from json import loads
+from unittest.mock import patch
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -19,6 +20,21 @@ class ProxyProviderTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
+
+    def test_secret_rotation_triggers_outpost_update(self):
+        """Inherited OAuth secret fields still notify Proxy outposts."""
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        provider = ProxyProvider.objects.create(name=generate_id())
+        outpost.providers.add(provider)
+
+        with patch("authentik.outposts.signals.outpost_send_update.send_with_options") as sender:
+            with self.captureOnCommitCallbacks(execute=True):
+                provider.secret.rotate()
+
+        self.assertTrue(
+            any(call.kwargs.get("args") == (outpost.pk,) for call in sender.call_args_list),
+            sender.call_args_list,
+        )
 
     def test_basic_auth(self):
         """Test basic_auth_enabled"""

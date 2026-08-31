@@ -36,8 +36,11 @@ class PlexSourceSerializer(SourceSerializer):
             "client_id",
             "allowed_servers",
             "allow_friends",
-            "plex_token",
+            "secret",
         ]
+        extra_kwargs = {
+            "secret": {"required": True, "allow_null": False},
+        }
 
 
 class PlexTokenRedeemSerializer(PassiveSerializer):
@@ -106,7 +109,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.plex_token)
+            owner_api = PlexAuth(source, source.secret.get_value())
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):
@@ -165,7 +168,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.plex_token)
+            owner_api = PlexAuth(source, source.secret.get_value())
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):

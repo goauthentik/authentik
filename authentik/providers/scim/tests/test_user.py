@@ -15,6 +15,7 @@ from authentik.lib.sync.outgoing.exceptions import TransientSyncException
 from authentik.providers.scim.clients.users import SCIMUserClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser
 from authentik.providers.scim.tasks import scim_sync, scim_sync_objects, sync_tasks
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.tasks.models import Task
 from authentik.tenants.models import Tenant
 
@@ -33,7 +34,7 @@ class SCIMUserTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         self.app: Application = Application.objects.create(
@@ -164,7 +165,7 @@ class SCIMUserTests(TestCase):
         provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             exclude_users_service_account=True,
         )
         app: Application = Application.objects.create(

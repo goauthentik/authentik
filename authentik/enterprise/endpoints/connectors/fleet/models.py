@@ -15,7 +15,17 @@ class FleetConnector(Connector):
     """Ingest device data and policy compliance from a Fleet instance."""
 
     url = models.URLField()
-    token = models.TextField()
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Fleet API Token"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="fleet_connectors",
+    )
+    _token = models.TextField(db_column="token")
+
     headers_mapping = models.ForeignKey(
         "authentik_events.NotificationWebhookMapping",
         on_delete=models.SET_DEFAULT,

@@ -1,5 +1,5 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-secret-textarea-input";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
@@ -17,6 +17,7 @@ import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSo
 import { aki } from "#common/api/client";
 
 import { RadioOption } from "#elements/forms/Radio";
+import { ifPresent } from "#elements/utils/attributes";
 
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -248,14 +249,16 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         value=${ifDefined(this.instance?.syncPrincipal)}
                         help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
-                    <ak-secret-text-input
-                        name="syncPassword"
+                    <ak-secret-search-input
+                        name="secret"
                         label=${msg("Sync password")}
-                        ?revealed=${!this.instance}
+                        value=${ifPresent(this.instance?.secret)}
+                        blankable
                         help=${msg(
-                            "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
+                            "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided. Create or select the secret holding the value.",
+                            { id: "source.kerberos.form.secret.description" },
                         )}
-                    ></ak-secret-text-input>
+                    ></ak-secret-search-input>
                     <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}

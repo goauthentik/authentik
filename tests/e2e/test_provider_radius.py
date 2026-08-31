@@ -13,6 +13,7 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
+from authentik.secrets.tests.utils import create_test_secret
 from tests.decorators import retry
 from tests.live import E2ETestCase
 
@@ -39,7 +40,7 @@ class TestProviderRadius(E2ETestCase):
         radius: RadiusProvider = RadiusProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            shared_secret=self.shared_secret,
+            secret=create_test_secret(self.shared_secret),
         )
         # we need to create an application to actually access radius
         Application.objects.create(name=generate_id(), slug=generate_id(), provider=radius)

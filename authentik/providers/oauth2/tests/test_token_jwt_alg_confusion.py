@@ -37,6 +37,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.jwks import JWKSView
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource
 
 
@@ -58,7 +59,7 @@ class TestTokenJWTAlgConfusion(OAuthTestCase):
             slug=generate_id(),
             provider_type="openidconnect",
             consumer_key=generate_id(),
-            consumer_secret=generate_id(),
+            secret=create_test_secret(generate_id()),
             authorization_url="http://foo",
             access_token_url=f"http://{generate_id()}",
             profile_url="http://foo",

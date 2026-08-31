@@ -49,15 +49,15 @@ class TestOpenIDConformance(SSLLiveMixin, SeleniumTestCase):
             },
             "client": {
                 "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
-                "client_secret": provider_a.client_secret,
+                "client_secret": provider_a.secret.get_value(),
             },
             "client_secret_post": {
                 "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
-                "client_secret": provider_a.client_secret,
+                "client_secret": provider_a.secret.get_value(),
             },
             "client2": {
                 "client_id": "ad64aeaf1efe388ecf4d28fcc537e8de08bcae26",
-                "client_secret": provider_b.client_secret,
+                "client_secret": provider_b.secret.get_value(),
             },
             "consent": {},
         }

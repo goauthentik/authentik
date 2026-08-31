@@ -56,7 +56,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
             },
         )
@@ -75,7 +75,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
             },
@@ -116,7 +116,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
             },
@@ -136,7 +136,7 @@ class TestTokenDeviceCode(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} invalid",
@@ -163,7 +163,7 @@ class TestTokenDeviceCode(OAuthTestCase):
         """Poll the token endpoint for the given device code"""
         data = {
             "client_id": self.provider.client_id,
-            "client_secret": self.provider.client_secret,
+            "client_secret": self.provider.secret.get_value(),
             "grant_type": GRANT_TYPE_DEVICE_CODE,
             "device_code": device_code,
         }

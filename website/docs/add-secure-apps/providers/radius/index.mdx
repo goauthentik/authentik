@@ -14,6 +14,10 @@ This provider requires the deployment of a [RADIUS outpost](../../outposts/index
 
 Currently, only authentication requests are supported.
 
+### Shared secret
+
+The shared secret is a [Secret](../../../sys-mgmt/secrets/index.mdx) object. Leave the field empty on create and authentik creates one with a generated value. When the secret is [rotated](../../../sys-mgmt/secrets/rotation.mdx), the outpost picks up the new value within a few seconds, and RADIUS clients still using the old one are rejected until you update them.
+
 ### Authentication flow
 
 Authentication requests against the Radius Server use a flow in the background. This allows you to use the same flows, stages, and policies as you do for web-based logins.

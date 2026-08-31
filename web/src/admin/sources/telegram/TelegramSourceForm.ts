@@ -1,7 +1,7 @@
 import "#admin/common/ak-flow-search/ak-source-flow-search";
 import "#components/ak-slug-input";
 import "#components/ak-text-input";
-import "#components/ak-secret-text-input";
+import "#components/ak-secret-search-input";
 import "#elements/forms/Radio";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#components/ak-switch-input";
@@ -9,6 +9,8 @@ import "#components/ak-switch-input";
 import { propertyMappingsProvider, propertyMappingsSelector } from "./TelegramSourceFormHelpers.js";
 
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -119,14 +121,16 @@ export class TelegramSourceForm extends BaseSourceForm<TelegramSource> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-secret-text-input
+            <ak-secret-search-input
+                name="secret"
                 label=${msg("Bot token")}
-                name="botToken"
-                plaintext
-                input-hint="code"
-                ?required=${!this.instance}
-                ?revealed=${!this.instance}
-            ></ak-secret-text-input>
+                value=${ifPresent(this.instance?.secret)}
+                required
+                help=${msg(
+                    "Token of the Telegram bot. Create or select the secret holding the value.",
+                    { id: "source.telegram.form.secret.description" },
+                )}
+            ></ak-secret-search-input>
             <ak-switch-input
                 name="requestMessageAccess"
                 label=${msg("Request access to send messages from your bot")}

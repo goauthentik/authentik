@@ -199,6 +199,10 @@ export const ROUTES: Route[] = [
         await import("#admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
+    new Route(new RegExp("^/secrets$"), async () => {
+        await import("#admin/secrets/SecretListPage");
+        return html`<ak-secret-list></ak-secret-list>`;
+    }),
     new Route(new RegExp("^/admin/settings$"), async () => {
         await import("#admin/admin-settings/AdminSettingsPage");
         return html`<ak-admin-settings></ak-admin-settings>`;

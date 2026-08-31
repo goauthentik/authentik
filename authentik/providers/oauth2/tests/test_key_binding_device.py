@@ -70,7 +70,7 @@ class TestKeyBindingDevice(OAuthTestCase):
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
             HTTP_DPOP=self.dpop_builder.make_header(self.token_url, c_s256),
         )
@@ -109,7 +109,7 @@ class TestKeyBindingDevice(OAuthTestCase):
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
             HTTP_DPOP=self.dpop_builder.make_header(self.token_url, c_s256="wrong-hash"),
         )
@@ -131,7 +131,7 @@ class TestKeyBindingDevice(OAuthTestCase):
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_token.device_code,
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.get_value(),
             },
         )
         self.assertEqual(response.status_code, 400)
@@ -150,7 +150,7 @@ class TestKeyBindingDevice(OAuthTestCase):
             _id_token=dumps({}),
         )
         header = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.get_value()}".encode()
         ).decode()
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),

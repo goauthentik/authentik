@@ -76,11 +76,11 @@ export interface AuthenticatorSMSStage {
     /**
      *
      */
-    auth: string;
+    authSecret: string;
     /**
      *
      */
-    authPassword?: string;
+    authPasswordSecret?: string | null;
     /**
      *
      */
@@ -145,7 +145,13 @@ export function instanceOfAuthenticatorSMSStage(value: object): value is Authent
             (value as Record<string, any>)["account_sid"] === undefined)
     )
         return false;
-    if (!("auth" in value) || value["auth"] === undefined) return false;
+    if (
+        (!("authSecret" in (value as Record<string, any>)) &&
+            !("auth_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["authSecret"] === undefined &&
+            (value as Record<string, any>)["auth_secret"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -178,8 +184,13 @@ export function AuthenticatorSMSStageFromJSONTyped(
         provider: ProviderEnumFromJSON(json["provider"]),
         fromNumber: json["from_number"],
         accountSid: json["account_sid"],
-        auth: json["auth"],
-        authPassword: json["auth_password"] == null ? undefined : json["auth_password"],
+        authSecret: json["auth_secret"],
+        authPasswordSecret:
+            json["auth_password_secret"] === undefined
+                ? undefined
+                : json["auth_password_secret"] === null
+                  ? null
+                  : json["auth_password_secret"],
         authType: json["auth_type"] == null ? undefined : AuthTypeEnumFromJSON(json["auth_type"]),
         verifyOnly: json["verify_only"] == null ? undefined : json["verify_only"],
         mapping:
@@ -213,8 +224,8 @@ export function AuthenticatorSMSStageToJSONTyped(
         provider: ProviderEnumToJSON(value["provider"]),
         from_number: value["fromNumber"],
         account_sid: value["accountSid"],
-        auth: value["auth"],
-        auth_password: value["authPassword"],
+        auth_secret: value["authSecret"],
+        auth_password_secret: value["authPasswordSecret"],
         auth_type: AuthTypeEnumToJSON(value["authType"]),
         verify_only: value["verifyOnly"],
         mapping: value["mapping"],

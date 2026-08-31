@@ -50,7 +50,7 @@ export interface ProxyOutpostConfig {
     /**
      *
      */
-    clientSecret?: string;
+    readonly clientSecret: string;
     /**
      *
      */
@@ -124,6 +124,13 @@ export function instanceOfProxyOutpostConfig(value: object): value is ProxyOutpo
     )
         return false;
     if (
+        (!("clientSecret" in (value as Record<string, any>)) &&
+            !("client_secret" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["clientSecret"] === undefined &&
+            (value as Record<string, any>)["client_secret"] === undefined)
+    )
+        return false;
+    if (
         (!("oidcConfiguration" in (value as Record<string, any>)) &&
             !("oidc_configuration" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["oidcConfiguration"] === undefined &&
@@ -182,7 +189,7 @@ export function ProxyOutpostConfigFromJSONTyped(
                 ? undefined
                 : json["internal_host_ssl_validation"],
         clientId: json["client_id"] == null ? undefined : json["client_id"],
-        clientSecret: json["client_secret"] == null ? undefined : json["client_secret"],
+        clientSecret: json["client_secret"],
         oidcConfiguration: OpenIDConnectConfigurationFromJSON(json["oidc_configuration"]),
         cookieSecret: json["cookie_secret"] == null ? undefined : json["cookie_secret"],
         certificate:
@@ -221,6 +228,7 @@ export function ProxyOutpostConfigToJSONTyped(
     value?: Omit<
         ProxyOutpostConfig,
         | "pk"
+        | "clientSecret"
         | "oidcConfiguration"
         | "accessTokenValidity"
         | "scopesToRequest"
@@ -239,7 +247,6 @@ export function ProxyOutpostConfigToJSONTyped(
         external_host: value["externalHost"],
         internal_host_ssl_validation: value["internalHostSslValidation"],
         client_id: value["clientId"],
-        client_secret: value["clientSecret"],
         cookie_secret: value["cookieSecret"],
         certificate: value["certificate"],
         skip_path_regex: value["skipPathRegex"],
