@@ -1,3 +1,4 @@
+import "#elements/timestamp/ak-timestamp";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import "#components/tasks/TaskStatus";
 
@@ -6,7 +7,7 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
 
-import { LDAPSourceSync } from "@goauthentik/api";
+import { LDAPSourceSync, LDAPSourceSyncStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html } from "lit";
@@ -24,7 +25,7 @@ export class LDAPSourceStatus extends AKElement {
         };
     } | null = null;
 
-    @property()
+    @property({ attribute: false })
     lastSync?: LDAPSourceSync;
 
     static styles: CSSResult[] = [PFDescriptionList, PFList];
@@ -32,44 +33,59 @@ export class LDAPSourceStatus extends AKElement {
     render(): SlottedTemplateResult {
         return html`
             ${renderDescriptionList([
-            [
-                msg("Connection"),
-                this.connectivity
-                    ? html`
+                [
+                    msg("Connection"),
+                    this.connectivity
+                        ? html`
                               <ul class="pf-c-list">
                                   ${Object.keys(this.connectivity).map((serverKey) => {
-                        let serverLabel = html`${serverKey}`;
-                        if (serverKey === "__all__") {
-                            serverLabel = html`<b>${msg("Global status")}</b>`;
-                        }
-                        const server = this.connectivity![serverKey];
-                        const content = html`${serverLabel}: ${server.status}`;
-                        let tooltip = html`${content}`;
-                        if (server.status === "ok") {
-                            tooltip = html`<pf-tooltip position="top">
+                                      let serverLabel = html`${serverKey}`;
+                                      if (serverKey === "__all__") {
+                                          serverLabel = html`<b>${msg("Global status")}</b>`;
+                                      }
+                                      const server = this.connectivity![serverKey];
+                                      const content = html`${serverLabel}: ${server.status}`;
+                                      let tooltip = html`${content}`;
+                                      if (server.status === "ok") {
+                                          tooltip = html`<pf-tooltip position="top">
                                               <ul slot="content" class="pf-c-list">
                                                   <li>${msg("Vendor")}: ${server.vendor}</li>
                                                   <li>${msg("Version")}: ${server.version}</li>
                                               </ul>
                                               ${content}
                                           </pf-tooltip>`;
-                        }
-                        return html`<li>${tooltip}</li>`;
-                    })}
+                                      }
+                                      return html`<li>${tooltip}</li>`;
+                                  })}
                               </ul>
                           `
-                    : html`${msg("No connectivity status available.")}`,
-            ],
-            [
-                msg("Last synchronisation"),
-                this.lastSync !== undefined
-                    ? html`
-                              <ak-task-status .status=${this.lastSync.status}></ak-task-status>
-                              ${this.lastSync.finishedAt}
-                          `
-                    : html`${msg("Synchronisation never ran.")}`,
-            ],
-        ])}
+                        : html`${msg("No connectivity status available.")}`,
+                ],
+                [
+                    msg("Last synchronisation"),
+                    this.lastSync !== undefined
+                        ? this.lastSync.status === LDAPSourceSyncStatusEnum.Running
+                            ? html`
+                                  <ak-task-status .status=${this.lastSync.status}></ak-task-status>
+                                  <div>
+                                      Started at
+                                      <ak-timestamp
+                                          .timestamp=${this.lastSync.startedAt}
+                                      ></ak-timestamp>
+                                  </div>
+                              `
+                            : html`
+                                  <ak-task-status .status=${this.lastSync.status}></ak-task-status>
+                                  <div>
+                                      Finished at
+                                      <ak-timestamp
+                                          .timestamp=${this.lastSync.finishedAt}
+                                      ></ak-timestamp>
+                                  </div>
+                              `
+                        : html`${msg("Synchronisation never ran.")}`,
+                ],
+            ])}
         `;
     }
 }
