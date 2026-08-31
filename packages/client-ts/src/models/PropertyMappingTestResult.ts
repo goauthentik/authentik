@@ -20,14 +20,10 @@
 export interface PropertyMappingTestResult {
     /**
      *
-     * @type {string}
-     * @memberof PropertyMappingTestResult
      */
     readonly result: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PropertyMappingTestResult
      */
     readonly successful: boolean;
 }

@@ -20,62 +20,42 @@
 export interface DeviceUserBindingRequest {
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBindingRequest
      */
     policy?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBindingRequest
      */
     group?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof DeviceUserBindingRequest
      */
     user?: number | null;
     /**
      *
-     * @type {string}
-     * @memberof DeviceUserBindingRequest
      */
     target: string;
     /**
      * Negates the outcome of the policy. Messages are unaffected.
-     * @type {boolean}
-     * @memberof DeviceUserBindingRequest
      */
     negate?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof DeviceUserBindingRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DeviceUserBindingRequest
      */
     order: number;
     /**
      * Timeout after which Policy execution is terminated.
-     * @type {number}
-     * @memberof DeviceUserBindingRequest
      */
     timeout?: number;
     /**
      * Result if the Policy execution fails.
-     * @type {boolean}
-     * @memberof DeviceUserBindingRequest
      */
     failureResult?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof DeviceUserBindingRequest
      */
     isPrimary?: boolean;
 }

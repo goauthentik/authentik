@@ -193,6 +193,7 @@ SPECTACULAR_SETTINGS = {
         "EventActions": "authentik.events.models.EventAction",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
         "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
+        "FlowMessageLevelEnum": "authentik.flows.challenge.FLOW_MESSAGE_LEVELS",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "ModelEnum": "authentik.lib.api.Models",
         "OffboardingActionEnum": (
@@ -290,7 +291,7 @@ SESSION_COOKIE_AGE = timedelta_from_string(
 ).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-MESSAGE_STORAGE = "authentik.root.ws.storage.ChannelsStorage"
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 MIDDLEWARE_FIRST = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",

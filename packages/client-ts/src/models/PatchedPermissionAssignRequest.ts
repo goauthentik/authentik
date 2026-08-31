@@ -23,20 +23,14 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 export interface PatchedPermissionAssignRequest {
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedPermissionAssignRequest
      */
     permissions?: Array<string>;
     /**
      *
-     * @type {ModelEnum}
-     * @memberof PatchedPermissionAssignRequest
      */
     model?: ModelEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedPermissionAssignRequest
      */
     objectPk?: string;
 }

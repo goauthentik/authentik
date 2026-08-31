@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Reputation Serializer
  * @export
@@ -20,44 +22,30 @@
 export interface Reputation {
     /**
      *
-     * @type {string}
-     * @memberof Reputation
      */
     pk?: string;
     /**
      *
-     * @type {string}
-     * @memberof Reputation
      */
     identifier: string;
     /**
      *
-     * @type {string}
-     * @memberof Reputation
      */
     ip: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Reputation
      */
     ipGeoData?: { [key: string]: any };
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Reputation
      */
     ipAsnData?: { [key: string]: any };
     /**
      *
-     * @type {number}
-     * @memberof Reputation
      */
     score?: number;
     /**
      *
-     * @type {Date}
-     * @memberof Reputation
      */
     readonly updated: Date;
 }
@@ -87,7 +75,7 @@ export function ReputationFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         ipGeoData: json["ip_geo_data"] == null ? undefined : json["ip_geo_data"],
         ipAsnData: json["ip_asn_data"] == null ? undefined : json["ip_asn_data"],
         score: json["score"] == null ? undefined : json["score"],
-        updated: new Date(json["updated"]),
+        updated: json["updated"] == null ? json["updated"] : parseDateTime(json["updated"]),
     };
 }
 

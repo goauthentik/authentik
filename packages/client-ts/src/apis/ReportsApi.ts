@@ -20,17 +20,35 @@ import {
 import * as runtime from "../runtime";
 
 export interface ReportsExportsDestroyRequest {
+    /**
+     * A UUID string identifying this Data Export.
+     */
     id: string;
 }
 
 export interface ReportsExportsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ReportsExportsRetrieveRequest {
+    /**
+     * A UUID string identifying this Data Export.
+     */
     id: string;
 }
 

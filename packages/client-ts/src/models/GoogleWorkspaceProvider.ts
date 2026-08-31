@@ -26,134 +26,90 @@ import {
 export interface GoogleWorkspaceProvider {
     /**
      *
-     * @type {number}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof GoogleWorkspaceProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof GoogleWorkspaceProvider
      */
     propertyMappingsGroup?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     delegatedSubject: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleWorkspaceProvider
      */
     credentials: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     scopes?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProvider
      */
     excludeUsersServiceAccount?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     filterGroup?: string | null;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof GoogleWorkspaceProvider
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof GoogleWorkspaceProvider
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     defaultGroupEmailDomain: string;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof GoogleWorkspaceProvider
      */
     syncPageSize?: number;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof GoogleWorkspaceProvider
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProvider
      */
     dryRun?: boolean;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProvider
      */
     discoveryEnabled?: boolean;
 }

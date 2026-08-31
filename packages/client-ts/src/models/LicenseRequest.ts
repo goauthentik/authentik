@@ -20,8 +20,6 @@
 export interface LicenseRequest {
     /**
      *
-     * @type {string}
-     * @memberof LicenseRequest
      */
     key: string;
 }

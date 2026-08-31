@@ -20,86 +20,58 @@
 export interface Provider {
     /**
      *
-     * @type {number}
-     * @memberof Provider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof Provider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof Provider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof Provider
      */
     authorizationFlow?: string | null;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof Provider
      */
     invalidationFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Provider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Provider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Provider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Provider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Provider
      */
     readonly metaModelName: string;
 }

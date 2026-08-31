@@ -633,15 +633,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
-        if request and hasattr(request, "LANGUAGE_CODE"):
-            return request.LANGUAGE_CODE
         try:
-            return self.attributes.get("settings", {}).get("locale", "")
-
+            locale = self.attributes.get("settings", {}).get("locale", "")
+            if locale:
+                return locale
         except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
-        if request:
-            return request.brand.locale
+        if request and hasattr(request, "LANGUAGE_CODE"):
+            return request.LANGUAGE_CODE
         return ""
 
     @property

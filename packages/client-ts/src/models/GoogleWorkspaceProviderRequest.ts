@@ -26,92 +26,62 @@ import {
 export interface GoogleWorkspaceProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     propertyMappingsGroup?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     delegatedSubject: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     credentials: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     scopes?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     excludeUsersServiceAccount?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     filterGroup?: string | null;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     userDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {OutgoingSyncDeleteAction}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     groupDeleteAction?: OutgoingSyncDeleteAction;
     /**
      *
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     defaultGroupEmailDomain: string;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     syncPageSize?: number;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     syncPageTimeout?: string;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     dryRun?: boolean;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof GoogleWorkspaceProviderRequest
      */
     discoveryEnabled?: boolean;
 }

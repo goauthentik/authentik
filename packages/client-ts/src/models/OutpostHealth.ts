@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Outpost health status
  * @export
@@ -20,74 +22,50 @@
 export interface OutpostHealth {
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly uid: string;
     /**
      *
-     * @type {Date}
-     * @memberof OutpostHealth
      */
     readonly lastSeen: Date;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly version: string;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly golangVersion: string;
     /**
      *
-     * @type {boolean}
-     * @memberof OutpostHealth
      */
     readonly opensslEnabled: boolean;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly opensslVersion: string;
     /**
      * Get FIPS enabled
-     * @type {boolean}
-     * @memberof OutpostHealth
      */
     readonly fipsEnabled: boolean | null;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly versionShould: string;
     /**
      *
-     * @type {boolean}
-     * @memberof OutpostHealth
      */
     readonly versionOutdated: boolean;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly buildHash: string;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly buildHashShould: string;
     /**
      *
-     * @type {string}
-     * @memberof OutpostHealth
      */
     readonly hostname: string;
 }
@@ -175,7 +153,7 @@ export function OutpostHealthFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         uid: json["uid"],
-        lastSeen: new Date(json["last_seen"]),
+        lastSeen: json["last_seen"] == null ? json["last_seen"] : parseDateTime(json["last_seen"]),
         version: json["version"],
         golangVersion: json["golang_version"],
         opensslEnabled: json["openssl_enabled"],

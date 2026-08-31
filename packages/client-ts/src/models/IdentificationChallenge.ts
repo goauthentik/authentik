@@ -30,116 +30,78 @@ import { LoginSourceFromJSON, LoginSourceToJSON } from "./LoginSource";
 export interface IdentificationChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof IdentificationChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof IdentificationChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {Array<string>}
-     * @memberof IdentificationChallenge
      */
     userFields: Array<string> | null;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     pendingUserIdentifier?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof IdentificationChallenge
      */
     passwordFields: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof IdentificationChallenge
      */
     allowShowPassword?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     applicationPre?: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     applicationPreLaunch?: string;
     /**
      *
-     * @type {FlowDesignationEnum}
-     * @memberof IdentificationChallenge
      */
     flowDesignation: FlowDesignationEnum;
     /**
      *
-     * @type {CaptchaChallenge}
-     * @memberof IdentificationChallenge
      */
     captchaStage?: CaptchaChallenge | null;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     enrollUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     recoveryUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     passwordlessUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallenge
      */
     primaryAction: string;
     /**
      *
-     * @type {Array<LoginSource>}
-     * @memberof IdentificationChallenge
      */
     sources?: Array<LoginSource>;
     /**
      *
-     * @type {boolean}
-     * @memberof IdentificationChallenge
      */
     showSourceLabels: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof IdentificationChallenge
      */
     enableRememberMe?: boolean;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof IdentificationChallenge
      */
     passkeyChallenge?: { [key: string]: any } | null;
 }

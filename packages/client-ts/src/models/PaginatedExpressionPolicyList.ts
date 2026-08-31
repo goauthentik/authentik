@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedExpressionPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedExpressionPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ExpressionPolicy>}
-     * @memberof PaginatedExpressionPolicyList
      */
     results: Array<ExpressionPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedExpressionPolicyList
      */
     autocomplete: { [key: string]: any };
 }

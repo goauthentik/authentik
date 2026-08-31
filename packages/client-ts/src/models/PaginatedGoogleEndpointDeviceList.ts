@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedGoogleEndpointDeviceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedGoogleEndpointDeviceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<GoogleEndpointDevice>}
-     * @memberof PaginatedGoogleEndpointDeviceList
      */
     results: Array<GoogleEndpointDevice>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedGoogleEndpointDeviceList
      */
     autocomplete: { [key: string]: any };
 }

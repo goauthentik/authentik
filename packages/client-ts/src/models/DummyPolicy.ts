@@ -20,68 +20,46 @@
 export interface DummyPolicy {
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof DummyPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof DummyPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {boolean}
-     * @memberof DummyPolicy
      */
     result?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMin?: number;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMax?: number;
 }

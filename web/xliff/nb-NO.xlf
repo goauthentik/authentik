@@ -6656,10 +6656,6 @@ består ikke når ett eller begge av de valgte alternativene er lik eller over t
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, av type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>Vis vilkårlige inndatafelt til brukeren, for eksempel under registrering. Data lagres i flytkonteksten under variabelen 'prompt_data'.</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>Felt</target>
@@ -9105,14 +9101,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>Add new role</source>
   <target>Legg til ny rolle</target>
 </trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>Oppdater andre flyt-faner ved autentisering</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>Når aktivert, vil andre flyt-faner i en økt oppdateres ved en vellykket autentisering.</target>
-</trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
   <target>Dataeksport klar</target>
@@ -9592,10 +9580,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s4cbbb47ef050cd0e">
   <source>Paste your CAPTCHA secret key...</source>
   <target>Lim inn din hemmelige CAPTCHA-nøkkel...</target>
-</trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
-  <target>Trinn-navn</target>
 </trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
@@ -11769,10 +11753,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
   <target>Dette trinnet utfører kontolåsingstiltak på en målbruker. Konfigurer hvilke handlinger som skal utføres når dette trinnet kjøres.</target>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-  <target>Skriv inn et navn for dette trinnet...</target>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
   <target>Deaktiver bruker</target>
@@ -11884,10 +11864,6 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
   <target>Brukerfelt</target>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>Dette flagget er avviklet.</target>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
@@ -13170,6 +13146,17 @@ Bindinger til grupper/brukere sjekkes mot brukeren av hendelsen.</target>
 </trans-unit>
 <trans-unit id="stages.source.match-failure.missing-property.label">
   <source>Missing property</source>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
 </trans-unit>
 </body>
 </file>

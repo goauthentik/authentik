@@ -38,7 +38,7 @@ export class OAuth2DeviceCode extends BaseStage<
                     ${AKLabel({ required: true, htmlFor: "device-code-input" }, msg("Device Code"))}
 
                     <input
-                        ${this.autofocusTarget.toRef()}
+                        ${this.primaryFocusTarget.toRef()}
                         id="device-code-input"
                         type="text"
                         name="code"

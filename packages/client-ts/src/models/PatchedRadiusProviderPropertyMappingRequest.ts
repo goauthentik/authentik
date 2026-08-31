@@ -20,20 +20,14 @@
 export interface PatchedRadiusProviderPropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedRadiusProviderPropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRadiusProviderPropertyMappingRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRadiusProviderPropertyMappingRequest
      */
     expression?: string;
 }

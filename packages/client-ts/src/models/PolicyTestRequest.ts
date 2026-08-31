@@ -20,14 +20,10 @@
 export interface PolicyTestRequest {
     /**
      *
-     * @type {number}
-     * @memberof PolicyTestRequest
      */
     user: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PolicyTestRequest
      */
     context?: { [key: string]: any };
 }

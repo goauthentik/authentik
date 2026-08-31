@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedOAuthSourcePropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedOAuthSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<OAuthSourcePropertyMapping>}
-     * @memberof PaginatedOAuthSourcePropertyMappingList
      */
     results: Array<OAuthSourcePropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedOAuthSourcePropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

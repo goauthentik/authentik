@@ -10,7 +10,7 @@ sidebar_position: 4
 
 OAuth2/OIDC logout is a security feature defined in the OpenID Connect specification. It allows an OIDC Provider (OP), such as authentik, to notify Relying Parties (RPs) when a user session ends. This ensures that all associated applications can properly terminate the user's session.
 
-For more information about single logout across all providers, see the [Single Logout (SLO) Overview](../single-logout/index.md).
+For more information about single logout across all providers, see the [Single Logout (SLO) Overview](../single-logout/index.mdx).
 
 :::warning
 Your OAuth application (Relying Party) must explicitly support OpenID Connect front-channel logout or back-channel logout to properly handle logout requests. Not all OAuth applications support these features, so compatibility should be verified.
@@ -62,7 +62,7 @@ https://api.service.com/logout
 
 OIDC Relying Parties can initiate logout by redirecting a user to authentik's `end_session` endpoint. By default, only that application's session is ended while the authentik session remains active and the user stays logged in to other applications.
 
-For instructions on how to trigger full Single Logout when a user logs out from an application, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.md#enable-full-single-logout-for-rp-initiated-logout).
+For instructions on how to trigger full Single Logout when a user logs out from an application, see [Enable full Single Logout for RP-initiated logout](../single-logout/index.mdx#enable-full-single-logout-for-rp-initiated-logout).
 
 ## How OpenID Connect single logout works
 
@@ -118,8 +118,8 @@ Front-channel logout only works for user-initiated logouts through a logout flow
 
 ## Resources
 
-- [Single Logout (SLO) Overview](../single-logout/index.md)
-- [User Logout Stage](../../flows-stages/stages/user_logout/index.md)
+- [Single Logout (SLO) Overview](../single-logout/index.mdx)
+- [User Logout Stage](../../flows-stages/stages/user_logout/index.mdx)
 - [OAuth2 Provider Configuration](./index.mdx)
 - [OpenID Connect Back-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-backchannel-1_0.html)
 - [OpenID Connect Front-Channel Logout 1.0 Specification](https://openid.net/specs/openid-connect-frontchannel-1_0.html)

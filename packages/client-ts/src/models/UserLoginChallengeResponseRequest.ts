@@ -20,14 +20,10 @@
 export interface UserLoginChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserLoginChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof UserLoginChallengeResponseRequest
      */
     rememberMe: boolean;
 }

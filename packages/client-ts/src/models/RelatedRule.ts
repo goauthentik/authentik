@@ -26,32 +26,22 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface RelatedRule {
     /**
      *
-     * @type {string}
-     * @memberof RelatedRule
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof RelatedRule
      */
     name: string;
     /**
      *
-     * @type {Array<PartialGroup>}
-     * @memberof RelatedRule
      */
     readonly reviewerGroups: Array<PartialGroup>;
     /**
      *
-     * @type {number}
-     * @memberof RelatedRule
      */
     readonly minReviewers: number;
     /**
      *
-     * @type {Array<PartialUser>}
-     * @memberof RelatedRule
      */
     readonly reviewers: Array<PartialUser>;
 }

@@ -23,20 +23,14 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface DuoDevice {
     /**
      *
-     * @type {number}
-     * @memberof DuoDevice
      */
     readonly pk: number;
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof DuoDevice
      */
     name: string;
     /**
      *
-     * @type {PartialUser}
-     * @memberof DuoDevice
      */
     readonly user: PartialUser;
 }

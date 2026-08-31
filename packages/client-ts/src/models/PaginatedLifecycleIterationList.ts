@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedLifecycleIterationList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedLifecycleIterationList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<LifecycleIteration>}
-     * @memberof PaginatedLifecycleIterationList
      */
     results: Array<LifecycleIteration>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLifecycleIterationList
      */
     autocomplete: { [key: string]: any };
 }

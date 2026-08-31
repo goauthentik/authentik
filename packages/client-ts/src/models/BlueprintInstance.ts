@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { BlueprintInstanceStatusEnum } from "./BlueprintInstanceStatusEnum";
 import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEnum";
 
@@ -23,68 +24,46 @@ import { BlueprintInstanceStatusEnumFromJSON } from "./BlueprintInstanceStatusEn
 export interface BlueprintInstance {
     /**
      *
-     * @type {string}
-     * @memberof BlueprintInstance
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof BlueprintInstance
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof BlueprintInstance
      */
     path?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof BlueprintInstance
      */
     context?: { [key: string]: any };
     /**
      *
-     * @type {Date}
-     * @memberof BlueprintInstance
      */
     readonly lastApplied: Date;
     /**
      *
-     * @type {string}
-     * @memberof BlueprintInstance
      */
     readonly lastAppliedHash: string;
     /**
      *
-     * @type {BlueprintInstanceStatusEnum}
-     * @memberof BlueprintInstance
      */
     readonly status: BlueprintInstanceStatusEnum;
     /**
      *
-     * @type {boolean}
-     * @memberof BlueprintInstance
      */
     enabled?: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof BlueprintInstance
      */
     readonly managedModels: Array<string>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof BlueprintInstance
      */
     readonly metadata: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof BlueprintInstance
      */
     content?: string;
 }
@@ -137,7 +116,10 @@ export function BlueprintInstanceFromJSONTyped(
         name: json["name"],
         path: json["path"] == null ? undefined : json["path"],
         context: json["context"] == null ? undefined : json["context"],
-        lastApplied: new Date(json["last_applied"]),
+        lastApplied:
+            json["last_applied"] == null
+                ? json["last_applied"]
+                : parseDateTime(json["last_applied"]),
         lastAppliedHash: json["last_applied_hash"],
         status: BlueprintInstanceStatusEnumFromJSON(json["status"]),
         enabled: json["enabled"] == null ? undefined : json["enabled"],
