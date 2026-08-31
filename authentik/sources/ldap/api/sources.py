@@ -18,14 +18,14 @@ from authentik.core.api.sources import (
 )
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.api import SyncSerializer, SyncStatusSerializer
+from authentik.lib.sync.api import SyncSerializer
 from authentik.rbac.filters import ObjectFilter
 from authentik.sources.ldap.models import (
     LDAPSource,
     LDAPSourceSync,
 )
-from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES, ldap_sync
-from authentik.tasks.models import Task, TaskStatus
+from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
+from authentik.tasks.models import Task
 
 
 class LDAPSourceSerializer(SourceSerializer):
