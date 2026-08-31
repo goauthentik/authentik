@@ -39,7 +39,7 @@ dependencies = [
   "gssapi==1.11.1",
   "gunicorn==26.1.0",
   "jsonpatch==1.33",
-  "jwcrypto==1.5.8",
+  "jwcrypto==1.5.9",
   "kubernetes==36.0.3",
   "ldap3==2.9.1",
   "lxml==6.1.2",

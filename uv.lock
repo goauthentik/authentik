@@ -401,7 +401,7 @@ requires-dist = [
     { name = "gssapi", specifier = "==1.11.1" },
     { name = "gunicorn", specifier = "==26.1.0" },
     { name = "jsonpatch", specifier = "==1.33" },
-    { name = "jwcrypto", specifier = "==1.5.8" },
+    { name = "jwcrypto", specifier = "==1.5.9" },
     { name = "kubernetes", specifier = "==36.0.3" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==6.1.2" },
@@ -2059,15 +2059,15 @@ wheels = [
 
 [[package]]
 name = "jwcrypto"
-version = "1.5.8"
+version = "1.5.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/de/7e/53c14813521693e931e420d9db00efe317419ff194495903bce03402275e/jwcrypto-1.5.8.tar.gz", hash = "sha256:c3d7114b6f6e65b52f6b7da817eb8cb8423e1da31e1ef13508447c81ecbdcc34", size = 90772, upload-time = "2026-06-24T19:36:50.782Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/c7/00b87b49ffec758a5a957e448c863f6c4bb6223b3fab22c8c5161362ddcf/jwcrypto-1.5.9.tar.gz", hash = "sha256:dbbbfcdad7a6fc40cf3d5a635b11115fc42591b7ab869a36ad347a516a6e1c5d", size = 115793, upload-time = "2026-08-26T12:54:09.689Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/7c/f87c5db042c4f7b4476346fc0d22f1025a777fee08eebde3720d3b9c4eb5/jwcrypto-1.5.8-py3-none-any.whl", hash = "sha256:85aeb475f808d56bbc2f2ed1f6f73e6a317c4011a4321505f02f0aed695a3742", size = 96133, upload-time = "2026-06-24T19:36:49.519Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/54/b819eb2f8caedb1bccef0bf6188c051f0d898a177b271e1ed3a5cc0a8b66/jwcrypto-1.5.9-py3-none-any.whl", hash = "sha256:30b1c9afc898eefd112c31d836eb2d7a4c6febcac95d4aa727e963cd42911d8e", size = 120772, upload-time = "2026-08-26T12:54:08.637Z" },
 ]
 
 [[package]]
