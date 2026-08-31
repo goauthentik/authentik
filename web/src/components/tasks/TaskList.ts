@@ -56,6 +56,9 @@ export class TaskList extends Table<Task> {
     taskIds?: string[];
 
     @property()
+    taskIds?: string[];
+
+    @property()
     relObjAppLabel?: string;
 
     @property()
