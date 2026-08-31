@@ -1,0 +1,73 @@
+{{- if .Values.server.enabled }}
+{{- if .Values.server.ingress.enabled -}}
+{{- $servicePort := ternary .Values.server.service.servicePortHttps .Values.server.service.servicePortHttp .Values.server.ingress.https -}}
+{{- $paths := .Values.server.ingress.paths -}}
+{{- $extraPaths := .Values.server.ingress.extraPaths -}}
+{{- $pathType := .Values.server.ingress.pathType -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "authentik.server.fullname" . }}
+  namespace: {{ include "authentik.namespace" . | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+    {{- with .Values.server.ingress.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.server.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.server.ingress.ingressClassName }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  rules:
+  {{- if .Values.server.ingress.hosts }}
+    {{- range $host := .Values.server.ingress.hosts }}
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          {{- with $extraPaths }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- range $p := $paths }}
+          - path: {{ tpl (toYaml $p) $ }}
+            pathType: {{ $pathType }}
+            backend:
+              service:
+                name: {{ include "authentik.server.fullname" $ }}
+                port:
+                  {{- if kindIs "float64" $servicePort }}
+                  number: {{ $servicePort }}
+                  {{- else }}
+                  name: {{ $servicePort }}
+                  {{- end }}
+          {{- end -}}
+    {{- end -}}
+  {{- else }}
+    - http:
+        paths:
+          {{- with $extraPaths }}
+          {{- toYaml . | nindent 10 }}
+          {{- end }}
+          {{- range $p := $paths }}
+          - path: {{ tpl (toYaml $p) $ }}
+            pathType: {{ $pathType }}
+            backend:
+              service:
+                name: {{ include "authentik.server.fullname" $ }}
+                port:
+                  {{- if kindIs "float64" $servicePort }}
+                  number: {{ $servicePort }}
+                  {{- else }}
+                  name: {{ $servicePort }}
+                  {{- end }}
+          {{- end -}}
+  {{- end -}}
+  {{- with .Values.server.ingress.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}
