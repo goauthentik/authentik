@@ -80,6 +80,7 @@ import {
 import { type LDAPDebug, LDAPDebugFromJSON } from "../models/LDAPDebug";
 import { type LDAPSource, LDAPSourceFromJSON } from "../models/LDAPSource";
 import { type LDAPSourceRequest, LDAPSourceRequestToJSON } from "../models/LDAPSourceRequest";
+import { type LDAPSourceSync, LDAPSourceSyncFromJSON } from "../models/LDAPSourceSync";
 import { type OAuthSource, OAuthSourceFromJSON } from "../models/OAuthSource";
 import { type OAuthSourceRequest, OAuthSourceRequestToJSON } from "../models/OAuthSourceRequest";
 import {
@@ -1244,7 +1245,7 @@ export interface SourcesLdapRetrieveRequest {
     slug: string;
 }
 
-export interface SourcesLdapSyncStatusRetrieveRequest {
+export interface SourcesLdapSyncStatusListRequest {
     /**
      *
      */
@@ -7480,15 +7481,15 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sourcesLdapSyncStatusRetrieve without sending the request
+     * Creates request options for sourcesLdapSyncStatusList without sending the request
      */
-    async sourcesLdapSyncStatusRetrieveRequestOpts(
-        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+    async sourcesLdapSyncStatusListRequestOpts(
+        requestParameters: SourcesLdapSyncStatusListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["slug"] == null) {
             throw new runtime.RequiredError(
                 "slug",
-                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncStatusRetrieve().',
+                'Required parameter "slug" was null or undefined when calling sourcesLdapSyncStatusList().',
             );
         }
 
@@ -7517,30 +7518,28 @@ export class SourcesApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider\'s sync statuses
      */
-    async sourcesLdapSyncStatusRetrieveRaw(
-        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+    async sourcesLdapSyncStatusListRaw(
+        requestParameters: SourcesLdapSyncStatusListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions =
-            await this.sourcesLdapSyncStatusRetrieveRequestOpts(requestParameters);
+    ): Promise<runtime.ApiResponse<Array<LDAPSourceSync>>> {
+        const requestOptions = await this.sourcesLdapSyncStatusListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            jsonValue.map(LDAPSourceSyncFromJSON),
+        );
     }
 
     /**
-     * Get provider\'s sync status
+     * Get provider\'s sync statuses
      */
-    async sourcesLdapSyncStatusRetrieve(
-        requestParameters: SourcesLdapSyncStatusRetrieveRequest,
+    async sourcesLdapSyncStatusList(
+        requestParameters: SourcesLdapSyncStatusListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SyncStatus> {
-        const response = await this.sourcesLdapSyncStatusRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    ): Promise<Array<LDAPSourceSync>> {
+        const response = await this.sourcesLdapSyncStatusListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
