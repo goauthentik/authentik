@@ -24,8 +24,6 @@ export interface UserPasswordHashSetRequest {
     password: string;
     /**
      * Import a valid password hash even when its parameters do not match authentik's current password hashing policy.
-     * @type {boolean}
-     * @memberof UserPasswordHashSetRequest
      */
     override?: boolean;
 }

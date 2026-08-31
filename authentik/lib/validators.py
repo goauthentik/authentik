@@ -1,5 +1,7 @@
 """Serializer validators"""
 
+from typing import Any
+
 from django.contrib.auth.hashers import (
     BasePasswordHasher,
     get_hashers,
@@ -11,8 +13,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
 
-INVALID_PASSWORD_HASH_MESSAGE = _("Invalid password hash encoding.")
-
 
 class PasswordHashRequiresOverride(Exception):
     """A valid password hash that does not match the current import policy."""
@@ -22,59 +22,70 @@ class PasswordHashRequiresOverride(Exception):
         super().__init__(" ".join(str(message) for message in messages))
 
 
-def _importable_hashers() -> list[BasePasswordHasher]:
-    return [hasher for hasher in get_hashers() if hasher.algorithm != "pbkdf2_sha1"]
+class PasswordHashValidator:
+    """Validate the encoding of a Django password hash."""
+
+    message = _("Invalid password hash encoding.")
+
+    def __call__(self, password_hash: str) -> None:
+        self._decode(password_hash)
+
+    def _decode(self, password_hash: str) -> tuple[BasePasswordHasher, dict[str, Any]]:
+        """Return the hasher and decoded password hash."""
+        try:
+            hasher = identify_hasher(password_hash)
+            return hasher, hasher.decode(password_hash)
+        except (AssertionError, TypeError, ValueError) as exc:
+            raise ValidationError(self.message) from exc
 
 
-def _current_policy_message(hashers: list[BasePasswordHasher]) -> str:
-    expected: list[str] = []
-    for hasher in hashers:
-        params = ", ".join(
-            f"{attr}={getattr(hasher, attr)}"
-            for attr in (
-                "iterations",
-                "rounds",
-                "time_cost",
-                "memory_cost",
-                "work_factor",
-                "block_size",
-                "parallelism",
+class PasswordHashImportValidator(PasswordHashValidator):
+    """Validate a password hash against authentik's import policy."""
+
+    def __call__(self, password_hash: str) -> None:
+        hasher, decoded = self._decode(password_hash)
+        importable = [
+            configured_hasher
+            for configured_hasher in get_hashers()
+            if configured_hasher.algorithm != "pbkdf2_sha1"
+        ]
+        messages: list[str] = []
+        salt_stale = must_update_salt(decoded["salt"], hasher.salt_entropy)
+        # hasher.must_update() is also true for a short salt.
+        if hasher not in importable or (hasher.must_update(password_hash) and not salt_stale):
+            messages.append(self._policy_message(importable))
+        if salt_stale:
+            messages.append(
+                _(
+                    "Password hash salt does not meet the current requirement of "
+                    "%(bits)d bits of entropy."
+                )
+                % {"bits": hasher.salt_entropy}
             )
-            if hasattr(hasher, attr)
-        )
-        expected.append(f"{hasher.algorithm} ({params})")
-    return _("Password hash parameters must match: %(expected)s.") % {
-        "expected": "; ".join(expected)
-    }
+        if messages:
+            raise PasswordHashRequiresOverride(messages)
 
-
-def validate_password_hash(password_hash: str, *, require_current: bool = False) -> None:
-    """Validate an encoded Django password, optionally against current hasher parameters."""
-    try:
-        hasher = identify_hasher(password_hash)
-        decoded = hasher.decode(password_hash)
-    except (AssertionError, TypeError, ValueError) as exc:
-        raise ValidationError(INVALID_PASSWORD_HASH_MESSAGE) from exc
-
-    if not require_current:
-        return
-
-    importable = _importable_hashers()
-    messages: list[str] = []
-    salt_stale = must_update_salt(decoded["salt"], hasher.salt_entropy)
-    # hasher.must_update() is also true for a short salt.
-    if hasher not in importable or (hasher.must_update(password_hash) and not salt_stale):
-        messages.append(_current_policy_message(importable))
-    if salt_stale:
-        messages.append(
-            _(
-                "Password hash salt does not meet the current requirement of "
-                "%(bits)d bits of entropy."
+    def _policy_message(self, hashers: list[BasePasswordHasher]) -> str:
+        """Describe the password hash parameters accepted for import."""
+        expected: list[str] = []
+        for hasher in hashers:
+            params = ", ".join(
+                f"{attr}={getattr(hasher, attr)}"
+                for attr in (
+                    "iterations",
+                    "rounds",
+                    "time_cost",
+                    "memory_cost",
+                    "work_factor",
+                    "block_size",
+                    "parallelism",
+                )
+                if hasattr(hasher, attr)
             )
-            % {"bits": hasher.salt_entropy}
-        )
-    if messages:
-        raise PasswordHashRequiresOverride(messages)
+            expected.append(f"{hasher.algorithm} ({params})")
+        return _("Password hash parameters must match: %(expected)s.") % {
+            "expected": "; ".join(expected)
+        }
 
 
 class RequiredTogetherValidator:
