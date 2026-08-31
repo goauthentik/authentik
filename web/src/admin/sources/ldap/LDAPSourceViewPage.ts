@@ -97,36 +97,38 @@ export class LDAPSourceViewPage extends AKElement {
                             <div class="pf-c-card__title">${msg("Info")}</div>
                             <div class="pf-c-card__body">
                                 ${renderDescriptionList(
-            [
-                [msg("Name"), html`${this.source?.name}`],
-                [msg("Server URI"), html`${this.source?.serverUri}`],
-                [msg("Base DN"), html`${this.source?.baseDn}`],
-                [
-                    msg("Status"),
-                    html`<ak-status-label
+                                    [
+                                        [msg("Name"), html`${this.source?.name}`],
+                                        [msg("Server URI"), html`${this.source?.serverUri}`],
+                                        [msg("Base DN"), html`${this.source?.baseDn}`],
+                                        [
+                                            msg("Status"),
+                                            html`<ak-status-label
                                                 type="neutral"
                                                 ?good=${this.source?.enabled}
                                                 good-label=${msg("Enabled")}
                                                 bad-label=${msg("Disabled")}
                                             ></ak-status-label>`,
-                ],
-                [
-                    msg("Related actions"),
-                    html`<button
+                                        ],
+                                        [
+                                            msg("Related actions"),
+                                            html`<button
                                                 class="pf-c-button pf-m-primary pf-m-block"
                                                 ${modalInvoker(LDAPSourceForm, {
-                        instancePk: this.source?.slug,
-                    })}
+                                                    instancePk: this.source?.slug,
+                                                })}
                                             >
                                                 ${msg("Edit")}
                                             </button>`,
-                ],
-            ],
-            { twocolumn: true },
-        )}
+                                        ],
+                                    ],
+                                    { twocolumn: true },
+                                )}
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl">
+                        <div
+                            class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl"
+                        >
                             <div class="pf-c-card__title">
                                 <p>${msg("Status")}</p>
                             </div>
