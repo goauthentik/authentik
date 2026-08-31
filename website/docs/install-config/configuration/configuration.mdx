@@ -67,7 +67,7 @@ To check if your config has been applied correctly, you can run the following co
 
 authentik requires PostgreSQL for application data, configuration, sessions, and background task coordination. authentik supports PostgreSQL 14 - 18.
 
-The database must use the `UTF8` encoding, which is PostgreSQL's default. Unless a different encoding was explicitly chosen when the database was created, no change is needed. Run `SHOW server_encoding;` to check; authentik logs a warning on any other encoding, and support for them will be removed in an upcoming version. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
+The database must use the `UTF8` server encoding, which is PostgreSQL's default. Unless a different encoding was explicitly chosen when the database was created, no change is needed. Run `SHOW server_encoding;` to check; authentik logs a warning on any other encoding, and support for them will be removed in an upcoming version. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
 
 Use the settings in this section to configure:
 
