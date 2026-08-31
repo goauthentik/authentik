@@ -1,0 +1,27 @@
+{{- if .Values.server.enabled }}
+{{- if .Values.server.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "authentik.server.fullname" . }}
+  namespace: {{ include "authentik.namespace" . | quote }}
+  labels:
+    {{- include "authentik.labels" (dict "context" . "component" .Values.server.name) | nindent 4 }}
+    {{- with .Values.server.pdb.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{ with .Values.server.pdb.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.server.pdb.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- else }}
+  minAvailable: {{ .Values.server.pdb.minAvailable | default 0 }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "authentik.selectorLabels" (dict "context" . "component" .Values.server.name) | nindent 6 }}
+{{- end }}
+{{- end }}
