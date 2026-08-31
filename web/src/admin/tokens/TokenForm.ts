@@ -120,17 +120,7 @@ export class TokenForm extends ModelForm<Token, string> {
                         }
 
                         const users = await aki(CoreApi).coreUsersList(args);
-                        const instanceUser = this.instance?.userObj ?? this.defaultUser;
-
-                        if (!instanceUser) {
-                            return users.results;
-                        }
-
-                        if (users.results.find((user) => user.pk === instanceUser.pk)) {
-                            return users.results;
-                        }
-
-                        return [instanceUser, ...users.results];
+                        return users.results;
                     }}
                     .renderElement=${(user: User): string => {
                         return user.username;
@@ -148,6 +138,7 @@ export class TokenForm extends ModelForm<Token, string> {
 
                         return this.defaultUser?.pk === user.pk;
                     }}
+                    .selectedObject=${this.instance?.userObj ?? this.defaultUser}
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
