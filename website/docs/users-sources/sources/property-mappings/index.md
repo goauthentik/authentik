@@ -77,3 +77,80 @@ return {
 The `groups` attribute is a special attribute that must contain group identifiers. By default, those identifiers are also used as the group name. Each identifier is then given to group property mappings as the `group_id` variable, if extra processing needs to happen.
 
 An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
+<<<<<<< HEAD:website/docs/users-sources/sources/property-mappings/index.md
+=======
+
+#### Disabling group synchronization
+
+The source collects its groups before any property mapping runs, and mapping results are merged into them as described in [Object construction process](#object-construction-process). To prevent the collected groups from being imported, return `None` for the `groups` attribute:
+
+```python
+return {"groups": None}
+```
+
+This stops groups from being imported. However, authentik reconciles source-linked memberships on every login, so users are still removed from groups that were created by or linked through the source.
+
+#### Object-shaped OpenID Connect group claims
+
+OpenID Connect does not define a `groups` claim, so providers are free to put anything in one. Some return group objects instead of plain identifiers.
+
+The best fix is on the provider side. Configure it to return an array of stable, unique identifiers:
+
+```json
+{
+    "groups": ["g1", "g2"]
+}
+```
+
+Prefer an immutable group ID from the provider. Only use a display name if it is unique and never changes.
+
+If the provider cannot do that, create an OAuth source property mapping and attach it to the source's **User property mappings**. These mappings receive the provider's response in the `info` variable.
+
+The mapping below handles a `groups` claim holding identifiers, objects, or a mix of both:
+
+```python
+groups = []
+
+for group in info.get("groups", []):
+    if isinstance(group, dict):
+        # Adjust these keys for your provider. Some use "id",
+        # SCIM group resources use "value".
+        group_id = group.get("value") or group.get("id")
+    else:
+        group_id = group
+
+    if isinstance(group_id, (str, int)):
+        groups.append(group_id)
+
+return {"groups": groups}
+```
+
+Pick a stable, unique identifier from each object, because authentik uses it to recognize the group on later logins.
+
+The identifiers the mapping returns are merged into the `groups` the source already collected, not substituted for them, so the original objects are still in the list. authentik skips those and records a **Configuration error** event counting how many it dropped. The identifiers you extracted still synchronize.
+
+To get rid of the event, the `groups` claim itself has to contain only identifiers. Either change what the provider sends, or have it emit a separate identifier-only claim and map that claim to `groups`.
+
+To use the provider's group name instead of the identifier, add a second OAuth source property mapping under the source's **Group property mappings**. It receives `group_id` along with the original `info` data:
+
+```python
+for group in info.get("groups", []):
+    if not isinstance(group, dict):
+        continue
+
+    # Use the same identifier keys as the user property mapping.
+    if (group.get("value") or group.get("id")) != group_id:
+        continue
+
+    # Adjust these keys for your provider.
+    group_name = group.get("display") or group.get("name")
+    if group_name:
+        return {"name": group_name}
+
+    break
+
+return {"name": str(group_id)}
+```
+
+Skip this second mapping if the identifier already makes a reasonable group name.
+>>>>>>> 89299033a (website/docs: document disabling source group sync (#25578)):website/docs/users-sources/sources/property-mappings/index.mdx
