@@ -2,6 +2,7 @@
 
 from django.apps import apps
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -40,13 +41,15 @@ class PermissionAssignSerializer(PassiveSerializer):
     validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]
 
     def validate(self, attrs: dict) -> dict:
+        model_class = None
         model_instance = None
         # Check if we're setting an object-level perm or global
         model = attrs.get("model")
         object_pk = attrs.get("object_pk")
         if model and object_pk:
-            model = apps.get_model(attrs["model"])
-            model_instance = model.objects.filter(pk=attrs["object_pk"]).first()
+            model_class = apps.get_model(attrs["model"])
+            model_instance = model_class.objects.filter(pk=attrs["object_pk"]).first()
+        attrs["model_class"] = model_class
         attrs["model_instance"] = model_instance
         if attrs.get("model"):
             return attrs
@@ -183,6 +186,10 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         role: Role = self.get_object()
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+
+        if data.validated_data["model_class"] and not data.validated_data["model_instance"]:
+            raise ValidationError({"object_pk": "Object does not exist."})
+
         ids = []
         with atomic():
             for perm in data.validated_data["permissions"]:
@@ -206,5 +213,18 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         data.is_valid(raise_exception=True)
         with atomic():
             for perm in data.validated_data["permissions"]:
-                remove_perm(perm, role, data.validated_data["model_instance"])
+                # Temporary™ fix for orphaned permissions.
+                if data.validated_data["model_class"] and not data.validated_data["model_instance"]:
+                    content_type = ContentType.objects.get_for_model(
+                        data.validated_data["model_class"]
+                    )
+                    _, codename = perm.split(".", 1)
+                    RoleObjectPermission.objects.filter(
+                        role=role,
+                        content_type=content_type,
+                        object_pk=data.validated_data["object_pk"],
+                        permission__codename=codename,
+                    ).delete()
+                else:
+                    remove_perm(perm, role, data.validated_data["model_instance"])
         return Response(status=204)
