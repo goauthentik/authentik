@@ -33,7 +33,7 @@ To support the integration of wg-easy with authentik, you need to create an appl
 
 ### Create a custom scope mapping
 
-wg-easy only accepts logins where the email scope returns `email_verified: True`. Because the default authentik email scope mapping returns `email_verified: False`, create a custom scope mapping for wg-easy.
+wg-easy only accepts logins where the email scope returns `email_verified: True`. Because the default authentik email scope mapping returns `email_verified: False`, create a custom scope mapping for wg-easy. See [Email scope verification](/docs/add-secure-apps/providers/oauth2/#email-scope-verification).
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
