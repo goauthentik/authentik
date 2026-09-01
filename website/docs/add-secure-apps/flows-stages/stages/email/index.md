@@ -65,7 +65,7 @@ When an Identification stage does not find a user, it can create a placeholder u
 
 An existing inactive user is not a placeholder user. By default, the Email stage sends that user a recovery email and creates a recovery token. Deactivating an account prevents authentication, but it does not automatically prevent the user from recovering their account.
 
-You can use a policy bound to a Deny stage to block inactive users before the Email stage. However, the denial response differs from the response for an unknown or active account and can disclose whether an account exists or is inactive. For configuration details and this security tradeoff, see [Block password recovery for inactive users](../deny/index.mdx#example-block-password-recovery-for-inactive-users).
+You can use a policy bound to a Deny stage to block inactive users before the Email stage. However, the denial response differs from the response for an unknown or active account and can disclose whether an account exists or is inactive. For configuration details and this security tradeoff, see [Block password recovery for inactive users](../deny/#example-block-password-recovery-for-inactive-users).
 
 ### Custom templates
 
