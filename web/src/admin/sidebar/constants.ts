@@ -55,6 +55,7 @@ export const initAdminSidebarEntries = (): readonly SidebarEntry[] => [
     ],
     [null, msg("System"), { key: "system" }, [
         ["/core/brands", msg("Brands")],
+        ["/core/webauthn-rp-configs", msg("WebAuthn RP Configs", { id: "webauthn-rp-config.verbose-name-plural" })],
         ["/crypto/certificates", msg("Certificates")],
         ["/outpost/integrations", msg("Outpost Integrations")],
         ["/admin/settings", msg("Settings")]]
