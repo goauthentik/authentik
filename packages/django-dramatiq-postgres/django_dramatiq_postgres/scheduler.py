@@ -6,6 +6,7 @@ from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from dramatiq.broker import Broker
+from dramatiq.errors import ActorNotFound
 from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
@@ -36,7 +37,20 @@ class Scheduler:
 
     def process_schedule(self, schedule: ScheduleBase) -> None:
         schedule.next_run = schedule.compute_next_run()
-        schedule.send(self.broker)
+        try:
+            schedule.send(self.broker)
+        except ActorNotFound:
+            # Schedule references an actor that no longer exists. Pause it instead
+            # of crashing the consumer thread; schedule reconciliation on startup
+            # will clean it up.
+            self.logger.warning(
+                "Actor for schedule not found, pausing schedule",
+                schedule=schedule,
+                actor_name=schedule.actor_name,
+            )
+            schedule.paused = True
+            schedule.save(update_fields=["paused"])
+            return
         schedule.save(update_fields=["next_run"])
 
     def _lock(self) -> pglock.advisory:
