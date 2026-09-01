@@ -42,3 +42,31 @@ return ak_client_ip in ip_network("203.0.113.0/24")
 3. Bind that policy to the Deny stage in the flow.
 
 When the policy passes, the Deny stage runs and the flow stops immediately.
+
+### Example: Block password recovery for inactive users
+
+Account deactivation prevents authentication, but it does not automatically prevent recovery stages from sending email or changing a password. To stop inactive users before those actions occur:
+
+1. Add a Deny stage to the recovery flow after the Identification stage and before the Email stage.
+2. Create an [Expression policy](../../../../customize/policies/types/expression/index.mdx) with the following expression:
+
+    ```python
+    pending_user = request.context.get("pending_user")
+
+    return bool(
+        pending_user
+        and pending_user.pk
+        and not pending_user.is_active
+    )
+    ```
+
+3. Bind the policy to the Deny stage binding.
+4. On the Deny stage binding, disable **Evaluate when flow is planned** and enable **Evaluate when stage is run**. The policy must run after the Identification stage adds `pending_user` to the flow context.
+
+The Deny stage runs only when the identified user exists and is inactive. Active users and placeholder users that represent unknown identifiers skip the Deny stage.
+
+:::danger Account state disclosure
+The Deny stage produces a different response for an inactive account than the **Email sent.** challenge that the Email stage displays for unknown and active accounts. An attacker can use this difference to determine that an account exists or is inactive.
+
+Use this configuration only if disclosing account state is acceptable. A Deny stage cannot both stop recovery and preserve the Email stage's indistinguishable response.
+:::
