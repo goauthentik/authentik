@@ -1,14 +1,18 @@
+from collections.abc import Iterable
+from typing import TYPE_CHECKING
+
 from dramatiq.actor import Actor
-from dramatiq.broker import Broker, MessageProxy
 from dramatiq.middleware import Middleware
 
 from authentik.lib.sync.models import Sync
-from authentik.sources.ldap.tasks import ldap_sync
+
+if TYPE_CHECKING:
+    from dramatiq.broker import Broker, MessageProxy
 
 
 class SyncMiddleware(Middleware):
     SyncModel: type[Sync]
-    actors: list[Actor] = [ldap_sync]
+    actors: Iterable[Actor] = []
 
     def update_sync_status(self, message_id: str, actor_name: str):
         if all(actor_name != actor.actor_name for actor in self.actors):
