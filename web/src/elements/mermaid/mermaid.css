@@ -37,6 +37,17 @@
     }
 }
 
+.nodeLabel > .ak-diagram-toolbar {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pf-global--spacer--xs, 0.25rem);
+    inline-size: 100%;
+    block-size: var(--pf-global--spacer--xl, 2rem);
+    padding-block-start: var(--pf-global--spacer--sm, 0.5rem);
+}
+
 svg[id^="mermaid-svg-"] {
     & > .rect {
         fill: color-mix(var(--pf-global--palette--gold-100), transparent 95%);
