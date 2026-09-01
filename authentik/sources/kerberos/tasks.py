@@ -7,11 +7,12 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.incoming.models import SyncOutgoingTriggerMode
+from authentik.lib.sync.models import SyncStatus
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.sync.outgoing.signals import sync_outgoing_inhibit_dispatch
 from authentik.lib.utils.reflection import all_subclasses
-from authentik.sources.kerberos.models import KerberosSource
+from authentik.sources.kerberos.models import KerberosSource, KerberosSourceSync
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.tasks.middleware import CurrentTask
 
@@ -40,20 +41,37 @@ def kerberos_sync(pk: str):
     source: KerberosSource = KerberosSource.objects.filter(enabled=True, pk=pk).first()
     if not source:
         return
+
+    with source.start_sync_lock as lock_acquired:
+        if not lock_acquired:
+            self.info("Synchronization is already starting. Skipping this one.")
+            LOGGER.debug(
+                "Failed to acquire lock for sync, another is already starting, skipping task",
+                source=source.slug,
+            )
+            return
+
+        previous_sync = (
+            KerberosSourceSync.objects.filter(source=source).order_by("-started_by").first()
+        )
+        if previous_sync and previous_sync.status == SyncStatus.RUNNING:
+            self.info("Synchronization is already running. Skipping")
+            LOGGER.debug(
+                "Previous Kerberos sync detected as running, skipping task", source=source.slug
+            )
+
+        current_sync = KerberosSourceSync.objects.create(source=source)
+        current_sync.tasks.add(self)
+
     try:
-        with source.sync_lock as lock_acquired:
-            if not lock_acquired:
-                self.info("Synchronization is already running. Skipping")
-                LOGGER.debug(
-                    "Failed to acquire lock for Kerberos sync, skipping task", source=source.slug
-                )
-                return
-            syncer = KerberosSync(source, self)
-            if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+        syncer = KerberosSync(source, self)
+        if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.IMMEDIATE:
+            users_count = syncer.sync()
+            current_sync.users_count = users_count
+            current_sync.save()
+        else:
+            with sync_outgoing_inhibit_dispatch():
                 syncer.sync()
-            else:
-                with sync_outgoing_inhibit_dispatch():
-                    syncer.sync()
         if source.sync_outgoing_trigger_mode == SyncOutgoingTriggerMode.DEFERRED_END:
             for outgoing_sync_provider_cls in all_subclasses(OutgoingSyncProvider):
                 for provider in outgoing_sync_provider_cls.objects.all():
