@@ -12,10 +12,13 @@ if TYPE_CHECKING:
 
 class SyncMiddleware(Middleware):
     SyncModel: type[Sync]
-    actors: Iterable[Actor] = []
+
+    @staticmethod
+    def sync_actors() -> Iterable[Actor]:
+        return []
 
     def update_sync_status(self, message_id: str, actor_name: str):
-        if all(actor_name != actor.actor_name for actor in self.actors):
+        if all(actor_name != actor.actor_name for actor in self.sync_actors()):
             return
 
         sync = self.SyncModel.objects.filter(tasks=message_id).first()
