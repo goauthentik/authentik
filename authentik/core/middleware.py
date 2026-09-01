@@ -11,7 +11,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
-from django.utils.translation import override
+from django.utils.translation import check_for_language, override
 from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 
@@ -90,6 +90,24 @@ class ImpersonateMiddleware:
 
         if locale_to_set:
             with override(locale_to_set):
+                return self.get_response(request)
+        return self.get_response(request)
+
+
+class LocaleOverrideMiddleware:
+    """Honor an explicit `?locale=` query parameter (a dev/test aid), validated against
+    the supported languages. Runs after every other locale source so that the web UI,
+    which reads the same parameter client-side, cannot disagree with the rendered shell."""
+
+    get_response: Callable[[HttpRequest], HttpResponse]
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]):
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        locale = request.GET.get("locale")
+        if locale and check_for_language(locale):
+            with override(locale):
                 return self.get_response(request)
         return self.get_response(request)
 
