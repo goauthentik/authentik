@@ -80,7 +80,7 @@ RUN --mount=type=bind,target=rust-toolchain.toml,src=rust-toolchain.toml \
     cargo --version
 
 # Stage: Download uv
-FROM ghcr.io/astral-sh/uv:0.12.7@sha256:95f2aa1fe59274951cfe9b0cbc7972e879ff1004bc8945d130a32eb0dbd85945 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.8@sha256:d1cbaeadc234fe19c0d93daabcf5e98738cd93c6d1dd4918ef6aa30735feb23a AS uv
 # Stage: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.14.7-slim-trixie-fips@sha256:e9a21ec90f92a8d0a46217e473c1340832e9b5c85019727f45eca05eb55aef87 AS python-base
 
