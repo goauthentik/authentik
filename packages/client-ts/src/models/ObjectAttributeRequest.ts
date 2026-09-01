@@ -26,62 +26,42 @@ import {
 export interface ObjectAttributeRequest {
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     objectType: string;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttributeRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     key: string;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     label: string;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     regex?: string;
     /**
      *
-     * @type {ObjectAttributeTypeEnum}
-     * @memberof ObjectAttributeRequest
      */
     type: ObjectAttributeTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     group?: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof ObjectAttributeRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttributeRequest
      */
     isUnique?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof ObjectAttributeRequest
      */
     isRequired?: boolean;
 }

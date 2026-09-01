@@ -25,50 +25,34 @@ import { ProtocolEnumFromJSON, ProtocolEnumToJSON } from "./ProtocolEnum";
 export interface PatchedEndpointRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointRequest
      */
     name?: string;
     /**
      *
-     * @type {number}
-     * @memberof PatchedEndpointRequest
      */
     provider?: number;
     /**
      *
-     * @type {ProtocolEnum}
-     * @memberof PatchedEndpointRequest
      */
     protocol?: ProtocolEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointRequest
      */
     host?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEndpointRequest
      */
     settings?: { [key: string]: any };
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedEndpointRequest
      */
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {EndpointAuthModeEnum}
-     * @memberof PatchedEndpointRequest
      */
     authMode?: EndpointAuthModeEnum;
     /**
      *
-     * @type {number}
-     * @memberof PatchedEndpointRequest
      */
     maximumConnections?: number;
 }

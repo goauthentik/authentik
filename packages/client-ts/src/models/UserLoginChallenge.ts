@@ -24,32 +24,22 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface UserLoginChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof UserLoginChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof UserLoginChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof UserLoginChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof UserLoginChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof UserLoginChallenge
      */
     pendingUserAvatar: string;
 }

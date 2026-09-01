@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedLDAPSourceList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedLDAPSourceList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<LDAPSource>}
-     * @memberof PaginatedLDAPSourceList
      */
     results: Array<LDAPSource>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLDAPSourceList
      */
     autocomplete: { [key: string]: any };
 }

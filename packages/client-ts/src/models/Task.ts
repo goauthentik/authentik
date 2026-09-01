@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { LogEvent } from "./LogEvent";
 import { LogEventFromJSON } from "./LogEvent";
 import type { TaskAggregatedStatusEnum } from "./TaskAggregatedStatusEnum";
@@ -30,92 +31,62 @@ import { TaskStatusEnumFromJSON, TaskStatusEnumToJSON } from "./TaskStatusEnum";
 export interface Task {
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     messageId?: string;
     /**
      * Queue name
-     * @type {string}
-     * @memberof Task
      */
     queueName?: string;
     /**
      * Dramatiq actor name
-     * @type {string}
-     * @memberof Task
      */
     actorName: string;
     /**
      * Task status
-     * @type {TaskStatusEnum}
-     * @memberof Task
      */
     state?: TaskStatusEnum;
     /**
      * Task last modified time
-     * @type {Date}
-     * @memberof Task
      */
     mtime?: Date;
     /**
      * Number of retries
-     * @type {number}
-     * @memberof Task
      */
     retries?: number;
     /**
      * Planned execution time
-     * @type {Date}
-     * @memberof Task
      */
     eta?: Date | null;
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     readonly relObjAppLabel: string;
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     readonly relObjModel: string;
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     relObjId?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     readonly uid: string;
     /**
      *
-     * @type {Array<LogEvent>}
-     * @memberof Task
      */
     readonly logs: Array<LogEvent>;
     /**
      *
-     * @type {Array<LogEvent>}
-     * @memberof Task
      */
     readonly previousLogs: Array<LogEvent>;
     /**
      *
-     * @type {TaskAggregatedStatusEnum}
-     * @memberof Task
      */
     aggregatedStatus: TaskAggregatedStatusEnum;
     /**
      *
-     * @type {string}
-     * @memberof Task
      */
     readonly description: string | null;
 }
@@ -178,14 +149,14 @@ export function TaskFromJSONTyped(json: any, ignoreDiscriminator: boolean): Task
         queueName: json["queue_name"] == null ? undefined : json["queue_name"],
         actorName: json["actor_name"],
         state: json["state"] == null ? undefined : TaskStatusEnumFromJSON(json["state"]),
-        mtime: json["mtime"] == null ? undefined : new Date(json["mtime"]),
+        mtime: json["mtime"] == null ? undefined : parseDateTime(json["mtime"]),
         retries: json["retries"] == null ? undefined : json["retries"],
         eta:
             json["eta"] === undefined
                 ? undefined
                 : json["eta"] === null
                   ? null
-                  : new Date(json["eta"]),
+                  : parseDateTime(json["eta"]),
         relObjAppLabel: json["rel_obj_app_label"],
         relObjModel: json["rel_obj_model"],
         relObjId:
@@ -222,9 +193,9 @@ export function TaskToJSONTyped(
         queue_name: value["queueName"],
         actor_name: value["actorName"],
         state: TaskStatusEnumToJSON(value["state"]),
-        mtime: value["mtime"] == null ? value["mtime"] : value["mtime"].toISOString(),
+        mtime: value["mtime"] == null ? value["mtime"] : serializeDateTime(value["mtime"]),
         retries: value["retries"],
-        eta: value["eta"] == null ? value["eta"] : value["eta"].toISOString(),
+        eta: value["eta"] == null ? value["eta"] : serializeDateTime(value["eta"]),
         rel_obj_id: value["relObjId"],
         aggregated_status: TaskAggregatedStatusEnumToJSON(value["aggregatedStatus"]),
     };

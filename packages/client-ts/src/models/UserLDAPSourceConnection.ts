@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { Source } from "./Source";
@@ -25,50 +26,34 @@ import { SourceFromJSON } from "./Source";
 export interface UserLDAPSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof UserLDAPSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {number}
-     * @memberof UserLDAPSourceConnection
      */
     readonly user: number;
     /**
      *
-     * @type {string}
-     * @memberof UserLDAPSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof UserLDAPSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof UserLDAPSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof UserLDAPSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof UserLDAPSourceConnection
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {PartialUser}
-     * @memberof UserLDAPSourceConnection
      */
     readonly userObj: PartialUser;
 }
@@ -125,8 +110,11 @@ export function UserLDAPSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
         userObj: PartialUserFromJSON(json["user_obj"]),
     };
 }

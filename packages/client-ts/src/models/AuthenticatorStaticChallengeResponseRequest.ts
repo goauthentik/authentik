@@ -20,8 +20,6 @@
 export interface AuthenticatorStaticChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorStaticChallengeResponseRequest
      */
     component?: string;
 }

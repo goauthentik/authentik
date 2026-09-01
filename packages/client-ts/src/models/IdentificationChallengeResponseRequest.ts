@@ -20,32 +20,22 @@
 export interface IdentificationChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallengeResponseRequest
      */
     uidField?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallengeResponseRequest
      */
     password?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof IdentificationChallengeResponseRequest
      */
     captchaToken?: string | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof IdentificationChallengeResponseRequest
      */
     passkey?: { [key: string]: any } | null;
 }

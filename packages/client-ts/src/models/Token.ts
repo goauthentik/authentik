@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { IntentEnum } from "./IntentEnum";
 import { IntentEnumFromJSON, IntentEnumToJSON } from "./IntentEnum";
 import type { User } from "./User";
@@ -25,56 +26,38 @@ import { UserFromJSON } from "./User";
 export interface Token {
     /**
      *
-     * @type {string}
-     * @memberof Token
      */
     readonly pk: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof Token
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof Token
      */
     identifier: string;
     /**
      *
-     * @type {IntentEnum}
-     * @memberof Token
      */
     intent?: IntentEnum;
     /**
      *
-     * @type {number}
-     * @memberof Token
      */
     user?: number;
     /**
      *
-     * @type {User}
-     * @memberof Token
      */
     readonly userObj: User;
     /**
      *
-     * @type {string}
-     * @memberof Token
      */
     description?: string;
     /**
      *
-     * @type {Date}
-     * @memberof Token
      */
     expires?: Date | null;
     /**
      *
-     * @type {boolean}
-     * @memberof Token
      */
     expiring?: boolean;
 }
@@ -121,7 +104,7 @@ export function TokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): Tok
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         expiring: json["expiring"] == null ? undefined : json["expiring"],
     };
 }
@@ -144,7 +127,7 @@ export function TokenToJSONTyped(
         intent: IntentEnumToJSON(value["intent"]),
         user: value["user"],
         description: value["description"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         expiring: value["expiring"],
     };
 }

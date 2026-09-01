@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PolicyBehaviorEnum } from "./PolicyBehaviorEnum";
 import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBehaviorEnum";
 
@@ -23,32 +24,22 @@ import { PolicyBehaviorEnumFromJSON, PolicyBehaviorEnumToJSON } from "./PolicyBe
 export interface AgentCreateRequest {
     /**
      *
-     * @type {number}
-     * @memberof AgentCreateRequest
      */
     parent?: number;
     /**
      *
-     * @type {string}
-     * @memberof AgentCreateRequest
      */
     label?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AgentCreateRequest
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof AgentCreateRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {PolicyBehaviorEnum}
-     * @memberof AgentCreateRequest
      */
     policyBehavior?: PolicyBehaviorEnum;
 }
@@ -80,7 +71,7 @@ export function AgentCreateRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         policyBehavior:
             json["policy_behavior"] == null
                 ? undefined
@@ -104,7 +95,7 @@ export function AgentCreateRequestToJSONTyped(
         parent: value["parent"],
         label: value["label"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         policy_behavior: PolicyBehaviorEnumToJSON(value["policyBehavior"]),
     };
 }

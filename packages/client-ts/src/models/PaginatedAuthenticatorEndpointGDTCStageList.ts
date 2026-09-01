@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedAuthenticatorEndpointGDTCStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedAuthenticatorEndpointGDTCStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<AuthenticatorEndpointGDTCStage>}
-     * @memberof PaginatedAuthenticatorEndpointGDTCStageList
      */
     results: Array<AuthenticatorEndpointGDTCStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedAuthenticatorEndpointGDTCStageList
      */
     autocomplete: { [key: string]: any };
 }

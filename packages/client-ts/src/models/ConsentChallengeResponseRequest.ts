@@ -20,14 +20,10 @@
 export interface ConsentChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof ConsentChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof ConsentChallengeResponseRequest
      */
     token: string;
 }

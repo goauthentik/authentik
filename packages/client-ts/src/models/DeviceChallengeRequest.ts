@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceClassesEnum } from "./DeviceClassesEnum";
 import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClassesEnum";
 
@@ -23,26 +24,18 @@ import { DeviceClassesEnumFromJSON, DeviceClassesEnumToJSON } from "./DeviceClas
 export interface DeviceChallengeRequest {
     /**
      *
-     * @type {DeviceClassesEnum}
-     * @memberof DeviceChallengeRequest
      */
     deviceClass: DeviceClassesEnum;
     /**
      *
-     * @type {string}
-     * @memberof DeviceChallengeRequest
      */
     deviceUid: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof DeviceChallengeRequest
      */
     challenge: { [key: string]: any };
     /**
      *
-     * @type {Date}
-     * @memberof DeviceChallengeRequest
      */
     lastUsed: Date | null;
 }
@@ -91,7 +84,7 @@ export function DeviceChallengeRequestFromJSONTyped(
         deviceClass: DeviceClassesEnumFromJSON(json["device_class"]),
         deviceUid: json["device_uid"],
         challenge: json["challenge"],
-        lastUsed: json["last_used"] == null ? null : new Date(json["last_used"]),
+        lastUsed: json["last_used"] == null ? null : parseDateTime(json["last_used"]),
     };
 }
 
@@ -111,6 +104,7 @@ export function DeviceChallengeRequestToJSONTyped(
         device_class: DeviceClassesEnumToJSON(value["deviceClass"]),
         device_uid: value["deviceUid"],
         challenge: value["challenge"],
-        last_used: value["lastUsed"] == null ? value["lastUsed"] : value["lastUsed"].toISOString(),
+        last_used:
+            value["lastUsed"] == null ? value["lastUsed"] : serializeDateTime(value["lastUsed"]),
     };
 }

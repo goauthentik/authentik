@@ -25,98 +25,66 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface PatchedTelegramSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     name?: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     slug?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedTelegramSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PatchedTelegramSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedTelegramSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedTelegramSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedTelegramSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PatchedTelegramSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     icon?: string;
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     botUsername?: string;
     /**
      * Telegram bot token
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     botToken?: string;
     /**
      * Request access to send messages from your bot.
-     * @type {boolean}
-     * @memberof PatchedTelegramSourceRequest
      */
     requestMessageAccess?: boolean;
     /**
      * Flow used before authentication.
-     * @type {string}
-     * @memberof PatchedTelegramSourceRequest
      */
     preAuthenticationFlow?: string;
 }

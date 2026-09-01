@@ -32,74 +32,50 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface AuthenticatorValidateStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorValidateStageRequest
      */
     name: string;
     /**
      *
-     * @type {NotConfiguredActionEnum}
-     * @memberof AuthenticatorValidateStageRequest
      */
     notConfiguredAction?: NotConfiguredActionEnum;
     /**
      * Device classes which can be used to authenticate
-     * @type {Array<DeviceClassesEnum>}
-     * @memberof AuthenticatorValidateStageRequest
      */
     deviceClasses?: Array<DeviceClassesEnum>;
     /**
      * Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.
-     * @type {Array<string>}
-     * @memberof AuthenticatorValidateStageRequest
      */
     configurationStages?: Array<string>;
     /**
      * If any of the user's device has been used within this threshold, this stage will be skipped
-     * @type {string}
-     * @memberof AuthenticatorValidateStageRequest
      */
     lastAuthThreshold?: string;
     /**
      * Enforce user verification for WebAuthn devices.
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorValidateStageRequest
      */
     webauthnUserVerification?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof AuthenticatorValidateStageRequest
      */
     webauthnHints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof AuthenticatorValidateStageRequest
      */
     webauthnAllowedDeviceTypes?: Array<string>;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStageRequest
      */
     emailOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStageRequest
      */
     smsOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStageRequest
      */
     totpOtpThrottlingFactor?: number;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorValidateStageRequest
      */
     staticOtpThrottlingFactor?: number;
 }

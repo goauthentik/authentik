@@ -30,104 +30,70 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface PlexSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PlexSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof PlexSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PlexSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PlexSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PlexSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof PlexSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof PlexSourceRequest
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Client identifier used to talk to Plex.
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     clientId?: string;
     /**
      * Which servers a user has to be a member of to be granted access. Empty list allows every server.
-     * @type {Array<string>}
-     * @memberof PlexSourceRequest
      */
     allowedServers?: Array<string>;
     /**
      * Allow friends to authenticate, even if you don't share a server.
-     * @type {boolean}
-     * @memberof PlexSourceRequest
      */
     allowFriends?: boolean;
     /**
      * Plex token used to check friends
-     * @type {string}
-     * @memberof PlexSourceRequest
      */
     plexToken: string;
 }

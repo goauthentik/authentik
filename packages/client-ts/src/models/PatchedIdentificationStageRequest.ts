@@ -23,86 +23,58 @@ import { UserFieldsEnumFromJSON, UserFieldsEnumToJSON } from "./UserFieldsEnum";
 export interface PatchedIdentificationStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     name?: string;
     /**
      * Fields of the user object to match against. (Hold shift to select multiple options)
-     * @type {Array<UserFieldsEnum>}
-     * @memberof PatchedIdentificationStageRequest
      */
     userFields?: Array<UserFieldsEnum>;
     /**
      * When set, shows a password field, instead of showing the password field as separate step.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     passwordStage?: string | null;
     /**
      * When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     captchaStage?: string | null;
     /**
      * When enabled, user fields are matched regardless of their casing.
-     * @type {boolean}
-     * @memberof PatchedIdentificationStageRequest
      */
     caseInsensitiveMatching?: boolean;
     /**
      * When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown
-     * @type {boolean}
-     * @memberof PatchedIdentificationStageRequest
      */
     showMatchedUser?: boolean;
     /**
      * Optional enrollment flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     enrollmentFlow?: string | null;
     /**
      * Optional recovery flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     recoveryFlow?: string | null;
     /**
      * Optional passwordless flow, which is linked at the bottom of the page.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     passwordlessFlow?: string | null;
     /**
      * Specify which sources should be shown.
-     * @type {Array<string>}
-     * @memberof PatchedIdentificationStageRequest
      */
     sources?: Array<string>;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedIdentificationStageRequest
      */
     showSourceLabels?: boolean;
     /**
      * When enabled, the stage will succeed and continue even when incorrect user info is entered.
-     * @type {boolean}
-     * @memberof PatchedIdentificationStageRequest
      */
     pretendUserExists?: boolean;
     /**
      * Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password.
-     * @type {boolean}
-     * @memberof PatchedIdentificationStageRequest
      */
     enableRememberMe?: boolean;
     /**
      * When set, and conditional WebAuthn is available, allow the user to use their passkey as a first factor.
-     * @type {string}
-     * @memberof PatchedIdentificationStageRequest
      */
     webauthnStage?: string | null;
 }

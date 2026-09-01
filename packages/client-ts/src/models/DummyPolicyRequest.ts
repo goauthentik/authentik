@@ -20,32 +20,22 @@
 export interface DummyPolicyRequest {
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicyRequest
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof DummyPolicyRequest
      */
     executionLogging?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof DummyPolicyRequest
      */
     result?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicyRequest
      */
     waitMin?: number;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicyRequest
      */
     waitMax?: number;
 }

@@ -263,754 +263,1840 @@ import {
 import * as runtime from "../runtime";
 
 export interface ProvidersAllDestroyRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
 export interface ProvidersAllListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     * When not set all providers are returned. When set to true, only backchannel providers are returned. When set to false, backchannel providers are excluded
+     */
     backchannel?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersAllRetrieveRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
 export interface ProvidersAllUsedByListRequest {
+    /**
+     * A unique integer value identifying this provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceCreateRequest {
+    /**
+     *
+     */
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
 export interface ProvidersGoogleWorkspaceDestroyRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsCreateRequest {
+    /**
+     *
+     */
     googleWorkspaceProviderGroupRequest: GoogleWorkspaceProviderGroupRequest;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsListRequest {
+    /**
+     *
+     */
     groupGroupUuid?: string;
+    /**
+     *
+     */
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceListRequest {
+    /**
+     *
+     */
     delegatedSubject?: string;
+    /**
+     *
+     */
     excludeUsersServiceAccount?: boolean;
+    /**
+     *
+     */
     filterGroup?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersGoogleWorkspacePartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedGoogleWorkspaceProviderRequest?: PatchedGoogleWorkspaceProviderRequest;
 }
 
 export interface ProvidersGoogleWorkspaceRetrieveRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
+    /**
+     *
+     */
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersGoogleWorkspaceSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceUpdateRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
+    /**
+     *
+     */
     googleWorkspaceProviderRequest: GoogleWorkspaceProviderRequest;
 }
 
 export interface ProvidersGoogleWorkspaceUsedByListRequest {
+    /**
+     * A unique integer value identifying this Google Workspace Provider.
+     */
     id: number;
 }
 
 export interface ProvidersGoogleWorkspaceUsersCreateRequest {
+    /**
+     *
+     */
     googleWorkspaceProviderUserRequest: GoogleWorkspaceProviderUserRequest;
 }
 
 export interface ProvidersGoogleWorkspaceUsersDestroyRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userId?: number;
+    /**
+     *
+     */
     userUsername?: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersGoogleWorkspaceUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this Google Workspace Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersLdapCreateRequest {
+    /**
+     *
+     */
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
 export interface ProvidersLdapDestroyRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
 export interface ProvidersLdapListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     *
+     */
     authorizationFlowSlugIexact?: string;
+    /**
+     *
+     */
     baseDnIexact?: string;
+    /**
+     *
+     */
     certificateKpUuidIexact?: string;
+    /**
+     *
+     */
     certificateNameIexact?: string;
+    /**
+     *
+     */
     gidStartNumberIexact?: number;
+    /**
+     *
+     */
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     tlsServerNameIexact?: string;
+    /**
+     *
+     */
     uidStartNumberIexact?: number;
 }
 
 export interface ProvidersLdapPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedLDAPProviderRequest?: PatchedLDAPProviderRequest;
 }
 
 export interface ProvidersLdapRetrieveRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
 export interface ProvidersLdapUpdateRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
+    /**
+     *
+     */
     lDAPProviderRequest: LDAPProviderRequest;
 }
 
 export interface ProvidersLdapUsedByListRequest {
+    /**
+     * A unique integer value identifying this LDAP Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraCreateRequest {
+    /**
+     *
+     */
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
 export interface ProvidersMicrosoftEntraDestroyRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraGroupsCreateRequest {
+    /**
+     *
+     */
     microsoftEntraProviderGroupRequest: MicrosoftEntraProviderGroupRequest;
 }
 
 export interface ProvidersMicrosoftEntraGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsListRequest {
+    /**
+     *
+     */
     groupGroupUuid?: string;
+    /**
+     *
+     */
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider Group.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraListRequest {
+    /**
+     *
+     */
     excludeUsersServiceAccount?: boolean;
+    /**
+     *
+     */
     filterGroup?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersMicrosoftEntraPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedMicrosoftEntraProviderRequest?: PatchedMicrosoftEntraProviderRequest;
 }
 
 export interface ProvidersMicrosoftEntraRetrieveRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
+    /**
+     *
+     */
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersMicrosoftEntraSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraUpdateRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
+    /**
+     *
+     */
     microsoftEntraProviderRequest: MicrosoftEntraProviderRequest;
 }
 
 export interface ProvidersMicrosoftEntraUsedByListRequest {
+    /**
+     * A unique integer value identifying this Microsoft Entra Provider.
+     */
     id: number;
 }
 
 export interface ProvidersMicrosoftEntraUsersCreateRequest {
+    /**
+     *
+     */
     microsoftEntraProviderUserRequest: MicrosoftEntraProviderUserRequest;
 }
 
 export interface ProvidersMicrosoftEntraUsersDestroyRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userId?: number;
+    /**
+     *
+     */
     userUsername?: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersMicrosoftEntraUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this Microsoft Entra Provider User.
+     */
     id: string;
 }
 
 export interface ProvidersOauth2CreateRequest {
+    /**
+     *
+     */
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2DcrCreateRequest {
+    /**
+     *
+     */
     oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DcrDestroyRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
 }
 
 export interface ProvidersOauth2DcrListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersOauth2DcrPartialUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
+    /**
+     *
+     */
     patchedOAuth2DynamicClientRegistrationRequest?: PatchedOAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DcrRetrieveRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
 }
 
 export interface ProvidersOauth2DcrUpdateRequest {
+    /**
+     * A UUID string identifying this OAuth2 Dynamic Client Registration.
+     */
     pbmUuid: string;
+    /**
+     *
+     */
     oAuth2DynamicClientRegistrationRequest: OAuth2DynamicClientRegistrationRequest;
 }
 
 export interface ProvidersOauth2DestroyRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersOauth2ListRequest {
+    /**
+     *
+     */
     accessCodeValidity?: string;
+    /**
+     *
+     */
     accessTokenValidity?: string;
+    /**
+     *
+     */
     application?: string;
+    /**
+     *
+     */
     authorizationFlow?: string;
+    /**
+     *
+     */
     clientId?: string;
+    /**
+     *
+     */
     clientType?: ClientTypeEnum;
+    /**
+     *
+     */
     includeClaimsInIdToken?: boolean;
+    /**
+     *
+     */
     issuerMode?: IssuerModeEnum;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     propertyMappings?: Array<string>;
+    /**
+     *
+     */
     refreshTokenValidity?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     signingKey?: string;
+    /**
+     *
+     */
     subMode?: SubModeEnum;
 }
 
 export interface ProvidersOauth2PartialUpdateRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedOAuth2ProviderRequest?: PatchedOAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2PreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
+    /**
+     *
+     */
     forUser?: number;
 }
 
 export interface ProvidersOauth2RetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersOauth2SetupUrlsRetrieveRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersOauth2UpdateRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
+    /**
+     *
+     */
     oAuth2ProviderRequest: OAuth2ProviderRequest;
 }
 
 export interface ProvidersOauth2UsedByListRequest {
+    /**
+     * A unique integer value identifying this OAuth2/OpenID Provider.
+     */
     id: number;
 }
 
 export interface ProvidersProxyCreateRequest {
+    /**
+     *
+     */
     proxyProviderRequest: ProxyProviderRequest;
 }
 
 export interface ProvidersProxyDestroyRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
 export interface ProvidersProxyListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     *
+     */
     authorizationFlowSlugIexact?: string;
+    /**
+     *
+     */
     basicAuthEnabledIexact?: boolean;
+    /**
+     *
+     */
     basicAuthPasswordAttributeIexact?: string;
+    /**
+     *
+     */
     basicAuthUserAttributeIexact?: string;
+    /**
+     *
+     */
     certificateKpUuidIexact?: string;
+    /**
+     *
+     */
     certificateNameIexact?: string;
+    /**
+     *
+     */
     cookieDomainIexact?: string;
+    /**
+     *
+     */
     externalHostIexact?: string;
+    /**
+     *
+     */
     internalHostIexact?: string;
+    /**
+     *
+     */
     internalHostSslValidationIexact?: boolean;
+    /**
+     *
+     */
     modeIexact?: string;
+    /**
+     *
+     */
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     propertyMappingsIexact?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     skipPathRegexIexact?: string;
 }
 
 export interface ProvidersProxyPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedProxyProviderRequest?: PatchedProxyProviderRequest;
 }
 
 export interface ProvidersProxyRetrieveRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
 export interface ProvidersProxyUpdateRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
+    /**
+     *
+     */
     proxyProviderRequest: ProxyProviderRequest;
 }
 
 export interface ProvidersProxyUsedByListRequest {
+    /**
+     * A unique integer value identifying this Proxy Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRacCreateRequest {
+    /**
+     *
+     */
     rACProviderRequest: RACProviderRequest;
 }
 
 export interface ProvidersRacDestroyRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRacListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     *
+     */
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersRacPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedRACProviderRequest?: PatchedRACProviderRequest;
 }
 
 export interface ProvidersRacRetrieveRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRacUpdateRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
+    /**
+     *
+     */
     rACProviderRequest: RACProviderRequest;
 }
 
 export interface ProvidersRacUsedByListRequest {
+    /**
+     * A unique integer value identifying this RAC Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRadiusCreateRequest {
+    /**
+     *
+     */
     radiusProviderRequest: RadiusProviderRequest;
 }
 
 export interface ProvidersRadiusDestroyRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRadiusListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     *
+     */
     authorizationFlowSlugIexact?: string;
+    /**
+     *
+     */
     clientNetworksIexact?: string;
+    /**
+     *
+     */
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersRadiusPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedRadiusProviderRequest?: PatchedRadiusProviderRequest;
 }
 
 export interface ProvidersRadiusRetrieveRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
 export interface ProvidersRadiusUpdateRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
+    /**
+     *
+     */
     radiusProviderRequest: RadiusProviderRequest;
 }
 
 export interface ProvidersRadiusUsedByListRequest {
+    /**
+     * A unique integer value identifying this Radius Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSamlCreateRequest {
+    /**
+     *
+     */
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
 export interface ProvidersSamlDestroyRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSamlImportMetadataCreateRequest {
+    /**
+     *
+     */
     name: string;
+    /**
+     *
+     */
     authorizationFlow: string;
+    /**
+     *
+     */
     invalidationFlow: string;
+    /**
+     *
+     */
     file: Blob;
 }
 
 export interface ProvidersSamlListRequest {
+    /**
+     *
+     */
     acsUrl?: string;
+    /**
+     *
+     */
     assertionValidNotBefore?: string;
+    /**
+     *
+     */
     assertionValidNotOnOrAfter?: string;
+    /**
+     *
+     */
     audience?: string;
+    /**
+     *
+     */
     authenticationFlow?: string;
+    /**
+     *
+     */
     authnContextClassRefMapping?: string;
+    /**
+     *
+     */
     authorizationFlow?: string;
+    /**
+     *
+     */
     backchannelApplication?: string;
+    /**
+     *
+     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     *
+     */
     defaultRelayState?: string;
+    /**
+     *
+     */
     digestAlgorithm?: DigestAlgorithmEnum;
+    /**
+     *
+     */
     encryptionKp?: string;
+    /**
+     *
+     */
     invalidationFlow?: string;
+    /**
+     *
+     */
     isBackchannel?: boolean;
+    /**
+     *
+     */
     issuerOverride?: string;
+    /**
+     *
+     */
     logoutMethod?: SAMLLogoutMethods;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     nameIdMapping?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     propertyMappings?: Array<string>;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     sessionValidNotOnOrAfter?: string;
+    /**
+     *
+     */
     signAssertion?: boolean;
+    /**
+     *
+     */
     signLogoutRequest?: boolean;
+    /**
+     *
+     */
     signLogoutResponse?: boolean;
+    /**
+     *
+     */
     signResponse?: boolean;
+    /**
+     *
+     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
+    /**
+     *
+     */
     signingKp?: string;
+    /**
+     *
+     */
     slsBinding?: SAMLBindingsEnum;
+    /**
+     *
+     */
     slsUrl?: string;
+    /**
+     *
+     */
     spBinding?: SAMLBindingsEnum;
+    /**
+     *
+     */
     verificationKp?: string;
 }
 
 export interface ProvidersSamlMetadataRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
+    /**
+     *
+     */
     download?: boolean;
+    /**
+     *
+     */
     forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersSamlPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedSAMLProviderRequest?: PatchedSAMLProviderRequest;
 }
 
 export interface ProvidersSamlPreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
+    /**
+     *
+     */
     forUser?: number;
 }
 
 export interface ProvidersSamlRetrieveRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSamlUpdateRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
+    /**
+     *
+     */
     sAMLProviderRequest: SAMLProviderRequest;
 }
 
 export interface ProvidersSamlUsedByListRequest {
+    /**
+     * A unique integer value identifying this SAML Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimCreateRequest {
+    /**
+     *
+     */
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
 export interface ProvidersScimDestroyRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimGroupsCreateRequest {
+    /**
+     *
+     */
     sCIMProviderGroupRequest: SCIMProviderGroupRequest;
 }
 
 export interface ProvidersScimGroupsDestroyRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
 export interface ProvidersScimGroupsListRequest {
+    /**
+     *
+     */
     groupGroupUuid?: string;
+    /**
+     *
+     */
     groupName?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersScimGroupsRetrieveRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
 export interface ProvidersScimGroupsUsedByListRequest {
+    /**
+     * A UUID string identifying this scim provider group.
+     */
     id: string;
 }
 
 export interface ProvidersScimListRequest {
+    /**
+     *
+     */
     excludeUsersServiceAccount?: boolean;
+    /**
+     *
+     */
     groupFilters?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     url?: string;
 }
 
 export interface ProvidersScimPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedSCIMProviderRequest?: PatchedSCIMProviderRequest;
 }
 
 export interface ProvidersScimRetrieveRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimSyncObjectCreateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
+    /**
+     *
+     */
     syncObjectRequest: SyncObjectRequest;
 }
 
 export interface ProvidersScimSyncStatusRetrieveRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimUpdateRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
+    /**
+     *
+     */
     sCIMProviderRequest: SCIMProviderRequest;
 }
 
 export interface ProvidersScimUsedByListRequest {
+    /**
+     * A unique integer value identifying this SCIM Provider.
+     */
     id: number;
 }
 
 export interface ProvidersScimUsersCreateRequest {
+    /**
+     *
+     */
     sCIMProviderUserRequest: SCIMProviderUserRequest;
 }
 
 export interface ProvidersScimUsersDestroyRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
 export interface ProvidersScimUsersListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     providerId?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userId?: number;
+    /**
+     *
+     */
     userUsername?: string;
 }
 
 export interface ProvidersScimUsersRetrieveRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
 export interface ProvidersScimUsersUsedByListRequest {
+    /**
+     * A UUID string identifying this scim provider user.
+     */
     id: string;
 }
 
 export interface ProvidersSsfCreateRequest {
+    /**
+     *
+     */
     sSFProviderRequest: SSFProviderRequest;
 }
 
 export interface ProvidersSsfDestroyRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSsfListRequest {
+    /**
+     *
+     */
     applicationIsnull?: boolean;
+    /**
+     *
+     */
     nameIexact?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface ProvidersSsfPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedSSFProviderRequest?: PatchedSSFProviderRequest;
 }
 
 export interface ProvidersSsfRetrieveRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
 export interface ProvidersSsfUpdateRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
+    /**
+     *
+     */
     sSFProviderRequest: SSFProviderRequest;
 }
 
 export interface ProvidersSsfUsedByListRequest {
+    /**
+     * A unique integer value identifying this Shared Signals Framework Provider.
+     */
     id: number;
 }
 
 export interface ProvidersWsfedCreateRequest {
+    /**
+     *
+     */
     wSFederationProviderRequest: WSFederationProviderRequest;
 }
 
 export interface ProvidersWsfedDestroyRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 
 export interface ProvidersWsfedListRequest {
+    /**
+     *
+     */
     acsUrl?: string;
+    /**
+     *
+     */
     assertionValidNotBefore?: string;
+    /**
+     *
+     */
     assertionValidNotOnOrAfter?: string;
+    /**
+     *
+     */
     audience?: string;
+    /**
+     *
+     */
     authenticationFlow?: string;
+    /**
+     *
+     */
     authnContextClassRefMapping?: string;
+    /**
+     *
+     */
     authorizationFlow?: string;
+    /**
+     *
+     */
     backchannelApplication?: string;
+    /**
+     *
+     */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
+    /**
+     *
+     */
     defaultRelayState?: string;
+    /**
+     *
+     */
     digestAlgorithm?: DigestAlgorithmEnum;
+    /**
+     *
+     */
     encryptionKp?: string;
+    /**
+     *
+     */
     invalidationFlow?: string;
+    /**
+     *
+     */
     isBackchannel?: boolean;
+    /**
+     *
+     */
     issuerOverride?: string;
+    /**
+     *
+     */
     logoutMethod?: SAMLLogoutMethods;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     nameIdMapping?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     propertyMappings?: Array<string>;
+    /**
+     *
+     */
     samlVersion?: SamlVersionEnum;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     sessionValidNotOnOrAfter?: string;
+    /**
+     *
+     */
     signAssertion?: boolean;
+    /**
+     *
+     */
     signLogoutRequest?: boolean;
+    /**
+     *
+     */
     signLogoutResponse?: boolean;
+    /**
+     *
+     */
     signResponse?: boolean;
+    /**
+     *
+     */
     signatureAlgorithm?: SignatureAlgorithmEnum;
+    /**
+     *
+     */
     signingKp?: string;
+    /**
+     *
+     */
     slsBinding?: SAMLBindingsEnum;
+    /**
+     *
+     */
     slsUrl?: string;
+    /**
+     *
+     */
     spBinding?: SAMLBindingsEnum;
+    /**
+     *
+     */
     verificationKp?: string;
 }
 
 export interface ProvidersWsfedMetadataRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
+    /**
+     *
+     */
     download?: boolean;
+    /**
+     *
+     */
     forceBinding?: ForceBindingEnum;
 }
 
 export interface ProvidersWsfedPartialUpdateRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
+    /**
+     *
+     */
     patchedWSFederationProviderRequest?: PatchedWSFederationProviderRequest;
 }
 
 export interface ProvidersWsfedPreviewUserRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
+    /**
+     *
+     */
     forUser?: number;
 }
 
 export interface ProvidersWsfedRetrieveRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 
 export interface ProvidersWsfedUpdateRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
+    /**
+     *
+     */
     wSFederationProviderRequest: WSFederationProviderRequest;
 }
 
 export interface ProvidersWsfedUsedByListRequest {
+    /**
+     * A unique integer value identifying this WS-Federation Provider.
+     */
     id: number;
 }
 

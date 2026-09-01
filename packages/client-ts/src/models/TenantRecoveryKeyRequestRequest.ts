@@ -20,14 +20,10 @@
 export interface TenantRecoveryKeyRequestRequest {
     /**
      *
-     * @type {string}
-     * @memberof TenantRecoveryKeyRequestRequest
      */
     user: string;
     /**
      *
-     * @type {number}
-     * @memberof TenantRecoveryKeyRequestRequest
      */
     durationDays: number;
 }

@@ -20,32 +20,22 @@
 export interface SAMLPropertyMappingRequest {
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof SAMLPropertyMappingRequest
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SAMLPropertyMappingRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLPropertyMappingRequest
      */
     expression: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLPropertyMappingRequest
      */
     samlName: string;
     /**
      *
-     * @type {string}
-     * @memberof SAMLPropertyMappingRequest
      */
     friendlyName?: string | null;
 }
