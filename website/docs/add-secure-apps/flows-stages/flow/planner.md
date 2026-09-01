@@ -1,5 +1,7 @@
 ---
 title: Flow Planner
+description: How authentik determines which stages run and the order in which they run.
+sidebar_position: 3
 ---
 
 The Flow Planner is the component of authentik that takes a configured [flow](./index.md) and, for each incoming request for that flow, determines the specific stages to run and the order in which they will run.

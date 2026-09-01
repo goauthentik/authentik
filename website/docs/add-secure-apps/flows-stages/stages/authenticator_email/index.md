@@ -1,5 +1,6 @@
 ---
 title: Email authenticator setup stage
+description: Set up email-based authenticators and one-time codes for users.
 authentik_version: "2025.2"
 ---
 

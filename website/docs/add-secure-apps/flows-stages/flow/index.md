@@ -1,6 +1,8 @@
 ---
 title: Flows
+description: Create, configure, import, and manage flows for authentication, enrollment, and other processes.
 sidebar_label: "Flows"
+sidebar_position: 1
 ---
 
 Flows are a major component in authentik. In conjunction with [stages](../stages/index.md) and [policies](../../../customize/policies/index.md), flows are at the heart of our system of building blocks, used to define and execute the workflows of authentication, authorization, enrollment, and user settings.
@@ -35,7 +37,11 @@ Flows can be imported and exported (as [blueprints](../../../customize/blueprint
 
 Flows can be imported to add new functionality to existing flows, or to add a new custom flow.
 
+<<<<<<< HEAD:website/docs/add-secure-apps/flows-stages/flow/index.md
 You can download our [Example flows](./examples/flows.md) and then import them into your authentik instance, or create a new flow.
+=======
+You can download our [Example flows](./flows.mdx) and then import them into your authentik instance, or create a new flow.
+>>>>>>> ff40a9f9c (website/docs: flows-stages: update section (#25640)):website/docs/add-secure-apps/flows-stages/flow/index.mdx
 
 Starting with authentik 2022.8, flows are exported as YAML, but legacy JSON-based flows can still be imported.
 

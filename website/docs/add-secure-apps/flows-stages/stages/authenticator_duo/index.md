@@ -1,5 +1,6 @@
 ---
 title: Duo authenticator setup stage
+description: Enroll Duo authenticators for users as part of an authentication flow.
 ---
 
 The Duo Authenticator Setup stage enrolls a Duo authenticator for the current user.

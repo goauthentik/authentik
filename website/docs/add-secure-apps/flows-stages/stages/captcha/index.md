@@ -1,5 +1,6 @@
 ---
 title: Captcha stage
+description: Add CAPTCHA checks to flows to verify that an interaction is human.
 ---
 
 The Captcha stage adds CAPTCHA verification to a flow by using Google reCAPTCHA or compatible alternatives like hCaptcha, Cloudflare Turnstile, and Cap.

@@ -1,5 +1,6 @@
 ---
 title: WebAuthn / FIDO2 / Passkeys authenticator setup stage
+description: Enroll WebAuthn authenticators, security keys, and passkeys for users.
 ---
 
 The WebAuthn / FIDO2 / Passkeys Authenticator setup stage enrolls a WebAuthn authenticator for the current user.

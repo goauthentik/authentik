@@ -1,5 +1,7 @@
 ---
 title: Flow Inspector
+description: Inspect running flows and troubleshoot their stages, history, and context.
+sidebar_position: 8
 ---
 
 The Flow Inspector allows administrators to visually determine how custom flows work, inspect the current [flow context](./context/index.mdx) by stepping through the flow process and observing the Inspector with each step, and investigate issues. It shows details from the active [flow plan](./planner.md).
