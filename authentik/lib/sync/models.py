@@ -79,8 +79,8 @@ class Sync(InternallyManagedMixin, models.Model):
         return SyncStatus.DONE
 
     def persist_status(self) -> None:
-        self._status = self.tasks_status
-        self.save(update_fields=["_status"])
+        self.status = self.tasks_status
+        self.save(update_fields=["status"])
 
     def enqueue(self, messages: list[Message], existing_tasks_as_dependencies: bool = True) -> None:
         broker = get_broker()
