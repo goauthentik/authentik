@@ -11,27 +11,26 @@ import { loadMermaid } from "#elements/mermaid/utils";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { CSSResult, PropertyValues } from "lit";
-import { guard } from "lit-html/directives/guard.js";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { until } from "lit/directives/until.js";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
     static styles: CSSResult[] = [MermaidStyles, Styles];
 
     #diagram = "";
-    @property({ attribute: false, useDefault: true })
+
     public get diagram(): string {
         return this.#diagram || this.textContent.trim() || "";
     }
 
+    @property({ attribute: false, useDefault: true })
     public set diagram(value: string) {
-        const previous = this.#diagram;
         this.#diagram = value.trim();
-
-        this.requestUpdate("diagram", previous);
     }
+
+    @property({ attribute: false })
+    public postrenderCallback?: () => void;
 
     @listen(AKRefreshEvent, {
         target: window,
@@ -42,6 +41,14 @@ export class Diagram extends AKElement {
     };
 
     loadingPlaceholder: EmptyState;
+
+    // Mermaid has its own internal renderer with its own task queue. We need to keep the most
+    // recent version Mermaid produces as a state, so when mermaid completes it triggers a re-render
+    // of the whole diagram.
+    @state()
+    protected renderedSVG: SlottedTemplateResult = null;
+
+    #generation = 0;
 
     constructor() {
         super();
@@ -54,30 +61,70 @@ export class Diagram extends AKElement {
         this.syncDiagramContent();
     }
 
-    protected renderMermaid(): Promise<SlottedTemplateResult> {
-        return loadMermaid(this.activeTheme).then((mermaid) => {
-            if (!this.diagram) {
-                return null;
-            }
+    protected override updated(changedProperties: PropertyValues<this>): void {
+        super.updated(changedProperties);
+        if (changedProperties.has("diagram") || changedProperties.has("activeTheme")) {
+            // RAF so Lit's scheduler doesn't complain about a reschedule.
+            requestAnimationFrame(() =>
+                this.#renderMermaid().catch((error: unknown) => {
+                    console.warn("Could not render diagram:", error);
+                })
+            );
+        }
+    }
 
-            return mermaid.render(`mermaid-svg-${this.localName}`, this.diagram).then((result) => {
-                result.bindFunctions?.(this.renderRoot as HTMLElement);
+    async #renderMermaid(): Promise<void> {
+        this.#generation = this.#generation + 1;
 
-                return unsafeHTML(result.svg);
-            });
-        });
+        if (!this.diagram) {
+            this.renderedSVG = null;
+            return;
+        }
+
+        const generation = this.#generation;
+        const overridden = () => generation !== this.#generation;
+
+        const mermaid = await loadMermaid(this.activeTheme);
+        // Something else updated the render while we were waiting
+        if (overridden()) {
+            console.log("Overridden 1");
+            return;
+        }
+
+        const { svg, bindFunctions } = await mermaid.render(
+            `mermaid-svg-${this.localName}`,
+            this.diagram
+        );
+        if (overridden()) {
+            console.log("Overridden 2");
+            return;
+        }
+
+        this.renderedSVG = unsafeHTML(svg);
+        await this.updateComplete;
+        if (overridden()) {
+            console.log("Overridden 3");
+            return;
+        }
+
+        bindFunctions?.(this.renderRoot as HTMLElement);
+        this.diagramRendered();
+    }
+
+    // Do something to the diagram after it has rendered. You can either override this in a child
+    // class, or pass in a callback. Meant to let clients fill in details using the SVG
+    // ForeignObject protocol. The diagram is completely torn down and replaced every time, so
+    // whatever you put here must fully render and never assume anything from a previous pass is
+    // still present.
+    //
+    protected diagramRendered(): void {
+        if (this.postrenderCallback) {
+            this.postrenderCallback.apply(this);
+        }
     }
 
     protected override render(): SlottedTemplateResult {
-        const { diagram, loadingPlaceholder, activeTheme } = this;
-
-        return guard([diagram, activeTheme], () => {
-            if (!diagram) {
-                return loadingPlaceholder;
-            }
-
-            return until(this.renderMermaid(), loadingPlaceholder);
-        });
+        return this.renderedSVG ?? this.loadingPlaceholder;
     }
 }
 
