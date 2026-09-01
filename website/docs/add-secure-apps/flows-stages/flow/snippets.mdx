@@ -20,7 +20,7 @@ return False
 
 ## Deny flow when user is authenticated
 
-When used with authentik 2022.7 or later, set the flow _Denied action_ to _CONTINUE_. This will redirect already authenticated users to the default interface if they try to use the respective flow.
+Set the flow's **Denied action** to **CONTINUE**. This will redirect already authenticated users to the default interface if they try to use the respective flow.
 
 ```python
 return not request.user.is_authenticated
