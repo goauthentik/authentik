@@ -491,8 +491,8 @@ DRAMATIQ = {
                 "prefix": "authentik",
             },
         ),
-        ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
         ("authentik.sources.ldap.middleware.LDAPSyncMiddleware", {}),
+        ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
     ),
     "test": TEST,
 }
