@@ -15,7 +15,7 @@ When authentik is behind a reverse proxy, configure the proxy to set the followi
 
 At a minimum, configure these headers in your reverse proxy:
 
-- `Host`
+- `X-Forwarded-Host` or `Host`
 
     Preserves the original host requested by the client. Required for security checks, correct URL handling, WebSocket handshakes, and communication with outposts and proxy providers.
 
@@ -35,7 +35,7 @@ It is also recommended to use a [modern TLS configuration](https://ssl-config.mo
 
 ## Trusted proxy networks
 
-authentik only accepts forwarded headers, including `X-Forwarded-Proto` and `X-Forwarded-For`, when the request comes from a trusted proxy network. authentik does not use forwarded headers from other sources to determine the original host, scheme, or client address.
+authentik only accepts the headers listed above, excluding `Connection` and `Upgrade`, when the request comes from a trusted proxy network. authentik does not use forwarded headers from other sources to determine the original host, scheme, or client address.
 
 The trusted address is the source address from which the reverse proxy connects directly to authentik. In containerized deployments, this is typically the reverse proxy container or cluster network, not the client IP address.
 
