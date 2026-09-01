@@ -10,7 +10,7 @@ class LDAPSyncMiddleware(SyncMiddleware):
     SyncModel = LDAPSourceSync
 
     @staticmethod
-    def actors() -> Iterable[Actor]:
+    def sync_actors() -> Iterable[Actor]:
         from authentik.sources.ldap.tasks import (
             ldap_sync,
             ldap_sync_page,
