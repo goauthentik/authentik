@@ -28,21 +28,26 @@ const RECTANGLE = (label: string) => `["${escapeLabel(label)}"]`;
 const STADIUM = (label: string) => `(["${escapeLabel(label)}"])`;
 const HEXAGON = (label: string) => `{{"${escapeLabel(label)}"}}`;
 
-function declaration(id: string, shape: MermaidShape, label: string): string {
-    return `${id}${shape(label)}`;
-}
+const declaration = (id: string, shape: MermaidShape, label: string) => `${id}${shape(label)}`;
+
+const isEditableNode = (node: DiagramNode) => Boolean(node.pk);
+
+// The lack of quotes around the class declaration is deliberate. Put quotes around it and Mermaid +
+// Purify will break it by putting double-doublequotes.
+const TOOLBAR = "<div class=ak-diagram-toolbar></div>";
 
 function declareNode(node: DiagramNode, id: string): string {
     const { name, verboseName } = node;
-
     const D = DiagramNodeTypeEnum;
+    const toolbar = node.type === D.FlowStart || isEditableNode(node) ? TOOLBAR : "";
+
     // prettier-ignore
     return match(node.type)
-        .with(D.FlowStart,       () => declaration(id, SUBROUTINE, `${msg("Flow")}\n${name}`))
+        .with(D.FlowStart,       () => declaration(id, SUBROUTINE, `${msg("Flow")}\n${name}${toolbar}`))
         .with(D.FlowEnd,         () => declaration(id, SUBROUTINE, msg("End of the flow")))
         .with(D.PreFlowPolicies, () => declaration(id, SUBROUTINE, msg("Pre-flow policies")))
-        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`Stage (${verboseName})`)}\n${name}`))
-        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`Policy (${verboseName})`)}\n${name}`))
+        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`Stage (${verboseName})`)}\n${name}${toolbar}`))
+        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`Policy (${verboseName})`)}\n${name}${toolbar}`))
         .with(D.AuthenticationRequirement, () => declaration(id, RECTANGLE, `${msg("Flow authentication requirement")}\n${name}`))
         .with(D.UnknownDefaultOpenApi,     () => declaration(id, RECTANGLE, name))
         .exhaustive();
