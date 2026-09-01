@@ -988,14 +988,14 @@ wheels = [
 
 [[package]]
 name = "cron-converter"
-version = "1.3.1"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/75/1a/b670d969f3cf6a46322f3d28f7fd6d13294d4f20a5e132beacb1ee1981b9/cron_converter-1.3.1.tar.gz", hash = "sha256:53eb26be3eb2e0f206a6e227ca0c19b3807b44a24b39f4eda3718703e6474f4a", size = 15738, upload-time = "2025-12-02T19:03:33.633Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8d/1b/8848a83006366a29ea13eb5891c63d5956c80614d50ae48d956274d49300/cron_converter-2.0.1.tar.gz", hash = "sha256:767813cda685433707a91ab3eb2326d3a0dc53c017409c01a9a6df6770975b98", size = 17350, upload-time = "2026-08-17T09:39:12.302Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/9e/4285b91b03ad0d641fefaa69cc39cd7978106c40f729ac0052dd98a44204/cron_converter-1.3.1-py3-none-any.whl", hash = "sha256:60c645532802e12ad09097091a5ec83a79b9b1064374e89edb0facf2ba36a697", size = 14242, upload-time = "2025-12-02T19:03:32.306Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/d4/6d9941f2fe175410a87d0db1fb2ef7ccbbddc30db219e20eda280a81bb45/cron_converter-2.0.1-py3-none-any.whl", hash = "sha256:80875151d1918f90a41af304bbb74668a1badc2dc79db446d2f18153debbb708", size = 15434, upload-time = "2026-08-17T09:39:11.081Z" },
 ]
 
 [[package]]
@@ -1220,7 +1220,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cron-converter", specifier = ">=1,<2" },
+    { name = "cron-converter", specifier = ">=1,<3" },
     { name = "django", specifier = ">=4.2,<6.0" },
     { name = "django-pglock", specifier = ">=1.7,<2" },
     { name = "django-pgtrigger", specifier = ">=4,<5" },
