@@ -30,7 +30,7 @@ export class Diagram extends AKElement {
     }
 
     @property({ attribute: false })
-    public postrenderCallback?: () => void;
+    public diagramUpdatedCallback?: (diagram: Diagram) => void;
 
     @listen(AKRefreshEvent, {
         target: window,
@@ -64,11 +64,10 @@ export class Diagram extends AKElement {
     protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
         if (changedProperties.has("diagram") || changedProperties.has("activeTheme")) {
-            // RAF so Lit's scheduler doesn't complain about a reschedule.
             requestAnimationFrame(() =>
                 this.#renderMermaid().catch((error: unknown) => {
                     console.warn("Could not render diagram:", error);
-                })
+                }),
             );
         }
     }
@@ -86,29 +85,23 @@ export class Diagram extends AKElement {
 
         const mermaid = await loadMermaid(this.activeTheme);
         // Something else updated the render while we were waiting
-        if (overridden()) {
-            console.log("Overridden 1");
-            return;
-        }
+        if (overridden()) return;
 
         const { svg, bindFunctions } = await mermaid.render(
             `mermaid-svg-${this.localName}`,
-            this.diagram
+            this.diagram,
         );
-        if (overridden()) {
-            console.log("Overridden 2");
-            return;
-        }
+        if (overridden()) return;
 
         this.renderedSVG = unsafeHTML(svg);
+
+        // This hands control back to Lit's scheduling thread. We do this here so that when
+        // `bindFunctions()` and `diagramUpddated()` are called, the diagram is already present.
         await this.updateComplete;
-        if (overridden()) {
-            console.log("Overridden 3");
-            return;
-        }
+        if (overridden()) return;
 
         bindFunctions?.(this.renderRoot as HTMLElement);
-        this.diagramRendered();
+        this.diagramUpdated();
     }
 
     // Do something to the diagram after it has rendered. You can either override this in a child
@@ -117,9 +110,9 @@ export class Diagram extends AKElement {
     // whatever you put here must fully render and never assume anything from a previous pass is
     // still present.
     //
-    protected diagramRendered(): void {
-        if (this.postrenderCallback) {
-            this.postrenderCallback.apply(this);
+    protected diagramUpdated(): void {
+        if (this.diagramUpdatedCallback) {
+            this.diagramUpdatedCallback.call(this.diagramUpdatedCallback, this);
         }
     }
 

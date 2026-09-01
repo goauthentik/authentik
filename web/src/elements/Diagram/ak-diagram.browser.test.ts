@@ -20,22 +20,26 @@ afterEach(() => {
     mounted.clear();
 });
 
-/**
- * Records what the render root actually contained at the moment the hook fired,
- * rather than what it contains once the test gets around to looking.
- */
 class TestDiagram extends Diagram {
     public observed: string[] = [];
 
-    protected override diagramRendered(): void {
+    protected override diagramUpdated(): void {
         this.observed.push(this.renderRoot.querySelector("svg")?.tagName ?? "no-svg");
     }
+}
+
+class CallbackTestClass {
+    public observed: string[] = [];
+
+    invoke = (diagram: Diagram) => {
+        this.observed.push(diagram.renderRoot.querySelector("svg")?.tagName ?? "no-svg");
+    };
 }
 
 customElements.define("ak-test-diagram", TestDiagram);
 
 describe("ak-diagram", () => {
-    it("invokes diagramRendered once the SVG is committed to the render root", async () => {
+    it("invokes diagramUpdated after the SVG is made visible", async () => {
         const element = mount(new TestDiagram());
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
@@ -43,7 +47,7 @@ describe("ak-diagram", () => {
         await vi.waitFor(() => expect(element.observed).toStrictEqual(["svg"]));
     });
 
-    it("invokes diagramRendered again when the diagram changes", async () => {
+    it("invokes diagramUpdated again when the diagram changes", async () => {
         const element = mount(new TestDiagram());
 
         element.diagram = 'graph TD\nn0["Alpha"]';
@@ -51,5 +55,31 @@ describe("ak-diagram", () => {
 
         element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
         await vi.waitFor(() => expect(element.observed).toStrictEqual(["svg", "svg"]));
+    });
+
+    it("invokes diagramUpdatedCallback on a function after the SVG is rendered", async () => {
+        const element = mount(new Diagram());
+        const observed: string[] = [];
+
+        element.diagramUpdatedCallback = (diagram: Diagram) =>
+            observed.push(diagram.renderRoot.querySelector("svg")?.tagName ?? "no-svg");
+
+        element.diagram = 'graph TD\nn0["Alpha"]';
+        await vi.waitFor(() => expect(observed).toHaveLength(1));
+
+        element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
+        await vi.waitFor(() => expect(observed).toStrictEqual(["svg", "svg"]));
+    });
+
+    it("invokes diagramUpdatedCallback on a method after the SVG is rendered", async () => {
+        const callback = new CallbackTestClass();
+        const element = mount(new Diagram());
+        element.diagramUpdatedCallback = callback.invoke;
+
+        element.diagram = 'graph TD\nn0["Alpha"]';
+        await vi.waitFor(() => expect(callback.observed).toHaveLength(1));
+
+        element.diagram = 'graph TD\nn0["Alpha"]\nn1["Beta"]\nn0 --> n1';
+        await vi.waitFor(() => expect(callback.observed).toStrictEqual(["svg", "svg"]));
     });
 });
