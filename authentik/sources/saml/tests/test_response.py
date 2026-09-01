@@ -635,6 +635,11 @@ class TestResponseProcessor(TestCase):
         self._parse_success(audience=self.source.issuer_override)
 
     @freeze_time("2022-10-14T14:15:00")
+    def test_audience_issuer_override_with_audience_override(self):
+        """Test that the issuer override is accepted even when an audience override is set"""
+        self._parse_success(audience=self.source.issuer_override)
+
+    @freeze_time("2022-10-14T14:15:00")
     def test_audience_default_issuer(self):
         """Test that the audience falls back to the generated metadata URL"""
         self.source.audience_override = ""

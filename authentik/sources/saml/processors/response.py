@@ -156,8 +156,8 @@ class ResponseProcessor:
         ]
         if not audiences:
             return
-        expected = self._source.get_audience(self._http_request)
-        if expected not in audiences:
+        expected = self._source.get_audiences(self._http_request)
+        if not set(expected).intersection(audiences):
             LOGGER.warning(
                 "Assertion audience does not match source",
                 expected=expected,
