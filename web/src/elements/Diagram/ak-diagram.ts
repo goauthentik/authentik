@@ -96,7 +96,7 @@ export class Diagram extends AKElement {
         this.renderedSVG = unsafeHTML(svg);
 
         // This hands control back to Lit's scheduling thread. We do this here so that when
-        // `bindFunctions()` and `diagramUpddated()` are called, the diagram is already present.
+        // `bindFunctions()` and `diagramUpdated()` are called, the diagram is already present.
         await this.updateComplete;
         if (overridden()) return;
 
