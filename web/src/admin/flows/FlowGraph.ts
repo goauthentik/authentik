@@ -30,7 +30,7 @@ const HEXAGON = (label: string) => `{{"${escapeLabel(label)}"}}`;
 
 const declaration = (id: string, shape: MermaidShape, label: string) => `${id}${shape(label)}`;
 
-const isEditableNode = (node: DiagramNode) => Boolean(node.pk);
+export const isEditableNode = (node: DiagramNode) => Boolean(node.pk);
 
 // The lack of quotes around the class declaration is deliberate. Put quotes around it and Mermaid +
 // Purify will break it by putting double-doublequotes.
@@ -39,15 +39,15 @@ const TOOLBAR = "<div class=ak-diagram-toolbar></div>";
 function declareNode(node: DiagramNode, id: string): string {
     const { name, verboseName } = node;
     const D = DiagramNodeTypeEnum;
-    const toolbar = node.type === D.FlowStart || isEditableNode(node) ? TOOLBAR : "";
+    const toolbar = isEditableNode(node) ? TOOLBAR : "";
 
     // prettier-ignore
     return match(node.type)
-        .with(D.FlowStart,       () => declaration(id, SUBROUTINE, `${msg("Flow")}\n${name}${toolbar}`))
+        .with(D.FlowStart,       () => declaration(id, SUBROUTINE, `${msg("Flow")}\n<strong>${name}</strong>`))
         .with(D.FlowEnd,         () => declaration(id, SUBROUTINE, msg("End of the flow")))
         .with(D.PreFlowPolicies, () => declaration(id, SUBROUTINE, msg("Pre-flow policies")))
-        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`Stage (${verboseName})`)}\n${name}${toolbar}`))
-        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`Policy (${verboseName})`)}\n${name}${toolbar}`))
+        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`Stage (<strong>${verboseName}</strong>)`)}\n${name}${toolbar}`))
+        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`Policy (<strong>${verboseName}</strong>)`)}\n${name}${toolbar}`))
         .with(D.AuthenticationRequirement, () => declaration(id, RECTANGLE, `${msg("Flow authentication requirement")}\n${name}`))
         .with(D.UnknownDefaultOpenApi,     () => declaration(id, RECTANGLE, name))
         .exhaustive();
@@ -68,8 +68,14 @@ function edgeLabel(edge: DiagramEdge, target?: DiagramNode): string {
         .exhaustive();
 }
 
+const nodeId = (index: number) => `n${index}`;
+
+const nodeIdRe = /-flowchart-(n\d+)-\d+$/;
+
+export const resolveNodeID = (id: string) => nodeIdRe.exec(id)?.[1] ?? null;
+
 export function buildFlowGraph(graph: FlowDiagram): FlowGraph {
-    const ids = new Map(graph.nodes.map((node, index) => [node.identifier, `n${index}`]));
+    const ids = new Map(graph.nodes.map((node, index) => [node.identifier, nodeId(index)]));
     const byIdentifier = new Map(graph.nodes.map((node) => [node.identifier, node]));
 
     const connect = (edge: DiagramEdge): string | null => {
@@ -86,11 +92,11 @@ export function buildFlowGraph(graph: FlowDiagram): FlowGraph {
 
     const lines = [
         "graph TD",
-        ...graph.nodes.map((node, index) => declareNode(node, `n${index}`)),
+        ...graph.nodes.map((node, index) => declareNode(node, nodeId(index))),
         ...graph.edges.map(connect).filter((line) => line !== null),
     ];
 
-    const nodes = new Map(graph.nodes.map((node, index) => [`n${index}`, node] as const));
+    const nodes = new Map(graph.nodes.map((node, index) => [nodeId(index), node] as const));
     return {
         diagram: lines.join("\n"),
         nodes,
