@@ -41,9 +41,19 @@ class TestPasswordHashValidator(TestCase):
             validator(stale)
 
         sha1 = PBKDF2SHA1PasswordHasher()
-        with self.assertRaises(PasswordHashRequiresOverride):
-            validator(sha1.encode(password, sha1.salt()))
-
         with self.assertRaises(PasswordHashRequiresOverride) as ctx:
-            validator(PBKDF2PasswordHasher().encode(password, "salt"))
-        self.assertIn("entropy", str(ctx.exception.messages[0]))
+            validator(sha1.encode(password, sha1.salt()))
+        self.assertIn("pbkdf2_sha1", str(ctx.exception.detail[0]))
+
+        hasher = PBKDF2PasswordHasher()
+        hasher.iterations -= 1
+        with self.assertRaises(PasswordHashRequiresOverride) as ctx:
+            validator(hasher.encode(password, "salt"))
+        self.assertEqual(len(ctx.exception.detail), 2)
+        self.assertIn("Provided:", str(ctx.exception.detail[0]))
+        self.assertIn(f"Iterations: {hasher.iterations}", str(ctx.exception.detail[0]))
+        self.assertIn(
+            f"Iterations: {PBKDF2PasswordHasher.iterations}", str(ctx.exception.detail[0])
+        )
+        self.assertNotIn("argon2", str(ctx.exception.detail[0]))
+        self.assertIn("entropy", str(ctx.exception.detail[1]))

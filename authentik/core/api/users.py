@@ -522,7 +522,7 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
                     "password": [
                         _('%(reason)s Set "override" to true to import it anyway.')
                         % {"reason": reason}
-                        for reason in exc.messages
+                        for reason in exc.detail
                     ]
                 }
             ) from exc
@@ -992,11 +992,15 @@ class UserViewSet(
             user.set_password_from_hash(
                 body.validated_data["password"],
                 request=request,
+                password_hash_override=body.validated_data["override"],
             )
             user.save()
         except IntegrityError as exc:
             LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(status=400)
+            return Response(
+                {"detail": _("The password hash could not be saved due to a database constraint.")},
+                status=400,
+            )
         self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 

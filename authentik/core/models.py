@@ -569,7 +569,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
+    def set_password_from_hash(
+        self,
+        password_hash: str,
+        signal=True,
+        sender=None,
+        request=None,
+        password_hash_override: bool | None = None,
+    ):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
@@ -583,7 +590,12 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
             if not sender:
                 sender = self
-            password_hash_changed.send(sender=sender, user=self, request=request)
+            password_hash_changed.send(
+                sender=sender,
+                user=self,
+                request=request,
+                password_hash_override=password_hash_override,
+            )
         self.password = password_hash
         self.password_change_date = now()
 

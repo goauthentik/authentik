@@ -1,6 +1,9 @@
 from os import getenv
 
+from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import receiver
+from django.utils.translation import gettext_lazy
+from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import BlueprintInstance
@@ -34,8 +37,16 @@ def post_startup_setup_bootstrap(sender, **_):
             continue
         with tenant:
             if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
-                validator = PasswordHashImportValidator()
-                validator(password_hash)
+                try:
+                    PasswordHashImportValidator()(password_hash)
+                except ValidationError as exc:
+                    raise ImproperlyConfigured(
+                        gettext_lazy(
+                            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
+                            "password hashing policy. Generate a new hash with authentik's current "
+                            "settings."
+                        )
+                    ) from exc
             importer = Importer.from_string(content)
             valid, logs = importer.validate()
             if not valid:

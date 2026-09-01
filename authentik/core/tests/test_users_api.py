@@ -2,12 +2,14 @@
 
 from datetime import datetime, timedelta
 from json import loads
+from unittest.mock import patch
 
 from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
     check_password,
     make_password,
 )
+from django.db import IntegrityError
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -29,13 +31,17 @@ from authentik.core.tests.utils import (
     create_test_session,
     create_test_user,
 )
+from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.rbac.models import Role
 from authentik.stages.email.models import EmailStage
 
 INVALID_PASSWORD_HASH = "not-a-valid-hash"
-INVALID_PASSWORD_HASH_ERROR = "Invalid password hash encoding."
+INVALID_PASSWORD_HASH_ERROR = (
+    "Invalid password hash. The value must be a complete encoded password hash in one of "
+    "authentik's configured formats."
+)
 
 
 class TestUsersAPI(APITestCase):
@@ -187,27 +193,49 @@ class TestUsersAPI(APITestCase):
 
         self._assert_password_hash_rejected(self.user, self.user.password, response)
 
-    def _noncurrent_pbkdf2_hash(self, password: str) -> str:
+    def _noncurrent_pbkdf2_hash(self, password: str, salt: str | None = None) -> str:
         hasher = PBKDF2PasswordHasher()
         hasher.iterations -= 1
-        return hasher.encode(password, hasher.salt())
+        return hasher.encode(password, salt or hasher.salt())
 
     def test_set_password_hash_override(self):
         """Test override imports a non-current hash, but not an invalid one."""
         self.client.force_login(self.admin)
         original_password = self.user.password
         password = generate_key()
-        password_hash = self._noncurrent_pbkdf2_hash(password)
+        password_hash = self._noncurrent_pbkdf2_hash(password, "salt")
 
         response = self._set_password_hash(self.user, password_hash)
-        self._assert_password_hash_rejected(self.user, original_password, response, errors=None)
-        self.assertTrue(any("override" in error for error in response.json()["password"]))
+        errors = response.json()["password"]
+        self._assert_password_hash_rejected(self.user, original_password, response, errors=errors)
+        self.assertEqual(len(errors), 2)
+        self.assertTrue(all("override" in error for error in errors))
 
         response = self._set_password_hash(self.user, password_hash, override=True)
         self._assert_password_hash_set(self.user, password, password_hash, response)
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.PASSWORD_SET,
+                user__pk=self.user.pk,
+                context__password_hash_override=True,
+            ).exists()
+        )
 
         response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
         self._assert_password_hash_rejected(self.user, password_hash, response)
+
+    def test_set_password_hash_integrity_error(self):
+        """The endpoint reports a database integrity failure."""
+        self.client.force_login(self.admin)
+
+        with patch.object(User, "save", side_effect=IntegrityError):
+            response = self._set_password_hash(self.user, make_password(generate_key()))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"detail": "The password hash could not be saved due to a database constraint."},
+        )
 
     def test_recovery(self):
         """Test user recovery link"""
