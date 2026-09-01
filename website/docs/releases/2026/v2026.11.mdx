@@ -12,6 +12,12 @@ draft: true
 
 - **Display names in `ak_send_email` recipients**: The `address`, `cc`, and `bcc` parameters of `ak_send_email` now accept `(name, email)` tuples and `"Name <email>"` strings, so emails sent from expressions can include a display name in the `To` and `CC` headers, matching the Email stage. See [`ak_send_email`](../../customize/policies/types/expression/reference.mdx).
 
+### Require actions on next login :ak-enterprise
+
+Administrators can require users to complete one or more flows after their next successful login by setting the `goauthentik.io/user/next-actions` attribute. authentik marks the new session as restricted, prevents it from continuing to the user interface, an application authorization flow, or an API, and releases it after the user completes every action.
+
+For more details, refer to the [next actions documentation](../../users-sources/user/next_actions.mdx).
+
 ## Upgrading
 
 This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
