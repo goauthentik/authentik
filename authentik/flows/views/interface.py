@@ -2,24 +2,31 @@
 
 from typing import Any
 
-from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
 from authentik.flows.models import Flow
-from authentik.lib.http_cache import anonymous_redirect_cache_control
+from authentik.lib.http_cache import patch_anonymous_shared_cache
+
+_STABLE_MEDIA_PREFIXES = ("/static/", "http://", "https://")
 
 
 class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
+    flow: Flow
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
-        kwargs["flow"] = flow
-        kwargs["flow_background_url"] = flow.background_url(self.request)
+        self.flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        kwargs["flow"] = self.flow
+        kwargs["flow_background_url"] = self.flow.background_url(self.request)
         kwargs["inspector"] = "inspector" in self.request.GET
+        if self._can_edge_cache(self.request):
+            # Reusing server-generated trace metadata would combine unrelated clients'
+            # browser spans into the trace which originally populated the cache.
+            kwargs["html_meta"] = {}
         return super().get_context_data(**kwargs)
 
     def compat_needs_sfe(self) -> bool:
@@ -45,24 +52,30 @@ class FlowInterfaceView(InterfaceView):
             return ["if/flow-sfe.html"]
         return ["if/flow.html"]
 
-    def _can_edge_cache(self, request: HttpRequest) -> bool:
-        """Whether the response is safe to mark as publicly cacheable.
+    @staticmethod
+    def _stable_media(value: object) -> bool:
+        return not value or str(value).startswith(_STABLE_MEDIA_PREFIXES)
 
-        The body is deterministic per ``(host, flow_slug)`` only when:
-        no session cookie, no SFE-selecting UA (IE, Edge<=18, PKeyAuth — we
-        exclude them rather than ``Vary: User-Agent``), and no ``?sfe`` or
-        ``?inspector`` query variants.
-        """
-        if settings.SESSION_COOKIE_NAME in request.COOKIES:
+    def _can_edge_cache(self, request: HttpRequest) -> bool:
+        """Check whether all rendered request variants have safe shared-cache keys."""
+        if request.method not in ("GET", "HEAD") or request.COOKIES:
             return False
-        if "inspector" in request.GET or "sfe" in request.GET:
-            return False
-        if self.compat_needs_sfe():
-            return False
-        return True
+        brand = request.brand
+        media = (
+            self.flow.background,
+            brand.branding_logo,
+            brand.branding_favicon,
+            brand.branding_default_flow_background,
+        )
+        return (
+            "inspector" not in request.GET
+            and "sfe" not in request.GET
+            and not self.compat_needs_sfe()
+            and all(self._stable_media(value) for value in media)
+        )
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)
         if self._can_edge_cache(request):
-            response["Cache-Control"] = anonymous_redirect_cache_control()
+            patch_anonymous_shared_cache(response, "Accept-Language", "User-Agent")
         return response

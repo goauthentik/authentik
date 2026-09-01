@@ -1,10 +1,7 @@
-"""Tests for HTTP edge-cache headers on the anonymous flow entry-point views.
-
-Covers ``GET /flows/-/default/authentication/`` (``ToDefaultFlow.dispatch``)
-and ``GET /if/flow/<slug>/`` (``FlowInterfaceView.dispatch``).
-"""
+"""Tests for shared HTTP caching of anonymous flow entry points."""
 
 from http import HTTPStatus
+from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
@@ -13,10 +10,6 @@ from django.urls import reverse
 from authentik.brands.models import Brand
 from authentik.core.tests.utils import create_test_brand, create_test_flow
 from authentik.flows.models import FlowDesignation
-from authentik.lib.http_cache import (
-    ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS,
-    anonymous_redirect_cache_control,
-)
 
 _MODERN_UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -24,128 +17,92 @@ _MODERN_UA = (
 )
 
 
+def vary_values(response) -> set[str]:
+    """Return normalized Vary header values."""
+    return {value.strip().lower() for value in response.get("Vary", "").split(",")}
+
+
 class TestToDefaultFlowEdgeCache(TestCase):
-    """``/flows/-/default/authentication/`` must be edge-cacheable for
-    anonymous, cookieless visitors."""
+    """Cache only redirects selected directly by the current brand."""
 
     def setUp(self):
         Brand.objects.all().delete()
         self.flow = create_test_flow(designation=FlowDesignation.AUTHENTICATION)
         self.brand = create_test_brand(flow_authentication=self.flow)
+        self.url = reverse("authentik_flows:default-authentication")
 
-    def test_anonymous_no_cookie_is_publicly_cacheable(self):
-        """No session cookie → 302 with publicly cacheable headers."""
+    def test_explicit_brand_flow_is_publicly_cacheable(self):
         self.client.cookies.clear()
-        response = self.client.get(reverse("authentik_flows:default-authentication"))
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertEqual(
-            response["Cache-Control"],
-            anonymous_redirect_cache_control(),
-        )
-
-    def test_anonymous_no_cookie_response_blocks_browser_cache(self):
-        """``max-age=0`` prevents browser caching (post-login loop guard);
-        ``s-maxage`` keeps shared-cache caching."""
-        self.client.cookies.clear()
-        response = self.client.get(reverse("authentik_flows:default-authentication"))
-        cache_control = response.get("Cache-Control", "")
-        self.assertIn("max-age=0", cache_control)
-        self.assertIn(f"s-maxage={ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS}", cache_control)
-
-    def test_anonymous_no_cookie_response_has_no_vary_cookie(self):
-        """Cookieless publicly-cacheable responses must not carry
-        ``Vary: Cookie`` — otherwise shared caches refuse to serve them."""
-        self.client.cookies.clear()
-        response = self.client.get(reverse("authentik_flows:default-authentication"))
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertIn("public", response.get("Cache-Control", ""))
-        vary_values = [v.strip().lower() for v in response.get("Vary", "").split(",")]
-        self.assertNotIn("cookie", vary_values)
+        self.assertIn("cookie", vary_values(response))
 
-    def test_anonymous_with_cookie_is_not_publicly_cacheable(self):
-        """A request with a session cookie does not get
-        ``Cache-Control: public`` — the response could vary by session state."""
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = "some-opaque-token"
-        response = self.client.get(reverse("authentik_flows:default-authentication"))
+    def test_policy_selected_fallback_is_not_publicly_cacheable(self):
+        self.brand.flow_authentication = None
+        self.brand.save(update_fields=["flow_authentication"])
+        self.client.cookies.clear()
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertNotIn("public", response.get("Cache-Control", ""))
 
-    def test_invalidation_endpoint_also_cacheable_for_anonymous(self):
-        """``/flows/-/default/invalidation/`` uses the same view and should
-        carry the same cache header on anonymous cookieless requests."""
-        create_test_flow(designation=FlowDesignation.INVALIDATION)
-        self.brand.refresh_from_db()
-        self.client.cookies.clear()
-        response = self.client.get(reverse("authentik_flows:default-invalidation"))
-        if response.status_code == HTTPStatus.FOUND:
-            self.assertEqual(
-                response["Cache-Control"],
-                anonymous_redirect_cache_control(),
-            )
+    def test_session_request_is_not_publicly_cacheable(self):
+        self.client.cookies[settings.SESSION_COOKIE_NAME] = "some-opaque-token"
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertNotIn("public", response.get("Cache-Control", ""))
+
+    def test_unrelated_cookie_is_not_publicly_cacheable(self):
+        self.client.cookies["unrelated"] = "attacker-controlled-value"
+        response = self.client.get(self.url)
+        self.assertNotIn("public", response.get("Cache-Control", ""))
 
 
 class TestFlowInterfaceViewEdgeCache(TestCase):
-    """``/if/flow/<slug>/`` must be edge-cacheable for the common
-    modern-browser, anonymous, cookieless case. Variant-producing query
-    params and SFE-routed UAs must opt out."""
+    """Cache only constrained variants of the anonymous flow shell."""
 
     def setUp(self):
         Brand.objects.all().delete()
         self.flow = create_test_flow(designation=FlowDesignation.AUTHENTICATION)
-        self.brand = create_test_brand(flow_authentication=self.flow)
+        create_test_brand(flow_authentication=self.flow)
+        self.url = reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug})
 
-    def _url(self) -> str:
-        return reverse("authentik_core:if-flow", kwargs={"flow_slug": self.flow.slug})
-
-    def test_anonymous_modern_browser_is_publicly_cacheable(self):
-        """Anonymous, no cookie, modern UA → publicly cacheable."""
+    def test_normal_anonymous_shell_is_publicly_cacheable(self):
         self.client.cookies.clear()
-        response = self.client.get(self._url(), HTTP_USER_AGENT=_MODERN_UA)
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(
-            response["Cache-Control"],
-            anonymous_redirect_cache_control(),
-        )
-
-    def test_anonymous_modern_browser_response_blocks_browser_cache(self):
-        """``max-age=0`` prevents browser caching of the HTML page."""
-        self.client.cookies.clear()
-        response = self.client.get(self._url(), HTTP_USER_AGENT=_MODERN_UA)
-        cache_control = response.get("Cache-Control", "")
-        self.assertIn("max-age=0", cache_control)
-        self.assertIn(f"s-maxage={ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS}", cache_control)
-
-    def test_anonymous_modern_browser_response_has_no_vary_cookie(self):
-        """Cookieless cacheable responses must not carry ``Vary: Cookie``."""
-        self.client.cookies.clear()
-        response = self.client.get(self._url(), HTTP_USER_AGENT=_MODERN_UA)
+        response = self.client.get(self.url, HTTP_USER_AGENT=_MODERN_UA)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertIn("public", response.get("Cache-Control", ""))
-        vary_values = [v.strip().lower() for v in response.get("Vary", "").split(",")]
-        self.assertNotIn("cookie", vary_values)
+        self.assertTrue({"cookie", "accept-language", "user-agent"} <= vary_values(response))
 
-    def test_anonymous_with_cookie_is_not_publicly_cacheable(self):
-        """Cookie present → never publicly cacheable, even if anonymous."""
+    def test_cached_shell_omits_per_request_trace_metadata(self):
+        self.client.cookies.clear()
+        with patch(
+            "authentik.brands.utils.get_http_meta",
+            return_value={"sentry-trace": "request-specific-trace"},
+        ):
+            response = self.client.get(self.url, HTTP_USER_AGENT=_MODERN_UA)
+        self.assertNotContains(response, "request-specific-trace")
+
+    def test_session_request_is_not_publicly_cacheable(self):
         self.client.cookies[settings.SESSION_COOKIE_NAME] = "some-opaque-token"
-        response = self.client.get(self._url(), HTTP_USER_AGENT=_MODERN_UA)
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        response = self.client.get(self.url, HTTP_USER_AGENT=_MODERN_UA)
         self.assertNotIn("public", response.get("Cache-Control", ""))
 
-    def test_inspector_query_param_disables_caching(self):
-        """``?inspector`` produces a different template variant; not cacheable."""
-        self.client.cookies.clear()
-        response = self.client.get(self._url() + "?inspector", HTTP_USER_AGENT=_MODERN_UA)
+    def test_inspector_is_not_publicly_cacheable(self):
+        response = self.client.get(f"{self.url}?inspector", HTTP_USER_AGENT=_MODERN_UA)
         self.assertNotIn("public", response.get("Cache-Control", ""))
 
-    def test_sfe_query_param_disables_caching(self):
-        """``?sfe`` forces the SFE template; not cacheable."""
-        self.client.cookies.clear()
-        response = self.client.get(self._url() + "?sfe", HTTP_USER_AGENT=_MODERN_UA)
+    def test_sfe_is_not_publicly_cacheable(self):
+        response = self.client.get(f"{self.url}?sfe", HTTP_USER_AGENT=_MODERN_UA)
         self.assertNotIn("public", response.get("Cache-Control", ""))
 
-    def test_ie_user_agent_disables_caching(self):
-        """IE UAs route to the SFE template via ``compat_needs_sfe``; not cacheable."""
-        self.client.cookies.clear()
-        ie_ua = "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
-        response = self.client.get(self._url(), HTTP_USER_AGENT=ie_ua)
+    def test_legacy_user_agent_is_not_publicly_cacheable(self):
+        user_agent = "Mozilla/5.0 (Trident/7.0; rv:11.0) like Gecko"
+        response = self.client.get(self.url, HTTP_USER_AGENT=user_agent)
+        self.assertNotIn("public", response.get("Cache-Control", ""))
+
+    def test_generated_media_url_is_not_publicly_cacheable(self):
+        self.flow.background = "managed-background.png"
+        self.flow.save(update_fields=["background"])
+        response = self.client.get(self.url, HTTP_USER_AGENT=_MODERN_UA)
         self.assertNotIn("public", response.get("Cache-Control", ""))

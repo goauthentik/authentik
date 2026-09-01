@@ -2,7 +2,6 @@
 
 from http import HTTPStatus
 
-from django.conf import settings
 from django.test import TestCase
 from django.urls import resolve, reverse
 
@@ -10,11 +9,8 @@ from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import Application, UserTypes
 from authentik.core.tests.utils import create_test_brand, create_test_user
-from authentik.core.views.interface import (
-    ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS,
-    anonymous_redirect_cache_control,
-)
 from authentik.lib.config import CONFIG
+from authentik.lib.http_cache import ANONYMOUS_SHARED_CACHE_SECONDS
 
 
 class TestInterfaceRedirects(TestCase):
@@ -117,10 +113,8 @@ class TestInterfaceRedirects(TestCase):
         self.client.cookies.clear()
         response = self.client.get(reverse("authentik_core:root-redirect"))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertEqual(
-            response["Cache-Control"],
-            anonymous_redirect_cache_control(),
-        )
+        self.assertIn("public", response["Cache-Control"])
+        self.assertIn(f"s-maxage={ANONYMOUS_SHARED_CACHE_SECONDS}", response["Cache-Control"])
 
     def test_root_anonymous_no_cookie_response_blocks_browser_cache(self):
         """``Cache-Control`` carries ``max-age=0`` so browsers don't cache —
@@ -129,23 +123,28 @@ class TestInterfaceRedirects(TestCase):
         response = self.client.get(reverse("authentik_core:root-redirect"))
         cache_control = response.get("Cache-Control", "")
         self.assertIn("max-age=0", cache_control)
-        self.assertIn(f"s-maxage={ANONYMOUS_ROOT_REDIRECT_CACHE_SECONDS}", cache_control)
+        self.assertIn(f"s-maxage={ANONYMOUS_SHARED_CACHE_SECONDS}", cache_control)
 
-    def test_root_anonymous_no_cookie_response_has_no_vary_cookie(self):
-        """Cookieless publicly-cacheable responses must not carry
-        ``Vary: Cookie`` — otherwise shared caches refuse to serve them."""
+    def test_root_anonymous_response_varies_on_cookie(self):
+        """Shared caches must distinguish anonymous and authenticated requests."""
         self.client.cookies.clear()
         response = self.client.get(reverse("authentik_core:root-redirect"))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertIn("public", response.get("Cache-Control", ""))
         vary_values = [v.strip().lower() for v in response.get("Vary", "").split(",")]
-        self.assertNotIn("cookie", vary_values)
+        self.assertIn("cookie", vary_values)
 
     def test_root_anonymous_with_cookie_is_not_publicly_cacheable(self):
-        """A request with a session cookie does not get
-        ``Cache-Control: public`` — it's potentially per-user."""
-        self.client.cookies[settings.SESSION_COOKIE_NAME] = "some-opaque-token"
+        """Requests carrying cookies are not stored in the shared cache."""
+        self.client.cookies["unrelated"] = "attacker-controlled-value"
         response = self.client.get(reverse("authentik_core:root-redirect"))
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertNotIn("public", response.get("Cache-Control", ""))
+
+    def test_root_anonymous_post_is_not_publicly_cacheable(self):
+        """Non-read requests are never publicly cacheable."""
+        self.client.cookies.clear()
+        response = self.client.post(reverse("authentik_core:root-redirect"))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertNotIn("public", response.get("Cache-Control", ""))
 
