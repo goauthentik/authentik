@@ -1,5 +1,6 @@
 ---
 title: Prompt stage
+description: Collect user input and store the submitted values in the flow context.
 ---
 
 The Prompt stage prompts the user to enter information. The submitted values are then stored in the flow context.
