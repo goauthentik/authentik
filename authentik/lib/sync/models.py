@@ -24,6 +24,8 @@ class Sync(InternallyManagedMixin, models.Model):
     # tasks = models.ManyToManyField(Task, related_name="+")
     tasks: models.ManyToManyField
 
+    _status = models.TextField(choices=SyncStatus, null=True, default=None, db_column="status")
+
     started_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -50,7 +52,7 @@ class Sync(InternallyManagedMixin, models.Model):
         return None
 
     @property
-    def status(self) -> SyncStatus:
+    def tasks_status(self) -> SyncStatus:
         states = self.tasks.values_list("aggregated_status", flat=True)
         if any(
             state
@@ -77,6 +79,16 @@ class Sync(InternallyManagedMixin, models.Model):
         if any(state == TaskStatus.WARNING for state in states):
             return SyncStatus.WARNING
         return SyncStatus.DONE
+
+    @property
+    def status(self) -> SyncStatus:
+        if self._status:
+            return self._status
+        return self.tasks_status
+
+    def persist_status(self):
+        self._status = self.tasks_status
+        self.save(update_fields=["_status"])
 
     def enqueue(self, messages: list[Message], existing_tasks_as_dependencies: bool = True) -> None:
         broker = get_broker()
