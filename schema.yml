@@ -3475,6 +3475,11 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: webauthn_rp_config
+        schema:
+          type: string
+          format: uuid
       tags:
       - core
       security:
@@ -30870,6 +30875,200 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /stages/authenticator/webauthn_rp_configs/:
+    get:
+      operationId: stages_authenticator_webauthn_rp_configs_list
+      description: WebAuthnRPConfig Viewset
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: rp_id
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebAuthnRPConfigList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: stages_authenticator_webauthn_rp_configs_create
+      description: WebAuthnRPConfig Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnRPConfigRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnRPConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/:
+    get:
+      operationId: stages_authenticator_webauthn_rp_configs_retrieve
+      description: WebAuthnRPConfig Viewset
+      parameters:
+      - in: path
+        name: rp_config_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn RP Config.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnRPConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: stages_authenticator_webauthn_rp_configs_update
+      description: WebAuthnRPConfig Viewset
+      parameters:
+      - in: path
+        name: rp_config_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn RP Config.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebAuthnRPConfigRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnRPConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: stages_authenticator_webauthn_rp_configs_partial_update
+      description: WebAuthnRPConfig Viewset
+      parameters:
+      - in: path
+        name: rp_config_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn RP Config.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedWebAuthnRPConfigRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebAuthnRPConfig'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: stages_authenticator_webauthn_rp_configs_destroy
+      description: WebAuthnRPConfig Viewset
+      parameters:
+      - in: path
+        name: rp_config_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn RP Config.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_webauthn_rp_configs_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: rp_config_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this WebAuthn RP Config.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /stages/captcha/:
     get:
       operationId: stages_captcha_list
@@ -38031,6 +38230,12 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
+        webauthn_rp_config:
+          type: string
+          format: uuid
+          nullable: true
+          description: WebAuthn RP config used for all WebAuthn ceremonies on this
+            brand. When unset, the RP ID and origin are derived from the request.
         attributes:
           type: object
           additionalProperties: {}
@@ -38122,6 +38327,12 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
+        webauthn_rp_config:
+          type: string
+          format: uuid
+          nullable: true
+          description: WebAuthn RP config used for all WebAuthn ceremonies on this
+            brand. When unset, the RP ID and origin are derived from the request.
         attributes:
           type: object
           additionalProperties: {}
@@ -45524,6 +45735,7 @@ components:
       - authentik_stages_authenticator_totp.authenticatortotpstage
       - authentik_stages_authenticator_totp.totpdevice
       - authentik_stages_authenticator_validate.authenticatorvalidatestage
+      - authentik_stages_authenticator_webauthn.webauthnrpconfig
       - authentik_stages_authenticator_webauthn.authenticatorwebauthnstage
       - authentik_stages_authenticator_webauthn.webauthndevice
       - authentik_stages_captcha.captchastage
@@ -49688,6 +49900,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedWebAuthnRPConfigList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebAuthnRPConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     Pagination:
       type: object
       properties:
@@ -50685,6 +50912,12 @@ components:
             type: string
             format: uuid
           description: Certificates used for client authentication.
+        webauthn_rp_config:
+          type: string
+          format: uuid
+          nullable: true
+          description: WebAuthn RP config used for all WebAuthn ceremonies on this
+            brand. When unset, the RP ID and origin are derived from the request.
         attributes:
           type: object
           additionalProperties: {}
@@ -54304,6 +54537,30 @@ components:
           type: string
           minLength: 1
           maxLength: 200
+    PatchedWebAuthnRPConfigRequest:
+      type: object
+      description: WebAuthnRPConfig Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        rp_id:
+          type: string
+          minLength: 1
+          description: WebAuthn Relying Party ID that credentials are bound to. Cannot
+            be changed after creation, as doing so invalidates all credentials registered
+            for it.
+          pattern: ^[a-z\u00a1-\uffff0-9](?:[a-z\u00a1-\uffff0-9-]{0,61}[a-z\u00a1-\uffff0-9])?(?:\.(?!-)[a-z\u00a1-\uffff0-9-]{1,63}(?<!-))*\.(?!-)(?:[a-z\u00a1-\uffff-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?$
+        origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'Origins allowed to perform WebAuthn ceremonies for this RP
+            ID. Web origins are listed in the Related Origin Requests document served
+            at https://<RP ID>/.well-known/webauthn. Entries must be exact https://
+            origins or android:apk-key-hash: origins; browsers only honor origins
+            whose count of distinct registrable-domain labels is at most 5.'
     Permission:
       type: object
       description: Global permission
@@ -62037,6 +62294,62 @@ components:
       - client-device
       - hybrid
       type: string
+    WebAuthnRPConfig:
+      type: object
+      description: WebAuthnRPConfig Serializer
+      properties:
+        rp_config_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+        rp_id:
+          type: string
+          description: WebAuthn Relying Party ID that credentials are bound to. Cannot
+            be changed after creation, as doing so invalidates all credentials registered
+            for it.
+          pattern: ^[a-z\u00a1-\uffff0-9](?:[a-z\u00a1-\uffff0-9-]{0,61}[a-z\u00a1-\uffff0-9])?(?:\.(?!-)[a-z\u00a1-\uffff0-9-]{1,63}(?<!-))*\.(?!-)(?:[a-z\u00a1-\uffff-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?$
+        origins:
+          type: array
+          items:
+            type: string
+          description: 'Origins allowed to perform WebAuthn ceremonies for this RP
+            ID. Web origins are listed in the Related Origin Requests document served
+            at https://<RP ID>/.well-known/webauthn. Entries must be exact https://
+            origins or android:apk-key-hash: origins; browsers only honor origins
+            whose count of distinct registrable-domain labels is at most 5.'
+      required:
+      - name
+      - rp_config_uuid
+      - rp_id
+    WebAuthnRPConfigRequest:
+      type: object
+      description: WebAuthnRPConfig Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        rp_id:
+          type: string
+          minLength: 1
+          description: WebAuthn Relying Party ID that credentials are bound to. Cannot
+            be changed after creation, as doing so invalidates all credentials registered
+            for it.
+          pattern: ^[a-z\u00a1-\uffff0-9](?:[a-z\u00a1-\uffff0-9-]{0,61}[a-z\u00a1-\uffff0-9])?(?:\.(?!-)[a-z\u00a1-\uffff0-9-]{1,63}(?<!-))*\.(?!-)(?:[a-z\u00a1-\uffff-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?$
+        origins:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: 'Origins allowed to perform WebAuthn ceremonies for this RP
+            ID. Web origins are listed in the Related Origin Requests document served
+            at https://<RP ID>/.well-known/webauthn. Entries must be exact https://
+            origins or android:apk-key-hash: origins; browsers only honor origins
+            whose count of distinct registrable-domain labels is at most 5.'
+      required:
+      - name
+      - rp_id
     Worker:
       type: object
       properties:

@@ -260,6 +260,10 @@ import {
     type PaginatedWebAuthnDeviceTypeList,
     PaginatedWebAuthnDeviceTypeListFromJSON,
 } from "../models/PaginatedWebAuthnDeviceTypeList";
+import {
+    type PaginatedWebAuthnRPConfigList,
+    PaginatedWebAuthnRPConfigListFromJSON,
+} from "../models/PaginatedWebAuthnRPConfigList";
 import { type PasswordStage, PasswordStageFromJSON } from "../models/PasswordStage";
 import {
     type PasswordStageRequest,
@@ -377,6 +381,10 @@ import {
     type PatchedUserWriteStageRequest,
     PatchedUserWriteStageRequestToJSON,
 } from "../models/PatchedUserWriteStageRequest";
+import {
+    type PatchedWebAuthnRPConfigRequest,
+    PatchedWebAuthnRPConfigRequestToJSON,
+} from "../models/PatchedWebAuthnRPConfigRequest";
 import { type Prompt, PromptFromJSON } from "../models/Prompt";
 import { type PromptChallenge, PromptChallengeFromJSON } from "../models/PromptChallenge";
 import { type PromptRequest, PromptRequestToJSON } from "../models/PromptRequest";
@@ -421,6 +429,11 @@ import {
     UserWriteStageRequestToJSON,
 } from "../models/UserWriteStageRequest";
 import { type WebAuthnDeviceType, WebAuthnDeviceTypeFromJSON } from "../models/WebAuthnDeviceType";
+import { type WebAuthnRPConfig, WebAuthnRPConfigFromJSON } from "../models/WebAuthnRPConfig";
+import {
+    type WebAuthnRPConfigRequest,
+    WebAuthnRPConfigRequestToJSON,
+} from "../models/WebAuthnRPConfigRequest";
 import * as runtime from "../runtime";
 
 export interface StagesAccountLockdownCreateRequest {
@@ -1379,6 +1392,83 @@ export interface StagesAuthenticatorWebauthnRetrieveRequest {
      * A UUID string identifying this WebAuthn Authenticator Setup Stage.
      */
     stageUuid: string;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsCreateRequest {
+    /**
+     *
+     */
+    webAuthnRPConfigRequest: WebAuthnRPConfigRequest;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsDestroyRequest {
+    /**
+     * A UUID string identifying this WebAuthn RP Config.
+     */
+    rpConfigUuid: string;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsListRequest {
+    /**
+     *
+     */
+    name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
+    ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
+    /**
+     *
+     */
+    rpId?: string;
+    /**
+     * A search term.
+     */
+    search?: string;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn RP Config.
+     */
+    rpConfigUuid: string;
+    /**
+     *
+     */
+    patchedWebAuthnRPConfigRequest?: PatchedWebAuthnRPConfigRequest;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsRetrieveRequest {
+    /**
+     * A UUID string identifying this WebAuthn RP Config.
+     */
+    rpConfigUuid: string;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn RP Config.
+     */
+    rpConfigUuid: string;
+    /**
+     *
+     */
+    webAuthnRPConfigRequest: WebAuthnRPConfigRequest;
+}
+
+export interface StagesAuthenticatorWebauthnRpConfigsUsedByListRequest {
+    /**
+     * A UUID string identifying this WebAuthn RP Config.
+     */
+    rpConfigUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnUpdateRequest {
@@ -8443,6 +8533,517 @@ export class StagesApi extends runtime.BaseAPI {
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
     ): Promise<AuthenticatorWebAuthnStage> {
         const response = await this.stagesAuthenticatorWebauthnRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsCreate without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsCreateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["webAuthnRPConfigRequest"] == null) {
+            throw new runtime.RequiredError(
+                "webAuthnRPConfigRequest",
+                'Required parameter "webAuthnRPConfigRequest" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: WebAuthnRPConfigRequestToJSON(requestParameters["webAuthnRPConfigRequest"]),
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsCreateRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WebAuthnRPConfig>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WebAuthnRPConfigFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsCreate(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WebAuthnRPConfig> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsDestroy without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsDestroyRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsDestroyRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rpConfigUuid"] == null) {
+            throw new runtime.RequiredError(
+                "rpConfigUuid",
+                'Required parameter "rpConfigUuid" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsDestroy().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/`;
+        urlPath = urlPath.replace(
+            "{rp_config_uuid}",
+            encodeURIComponent(String(requestParameters["rpConfigUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "DELETE",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsDestroyRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<void>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsDestroyRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsDestroy(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsDestroyRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<void> {
+        await this.stagesAuthenticatorWebauthnRpConfigsDestroyRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsList without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsListRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsListRequest,
+    ): Promise<runtime.RequestOpts> {
+        const queryParameters: any = {};
+
+        if (requestParameters["name"] != null) {
+            queryParameters["name"] = requestParameters["name"];
+        }
+
+        if (requestParameters["ordering"] != null) {
+            queryParameters["ordering"] = requestParameters["ordering"];
+        }
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
+
+        if (requestParameters["rpId"] != null) {
+            queryParameters["rp_id"] = requestParameters["rpId"];
+        }
+
+        if (requestParameters["search"] != null) {
+            queryParameters["search"] = requestParameters["search"];
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/`;
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsListRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<PaginatedWebAuthnRPConfigList>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedWebAuthnRPConfigListFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsList(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsListRequest = {},
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<PaginatedWebAuthnRPConfigList> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsListRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsPartialUpdate without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsPartialUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsPartialUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rpConfigUuid"] == null) {
+            throw new runtime.RequiredError(
+                "rpConfigUuid",
+                'Required parameter "rpConfigUuid" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsPartialUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/`;
+        urlPath = urlPath.replace(
+            "{rp_config_uuid}",
+            encodeURIComponent(String(requestParameters["rpConfigUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PATCH",
+            headers: headerParameters,
+            query: queryParameters,
+            body: PatchedWebAuthnRPConfigRequestToJSON(
+                requestParameters["patchedWebAuthnRPConfigRequest"],
+            ),
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsPartialUpdateRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WebAuthnRPConfig>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsPartialUpdateRequestOpts(
+                requestParameters,
+            );
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WebAuthnRPConfigFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsPartialUpdate(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsPartialUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WebAuthnRPConfig> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsPartialUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsRetrieve without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsRetrieveRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsRetrieveRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rpConfigUuid"] == null) {
+            throw new runtime.RequiredError(
+                "rpConfigUuid",
+                'Required parameter "rpConfigUuid" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsRetrieve().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/`;
+        urlPath = urlPath.replace(
+            "{rp_config_uuid}",
+            encodeURIComponent(String(requestParameters["rpConfigUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsRetrieveRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WebAuthnRPConfig>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsRetrieveRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WebAuthnRPConfigFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsRetrieve(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsRetrieveRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WebAuthnRPConfig> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsRetrieveRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsUpdate without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUpdateRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUpdateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rpConfigUuid"] == null) {
+            throw new runtime.RequiredError(
+                "rpConfigUuid",
+                'Required parameter "rpConfigUuid" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsUpdate().',
+            );
+        }
+
+        if (requestParameters["webAuthnRPConfigRequest"] == null) {
+            throw new runtime.RequiredError(
+                "webAuthnRPConfigRequest",
+                'Required parameter "webAuthnRPConfigRequest" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsUpdate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/`;
+        urlPath = urlPath.replace(
+            "{rp_config_uuid}",
+            encodeURIComponent(String(requestParameters["rpConfigUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "PUT",
+            headers: headerParameters,
+            query: queryParameters,
+            body: WebAuthnRPConfigRequestToJSON(requestParameters["webAuthnRPConfigRequest"]),
+        };
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUpdateRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<WebAuthnRPConfig>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsUpdateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            WebAuthnRPConfigFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * WebAuthnRPConfig Viewset
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUpdate(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUpdateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<WebAuthnRPConfig> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsUpdateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for stagesAuthenticatorWebauthnRpConfigsUsedByList without sending the request
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUsedByListRequestOpts(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUsedByListRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["rpConfigUuid"] == null) {
+            throw new runtime.RequiredError(
+                "rpConfigUuid",
+                'Required parameter "rpConfigUuid" was null or undefined when calling stagesAuthenticatorWebauthnRpConfigsUsedByList().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/stages/authenticator/webauthn_rp_configs/{rp_config_uuid}/used_by/`;
+        urlPath = urlPath.replace(
+            "{rp_config_uuid}",
+            encodeURIComponent(String(requestParameters["rpConfigUuid"])),
+        );
+
+        return {
+            path: urlPath,
+            method: "GET",
+            headers: headerParameters,
+            query: queryParameters,
+        };
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUsedByListRaw(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<Array<UsedBy>>> {
+        const requestOptions =
+            await this.stagesAuthenticatorWebauthnRpConfigsUsedByListRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(UsedByFromJSON));
+    }
+
+    /**
+     * Get a list of all objects that use this object
+     */
+    async stagesAuthenticatorWebauthnRpConfigsUsedByList(
+        requestParameters: StagesAuthenticatorWebauthnRpConfigsUsedByListRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<Array<UsedBy>> {
+        const response = await this.stagesAuthenticatorWebauthnRpConfigsUsedByListRaw(
             requestParameters,
             initOverrides,
         );

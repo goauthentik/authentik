@@ -12,6 +12,9 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
     label = "authentik_stages_authenticator_webauthn"
     verbose_name = "authentik Stages.Authenticator.WebAuthn"
     default = True
+    mountpoints = {
+        "authentik.stages.authenticator_webauthn.urls_root": "",
+    }
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:

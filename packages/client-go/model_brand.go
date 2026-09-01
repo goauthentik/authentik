@@ -46,7 +46,9 @@ type Brand struct {
 	// Web Certificate used by the authentik Core webserver.
 	WebCertificate NullableString `json:"web_certificate,omitempty"`
 	// Certificates used for client authentication.
-	ClientCertificates   []string               `json:"client_certificates,omitempty"`
+	ClientCertificates []string `json:"client_certificates,omitempty"`
+	// WebAuthn RP config used for all WebAuthn ceremonies on this brand. When unset, the RP ID and origin are derived from the request.
+	WebauthnRpConfig     NullableString         `json:"webauthn_rp_config,omitempty"`
 	Attributes           map[string]interface{} `json:"attributes,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -849,6 +851,49 @@ func (o *Brand) SetClientCertificates(v []string) {
 	o.ClientCertificates = v
 }
 
+// GetWebauthnRpConfig returns the WebauthnRpConfig field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *Brand) GetWebauthnRpConfig() string {
+	if o == nil || IsNil(o.WebauthnRpConfig.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.WebauthnRpConfig.Get()
+}
+
+// GetWebauthnRpConfigOk returns a tuple with the WebauthnRpConfig field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *Brand) GetWebauthnRpConfigOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.WebauthnRpConfig.Get(), o.WebauthnRpConfig.IsSet()
+}
+
+// HasWebauthnRpConfig returns a boolean if a field has been set.
+func (o *Brand) HasWebauthnRpConfig() bool {
+	if o != nil && o.WebauthnRpConfig.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWebauthnRpConfig gets a reference to the given NullableString and assigns it to the WebauthnRpConfig field.
+func (o *Brand) SetWebauthnRpConfig(v string) {
+	o.WebauthnRpConfig.Set(&v)
+}
+
+// SetWebauthnRpConfigNil sets the value for WebauthnRpConfig to be an explicit nil
+func (o *Brand) SetWebauthnRpConfigNil() {
+	o.WebauthnRpConfig.Set(nil)
+}
+
+// UnsetWebauthnRpConfig ensures that no value is present for WebauthnRpConfig, not even an explicit nil
+func (o *Brand) UnsetWebauthnRpConfig() {
+	o.WebauthnRpConfig.Unset()
+}
+
 // GetAttributes returns the Attributes field value if set, zero value otherwise.
 func (o *Brand) GetAttributes() map[string]interface{} {
 	if o == nil || IsNil(o.Attributes) {
@@ -950,6 +995,9 @@ func (o Brand) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ClientCertificates) {
 		toSerialize["client_certificates"] = o.ClientCertificates
 	}
+	if o.WebauthnRpConfig.IsSet() {
+		toSerialize["webauthn_rp_config"] = o.WebauthnRpConfig.Get()
+	}
 	if !IsNil(o.Attributes) {
 		toSerialize["attributes"] = o.Attributes
 	}
@@ -1018,6 +1066,7 @@ func (o *Brand) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "default_application")
 		delete(additionalProperties, "web_certificate")
 		delete(additionalProperties, "client_certificates")
+		delete(additionalProperties, "webauthn_rp_config")
 		delete(additionalProperties, "attributes")
 		o.AdditionalProperties = additionalProperties
 	}

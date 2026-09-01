@@ -4624,6 +4624,46 @@
                     ],
                     "properties": {
                         "model": {
+                            "const": "authentik_stages_authenticator_webauthn.webauthnrpconfig"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "absent",
+                                "created",
+                                "must_created",
+                                "present"
+                            ],
+                            "default": "present"
+                        },
+                        "conditions": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        },
+                        "permissions": {
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthnrpconfig_permissions"
+                        },
+                        "attrs": {
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthnrpconfig"
+                        },
+                        "identifiers": {
+                            "$ref": "#/definitions/model_authentik_stages_authenticator_webauthn.webauthnrpconfig"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "model",
+                        "identifiers"
+                    ],
+                    "properties": {
+                        "model": {
                             "const": "authentik_stages_captcha.captchastage"
                         },
                         "id": {
@@ -5542,6 +5582,12 @@
                     "title": "Client certificates",
                     "description": "Certificates used for client authentication."
                 },
+                "webauthn_rp_config": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Webauthn rp config",
+                    "description": "WebAuthn RP config used for all WebAuthn ceremonies on this brand. When unset, the RP ID and origin are derived from the request."
+                },
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true,
@@ -6430,18 +6476,22 @@
                             "authentik_stages_authenticator_webauthn.add_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.add_webauthndevice",
                             "authentik_stages_authenticator_webauthn.add_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.add_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.change_webauthndevice",
                             "authentik_stages_authenticator_webauthn.change_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.change_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevice",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.delete_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.view_webauthndevice",
                             "authentik_stages_authenticator_webauthn.view_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.view_webauthnrpconfig",
                             "authentik_stages_captcha.add_captchastage",
                             "authentik_stages_captcha.change_captchastage",
                             "authentik_stages_captcha.delete_captchastage",
@@ -7824,18 +7874,22 @@
                             "authentik_stages_authenticator_webauthn.add_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.add_webauthndevice",
                             "authentik_stages_authenticator_webauthn.add_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.add_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.change_webauthndevice",
                             "authentik_stages_authenticator_webauthn.change_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.change_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevice",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.delete_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.view_webauthndevice",
                             "authentik_stages_authenticator_webauthn.view_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.view_webauthnrpconfig",
                             "authentik_stages_captcha.add_captchastage",
                             "authentik_stages_captcha.change_captchastage",
                             "authentik_stages_captcha.delete_captchastage",
@@ -11247,6 +11301,7 @@
                         "authentik_stages_authenticator_totp.authenticatortotpstage",
                         "authentik_stages_authenticator_totp.totpdevice",
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
+                        "authentik_stages_authenticator_webauthn.webauthnrpconfig",
                         "authentik_stages_authenticator_webauthn.authenticatorwebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
                         "authentik_stages_captcha.captchastage",
@@ -14324,18 +14379,22 @@
                             "authentik_stages_authenticator_webauthn.add_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.add_webauthndevice",
                             "authentik_stages_authenticator_webauthn.add_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.add_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.change_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.change_webauthndevice",
                             "authentik_stages_authenticator_webauthn.change_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.change_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.delete_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevice",
                             "authentik_stages_authenticator_webauthn.delete_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.delete_webauthnrpconfig",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstage",
                             "authentik_stages_authenticator_webauthn.view_authenticatorwebauthnstagedevicetyperestriction",
                             "authentik_stages_authenticator_webauthn.view_webauthndevice",
                             "authentik_stages_authenticator_webauthn.view_webauthndevicetype",
+                            "authentik_stages_authenticator_webauthn.view_webauthnrpconfig",
                             "authentik_stages_captcha.add_captchastage",
                             "authentik_stages_captcha.change_captchastage",
                             "authentik_stages_captcha.delete_captchastage",
@@ -17430,6 +17489,59 @@
                             "change_webauthndevice",
                             "delete_webauthndevice",
                             "view_webauthndevice"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_authenticator_webauthn.webauthnrpconfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "rp_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Rp id",
+                    "description": "WebAuthn Relying Party ID that credentials are bound to. Cannot be changed after creation, as doing so invalidates all credentials registered for it."
+                },
+                "origins": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Origins"
+                    },
+                    "title": "Origins",
+                    "description": "Origins allowed to perform WebAuthn ceremonies for this RP ID. Web origins are listed in the Related Origin Requests document served at https://<RP ID>/.well-known/webauthn. Entries must be exact https:// origins or android:apk-key-hash: origins; browsers only honor origins whose count of distinct registrable-domain labels is at most 5."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_webauthn.webauthnrpconfig_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_webauthnrpconfig",
+                            "change_webauthnrpconfig",
+                            "delete_webauthnrpconfig",
+                            "view_webauthnrpconfig"
                         ]
                     },
                     "user": {

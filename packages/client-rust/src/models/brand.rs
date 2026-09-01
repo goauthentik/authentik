@@ -127,6 +127,15 @@ pub struct Brand {
         skip_serializing_if = "Option::is_none"
     )]
     pub client_certificates: Option<Vec<uuid::Uuid>>,
+    /// WebAuthn RP config used for all WebAuthn ceremonies on this brand. When unset, the RP ID
+    /// and origin are derived from the request.
+    #[serde(
+        rename = "webauthn_rp_config",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub webauthn_rp_config: Option<Option<uuid::Uuid>>,
     #[serde(rename = "attributes", skip_serializing_if = "Option::is_none")]
     pub attributes: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
@@ -156,6 +165,7 @@ impl Brand {
             default_application: None,
             web_certificate: None,
             client_certificates: None,
+            webauthn_rp_config: None,
             attributes: None,
         }
     }

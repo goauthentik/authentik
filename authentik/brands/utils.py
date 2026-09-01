@@ -5,6 +5,7 @@ from typing import Any
 from django.db.models import Case, F, IntegerField, Q, Value, When
 from django.db.models.functions import Concat, Length
 from django.http.request import HttpRequest
+from django.utils.functional import SimpleLazyObject
 from django.utils.html import _json_script_escapes
 from django.utils.safestring import mark_safe
 
@@ -14,7 +15,9 @@ from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
-DEFAULT_BRAND = Brand(domain="fallback")
+# Instantiated lazily: Brand has foreign keys into apps loaded after authentik.brands,
+# which are not resolvable yet when this module is first imported during app loading.
+DEFAULT_BRAND = SimpleLazyObject(lambda: Brand(domain="fallback"))
 
 
 def session_safe_mode(request: HttpRequest) -> bool:

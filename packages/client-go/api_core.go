@@ -50,6 +50,7 @@ type ApiCoreBrandsListRequest struct {
 	pageSize                      *int32
 	search                        *string
 	webCertificate                *string
+	webauthnRpConfig              *string
 }
 
 func (r ApiCoreBrandsListRequest) BrandUuid(brandUuid string) ApiCoreBrandsListRequest {
@@ -163,6 +164,11 @@ func (r ApiCoreBrandsListRequest) Search(search string) ApiCoreBrandsListRequest
 
 func (r ApiCoreBrandsListRequest) WebCertificate(webCertificate string) ApiCoreBrandsListRequest {
 	r.webCertificate = &webCertificate
+	return r
+}
+
+func (r ApiCoreBrandsListRequest) WebauthnRpConfig(webauthnRpConfig string) ApiCoreBrandsListRequest {
+	r.webauthnRpConfig = &webauthnRpConfig
 	return r
 }
 
@@ -280,6 +286,9 @@ func (a *CoreAPIService) CoreBrandsListExecute(r ApiCoreBrandsListRequest) (*Pag
 	}
 	if r.webCertificate != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "web_certificate", r.webCertificate, "form", "")
+	}
+	if r.webauthnRpConfig != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "webauthn_rp_config", r.webauthnRpConfig, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
