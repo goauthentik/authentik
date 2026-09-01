@@ -492,6 +492,7 @@ DRAMATIQ = {
             },
         ),
         ("django_dramatiq_postgres.middleware.TaskStateAfterMiddleware", {}),
+        ("authentik.sources.ldap.middleware.LDAPSyncMiddleware", {}),
     ),
     "test": TEST,
 }
