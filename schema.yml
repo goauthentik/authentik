@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.8.0
+  version: 2026.8.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -53723,9 +53723,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58820,9 +58820,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58913,9 +58913,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
