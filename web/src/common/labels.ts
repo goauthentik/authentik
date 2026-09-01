@@ -72,10 +72,10 @@ export const EventActionLabelRecord: Record<EventActions, MessageFormatter<strin
     [EventActions.Custom]: () => msg("Custom action"),
 };
 
-export function actionToLabel(action?: EventActions): string {
-    const formatter = action ? EventActionLabelRecord[action] : null;
+export function actionToLabel(action?: string): string {
+    const formatter = action ? EventActionLabelRecord[action as EventActions] : null;
 
-    return formatter?.() || "";
+    return formatter?.() ?? action ?? "";
 }
 
 const SeverityEnumLabelRecord: Record<SeverityEnum, MessageFormatter<string>> = {
