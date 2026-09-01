@@ -3,6 +3,7 @@ from os import environ
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import PBKDF2PasswordHasher, make_password
+from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
@@ -11,7 +12,6 @@ from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.models import Flow
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
-from authentik.lib.validators import PasswordHashRequiresOverride
 from authentik.root.signals import post_startup, pre_startup
 from authentik.tenants.flags import patch_flag
 from authentik.tenants.utils import get_current_tenant
@@ -225,7 +225,29 @@ class TestSetup(FlowTestCase):
         hasher.iterations -= 1
         environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = hasher.encode(generate_id(), hasher.salt())
         pre_startup.send(sender=self)
-        with self.assertRaises(PasswordHashRequiresOverride):
+        with self.assertRaisesRegex(
+            ImproperlyConfigured,
+            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
+            "hashing policy",
+        ):
+            post_startup.send(sender=self)
+
+        self.assertFalse(Setup.get())
+        self.assertFalse(User.objects.filter(username="akadmin").exists())
+
+    def test_setup_bootstrap_env_malformed_password_hash(self):
+        """Test setup rejects a malformed password hash from the environment."""
+        User.objects.filter(username="akadmin").delete()
+        Setup.set(False)
+
+        environ.pop("AUTHENTIK_BOOTSTRAP_PASSWORD", None)
+        environ["AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"] = "not-a-valid-hash"
+        pre_startup.send(sender=self)
+        with self.assertRaisesRegex(
+            ImproperlyConfigured,
+            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
+            "hashing policy",
+        ):
             post_startup.send(sender=self)
 
         self.assertFalse(Setup.get())

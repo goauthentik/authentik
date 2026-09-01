@@ -124,10 +124,14 @@ def on_password_changed(
     user: User,
     password: str | None = None,
     request: HttpRequest | None = None,
+    password_hash_override: bool | None = None,
     **_,
 ):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
+    context = {}
+    if password_hash_override is not None:
+        context["password_hash_override"] = password_hash_override
+    Event.new(EventAction.PASSWORD_SET, **context).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)
