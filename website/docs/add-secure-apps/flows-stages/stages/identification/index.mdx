@@ -1,5 +1,6 @@
 ---
 title: Identification stage
+description: Identify users by username, email address, or an external login source.
 ---
 
 The Identification stage is the primary user-identification step in most authentik login flows.
