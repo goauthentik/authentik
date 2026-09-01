@@ -35048,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
