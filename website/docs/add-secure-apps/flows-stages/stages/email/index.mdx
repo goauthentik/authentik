@@ -1,5 +1,6 @@
 ---
 title: Email stage
+description: Send verification, recovery, invitation, and other action emails from flows.
 ---
 
 The Email stage sends a verification or action email from within a flow.

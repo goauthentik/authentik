@@ -1,5 +1,6 @@
 ---
 title: Deny stage
+description: Stop a flow immediately and deny access to the user.
 ---
 
 The Deny stage stops the current flow immediately.
