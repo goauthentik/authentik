@@ -144,7 +144,7 @@ export const DOM_PURIFY_STRICT = {
  * This configuration allows text nodes and <br> tags.
  */
 export const DOM_PURIFY_RELAXED = {
-    ALLOWED_TAGS: ["#text", "br", "div"],
+    ALLOWED_TAGS: ["#text", "br", "div", "strong"],
     ALLOWED_ATTR: ["class"],
 } as const satisfies DOMPurifyConfig;
 
