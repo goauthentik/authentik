@@ -12,7 +12,12 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core import user_switching
-from authentik.core.models import AuthenticatedSession, Session, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
+    AuthenticatedSession,
+    Session,
+    User,
+)
 from authentik.core.sessions import SessionStore
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
@@ -35,6 +40,10 @@ from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_NET,
 )
 from authentik.stages.user_login.models import UserLoginStage
+from authentik.stages.user_login.next_actions import (
+    SESSION_KEY_PENDING_NEXT_ACTIONS,
+    next_actions_enabled,
+)
 from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
@@ -228,6 +237,16 @@ class UserLoginStageView(ChallengeStageView):
                 self.request,
                 user,
                 backend=backend,
+            )
+        if (
+            not is_user_switch_login
+            and user.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS)
+            and next_actions_enabled()
+        ):
+            self.request.session[SESSION_KEY_PENDING_NEXT_ACTIONS] = True
+            messages.info(
+                self.request,
+                _("Login successful. Complete the required actions before continuing."),
             )
         self.logger.debug(
             "Logged in",
