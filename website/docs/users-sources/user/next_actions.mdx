@@ -1,0 +1,30 @@
+---
+title: Require actions on next login
+authentik_version: "2026.11"
+authentik_enterprise: true
+---
+
+You can require a user to complete one or more flows after their next successful login, before they can continue to authentik or an application. Typical uses are forcing a password change or requiring the user to set up an authenticator.
+
+## How it works
+
+The `goauthentik.io/user/next-actions` attribute on a user defines their required actions. Its value can be a single flow slug or a list of flow slugs.
+
+When a login flow reaches the [User Login stage](../../add-secure-apps/flows-stages/stages/user_login/index.mdx), authentik creates the user's session and marks it as restricted. The user sees a successful-login message, but authentik does not let that session continue to the user interface, an application authorization flow, or an API until all required flows are complete.
+
+authentik runs the required flows in the order they are listed. After the user completes a flow, authentik removes it from the attribute and starts the next one. After the final flow, authentik releases the session and resumes the page or application authorization that started the login. Sessions that already existed when an administrator assigned the actions are not restricted; the actions apply when the user next logs in.
+
+Any flow can be used as an action, except flows with the **Authentication** or **Invalidation** [designation](../../add-secure-apps/flows-stages/flow/index.mdx). authentik's [default flows](../../add-secure-apps/flows-stages/flow/default-flows.mdx) already cover changing the password (`default-password-change`) and setting up the various authenticator types (for example `default-authenticator-totp-setup`).
+
+For anything else, [create a flow](../../add-secure-apps/flows-stages/flow/index.mdx#create-a-flow) that walks the user through the action and use its slug. For example, a flow with a [Prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.mdx) followed by a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) can collect missing profile details, and a flow with a [Consent stage](../../add-secure-apps/flows-stages/stages/consent/index.mdx) can require the user to accept updated terms.
+
+If a listed flow doesn't exist or its policies deny the user, the session remains restricted until an administrator corrects or removes the attribute. An expired Enterprise license does not release a restricted session or skip actions on later logins. On deployments without an installed Enterprise license, authentik ignores this attribute.
+
+## Require an action for a user
+
+Set the `goauthentik.io/user/next-actions` attribute on the user, through the user API, a [blueprint](../../customize/blueprints/index.mdx), or from within a flow, for example with a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) in an enrollment flow:
+
+```yaml
+goauthentik.io/user/next-actions:
+    - default-password-change
+```
