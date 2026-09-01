@@ -53,6 +53,9 @@ jobs:
         include:
           - name: server
             dockerfile: Dockerfile
+          - name: server-debug
+            dockerfile: Dockerfile
+            target: debug-image
           - name: proxy
             dockerfile: proxy.Dockerfile
           - name: ldap
@@ -67,6 +70,7 @@ jobs:
       ref: "${{ github.ref }}"
       image-name: "${{ matrix.name }}"
       image-dockerfile: "lifecycle/container/${{ matrix.dockerfile }}"
+      image-target: "${{ matrix.target || '' }}"
       image-build-args: |
         GIT_BUILD_HASH=${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
       should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
@@ -503,6 +507,7 @@ jobs:
       matrix:
         name:
           - server
+          - server-debug
           - proxy
           - ldap
           - radius
