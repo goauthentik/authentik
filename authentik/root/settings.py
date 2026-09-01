@@ -312,6 +312,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
+    "authentik.stages.user_login.next_actions.PendingNextActionsMiddleware",
     "authentik.rbac.middleware.InitialPermissionsMiddleware",
 ]
 MIDDLEWARE_LAST = [
