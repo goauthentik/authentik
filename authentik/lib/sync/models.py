@@ -24,7 +24,7 @@ class Sync(InternallyManagedMixin, models.Model):
     # tasks = models.ManyToManyField(Task, related_name="+")
     tasks: models.ManyToManyField
 
-    _status = models.TextField(choices=SyncStatus, null=True, default=None, db_column="status")
+    status = models.TextField(choices=SyncStatus, default=SyncStatus.RUNNING)
 
     started_at = models.DateTimeField(auto_now_add=True)
 
@@ -33,9 +33,7 @@ class Sync(InternallyManagedMixin, models.Model):
 
     @classmethod
     def cleanup(cls) -> int:
-        count = cls.objects.filter(tasks__count=0).delete()[0]
-        count += cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
-        return count
+        return cls.objects.exclude(pk__in=cls.objects.order_by("-started_at")[:20]).delete()[0]
 
     @property
     def done(self) -> bool:
@@ -80,13 +78,7 @@ class Sync(InternallyManagedMixin, models.Model):
             return SyncStatus.WARNING
         return SyncStatus.DONE
 
-    @property
-    def status(self) -> SyncStatus:
-        if self._status:
-            return self._status
-        return self.tasks_status
-
-    def persist_status(self):
+    def persist_status(self) -> None:
         self._status = self.tasks_status
         self.save(update_fields=["_status"])
 

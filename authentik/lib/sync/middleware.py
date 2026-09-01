@@ -1,0 +1,26 @@
+from dramatiq.actor import Actor
+from dramatiq.broker import Broker, MessageProxy
+from dramatiq.middleware import Middleware
+
+from authentik.lib.sync.models import Sync
+from authentik.sources.ldap.tasks import ldap_sync
+
+
+class SyncMiddleware(Middleware):
+    SyncModel: type[Sync]
+    actors: list[Actor] = [ldap_sync]
+
+    def update_sync_status(self, message_id: str, actor_name: str):
+        if all(actor_name != actor.actor_name for actor in self.actors):
+            return
+
+        sync = self.SyncModel.objects.filter(tasks=message_id).first()
+        if sync is None:
+            return
+        sync.persist_status()
+
+    def after_ack(self, broker: Broker, message: MessageProxy) -> None:
+        self.update_sync_status(str(message.message_id), message.actor_name)
+
+    def after_nack(self, broker: Broker, message: MessageProxy) -> None:
+        self.update_sync_status(str(message.message_id), message.actor_name)
