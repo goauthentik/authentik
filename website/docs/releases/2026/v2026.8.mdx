@@ -17,17 +17,7 @@ slug: "/releases/2026.8"
 
 ### `hash_password` management command security improvements
 
-The `hash_password` management command no longer accepts a password as a positional command-line argument (password was visible in the process list). Run the command without arguments to enter the password in a hidden interactive prompt:
-
-```bash
-docker compose run --rm server hash_password
-```
-
-For automation, pipe the password through standard input:
-
-```bash
-echo "$PASSWORD" | docker compose run --rm server hash_password
-```
+The `hash_password` management command no longer accepts a password as a positional command-line argument, where it was visible in the process list. The command now reads the password from a hidden prompt or from standard input. Refer to [Generate a password hash](../../core/password-hashes.mdx#generate-a-password-hash) for the current commands.
 
 ### "Prevent duplicate device" in WebAuthn setup stage removed
 
@@ -141,7 +131,7 @@ A task can log an error and still finish, for example a sync that failed for a s
 - **SAML providers**: Authentication requests that set `ForceAuthn` now require fresh authentication.
 - **WS-Federation**: :ak-enterprise Providers can issue SAML 1.1 assertions, enabling WS-Federation integration with [Microsoft 365 and Entra ID](https://integrations.goauthentik.io/platforms/microsoft-ws-federation/).
 - **User event history**: Account changes made by administrators now appear in the affected user's event history.
-- **Password hash imports**: [Bootstrap and API password hash imports](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) now reject malformed values before they are stored.
+- **Password hash imports**: [Bootstrap and API password hash imports](../../core/password-hashes.mdx) now reject malformed values before they are stored.
 - **Enterprise licensing**: :ak-enterprise The license status card now shows when a license expires today or the number of days remaining.
 - **Performance**: Group lists use fewer database queries, and S3-backed file storage reuses clients instead of creating them for each operation.
 - **Authenticators**: Deleting an authenticator stage no longer deletes enrolled devices that reference it.
