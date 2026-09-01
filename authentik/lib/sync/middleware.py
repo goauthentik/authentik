@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
+from django.db import transaction
 from dramatiq.actor import Actor
 from dramatiq.middleware import Middleware
 
@@ -21,10 +22,11 @@ class SyncMiddleware(Middleware):
         if all(actor_name != actor.actor_name for actor in self.sync_actors()):
             return
 
-        sync = self.SyncModel.objects.filter(tasks=message_id).first()
-        if sync is None:
-            return
-        sync.persist_status()
+        with transaction.atomic():
+            sync = self.SyncModel.objects.filter(tasks=message_id).first()
+            if sync is None:
+                return
+            sync.persist_status()
 
     def after_ack(self, broker: Broker, message: MessageProxy) -> None:
         self.update_sync_status(str(message.message_id), message.actor_name)
