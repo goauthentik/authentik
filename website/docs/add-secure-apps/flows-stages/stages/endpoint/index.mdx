@@ -1,5 +1,6 @@
 ---
 title: Endpoint stage
+description: Check devices and make their information available to flows and policies.
 ---
 
 The Endpoint stage checks whether the current browser or device is known to authentik's Endpoint Devices system and injects device facts into flow context.

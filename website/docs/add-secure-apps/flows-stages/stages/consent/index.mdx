@@ -1,5 +1,6 @@
 ---
 title: Consent stage
+description: Ask users to approve sharing their data with applications.
 ---
 
 The Consent stage asks the user to approve sharing data with an application or relying party.

@@ -1,5 +1,6 @@
 ---
 title: SMS authenticator setup stage
+description: Set up SMS-based authenticators and one-time codes for users.
 ---
 
 The SMS Authenticator Setup stage enrolls an SMS-based authenticator for the current user by using either Twilio or a generic HTTP endpoint.
