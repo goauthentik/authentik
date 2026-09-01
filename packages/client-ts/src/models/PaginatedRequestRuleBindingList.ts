@@ -25,20 +25,14 @@ import { RequestRuleBindingFromJSON, RequestRuleBindingToJSON } from "./RequestR
 export interface PaginatedRequestRuleBindingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRequestRuleBindingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RequestRuleBinding>}
-     * @memberof PaginatedRequestRuleBindingList
      */
     results: Array<RequestRuleBinding>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestRuleBindingList
      */
     autocomplete: { [key: string]: any };
 }

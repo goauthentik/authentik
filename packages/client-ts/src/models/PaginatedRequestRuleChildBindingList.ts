@@ -28,20 +28,14 @@ import {
 export interface PaginatedRequestRuleChildBindingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRequestRuleChildBindingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RequestRuleChildBinding>}
-     * @memberof PaginatedRequestRuleChildBindingList
      */
     results: Array<RequestRuleChildBinding>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestRuleChildBindingList
      */
     autocomplete: { [key: string]: any };
 }

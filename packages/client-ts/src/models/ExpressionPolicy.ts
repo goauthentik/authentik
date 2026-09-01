@@ -20,56 +20,38 @@
 export interface ExpressionPolicy {
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ExpressionPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ExpressionPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     expression: string;
 }

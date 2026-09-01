@@ -78,6 +78,16 @@ The `groups` attribute is a special attribute that must contain group identifier
 
 An identifier has to be a simple value such as a string. Entries that are not, such as the objects some identity providers return in an OpenID Connect `groups` claim, are skipped, and a **Configuration error** event records how many were dropped.
 
+#### Disabling group synchronization
+
+The source collects its groups before any property mapping runs, and mapping results are merged into them as described in [Object construction process](#object-construction-process). To prevent the collected groups from being imported, return `None` for the `groups` attribute:
+
+```python
+return {"groups": None}
+```
+
+This stops groups from being imported. However, authentik reconciles source-linked memberships on every login, so users are still removed from groups that were created by or linked through the source.
+
 #### Object-shaped OpenID Connect group claims
 
 OpenID Connect does not define a `groups` claim, so providers are free to put anything in one. Some return group objects instead of plain identifiers.

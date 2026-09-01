@@ -35048,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -53741,9 +53756,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58833,9 +58848,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58921,9 +58936,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean

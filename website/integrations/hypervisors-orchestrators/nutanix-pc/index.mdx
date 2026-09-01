@@ -1,22 +1,22 @@
 ---
-title: Integrate with Nutanix AHV
-sidebar_label: Nutanix AHV
+title: Integrate with Nutanix Prism Central
+sidebar_label: Nutanix Prism Central
 support_level: community
 ---
 
 import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
-## What is Nutanix AHV?
+## What is Nutanix Prism Central?
 
-> Nutanix AHV is the native hypervisor of the Nutanix Cloud Platform, providing enterprise virtualization for compute workloads. AHV clusters are managed through Prism Central, which supports single sign-on with SAML 2.0 identity providers.
+> Nutanix Prism Central, also known as Nutanix PC, is a centralized software virtual appliance that allows you to manage multiple physical or cloud-based clusters from one unified dashboard. It supports single sign-on with SAML 2.0 identity providers.
 >
-> -- https://www.nutanix.com/products/ahv
+> -- https://www.nutanix.com/products/prism
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `prismcentral.company` is the FQDN of the Prism Central instance that manages the Nutanix AHV cluster.
+- `prismcentral.company` is the FQDN of the Prism Central installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::info
@@ -27,7 +27,7 @@ This guide follows the authorization policy workflow available in Prism Central 
 
 ## authentik configuration
 
-To support the integration of Nutanix AHV with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
+To support the integration of Prism Central with authentik, you need to create two property mappings and an application/provider pair in authentik. Prism Central identifies users by the username and email attributes in the SAML assertion, and uses the NameID attribute for role mapping.
 
 ### Create property mappings
 
@@ -74,14 +74,16 @@ To support the integration of Nutanix AHV with authentik, you need to create two
 
 3. Click **Submit** to save the new application and provider.
 
+:::warning Prism Central Signing Certificates
+Prism Central does not support full chain Signing Certificates. Ensure that the selected certificate only contains one certificate.
+:::
+
 ### Download the authentik metadata
 
 1. In the authentik Admin interface, navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section.
 2. Under **Related objects** > **Metadata**, click **Download**. This metadata file is required in the next section.
 
-## Nutanix AHV configuration
-
-Authentication for Nutanix AHV clusters is configured in Prism Central.
+## Nutanix Prism Central configuration
 
 ### Add the identity provider
 
@@ -111,7 +113,7 @@ On earlier Prism Central versions, select or create a role, then use **Actions**
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Nutanix AHV, open Prism Central and select the authentik configuration on the login screen. Complete the authentik authentication flow and confirm that Prism Central opens with the expected role.
+To confirm that authentik is properly configured with Prism Central, open Prism Central and select the authentik configuration on the login screen. Complete the authentik authentication flow and confirm that Prism Central opens with the expected role.
 
 ## Resources
 

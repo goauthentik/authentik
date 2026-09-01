@@ -26,26 +26,18 @@ import {
 export interface PatchedSourceStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedSourceStageRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSourceStageRequest
      */
     source?: string;
     /**
      * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof PatchedSourceStageRequest
      */
     resumeTimeout?: string;
     /**
      * Source matching failure reasons for which the flow should resume.
-     * @type {Array<ResumeOnMatchFailuresEnum>}
-     * @memberof PatchedSourceStageRequest
      */
     resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }

@@ -25,20 +25,14 @@ import { RadiusProviderFromJSON, RadiusProviderToJSON } from "./RadiusProvider";
 export interface PaginatedRadiusProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRadiusProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RadiusProvider>}
-     * @memberof PaginatedRadiusProviderList
      */
     results: Array<RadiusProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRadiusProviderList
      */
     autocomplete: { [key: string]: any };
 }

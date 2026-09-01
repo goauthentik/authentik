@@ -20,8 +20,6 @@
 export interface PatchedRoleRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedRoleRequest
      */
     name?: string;
 }

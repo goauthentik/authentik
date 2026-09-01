@@ -20,14 +20,10 @@
 export interface GroupKerberosSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupKerberosSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupKerberosSourceConnectionRequest
      */
     identifier: string;
 }

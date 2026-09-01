@@ -23,38 +23,26 @@ import { PartialGroupFromJSON } from "./PartialGroup";
 export interface SCIMProviderGroup {
     /**
      *
-     * @type {string}
-     * @memberof SCIMProviderGroup
      */
     readonly id: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProviderGroup
      */
     scimId: string;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProviderGroup
      */
     group: string;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof SCIMProviderGroup
      */
     readonly groupObj: PartialGroup;
     /**
      *
-     * @type {number}
-     * @memberof SCIMProviderGroup
      */
     provider: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMProviderGroup
      */
     readonly attributes: { [key: string]: any };
 }

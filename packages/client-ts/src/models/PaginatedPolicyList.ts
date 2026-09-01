@@ -25,20 +25,14 @@ import { PolicyFromJSON, PolicyToJSON } from "./Policy";
 export interface PaginatedPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Policy>}
-     * @memberof PaginatedPolicyList
      */
     results: Array<Policy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPolicyList
      */
     autocomplete: { [key: string]: any };
 }

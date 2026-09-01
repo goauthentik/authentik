@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedDeviceUserBindingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedDeviceUserBindingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<DeviceUserBinding>}
-     * @memberof PaginatedDeviceUserBindingList
      */
     results: Array<DeviceUserBinding>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedDeviceUserBindingList
      */
     autocomplete: { [key: string]: any };
 }

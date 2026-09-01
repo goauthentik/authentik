@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AuthenticatorTOTPChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorTOTPChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorTOTPChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorTOTPChallenge
      */
     configUrl: string;
 }

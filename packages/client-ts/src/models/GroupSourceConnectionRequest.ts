@@ -20,14 +20,10 @@
 export interface GroupSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupSourceConnectionRequest
      */
     identifier: string;
 }

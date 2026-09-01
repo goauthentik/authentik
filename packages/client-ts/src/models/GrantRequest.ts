@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { RequestableTarget } from "./RequestableTarget";
@@ -28,74 +29,50 @@ import { RequestStatusFromJSON } from "./RequestStatus";
 export interface GrantRequest {
     /**
      *
-     * @type {Date}
-     * @memberof GrantRequest
      */
     readonly created: Date;
     /**
      *
-     * @type {PartialUser}
-     * @memberof GrantRequest
      */
     readonly createdBy: PartialUser;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GrantRequest
      */
     requesterData?: { [key: string]: any };
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GrantRequest
      */
     fulfillerData?: { [key: string]: any };
     /**
      *
-     * @type {PartialUser}
-     * @memberof GrantRequest
      */
     readonly revokedBy: PartialUser | null;
     /**
      *
-     * @type {PartialUser}
-     * @memberof GrantRequest
      */
     readonly agentOwner: PartialUser | null;
     /**
      *
-     * @type {boolean}
-     * @memberof GrantRequest
      */
     readonly isActive: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof GrantRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {RequestStatus}
-     * @memberof GrantRequest
      */
     readonly status: RequestStatus;
     /**
      *
-     * @type {Array<string>}
-     * @memberof GrantRequest
      */
     readonly targets: Array<string>;
     /**
      *
-     * @type {Array<RequestableTarget>}
-     * @memberof GrantRequest
      */
     readonly targetObjs: Array<RequestableTarget>;
     /**
      *
-     * @type {string}
-     * @memberof GrantRequest
      */
     uuid?: string;
 }
@@ -154,7 +131,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        created: new Date(json["created"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         createdBy: PartialUserFromJSON(json["created_by"]),
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
@@ -166,7 +143,7 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
         targetObjs: (json["target_objs"] as Array<any>).map(RequestableTargetFromJSON),
@@ -199,7 +176,7 @@ export function GrantRequestToJSONTyped(
     return {
         requester_data: value["requesterData"],
         fulfiller_data: value["fulfillerData"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         uuid: value["uuid"],
     };
 }

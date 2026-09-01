@@ -6,6 +6,8 @@ from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDataba
 
 from authentik.lib.config import CONFIG, DIRECT_DB_ALIAS
 
+ENCODING_DOCS_URL = "https://docs.goauthentik.io/install-config/configuration/#postgresql-settings"
+
 
 class DatabaseValidation(BaseDatabaseValidation):
 
@@ -33,6 +35,8 @@ class DatabaseValidation(BaseDatabaseValidation):
                 messages.append(
                     Warning(
                         f"PostgreSQL Server encoding is not UTF8: {server_encoding}",
+                        hint="Dump the database, re-create it with `ENCODING 'UTF8'` "
+                        f"and restore the dump. See {ENCODING_DOCS_URL}",
                         id="ak.db.W002",
                     )
                 )

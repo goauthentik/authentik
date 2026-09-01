@@ -20,20 +20,14 @@
 export interface PatchedConnectionTokenRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedConnectionTokenRequest
      */
     pk?: string;
     /**
      *
-     * @type {number}
-     * @memberof PatchedConnectionTokenRequest
      */
     provider?: number;
     /**
      *
-     * @type {string}
-     * @memberof PatchedConnectionTokenRequest
      */
     endpoint?: string;
 }

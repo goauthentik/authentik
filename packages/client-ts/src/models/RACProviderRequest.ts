@@ -20,44 +20,30 @@
 export interface RACProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof RACProviderRequest
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof RACProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof RACProviderRequest
      */
     authorizationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RACProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof RACProviderRequest
      */
     settings?: { [key: string]: any };
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof RACProviderRequest
      */
     connectionExpiry?: string;
     /**
      * When set to true, connection tokens will be deleted upon disconnect.
-     * @type {boolean}
-     * @memberof RACProviderRequest
      */
     deleteTokenOnDisconnect?: boolean;
 }

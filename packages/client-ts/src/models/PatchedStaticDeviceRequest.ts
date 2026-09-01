@@ -20,8 +20,6 @@
 export interface PatchedStaticDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedStaticDeviceRequest
      */
     name?: string;
 }

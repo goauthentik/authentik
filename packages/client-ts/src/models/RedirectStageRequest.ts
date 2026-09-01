@@ -26,32 +26,22 @@ import {
 export interface RedirectStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof RedirectStageRequest
      */
     name: string;
     /**
      *
-     * @type {boolean}
-     * @memberof RedirectStageRequest
      */
     keepContext?: boolean;
     /**
      *
-     * @type {RedirectStageModeEnum}
-     * @memberof RedirectStageRequest
      */
     mode: RedirectStageModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof RedirectStageRequest
      */
     targetStatic?: string;
     /**
      *
-     * @type {string}
-     * @memberof RedirectStageRequest
      */
     targetFlow?: string | null;
 }

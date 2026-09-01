@@ -20,32 +20,22 @@
 export interface PatchedSCIMSourceGroupRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedSCIMSourceGroupRequest
      */
     id?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSCIMSourceGroupRequest
      */
     externalId?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSCIMSourceGroupRequest
      */
     group?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedSCIMSourceGroupRequest
      */
     source?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedSCIMSourceGroupRequest
      */
     attributes?: { [key: string]: any };
 }

@@ -23,50 +23,34 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface InvitationStage {
     /**
      *
-     * @type {string}
-     * @memberof InvitationStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof InvitationStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof InvitationStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof InvitationStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof InvitationStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof InvitationStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof InvitationStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.
-     * @type {boolean}
-     * @memberof InvitationStage
      */
     continueFlowWithoutInvitation?: boolean;
 }

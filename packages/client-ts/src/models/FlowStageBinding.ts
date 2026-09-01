@@ -30,62 +30,42 @@ import { StageFromJSON } from "./Stage";
 export interface FlowStageBinding {
     /**
      *
-     * @type {string}
-     * @memberof FlowStageBinding
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowStageBinding
      */
     readonly policybindingmodelPtrId: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowStageBinding
      */
     target: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowStageBinding
      */
     stage: string;
     /**
      *
-     * @type {Stage}
-     * @memberof FlowStageBinding
      */
     readonly stageObj: Stage;
     /**
      * Evaluate policies during the Flow planning process.
-     * @type {boolean}
-     * @memberof FlowStageBinding
      */
     evaluateOnPlan?: boolean;
     /**
      * Evaluate policies when the Stage is presented to the user.
-     * @type {boolean}
-     * @memberof FlowStageBinding
      */
     reEvaluatePolicies?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof FlowStageBinding
      */
     order: number;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof FlowStageBinding
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
-     * @type {InvalidResponseActionEnum}
-     * @memberof FlowStageBinding
      */
     invalidResponseAction?: InvalidResponseActionEnum;
 }
