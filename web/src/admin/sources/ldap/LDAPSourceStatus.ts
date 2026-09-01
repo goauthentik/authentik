@@ -9,12 +9,38 @@ import renderDescriptionList from "#components/DescriptionList";
 
 import { LDAPSourceSync, LDAPSourceSyncStatusEnum } from "@goauthentik/api";
 
+import { match } from "ts-pattern";
+
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
+import { css, CSSResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+
+function statusBlock(notice: string, status: LDAPSourceSyncStatusEnum, timestamp: Date | null) {
+    const akTaskStatus = html`<ak-task-status .status=${status}></ak-task-status>`;
+    return timestamp === null
+        ? html`${akTaskStatus} ${msg("Task has not yet completed")}`
+        : html` <div class="ak-source-ldap-status-timestamp">
+              ${akTaskStatus}
+              <span>${notice} <ak-timestamp .timestamp=${timestamp}></ak-timestamp></span>
+          </div>`;
+}
+
+const Styles = css`
+    .ak-source-ldap-status-timestamp {
+        display: flex;
+        align-items: center;
+        gap: var(--pf-global--spacer--sm, 0.5rem);
+    }
+    .ak-source-ldap-status-timestamp > span {
+        display: flex;
+        align-items: center;
+        align-content: flex-start;
+        gap: var(--pf-global--spacer--xs, 0.25rem);
+    }
+`;
 
 @customElement("ak-source-ldap-status")
 export class LDAPSourceStatus extends AKElement {
@@ -28,7 +54,7 @@ export class LDAPSourceStatus extends AKElement {
     @property({ attribute: false })
     lastSync?: LDAPSourceSync;
 
-    static styles: CSSResult[] = [PFDescriptionList, PFList];
+    static styles: CSSResult[] = [PFDescriptionList, PFList, Styles];
 
     render(): SlottedTemplateResult {
         return html`
@@ -63,27 +89,24 @@ export class LDAPSourceStatus extends AKElement {
                 ],
                 [
                     msg("Last synchronisation"),
-                    this.lastSync !== undefined
-                        ? this.lastSync.status === LDAPSourceSyncStatusEnum.Running
-                            ? html`
-                                  <ak-task-status .status=${this.lastSync.status}></ak-task-status>
-                                  <div>
-                                      Started at
-                                      <ak-timestamp
-                                          .timestamp=${this.lastSync.startedAt}
-                                      ></ak-timestamp>
-                                  </div>
-                              `
-                            : html`
-                                  <ak-task-status .status=${this.lastSync.status}></ak-task-status>
-                                  <div>
-                                      Finished at
-                                      <ak-timestamp
-                                          .timestamp=${this.lastSync.finishedAt}
-                                      ></ak-timestamp>
-                                  </div>
-                              `
-                        : html`${msg("Synchronisation never ran.")}`,
+                    match(this.lastSync?.status ?? null)
+                        .with(null, () => html`${msg("No synchronization status available.")}`)
+                        .with(LDAPSourceSyncStatusEnum.Running, (status) =>
+                            statusBlock(
+                                msg("Started: "),
+                                status,
+                                /* @ts-expect-error ts2551 OpenAPI workaround */
+                                this.lastSync?.startedAt ?? this.lastSync?.started_at ?? null,
+                            ),
+                        )
+                        .otherwise((status) =>
+                            statusBlock(
+                                msg("Finished: "),
+                                status,
+                                /* @ts-expect-error ts2551 OpenAPI workaround */
+                                this.lastSync?.finishedAt ?? this.lastSync?.finished_at ?? null,
+                            ),
+                        ),
                 ],
             ])}
         `;
