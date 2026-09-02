@@ -2,9 +2,9 @@
 
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.hashers import (
     BasePasswordHasher,
-    get_hashers,
     identify_hasher,
     must_update_salt,
 )
@@ -13,7 +13,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
 from rest_framework.utils.representation import smart_repr
 
-_NON_IMPORTABLE_PASSWORD_HASHER_ALGORITHMS = ("pbkdf2_sha1",)
 _PASSWORD_HASHER_PARAMETERS = (
     ("iterations", "iterations", _("Iterations")),
     ("work_factor", "rounds", _("Work factor")),
@@ -54,13 +53,8 @@ class PasswordHashImportValidator(PasswordHashValidator):
 
     def __call__(self, password_hash: str) -> None:
         hasher, decoded = self._decode(password_hash)
-        importable_algorithms = {
-            configured_hasher.algorithm
-            for configured_hasher in get_hashers()
-            if configured_hasher.algorithm not in _NON_IMPORTABLE_PASSWORD_HASHER_ALGORITHMS
-        }
         messages: list[str] = []
-        if hasher.algorithm not in importable_algorithms:
+        if hasher.algorithm not in settings.PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS:
             messages.append(
                 _("Password hash algorithm %(algorithm)s is not accepted by the import policy.")
                 % {"algorithm": hasher.algorithm}
