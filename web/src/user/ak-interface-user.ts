@@ -119,7 +119,12 @@ class UserInterface extends WithLicenseSummary(
         const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         const { requests, agents } = this.uiConfig.enabledFeatures;
 
-        return guard([licensed, requests, agents], () => {
+        // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
+        // Otherwise late-arriving permissions won't re-render the tabs.
+        const canRequest = this.can(CapabilitiesEnum.CanRequest);
+        const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
+
+        return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
             if (licensed) return null;
 
             const navItems = [];
@@ -128,11 +133,11 @@ class UserInterface extends WithLicenseSummary(
             // and are only shown when the admin has configured at least one request rule
             // We can't easily check if this user actually has something they can request,
             // that is a semi-expensive request.
-            if (requests && this.can(CapabilitiesEnum.CanRequest)) {
+            if (requests && canRequest) {
                 navItems.push({ label: msg("Discover"), link: "/requests" });
             }
 
-            if (agents && this.can(CapabilitiesEnum.CanAgentSelfService)) {
+            if (agents && canAgentSelfService) {
                 navItems.push({ label: msg("Agents"), link: "/agents" });
             }
 
