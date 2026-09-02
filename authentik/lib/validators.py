@@ -81,7 +81,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
         parameters = self._parameters(hasher, decoded)
         parameters_changed = any(provided != expected for _, provided, expected in parameters)
         if hasher.must_update(password_hash) and (parameters_changed or not salt_needs_update):
-            messages.insert(0, self._policy_message(hasher, parameters))
+            messages.insert(0, self._settings_message(hasher, parameters))
 
         if messages:
             raise PasswordHashRequiresOverride(messages)
@@ -108,7 +108,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
             )
         return parameters
 
-    def _policy_message(
+    def _settings_message(
         self,
         hasher: BasePasswordHasher,
         parameters: list[tuple[str, Any, Any]],
@@ -117,9 +117,8 @@ class PasswordHashImportValidator(PasswordHashValidator):
         provided = "\n".join(f"{label}: {value}" for label, value, _ in parameters)
         expected = "\n".join(f"{label}: {value}" for label, _, value in parameters)
         return _(
-            "Password hash parameters do not match authentik's current policy.\n\n"
-            "Provided:\nAlgorithm: %(algorithm)s\n%(provided)s\n\n"
-            "Expected:\nAlgorithm: %(algorithm)s\n%(expected)s"
+            "Password hash parameters do not match authentik's current policy for algorithm "
+            "%(algorithm)s.\n\nProvided:\n%(provided)s\n\nExpected:\n%(expected)s"
         ) % {
             "algorithm": hasher.algorithm,
             "provided": provided,
