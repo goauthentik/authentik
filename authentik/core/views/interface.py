@@ -18,6 +18,7 @@ from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import UserTypes
 from authentik.lib.config import CONFIG
+from authentik.lib.http_cache import patch_anonymous_shared_cache
 from authentik.policies.denied import AccessDeniedResponse
 
 
@@ -41,9 +42,23 @@ class RootRedirectView(AccessMixin, RedirectView):
                 )
         return None
 
+    def _anonymous_redirect(self, request: HttpRequest) -> HttpResponse:
+        """Return the login redirect for an unauthenticated ``GET /``.
+
+        Cookieless requests get a publicly cacheable response so edge / proxy
+        caches can absorb flood traffic.
+        """
+        response = self.handle_no_permission()
+        if request.method in ("GET", "HEAD"):
+            patch_anonymous_shared_cache(response)
+        return response
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not Setup.get():
             return redirect("authentik_core:setup")
+        # No session cookie means this request cannot represent an authenticated user.
+        if not request.COOKIES:
+            return self._anonymous_redirect(request)
         if not request.user.is_authenticated:
             return self.handle_no_permission()
         if redirect_response := RootRedirectView().redirect_to_app(request):

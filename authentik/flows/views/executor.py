@@ -54,6 +54,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
+from authentik.lib.http_cache import patch_anonymous_shared_cache
 from authentik.lib.sentry import SentryIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
@@ -541,6 +542,12 @@ class ToDefaultFlow(View):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         flow = ToDefaultFlow.get_flow(request, self.designation)
+        brand: Brand = request.brand
+        brand_flow_id = None
+        if self.designation == FlowDesignation.AUTHENTICATION:
+            brand_flow_id = brand.flow_authentication_id
+        elif self.designation == FlowDesignation.INVALIDATION:
+            brand_flow_id = brand.flow_invalidation_id
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
@@ -550,7 +557,10 @@ class ToDefaultFlow(View):
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        response = redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        if request.method in ("GET", "HEAD") and not request.COOKIES and flow.pk == brand_flow_id:
+            patch_anonymous_shared_cache(response)
+        return response
 
 
 def to_stage_response(
