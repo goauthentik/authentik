@@ -396,6 +396,12 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
+PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS = (
+    "pbkdf2_sha256",
+    "argon2",
+    "bcrypt_sha256",
+    "scrypt",
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
