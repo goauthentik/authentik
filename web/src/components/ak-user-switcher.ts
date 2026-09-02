@@ -1,4 +1,5 @@
 import "#elements/buttons/Dropdown";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { isAPIResultReady } from "#common/api/responses";
@@ -14,70 +15,123 @@ import Styles from "#components/ak-user-switcher.css";
 
 import { CoreApi, type UserSelf, UserSwitchActionEnum } from "@goauthentik/api";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { msg, str } from "@lit/localize";
+import { html, PropertyValues } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
+import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-user-switcher")
 export class UserSwitcher extends WithSession(AKElement) {
-    static styles = [PFButton, PFDropdown, PFDivider, Styles];
+    public static styles = [
+        // ---
+        PFButton,
+        PFDropdown,
+        PFDivider,
+        PFDisplay,
+        Styles,
+    ];
 
-    async #startSwitch(userPk?: number): Promise<void> {
+    @state()
+    protected userSwitcherVisible: boolean = false;
+
+    @state()
+    protected users: readonly UserSelf[] = [];
+
+    protected override updated(changed: PropertyValues<this>): void {
+        super.updated(changed);
+
+        if (changed.has("session")) {
+            this.synchronizeUserSwitcherVisibility();
+        }
+    }
+
+    protected synchronizeUserSwitcherVisibility(): void {
+        const allUsers: readonly UserSelf[] = isAPIResultReady(this.session)
+            ? [this.session.user, ...(this.session.users ?? [])]
+            : [];
+
+        this.userSwitcherVisible = !!globalAK().brand.flowUserSwitch;
+
+        this.users = this.userSwitcherVisible
+            ? allUsers
+            : allUsers.filter((user) => user.isCurrent);
+    }
+
+    protected startSwitch = async (userPk?: number): Promise<void> => {
+        const { pathname, search, hash } = window.location;
+        const next = `${pathname}${search}${hash}`;
+
         const { redirect } = await aki(CoreApi).coreUsersSwitchCreate({
-            next: `${window.location.pathname}${window.location.search}${window.location.hash}`,
+            next,
             userSwitchRequest: {
                 action:
                     userPk === undefined ? UserSwitchActionEnum.Add : UserSwitchActionEnum.Switch,
                 userPk,
             },
         });
+
         window.location.assign(redirect);
-    }
+    };
 
-    #renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
+    protected renderAvatar(user?: { avatar?: string }): SlottedTemplateResult {
         if (user?.avatar && !isDefaultAvatar(user.avatar)) {
-            return html`<span part="avatar">
-                <img part="avatar-image" src=${user.avatar} alt="" />
-            </span>`;
+            return html`<div part="avatar">
+                <img
+                    part="avatar-image"
+                    src=${user.avatar}
+                    alt=${msg("User avatar", { id: "user-switcher.avatar.alt" })}
+                />
+                <div part="avatar-overlay" data-tooltip-target></div>
+            </div>`;
         }
-        return html`<span part="avatar">
+        return html`<div part="avatar">
             <i class="fas fa-user" aria-hidden="true"></i>
-        </span>`;
+        </div>`;
     }
 
-    #renderUser(user: UserSelf): SlottedTemplateResult {
+    protected renderUser(user: UserSelf): SlottedTemplateResult {
         const label = formatUserDisplayName(user, this.uiConfig) || user.username;
-        const description =
-            [user.email, user.username].find((identifier) => identifier && identifier !== label) ??
-            "";
+        const description = [user.email, user.username].find(
+            (identifier) => identifier && identifier !== label,
+        );
+
+        const current = user.isCurrent;
 
         return html`<li role="presentation">
             <button
                 class="pf-c-dropdown__menu-item"
-                part="menu-item"
+                part="menu-item user"
                 role="menuitem"
                 type="button"
-                ?disabled=${user.isCurrent}
-                @click=${() => this.#startSwitch(user.pk)}
+                ?disabled=${current}
+                @click=${() => this.startSwitch(user.pk)}
+                aria-label=${current
+                    ? msg(str`Current user "${label}"`, {
+                          id: "user-switcher.actions.current-user.label",
+                      })
+                    : msg(str`Switch to user "${label}"`, {
+                          id: "user-switcher.actions.switch-to-user.label",
+                      })}
             >
-                <span class="pf-c-dropdown__menu-item-main" part="item">
-                    ${this.#renderAvatar(user)}
-                    <span part="labels">
-                        <span part="name">${label}</span>
-                        ${description ? html`<span part="description">${description}</span>` : null}
-                    </span>
-                    ${user.isCurrent
+                <div class="pf-c-dropdown__menu-item-main" part="item user">
+                    ${this.renderAvatar(user)}
+                    <div part="labels">
+                        <div part="name">${label}</div>
+                        ${description ? html`<div part="description">${description}</div>` : null}
+                    </div>
+                    ${current
                         ? html`<i
-                              class="fas fa-check"
+                              class="fas fa-check pf-u-display-none pf-u-display-block-on-sm"
                               part="current-indicator"
                               aria-hidden="true"
                           ></i>`
                         : null}
-                </span>
+                </div>
             </button>
         </li>`;
     }
@@ -87,12 +141,6 @@ export class UserSwitcher extends WithSession(AKElement) {
             return null;
         }
 
-        const enabled = Boolean(globalAK().brand.flowUserSwitch);
-        const allUsers: readonly UserSelf[] = isAPIResultReady(this.session)
-            ? [this.session.user, ...(this.session.users ?? [])]
-            : [];
-        const users = enabled ? allUsers : allUsers.filter((user) => user.isCurrent);
-
         return html`<ak-dropdown class="pf-c-dropdown" part="switcher">
             <button
                 class="pf-c-dropdown__toggle pf-m-plain"
@@ -101,35 +149,44 @@ export class UserSwitcher extends WithSession(AKElement) {
                 id="user-switcher-toggle"
                 aria-haspopup="menu"
                 aria-controls="user-switcher-menu"
-                aria-label=${msg("Switch user", {
-                    id: "user-switcher.toggle.label",
+                aria-label=${msg("Toggle user navigation menu", {
+                    id: "user-switcher.toggle.tooltip",
                 })}
             >
-                ${this.#renderAvatar(this.currentUser)}
-                <i
-                    class="fas fa-caret-down pf-c-dropdown__toggle-icon"
-                    part="toggle-icon"
+                <pf-tooltip
+                    part="toggle-tooltip"
+                    position="top-end"
+                    content=${msg("Open user navigation menu", {
+                        id: "user-switcher.open.tooltip",
+                    })}
                     aria-hidden="true"
-                ></i>
+                >
+                    ${this.renderAvatar(this.currentUser)}
+                </pf-tooltip>
             </button>
+
             <menu
                 class="pf-c-dropdown__menu pf-m-align-right"
                 part="menu"
                 hidden
                 id="user-switcher-menu"
-                aria-labelledby="user-switcher-toggle"
+                aria-labelled=${msg("User navigation menu", { id: "user-switcher.menu.label" })}
                 tabindex="-1"
             >
-                ${users.map((user) => this.#renderUser(user))}
-                ${users.length ? html` <li class="pf-c-divider" role="separator"></li> ` : null}
-                ${enabled
+                ${repeat(
+                    this.users,
+                    (user) => user.pk,
+                    (user) => this.renderUser(user),
+                )}
+                ${this.users.length ? html`<li class="pf-c-divider" role="separator"></li>` : null}
+                ${this.userSwitcherVisible
                     ? html`<li role="presentation">
                           <button
                               class="pf-c-dropdown__menu-item"
                               part="menu-item"
                               role="menuitem"
                               type="button"
-                              @click=${() => this.#startSwitch()}
+                              @click=${() => this.startSwitch()}
                           >
                               <i class="fas fa-plus" aria-hidden="true"></i>
                               ${msg("Add another user", {
