@@ -269,11 +269,13 @@ class TestGeoIPPolicy(TestCase):
         self.create_login({"lat": 0, "long": 10}, current_time - timedelta(minutes=30))
         self.request.context["geoip"] = {"lat": 0, "long": 0}
         history_policy = GeoIPPolicy.objects.create(
+            name="history-distance-tolerance",
             check_history_distance=True,
             history_max_distance_km=1000,
             distance_tolerance_km=200,
         )
         impossible_policy = GeoIPPolicy.objects.create(
+            name="impossible-travel-tolerance",
             check_impossible_travel=True,
             distance_tolerance_km=500,
             impossible_tolerance_km=0,
