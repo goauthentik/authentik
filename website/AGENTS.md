@@ -1,6 +1,6 @@
 ## Project Overview
 
-This is the **authentik documentation website** — the source for everything published under `goauthentik.io`. It is a TypeScript [NPM Workspace](https://docs.npmjs.com/cli/v11/using-npm/workspaces) at `./website` that builds **three separate [Docusaurus](https://docusaurus.io/) sites**, each its own workspace package with its own `docusaurus.config.esm.mjs`, `sidebar.mjs`, and `static/_redirects`:
+This is the **authentik documentation website** — the source for everything published under `goauthentik.io`. It is a TypeScript [pnpm workspace](https://pnpm.io/workspaces) at `./website` that builds **three separate [Docusaurus](https://docusaurus.io/) sites**, each its own workspace package with its own `docusaurus.config.esm.mjs`, `sidebar.mjs`, and `static/_redirects`:
 
 - **Topics / "The Docs"** (`docs/`, pkg `@goauthentik/docs-topics`) → [docs.goauthentik.io](https://docs.goauthentik.io) — how to use and configure authentik.
 - **Integrations** (`integrations/`, pkg `@goauthentik/integration-docs`) → [integrations.goauthentik.io](https://integrations.goauthentik.io) — guides for integrating authentik with third-party services. Primarily for SSO.
@@ -8,13 +8,13 @@ This is the **authentik documentation website** — the source for everything pu
 
 A shared `docusaurus-theme/` workspace package (`@goauthentik/docusaurus-theme`) holds common theme, redirect, and component code consumed by all three. Common dependencies (Docusaurus, React, MDX) are hoisted to the root `node_modules`.
 
-Theme customizations live in `docusaurus-theme/theme/` as **swizzled** components — Docusaurus's mechanism for overriding a built-in theme component by shadowing it at the same import path (e.g. `theme/EditThisPage`, `theme/DocItem/Content`, `theme/NotFound`). Most are _wrappers_ (render the original and add to it); a few are _ejected_ (full replacements). Because these override theme internals, they can break on a Docusaurus upgrade — prefer wrapping over ejecting, keep overrides minimal, and re-check them when bumping Docusaurus. Scaffold a new one with the `docusaurus swizzle` CLI (`npm run --prefix website/docs docusaurus -- swizzle @docusaurus/theme-classic <ComponentName> --wrap`; use `--eject` only when wrapping cannot express the change), then move the result into `docusaurus-theme/theme/` so all three sites share it.
+Theme customizations live in `docusaurus-theme/theme/` as **swizzled** components — Docusaurus's mechanism for overriding a built-in theme component by shadowing it at the same import path (e.g. `theme/EditThisPage`, `theme/DocItem/Content`, `theme/NotFound`). Most are _wrappers_ (render the original and add to it); a few are _ejected_ (full replacements). Because these override theme internals, they can break on a Docusaurus upgrade — prefer wrapping over ejecting, keep overrides minimal, and re-check them when bumping Docusaurus. Scaffold a new one with the `docusaurus swizzle` CLI (`pnpm --dir website/docs run docusaurus -- swizzle @docusaurus/theme-classic <ComponentName> --wrap`; use `--eject` only when wrapping cannot express the change), then move the result into `docusaurus-theme/theme/` so all three sites share it.
 
 You are most often editing **MDX content**, not application code. Treat documentation as a product: every page has a URL that is a promise to readers, and prose must pass the linters and the spell checker.
 
 ## Commands
 
-All build/lint commands are driven from the **repo-root `Makefile`**, not from inside `website/`. Each target proxies to an NPM script via `corepack npm run --prefix website ...`. Run them from the repository root.
+All build/lint commands are driven from the **repo-root `Makefile`**, not from inside `website/`. Each target proxies to a package script via `pnpm --dir website run ...`. Run them from the repository root.
 
 ### Setup
 
@@ -53,7 +53,7 @@ make lint-spellcheck   # cspell over the repo (also part of docs-lint-fix)
 make docs-lint-fix     # spellcheck + prettier --write
 ```
 
-Inside `website/` the underlying scripts are `npm run prettier`, `npm run lint` / `npm run lint-check` (ESLint), and `npm run check-types` (`tsc -b`). Prefer the `make` targets — they wire up the correct working directory and ordering.
+Inside `website/` the underlying scripts are `pnpm run prettier`, `pnpm run lint` / `pnpm run lint-check` (ESLint), and `pnpm run check-types` (`tsc -b`). Prefer the `make` targets — they wire up the correct working directory and ordering.
 
 ## Architecture
 
@@ -159,8 +159,8 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 | Site generator | Docusaurus 3.x (classic preset + Mermaid)                                           |
 | Content        | MDX + React                                                                         |
 | API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                      |
-| Build runtime  | Node ≥ 24, npm ≥ 11 (run via `corepack`)                                            |
-| Package layout | NPM Workspaces (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
+| Build runtime  | Node ≥ 24, pnpm ≥ 11.25 (pinned via `packageManager`)                               |
+| Package layout | pnpm workspace (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |
 | Lint / format  | ESLint 9 (`@goauthentik/eslint-config`) + Prettier (`@goauthentik/prettier-config`) |
 | Spell check    | cspell (typo-only mode)                                                             |
 | Types          | TypeScript (`tsc -b`)                                                               |

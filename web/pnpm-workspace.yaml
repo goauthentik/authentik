@@ -33,7 +33,7 @@ catalog:
   "@typescript-eslint/eslint-plugin": "^8.65.0"
   "@typescript-eslint/parser": "^8.65.0"
   "@typescript-eslint/utils": "^8.65.0"
-  "@types/node": "^26.1.2"
+  "@types/node": "^26.4.0"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
   esbuild: "^0.28.1"

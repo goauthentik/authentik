@@ -88,7 +88,7 @@ lint-fix: lint-fix-rust  ## Lint and automatically fix errors in the python sour
 lint-spellcheck:  ## Reports spelling errors.
 	npm run lint:spellcheck
 
-lint-catalogs:  ## Reports pnpm catalog pins that drifted between the root, web, and website workspaces.
+lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
 
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
