@@ -68,15 +68,8 @@ class PasswordHashImportValidator(PasswordHashValidator):
                 }
             )
 
-        parameters = [
-            (label, decoded[decoded_name], getattr(hasher, configured_name))
-            for decoded_name, configured_name, label in _PASSWORD_HASHER_PARAMETERS
-            if decoded_name in decoded and hasattr(hasher, configured_name)
-        ]
-        if any(provided != expected for _, provided, expected in parameters):
-            messages.append(self._policy_message(hasher, parameters))
-
-        if must_update_salt(decoded["salt"], hasher.salt_entropy):
+        salt_needs_update = must_update_salt(decoded["salt"], hasher.salt_entropy)
+        if salt_needs_update:
             messages.append(
                 _(
                     "Password hash salt does not meet the current requirement of "
@@ -84,8 +77,36 @@ class PasswordHashImportValidator(PasswordHashValidator):
                 )
                 % {"bits": hasher.salt_entropy}
             )
+
+        parameters = self._parameters(hasher, decoded)
+        parameters_changed = any(provided != expected for _, provided, expected in parameters)
+        if hasher.must_update(password_hash) and (parameters_changed or not salt_needs_update):
+            messages.insert(0, self._policy_message(hasher, parameters))
+
         if messages:
             raise PasswordHashRequiresOverride(messages)
+
+    def _parameters(
+        self,
+        hasher: BasePasswordHasher,
+        decoded: dict[str, Any],
+    ) -> list[tuple[str, Any, Any]]:
+        """Return password hash parameters for the error message."""
+        parameters = [
+            (label, decoded[decoded_name], getattr(hasher, configured_name))
+            for decoded_name, configured_name, label in _PASSWORD_HASHER_PARAMETERS
+            if decoded_name in decoded and hasattr(hasher, configured_name)
+        ]
+        if "params" in decoded:
+            expected = hasher.params()
+            parameters.extend(
+                (
+                    (_("Variety"), decoded["variety"], f"argon2{expected.type.name.lower()}"),
+                    (_("Version"), decoded["version"], expected.version),
+                    (_("Hash length"), decoded["params"].hash_len, expected.hash_len),
+                )
+            )
+        return parameters
 
     def _policy_message(
         self,
