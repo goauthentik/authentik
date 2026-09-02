@@ -12,7 +12,11 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.sources.ldap.api.sources import LDAPSourceSerializer
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
 
@@ -139,6 +143,36 @@ class LDAPAPITests(APITestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
+
+
+    def test_user_connection_create(self):
+        """User connection creation: user is required and must be persisted (#25672/#25673)"""
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        source = self._create_debug_source()
+        identifier = "S-1-5-21-3638675543-1746918860-1899855899-1109"
+        # Missing user must be rejected with 400, not crash with a 500
+        res = self.client.post(
+            reverse("authentik_api:userldapsourceconnection-list"),
+            data={
+                "source": str(source.pk),
+                "identifier": identifier,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertIn("user", loads(res.content.decode()))
+        # A posted user must be accepted and persisted
+        res = self.client.post(
+            reverse("authentik_api:userldapsourceconnection-list"),
+            data={
+                "source": str(source.pk),
+                "identifier": identifier,
+                "user": user.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 201)
+        connection = UserLDAPSourceConnection.objects.get(source=source)
+        self.assertEqual(connection.user, user)
 
     @apply_blueprint("system/sources-ldap.yaml")
     def test_debug_denied_for_anonymous(self):
