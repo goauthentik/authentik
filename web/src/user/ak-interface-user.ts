@@ -105,20 +105,12 @@ class UserInterface extends WithLicenseSummary(
 
             const { base } = globalAK().api;
 
-            return html`<a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                    href="${base}if/admin/"
-                    slot="extra"
+            return html`<a class="pf-c-button pf-m-secondary pf-m-small" href="${base}if/admin/">
+                <span class="pf-u-display-none pf-u-display-block-on-md"
+                    >${msg("Admin interface")}</span
                 >
-                    ${msg("Admin interface")}
-                </a>
-                <a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                    href="${base}if/admin/"
-                    slot="extra"
-                >
-                    ${msg("Admin")}
-                </a>`;
+                <span class="pf-u-display-none-on-md pf-u-display-block">${msg("Admin")}</span>
+            </a>`;
         });
     }
 
