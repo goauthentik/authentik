@@ -44,6 +44,7 @@ class TestPasswordHashValidator(TestCase):
         with self.assertRaises(PasswordHashRequiresOverride) as ctx:
             validator(sha1.encode(password, sha1.salt()))
         self.assertIn("pbkdf2_sha1", str(ctx.exception.detail[0]))
+        self.assertIn("pbkdf2_sha256, argon2, bcrypt_sha256, scrypt", str(ctx.exception.detail[0]))
 
         hasher = PBKDF2PasswordHasher()
         hasher.iterations -= 1

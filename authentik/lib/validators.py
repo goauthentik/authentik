@@ -56,8 +56,16 @@ class PasswordHashImportValidator(PasswordHashValidator):
         messages: list[str] = []
         if hasher.algorithm not in settings.PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS:
             messages.append(
-                _("Password hash algorithm %(algorithm)s is not accepted by the import policy.")
-                % {"algorithm": hasher.algorithm}
+                _(
+                    "Password hash algorithm %(algorithm)s is not accepted. Accepted algorithms: "
+                    "%(accepted_algorithms)s."
+                )
+                % {
+                    "algorithm": hasher.algorithm,
+                    "accepted_algorithms": ", ".join(
+                        settings.PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS
+                    ),
+                }
             )
 
         parameters = [
