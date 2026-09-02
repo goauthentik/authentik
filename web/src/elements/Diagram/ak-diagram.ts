@@ -48,7 +48,9 @@ export class Diagram extends AKElement {
     @state()
     protected renderedSVG: SlottedTemplateResult = null;
 
-    #generation = 0;
+    protected generation = 0;
+
+    protected mermaidRenderFrameId = -1;
 
     constructor() {
         super();
@@ -64,7 +66,8 @@ export class Diagram extends AKElement {
     protected override updated(changedProperties: PropertyValues<this>): void {
         super.updated(changedProperties);
         if (changedProperties.has("diagram") || changedProperties.has("activeTheme")) {
-            requestAnimationFrame(() =>
+            cancelAnimationFrame(this.mermaidRenderFrameId);
+            this.mermaidRenderFrameId = requestAnimationFrame(() =>
                 this.#renderMermaid().catch((error: unknown) => {
                     console.warn("Could not render diagram:", error);
                 }),
@@ -73,15 +76,15 @@ export class Diagram extends AKElement {
     }
 
     async #renderMermaid(): Promise<void> {
-        this.#generation = this.#generation + 1;
+        this.generation = this.generation + 1;
 
         if (!this.diagram) {
             this.renderedSVG = null;
             return;
         }
 
-        const generation = this.#generation;
-        const overridden = () => generation !== this.#generation;
+        const generation = this.generation;
+        const overridden = () => generation !== this.generation;
 
         const mermaid = await loadMermaid(this.activeTheme);
         // Something else updated the render while we were waiting
@@ -95,7 +98,7 @@ export class Diagram extends AKElement {
 
         this.renderedSVG = unsafeHTML(svg);
 
-        // This hands control back to Lit's scheduling thread. We do this here so that when
+        // Hand control back to Lit's scheduling thread. We do this here so that when
         // `bindFunctions()` and `diagramUpdated()` are called, the diagram is already present.
         await this.updateComplete;
         if (overridden()) return;
@@ -104,16 +107,17 @@ export class Diagram extends AKElement {
         this.diagramUpdated();
     }
 
-    // Do something to the diagram after it has rendered. You can either override this in a child
-    // class, or pass in a callback. Meant to let clients fill in details using the SVG
-    // ForeignObject protocol. The diagram is completely torn down and replaced every time, so
-    // whatever you put here must fully render and never assume anything from a previous pass is
-    // still present.
-    //
+    /**
+     * Callback to be called when the *diagram* (not the component) has been updated. This is called
+     * after the diagram has been rendered, and can be used to fill in details using the SVG
+     * ForeignObject protocol.
+     *
+     * Meant to let clients fill in details using the SVG ForeignObject protocol. The diagram is
+     * completely torn down and replaced every time. Whatever you put here must fully render and
+     * never assume anything from a previous pass is still present.
+     */
     protected diagramUpdated(): void {
-        if (this.diagramUpdatedCallback) {
-            this.diagramUpdatedCallback.call(this.diagramUpdatedCallback, this);
-        }
+        this.diagramUpdatedCallback?.call(this.diagramUpdatedCallback, this);
     }
 
     protected override render(): SlottedTemplateResult {
