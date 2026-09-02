@@ -2,14 +2,12 @@
 
 from datetime import datetime, timedelta
 from json import loads
-from unittest.mock import patch
 
 from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
     check_password,
     make_password,
 )
-from django.db import IntegrityError
 from django.urls.base import reverse
 from django.utils.timezone import now
 from rest_framework.test import APITestCase
@@ -223,19 +221,6 @@ class TestUsersAPI(APITestCase):
 
         response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH, override=True)
         self._assert_password_hash_rejected(self.user, password_hash, response)
-
-    def test_set_password_hash_integrity_error(self):
-        """The endpoint reports a database integrity failure."""
-        self.client.force_login(self.admin)
-
-        with patch.object(User, "save", side_effect=IntegrityError):
-            response = self._set_password_hash(self.user, make_password(generate_key()))
-
-        self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"detail": "The password hash could not be saved due to a database constraint."},
-        )
 
     def test_recovery(self):
         """Test user recovery link"""

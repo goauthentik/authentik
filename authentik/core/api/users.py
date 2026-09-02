@@ -988,19 +988,12 @@ class UserViewSet(
         is available from the request payload.
         """
         user: User = self.get_object()
-        try:
-            user.set_password_from_hash(
-                body.validated_data["password"],
-                request=request,
-                password_hash_override=body.validated_data["override"],
-            )
-            user.save()
-        except IntegrityError as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(
-                {"detail": _("The password hash could not be saved due to a database constraint.")},
-                status=400,
-            )
+        user.set_password_from_hash(
+            body.validated_data["password"],
+            request=request,
+            password_hash_override=body.validated_data["override"],
+        )
+        user.save()
         self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 
