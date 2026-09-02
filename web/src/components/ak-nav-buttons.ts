@@ -166,6 +166,8 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
 
     render(): SlottedTemplateResult {
         return html`<div role="presentation" class="pf-c-page__header-tools">
+            <slot></slot>
+
             <div class="pf-c-page__header-tools-group">
                 ${this.renderAPIDrawerTrigger()}
                 <!-- -->
@@ -176,7 +178,6 @@ export class NavigationButtons extends WithNotifications(WithSession(AKElement))
                 <ak-user-switcher class="pf-c-page__header-tools-item"></ak-user-switcher>
             </div>
             ${this.renderImpersonation()}
-            <slot></slot>
         </div>`;
     }
 }
