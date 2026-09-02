@@ -23,7 +23,7 @@ arc-swap = "= 1.9.2"
 argh = "= 0.1.19"
 askama = "= 0.16.0"
 axum-server = { version = "= 0.8.0", features = ["tls-rustls-no-provider"] }
-aws-lc-rs = { version = "= 1.18.0", features = ["fips"] }
+aws-lc-rs = { version = "= 1.18.1", features = ["fips"] }
 axum = { version = "= 0.8.9", features = ["http2", "macros", "ws"] }
 axum-extra = { version = "= 0.12.6", default-features = false, features = [
   "cookie-signed",
