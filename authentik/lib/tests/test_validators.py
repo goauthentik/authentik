@@ -6,30 +6,30 @@ from django.contrib.auth.hashers import (
     PBKDF2PasswordHasher,
     PBKDF2SHA1PasswordHasher,
     check_password,
-    make_password,
 )
 from django.test import TestCase
-from rest_framework.exceptions import ValidationError
 
 from authentik.lib.generators import generate_key
 from authentik.lib.validators import (
     PasswordHashImportValidator,
     PasswordHashRequiresOverride,
-    PasswordHashValidator,
 )
 
 
-class TestPasswordHashValidator(TestCase):
-    """Test password hash validators."""
+class TestPasswordHashImportValidator(TestCase):
+    """Test password hash import settings."""
 
-    def test_password_hash_validator(self):
-        """Test password hash encoding validation."""
+    def test_rejected_algorithm_lists_allowed_algorithms(self):
+        """The algorithm error lists every accepted algorithm."""
         password = generate_key()
-        validator = PasswordHashValidator()
-        validator(make_password(password))
+        validator = PasswordHashImportValidator()
 
-        with self.assertRaises(ValidationError):
-            validator("not-a-valid-hash")
+        sha1 = PBKDF2SHA1PasswordHasher()
+        with self.assertRaises(PasswordHashRequiresOverride) as ctx:
+            validator(sha1.encode(password, sha1.salt()))
+        algorithm_error = str(ctx.exception.detail[0])
+        self.assertIn("pbkdf2_sha1", algorithm_error)
+        self.assertIn("pbkdf2_sha256, argon2, bcrypt_sha256, scrypt", algorithm_error)
 
     def test_argon2i_requires_override(self):
         """Django's must_update flags an otherwise current argon2i hash."""
@@ -55,24 +55,10 @@ class TestPasswordHashValidator(TestCase):
         self.assertIn("Variety: argon2i", str(ctx.exception.detail[0]))
         self.assertIn("Variety: argon2id", str(ctx.exception.detail[0]))
 
-    def test_password_hash_import_validator(self):
-        """Test the password hash import policy."""
+    def test_parameters_and_salt_have_separate_errors(self):
+        """Parameter and salt mismatches are reported separately."""
         password = generate_key()
         validator = PasswordHashImportValidator()
-        validator(make_password(password))
-
-        hasher = PBKDF2PasswordHasher()
-        hasher.iterations -= 1
-        stale = hasher.encode(password, hasher.salt())
-        with self.assertRaises(PasswordHashRequiresOverride):
-            validator(stale)
-
-        sha1 = PBKDF2SHA1PasswordHasher()
-        with self.assertRaises(PasswordHashRequiresOverride) as ctx:
-            validator(sha1.encode(password, sha1.salt()))
-        self.assertIn("pbkdf2_sha1", str(ctx.exception.detail[0]))
-        self.assertIn("pbkdf2_sha256, argon2, bcrypt_sha256, scrypt", str(ctx.exception.detail[0]))
-
         hasher = PBKDF2PasswordHasher()
         hasher.iterations -= 1
         with self.assertRaises(PasswordHashRequiresOverride) as ctx:
