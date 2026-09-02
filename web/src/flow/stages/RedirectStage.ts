@@ -26,6 +26,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     @state()
     startedRedirect = false;
 
+    #keydownController: AbortController | null = null;
+
     static styles: CSSResult[] = [
         PFLogin,
         PFForm,
@@ -51,6 +53,19 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         )?.open;
     }
 
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+
+        this.#keydownController?.abort();
+        this.#keydownController = null;
+    }
+
+    #keydownListener = (ev: KeyboardEvent): void => {
+        if (ev.key === "Enter") {
+            this.redirect();
+        }
+    };
+
     updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
@@ -58,11 +73,14 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             return;
         }
         if (this.promptUser) {
-            document.addEventListener("keydown", (ev) => {
-                if (ev.key === "Enter") {
-                    this.redirect();
-                }
-            });
+            // Register the listener once for the element's lifetime; `updated` runs on every
+            // challenge change, and the AbortController tears it down on disconnect.
+            if (!this.#keydownController) {
+                this.#keydownController = new AbortController();
+                document.addEventListener("keydown", this.#keydownListener, {
+                    signal: this.#keydownController.signal,
+                });
+            }
             return;
         }
         this.redirect();
