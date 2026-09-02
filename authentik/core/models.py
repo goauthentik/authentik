@@ -575,7 +575,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         signal=True,
         sender=None,
         request=None,
-        password_hash_override: bool | None = None,
+        hasher_defaults_overridden: bool | None = None,
     ):
         """Set password directly from a pre-hashed value.
 
@@ -594,7 +594,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
                 sender=sender,
                 user=self,
                 request=request,
-                password_hash_override=password_hash_override,
+                hasher_defaults_overridden=hasher_defaults_overridden,
             )
         self.password = password_hash
         self.password_change_date = now()

@@ -215,7 +215,7 @@ class TestUsersAPI(APITestCase):
             Event.objects.filter(
                 action=EventAction.PASSWORD_SET,
                 user__pk=self.user.pk,
-                context__password_hash_override=True,
+                context__hasher_defaults_overridden=True,
             ).exists()
         )
 

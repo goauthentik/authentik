@@ -991,7 +991,7 @@ class UserViewSet(
         user.set_password_from_hash(
             body.validated_data["password"],
             request=request,
-            password_hash_override=body.validated_data["override"],
+            hasher_defaults_overridden=body.validated_data["override"],
         )
         user.save()
         self._update_session_hash_after_password_change(request, user)
