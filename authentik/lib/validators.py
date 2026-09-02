@@ -25,7 +25,7 @@ _PASSWORD_HASHER_PARAMETERS = (
 
 
 class PasswordHashRequiresOverride(ValidationError):
-    """A valid password hash that does not match the current import policy."""
+    """A valid password hash that does not match the current import defaults."""
 
 
 class PasswordHashValidator:
@@ -49,7 +49,7 @@ class PasswordHashValidator:
 
 
 class PasswordHashImportValidator(PasswordHashValidator):
-    """Validate a password hash against authentik's import policy."""
+    """Validate a password hash against authentik's import settings."""
 
     def __call__(self, password_hash: str) -> None:
         hasher, decoded = self._decode(password_hash)
@@ -117,7 +117,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
         provided = "\n".join(f"{label}: {value}" for label, value, _ in parameters)
         expected = "\n".join(f"{label}: {value}" for label, _, value in parameters)
         return _(
-            "Password hash parameters do not match authentik's current policy for algorithm "
+            "Password hash parameters do not match authentik's current settings for algorithm "
             "%(algorithm)s.\n\nProvided:\n%(provided)s\n\nExpected:\n%(expected)s"
         ) % {
             "algorithm": hasher.algorithm,

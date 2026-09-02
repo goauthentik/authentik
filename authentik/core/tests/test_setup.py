@@ -228,7 +228,7 @@ class TestSetup(FlowTestCase):
         with self.assertRaisesRegex(
             ImproperlyConfigured,
             "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
-            "hashing policy.*https://docs.goauthentik.io/core/password-hashes/",
+            "hashing settings.*https://docs.goauthentik.io/core/password-hashes/",
         ):
             post_startup.send(sender=self)
 
@@ -246,7 +246,7 @@ class TestSetup(FlowTestCase):
         with self.assertRaisesRegex(
             ImproperlyConfigured,
             "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current password "
-            "hashing policy.*https://docs.goauthentik.io/core/password-hashes/",
+            "hashing settings.*https://docs.goauthentik.io/core/password-hashes/",
         ):
             post_startup.send(sender=self)
 

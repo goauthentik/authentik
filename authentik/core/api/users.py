@@ -507,12 +507,12 @@ class UserPasswordHashSetSerializer(PassiveSerializer):
         default=False,
         help_text=_(
             "Import a valid password hash even when its parameters do not match authentik's "
-            "current password hashing policy."
+            "current password hashing settings."
         ),
     )
 
     def validate(self, attrs: dict) -> dict:
-        """Validate the password hash against the selected import policy."""
+        """Validate the password hash with the requested override."""
         validator = PasswordHashValidator() if attrs["override"] else PasswordHashImportValidator()
         try:
             validator(attrs["password"])
