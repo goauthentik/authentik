@@ -41,7 +41,7 @@ def post_startup_setup_bootstrap(sender, **_):
                 except ValidationError as exc:
                     raise ImproperlyConfigured(
                         "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
-                        "password hashing policy. Generate a new hash with authentik's current "
+                        "password hashing settings. Generate a new hash with authentik's current "
                         "settings. See https://docs.goauthentik.io/core/password-hashes/."
                     ) from exc
             importer = Importer.from_string(content)
