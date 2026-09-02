@@ -8,23 +8,10 @@ import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
-/**
- * The shape the server sends for `LDAPSource.connectivity`: one entry per server host, plus a
- * synthetic `__all__` entry for the server pool as a whole. Every value is a string; `status` is
- * either the literal `"ok"` or the stringified `LDAPException` that was raised while connecting.
- * `vendor` and `version` are only present when `status` is `"ok"`.
- *
- * @see authentik/sources/ldap/models.py, `LDAPSource.check_connection`
- */
 type Connectivity = LDAPSourceStatus["connectivity"];
 
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60 * 1000);
 
-/**
- * `LDAPSourceSync` has six read-only fields the component never reads (`pk`, `tasks`, `source`, and
- * the various counts). This builder supplies plausible values for them so the fixtures type-check
- * without casts.
- */
 function makeSync(sync: Partial<LDAPSourceSync> = {}): LDAPSourceSync {
     return {
         pk: "e9f2c1a4-0c9c-4b1a-9a3a-5f7c1f0d2b88",
@@ -44,12 +31,12 @@ function makeSync(sync: Partial<LDAPSourceSync> = {}): LDAPSourceSync {
 }
 
 const CONNECTED: Connectivity = {
-    "dc01.corp.example.com": {
+    "dc01.foo.example.com": {
         status: "ok",
         vendor: "389 Project",
         version: "389-Directory/2.4.5 B2024.130.1546",
     },
-    "dc02.corp.example.com": {
+    "dc02.foo.example.com": {
         status: "ok",
         vendor: "389 Project",
         version: "389-Directory/2.4.5 B2024.130.1546",
@@ -62,32 +49,28 @@ const CONNECTED: Connectivity = {
 };
 
 const PARTIAL_OUTAGE: Connectivity = {
-    "dc01.corp.example.com": {
+    "dc01.foo.example.com": {
         status: "ok",
-        vendor: "Microsoft",
+        vendor: "Microsquish",
         version: "Active Directory 10.0.20348",
     },
-    "dc02.corp.example.com": {
+    "dc02.foo.example.com": {
         status: "socket connection error while opening: [Errno 111] Connection refused",
     },
     "__all__": {
         status: "ok",
-        vendor: "Microsoft",
+        vendor: "Microsquish",
         version: "Active Directory 10.0.20348",
     },
 };
 
-/**
- * The realistic worst case for layout: `status` carries the full `str(LDAPException)` text, which
- * is unbounded, untranslated, and printed inline next to the host name.
- */
 const TOTAL_OUTAGE: Connectivity = {
-    "dc01.corp.example.com": {
+    "dc01.foo.example.com": {
         status:
             "automatic bind not successful - invalidCredentials - 80090308: " +
             "LdapErr: DSID-0C090447, comment: AcceptSecurityContext error, data 52e, v4563",
     },
-    "dc02.corp.example.com": {
+    "dc02.foo.example.com": {
         status: "socket ssl wrapping error: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1000)",
     },
     "__all__": {
@@ -95,10 +78,6 @@ const TOTAL_OUTAGE: Connectivity = {
     },
 };
 
-/**
- * A server that reported no vendor metadata. The Python side fills both fields with the
- * translated string "N/A" rather than omitting them.
- */
 const NO_SERVER_INFO: Connectivity = {
     "ldap.example.com": { status: "ok", vendor: "N/A", version: "N/A" },
     "__all__": { status: "ok", vendor: "N/A", version: "N/A" },
@@ -118,31 +97,6 @@ const metadata: Meta<StoryArgs> = {
             description: {
                 component: /* md */ `
 # LDAP Source Status
-
-A two-row description list summarizing an LDAP source: the per-server connection state cached by
-the hourly \`ldap_connectivity_check\` task, and the outcome of the most recent sync.
-
-The component is entirely presentational — it makes no API calls — so every story below is driven
-by literal fixtures.
-
-## Reading the fixtures
-
-\`connectivity\` is a map of server host to a flat string dictionary. The key \`__all__\` is not a
-host; it is the result of connecting through the round-robin server *pool*, and the component
-relabels it as **Global status**. A \`status\` of \`"ok"\` is the only value with \`vendor\` and
-\`version\` alongside it; anything else is the stringified exception text.
-
-## Things the stories can't show you statically
-
-The vendor/version detail is inside a \`<pf-tooltip>\`, so it only appears on hover or keyboard
-focus of an \`ok\` row. Hover **Global status** in the *Connected* story to see it.
-
-\`\`\`html
-<ak-source-ldap-status
-    .connectivity=\${source.connectivity}
-    .lastSync=\${source.lastSync}
-></ak-source-ldap-status>
-\`\`\`
 `,
             },
         },
@@ -153,11 +107,6 @@ export default metadata;
 
 type Story = StoryObj<StoryArgs>;
 
-/**
- * Both properties are bound with Lit's `.property` syntax rather than Storybook's automatic
- * attribute binding. `connectivity` is declared as a plain `@property()`, so letting Storybook
- * write it as an attribute would hand the component a string instead of an object.
- */
 const Template: Story = {
     render: ({ connectivity, lastSync }) => html`
         <div style="max-width: 40rem; padding: 1rem;">
@@ -185,7 +134,7 @@ export const OneServerDown: Story = {
     },
 };
 
-/** The layout stress case: long, unwrapped exception text on every row. */
+/* Lots of big text */
 export const AllServersDown: Story = {
     ...Template,
     args: {
@@ -206,7 +155,6 @@ export const NoVendorMetadata: Story = {
     },
 };
 
-/** A single-host source: no pool entry beyond `__all__`. */
 export const SingleServer: Story = {
     ...Template,
     args: {
@@ -222,10 +170,6 @@ export const SingleServer: Story = {
     },
 };
 
-/**
- * `connectivity` is `null` until the connectivity-check task has run at least once — a source
- * created less than an hour ago will look like this.
- */
 export const ConnectivityUnknown: Story = {
     ...Template,
     args: {
@@ -234,7 +178,6 @@ export const ConnectivityUnknown: Story = {
     },
 };
 
-/** A sync in flight. The component shows "Started at" instead of "Finished at". */
 export const SyncRunning: Story = {
     ...Template,
     args: {
@@ -263,10 +206,6 @@ export const SyncError: Story = {
     },
 };
 
-/**
- * A terminal status with no `finishedAt`. `finishedAt` is nullable in the schema, and
- * `<ak-timestamp>` renders nothing for a null value, leaving a bare "Finished at" label.
- */
 export const SyncFinishedWithoutTimestamp: Story = {
     ...Template,
     args: {
@@ -275,10 +214,6 @@ export const SyncFinishedWithoutTimestamp: Story = {
     },
 };
 
-/**
- * The OpenAPI generator's catch-all member, emitted when the server sends a status this client
- * build doesn't know about. `<ak-task-status>` falls back to a gray "Unknown" chip.
- */
 export const SyncUnknownStatus: Story = {
     ...Template,
     args: {
@@ -287,7 +222,6 @@ export const SyncUnknownStatus: Story = {
     },
 };
 
-/** A source that has never synced, on a host that has never been reached. */
 export const NothingKnown: Story = {
     ...Template,
     args: {
