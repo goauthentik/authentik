@@ -45,7 +45,12 @@ fn rightmost_untrusted_x_forwarded_for(headers: &HeaderMap) -> Option<IpAddr> {
             continue;
         };
         for part in value.split(',') {
-            let Ok(ip) = part.trim().parse() else {
+            let part = part.trim();
+            let ip = if let Ok(ip) = part.parse::<IpAddr>() {
+                ip
+            } else if let Ok(socket_addr) = part.parse::<SocketAddr>() {
+                socket_addr.ip()
+            } else {
                 continue;
             };
             forwarded_ips.push(ip);
@@ -247,6 +252,38 @@ mod tests {
 
         let client_ip = extract_client_ip(&mut parts).await;
 
-        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 3),);
+        assert_eq!(client_ip, Ipv4Addr::new(192, 0, 2, 3));
+    }
+
+    #[tokio::test]
+    async fn with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "10.0.0.1:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv4Addr::new(10, 0, 0, 1));
+    }
+
+    #[tokio::test]
+    async fn ipv6_with_ports() {
+        config::init().expect("config");
+        let (mut parts, _) = Request::builder()
+            .uri("http://example.com/path")
+            .header("x-forwarded-for", "[2001:db8::42]:9000")
+            .extension(TrustedProxy(true))
+            .body(Body::empty())
+            .expect("Failed to create request")
+            .into_parts();
+
+        let client_ip = extract_client_ip(&mut parts).await;
+
+        assert_eq!(client_ip, Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 0x42));
     }
 }
