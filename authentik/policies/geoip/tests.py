@@ -1,5 +1,9 @@
 """geoip policy tests"""
 
+from datetime import UTC, datetime, timedelta
+from types import SimpleNamespace
+from unittest import mock
+
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_user
@@ -9,6 +13,8 @@ from authentik.policies.engine import PolicyRequest, PolicyResult
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.geoip.exceptions import GeoIPNotFoundException
 from authentik.policies.geoip.models import GeoIPPolicy
+from authentik.policies.models import PolicyBinding
+from authentik.policies.process import PolicyProcess
 
 
 class TestGeoIPPolicy(TestCase):
@@ -48,6 +54,17 @@ class TestGeoIPPolicy(TestCase):
     def enrich_context(self):
         self.request.context["asn"] = self.context["asn"]
         self.request.context["geoip"] = self.context["geoip"]
+
+    def create_login(self, geo: object, created: datetime) -> Event:
+        """Create a login event at an explicit timestamp."""
+        event = Event.objects.create(
+            action=EventAction.LOGIN,
+            user=get_user(self.user),
+            context={"geo": geo},
+        )
+        Event.objects.filter(pk=event.pk).update(created=created)
+        event.refresh_from_db()
+        return event
 
     def test_disabled_geoip(self):
         """Test that disabled GeoIP raises PolicyException with GeoIPNotFoundException"""
@@ -129,102 +146,195 @@ class TestGeoIPPolicy(TestCase):
 
         self.assertTrue(result.passing)
 
-    def test_history(self):
-        """Test history checks"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={
-                # Random location in Canada
-                "geo": {"lat": 55.868351, "long": -104.441011},
-            },
-        )
-        # Random location in Poland
-        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
-
-        policy = GeoIPPolicy.objects.create(check_history_distance=True)
-
-        result: PolicyResult = policy.passes(self.request)
-        self.assertFalse(result.passing)
-
-    def test_history_no_data(self):
-        """Test history checks (with no geoip data in context)"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={
-                # Random location in Canada
-                "geo": {"lat": 55.868351, "long": -104.441011},
-            },
+    def test_distance_missing_or_invalid_current_geoip(self):
+        """Missing and invalid current coordinates pass as not evaluable."""
+        policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
+        invalid_geoip = (
+            None,
+            {},
+            {"lat": 0},
+            {"lat": "0", "long": 0},
+            {"lat": 0, "long": "0"},
+            {"lat": True, "long": 0},
+            {"lat": 91, "long": 0},
+            {"lat": 0, "long": -181},
+            {"lat": 10**1000, "long": 0},
+            {"lat": 0, "long": 10**1000},
+            {"lat": float("nan"), "long": 0},
+            {"lat": 0, "long": float("inf")},
         )
 
-        policy = GeoIPPolicy.objects.create(check_history_distance=True)
+        for geoip_data in invalid_geoip:
+            with self.subTest(geoip_data=geoip_data):
+                self.request.context["geoip"] = geoip_data
+                self.assertTrue(policy.passes(self.request).passing)
 
-        result: PolicyResult = policy.passes(self.request)
-        self.assertFalse(result.passing)
-
-    def test_history_impossible_travel_failing(self):
-        """Test history checks"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={
-                # Random location in Canada
-                "geo": {"lat": 55.868351, "long": -104.441011},
-            },
-        )
-        # Random location in Poland
-        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
-
+    def test_distance_no_history(self):
+        """A distance policy passes when there is no login history."""
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
         policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
 
-        result: PolicyResult = policy.passes(self.request)
-        self.assertFalse(result.passing)
+        self.assertTrue(policy.passes(self.request).passing)
 
-    def test_history_impossible_travel_passing(self):
-        """Test history checks"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={
-                # Random location in Canada
-                "geo": {"lat": 55.868351, "long": -104.441011},
-            },
-        )
-        # Same location
-        self.request.context["geoip"] = {"lat": 55.868351, "long": -104.441011}
-
+    def test_distance_only_invalid_history(self):
+        """A distance policy passes when no historical coordinates are usable."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        for geo in (None, {}, {"lat": 0}, {"lat": 100, "long": 0}):
+            self.create_login(geo, current_time - timedelta(minutes=30))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
         policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
 
-        result: PolicyResult = policy.passes(self.request)
-        self.assertTrue(result.passing)
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            self.assertTrue(policy.passes(self.request).passing)
 
-    def test_history_no_geoip(self):
-        """Test history checks (previous login with no geoip data)"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={},
+    def test_distance_invalid_history_is_skipped(self):
+        """Invalid recent history does not hide an older impossible login."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        violating_login = self.create_login(
+            {"lat": 0, "long": 20}, current_time - timedelta(minutes=30)
         )
-        # Random location in Poland
-        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
-
-        policy = GeoIPPolicy.objects.create(check_history_distance=True)
-
-        result: PolicyResult = policy.passes(self.request)
-        self.assertFalse(result.passing)
-
-    def test_impossible_travel_no_geoip(self):
-        """Test impossible travel checks (previous login with no geoip data)"""
-        Event.objects.create(
-            action=EventAction.LOGIN,
-            user=get_user(self.user),
-            context={},
-        )
-        # Random location in Poland
-        self.request.context["geoip"] = {"lat": 50.950613, "long": 20.363679}
-
+        self.create_login({"lat": "invalid", "long": 0}, current_time - timedelta(minutes=10))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
         policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
 
-        result: PolicyResult = policy.passes(self.request)
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            result = policy.passes(self.request)
+
         self.assertFalse(result.passing)
+        self.assertEqual(result.raw_result["previous_login_event"], violating_login.event_uuid)
+
+    def test_distance_checks_every_usable_login(self):
+        """A passing recent login does not hide an older impossible login."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        violating_login = self.create_login(
+            {"lat": 0, "long": 20}, current_time - timedelta(minutes=30)
+        )
+        self.create_login({"lat": 0, "long": 0}, current_time - timedelta(minutes=10))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            result = policy.passes(self.request)
+
+        self.assertFalse(result.passing)
+        self.assertEqual(result.raw_result["previous_login_event"], violating_login.event_uuid)
+
+    def test_impossible_travel_same_location(self):
+        """Travel from the same location passes."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        self.create_login({"lat": 10, "long": 10}, current_time - timedelta(minutes=5))
+        self.request.context["geoip"] = {"lat": 10, "long": 10}
+        policy = GeoIPPolicy.objects.create(check_impossible_travel=True)
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            self.assertTrue(policy.passes(self.request).passing)
+
+    def test_impossible_travel_uses_fractional_hours(self):
+        """An interval just below two hours is not floored to one hour."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        self.create_login({"lat": 0, "long": 18}, current_time - timedelta(minutes=119))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        policy = GeoIPPolicy.objects.create(
+            check_impossible_travel=True, impossible_tolerance_km=100
+        )
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            self.assertTrue(policy.passes(self.request).passing)
+
+    def test_impossible_travel_one_hour_minimum_and_boundary(self):
+        """Short intervals use one hour and equality rejects travel."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        self.create_login({"lat": 0, "long": 10}, current_time - timedelta(minutes=30))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        policy = GeoIPPolicy.objects.create(
+            check_impossible_travel=True, impossible_tolerance_km=100
+        )
+
+        with (
+            mock.patch("authentik.policies.geoip.models.now", return_value=current_time),
+            mock.patch(
+                "authentik.policies.geoip.models.distance.geodesic",
+                return_value=SimpleNamespace(km=1100),
+            ),
+        ):
+            result = policy.passes(self.request)
+
+        self.assertFalse(result.passing)
+        self.assertEqual(result.raw_result["elapsed_hours"], 1.0)
+        self.assertEqual(result.raw_result["allowed_distance_km"], 1100)
+
+    def test_distance_checks_use_separate_tolerances(self):
+        """History and impossible-travel checks use their dedicated tolerances."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        self.create_login({"lat": 0, "long": 10}, current_time - timedelta(minutes=30))
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        history_policy = GeoIPPolicy.objects.create(
+            check_history_distance=True,
+            history_max_distance_km=1000,
+            distance_tolerance_km=200,
+        )
+        impossible_policy = GeoIPPolicy.objects.create(
+            check_impossible_travel=True,
+            distance_tolerance_km=500,
+            impossible_tolerance_km=0,
+        )
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            self.assertTrue(history_policy.passes(self.request).passing)
+            self.assertFalse(impossible_policy.passes(self.request).passing)
+
+    def test_impossible_travel_diagnostics(self):
+        """A rejection identifies the historical event and threshold."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        previous_login = self.create_login(
+            {"lat": 0, "long": 20}, current_time - timedelta(minutes=30)
+        )
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        policy = GeoIPPolicy.objects.create(
+            check_impossible_travel=True, impossible_tolerance_km=100
+        )
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            result = policy.passes(self.request)
+
+        self.assertFalse(result.passing)
+        self.assertEqual(result.messages, ("Distance is further than possible.",))
+        self.assertEqual(result.raw_result["reason"], "impossible_travel_threshold_exceeded")
+        self.assertGreater(result.raw_result["distance_km"], 2200)
+        self.assertEqual(result.raw_result["allowed_distance_km"], 1100)
+        self.assertEqual(result.raw_result["elapsed_hours"], 1.0)
+        self.assertEqual(result.raw_result["max_speed_km_per_hour"], 1000)
+        self.assertEqual(result.raw_result["impossible_tolerance_km"], 100)
+        self.assertEqual(result.raw_result["previous_login_at"], previous_login.created)
+        self.assertEqual(result.raw_result["previous_login_event"], previous_login.event_uuid)
+        self.assertEqual(result.raw_result["current_geo"], {"lat": 0.0, "long": 0.0})
+        self.assertEqual(result.raw_result["previous_geo"], {"lat": 0.0, "long": 20.0})
+
+    def test_impossible_travel_diagnostics_in_execution_event(self):
+        """Execution logging retains sanitized impossible-travel diagnostics."""
+        current_time = datetime(2026, 1, 1, tzinfo=UTC)
+        previous_login = self.create_login(
+            {"lat": 0, "long": 20}, current_time - timedelta(minutes=30)
+        )
+        self.request.context["geoip"] = {"lat": 0, "long": 0}
+        policy = GeoIPPolicy.objects.create(
+            check_impossible_travel=True,
+            impossible_tolerance_km=100,
+            execution_logging=True,
+        )
+
+        with mock.patch("authentik.policies.geoip.models.now", return_value=current_time):
+            result = PolicyProcess(
+                PolicyBinding(policy=policy), self.request, connection=None
+            ).execute()
+
+        event = Event.objects.get(
+            action=EventAction.POLICY_EXECUTION,
+            context__policy_uuid=policy.policy_uuid.hex,
+        )
+        diagnostics = event.context["result"]["raw_result"]
+        self.assertFalse(result.passing)
+        self.assertEqual(diagnostics["reason"], "impossible_travel_threshold_exceeded")
+        self.assertEqual(diagnostics["previous_login_event"], previous_login.event_uuid.hex)
+        self.assertEqual(diagnostics["previous_login_at"], "2025-12-31T23:30:00Z")
+        self.assertEqual(diagnostics["allowed_distance_km"], 1100)
