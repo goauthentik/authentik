@@ -128,14 +128,10 @@ server {
 
 ## Troubleshooting
 
-<<<<<<< HEAD:website/docs/install-config/reverse-proxy.md
 - An endless loading indicator, a generic authentication error, or a browser error about blocked mixed content usually means that authentik is interpreting an HTTPS request as HTTP.
     1. Use the browser's developer tools to check whether the page is attempting to load an `http://` authentik URL from an `https://` page.
     2. Verify that the reverse proxy sets `X-Forwarded-Proto` to the original client scheme. For an HTTPS request, the proxy must send `X-Forwarded-Proto: https`, even if the proxy connects to authentik over HTTP on port `9000`.
     3. Verify that the address from which the proxy connects to authentik is included in `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`. authentik ignores forwarded headers from untrusted addresses.
-- CSRF errors when saving objects are usually caused by incorrect `Host` or `Origin` handling. See [Troubleshooting CSRF Errors](../troubleshooting/csrf.md).
-=======
 - CSRF errors when saving objects are usually caused by incorrect `Host` or `Origin` handling. See [Troubleshooting CSRF Errors](../troubleshooting/csrf.mdx).
->>>>>>> 15aa5e86a (website: mdx (#25246)):website/docs/install-config/reverse-proxy.mdx
 - Incorrect client IP addresses usually mean the proxy IP is not covered by `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`.
 - Broken outpost or proxy provider communication often means the WebSocket upgrade headers are missing or the proxy is not using HTTP/1.1 or newer.
