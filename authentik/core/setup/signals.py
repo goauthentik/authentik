@@ -2,7 +2,6 @@ from os import getenv
 
 from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy
 from rest_framework.exceptions import ValidationError
 from structlog.stdlib import get_logger
 
@@ -41,11 +40,9 @@ def post_startup_setup_bootstrap(sender, **_):
                     PasswordHashImportValidator()(password_hash)
                 except ValidationError as exc:
                     raise ImproperlyConfigured(
-                        gettext_lazy(
-                            "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
-                            "password hashing policy. Generate a new hash with authentik's current "
-                            "settings."
-                        )
+                        "AUTHENTIK_BOOTSTRAP_PASSWORD_HASH does not match authentik's current "
+                        "password hashing policy. Generate a new hash with authentik's current "
+                        "settings. See https://docs.goauthentik.io/core/password-hashes/."
                     ) from exc
             importer = Importer.from_string(content)
             valid, logs = importer.validate()
