@@ -37,13 +37,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
-from authentik.sources.saml.exceptions import (
-    InvalidEncryption,
-    InvalidSignature,
-    MismatchedRequestID,
-    MissingSAMLResponse,
-    UnsupportedNameIDFormat,
-)
+from authentik.sources.saml.exceptions import SAMLException
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
@@ -160,10 +154,7 @@ class ACSView(View):
         try:
             processor.parse()
         except (
-            InvalidEncryption,
-            InvalidSignature,
-            MismatchedRequestID,
-            MissingSAMLResponse,
+            SAMLException,
             SuspiciousOperation,
             VerificationError,
             ValueError,
@@ -177,7 +168,7 @@ class ACSView(View):
                 if plan_redirect:
                     self.request.session[SESSION_KEY_GET] = {NEXT_ARG_NAME: plan_redirect}
             return processor.prepare_flow_manager().get_flow()
-        except (UnsupportedNameIDFormat, ValueError) as exc:
+        except (SAMLException, ValueError) as exc:
             return bad_request_message(request, str(exc))
 
 

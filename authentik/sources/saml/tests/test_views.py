@@ -54,6 +54,25 @@ class TestViews(TestCase):
         plan: FlowPlan = self.client.session.get(SESSION_KEY_PLAN)
         self.assertIsNotNone(plan)
 
+    @freeze_time("2022-10-14T15:00:00")
+    def test_expired_assertion(self):
+        """An expired assertion should return a 400, not an unhandled error"""
+        response = self.client.post(
+            reverse(
+                "authentik_sources_saml:acs",
+                kwargs={
+                    "source_slug": self.source.slug,
+                },
+            ),
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Assertion is not valid yet or expired.", response.content)
+
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
         """Enroll when attempting to access a provider"""
