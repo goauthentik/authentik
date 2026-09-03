@@ -26,6 +26,7 @@ CASB
 CLDR
 Cloudflare
 DOTADIW
+DTCG
 Docsmg
 GDTC
 GHES
@@ -176,6 +177,7 @@ tuisp
 uisp
 unenrollment
 unhashed
+unlayered
 unmigrate
 unskippable
 unsynchronized

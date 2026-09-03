@@ -1,4 +1,4 @@
-authentik takes security very seriously. We follow the rules of [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure), and we urge our community to do so as well, instead of reporting vulnerabilities publicly. This allows us to patch the issue quickly, announce it's existence and release the fixed version.
+authentik takes security very seriously. We follow the rules of [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure), and we urge our community to do so as well, instead of reporting vulnerabilities publicly. This allows us to patch the issue quickly, announce its existence and release the fixed version.
 
 ## Independent audits and pentests
 
@@ -6,7 +6,7 @@ We are committed to engaging in regular pentesting and security audits of authen
 
 ## What authentik classifies as a CVE
 
-CVE (Common Vulnerability and Exposure) is a system designed to aggregate all vulnerabilities. As such, a CVE will be issued when there is a either vulnerability or exposure. Per NIST, A vulnerability is:
+CVE (Common Vulnerability and Exposure) is a system designed to aggregate all vulnerabilities. As such, a CVE will be issued when there is either a vulnerability or exposure. Per NIST, A vulnerability is:
 
 “Weakness in an information system, system security procedures, internal controls, or implementation that could be exploited or triggered by a threat source.”
 
@@ -20,15 +20,12 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version   | Supported |
 | --------- | --------- |
-| 2026.2.x  | ✅        |
 | 2026.5.x  | ✅        |
+| 2026.8.x  | ✅        |
 
 ## Reporting a Vulnerability
 
-If you discover a potential vulnerability, please report it responsibly through one of the following channels:
-
-- **Email**: [security@goauthentik.io](mailto:security@goauthentik.io)
-- **GitHub**: Submit a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)
+If you discover a potential vulnerability, please report it responsibly by submitting a private security advisory via our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new).
 
 When submitting a report, please include as much detail as possible, such as:
 
@@ -96,7 +93,7 @@ The destinations of outgoing network requests (HTTP, TCP, etc.) made by authenti
 
 ## Disclosure process
 
-1. Report from Github or Issue is reported via Email as listed above.
+1. Vulnerability is reported via a GitHub Security Advisory, as listed above.
 2. The authentik Security team will try to reproduce the issue and ask for more information if required.
 3. A severity level is assigned.
 4. A fix is created, and if possible tested by the issue reporter.
@@ -107,3 +104,9 @@ The destinations of outgoing network requests (HTTP, TCP, etc.) made by authenti
 ## Getting security notifications
 
 To get security notifications, subscribe to the mailing list [here](https://groups.google.com/g/authentik-security-announcements) or join the [discord](https://goauthentik.io/discord) server.
+
+## Contact
+
+For general inquiries, you can reach the authentik Security team at [security@goauthentik.io](mailto:security@goauthentik.io).
+
+_Please do not use email for vulnerability reports, instead use our [repository’s advisory portal](https://github.com/goauthentik/authentik/security/advisories/new)._

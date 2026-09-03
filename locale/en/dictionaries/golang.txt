@@ -18,3 +18,4 @@ gorm
 gorm
 gorm*
 logger
+nolint

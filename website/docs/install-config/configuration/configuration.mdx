@@ -74,7 +74,7 @@ Use the settings in this section to configure:
 - connection behavior and pooler compatibility
 - optional read replicas
 
-For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.md) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.md). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.md).
+For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.mdx) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.mdx). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.mdx).
 
 ### Connection settings
 
@@ -441,7 +441,7 @@ Defaults to `0.0.0.0:9900`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG_PY`
 
-Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.mdx).
 
 Applies to the Server and the Worker. The Server listens on this exact port; each Worker process listens on a successive port (`9902`, `9903`, …).
 
@@ -483,7 +483,7 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
-For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.md).
+For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -687,7 +687,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 The `AUTHENTIK_EMAIL` settings are used to configure SMTP email delivery from authentik.
 
-These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
+These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.mdx), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
 For complete setup examples, testing instructions, and TLS guidance, see the [Email configuration guide](../email.mdx).
 
@@ -799,13 +799,13 @@ If you are running a version earlier than 2025.4, you can configure if the sessi
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.mdx) for session validity.
 
 Defaults to `days=1`.
 
 ### `AUTHENTIK_SESSIONS__USER_SWITCHING_AGE`:ak-version[2026.8]
 
-Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.md) lasts. This setting does not change the validity of the grouped sessions.
+Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.mdx) lasts. This setting does not change the validity of the grouped sessions.
 
 Defaults to `days=365`.
 
@@ -843,7 +843,7 @@ Defaults to `/`.
 
 The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
 
-This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.md) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
 
 Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
 
@@ -885,7 +885,7 @@ Defaults to `false`.
 
 ## System settings
 
-Additional [system settings](../../sys-mgmt/settings.md) are configurable using the Admin interface, under **System** > **Settings** or using the API.
+Additional [system settings](../../sys-mgmt/settings.mdx) are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

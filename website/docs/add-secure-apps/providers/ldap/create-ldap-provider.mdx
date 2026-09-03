@@ -18,7 +18,7 @@ The `default-authentication-flow` validates MFA by default. Duo, TOTP, and stati
 
 If you plan to use only dedicated service accounts to bind to LDAP, or only use LDAP supported MFA authenticators, then you can use the default authentication flow and skip this section and continue with the [Create an LDAP application and provider](#create-an-ldap-application-and-provider) section.
 
-Refer to [Code-Based MFA support](./index.md#code-based-mfa-support) for more information on LDAP and MFA.
+Refer to [Code-Based MFA support](./index.mdx#code-based-mfa-support) for more information on LDAP and MFA.
 
 ### Create custom stages
 
@@ -121,7 +121,7 @@ The LDAP provider requires the deployment of an LDAP [Outpost](../../outposts/in
 2. Navigate to **Applications** > **Outposts**, click **New Outpost** and set the following required configurations:
     - Provide a **Name** for the outpost (e.g. `LDAP Outpost').
     - Set the **Type** as `LDAP`.
-    - Set **Integration** to match your deployment method or manually deploy an outpost via [Docker-Compose](../../outposts/manual-deploy-docker-compose.md) or [Kubernetes](../../outposts/manual-deploy-kubernetes.md). For more information, refer to the [Outpost documentation](../../outposts/index.mdx).
+    - Set **Integration** to match your deployment method or manually deploy an outpost via [Docker-Compose](../../outposts/manual-deploy-docker-compose.mdx) or [Kubernetes](../../outposts/manual-deploy-kubernetes.mdx). For more information, refer to the [Outpost documentation](../../outposts/index.mdx).
     - Under **Applications**, select the LDAP application created in the previous section.
     - Under **Advanced settings**, set the required outpost configurations. For more information, refer to [Outpost Configuration](../../outposts/index.mdx#configuration)
 
@@ -164,10 +164,10 @@ ldapsearch \
   '(objectClass=user)'
 ```
 
-This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.md#bind-modes).
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.mdx#bind-modes).
 
 :::warning LDAPS
-In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.
+In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.mdx#ldaps-via-ssl-or-starttls) for more information.
 :::
 
   </TabItem>
@@ -179,10 +179,10 @@ To search the LDAP directory using the previously created `ldapservice` service 
 dsquery * -s <LDAP outpost IP address> -u "cn=ldapservice,ou=users,DC=ldap,DC=goauthentik,DC=io" -p <ldapuserpassword> -b "DC=ldap,DC=goauthentik,DC=io" -filter "(objectClass=user)"
 ```
 
-This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.md#bind-modes).
+This example query will return all users and log the first successful attempt in an event in **Events** > **Logs**. Subsequent successful logins from the same user are not logged by default, as they are cached in the outpost. For more details see [Bind modes](./index.mdx#bind-modes).
 
 :::warning LDAPS
-In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.md#ldaps-via-ssl-or-starttls) for more information.
+In production it is recommended to use LDAPS, which requires `ldaps://` as the protocol, and port number `636` rather than `389`. See [LDAPS](./index.mdx#ldaps-via-ssl-or-starttls) for more information.
 :::
 
   </TabItem>
