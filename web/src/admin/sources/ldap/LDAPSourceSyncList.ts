@@ -32,15 +32,15 @@ const noSourceResponse = {
 @customElement("ak-source-ldap-sync-list")
 export class LDAPSourceSyncList extends Table<LDAPSourceSync> {
     @property({ attribute: false })
-    source?: LDAPSource | null = null;
+    public source: LDAPSource | null = null;
 
-    expandable = true;
-    clearOnRefresh = true;
+    public override expandable = true;
+    public override clearOnRefresh = true;
 
     @property()
-    order = "-started_at";
+    public override order = "-started_at";
 
-    async apiEndpoint(): Promise<PaginatedResponse<LDAPSourceSync>> {
+    protected async apiEndpoint(): Promise<PaginatedResponse<LDAPSourceSync>> {
         return this.source
             ? aki(SourcesApi).sourcesLdapSyncsList({
                   ...(await this.defaultEndpointConfig()),
@@ -67,21 +67,21 @@ export class LDAPSourceSyncList extends Table<LDAPSourceSync> {
         ];
     }
 
-    row(item: LDAPSourceSync): SlottedTemplateResult[] {
+    protected row(item: LDAPSourceSync): SlottedTemplateResult[] {
         return [
             html`<ak-task-status .status=${item.status}></ak-task-status>`,
-            html`${Timestamp(item.startedAt)}`,
-            html`${Timestamp(item.finishedAt)}`,
-            html`${item.usersCount}`,
-            html`${item.groupsCount}`,
-            html`${item.membershipCount}`,
-            html`${item.groupHierarchyCount}`,
-            html`${item.userDeletionsCount}`,
-            html`${item.groupDeletionsCount}`,
+            Timestamp(item.startedAt),
+            Timestamp(item.finishedAt),
+            item.usersCount,
+            item.groupsCount,
+            item.membershipCount,
+            item.groupHierarchyCount,
+            item.userDeletionsCount,
+            item.groupDeletionsCount,
         ];
     }
 
-    renderExpanded(item: LDAPSourceSync): TemplateResult {
+    protected override renderExpanded(item: LDAPSourceSync): TemplateResult {
         return html`<div class="pf-c-content">
             <ak-task-list .taskIds=${item.tasks}></ak-task-list>
         </div>`;
