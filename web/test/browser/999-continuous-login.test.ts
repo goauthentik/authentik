@@ -15,15 +15,9 @@
  */
 
 import { expect, test } from "#e2e";
-import { FormFixture } from "#e2e/fixtures/FormFixture";
-import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
-import { PointerFixture } from "#e2e/fixtures/PointerFixture";
-import { SessionFixture } from "#e2e/fixtures/SessionFixture";
+import { setInstanceFlag } from "#e2e/utils/settings";
 
-import type { Page } from "@playwright/test";
-
-// The `/admin/settings` route mounted under the `/if/admin/` interface.
-const SETTINGS_PATHNAME = "/if/admin/admin/settings";
+const CONTINUOUS_LOGIN_FLAG = "Continuous Login";
 
 const FLOW_PATHNAME = "/if/flow/default-authentication-flow/";
 // Post-login destination shared by both tabs. Same-origin, so the follower resumes through
@@ -33,52 +27,23 @@ const FLOW_WITH_NEXT = `${FLOW_PATHNAME}?next=${encodeURIComponent(USER_INTERFAC
 
 const IDENTIFICATION_STAGE = "ak-stage-identification";
 
-/**
- * Toggle the global Continuous Login flag through the admin settings UI.
- *
- * Runs from `beforeAll`/`afterAll`, where the per-test fixtures aren't injected,
- * so it constructs the handful it needs against a caller-supplied page and
- * drives the same UI a human would.
- *
- * The settings write is awaited so the flag is durable before the page closes.
- */
-async function setContinuousLogin(page: Page, enabled: boolean): Promise<void> {
-    const testName = "continuous-login-setup";
-    const navigator = new NavigatorFixture(page, testName);
-    const session = new SessionFixture({ page, testName, navigator });
-    const form = new FormFixture(page, testName);
-    const pointer = new PointerFixture({ page, testName });
-
-    await session.login({ to: SETTINGS_PATHNAME });
-
-    await form.setFormGroup(/Flags/, true);
-    await form.setInputCheck("Continuous Login", enabled);
-
-    await Promise.all([
-        page.waitForResponse(
-            (response) =>
-                response.url().includes("/admin/settings/") &&
-                ["PUT", "PATCH"].includes(response.request().method()) &&
-                response.ok(),
-        ),
-        pointer.click("Save changes"),
-    ]);
-}
-
 test.describe.configure({ mode: "serial" });
 
 test.describe("Continuous login", () => {
+    // `beforeAll`/`afterAll` rather than the usual per-test fixtures: the flag is global, so it is
+    // toggled once for the file, and `afterAll` runs even when the test fails — restoring the flag
+    // no matter the outcome, which a `test.step` or `afterEach` on the scenario can't guarantee.
     test.beforeAll(async ({ browser }) => {
         const page = await browser.newPage();
 
-        await setContinuousLogin(page, true);
+        await setInstanceFlag(page, CONTINUOUS_LOGIN_FLAG, true);
         await page.close();
     });
 
     test.afterAll(async ({ browser }) => {
         const page = await browser.newPage();
 
-        await setContinuousLogin(page, false);
+        await setInstanceFlag(page, CONTINUOUS_LOGIN_FLAG, false);
         await page.close();
     });
 
@@ -87,9 +52,8 @@ test.describe("Continuous login", () => {
         page,
         session,
     }) => {
-        // Two tabs in the same context: the leader (authenticates)
-        // and the follower (waits to be resumed).
-        // They share the BroadcastChannel and Web Lock the orchestrator coordinates over.
+        // Two tabs in the same context: the leader (authenticates) and the follower (waits to be
+        // resumed). They share the BroadcastChannel and Web Lock the orchestrator coordinates over.
         const leader = page;
         const follower = await context.newPage();
 
@@ -97,8 +61,8 @@ test.describe("Continuous login", () => {
             await leader.goto(FLOW_WITH_NEXT);
             await follower.goto(FLOW_WITH_NEXT);
 
-            // The follower must be fully mounted before the leader completes,
-            // or it won't answer the leader's tab-discovery broadcast and would never be resumed.
+            // The follower must be fully mounted before the leader completes, or it won't answer
+            // the leader's tab-discovery broadcast and would never be resumed.
             await expect(
                 leader.locator(IDENTIFICATION_STAGE),
                 "Leader tab shows the identification stage",
@@ -110,19 +74,17 @@ test.describe("Continuous login", () => {
         });
 
         await test.step("Authenticate in the leader tab", async () => {
-            // `session` is bound to `leader`; it's already on the flow pathname,
-            // so login keeps the `?next=` and drives username/password in place.
-            await session.login({ to: USER_INTERFACE_PATHNAME }, leader);
+            // `session` is bound to `leader`, already on the flow pathname, so login keeps the
+            // `?next=` and drives username/password in place.
+            await session.login({ to: USER_INTERFACE_PATHNAME });
         });
 
         await test.step("Follower resumes without re-entering credentials", async () => {
-            // The follower never had credentials entered.
-            // Continuous login is the only thing that moves it off the identification stage.
-            // With the flag off it would sit there.
+            // The follower never had credentials entered. Continuous login is the only thing that
+            // moves it off the identification stage; with the flag off it would sit there.
             //
-            // The leader's resume confirms the follower's departure via a timed fallback
-            // before it navigates itself, so allow more than the default assertion budget here.
-
+            // The leader's resume confirms the follower's departure via a timed fallback before it
+            // navigates itself, so allow more than the default assertion budget here.
             await follower.waitForURL(`**${USER_INTERFACE_PATHNAME}**`, { timeout: 20_000 });
 
             await expect(
