@@ -45,8 +45,8 @@ const config = {
             },
         };
         newConfig.server = config.server || {};
-        newConfig.server.fs = config.server.fs || {};
-        newConfig.server.fs.allow = config.server.fs.allow || [];
+        newConfig.server.fs = newConfig.server.fs || {};
+        newConfig.server.fs.allow = newConfig.server.fs.allow || [];
         newConfig.server.fs.allow.push(join(__dirname, "../../packages/fonts"));
         newConfig.server.fs.allow.push(join(__dirname, ".."));
         return newConfig;
