@@ -114,6 +114,9 @@ class ResponseProcessor:
         encrypted_assertion = self._root.find(f".//{{{NS_SAML_ASSERTION}}}EncryptedAssertion")
         if encrypted_assertion is None:
             raise InvalidEncryption()
+        # Register Id attributes so a KeyInfo RetrievalMethod referencing a sibling
+        # EncryptedKey by #Id can be resolved by xmlsec
+        xmlsec.tree.add_ids(encrypted_assertion, ["Id"])
         encrypted_data = xmlsec.tree.find_child(
             encrypted_assertion, "EncryptedData", xmlsec.constants.EncNs
         )
