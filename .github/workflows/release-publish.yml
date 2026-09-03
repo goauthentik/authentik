@@ -54,8 +54,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - uses: regclient/actions/regctl-installer@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
-      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-login@ba687069a65d03e9214808f16f3f0b3933c2048b
+      - uses: regclient/actions/regctl-login@ba687069a65d03e9214808f16f3f0b3933c2048b
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
