@@ -27,7 +27,7 @@ class InvalidSignature(SAMLException):
 
 
 class InvalidTime(SAMLException):
-    """Exception raised when the Assertion's Conditions aren't met."""
+    """Exception raised when the current time is outside the Assertion's validity window."""
 
     default_message = "The SAML assertion is not valid yet or has expired."
 
