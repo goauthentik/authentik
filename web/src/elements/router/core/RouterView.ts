@@ -25,7 +25,7 @@ import {
     navigate,
     RouterNavigateEvent,
 } from "#elements/router/core/navigation";
-import { Route } from "#elements/router/core/Route";
+import { type RouteLike } from "#elements/router/core/Route";
 import { type SlottedTemplateResult } from "#elements/types";
 
 import {
@@ -69,7 +69,7 @@ export class RouterView extends AKElement {
     //#region Properties
 
     @property({ attribute: false })
-    public routes: Route[] = [];
+    public routes: RouteLike[] = [];
 
     @property({ type: String })
     public prefix = "";
@@ -78,7 +78,7 @@ export class RouterView extends AKElement {
     public defaultPath = "/";
 
     @state()
-    private current: RouteMatch<Route> | null = null;
+    private current: RouteMatch<RouteLike> | null = null;
 
     //#endregion
 
@@ -182,7 +182,7 @@ export class RouterView extends AKElement {
 
     //#region Rendering
 
-    async #resolve(match: RouteMatch<Route>): Promise<SlottedTemplateResult> {
+    async #resolve(match: RouteMatch<RouteLike>): Promise<SlottedTemplateResult> {
         try {
             return await match.route.resolve(match.parameters);
         } catch (error) {
