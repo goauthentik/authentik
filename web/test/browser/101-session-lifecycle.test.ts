@@ -1,50 +1,15 @@
 import { expect, test } from "#e2e";
-import { FormFixture } from "#e2e/fixtures/FormFixture";
-import { NavigatorFixture } from "#e2e/fixtures/NavigatorFixture";
-import { GOOD_USERNAME, SessionFixture } from "#e2e/fixtures/SessionFixture";
+import { GOOD_USERNAME } from "#e2e/fixtures/SessionFixture";
 
 import type { Page } from "@playwright/test";
 
 const REMEMBER_ME_USER_KEY = "authentik-remember-me-user";
 const REMEMBER_ME_SESSION_KEY = "authentik-remember-me-session";
 
-const IDENTIFICATION_STAGE_NAME = "default-authentication-identification";
-
 const readStoredUserIdentifier = (page: Page) =>
     page.evaluate((k) => localStorage.getItem(k), REMEMBER_ME_USER_KEY);
 
 test.describe("Session Lifecycle", () => {
-    test.beforeAll(
-        'Ensure "Enable Remember me on this device" is on for the default identification stage',
-        async ({ browser }, { title: testName }) => {
-            const context = await browser.newContext();
-            const page = await context.newPage();
-            const navigator = new NavigatorFixture(page, testName);
-            const form = new FormFixture(page, testName);
-            const session = new SessionFixture({ page, testName, navigator });
-
-            await test.step("Authenticate", async () =>
-                session.login({
-                    to: "/if/admin/flow/stages",
-                    page,
-                }));
-
-            const $stage = await test.step("Find stage via search", () =>
-                form.search(IDENTIFICATION_STAGE_NAME, page));
-
-            await $stage.getByRole("button", { name: "Edit Stage" }).click();
-
-            const dialog = page.getByRole("dialog", { name: "Edit Identification Stage" });
-            await expect(dialog, "Edit modal opens after clicking edit").toBeVisible();
-
-            await form.setInputCheck(`Enable "Remember me on this device"`, true, dialog);
-            await dialog.getByRole("button", { name: "Save Changes" }).click();
-            await expect(dialog, "Edit modal closes after save").toBeHidden();
-
-            await context.close();
-        },
-    );
-
     test.beforeEach(async ({ session, page }) => {
         await session.toLoginPage();
 
@@ -90,13 +55,23 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            const signOutLink = page.getByRole("link", { name: "Sign out" });
+            // Sign-out lives in the user switcher's dropdown, which is `hidden` until the
+            // toggle is pressed, and the entry carries an explicit role="menuitem" rather
+            // than the implicit link role of its `<a>`.
+            await page.getByRole("button", { name: "Switch user" }).click();
 
-            await expect(signOutLink, "Sign out link is visible").toBeVisible();
+            const signOutItem = page.getByRole("menuitem", { name: "Sign out current user" });
 
-            await signOutLink.click();
+            await expect(signOutItem, "Sign out entry is visible").toBeVisible();
+
+            await signOutItem.click();
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
+            // The shell is served before the executor has resolved the first stage, so the
+            // pathname landing is not enough to act on. No explicit timeout: signing out
+            // runs the invalidation flow, then the authentication flow, then remember-me's
+            // auto-submit — 836ms unloaded, but the whole chain is at the mercy of however
+            // busy the instance is, and the test budget is the right ceiling for it.
             await session.$identificationStage.waitFor({ state: "visible" });
 
             const passwordEmbedded = await session.$passwordField.isVisible();

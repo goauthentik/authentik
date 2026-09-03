@@ -296,23 +296,37 @@ export class LibraryPage extends WithSession(AKElement) {
         this.query = inputElement.value;
     };
 
+    /**
+     * Open the row `targetRef` points at, once the render that binds it has run.
+     *
+     * `selectedApp` is null while the query is empty, so no row carries the ref
+     * until a query exists. Committing a search from empty dispatches `input`
+     * and `change` in the same task: the query setter has narrowed
+     * `visibleApplications` synchronously, but Lit's re-render — and with it the
+     * ref binding — is still pending. Reading `targetRef` before awaiting would
+     * find the previous render's element, or nothing at all on a first search.
+     */
+    async #openSelected(): Promise<void> {
+        await this.updateComplete;
+
+        const target = this.targetRef.value;
+
+        if (!target) return;
+
+        target.focus();
+        target.click();
+    }
+
     #changeListener = () => {
-        if (this.targetRef.value && this.visibleApplications.length === 1) {
-            this.targetRef.value.focus();
-            this.targetRef.value.click();
-            return;
-        }
+        if (this.visibleApplications.length !== 1) return;
+
+        this.#openSelected();
     };
 
     #submitListener = (event: SubmitEvent) => {
         event.preventDefault();
 
-        if (this.targetRef.value) {
-            this.targetRef.value.focus();
-            this.targetRef.value.click();
-
-            return;
-        }
+        this.#openSelected();
     };
 
     #rootKeyDownListener = (event: KeyboardEvent) => {
