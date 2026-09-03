@@ -5,7 +5,7 @@
  * the user to authenticate. The tab that completes auth becomes the "leader" and walks every other
  * ("follower") tab through its own resume, one at a time:
  *
- *  1. The leader takes a cross-tab Web Lock ({@link lockKey}) so a second finishing tab won't also
+ *  1. The leader takes a cross-tab Web Lock ({@link TabLockName}) so a second finishing tab won't also
  *     start resuming — it suppresses its own exit and bows out. The lock is held for the duration of
  *     the resume loop and released automatically when the leader navigates away or is closed.
  *  2. For each discovered follower the leader mints a one-shot `resumeID`, starts waiting for that
@@ -29,8 +29,10 @@ import { TabID } from "#flow/tabs/TabID";
 
 import { ConsoleLogger } from "#logger/browser";
 
-// Name of the cross-tab Web Lock that elects a single resume leader.
-const lockKey = "authentik-tab-locked";
+/**
+ * Name of the cross-tab Web Lock that elects a single resume leader.
+ */
+const TabLockName = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
 // How often to poll for a follower that hasn't sent its exit event yet.
@@ -127,7 +129,7 @@ export async function multiTabOrchestrateResume() {
     // `ifAvailable` returns immediately: a null lock means another tab already won leadership and
     // is driving the resume, so we bow out. The browser releases the lock for us when the leader
     // navigates away or is closed, so there is no stale lock to reap and no manual cleanup.
-    await navigator.locks.request(lockKey, { ifAvailable: true }, async (lock) => {
+    await navigator.locks.request(TabLockName, { ifAvailable: true }, async (lock) => {
         if (!lock) {
             logger.debug("Tabs locked, suppressing same-origin exit.");
             suppressNextExitForSameOriginNavigation();
