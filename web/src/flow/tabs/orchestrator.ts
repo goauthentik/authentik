@@ -1,21 +1,13 @@
-import { globalAK } from "#common/global";
-import { ascii_letters, digits, randomString } from "#common/utils";
-
-import { Broadcast } from "#flow/tabs/broadcast";
-import { AKMultiTabExitEvent } from "#flow/tabs/events";
-import { TabID } from "#flow/tabs/TabID";
-
-import { ConsoleLogger } from "#logger/browser";
-
 /**
- * Multi-tab continuous-login coordination.
+ * @file  Multi-tab continuous-login coordination.
  *
  * When several tabs sit in the same flow (e.g. multiple SP-initiated SAML logins), only one needs
  * the user to authenticate. The tab that completes auth becomes the "leader" and walks every other
  * ("follower") tab through its own resume, one at a time:
  *
- *  1. The leader takes a cross-tab lock ({@link lockKey} in localStorage) so a second finishing tab
- *     won't also start resuming — it suppresses its own exit and bows out.
+ *  1. The leader takes a cross-tab Web Lock ({@link lockKey}) so a second finishing tab won't also
+ *     start resuming — it suppresses its own exit and bows out. The lock is held for the duration of
+ *     the resume loop and released automatically when the leader navigates away or is closed.
  *  2. For each discovered follower the leader mints a one-shot `resumeID`, starts waiting for that
  *     tab's exit, then tells it to continue ({@link Broadcast.resumeTab}).
  *  3. The follower stores the `resumeID`, re-enters its flow, and only echoes it back in an exit
@@ -28,6 +20,16 @@ import { ConsoleLogger } from "#logger/browser";
  * completed auth flow — never from intermediate hops (source stages, the same-origin SAML re-entry).
  */
 
+import { globalAK } from "#common/global";
+import { ascii_letters, digits, randomString } from "#common/utils";
+
+import { Broadcast } from "#flow/tabs/broadcast";
+import { AKMultiTabExitEvent } from "#flow/tabs/events";
+import { TabID } from "#flow/tabs/TabID";
+
+import { ConsoleLogger } from "#logger/browser";
+
+// Name of the cross-tab Web Lock that elects a single resume leader.
 const lockKey = "authentik-tab-locked";
 const logger = ConsoleLogger.prefix("mtab/orchestrate");
 
@@ -122,32 +124,34 @@ export async function multiTabOrchestrateResume() {
         return;
     }
 
-    const lockTabID = localStorage.getItem(lockKey);
-    const tabs = await Broadcast.shared.discoverTabs();
+    // `ifAvailable` returns immediately: a null lock means another tab already won leadership and
+    // is driving the resume, so we bow out. The browser releases the lock for us when the leader
+    // navigates away or is closed, so there is no stale lock to reap and no manual cleanup.
+    await navigator.locks.request(lockKey, { ifAvailable: true }, async (lock) => {
+        if (!lock) {
+            logger.debug("Tabs locked, suppressing same-origin exit.");
+            suppressNextExitForSameOriginNavigation();
+            return;
+        }
 
-    logger.debug("Got list of tabs", tabs);
+        logger.debug("Acquired tab lock, orchestrating resume");
 
-    if (lockTabID && tabs.has(lockTabID)) {
-        logger.debug("Tabs locked, suppressing same-origin exit.");
-        suppressNextExitForSameOriginNavigation();
-        return;
-    }
+        const tabs = await Broadcast.shared.discoverTabs();
 
-    logger.debug("Locking tabs");
-    localStorage.setItem(lockKey, TabID.shared.current);
+        logger.debug("Got list of tabs", tabs);
 
-    for (const tab of tabs) {
-        const resumeID = randomString(32, ascii_letters + digits);
-        const done = waitForTabExit(tab, resumeID);
+        for (const tab of tabs) {
+            const resumeID = randomString(32, ascii_letters + digits);
+            const done = waitForTabExit(tab, resumeID);
 
-        logger.debug("Telling tab to continue", tab);
-        Broadcast.shared.resumeTab(tab, resumeID);
+            logger.debug("Telling tab to continue", tab);
+            Broadcast.shared.resumeTab(tab, resumeID);
 
-        await done;
+            await done;
 
-        logger.debug("Tab done, continuing", tab);
-    }
+            logger.debug("Tab done, continuing", tab);
+        }
 
-    logger.debug("All tabs done.");
-    localStorage.removeItem(lockKey);
+        logger.debug("All tabs done.");
+    });
 }
