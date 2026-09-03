@@ -335,7 +335,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 name="force_binding",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
-                enum=list(SAML_BINDINGS_SUPPORTED),
+                enum=SAML_BINDINGS_SUPPORTED,
                 description="Optionally force the metadata to only include one binding.",
             ),
             # Explicitly excluded, because otherwise spectacular automatically
