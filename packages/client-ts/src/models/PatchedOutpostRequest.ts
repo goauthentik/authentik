@@ -23,38 +23,26 @@ import { OutpostTypeEnumFromJSON, OutpostTypeEnumToJSON } from "./OutpostTypeEnu
 export interface PatchedOutpostRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedOutpostRequest
      */
     name?: string;
     /**
      *
-     * @type {OutpostTypeEnum}
-     * @memberof PatchedOutpostRequest
      */
     type?: OutpostTypeEnum;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedOutpostRequest
      */
     providers?: Array<number>;
     /**
      * Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.
-     * @type {string}
-     * @memberof PatchedOutpostRequest
      */
     serviceConnection?: string | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedOutpostRequest
      */
     config?: { [key: string]: any };
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof PatchedOutpostRequest
      */
     managed?: string | null;
 }

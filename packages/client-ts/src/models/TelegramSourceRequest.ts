@@ -25,98 +25,66 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface TelegramSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof TelegramSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof TelegramSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TelegramSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TelegramSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof TelegramSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof TelegramSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     icon?: string;
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     botUsername: string;
     /**
      * Telegram bot token
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     botToken: string;
     /**
      * Request access to send messages from your bot.
-     * @type {boolean}
-     * @memberof TelegramSourceRequest
      */
     requestMessageAccess?: boolean;
     /**
      * Flow used before authentication.
-     * @type {string}
-     * @memberof TelegramSourceRequest
      */
     preAuthenticationFlow: string;
 }

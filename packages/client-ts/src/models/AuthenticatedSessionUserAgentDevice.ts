@@ -20,20 +20,14 @@
 export interface AuthenticatedSessionUserAgentDevice {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentDevice
      */
     brand: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentDevice
      */
     family: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatedSessionUserAgentDevice
      */
     model: string | null;
 }

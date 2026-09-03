@@ -296,7 +296,7 @@ jobs:
         with:
           pattern: binaries-build-*
           merge-multiple: true
-      - uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6
         with:
           subject-path: |
             metadata.json
@@ -307,14 +307,14 @@ jobs:
             container/rac.oci.tar
             binaries/authentik-outpost-*
       - name: Create Release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           token: "${{ steps.app-token.outputs.token }}"
           tag_name: "version/${{ needs.check-inputs.outputs.version }}"
           name: Release ${{ needs.check-inputs.outputs.version }}
           draft: true
           prerelease: ${{ inputs.release_reason == 'prerelease' }}
-          generate_release_notes: true
+          generate_release_notes: false
           body: |
             See ${{ needs.check-inputs.outputs.changelog-url }}
           files: |

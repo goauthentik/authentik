@@ -1,5 +1,6 @@
 ---
 title: Flow Context
+description: An overview of the data stored in a flow context and how authentik uses it.
 toc_max_heading_level: 5
 ---
 
@@ -13,7 +14,7 @@ For example, in the Identification Stage (part of the default login flow), you c
 
 Any data can be stored in the flow context, however there are some reserved keys in the context dictionary that are used by authentik stages.
 
-To manage flow context on a more granular level, see [Setting flow context keys](../../../../customize/policies/types/expression/managing_flow_context_keys.md).
+To manage flow context on a more granular level, see [Setting flow context keys](../../../../customize/policies/types/expression/managing_flow_context_keys.mdx).
 
 ## Context dictionary and reserved keys
 
@@ -29,13 +30,13 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 #### `pending_user` ([User object](../../../../users-sources/user/user_ref.mdx#object-properties))
 
-`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.md).
+`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../../stages/identification/index.mdx).
 
-Stages that require a user, such as the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.md), and others will use this value if it is set, and fall back to the request's user when possible.
+Stages that require a user, such as the [Password stage](../../stages/password/index.mdx), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx), and others will use this value if it is set, and fall back to the request's user when possible.
 
 #### `prompt_data` (Dictionary)
 
-`prompt_data` is primarily used by the [Prompt stage](../../stages/prompt/index.md). The value of any field within a prompt stage is written to the `prompt_data` dictionary. For example, given a field with the _Field key_ `email` that was submitted with the value `foo@bar.baz` will result in the following context:
+`prompt_data` is primarily used by the [Prompt stage](../../stages/prompt/index.mdx). The value of any field within a prompt stage is written to the `prompt_data` dictionary. For example, given a field with the _Field key_ `email` that was submitted with the value `foo@bar.baz` will result in the following context:
 
 ```json
 {
@@ -45,7 +46,7 @@ Stages that require a user, such as the [Password stage](../../stages/password/i
 }
 ```
 
-This data can be modified with policies. The data is also used by stages like [User write](../../stages/user_write/index.md), which takes data in `prompt_data` and writes it to `pending_user`.
+This data can be modified with policies. The data is also used by stages like [User write](../../stages/user_write/index.mdx), which takes data in `prompt_data` and writes it to `pending_user`.
 
 #### `redirect` (string)
 
@@ -65,7 +66,7 @@ When a user authenticates/enrolls via an external source, this will be set to th
 
 #### `outpost` (dictionary)
 
-When a flow is executed by an Outpost (for example the [LDAP](../../../providers/ldap/index.md) or [RADIUS](../../../providers/radius/index.mdx)), this will be set to a dictionary containing the Outpost instance under the key `"instance"`.
+When a flow is executed by an Outpost (for example the [LDAP](../../../providers/ldap/index.mdx) or [RADIUS](../../../providers/radius/index.mdx)), this will be set to a dictionary containing the Outpost instance under the key `"instance"`.
 
 ### Scenario-specific keys
 
@@ -75,11 +76,11 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 #### `is_restored` (Token object)
 
-This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.md) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
+This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.mdx) when returning back to the initial flow the Source stage was run on.
 
 #### `is_redirected` (Flow object)
 
-This key is set when the current flow was reached through a [Redirect stage](../../stages/redirect/index.md) in Flow mode.
+This key is set when the current flow was reached through a [Redirect stage](../../stages/redirect/index.mdx) in Flow mode.
 
 ### Stage-specific keys
 
@@ -149,11 +150,11 @@ Type the `pending_user` will be created as. Must be one of `internal`, `external
 
 ##### `user_backend` (string)
 
-Set by the [Password stage](../../stages/password/index.md) after successfully authenticating the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
+Set by the [Password stage](../../stages/password/index.mdx) after successfully authenticating the user. Contains a dot-notation to the authentication backend that was used to successfully authenticate the user.
 
 ##### `auth_method` (string)
 
-Set by the [Password stage](../../stages/password/index.md), the [Authenticator validation stage](../../stages/authenticator_validate/index.md), the [OAuth2 Provider](../../../providers/oauth2/index.mdx), and the API authentication depending on which method was used to authenticate.
+Set by the [Password stage](../../stages/password/index.mdx), the [Authenticator validation stage](../../stages/authenticator_validate/index.mdx), the [OAuth2 Provider](../../../providers/oauth2/index.mdx), and the API authentication depending on which method was used to authenticate.
 
 Possible options:
 
@@ -163,7 +164,7 @@ Possible options:
 - `auth_mfa` (Authentication via MFA device without password)
 - `auth_webauthn_pwl` (Passwordless authentication via WebAuthn with Passkeys)
 - `jwt` ([M2M](../../../providers/oauth2/machine_to_machine.mdx) authentication via an existing JWT)
-- `mtls` (Authentication via Certificate, see [Mutual TLS Stage](../../stages/mtls/index.md))
+- `mtls` (Authentication via Certificate, see [Mutual TLS Stage](../../stages/mtls/index.mdx))
 
 ##### `auth_method_args` (dictionary)
 
@@ -227,7 +228,7 @@ This value can be set either via [Prompt data](#prompt_data-dictionary) or via p
 
 ##### `redirect_stage_target` (string)
 
-[Set this key](../../../../customize/policies/types/expression/managing_flow_context_keys.md) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.md) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
+[Set this key](../../../../customize/policies/types/expression/managing_flow_context_keys.mdx) in an Expression Policy to override [Redirect stage](../../stages/redirect/index.mdx) to force it to redirect to a certain URL or flow. This is useful when a flow requires that the redirection target be decided dynamically.
 
 Use the format `ak-flow://{slug}` to use the Redirect stage in Flow mode. Any other format will result in the Redirect stage running in Static mode.
 

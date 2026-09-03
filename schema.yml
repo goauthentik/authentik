@@ -5929,6 +5929,11 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
@@ -22437,6 +22442,10 @@ paths:
       operationId: requests_grant_requests_list
       parameters:
       - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
         name: created_by
         schema:
           type: integer
@@ -22585,11 +22594,47 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/agent/:
+    post:
+      operationId: requests_grant_requests_agent_create
+      description: |-
+        Delegate access an agent's owner already holds to the agent, time-boxed. Unlike
+        `create` this persists the request directly instead of returning a flow link -- an agent
+        authenticates with an API token and has no browser to run a flow in, so no justification
+        is ever collected. That is why the agent may only ask for what its owner already has:
+        the owner's approval is then the whole decision, and no reviewer is asked to judge a
+        request with nothing in it. The returned `fulfill_url` is what the agent hands to its
+        owner so they can act on it.
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentGrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGrantRequestCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /requests/grant-requests/pending_review/:
     get:
       operationId: requests_grant_requests_pending_review_list
       description: List pending grant requests the current user is eligible to review.
       parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
       - in: query
         name: created_by
         schema:
@@ -35003,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -35927,6 +35987,37 @@ components:
       required:
       - agent
       - token
+    AgentGrantRequestCreateRequest:
+      type: object
+      description: |-
+        Body for an agent requesting access for itself. Deliberately narrower than
+        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
+        derived from the granting rules and capped by the agent's own lifetime.
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    AgentGrantRequestCreated:
+      type: object
+      description: |-
+        Response to an agent's access request: the request it created, plus the URL to hand to
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+        `fulfill_url` is what its owner opens to approve or deny.
+      properties:
+        grant_request:
+          allOf:
+          - $ref: '#/components/schemas/GrantRequest'
+          readOnly: true
+        fulfill_url:
+          type: string
+          readOnly: true
+      required:
+      - fulfill_url
+      - grant_request
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -36133,7 +36224,6 @@ components:
       - authentik.enterprise.policies.unique_password
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
-      - authentik.enterprise.providers.oauth2
       - authentik.enterprise.providers.radius
       - authentik.enterprise.providers.scim
       - authentik.enterprise.providers.ssf
@@ -38718,6 +38808,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -39047,13 +39141,8 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -40358,6 +40447,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -40393,6 +40483,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -41421,6 +41512,25 @@ components:
       - sidebar_left_frame_background
       - sidebar_right_frame_background
       type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
+      type: string
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -42294,6 +42404,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
+        agent_owner:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -42320,6 +42436,7 @@ components:
           type: string
           format: uuid
       required:
+      - agent_owner
       - created
       - created_by
       - is_active
@@ -53639,9 +53756,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -53713,15 +53830,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -53737,6 +53849,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -55126,10 +55243,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55177,9 +55296,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -56617,6 +56734,10 @@ components:
       - pbm_uuid
       - verbose_name
       - verbose_name_plural
+    ResumeOnMatchFailuresEnum:
+      enum:
+      - missing_property
+      type: string
     Review:
       type: object
       description: |-
@@ -58727,9 +58848,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58799,15 +58920,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -58820,9 +58936,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58894,15 +59010,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:
@@ -59111,6 +59222,11 @@ components:
           type: string
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - component
       - flow_set
@@ -59135,6 +59251,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - name
       - source

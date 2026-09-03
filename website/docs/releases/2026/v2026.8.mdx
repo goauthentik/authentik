@@ -1,0 +1,4044 @@
+---
+title: Release 2026.8
+slug: "/releases/2026.8"
+---
+
+## Highlights
+
+- **Privileged access management (PAM)**: :ak-enterprise Users can request access to applications or specific application entitlements. Designated approvers can approve or deny requests and set when access expires.
+- **Agent accounts**: :ak-enterprise Service accounts that act on behalf of a parent user, enabling automation and integrations while preserving delegated access and auditability.
+- **User switching**: Users can keep multiple accounts signed in within the same browser and switch between them from the User interface.
+- **User offboarding**: :ak-enterprise Schedule users for deactivation or deletion, with optional session and token revocation.
+- **Object attributes**: Define custom fields for users, groups, application entitlements, and other objects, with validation built into the Admin interface and API.
+- **Self-hosted event maps**: :ak-enterprise Use the new bundled event map without external requests, or configure a self-hosted map for each brand.
+- **OAuth 2.0 and OpenID Connect improvements**: Exchange tokens between trusted providers and use key-bound ID tokens for stronger protection against token theft. Also added support for on-behalf-of (OBO) and Dynamic Client Registration (DCR).
+
+## Breaking changes
+
+### `hash_password` management command security improvements
+
+The `hash_password` management command no longer accepts a password as a positional command-line argument (password was visible in the process list). Run the command without arguments to enter the password in a hidden interactive prompt:
+
+```bash
+docker compose run --rm server hash_password
+```
+
+For automation, pipe the password through standard input:
+
+```bash
+echo "$PASSWORD" | docker compose run --rm server hash_password
+```
+
+### "Prevent duplicate device" in WebAuthn setup stage removed
+
+The **Prevent duplicate devices** option of the [WebAuthn authenticator setup stage](../../add-secure-apps/flows-stages/stages/authenticator_webauthn/index.mdx) has been removed. It compared attestation certificates, which manufacturers deliberately share across entire production batches, so it rejected legitimate enrollments of a second security key bought at the same time as the first. The option was disabled by default in 2026.5.4 and is now gone; no configuration is required to replace it, and no action is needed when upgrading.
+
+### Forwarded headers are now restricted to trusted proxies
+
+Starting with authentik 2026.8, the authentik server only uses forwarded request headers such as `X-Forwarded-Proto`, `X-Forwarded-Host`, and `X-Forwarded-For` when the connection comes from a trusted proxy network. Previous versions did not apply this restriction consistently to all forwarded headers.
+
+This change prevents clients from supplying forged proxy headers and more strictly enforces the existing trusted proxy configuration.
+
+Before upgrading, verify that your reverse proxy sends the [required proxy headers](../../install-config/reverse-proxy.mdx#required-proxy-headers) and that every address or network from which it connects directly to authentik is included in [`AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`](../../install-config/reverse-proxy.mdx#trusted-proxy-networks).
+
+An incorrect configuration can cause authentik to interpret HTTPS requests as HTTP, resulting in blocked mixed content, an endless loading indicator, or authentication errors.
+
+## New features and improvements
+
+### Privileged access management (PAM) :ak-enterprise
+
+Users can now request access to applications and application entitlements from the User interface. They can browse the resources that they are eligible to request and track whether each request is pending, approved, denied, or revoked. Approved access expires automatically after the configured duration.
+
+Administrators define request rules that control who can request and approve access. Rules support approval by individual users, groups, or policies, minimum reviewer counts, request and grant expiration limits, reviewer notifications, and custom flows that collect request details. Reviewers can approve or deny pending requests and revoke active grants. Each action is recorded in the event log.
+
+For more details, refer to the [access requests documentation](../../add-secure-apps/access-requests/index.mdx).
+
+### Agent accounts :ak-enterprise
+
+authentik now supports "Agent" service accounts that act on behalf of a parent user when accessing the authentik API. Agents are designed for automation, integrations, and other machine identities that need delegated access while preserving a clear link to the user they represent. Administrators can control how agents inherit policy access, set expiration rules, manage them through the API, and trace their activity through audit events. Users can optionally create agent accounts via the user interface.
+
+For more details, refer to the [agent accounts documentation](../../users-sources/user/account-types/agent-accounts.mdx).
+
+### User switching
+
+Users can now keep multiple authentik accounts signed in within the same browser and switch between them from the account menu in the User interface. They can also add another account without signing out of their current accounts.
+
+Administrators enable the feature by selecting a **User switch flow** for the brand. Because this is a normal authentik flow, policies can control whether a switch requires a password, MFA, or a shorter verification process. Successful switches are recorded in the event log. For configuration details, refer to the [user switching documentation](../../users-sources/user/user-switching.mdx).
+
+### Scheduled user offboarding :ak-enterprise
+
+Administrators can schedule a user for deactivation or deletion at a specific date and time, with the option to revoke the user's sessions and tokens.
+
+Scheduled offboardings can be reviewed or canceled before they run. authentik retries failed actions and records the result in the event log, providing a clear history of who scheduled the offboarding and which actions were selected. For more details, refer to the [user offboarding documentation](../../sys-mgmt/user-offboarding.mdx).
+
+### Object attributes
+
+Administrators can now define custom text, number, and Boolean fields under **Directory** > **Object attributes**. Fields can be required, unique, or validated against a regular expression.
+
+These fields appear when editing users, groups, application entitlements, and device access groups, and the same validation applies when objects are managed through the API.
+
+authentik also includes definitions for common identity, contact, address, Unix, and employee attributes. These definitions are disabled by default and can be enabled as needed. For more information, refer to the [object attributes documentation](../../sys-mgmt/object-attributes.mdx).
+
+### Self-hosted event maps :ak-enterprise
+
+The events map now uses a basemap bundled with authentik and does not make external requests by default, making it suitable for air-gapped and restricted-network deployments. Nearby events are grouped together, with columns showing the event volume and the types of events recorded in each area.
+
+Users can select an area to filter the event list, and each brand can use the bundled map or configure a self-hosted map under **Map tiles**. For more details, refer to the [events documentation](../../sys-mgmt/events/index.mdx).
+
+### OAuth 2.0 and OpenID Connect
+
+#### OpenID Certification
+
+As of 2026.8, authentik is officially **OpenID Certified™** by the OpenID Foundation — for both [OpenID Provider profiles](https://openid.net/certification/certified-openid-providers-profiles/) (Basic, Implicit, Hybrid, Config, and Form Post OP) and [logout profiles](https://openid.net/certification/certified-openid-providers-for-logout-profiles/) (RP-Initiated, Front-Channel, and Back-Channel).
+
+#### Token exchange
+
+[OAuth 2.0 token exchange](../../add-secure-apps/providers/oauth2/token_exchange.mdx) allows applications to exchange a token from a trusted provider or source for an authentik access token representing the same user. This makes it easier for connected services to act on a user's behalf without sharing the original token between services.
+
+Token exchange is disabled by default and can be enabled under the provider's **Grant Types** setting. Trusted providers and sources are configured using the existing JWT federation settings.
+
+#### On-behalf-of (OBO) token exchange
+
+authentik now supports RFC 8693 delegation. Clients can supply an authentik Actor token using `actor_token` and `actor_token_type` to receive a token that identifies both the user and the Actor acting on the user's behalf through the `act` claim. This enables services and agents to preserve user context while making delegated requests.
+
+For more information, refer to the [OBO documentation](../../add-secure-apps/providers/oauth2/token_exchange.mdx#exchange-a-token-on-behalf-of-a-user-obo).
+
+#### Dynamic client registration
+
+Applications can now use OAuth 2.0 and OpenID Connect Dynamic Client Registration (DCR) to register themselves with authentik, removing the need for administrators to create each application and provider manually. Administrators retain control through policy bindings and configurable restrictions on grant types, scope mappings, and token validity. This simplifies and automates client onboarding, particularly in environments where applications are created frequently or on demand.
+
+For more information, refer to the [DCR documentation](../../add-secure-apps/providers/oauth2/dynamic-client-registration.mdx)
+
+#### OpenID key binding
+
+OpenID Connect providers can now issue key-bound ID tokens. These tokens require the client to prove that it holds the associated key, providing stronger protection if a token is stolen. Key binding is available for authorization code, device code, and refresh flows.
+
+### Nested LDAP group synchronization
+
+LDAP sources can now preserve the source directory's nested group hierarchy in authentik. Enable **Sync Group Parents** to create parent relationships between synchronized groups. For configuration details, refer to the [LDAP source documentation](../../users-sources/sources/protocols/ldap/index.mdx#additional-settings).
+
+### Expiring policy bindings
+
+[Policy, group, and user bindings](../../customize/policies/bindings.mdx) can now have an expiration date and time. An expired binding no longer grants access or contributes a successful policy result, which makes temporary application, flow, and stage access possible without requiring an administrator to remove the binding later.
+
+### Base URL system setting
+
+authentik now has a **Base URL** [system setting](../../sys-mgmt/settings.mdx) that records the external URL where the instance is available. It can be configured under **System** > **Settings**, through the API, or with [`AUTHENTIK_WEB__BASE_URL`](../../install-config/configuration/configuration.mdx#authentik_web__base_url) during installation.
+
+Enter only the scheme and host, even if authentik is served under a subpath. This setting will become required starting with authentik 2026.11, so we recommend configuring it now.
+
+### PostgreSQL connection-pooler support
+
+authentik now supports using a transaction-mode PostgreSQL connection pooler alongside a separate direct database connection for operations that require a stable session. Existing PostgreSQL settings continue to handle normal traffic, while the new direct settings can point to a direct or session-pooled endpoint. For configuration details, refer to [Session-scoped operations and transaction-mode poolers](../../install-config/configuration/configuration.mdx#session-scoped-operations-and-transaction-mode-poolers).
+
+### Server and proxy outpost rewrite in Rust
+
+As part of our ongoing project to improve the performance and resource consumption of authentik, the authentik server (only the entrypoint for requests, the core remains Django) and proxy outpost, previously written in Golang, have been rewritten in Rust. We aimed this rewrite to be a 1-to-1 match with the previous code.
+
+This currently does not bring any improvements, but is a stepping stone for us to couple the Django core and the proxying Rust closer together, to avoid wasting resources. Stay tuned for more in following releases!
+
+### Task status reflects task logs
+
+A task can log an error and still finish, for example a sync that failed for a single object. Those tasks were marked successful, and because the **System Tasks** page hides successful tasks by default, they were invisible. They now show as errors or warnings, so failures that were already occurring may start appearing there after upgrading. Tasks that ran before the upgrade keep their old status until they run again.
+
+### Small general improvements
+
+- **Application Dashboard**: Users can switch between the existing card grid and a new compact list view. The selected view is remembered in the browser.
+- **AKQL**: Queries against JSON fields now match numeric and Boolean values in addition to strings.
+- **CAPTCHA providers**: The [Captcha stage](../../add-secure-apps/flows-stages/stages/captcha/index.mdx) now supports JSON verification requests and the self-hostable Cap CAPTCHA provider.
+- **GitLab SCIM**: SCIM providers now include a compatibility mode for GitLab.
+- **OAuth and OpenID Connect**: Providers can sign with Ed448 keys, OAuth sources can store longer authorization URLs, and Twitter sources can retrieve a user's email address.
+- **SAML providers**: Authentication requests that set `ForceAuthn` now require fresh authentication.
+- **WS-Federation**: :ak-enterprise Providers can issue SAML 1.1 assertions, enabling WS-Federation integration with [Microsoft 365 and Entra ID](https://integrations.goauthentik.io/platforms/microsoft-ws-federation/).
+- **User event history**: Account changes made by administrators now appear in the affected user's event history.
+- **Password hash imports**: [Bootstrap and API password hash imports](../../install-config/automated-install.mdx#authentik_bootstrap_password_hash) now reject malformed values before they are stored.
+- **Enterprise licensing**: :ak-enterprise The license status card now shows when a license expires today or the number of days remaining.
+- **Performance**: Group lists use fewer database queries, and S3-backed file storage reuses clients instead of creating them for each operation.
+- **Authenticators**: Deleting an authenticator stage no longer deletes enrolled devices that reference it.
+- **Runtime health checks**: Server and worker health checks now run through the Rust entrypoint.
+- **Upgrades**: The lifecycle tooling now prevents unsupported major-version skips before migrations begin.
+
+## New integration guides
+
+An integration is how authentik connects to third-party applications, directories, and other identity providers. The following integration guides were recently added. A big thanks to our contributors!
+
+- [Appsmith](https://integrations.goauthentik.io/platforms/appsmith/)
+- [Atlantis](https://integrations.goauthentik.io/infrastructure/atlantis/)
+- [Box](https://integrations.goauthentik.io/platforms/box/)
+- [Chatwoot](https://integrations.goauthentik.io/infrastructure/chatwoot/)
+- [Cisco Secure Firewall Management Center](https://integrations.goauthentik.io/networking/cisco-fmc/) (Thanks to @riversdev0!)
+- [Convex](https://integrations.goauthentik.io/development/convex/)
+- [Coolify](https://integrations.goauthentik.io/infrastructure/coolify/)
+- [Cursor](https://integrations.goauthentik.io/development/cursor/)
+- [Dashy](https://integrations.goauthentik.io/dashboards/dashy/) (Thanks to @nicedevil007!)
+- [Directus](https://integrations.goauthentik.io/platforms/directus/)
+- [Discourse](https://integrations.goauthentik.io/chat-communication-collaboration/discourse/)
+- [Docker Platforms](https://integrations.goauthentik.io/platforms/docker-platforms/)
+- [Dozzle](https://integrations.goauthentik.io/monitoring/dozzle/)
+- [Dropbox Sign](https://integrations.goauthentik.io/documentation/dropbox-sign/)
+- [ExcaliDash](https://integrations.goauthentik.io/dashboards/excalidash/)
+- [FortiAnalyzer](https://integrations.goauthentik.io/monitoring/fortianalyzer/) (Thanks to @nicedevil007!)
+- [GitGuardian](https://integrations.goauthentik.io/security/gitguardian/)
+- [Gotify](https://integrations.goauthentik.io/monitoring/gotify/) (Thanks to @nicedevil007!)
+- [HubSpot](https://integrations.goauthentik.io/platforms/hubspot/)
+- [Icinga Web 2](https://integrations.goauthentik.io/monitoring/icinga/) (Thanks to @nicedevil007!)
+- [IIS](https://integrations.goauthentik.io/infrastructure/iis/)
+- [Infisical](https://integrations.goauthentik.io/security/infisical/)
+- [Incus](https://integrations.goauthentik.io/hypervisors-orchestrators/incus/)
+- [Kavita](https://integrations.goauthentik.io/media/kavita/)
+- [mailcow Logs Viewer](https://integrations.goauthentik.io/chat-communication-collaboration/mailcow-logs-viewer/) (Thanks to @nicedevil007!)
+- [Maintainerr](https://integrations.goauthentik.io/media/maintainerr/) (Thanks to @enoch85!)
+- [Memos](https://integrations.goauthentik.io/chat-communication-collaboration/memos/)
+- [Microsoft 365 via WS-Federation](https://integrations.goauthentik.io/platforms/microsoft-ws-federation/)
+- [n8n](https://integrations.goauthentik.io/development/n8n/)
+- [Nexterm](https://integrations.goauthentik.io/infrastructure/nexterm/) (Thanks to @Nerdy-Technician!)
+- [NocoDB](https://integrations.goauthentik.io/development/nocodb/)
+- [Notion](https://integrations.goauthentik.io/documentation/notion/)
+- [Omnissa Workspace ONE Access](https://integrations.goauthentik.io/device-management/omnissa-workspace-one-access/) (Thanks to @nicedevil007!)
+- [OpenCloud](https://integrations.goauthentik.io/chat-communication-collaboration/opencloud/)
+- [OpenObserve](https://integrations.goauthentik.io/monitoring/openobserve/)
+- [Personio](https://integrations.goauthentik.io/platforms/personio/) (Thanks to @nicedevil007!)
+- [Plane](https://integrations.goauthentik.io/chat-communication-collaboration/plane/)
+- [Productive](https://integrations.goauthentik.io/platforms/productive/)
+- [SnapOtter](https://integrations.goauthentik.io/media/snapotter/)
+- [Stirling PDF](https://integrations.goauthentik.io/documentation/stirling-pdf/)
+- [ToolJet](https://integrations.goauthentik.io/platforms/tooljet/)
+- [Veeam Backup & Replication](https://integrations.goauthentik.io/infrastructure/veeam-backup-replication/) (Thanks to @nicedevil007!)
+
+## New source guides
+
+The following source guides were recently added. A big thanks to our contributors!
+
+- [GitLab](../../users-sources/sources/social-logins/gitlab/index.mdx) (Thanks to @4www!)
+- [JumpCloud](../../users-sources/sources/social-logins/jumpcloud/index.mdx)
+
+## Upgrading
+
+This release does not introduce new configuration options, but it more strictly enforces trusted proxy configuration. Review the [breaking change](#forwarded-headers-are-now-restricted-to-trusted-proxies) before upgrading. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../../install-config/upgrade.mdx).
+
+:::warning
+When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommend that you always upgrade any outposts at the same time you upgrade your authentik instance.
+:::
+
+### Docker Compose
+
+To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
+
+```shell
+wget -O docker-compose.yml https://goauthentik.io/version/2026.8/lifecycle/container/compose.yml
+docker compose up -d
+```
+
+The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
+
+### Kubernetes
+
+Upgrade the Helm Chart to the new version, using the following commands:
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml --version ^2026.8
+```
+
+## Deprecations
+
+### PostgreSQL custom connection options are deprecated
+
+The `AUTHENTIK_POSTGRESQL__CONN_OPTIONS` and its replica equivalent are deprecated and will be removed in an upcoming version. It was never properly used and may cause future breakages. If you're looking for a specific usage, open an issue to discuss alternative solutions.
+
+## Minor changes/fixes
+
+- api: replace orjson with msgspec (#23528)
+- blueprints Add `EQ` and `NEQ` modes to the `!Condition` tag (#20315)
+- blueprints: emit draft-07 definitions instead of $defs (#24981)
+- blueprints: fix ignoring hidden paths (#24222)
+- blueprints: fix mismatched stage name in example 2fa login flow (#24668)
+- blueprints: fix YAMLTag repr raising on unresolved tags (#23607)
+- blueprints: handle invalid yaml, add dry run to apply_blueprint (#24813)
+- blueprints: run initial migration before flows are created (#24880)
+- brands: expose authenticated flags correct in current brand (#24577)
+- brands: fix schema for current brand's flags (#24376)
+- core, flows: drop maximum-scale=1 from viewport meta (#23261)
+- core, internal, packages: fix British spellings flagged by cspell (#22819)
+- core, web, docs: introduce base URL (#24159)
+- core, web: Remove stale compatibility paths (#22192)
+- core: Actors (#24353)
+- core: add admin_authenticated_session_deleted signal for admin deleted session (#24434)
+- core: add user switching (#22659)
+- core: adjust label for clarity for core_default_app_access (#24326)
+- core: Agent instructions. (#23363)
+- core: align django-channels-postgres psycopg\[pool\] floor with #22201 (#22363)
+- core: cache S3 file storage clients (#23168)
+- core: Defer status posts until GitHub Actions finishes. (#22340)
+- core: delete all user sessions when user is deactivated (#25088)
+- core: delete expired actor tokens (#24767)
+- core: fix group source connection source object (#24626)
+- core: fix object attributes not setting allow_blank (#24298)
+- core: fix user_type check to correctly prevent internal_service_account (#23848)
+- core: harden npm install against supply-chain attacks (#22245)
+- core: make all m2m models explicit (#23315)
+- core: object attributes - minor fixes (#24292)
+- core: Object attributes (#21544)
+- core: prompt securely when hashing passwords (#24126)
+- core: return the intended status code from error views for all request methods (#24902)
+- core: run debugpy within worker process so it's DAP-attachable again (#23401)
+- core: scope user path_startswith filter to the path subtree (#25093)
+- core: update psycopg\[pool\] requirement from &lt;4,&gt;=3 to &gt;=3.3.4,&lt;4 (#22201)
+- core: validate imported password hashes at the API boundary (#24130)
+- core/groups: fix n+1 queries for list groups when include_users=false (#23216)
+- crypto: cache parsed certificates and private keys across model instances (#24454)
+- docs/social-logins: Add jumpcloud oidc and saml (#24048)
+- endpoints: handle error in facts (#25028)
+- endpoints/agent: fix Secure Enclave key dropped on first Platform SSO user registration (#24587)
+- endpoints/agent: return 400 instead of 500 for invalid Platform SSO token requests (#24588)
+- endpoints/connectors/agent: fix auth schema correctly (#24327)
+- enterprise: fix enterprise_test skipping tests when used as class decorator (#24138)
+- enterprise: simplify tests (#18404)
+- enterprise/agents: add (#24598)
+- enterprise/agents: fix enterprise required check for agents (#24814)
+- enterprise/core: add scheduled user offboarding (#23624)
+- enterprise/endpoints/connectors/agent: add login_hint to auth_ia (#25122)
+- enterprise/endpoints/connectors/fleet: decrease page size (#24908)
+- enterprise/endpoints/connectors/fleet: decrease page size (#24995)
+- enterprise/endpoints/connectors/fleet: fix exception when host has no policies (#24355)
+- enterprise/lifecycle: cleanup API (#23647)
+- enterprise/providers/oauth2: dynamic client registration (#24225)
+- enterprise/providers/ssf: log event user when sending SSF event (#24359)
+- enterprise/providers/ws_fed: add SAML 1.1 support (#23851)
+- enterprise/requests: Add ability to request access (#24183)
+- enterprise/requests: fix API schema for grant requests (#25111)
+- enterprise/requests: integrate agents with requests (#24844)
+- enterprise/requests: only show requests tab when usable (#24705)
+- enterprise/requests: optimize db for requestable apps (#24984)
+- enterprise/stages/source: configurable failure action (#24963)
+- events: add missing webhook property mappers to slack webhook function (#17377)
+- events: fix typo (#24161)
+- events: migrate top_per_user to serializer for params (#23779)
+- events: prevent migration changes when event actions modified (#24251)
+- events: show account changes in user event history (#24323)
+- fix release notes docker compose mention (#23386)
+- flows: fix flow executor authentication with jwt (#16646)
+- internal: Automated internal backport: CVE-2026-40165.sec.patch to authentik-main (#22298)
+- internal: Automated internal backport: CVE-2026-40166.sec.patch to authentik-main (#22299)
+- internal: Automated internal backport: CVE-2026-40172.sec.patch to authentik-main (#22300)
+- internal: Automated internal backport: CVE-2026-41569.sec.patch to authentik-main (#22301)
+- internal: Automated internal backport: CVE-2026-41577.sec.patch to authentik-main (#22302)
+- internal: Automated internal backport: CVE-2026-42849.sec.patch to authentik-main (#22303)
+- internal: Automated internal backport: GHSA-5wcc-hf24-rf5h.sec.patch to authentik-main (#22304)
+- internal: Automated internal backport: GHSA-973w-j457-rp2m.sec.patch to authentik-main (#22305)
+- internal: remove custom Vary header (#24078)
+- internal/outpost/ak: handle empty outpost list during refresh (#23827)
+- internal/outpost/ldap: remove Printf in MemberForGroup loop (#22952)
+- lib: move ExpiringModel to lib from core (#24109)
+- lib/evaluator: use lazy proxy for http session (#24893)
+- lib/sync: add Sync base model for storing past sync history (#23184)
+- lib/sync/outgoing: allow discovery to be deactivated (#24667)
+- lifecycle: prevent version skipping upgrades (#24160)
+- lifecycle/container: increase start time to 120s (#23896)
+- outpost: grab log level from api config (#24459)
+- outpost: retry API retrieval (#24483)
+- outpost/proxy: fix envoy request routing (#24528)
+- outpost/proxy: rewrite in rust (#21856)
+- outpost/proxy: send X-Forwarded-Proto with the backchannel Host override so the token issuer matches (#24489)
+- outposts/proxy: include query string in post-authentication redirect (#25043)
+- packages: migrate shared pins to the pnpm catalog: protocol (#23784)
+- packages/ak-axum: Correctly canonicalize IP when checking for trusted reverse proxy (#24479)
+- packages/ak-axum: mark all unix requests as trusted (#24534)
+- packages/ak-axum: re-add X-Forwarded-Host consideration (#24482)
+- packages/ak-common/db: ignore empty passwords (#24127)
+- packages/ak-common/db: truncate application name (#24552)
+- packages/ak-common/tracing: make console subscriber optional (#24219)
+- packages/django-dramatiq-postgres: minor fixes (#23181)
+- packages/django-dramatiq-postgres/broker: chunked purge queryset (#25102)
+- packages/django-postgres-dramatiq: add support for task dependencies (#23064)
+- policies: list engine (#24174)
+- policies: make policy bindings expire-able (#24116)
+- providers/oauth: Logout remove static html (#23002)
+- providers/oauth2: add support for ed448 (#24013)
+- providers/oauth2: add token exchange targeting (#24874)
+- providers/oauth2: automatically invalidate ProviderInfoView cached claims (#24944)
+- providers/oauth2: cache ProviderInfoView get_claims (#24890)
+- providers/oauth2: enforce VSCHAR for client_id and client_secret (#23760)
+- providers/oauth2: fix client_credentials regression (#24900)
+- providers/oauth2: fix dcr missing csrf_exempt (#24983)
+- providers/oauth2: fix iframe logout stage progression (#23919)
+- providers/oauth2: fix missing authorization event for oauth provider, add tests (#24819)
+- providers/oauth2: fix token exchange provider lookup for actor/subject (#25110)
+- providers/oauth2: move DCR to OSS (#24949)
+- providers/oauth2: OpenID key binding support (#22590)
+- providers/oauth2: optimize JWKS conversion (#24889)
+- providers/oauth2: refactor token parsing logic (#24904)
+- providers/oauth2: run invalidation flow for unauthenticated end-session requests (#23773)
+- providers/oauth2: send back-channel logout requests when a user is deactivated (#24718)
+- providers/oauth2: token exchange (#23900)
+- providers/oauth2: token exchange delegation (#24356)
+- providers/oauth2: ui/ux fixes around DCR (#24600)
+- providers/radius: allow empty message authenticator (#25097)
+- providers/saml: catch InvalidVersion from cryptography when parsing metadata (#21185)
+- providers/saml: support authnrequest forceauthn flag (#22489)
+- providers/scim: Add GitLab compatibility mode (#22906)
+- providers/scim: fix display of SCIMRequestException (2026.8) (#24833)
+- providers/scim: fix group membership removals (#25024)
+- providers/scim: fix scim changed detection for nested attributes (#24332)
+- providers/scim: ignore key casing in SCIM responses (#24441)
+- providers/scim: rework discovery with pageSize (#24490)
+- rbac: use constant-time comparison in SecretKeyFilter (#24888)
+- root, web, docs, packages/\*-config: Fix pnpm symlinks, version ranges (#23592)
+- root, web, docs: Update pnpm to 11.9.0 (#23582)
+- root: add .nvmrc (#24440)
+- root: Add .nvmrc to CODEOWNERS (#24444)
+- root: add a pnpm catalog drift lint + config cleanup (#23781)
+- root: add optional pyroscope for profiling (#24887)
+- root: assign packages/theme to @goauthentik/frontend (#23344)
+- root: avoid looping indefinitely on embedded outpost start (#24553)
+- root: avoid looping indefinitely on embedded outpost start (take 2) (#24824)
+- root: bind-mount .npmrc into Dockerfile npm ci stages (#22462)
+- root: bump requests & fix double slash (#23501)
+- root: bump version to 2026.8.0-rc1 (#22167)
+- root: don't fail fast cspell (#24223)
+- root: don't include debug info for rust release profile (#24664)
+- root: fix "make gen" failing with "the input device is not a TTY" (#23546)
+- root: fix agents test instructions (#24119)
+- root: fix CODEOWNERS paths (#24259)
+- root: fix context processor name (#24421)
+- root: fix docker compose pg volume path for compatibility with pg18 (#23883)
+- root: fix fast shutdown log message (#24565)
+- root: fix schema and API clients (#22735)
+- root: flag British spellings in cspell (#22821)
+- root: gitignore release generation artifacts (#22549)
+- root: Ignore local cached TypeScript build info. (#24579)
+- root: in-process per-IP rate throttle (#23015)
+- root: limit request body size (#24666)
+- root: make clippy run on all targets (#24551)
+- root: make tests run when running make all (#22186)
+- root: move server and worker healthcheck to rust (#23556)
+- root: pin pnpm 11.20.0 everywhere (#24789)
+- root: PostgreSQL direct-endpoint support for LISTEN/NOTIFY and advisory locks (#23013)
+- root: Replace (npm + Corepack) with pnpm (#22830)
+- root: rewrite server in rust (#24320)
+- root: Update CODEOWNERS for spellcheck dictionaries (#22408)
+- root: update gen-changelog to filter unnecessary commits (#22550)
+- root: Update PR template (#22185)
+- source/oauth: add cas source integration (#24737)
+- sources/ldap: derive TLS SNI name from hostname, not full server URI (#22456)
+- sources/ldap: implement nested group parentship sync (#19069)
+- sources/oauth: allow long authorization URLs on OAuth sources (#24132)
+- sources/oauth: Fallback to `id` field when `sub` is missing in OIDC callback (#22672)
+- sources/oauth: prevent requests being made to disabled oauth social sources (#23822)
+- sources/oauth: support email retrieval for Twitter login (#20468)
+- sources/saml: add audience override field for SAML sources (#25029)
+- sources/saml: fix issuer generation and change to issuer_override (#22177)
+- sources/saml: fix issuer_override default (#24221)
+- sources/telegram: restore next= redirect after pre_authentication_flow (#22762)
+- stages/authenticator_duo: clarify duplicate Duo user enrollment (#23588)
+- stages/authenticator_validate: fix intermittently failing throttling test (#24568)
+- stages/authenticator_validate: skip flaky test (#24554)
+- stages/authenticator_webauthn: remove prevent_duplicate_devices (#24450)
+- stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#22772)
+- stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#23562)
+- stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#24039)
+- stages/authenticator_webauthn: Update FIDO MDS3 & Passkey aaguid blobs (#24487)
+- stages/authenticator: protect devices from stage deletion (#24324)
+- stages/captcha: add Cap and JSON verification support (#22373)
+- stages/captcha: fix hcaptcha height (#20901)
+- stages/email: fix test_email ignoring the given stage (#25166)
+- stages/user_login: refuse to log in an unsaved pending user (#21691)
+- stages/user_write: only write user when data changes (#24158)
+- tasks: aggregate status from logs instead of legacy field (#24792)
+- tasks: ignore integrity error on tasklog insertion (#23178)
+- tests: add security regression tests for OAuth JWT-bearer and flow session handling (#23190)
+- tests/e2e: bump endpoints version in e2e test container (#22704)
+- tests/e2e: bump selenium and ak-agent to fix endpoint tests (#22942)
+- tests/openid_conformance: Add more conformance coverage (#22174)
+- Update SAML configuration for SonarQube integration (#23220)
+- web, docs, packages/\*: Fix pnpm Workspace Catalogs (#23944)
+- web, locale: Normalize legacy locale file names (#24024)
+- web, packages/geo, server/static: Air Gapped Maps Merge Branch (#24254)
+- web: add build start/end log to build script (#24296)
+- web: add grid/list view toggle to user application library (#22132)
+- web: break preformatted desc list elements (#20372)
+- web: contain long text in tables and application cards (#24621)
+- web: decode lit-localize over-escaped entities across all localized strings (#23264)
+- web: exclude dependabot-materialized link deps from workspace glob (#24297)
+- web: fix British spellings flagged by cspell (#22820)
+- web: Fix content_left/right layouts. (#25025)
+- web: fix email angle brackets rendering as HTML entities in localized UI (#23262)
+- web: fix file search input interactions (#24609)
+- web: Fix issue where 0 value is not preserved. (#24460)
+- web: Fix mangled nested CSS in compatibility mode. (#25053)
+- web: Flesh out frontend, E2E, agent instructions. (#22388)
+- web: hide plain action icons while loading (#24618)
+- web: improve base url helper text (#24455)
+- web: improve user header at intermediate widths (#24608)
+- web: migrate brand assets to npm pkg (#22361)
+- web: Recovery Token CSS Safe Mode (#23152)
+- web: remove orphaned chromedriver dependency (#22251)
+- web: rework ak-search-select dropdown as an anchored popover (retire ak-portal) (#24104)
+- web/admin: better table filter (#24368)
+- web/admin: drop misleading delete consequences from user activation review (#24273)
+- web/admin: enterprise status card properties (#24170)
+- web/admin: fix alignment of task list filters (#24752)
+- web/admin: fix leftover toggles in tables (#24436)
+- web/admin: fix missing preview banner for object attributes (#24982)
+- web/admin: hide previous loglist when no previous logs available (#23954)
+- web/admin: maint/clean ldap source connectivity (#22941)
+- web/admin: QOL: Add "Expiring in `n` days" and "Expiring today" notices to LicenseStatusCard (#24300)
+- web/admin: refactor user detail page layout (#23578)
+- web/admin: ui fixes for requests (#24458)
+- web/admin/stages/captcha: fix float values in score thresholds fix provider parsing (#22782)
+- web/bug: fix regex recursion error in compatibility mode (#22338)
+- web/bug: harmonize and make routine the display of schedules, part 2: Description lists (#23856)
+- web/bug: harmonize and make routine the display of tasks (part 2: description list abuse) (#23839)
+- web/bug: harmonize and make routine the display of tasks (part 3: problem children) (#23840)
+- web/bug: harmonize and make routine the display of tasks (part 4: schedule-list cards) (#23855)
+- web/bug: harmonize and make routine the display of tasks (part 6: sch… (#23859)
+- web/bug/22387 device user bindings failing (#23042)
+- web/cleanup/dedup default config (#23622)
+- web/cleanup/there is no memo (#23641)
+- web/common: allow line-break in dom-purify (#24755)
+- web/components: update styling for user account switcher (#24749)
+- web/css: de-dupe and simplify CSS customizations (#23195)
+- web/css: enabling layers, part 3: vendoring (#23366)
+- web/css/enabling layers 2 (#23265)
+- web/dependencies: move the sync components into the components folder. (#22242)
+- web/dependency: move the notifications components into the components folder (#22241)
+- web/doc: add documentation and wc-analyzer tags to ak-secret-text-input (#23134)
+- web/elements: Add location to sessions (#24422)
+- web/elements: add past-tense submitted formatter to Form (#23041)
+- web/elements: extract mermaid runtime, modernize `<ak-diagram>` (#22980)
+- web/elements: fix prioritization in form serialization for dotted input-fields (#24987)
+- web/elements: key the message list so stacked toasts don't share state (#24361)
+- web/elements: P5 Drawer component with all capabilities (#21545)
+- web/elements: update the progress bar (#24134)
+- web/elements/ak-dual-select: fix inverted pagination arrow colors in dark theme (#22608)
+- web/enterprise: add UI for pending offboardings (#24266)
+- web/fix: clarify some secrets remain secret (#23132)
+- web/flows: Add new flow background image (#24511)
+- web/flows: fix missing required flag on password input (#24831)
+- web/flows: fix untranslated user field labels in identification stage (#23518)
+- web/maint: harmonize and make routine the display of tasks (part 1: cards) (#23837)
+- web/maint: Put API-aware status indicators in `components`; fix missing state (#22936)
+- web/maint: upgrade ak-divider (#24082)
+- web/maint: upgrade ak-toggle-group (#24038)
+- web/maint/dependency: maint 1 (#22506)
+- web/maintenance: bump Typescript compiler to version 7 (#22172)
+- web/maintenance: eliminate the need for DEFAULT_CONFIG boilerplate everywhere (#22892)
+- web/maintenance: Replace routine form endpoints (#23554)
+- web/maintenance/explicit model endpoints (#22897)
+- web/tests: fix `strict mode` issues in two tests (#23339)
+- web/user: fix request access URL from agent not working (#25113)
+- web/xliff: fix zh-Hans translation (#24512)
+- worker: fix healthcheck paths (#24481)
+
+## Fixed in 2026.8.1
+
+- core/sources: forward kwargs when updating an existing connection (#25204)
+- core/sources: reuse group property mapping manager across groups (#24699)
+- core: add user type-active-username index (#25223)
+- core: declare authorization_flow and invalidation_flow as nullable in root provider list (#25243)
+- core: set days=1 as default token duration for new installs (#25341)
+- crypto: don't dispatch discovery if one is queued (#25483)
+- endpoints/connectors: fix integrity error when device with same name exists already (#25237)
+- lib/expression: fix policy request context pollution (#25462)
+- lib/expression: use literal fallback in ak_obj_attr (#25414)
+- outpost/event: fix websocket connection with AUTHENTIK_INSECURE=true (#25472)
+- outpost/proxy: avoid breaking header parsing in non-compliant backends (#25439)
+- outpost/proxy: fix double host sent on token introspection (#25234)
+- outposts: fix docker controller for proxy outpost (#25353)
+- packages/ak-axum: extract the rightmost untrusted IP from X-Forwarded-For (#25397)
+- providers/saml: remove redundant backchannel logout call (#25086)
+- root: SECURITY.md vulnerability reporting channel (#25365)
+- root: update SECURITY.md supported versions (#25351)
+- server/core: handle unsupported HTTP method (#22498)
+- server/core: relay negotiated websocket subprotocol and stop offering extensions upstream (#25487)
+- sources/ldap/freeipa: handle list-valued krbLastPwdChange (#20600)
+- sources/oauth: cover object group property mappings (#25195)
+- sources: don't 500 on an object-shaped `groups` claim (#25208)
+- stages/identification: dynamic captcha keys when stage embedded in identification stage (#24079)
+- stages/identification: only join Source subtypes that can render a login button (#25238)
+- tenants: fix base URL validation rejecting internal hostnames (#25560)
+- web/admin/events: Allow selecting public cert only on transport form verification (#24771)
+- web/elements/table: show scrollbar instead of overflowing off the page (#25232)
+- web/user: fix missing enterprise check on agents tab in user interface (#25371)
+- web: Auto focus password field after login error. (#25026)
+- web: Fix Sentry Initialization (#25450)
+- web: Fix imports when in compatibility mode. (#25526)
+- web: Fix issues surrounding text field focus behavior. (#25159)
+- web: keep sticky form actions below nav menus (#25336)
+- web: keep the search-select dropdown inside its modal (#24812)
+
+## API Changes
+
+### authentik (v 2026.8.0)
+
+---
+
+#### What's New
+
+---
+
+##### `GET` /agents/agents/
+
+##### `POST` /agents/agents/
+
+##### `GET` /agents/agents/&#123;id&#125;/
+
+##### `PUT` /agents/agents/&#123;id&#125;/
+
+##### `DELETE` /agents/agents/&#123;id&#125;/
+
+##### `PATCH` /agents/agents/&#123;id&#125;/
+
+##### `GET` /core/application_entitlements/requestable/
+
+##### `GET` /core/applications/requestable/
+
+##### `GET` /core/object_attributes/
+
+##### `POST` /core/object_attributes/
+
+##### `GET` /core/object_attributes/&#123;attribute_id&#125;/
+
+##### `PUT` /core/object_attributes/&#123;attribute_id&#125;/
+
+##### `DELETE` /core/object_attributes/&#123;attribute_id&#125;/
+
+##### `PATCH` /core/object_attributes/&#123;attribute_id&#125;/
+
+##### `POST` /core/users/switch/
+
+##### `GET` /lifecycle/user_offboarding/
+
+##### `POST` /lifecycle/user_offboarding/
+
+##### `GET` /lifecycle/user_offboarding/&#123;id&#125;/
+
+##### `DELETE` /lifecycle/user_offboarding/&#123;id&#125;/
+
+##### `GET` /providers/oauth2-dcr/
+
+##### `POST` /providers/oauth2-dcr/
+
+##### `GET` /providers/oauth2-dcr/&#123;pbm_uuid&#125;/
+
+##### `PUT` /providers/oauth2-dcr/&#123;pbm_uuid&#125;/
+
+##### `DELETE` /providers/oauth2-dcr/&#123;pbm_uuid&#125;/
+
+##### `PATCH` /providers/oauth2-dcr/&#123;pbm_uuid&#125;/
+
+##### `GET` /requests/grant-requests/
+
+##### `POST` /requests/grant-requests/
+
+##### `GET` /requests/grant-requests/&#123;uuid&#125;/
+
+##### `DELETE` /requests/grant-requests/&#123;uuid&#125;/
+
+##### `PATCH` /requests/grant-requests/&#123;uuid&#125;/fulfill/
+
+##### `DELETE` /requests/grant-requests/&#123;uuid&#125;/revoke/
+
+##### `POST` /requests/grant-requests/agent/
+
+##### `GET` /requests/grant-requests/pending_review/
+
+##### `GET` /requests/rule-bindings/
+
+##### `POST` /requests/rule-bindings/
+
+##### `GET` /requests/rule-bindings/&#123;uuid&#125;/
+
+##### `PUT` /requests/rule-bindings/&#123;uuid&#125;/
+
+##### `DELETE` /requests/rule-bindings/&#123;uuid&#125;/
+
+##### `PATCH` /requests/rule-bindings/&#123;uuid&#125;/
+
+##### `GET` /requests/rule-bindings/&#123;uuid&#125;/used_by/
+
+##### `GET` /requests/rule-child-bindings/
+
+##### `POST` /requests/rule-child-bindings/
+
+##### `GET` /requests/rule-child-bindings/&#123;uuid&#125;/
+
+##### `PUT` /requests/rule-child-bindings/&#123;uuid&#125;/
+
+##### `DELETE` /requests/rule-child-bindings/&#123;uuid&#125;/
+
+##### `PATCH` /requests/rule-child-bindings/&#123;uuid&#125;/
+
+##### `GET` /requests/rule-child-bindings/&#123;uuid&#125;/used_by/
+
+##### `GET` /requests/rules/
+
+##### `POST` /requests/rules/
+
+##### `GET` /requests/rules/&#123;uuid&#125;/
+
+##### `PUT` /requests/rules/&#123;uuid&#125;/
+
+##### `DELETE` /requests/rules/&#123;uuid&#125;/
+
+##### `PATCH` /requests/rules/&#123;uuid&#125;/
+
+##### `GET` /requests/rules/&#123;uuid&#125;/used_by/
+
+#### What's Changed
+
+---
+
+##### `GET` /admin/models/
+
+###### Parameters:
+
+Added: `filter_has_attributes` in `query`
+
+##### `GET` /admin/settings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `base_url` (string)
+
+        > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+
+    - Changed property `flags` (object)
+        - Changed property `core_default_app_access` (boolean)
+            > Applications with no policies bound can be accessed by any user.
+
+##### `PUT` /admin/settings/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `base_url` (string)
+
+    > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+
+- Changed property `flags` (object)
+    - Changed property `core_default_app_access` (boolean)
+        > Applications with no policies bound can be accessed by any user.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `base_url` (string)
+
+        > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+
+    - Changed property `flags` (object)
+        - Changed property `core_default_app_access` (boolean)
+            > Applications with no policies bound can be accessed by any user.
+
+##### `PATCH` /admin/settings/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `base_url` (string)
+
+    > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+
+- Changed property `flags` (object)
+    - Changed property `core_default_app_access` (boolean)
+        > Applications with no policies bound can be accessed by any user.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `base_url` (string)
+
+        > Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company
+
+    - Changed property `flags` (object)
+        - Changed property `core_default_app_access` (boolean)
+            > Applications with no policies bound can be accessed by any user.
+
+##### `GET` /admin/system/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `base_url`
+    * Added property `base_url` (string)
+        > Configured external base URL. Can be empty
+
+##### `POST` /admin/system/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `base_url`
+    * Added property `base_url` (string)
+        > Configured external base URL. Can be empty
+
+##### `GET` /core/brands/&#123;brand_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `branding_map_tiles` (string)
+
+        > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+    - Added property `flow_user_switch` (string)
+
+    - Added property `flow_request` (string)
+
+##### `PUT` /core/brands/&#123;brand_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `branding_map_tiles` (string)
+
+    > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+- Added property `flow_user_switch` (string)
+
+- Added property `flow_request` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `branding_map_tiles` (string)
+
+        > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+    - Added property `flow_user_switch` (string)
+
+    - Added property `flow_request` (string)
+
+##### `PATCH` /core/brands/&#123;brand_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `branding_map_tiles` (string)
+
+    > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+- Added property `flow_user_switch` (string)
+
+- Added property `flow_request` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `branding_map_tiles` (string)
+
+        > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+    - Added property `flow_user_switch` (string)
+
+    - Added property `flow_request` (string)
+
+##### `POST` /core/groups/&#123;group_uuid&#125;/add_user/
+
+##### `POST` /core/groups/&#123;group_uuid&#125;/remove_user/
+
+##### `POST` /core/users/&#123;id&#125;/impersonate/
+
+##### `POST` /core/users/&#123;id&#125;/recovery/
+
+##### `POST` /core/users/&#123;id&#125;/recovery_email/
+
+##### `POST` /core/users/&#123;id&#125;/set_password/
+
+##### `POST` /core/users/&#123;id&#125;/set_password_hash/
+
+##### `POST` /core/users/account_lockdown/
+
+##### `POST` /core/users/export/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `content_type` (object)
+
+        New required properties:
+        - `fully_qualified_model`
+        * Added property `fully_qualified_model` (string)
+
+##### `GET` /core/users/impersonate_end/
+
+##### `GET` /core/users/paths/
+
+##### `POST` /core/users/service_account/
+
+##### `POST` /endpoints/agents/connectors/auth_ia/
+
+###### Parameters:
+
+Added: `login_hint` in `query`
+
+##### `POST` /endpoints/agents/psso/register/device/
+
+##### `GET` /endpoints/device_bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `PUT` /endpoints/device_bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `PATCH` /endpoints/device_bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `POST` /events/events/export/
+
+###### Parameters:
+
+Changed: `actions` in `query`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `content_type` (object)
+
+        New required properties:
+        - `fully_qualified_model`
+        * Added property `fully_qualified_model` (string)
+
+##### `GET` /events/events/stats/
+
+###### Parameters:
+
+Changed: `actions` in `query`
+
+##### `GET` /events/events/top_per_user/
+
+###### Parameters:
+
+Added: `actions` in `query`
+
+Added: `brand_name` in `query`
+
+> Brand name
+
+Added: `client_ip` in `query`
+
+Added: `context_authorized_app` in `query`
+
+> Context Authorized application
+
+Added: `context_device` in `query`
+
+> Context Device Primary Key
+
+Added: `context_model_app` in `query`
+
+> Context Model App
+
+Added: `context_model_name` in `query`
+
+> Context Model Name
+
+Added: `context_model_pk` in `query`
+
+> Context Model Primary Key
+
+Added: `ordering` in `query`
+
+> Which field to use when ordering the results.
+
+Added: `search` in `query`
+
+> A search term.
+
+Added: `username` in `query`
+
+> Username
+
+Changed: `top_n` in `query`
+
+##### `POST` /lifecycle/reviews/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `reviewer` (object)
+
+        > Partial User Serializer, does not include child relations.
+
+        New required properties:
+        - `uid`
+
+        New optional properties:
+        - `uuid`
+        * Added property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        * Added property `last_login` (string)
+
+        * Added property `email` (string)
+
+        * Added property `attributes` (object)
+
+        * Added property `uid` (string)
+
+        * Deleted property `uuid` (string)
+
+##### `GET` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `PUT` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `PATCH` /policies/bindings/&#123;policy_binding_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `GET` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        > Match created events with this action type. When left empty, all action types will be matched.
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.enterprise.agents`
+        - `authentik.enterprise.requests`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum values:
+        - `authentik_core.objectattribute`
+        - `authentik_core.actor`
+        - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+        - `authentik_agents.agent`
+        - `authentik_lifecycle.useroffboarding`
+        - `authentik_requests.requestrulechildbinding`
+        - `authentik_requests.requestrulebinding`
+        - `authentik_requests.requestrule`
+        - `authentik_requests.grantrequest`
+
+##### `PUT` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    > Match created events with this action type. When left empty, all action types will be matched.
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.enterprise.agents`
+    - `authentik.enterprise.requests`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum values:
+    - `authentik_core.objectattribute`
+    - `authentik_core.actor`
+    - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+    - `authentik_agents.agent`
+    - `authentik_lifecycle.useroffboarding`
+    - `authentik_requests.requestrulechildbinding`
+    - `authentik_requests.requestrulebinding`
+    - `authentik_requests.requestrule`
+    - `authentik_requests.grantrequest`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        > Match created events with this action type. When left empty, all action types will be matched.
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.enterprise.agents`
+        - `authentik.enterprise.requests`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum values:
+        - `authentik_core.objectattribute`
+        - `authentik_core.actor`
+        - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+        - `authentik_agents.agent`
+        - `authentik_lifecycle.useroffboarding`
+        - `authentik_requests.requestrulechildbinding`
+        - `authentik_requests.requestrulebinding`
+        - `authentik_requests.requestrule`
+        - `authentik_requests.grantrequest`
+
+##### `PATCH` /policies/event_matcher/&#123;policy_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    > Match created events with this action type. When left empty, all action types will be matched.
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.enterprise.agents`
+    - `authentik.enterprise.requests`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum values:
+    - `authentik_core.objectattribute`
+    - `authentik_core.actor`
+    - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+    - `authentik_agents.agent`
+    - `authentik_lifecycle.useroffboarding`
+    - `authentik_requests.requestrulechildbinding`
+    - `authentik_requests.requestrulebinding`
+    - `authentik_requests.requestrule`
+    - `authentik_requests.grantrequest`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        > Match created events with this action type. When left empty, all action types will be matched.
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.enterprise.agents`
+        - `authentik.enterprise.requests`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum values:
+        - `authentik_core.objectattribute`
+        - `authentik_core.actor`
+        - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+        - `authentik_agents.agent`
+        - `authentik_lifecycle.useroffboarding`
+        - `authentik_requests.requestrulechildbinding`
+        - `authentik_requests.requestrulebinding`
+        - `authentik_requests.requestrule`
+        - `authentik_requests.grantrequest`
+
+##### `GET` /providers/oauth2/&#123;id&#125;/setup_urls/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `dcr_registration`
+    * Added property `dcr_registration` (string)
+
+##### `GET` /reports/exports/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `content_type` (object)
+
+        New required properties:
+        - `fully_qualified_model`
+        * Added property `fully_qualified_model` (string)
+
+##### `GET` /tasks/schedules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_task_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `PUT` /tasks/schedules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_task_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `PATCH` /tasks/schedules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_task_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /core/applications/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `pbm_uuid`
+    * Added property `pbm_uuid` (string)
+
+##### `PUT` /core/applications/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `pbm_uuid`
+    * Added property `pbm_uuid` (string)
+
+##### `PATCH` /core/applications/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `pbm_uuid`
+    * Added property `pbm_uuid` (string)
+
+##### `POST` /core/brands/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `branding_map_tiles` (string)
+
+    > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+- Added property `flow_user_switch` (string)
+
+- Added property `flow_request` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `branding_map_tiles` (string)
+
+        > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+    - Added property `flow_user_switch` (string)
+
+    - Added property `flow_request` (string)
+
+##### `GET` /core/brands/
+
+###### Parameters:
+
+Added: `flow_request` in `query`
+
+Added: `flow_user_switch` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Brand Serializer
+        - Added property `branding_map_tiles` (string)
+
+            > URL template for the vector tile source used by the events map. Supports XYZ templates with &#123;z&#125;, &#123;x&#125; and &#123;y&#125; placeholders, or pmtiles:// archive URLs. When empty, the frontend uses the bundled hexworld basemap. This value is part of the brand information served to unauthenticated clients; do not embed API keys or other credentials in it.
+
+        - Added property `flow_user_switch` (string)
+
+        - Added property `flow_request` (string)
+
+##### `GET` /core/brands/current/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `branding_map_tiles`
+    * Added property `branding_map_tiles` (string)
+
+    * Added property `flow_user_switch` (string)
+
+    * Added property `flow_request` (string)
+
+    * Changed property `flags` (object)
+
+        New optional properties:
+        - `core_default_app_access`
+        - `enterprise_audit_include_expanded_diff`
+        * Deleted property `core_default_app_access` (boolean)
+
+            > Configure if applications without any policy/group/user bindings should be accessible to any user.
+
+        * Deleted property `enterprise_audit_include_expanded_diff` (boolean)
+            > Include additional information in audit logs, may incur a performance penalty.
+
+##### `DELETE` /core/groups/&#123;group_uuid&#125;/
+
+##### `GET` /core/groups/&#123;group_uuid&#125;/
+
+##### `PUT` /core/groups/&#123;group_uuid&#125;/
+
+##### `PATCH` /core/groups/&#123;group_uuid&#125;/
+
+##### `GET` /core/groups/&#123;group_uuid&#125;/used_by/
+
+##### `DELETE` /core/users/&#123;id&#125;/
+
+##### `GET` /core/users/&#123;id&#125;/
+
+##### `PUT` /core/users/&#123;id&#125;/
+
+##### `PATCH` /core/users/&#123;id&#125;/
+
+##### `GET` /core/users/&#123;id&#125;/used_by/
+
+##### `GET` /endpoints/agents/connectors/agent_config/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `system_config` (object)
+
+        > Serialize authentik Config into DRF Object
+        - Changed property `capabilities` (array)
+
+            Changed items (string):
+
+            Added enum values:
+            - `can_request`
+            - `can_agent_self_service`
+
+##### `POST` /endpoints/agents/psso/register/user/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `is_current`
+    * Added property `is_current` (boolean)
+        > Return whether this user owns the current browser session.
+
+##### `POST` /endpoints/device_bindings/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `GET` /endpoints/device_bindings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > PolicyBinding Serializer
+
+        New required properties:
+        - `expires`
+        - `expiring`
+        * Added property `expires` (string)
+
+        * Added property `expiring` (boolean)
+
+##### `GET` /events/events/&#123;event_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+##### `PUT` /events/events/&#123;event_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+##### `PATCH` /events/events/&#123;event_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+##### `GET` /events/events/volume/
+
+###### Parameters:
+
+Changed: `actions` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Changed items (object): > Count of events of action created on day for a single event action
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+##### `POST` /lifecycle/iterations/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `reviews` (array)
+
+        Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+        - Changed property `reviewer` (object)
+
+            > Partial User Serializer, does not include child relations.
+
+            New required properties:
+            - `uid`
+
+            New optional properties:
+            - `uuid`
+            * Added property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            * Added property `last_login` (string)
+
+            * Added property `email` (string)
+
+            * Added property `attributes` (object)
+
+            * Added property `uid` (string)
+
+            * Deleted property `uuid` (string)
+
+    - Changed property `rule` (object)
+
+        > Mixin to validate that a valid enterprise license
+        > exists before allowing to save the object
+        - Changed property `reviewer_groups` (array)
+
+            Changed items (object): > Partial Group Serializer, does not include child relations.
+
+            New required properties:
+            - `num_pk`
+            * Added property `num_pk` (integer)
+
+                > Get a numerical, int32 ID for the group
+
+            * Added property `is_superuser` (boolean)
+
+                > Users added to this group will be superusers.
+
+            * Added property `attributes` (object)
+
+        - Changed property `reviewers` (array)
+
+            Changed items (object): > Partial User Serializer, does not include child relations.
+
+            New required properties:
+            - `uid`
+
+            New optional properties:
+            - `uuid`
+            * Added property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            * Added property `last_login` (string)
+
+            * Added property `email` (string)
+
+            * Added property `attributes` (object)
+
+            * Added property `uid` (string)
+
+            * Deleted property `uuid` (string)
+
+##### `GET` /lifecycle/iterations/latest/&#123;content_type&#125;/&#123;object_id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+    - Changed property `reviews` (array)
+
+        Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+        - Changed property `reviewer` (object)
+
+            > Partial User Serializer, does not include child relations.
+
+            New required properties:
+            - `uid`
+
+            New optional properties:
+            - `uuid`
+            * Added property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            * Added property `last_login` (string)
+
+            * Added property `email` (string)
+
+            * Added property `attributes` (object)
+
+            * Added property `uid` (string)
+
+            * Deleted property `uuid` (string)
+
+    - Changed property `rule` (object)
+
+        > Mixin to validate that a valid enterprise license
+        > exists before allowing to save the object
+        - Changed property `reviewer_groups` (array)
+
+            Changed items (object): > Partial Group Serializer, does not include child relations.
+
+            New required properties:
+            - `num_pk`
+            * Added property `num_pk` (integer)
+
+                > Get a numerical, int32 ID for the group
+
+            * Added property `is_superuser` (boolean)
+
+                > Users added to this group will be superusers.
+
+            * Added property `attributes` (object)
+
+        - Changed property `reviewers` (array)
+
+            Changed items (object): > Partial User Serializer, does not include child relations.
+
+            New required properties:
+            - `uid`
+
+            New optional properties:
+            - `uuid`
+            * Added property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            * Added property `last_login` (string)
+
+            * Added property `email` (string)
+
+            * Added property `attributes` (object)
+
+            * Added property `uid` (string)
+
+            * Deleted property `uuid` (string)
+
+##### `GET` /lifecycle/rules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `reviewer_groups_obj` (array)
+
+        Changed items (object): > Partial Group Serializer, does not include child relations.
+
+        New required properties:
+        - `num_pk`
+        * Added property `num_pk` (integer)
+
+            > Get a numerical, int32 ID for the group
+
+        * Added property `is_superuser` (boolean)
+
+            > Users added to this group will be superusers.
+
+        * Added property `attributes` (object)
+
+    - Changed property `reviewers_obj` (array)
+
+        Changed items (object): > Partial User Serializer, does not include child relations.
+
+        New required properties:
+        - `uid`
+
+        New optional properties:
+        - `uuid`
+        * Added property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        * Added property `last_login` (string)
+
+        * Added property `email` (string)
+
+        * Added property `attributes` (object)
+
+        * Added property `uid` (string)
+
+        * Deleted property `uuid` (string)
+
+##### `PUT` /lifecycle/rules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `reviewer_groups_obj` (array)
+
+        Changed items (object): > Partial Group Serializer, does not include child relations.
+
+        New required properties:
+        - `num_pk`
+        * Added property `num_pk` (integer)
+
+            > Get a numerical, int32 ID for the group
+
+        * Added property `is_superuser` (boolean)
+
+            > Users added to this group will be superusers.
+
+        * Added property `attributes` (object)
+
+    - Changed property `reviewers_obj` (array)
+
+        Changed items (object): > Partial User Serializer, does not include child relations.
+
+        New required properties:
+        - `uid`
+
+        New optional properties:
+        - `uuid`
+        * Added property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        * Added property `last_login` (string)
+
+        * Added property `email` (string)
+
+        * Added property `attributes` (object)
+
+        * Added property `uid` (string)
+
+        * Deleted property `uuid` (string)
+
+##### `PATCH` /lifecycle/rules/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `reviewer_groups_obj` (array)
+
+        Changed items (object): > Partial Group Serializer, does not include child relations.
+
+        New required properties:
+        - `num_pk`
+        * Added property `num_pk` (integer)
+
+            > Get a numerical, int32 ID for the group
+
+        * Added property `is_superuser` (boolean)
+
+            > Users added to this group will be superusers.
+
+        * Added property `attributes` (object)
+
+    - Changed property `reviewers_obj` (array)
+
+        Changed items (object): > Partial User Serializer, does not include child relations.
+
+        New required properties:
+        - `uid`
+
+        New optional properties:
+        - `uuid`
+        * Added property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        * Added property `last_login` (string)
+
+        * Added property `email` (string)
+
+        * Added property `attributes` (object)
+
+        * Added property `uid` (string)
+
+        * Deleted property `uuid` (string)
+
+##### `POST` /policies/bindings/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `expires`
+    - `expiring`
+    * Added property `expires` (string)
+
+    * Added property `expiring` (boolean)
+
+##### `GET` /policies/bindings/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > PolicyBinding Serializer
+
+        New required properties:
+        - `expires`
+        - `expiring`
+        * Added property `expires` (string)
+
+        * Added property `expiring` (boolean)
+
+##### `POST` /policies/event_matcher/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    > Match created events with this action type. When left empty, all action types will be matched.
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+- Changed property `app` (string)
+
+    > Match events created by selected application. When left empty, all applications are matched.
+
+    Added enum values:
+    - `authentik.enterprise.agents`
+    - `authentik.enterprise.requests`
+
+- Changed property `model` (string)
+
+    > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+    Added enum values:
+    - `authentik_core.objectattribute`
+    - `authentik_core.actor`
+    - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+    - `authentik_agents.agent`
+    - `authentik_lifecycle.useroffboarding`
+    - `authentik_requests.requestrulechildbinding`
+    - `authentik_requests.requestrulebinding`
+    - `authentik_requests.requestrule`
+    - `authentik_requests.grantrequest`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        > Match created events with this action type. When left empty, all action types will be matched.
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+    - Changed property `app` (string)
+
+        > Match events created by selected application. When left empty, all applications are matched.
+
+        Added enum values:
+        - `authentik.enterprise.agents`
+        - `authentik.enterprise.requests`
+
+    - Changed property `model` (string)
+
+        > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+        Added enum values:
+        - `authentik_core.objectattribute`
+        - `authentik_core.actor`
+        - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+        - `authentik_agents.agent`
+        - `authentik_lifecycle.useroffboarding`
+        - `authentik_requests.requestrulechildbinding`
+        - `authentik_requests.requestrulebinding`
+        - `authentik_requests.requestrule`
+        - `authentik_requests.grantrequest`
+
+##### `GET` /policies/event_matcher/
+
+###### Parameters:
+
+Changed: `action` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Event Matcher Policy Serializer
+        - Changed property `action` (string)
+
+            > Match created events with this action type. When left empty, all action types will be matched.
+
+            Added enum values:
+            - `user_offboarded`
+            - `access_request_created`
+            - `access_request_approved`
+            - `access_request_denied`
+            - `access_request_revoked`
+
+        - Changed property `app` (string)
+
+            > Match events created by selected application. When left empty, all applications are matched.
+
+            Added enum values:
+            - `authentik.enterprise.agents`
+            - `authentik.enterprise.requests`
+
+        - Changed property `model` (string)
+
+            > Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            Added enum values:
+            - `authentik_core.objectattribute`
+            - `authentik_core.actor`
+            - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+            - `authentik_agents.agent`
+            - `authentik_lifecycle.useroffboarding`
+            - `authentik_requests.requestrulechildbinding`
+            - `authentik_requests.requestrulebinding`
+            - `authentik_requests.requestrule`
+            - `authentik_requests.grantrequest`
+
+##### `GET` /providers/google_workspace/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `PUT` /providers/google_workspace/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `PATCH` /providers/google_workspace/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `GET` /providers/google_workspace/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_sync_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /providers/microsoft_entra/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `PUT` /providers/microsoft_entra/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `PATCH` /providers/microsoft_entra/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `GET` /providers/microsoft_entra/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_sync_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /providers/scim/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    - Changed property `compatibility_mode` (string)
+
+        > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Added enum value:
+        - `gitlab`
+
+##### `PUT` /providers/scim/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+- Changed property `compatibility_mode` (string)
+
+    > Alter authentik behavior for vendor-specific SCIM implementations.
+
+    Added enum value:
+    - `gitlab`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    - Changed property `compatibility_mode` (string)
+
+        > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Added enum value:
+        - `gitlab`
+
+##### `PATCH` /providers/scim/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+- Changed property `compatibility_mode` (string)
+
+    > Alter authentik behavior for vendor-specific SCIM implementations.
+
+    Added enum value:
+    - `gitlab`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    - Changed property `compatibility_mode` (string)
+
+        > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Added enum value:
+        - `gitlab`
+
+##### `GET` /providers/scim/&#123;id&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_sync_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /providers/wsfed/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `saml_version` (object)
+
+        > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+        Enum values:
+        - `1.1`
+        - `2.0`
+
+    * Added property `url_issuer` (string)
+        > Get Issuer/EntityID URL
+
+##### `PUT` /providers/wsfed/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `saml_version` (object)
+    > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `saml_version` (object)
+
+        > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+    * Added property `url_issuer` (string)
+        > Get Issuer/EntityID URL
+
+##### `PATCH` /providers/wsfed/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `saml_version` (object)
+    > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `saml_version` (object)
+
+        > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+    * Added property `url_issuer` (string)
+        > Get Issuer/EntityID URL
+
+##### `POST` /rbac/permissions/assigned_by_roles/&#123;uuid&#125;/assign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum values:
+    - `authentik_core.objectattribute`
+    - `authentik_core.actor`
+    - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+    - `authentik_agents.agent`
+    - `authentik_lifecycle.useroffboarding`
+    - `authentik_requests.requestrulechildbinding`
+    - `authentik_requests.requestrulebinding`
+    - `authentik_requests.requestrule`
+    - `authentik_requests.grantrequest`
+
+##### `PATCH` /rbac/permissions/assigned_by_roles/&#123;uuid&#125;/unassign/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `model` (string)
+
+    Added enum values:
+    - `authentik_core.objectattribute`
+    - `authentik_core.actor`
+    - `authentik_providers_oauth2.oauth2dynamicclientregistration`
+    - `authentik_agents.agent`
+    - `authentik_lifecycle.useroffboarding`
+    - `authentik_requests.requestrulechildbinding`
+    - `authentik_requests.requestrulebinding`
+    - `authentik_requests.requestrule`
+    - `authentik_requests.grantrequest`
+
+##### `GET` /reports/exports/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+        - Changed property `content_type` (object)
+
+            New required properties:
+            - `fully_qualified_model`
+            * Added property `fully_qualified_model` (string)
+
+##### `GET` /root/config/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `capabilities` (array)
+
+        Changed items (string):
+
+        Added enum values:
+        - `can_request`
+        - `can_agent_self_service`
+
+##### `GET` /sources/kerberos/&#123;slug&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_sync_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /sources/ldap/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `sync_group_hierarchy` (boolean)
+        > Sync group parentage/hierarchy from LDAP directories.
+
+##### `PUT` /sources/ldap/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `sync_group_hierarchy` (boolean)
+    > Sync group parentage/hierarchy from LDAP directories.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `sync_group_hierarchy` (boolean)
+        > Sync group parentage/hierarchy from LDAP directories.
+
+##### `PATCH` /sources/ldap/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `sync_group_hierarchy` (boolean)
+    > Sync group parentage/hierarchy from LDAP directories.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `sync_group_hierarchy` (boolean)
+        > Sync group parentage/hierarchy from LDAP directories.
+
+##### `GET` /sources/ldap/&#123;slug&#125;/sync/status/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `last_sync_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /sources/oauth/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `request_token_url` (string)
+
+        > URL used to request the initial token. This URL is only required for OAuth 1.
+
+    - Changed property `authorization_url` (string)
+
+        > URL the user is redirect to to conest the flow.
+
+    - Changed property `access_token_url` (string)
+
+        > URL used by authentik to retrieve tokens.
+
+    - Changed property `profile_url` (string)
+
+        > URL used by authentik to get user information.
+
+    - Changed property `provider_type` (string)
+
+        Removed enum value:
+        - `azuread`
+
+##### `PUT` /sources/oauth/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `request_token_url` (string)
+
+    > URL used to request the initial token. This URL is only required for OAuth 1.
+
+- Changed property `authorization_url` (string)
+
+    > URL the user is redirect to to conest the flow.
+
+- Changed property `access_token_url` (string)
+
+    > URL used by authentik to retrieve tokens.
+
+- Changed property `profile_url` (string)
+
+    > URL used by authentik to get user information.
+
+- Changed property `provider_type` (string)
+
+    Removed enum value:
+    - `azuread`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `request_token_url` (string)
+
+        > URL used to request the initial token. This URL is only required for OAuth 1.
+
+    - Changed property `authorization_url` (string)
+
+        > URL the user is redirect to to conest the flow.
+
+    - Changed property `access_token_url` (string)
+
+        > URL used by authentik to retrieve tokens.
+
+    - Changed property `profile_url` (string)
+
+        > URL used by authentik to get user information.
+
+    - Changed property `provider_type` (string)
+
+        Removed enum value:
+        - `azuread`
+
+##### `PATCH` /sources/oauth/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `request_token_url` (string)
+
+    > URL used to request the initial token. This URL is only required for OAuth 1.
+
+- Changed property `authorization_url` (string)
+
+    > URL the user is redirect to to conest the flow.
+
+- Changed property `access_token_url` (string)
+
+    > URL used by authentik to retrieve tokens.
+
+- Changed property `profile_url` (string)
+
+    > URL used by authentik to get user information.
+
+- Changed property `provider_type` (string)
+
+    Removed enum value:
+    - `azuread`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `request_token_url` (string)
+
+        > URL used to request the initial token. This URL is only required for OAuth 1.
+
+    - Changed property `authorization_url` (string)
+
+        > URL the user is redirect to to conest the flow.
+
+    - Changed property `access_token_url` (string)
+
+        > URL used by authentik to retrieve tokens.
+
+    - Changed property `profile_url` (string)
+
+        > URL used by authentik to get user information.
+
+    - Changed property `provider_type` (string)
+
+        Removed enum value:
+        - `azuread`
+
+##### `GET` /sources/saml/&#123;slug&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `issuer_override` (string)
+
+        > Also known as Entity ID. Defaults to the Metadata URL.
+
+    * Added property `url_issuer` (string)
+
+        > Get the resolved Issuer, falling back to the metadata URL when unset
+
+    * Deleted property `issuer` (string)
+        > Also known as Entity ID. Defaults the Metadata URL.
+
+##### `PUT` /sources/saml/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `issuer_override` (string)
+
+    > Also known as Entity ID. Defaults to the Metadata URL.
+
+- Deleted property `issuer` (string)
+    > Also known as Entity ID. Defaults the Metadata URL.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `issuer_override` (string)
+
+        > Also known as Entity ID. Defaults to the Metadata URL.
+
+    * Added property `url_issuer` (string)
+
+        > Get the resolved Issuer, falling back to the metadata URL when unset
+
+    * Deleted property `issuer` (string)
+        > Also known as Entity ID. Defaults the Metadata URL.
+
+##### `PATCH` /sources/saml/&#123;slug&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `issuer_override` (string)
+
+    > Also known as Entity ID. Defaults to the Metadata URL.
+
+- Deleted property `issuer` (string)
+    > Also known as Entity ID. Defaults the Metadata URL.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `issuer_override` (string)
+
+        > Also known as Entity ID. Defaults to the Metadata URL.
+
+    * Added property `url_issuer` (string)
+
+        > Get the resolved Issuer, falling back to the metadata URL when unset
+
+    * Deleted property `issuer` (string)
+        > Also known as Entity ID. Defaults the Metadata URL.
+
+##### `GET` /tasks/schedules/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object):
+        - Changed property `last_task_status` (string)
+
+            Added enum value:
+            - `waiting_for_dependencies`
+
+##### `POST` /core/applications/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `pbm_uuid`
+    * Added property `pbm_uuid` (string)
+
+##### `GET` /core/applications/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Application Serializer
+
+        New required properties:
+        - `pbm_uuid`
+        * Added property `pbm_uuid` (string)
+
+##### `POST` /core/groups/
+
+##### `GET` /core/groups/
+
+##### `GET` /core/user_consent/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `application` (object)
+
+        > Application Serializer
+
+        New required properties:
+        - `pbm_uuid`
+        * Added property `pbm_uuid` (string)
+
+##### `POST` /core/users/
+
+##### `GET` /core/users/
+
+##### `GET` /core/users/me/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `users`
+    * Added property `users` (array)
+
+        Items (object): > User Serializer for information a user can retrieve about themselves
+        - Property `pk` (integer)
+
+        - Property `username` (string)
+
+            > Required. 150 characters or fewer. Letters, digits and @/./+/-/\_ only.
+
+        - Property `name` (string)
+
+            > User's display name.
+
+        - Property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        - Property `is_superuser` (boolean)
+
+        - Property `is_current` (boolean)
+
+            > Return whether this user owns the current browser session.
+
+        - Property `groups` (array)
+
+            Items (object):
+            - Property `name` (string)
+
+            - Property `pk` (string)
+
+        - Property `roles` (array)
+
+            Items (object):
+
+        - Property `email` (string)
+
+        - Property `avatar` (string)
+
+            > User's avatar, either a http/https URL or a data URI
+
+        - Property `uid` (string)
+
+        - Property `settings` (object)
+
+            > Get user settings with brand and group settings applied
+
+        - Property `type` (string)
+
+            Enum values:
+            - `internal`
+            - `external`
+            - `service_account`
+            - `internal_service_account`
+
+        - Property `system_permissions` (array)
+
+            > Get all system permissions assigned to the user
+
+            Items (string):
+
+    * Changed property `user` (object)
+
+        > User Serializer for information a user can retrieve about themselves
+
+        New required properties:
+        - `is_current`
+        * Added property `is_current` (boolean)
+            > Return whether this user owns the current browser session.
+
+##### `GET` /endpoints/devices/&#123;device_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `facts` (object)
+
+##### `PUT` /endpoints/devices/&#123;device_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `facts` (object)
+
+##### `PATCH` /endpoints/devices/&#123;device_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `facts` (object)
+
+##### `POST` /events/events/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `action` (string)
+
+    Added enum values:
+    - `user_offboarded`
+    - `access_request_created`
+    - `access_request_approved`
+    - `access_request_denied`
+    - `access_request_revoked`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+##### `GET` /events/events/
+
+###### Parameters:
+
+Changed: `actions` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Event Serializer
+        - Changed property `action` (string)
+
+            Added enum values:
+            - `user_offboarded`
+            - `access_request_created`
+            - `access_request_approved`
+            - `access_request_denied`
+            - `access_request_revoked`
+
+##### `GET` /events/notifications/&#123;uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `action` (string)
+
+            Added enum values:
+            - `user_offboarded`
+            - `access_request_created`
+            - `access_request_approved`
+            - `access_request_denied`
+            - `access_request_revoked`
+
+##### `PUT` /events/notifications/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `event` (object)
+
+    > Event Serializer
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `action` (string)
+
+            Added enum values:
+            - `user_offboarded`
+            - `access_request_created`
+            - `access_request_approved`
+            - `access_request_denied`
+            - `access_request_revoked`
+
+##### `PATCH` /events/notifications/&#123;uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `event` (object)
+
+    > Event Serializer
+    - Changed property `action` (string)
+
+        Added enum values:
+        - `user_offboarded`
+        - `access_request_created`
+        - `access_request_approved`
+        - `access_request_denied`
+        - `access_request_revoked`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `event` (object)
+
+        > Event Serializer
+        - Changed property `action` (string)
+
+            Added enum values:
+            - `user_offboarded`
+            - `access_request_created`
+            - `access_request_approved`
+            - `access_request_denied`
+            - `access_request_revoked`
+
+##### `GET` /lifecycle/iterations/open/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+        - Changed property `reviews` (array)
+
+            Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+            - Changed property `reviewer` (object)
+
+                > Partial User Serializer, does not include child relations.
+
+                New required properties:
+                - `uid`
+
+                New optional properties:
+                - `uuid`
+                * Added property `is_active` (boolean)
+
+                    > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+                * Added property `last_login` (string)
+
+                * Added property `email` (string)
+
+                * Added property `attributes` (object)
+
+                * Added property `uid` (string)
+
+                * Deleted property `uuid` (string)
+
+        - Changed property `rule` (object)
+
+            > Mixin to validate that a valid enterprise license
+            > exists before allowing to save the object
+            - Changed property `reviewer_groups` (array)
+
+                Changed items (object): > Partial Group Serializer, does not include child relations.
+
+                New required properties:
+                - `num_pk`
+                * Added property `num_pk` (integer)
+
+                    > Get a numerical, int32 ID for the group
+
+                * Added property `is_superuser` (boolean)
+
+                    > Users added to this group will be superusers.
+
+                * Added property `attributes` (object)
+
+            - Changed property `reviewers` (array)
+
+                Changed items (object): > Partial User Serializer, does not include child relations.
+
+                New required properties:
+                - `uid`
+
+                New optional properties:
+                - `uuid`
+                * Added property `is_active` (boolean)
+
+                    > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+                * Added property `last_login` (string)
+
+                * Added property `email` (string)
+
+                * Added property `attributes` (object)
+
+                * Added property `uid` (string)
+
+                * Deleted property `uuid` (string)
+
+##### `POST` /lifecycle/rules/
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `reviewer_groups_obj` (array)
+
+        Changed items (object): > Partial Group Serializer, does not include child relations.
+
+        New required properties:
+        - `num_pk`
+        * Added property `num_pk` (integer)
+
+            > Get a numerical, int32 ID for the group
+
+        * Added property `is_superuser` (boolean)
+
+            > Users added to this group will be superusers.
+
+        * Added property `attributes` (object)
+
+    - Changed property `reviewers_obj` (array)
+
+        Changed items (object): > Partial User Serializer, does not include child relations.
+
+        New required properties:
+        - `uid`
+
+        New optional properties:
+        - `uuid`
+        * Added property `is_active` (boolean)
+
+            > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+        * Added property `last_login` (string)
+
+        * Added property `email` (string)
+
+        * Added property `attributes` (object)
+
+        * Added property `uid` (string)
+
+        * Deleted property `uuid` (string)
+
+##### `GET` /lifecycle/rules/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Mixin to validate that a valid enterprise license > exists before allowing to save the object
+        - Changed property `reviewer_groups_obj` (array)
+
+            Changed items (object): > Partial Group Serializer, does not include child relations.
+
+            New required properties:
+            - `num_pk`
+            * Added property `num_pk` (integer)
+
+                > Get a numerical, int32 ID for the group
+
+            * Added property `is_superuser` (boolean)
+
+                > Users added to this group will be superusers.
+
+            * Added property `attributes` (object)
+
+        - Changed property `reviewers_obj` (array)
+
+            Changed items (object): > Partial User Serializer, does not include child relations.
+
+            New required properties:
+            - `uid`
+
+            New optional properties:
+            - `uuid`
+            * Added property `is_active` (boolean)
+
+                > Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+
+            * Added property `last_login` (string)
+
+            * Added property `email` (string)
+
+            * Added property `attributes` (object)
+
+            * Added property `uid` (string)
+
+            * Deleted property `uuid` (string)
+
+##### `GET` /outposts/ldap/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > LDAPProvider Serializer
+        - Changed property `application_slug` (string)
+            > Prioritize backchannel slug over direct application slug
+
+##### `POST` /providers/google_workspace/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `GET` /providers/google_workspace/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > GoogleWorkspaceProvider Serializer
+        - Added property `discovery_enabled` (boolean)
+            > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `POST` /providers/microsoft_entra/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `GET` /providers/microsoft_entra/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > MicrosoftEntraProvider Serializer
+        - Added property `discovery_enabled` (boolean)
+            > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+##### `GET` /providers/oauth2/&#123;id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `grant_types` (array)
+
+        Changed items (string):
+
+        Added enum value:
+        - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+##### `PUT` /providers/oauth2/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `grant_types` (array)
+
+    Changed items (string):
+
+    Added enum value:
+    - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `grant_types` (array)
+
+        Changed items (string):
+
+        Added enum value:
+        - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+##### `PATCH` /providers/oauth2/&#123;id&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `grant_types` (array)
+
+    Changed items (string):
+
+    Added enum value:
+    - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `grant_types` (array)
+
+        Changed items (string):
+
+        Added enum value:
+        - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+##### `POST` /providers/scim/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `discovery_enabled` (boolean)
+
+    > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+- Changed property `compatibility_mode` (string)
+
+    > Alter authentik behavior for vendor-specific SCIM implementations.
+
+    Added enum value:
+    - `gitlab`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `discovery_enabled` (boolean)
+
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    - Changed property `compatibility_mode` (string)
+
+        > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Added enum value:
+        - `gitlab`
+
+##### `GET` /providers/scim/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > SCIMProvider Serializer
+        - Added property `discovery_enabled` (boolean)
+
+            > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+        - Changed property `compatibility_mode` (string)
+
+            > Alter authentik behavior for vendor-specific SCIM implementations.
+
+            Added enum value:
+            - `gitlab`
+
+##### `POST` /providers/wsfed/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `saml_version` (object)
+    > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `saml_version` (object)
+
+        > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+    * Added property `url_issuer` (string)
+        > Get Issuer/EntityID URL
+
+##### `GET` /providers/wsfed/
+
+###### Parameters:
+
+Added: `saml_version` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > WSFederationProvider Serializer
+
+        New required properties:
+        - `url_issuer`
+        * Added property `saml_version` (object)
+
+            > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+        * Added property `url_issuer` (string)
+            > Get Issuer/EntityID URL
+
+##### `POST` /sources/ldap/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `sync_group_hierarchy` (boolean)
+    > Sync group parentage/hierarchy from LDAP directories.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `sync_group_hierarchy` (boolean)
+        > Sync group parentage/hierarchy from LDAP directories.
+
+##### `GET` /sources/ldap/
+
+###### Parameters:
+
+Added: `sync_group_hierarchy` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > LDAP Source Serializer
+        - Added property `sync_group_hierarchy` (boolean)
+            > Sync group parentage/hierarchy from LDAP directories.
+
+##### `POST` /sources/oauth/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `request_token_url` (string)
+
+    > URL used to request the initial token. This URL is only required for OAuth 1.
+
+- Changed property `authorization_url` (string)
+
+    > URL the user is redirect to to conest the flow.
+
+- Changed property `access_token_url` (string)
+
+    > URL used by authentik to retrieve tokens.
+
+- Changed property `profile_url` (string)
+
+    > URL used by authentik to get user information.
+
+- Changed property `provider_type` (string)
+
+    Removed enum value:
+    - `azuread`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `request_token_url` (string)
+
+        > URL used to request the initial token. This URL is only required for OAuth 1.
+
+    - Changed property `authorization_url` (string)
+
+        > URL the user is redirect to to conest the flow.
+
+    - Changed property `access_token_url` (string)
+
+        > URL used by authentik to retrieve tokens.
+
+    - Changed property `profile_url` (string)
+
+        > URL used by authentik to get user information.
+
+    - Changed property `provider_type` (string)
+
+        Removed enum value:
+        - `azuread`
+
+##### `GET` /sources/oauth/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > OAuth Source Serializer
+        - Changed property `request_token_url` (string)
+
+            > URL used to request the initial token. This URL is only required for OAuth 1.
+
+        - Changed property `authorization_url` (string)
+
+            > URL the user is redirect to to conest the flow.
+
+        - Changed property `access_token_url` (string)
+
+            > URL used by authentik to retrieve tokens.
+
+        - Changed property `profile_url` (string)
+
+            > URL used by authentik to get user information.
+
+        - Changed property `provider_type` (string)
+
+            Removed enum value:
+            - `azuread`
+
+##### `POST` /sources/saml/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `issuer_override` (string)
+
+    > Also known as Entity ID. Defaults to the Metadata URL.
+
+- Deleted property `issuer` (string)
+    > Also known as Entity ID. Defaults the Metadata URL.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+
+    New required properties:
+    - `url_issuer`
+    * Added property `issuer_override` (string)
+
+        > Also known as Entity ID. Defaults to the Metadata URL.
+
+    * Added property `url_issuer` (string)
+
+        > Get the resolved Issuer, falling back to the metadata URL when unset
+
+    * Deleted property `issuer` (string)
+        > Also known as Entity ID. Defaults the Metadata URL.
+
+##### `GET` /sources/saml/
+
+###### Parameters:
+
+Added: `issuer_override` in `query`
+
+Deleted: `issuer` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > SAMLSource Serializer
+
+        New required properties:
+        - `url_issuer`
+        * Added property `issuer_override` (string)
+
+            > Also known as Entity ID. Defaults to the Metadata URL.
+
+        * Added property `url_issuer` (string)
+
+            > Get the resolved Issuer, falling back to the metadata URL when unset
+
+        * Deleted property `issuer` (string)
+            > Also known as Entity ID. Defaults the Metadata URL.
+
+##### `GET` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Deleted property `prevent_duplicate_devices` (boolean)
+        > When enabled, a given device can only be registered once.
+
+##### `PUT` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Deleted property `prevent_duplicate_devices` (boolean)
+    > When enabled, a given device can only be registered once.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Deleted property `prevent_duplicate_devices` (boolean)
+        > When enabled, a given device can only be registered once.
+
+##### `PATCH` /stages/authenticator/webauthn/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Deleted property `prevent_duplicate_devices` (boolean)
+    > When enabled, a given device can only be registered once.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Deleted property `prevent_duplicate_devices` (boolean)
+        > When enabled, a given device can only be registered once.
+
+##### `GET` /stages/captcha/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `request_content_type` (string)
+
+        Enum values:
+        - `application/x-www-form-urlencoded`
+        - `application/json`
+
+##### `PUT` /stages/captcha/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `request_content_type` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `request_content_type` (string)
+
+##### `PATCH` /stages/captcha/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `request_content_type` (string)
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `request_content_type` (string)
+
+##### `GET` /stages/source/&#123;stage_uuid&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `resume_on_match_failures` (array)
+
+        > Source matching failure reasons for which the flow should resume.
+
+        Items (string):
+
+        Enum value:
+        - `missing_property`
+
+##### `PUT` /stages/source/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `resume_on_match_failures` (array)
+    > Source matching failure reasons for which the flow should resume.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `resume_on_match_failures` (array)
+        > Source matching failure reasons for which the flow should resume.
+
+##### `PATCH` /stages/source/&#123;stage_uuid&#125;/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `resume_on_match_failures` (array)
+    > Source matching failure reasons for which the flow should resume.
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Added property `resume_on_match_failures` (array)
+        > Source matching failure reasons for which the flow should resume.
+
+##### `GET` /tasks/tasks/&#123;message_id&#125;/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `state` (string)
+
+        > Task status
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+    - Changed property `aggregated_status` (string)
+
+        Added enum value:
+        - `waiting_for_dependencies`
+
+##### `GET` /core/user_consent/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > UserConsent Serializer
+        - Changed property `application` (object)
+
+            > Application Serializer
+
+            New required properties:
+            - `pbm_uuid`
+            * Added property `pbm_uuid` (string)
+
+##### `GET` /endpoints/devices/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object):
+        - Changed property `facts` (object)
+
+##### `GET` /events/notifications/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > Notification Serializer
+        - Changed property `event` (object)
+
+            > Event Serializer
+            - Changed property `action` (string)
+
+                Added enum values:
+                - `user_offboarded`
+                - `access_request_created`
+                - `access_request_approved`
+                - `access_request_denied`
+                - `access_request_revoked`
+
+##### `POST` /providers/oauth2/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `grant_types` (array)
+
+    Changed items (string):
+
+    Added enum value:
+    - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Changed property `grant_types` (array)
+
+        Changed items (string):
+
+        Added enum value:
+        - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+##### `GET` /providers/oauth2/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > OAuth2Provider Serializer
+        - Changed property `grant_types` (array)
+
+            Changed items (string):
+
+            Added enum value:
+            - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+##### `POST` /stages/authenticator/webauthn/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Deleted property `prevent_duplicate_devices` (boolean)
+    > When enabled, a given device can only be registered once.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Deleted property `prevent_duplicate_devices` (boolean)
+        > When enabled, a given device can only be registered once.
+
+##### `GET` /stages/authenticator/webauthn/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > AuthenticatorWebAuthnStage Serializer
+        - Deleted property `prevent_duplicate_devices` (boolean)
+            > When enabled, a given device can only be registered once.
+
+##### `POST` /stages/captcha/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `request_content_type` (string)
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `request_content_type` (string)
+
+##### `GET` /stages/captcha/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > CaptchaStage Serializer
+        - Added property `request_content_type` (string)
+
+##### `POST` /stages/source/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Added property `resume_on_match_failures` (array)
+    > Source matching failure reasons for which the flow should resume.
+
+###### Return Type:
+
+Changed response : **201 Created**
+
+- Changed content type : `application/json`
+    - Added property `resume_on_match_failures` (array)
+        > Source matching failure reasons for which the flow should resume.
+
+##### `GET` /stages/source/
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object): > SourceStage Serializer
+        - Added property `resume_on_match_failures` (array)
+            > Source matching failure reasons for which the flow should resume.
+
+##### `GET` /tasks/tasks/
+
+###### Parameters:
+
+Changed: `state` in `query`
+
+Changed: `aggregated_status` in `query`
+
+###### Return Type:
+
+Changed response : **200 OK**
+
+- Changed content type : `application/json`
+    - Changed property `results` (array)
+
+        Changed items (object):
+        - Changed property `state` (string)
+
+            > Task status
+
+            Added enum value:
+            - `waiting_for_dependencies`
+
+        - Changed property `aggregated_status` (string)
+
+            Added enum value:
+            - `waiting_for_dependencies`
+
+##### `PUT` /core/transactional/applications/
+
+###### Request:
+
+Changed content type : `application/json`
+
+- Changed property `provider` (object)
+
+    Updated `authentik_providers_microsoft_entra.microsoftentraprovider` provider_model:
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    Updated `authentik_providers_google_workspace.googleworkspaceprovider` provider_model:
+    - Added property `discovery_enabled` (boolean)
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    Updated `authentik_providers_scim.scimprovider` provider_model:
+    - Added property `discovery_enabled` (boolean)
+
+        > When enabled, authentik will attempt to discover existing resources in the remote system.
+
+    - Changed property `compatibility_mode` (string) > Alter authentik behavior for vendor-specific SCIM implementations.
+
+        Updated `authentik_providers_ws_federation.wsfederationprovider` provider_model:
+
+    - Added property `saml_version` (object)
+        > SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
+    Updated `authentik_providers_oauth2.oauth2provider` provider_model:
+    - Changed property `grant_types` (array)
+
+        Changed items (string):
+
+        Added enum value:
+        - `urn:ietf:params:oauth:grant-type:token-exchange`
+
+#### Result
+
+---
+
+API changes broke backward compatibility

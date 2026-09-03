@@ -25,20 +25,14 @@ import { SSFStreamFromJSON, SSFStreamToJSON } from "./SSFStream";
 export interface PaginatedSSFStreamList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSSFStreamList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SSFStream>}
-     * @memberof PaginatedSSFStreamList
      */
     results: Array<SSFStream>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSSFStreamList
      */
     autocomplete: { [key: string]: any };
 }

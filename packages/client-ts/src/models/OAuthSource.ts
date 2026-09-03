@@ -43,212 +43,142 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface OAuthSource {
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof OAuthSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof OAuthSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof OAuthSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof OAuthSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof OAuthSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof OAuthSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuthSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof OAuthSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof OAuthSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof OAuthSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly iconUrl: string | null;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof OAuthSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof OAuthSource
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      *
-     * @type {ProviderTypeEnum}
-     * @memberof OAuthSource
      */
     providerType: ProviderTypeEnum;
     /**
      * URL used to request the initial token. This URL is only required for OAuth 1.
-     * @type {string}
-     * @memberof OAuthSource
      */
     requestTokenUrl?: string | null;
     /**
      * URL the user is redirect to to conest the flow.
-     * @type {string}
-     * @memberof OAuthSource
      */
     authorizationUrl?: string | null;
     /**
      * URL used by authentik to retrieve tokens.
-     * @type {string}
-     * @memberof OAuthSource
      */
     accessTokenUrl?: string | null;
     /**
      * URL used by authentik to get user information.
-     * @type {string}
-     * @memberof OAuthSource
      */
     profileUrl?: string | null;
     /**
      *
-     * @type {PKCEMethodEnum}
-     * @memberof OAuthSource
      */
     pkce?: PKCEMethodEnum;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     consumerKey: string;
     /**
      * Get OAuth Callback URL
-     * @type {string}
-     * @memberof OAuthSource
      */
     readonly callbackUrl: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     additionalScopes?: string;
     /**
      *
-     * @type {SourceType}
-     * @memberof OAuthSource
      */
     readonly type: SourceType;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     oidcWellKnownUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof OAuthSource
      */
     oidcJwksUrl?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof OAuthSource
      */
     oidcJwks?: { [key: string]: any };
     /**
      * How to perform authentication during an authorization_code token request flow
-     * @type {AuthorizationCodeAuthMethodEnum}
-     * @memberof OAuthSource
      */
     authorizationCodeAuthMethod?: AuthorizationCodeAuthMethodEnum;
 }

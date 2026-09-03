@@ -20,8 +20,6 @@
 export interface UserDeleteStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserDeleteStageRequest
      */
     name: string;
 }

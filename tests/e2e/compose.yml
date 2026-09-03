@@ -1,6 +1,6 @@
 services:
   chromium:
-    image: ghcr.io/goauthentik/selenium:150.0-ak-0.50.5
+    image: ghcr.io/goauthentik/selenium:151.0-ak-0.61.0@sha256:41ee5470968ea8d565ae4ea73eda4b271b8b9c51c7ee4bb1c1b9e49119bbf358
     shm_size: 2g
     network_mode: host
     restart: always
@@ -13,7 +13,7 @@ services:
     environment:
       VIDEO_READY_PORT: 9912
   mailpit:
-    image: docker.io/axllent/mailpit:v1.30.6
+    image: docker.io/axllent/mailpit:v1.31.0
     ports:
       - 1025:1025
       - 8025:8025

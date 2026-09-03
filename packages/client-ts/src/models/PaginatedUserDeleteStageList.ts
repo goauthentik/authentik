@@ -25,20 +25,14 @@ import { UserDeleteStageFromJSON, UserDeleteStageToJSON } from "./UserDeleteStag
 export interface PaginatedUserDeleteStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserDeleteStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserDeleteStage>}
-     * @memberof PaginatedUserDeleteStageList
      */
     results: Array<UserDeleteStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserDeleteStageList
      */
     autocomplete: { [key: string]: any };
 }

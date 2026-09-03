@@ -2126,10 +2126,6 @@
   <source>Selected Property Mappings</source>
   <target>Избрани съпоставяния на свойства</target>
 </trans-unit>
-<trans-unit id="s9b6bf63fddc7362f">
-  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
-  <target>Списък с CIDR (разделени със запетая), от които клиентите могат да се свързват. По-специфичен CIDR ще съвпадне преди по-широк. Клиентите, свързващи се от непосочен CIDR, ще бъдат отхвърлени.</target>
-</trans-unit>
 <trans-unit id="sb95baab425322600">
   <source>Shared secret</source>
   <target>Споделена тайна</target>
@@ -4003,7 +3999,7 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
+  <source><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></source>
   <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
@@ -6659,10 +6655,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", от тип <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>Показва произволни входни полета на потребителя, например по време на регистрация. Данните се записват в контекста на потока под променливата 'prompt_data'.</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>Полета</target>
@@ -8796,14 +8788,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
   <target>Чрез <x id="0" equiv-text="${event.context.device.name}"/></target>
 </trans-unit>
-<trans-unit id="s0b7ddc0168e79ea2">
-  <source>Failed to fetch files</source>
-  <target>Неуспешно извличане на файлове</target>
-</trans-unit>
-<trans-unit id="sdc4f1cfd587212b4">
-  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
-  <target>Можете също да въведете URL (https://...), Font Awesome икона (fa://fa-icon-name) или да качите нов файл.</target>
-</trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
   <target>Изберете от качените файлове или въведете Font Awesome икона (fa://fa-icon-name) или URL.</target>
@@ -8876,22 +8860,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>If no device was provided, this stage will stop flow execution.</source>
   <target>Ако не е предоставено устройство, тази стъпка ще спре изпълнението на потока.</target>
 </trans-unit>
-<trans-unit id="s3a3d5b2575cd32ea">
-  <source>File uploaded successfully</source>
-  <target>Файлът е качен успешно</target>
-</trans-unit>
-<trans-unit id="sd3775ef947e0de32">
-  <source>File Name</source>
-  <target>Име на файл</target>
-</trans-unit>
-<trans-unit id="s1afc99a84a890514">
-  <source>Type an optional custom file name...</source>
-  <target>Въведете незадължително персонализирано име на файл...</target>
-</trans-unit>
-<trans-unit id="sb40e2763045466ea">
-  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
-  <target>По избор преименувайте файла (без разширение). Оставете празно, за да запазите оригиналното име на файла.</target>
-</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
   <target>Файлове</target>
@@ -8911,10 +8879,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
   <target>Качи</target>
-</trans-unit>
-<trans-unit id="sa32e9d0a108ee802">
-  <source>Upload File</source>
-  <target>Качи файл</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
@@ -9135,14 +9099,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
   <target>Добави нова роля</target>
-</trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>Опресни другите раздели за поток при автентикация</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>Когато е активирано, другите раздели за поток в сесията ще се опреснят при успешна автентикация.</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
@@ -9624,10 +9580,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Paste your CAPTCHA secret key...</source>
   <target>Поставете тайния си CAPTCHA ключ...</target>
 </trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
-  <target>Име на стъпка</target>
-</trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
   <target>Въведете име на стъпка...</target>
@@ -9705,10 +9657,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>API ключове могат да бъдат получени от
                         <x id="0" equiv-text="${html `&lt;a target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot; href=${keyURL}                                 &gt;${formatAPISource()}&lt;/a                             &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
-</trans-unit>
-<trans-unit id="s87f858ca3c8e5579">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
-  <target>Името на файла може да съдържа само букви, цифри, точки, тирета, долни черти, наклонени черти и заместителя %(theme)s</target>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
   <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
@@ -10281,10 +10229,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
   <target>Вижте документацията за правилата за път и имена, отчитащи темата.</target>
-</trans-unit>
-<trans-unit id="s7e9afe092ef50353">
-  <source>See documentation for supported values.</source>
-  <target>Вижте документацията за поддържаните стойности.</target>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
@@ -11776,9 +11720,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s5ba577d0cda2bad2">
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
 </trans-unit>
@@ -11862,9 +11803,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s41938ae69656ef53">
   <source>User Fields</source>
-</trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
 </trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
@@ -13050,6 +12988,66 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="agent.page.description">
   <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
+</trans-unit>
+<trans-unit id="s46eb6cf13a8022e9">
+  <source>Select File</source>
+</trans-unit>
+<trans-unit id="s0d1ed094b601e76d">
+  <source>Type an optional file name without an extension...</source>
+</trans-unit>
+<trans-unit id="s384efdec2b99d471">
+  <source>Custom Name</source>
+</trans-unit>
+<trans-unit id="sd749d80c570a0d0e">
+  <source>Leave empty to keep the original filename.</source>
+</trans-unit>
+<trans-unit id="s1ea1d3a777930fd3">
+  <source>List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+</trans-unit>
+<trans-unit id="file-picker.upload-link.label">
+  <source>Upload file</source>
+</trans-unit>
+<trans-unit id="file-picker.value.placeholder">
+  <source>Select a file or enter a value...</source>
+</trans-unit>
+<trans-unit id="file-picker.value.description">
+  <source>Choose an existing file, or enter a URL or Font Awesome icon.</source>
+</trans-unit>
+<trans-unit id="file-picker.documentation-link.label">
+  <source>Supported values</source>
+</trans-unit>
+<trans-unit id="file.name.validation.html">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as code elements.</note>
+</trans-unit>
+<trans-unit id="file.name.validation.plaintext">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
+</trans-unit>
+<trans-unit id="sdcded316146a0b76">
+  <source>Object Attributes are in preview.</source>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.label">
+  <source>Resume on matching failures</source>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.description">
+  <source>Resume this flow for the selected source matching failures. No source connection is created.</source>
+</trans-unit>
+<trans-unit id="stages.source.match-failure.missing-property.label">
+  <source>Missing property</source>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
 </trans-unit>
 </body>
 </file>

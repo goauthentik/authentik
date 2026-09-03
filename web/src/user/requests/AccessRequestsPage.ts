@@ -13,13 +13,14 @@ import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
 import { paramURL } from "#elements/router/RouterOutlet";
 import { SlottedTemplateResult } from "#elements/types";
 
+import { AccessRequestFulfillForm } from "#user/requests/AccessRequestFulfillForm";
 import Styles from "#user/user-settings/styles.css";
 
 import { GrantRequest, RequestsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { CSSResult, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { CSSResult, html, nothing, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -32,12 +33,30 @@ export class AccessRequestsPage extends AKElement {
     @state()
     toReview?: PaginatedResponse<GrantRequest>;
 
+    @property({ attribute: "request-to-fulfill" })
+    requestToFulfill: string | null = null;
+
     override async connectedCallback(): Promise<void> {
         super.connectedCallback();
         try {
             this.toReview = await aki(RequestsApi).requestsGrantRequestsPendingReviewList({});
         } catch (error) {
             showAPIErrorMessage(error);
+        }
+    }
+
+    protected updated(changedProperties: PropertyValues): void {
+        super.updated(changedProperties);
+        if (changedProperties.has("requestToFulfill") && this.requestToFulfill !== null) {
+            aki(RequestsApi)
+                .requestsGrantRequestsRetrieve({
+                    uuid: this.requestToFulfill,
+                })
+                .then((req) => {
+                    const form = new AccessRequestFulfillForm();
+                    form.request = req;
+                    form.showModal();
+                });
         }
     }
 

@@ -23,32 +23,22 @@ import { SeverityEnumFromJSON, SeverityEnumToJSON } from "./SeverityEnum";
 export interface PatchedNotificationRuleRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedNotificationRuleRequest
      */
     name?: string;
     /**
      * Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.
-     * @type {Array<string>}
-     * @memberof PatchedNotificationRuleRequest
      */
     transports?: Array<string>;
     /**
      * Controls which severity level the created notifications will have.
-     * @type {SeverityEnum}
-     * @memberof PatchedNotificationRuleRequest
      */
     severity?: SeverityEnum;
     /**
      * Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.
-     * @type {string}
-     * @memberof PatchedNotificationRuleRequest
      */
     destinationGroup?: string | null;
     /**
      * When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both.
-     * @type {boolean}
-     * @memberof PatchedNotificationRuleRequest
      */
     destinationEventUser?: boolean;
 }

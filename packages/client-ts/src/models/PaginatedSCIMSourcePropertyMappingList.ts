@@ -28,20 +28,14 @@ import {
 export interface PaginatedSCIMSourcePropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SCIMSourcePropertyMapping>}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
      */
     results: Array<SCIMSourcePropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMSourcePropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

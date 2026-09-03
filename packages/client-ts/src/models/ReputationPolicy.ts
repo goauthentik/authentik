@@ -20,68 +20,46 @@
 export interface ReputationPolicy {
     /**
      *
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ReputationPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     checkIp?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     checkUsername?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof ReputationPolicy
      */
     threshold?: number;
 }

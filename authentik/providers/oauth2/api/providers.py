@@ -4,7 +4,7 @@ from copy import copy
 from re import compile
 from re import error as RegexError
 
-from django.urls import NoReverseMatch, reverse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
@@ -95,7 +95,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
@@ -185,16 +185,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                     kwargs={"application_slug": provider.application.slug},
                 )
             )
-            try:
-                data["dcr_registration"] = request.build_absolute_uri(
-                    reverse(
-                        "authentik_enterprise_providers_oauth2:dynamic-client-registration",
-                        kwargs={"application_slug": provider.application.slug},
-                    )
+            data["dcr_registration"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
+                    kwargs={"application_slug": provider.application.slug},
                 )
-            except NoReverseMatch:
-                # No reverse match if enterprise is not available
-                data["dcr_registration"] = None
+            )
         except Provider.application.RelatedObjectDoesNotExist:
             pass
         return Response(data)

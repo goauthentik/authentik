@@ -2125,10 +2125,6 @@
   <source>Selected Property Mappings</source>
   <target>নির্বাচিত প্রপার্টি ম্যাপিং</target>
 </trans-unit>
-<trans-unit id="s9b6bf63fddc7362f">
-  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
-  <target>যে CIDR (কমা-বিভক্ত) থেকে ক্লায়েন্ট সংযোগ করতে পারবে তার তালিকা। একটি আরও নির্দিষ্ট CIDR একটি সাধারণ CIDR-এর আগে মিলবে। অনির্দিষ্ট CIDR থেকে সংযোগকারী ক্লায়েন্টদের বাদ দেওয়া হবে।</target>
-</trans-unit>
 <trans-unit id="sb95baab425322600">
   <source>Shared secret</source>
   <target>শেয়ার্ড সিক্রেট</target>
@@ -4002,8 +3998,8 @@ doesn&apos;t pass when either or both of the selected options are equal or above
   <target>CPU</target>
 </trans-unit>
 <trans-unit id="sa10af889ecd36687">
-  <source><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></source>
-  <target><x id="0" equiv-text="${this.device?.facts.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts.data.hardware?.cpuName}"/></target>
+  <source><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></source>
+  <target><x id="0" equiv-text="${this.device?.facts?.data.hardware?.cpuCount}"/> x <x id="1" equiv-text="${this.device?.facts?.data.hardware?.cpuName}"/></target>
 </trans-unit>
 <trans-unit id="s16e1bead7b9c95ce">
   <source>Memory</source>
@@ -8796,14 +8792,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Via <x id="0" equiv-text="${event.context.device.name}"/></source>
   <target><x id="0" equiv-text="${event.context.device.name}"/>-এর মাধ্যমে</target>
 </trans-unit>
-<trans-unit id="s0b7ddc0168e79ea2">
-  <source>Failed to fetch files</source>
-  <target>ফাইল আনতে ব্যর্থ হয়েছে</target>
-</trans-unit>
-<trans-unit id="sdc4f1cfd587212b4">
-  <source>You can also enter a URL (https://...), Font Awesome icon (fa://fa-icon-name), or upload a new file.</source>
-  <target>আপনি একটি URL (https://...), Font Awesome আইকন (fa://fa-icon-name) লিখতে পারেন, অথবা একটি নতুন ফাইল আপলোড করতে পারেন।</target>
-</trans-unit>
 <trans-unit id="s8015ac3b47172dc8">
   <source>Select from uploaded files, or type a Font Awesome icon (fa://fa-icon-name) or URL.</source>
   <target>আপলোড করা ফাইল থেকে নির্বাচন করুন, অথবা একটি Font Awesome আইকন (fa://fa-icon-name) অথবা URL লিখুন।</target>
@@ -8876,22 +8864,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>If no device was provided, this stage will stop flow execution.</source>
   <target>কোনো ডিভাইস প্রদান না করা হলে, এই স্টেজটি ফ্লো এক্সিকিউশন বন্ধ করবে।</target>
 </trans-unit>
-<trans-unit id="s3a3d5b2575cd32ea">
-  <source>File uploaded successfully</source>
-  <target>ফাইল সফলভাবে আপলোড করা হয়েছে</target>
-</trans-unit>
-<trans-unit id="sd3775ef947e0de32">
-  <source>File Name</source>
-  <target>ফাইলের নাম</target>
-</trans-unit>
-<trans-unit id="s1afc99a84a890514">
-  <source>Type an optional custom file name...</source>
-  <target>একটি ঐচ্ছিক কাস্টম ফাইলের নাম লিখুন...</target>
-</trans-unit>
-<trans-unit id="sb40e2763045466ea">
-  <source>Optionally rename the file (without extension). Leave empty to keep the original filename.</source>
-  <target>ঐচ্ছিকভাবে ফাইলের নাম পরিবর্তন করুন (এক্সটেনশন ছাড়া)। মূল ফাইলের নাম রাখতে ফাঁকা রাখুন।</target>
-</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
   <target>ফাইলসমূহ</target>
@@ -8911,10 +8883,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s96668830629e0dfc">
   <source>Upload</source>
   <target>আপলোড করুন</target>
-</trans-unit>
-<trans-unit id="sa32e9d0a108ee802">
-  <source>Upload File</source>
-  <target>ফাইল আপলোড করুন</target>
 </trans-unit>
 <trans-unit id="s95094b57684716a5">
   <source>Failed to validate device.</source>
@@ -9135,14 +9103,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sbf5a46ac69b2ca56">
   <source>Add new role</source>
   <target>নতুন রোল যোগ করুন</target>
-</trans-unit>
-<trans-unit id="s8aa73079812f56b2">
-  <source>Refresh other flow tabs upon authentication</source>
-  <target>প্রমাণীকরণের পর অন্যান্য ফ্লো ট্যাব রিফ্রেশ করুন</target>
-</trans-unit>
-<trans-unit id="s696386b762cd516c">
-  <source>When enabled, other flow tabs in a session will refresh upon a successful authentication.</source>
-  <target>সক্রিয় করা থাকলে, একটি সেশনের অন্যান্য ফ্লো ট্যাব সফল প্রমাণীকরণের পর রিফ্রেশ হবে।</target>
 </trans-unit>
 <trans-unit id="s1af2337b6d11d4c6">
   <source>Data export ready</source>
@@ -9710,10 +9670,6 @@ Bindings to groups/users are checked against the user of the event.</source>
                                                 &gt;${formatAPISource()}&lt;/a
                                             &gt;.`}"/></target>
   <note from="lit-localize">Supplementary help text with link to provider dashboard.</note>
-</trans-unit>
-<trans-unit id="s87f858ca3c8e5579">
-  <source>Filename can only contain letters, numbers, dots, hyphens, underscores, slashes, and the placeholder %(theme)s</source>
-  <target>ফাইলের নামে শুধুমাত্র অক্ষর, সংখ্যা, ডট, হাইফেন, আন্ডারস্কোর, স্ল্যাশ, এবং প্লেসহোল্ডার %(theme)s থাকতে পারে</target>
 </trans-unit>
 <trans-unit id="s3934affe32f6a454">
   <source><x id="0" equiv-text="${availableCount}"/> item marked to add.</source>
@@ -10286,10 +10242,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s9e6f66c5246f0e8e">
   <source>See documentation for path rules and theme-aware names.</source>
   <target>পাথ রুল এবং থিম-অ্যাওয়্যার নামের জন্য ডকুমেন্টেশন দেখুন।</target>
-</trans-unit>
-<trans-unit id="s7e9afe092ef50353">
-  <source>See documentation for supported values.</source>
-  <target>সমর্থিত মানের জন্য ডকুমেন্টেশন দেখুন।</target>
 </trans-unit>
 <trans-unit id="sc0fccaeebcecbc47">
   <source>No assertion was returned by the authenticator</source>
@@ -11929,10 +11881,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Fields</source>
   <target>ইউজার ফিল্ড</target>
 </trans-unit>
-<trans-unit id="s02b73793e5b4e1ba">
-  <source>This flag is deprecated.</source>
-  <target>এই ফ্ল্যাগটি ডেপ্রিকেটেড।</target>
-</trans-unit>
 <trans-unit id="sc98037ccab57d329">
   <source>No preference: the browser may offer any available authenticator</source>
   <target>কোনো পছন্দ নেই: ব্রাউজার যেকোনো উপলব্ধ অথেন্টিকেটর প্রস্তাব করতে পারে</target>
@@ -13331,6 +13279,252 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="scf0457b46d32a983">
   <source>Bind an existing request rule to this object.</source>
   <target>এই অবজেক্টের সাথে একটি বিদ্যমান রিকোয়েস্ট নিয়ম যুক্ত করুন।</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.label">
+  <source>Mirror</source>
+  <target>মিরর</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.mirror.description">
+  <source>The agent has exactly the parent user&apos;s access, evaluated live.</source>
+  <target>এজেন্টটির অ্যাক্সেস ঠিক প্যারেন্ট ব্যবহারকারীর মতোই থাকে, যা লাইভ মূল্যায়ন করা হয়।</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.label">
+  <source>Copy</source>
+  <target>কপি</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.copy.description">
+  <source>Copy the parent&apos;s policy bindings onto the agent.</source>
+  <target>প্যারেন্টের পলিসি বাইন্ডিংগুলো এজেন্টে কপি করুন।</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.label">
+  <source>None</source>
+  <target>কোনোটি নয়</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.none.description">
+  <source>The agent uses only its own policy bindings.</source>
+  <target>এজেন্টটি শুধুমাত্র নিজস্ব পলিসি বাইন্ডিং ব্যবহার করে।</target>
+</trans-unit>
+<trans-unit id="s95416925fd51a346">
+  <source>Agent</source>
+  <target>এজেন্ট</target>
+</trans-unit>
+<trans-unit id="sefc8e08d71b8530f">
+  <source>Agents</source>
+  <target>এজেন্টসমূহ</target>
+</trans-unit>
+<trans-unit id="agent.form.close.label">
+  <source>Close</source>
+  <target>বন্ধ করুন</target>
+</trans-unit>
+<trans-unit id="s3687e4f7ae814ce1">
+  <source>Successfully created agent.</source>
+  <target>এজেন্ট সফলভাবে তৈরি করা হয়েছে।</target>
+</trans-unit>
+<trans-unit id="s725865ad04deb9d4">
+  <source>Parent user</source>
+  <target>প্যারেন্ট ব্যবহারকারী</target>
+</trans-unit>
+<trans-unit id="sb4e8961d5ee9a6df">
+  <source>The user this agent acts on behalf of.</source>
+  <target>যে ব্যবহারকারীর পক্ষে এই এজেন্টটি কাজ করে।</target>
+</trans-unit>
+<trans-unit id="s41a70d75feb46cd2">
+  <source>Optional display name. Defaults to the parent user&apos;s name.</source>
+  <target>ঐচ্ছিক ডিসপ্লে নাম। ডিফল্টভাবে প্যারেন্ট ব্যবহারকারীর নাম ব্যবহৃত হবে।</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.label">
+  <source>Policy behavior</source>
+  <target>পলিসি আচরণ</target>
+</trans-unit>
+<trans-unit id="agent.policy-behavior.help">
+  <source>How the agent&apos;s access relates to its parent user.</source>
+  <target>এজেন্টের অ্যাক্সেস তার প্যারেন্ট ব্যবহারকারীর সাথে কীভাবে সম্পর্কিত তা নির্ধারণ করে।</target>
+</trans-unit>
+<trans-unit id="se105d24a03216c66">
+  <source>Whether this agent should be automatically removed once it expires.</source>
+  <target>মেয়াদ শেষ হলে এই এজেন্টটি স্বয়ংক্রিয়ভাবে সরিয়ে ফেলা হবে কিনা।</target>
+</trans-unit>
+<trans-unit id="agent.token.description">
+  <source>Use the token below to authenticate as this agent. It is shown only once — store it now.</source>
+  <target>এই এজেন্ট হিসেবে প্রমাণীকরণ করতে নিচের টোকেনটি ব্যবহার করুন। এটি শুধুমাত্র একবারই দেখানো হবে, এখনই সংরক্ষণ করুন।</target>
+</trans-unit>
+<trans-unit id="agent.token.label">
+  <source>Token</source>
+  <target>টোকেন</target>
+</trans-unit>
+<trans-unit id="s2854025f8d4405b6">
+  <source>Search for a agent...</source>
+  <target>একটি এজেন্ট খুঁজুন...</target>
+</trans-unit>
+<trans-unit id="s4a29404019d64d40">
+  <source>Admin-provisioned delegate identities that access can be requested and granted for, separately from their parent user.</source>
+  <target>অ্যাডমিন-প্রোভিশনড ডেলিগেট পরিচয়, যেগুলোর জন্য প্যারেন্ট ব্যবহারকারী থেকে আলাদাভাবে অ্যাক্সেসের অনুরোধ ও প্রদান করা যায়।</target>
+</trans-unit>
+<trans-unit id="s4eb514ebcb80553d">
+  <source>Parent</source>
+  <target>প্যারেন্ট</target>
+</trans-unit>
+<trans-unit id="s9e5233ef650728d6">
+  <source>Agent(s)</source>
+  <target>এজেন্ট(সমূহ)</target>
+</trans-unit>
+<trans-unit id="user.activation.confirm.deactivate">
+  <source>Are you sure you want to deactivate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+  <target>আপনি কি নিশ্চিত আপনি <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/> নিষ্ক্রিয় করতে চান?</target>
+</trans-unit>
+<trans-unit id="user.activation.confirm.activate">
+  <source>Are you sure you want to activate <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/>?</source>
+  <target>আপনি কি নিশ্চিত আপনি <x id="0" equiv-text="&lt;code&gt;${displayName}&lt;/code&gt;"/> সক্রিয় করতে চান?</target>
+</trans-unit>
+<trans-unit id="agent.column.name">
+  <source>Name</source>
+  <target>নাম</target>
+</trans-unit>
+<trans-unit id="agent.column.expires">
+  <source>Expires</source>
+  <target>মেয়াদ শেষ হবে</target>
+</trans-unit>
+<trans-unit id="agent.column.actions">
+  <source>Actions</source>
+  <target>কার্যক্রম</target>
+</trans-unit>
+<trans-unit id="agent.delete.object-label">
+  <source>Agent(s)</source>
+  <target>এজেন্ট(সমূহ)</target>
+</trans-unit>
+<trans-unit id="agent.delete.trigger">
+  <source>Delete</source>
+  <target>মুছে ফেলুন</target>
+</trans-unit>
+<trans-unit id="agent.expires.never">
+  <source>-</source>
+  <target>-</target>
+</trans-unit>
+<trans-unit id="agent.delete.object-label-single">
+  <source>Agent</source>
+  <target>এজেন্ট</target>
+</trans-unit>
+<trans-unit id="agent.delete.tooltip">
+  <source>Delete</source>
+  <target>মুছে ফেলুন</target>
+</trans-unit>
+<trans-unit id="s98d9f46353f3fd25">
+  <source>Copy value</source>
+  <target>ভ্যালু কপি করুন</target>
+</trans-unit>
+<trans-unit id="agent.verbose-name.label">
+  <source>Agent</source>
+  <target>এজেন্ট</target>
+</trans-unit>
+<trans-unit id="agent.verbose-name-plural.label">
+  <source>Agents</source>
+  <target>এজেন্টসমূহ</target>
+</trans-unit>
+<trans-unit id="agent.create.label">
+  <source>Create</source>
+  <target>তৈরি করুন</target>
+</trans-unit>
+<trans-unit id="agent.create.submit">
+  <source>Create</source>
+  <target>তৈরি করুন</target>
+</trans-unit>
+<trans-unit id="agent.create.success">
+  <source>Successfully created agent.</source>
+  <target>এজেন্ট সফলভাবে তৈরি করা হয়েছে।</target>
+</trans-unit>
+<trans-unit id="agent.label.label">
+  <source>Label</source>
+  <target>লেবেল</target>
+</trans-unit>
+<trans-unit id="agent.label.description">
+  <source>Optional display name for this agent.</source>
+  <target>এই এজেন্টের জন্য ঐচ্ছিক ডিসপ্লে নাম।</target>
+</trans-unit>
+<trans-unit id="agent.mirror.description">
+  <source>This agent mirrors your access: it can act on exactly the applications you can, and never more.</source>
+  <target>এই এজেন্টটি আপনার অ্যাক্সেস প্রতিফলিত করে: এটি ঠিক ততগুলো অ্যাপ্লিকেশনে কাজ করতে পারবে যতগুলোতে আপনি পারেন, এর বেশি নয়।</target>
+</trans-unit>
+<trans-unit id="agent.list.empty">
+  <source>No agents.</source>
+  <target>কোনো এজেন্ট নেই।</target>
+</trans-unit>
+<trans-unit id="agent.create.header">
+  <source>Create Agent</source>
+  <target>এজেন্ট তৈরি করুন</target>
+</trans-unit>
+<trans-unit id="agent.create.trigger">
+  <source>Create Agent</source>
+  <target>এজেন্ট তৈরি করুন</target>
+</trans-unit>
+<trans-unit id="agent.page.description">
+  <source>Create expiring agent identities and hand their token to a harness so it can act on your behalf via the API.</source>
+  <target>মেয়াদোত্তীর্ণযোগ্য এজেন্ট পরিচয় তৈরি করুন এবং তাদের টোকেন কোনো হারনেসে হস্তান্তর করুন যাতে সেটি API-এর মাধ্যমে আপনার পক্ষে কাজ করতে পারে।</target>
+</trans-unit>
+<trans-unit id="s46eb6cf13a8022e9">
+  <source>Select File</source>
+  <target>ফাইল নির্বাচন করুন</target>
+</trans-unit>
+<trans-unit id="s0d1ed094b601e76d">
+  <source>Type an optional file name without an extension...</source>
+  <target>এক্সটেনশন ছাড়া একটি ঐচ্ছিক ফাইল নাম টাইপ করুন...</target>
+</trans-unit>
+<trans-unit id="s384efdec2b99d471">
+  <source>Custom Name</source>
+  <target>কাস্টম নাম</target>
+</trans-unit>
+<trans-unit id="sd749d80c570a0d0e">
+  <source>Leave empty to keep the original filename.</source>
+  <target>মূল ফাইলের নাম বজায় রাখতে খালি রাখুন।</target>
+</trans-unit>
+<trans-unit id="s1ea1d3a777930fd3">
+  <source>List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+  <target>ক্লায়েন্টরা যেসব CIDR থেকে সংযোগ করতে পারবে তার তালিকা (কমা দ্বারা পৃথক)। আরও নির্দিষ্ট CIDR কোনো বিস্তৃত CIDR-এর আগে মিলবে। নির্দিষ্ট নয় এমন কোনো CIDR থেকে সংযোগকারী ক্লায়েন্টদের বাদ দেওয়া হবে।</target>
+</trans-unit>
+<trans-unit id="file-picker.upload-link.label">
+  <source>Upload file</source>
+  <target>ফাইল আপলোড করুন</target>
+</trans-unit>
+<trans-unit id="file-picker.value.placeholder">
+  <source>Select a file or enter a value...</source>
+  <target>একটি ফাইল নির্বাচন করুন বা একটি ভ্যালু লিখুন...</target>
+</trans-unit>
+<trans-unit id="file-picker.value.description">
+  <source>Choose an existing file, or enter a URL or Font Awesome icon.</source>
+  <target>একটি বিদ্যমান ফাইল নির্বাচন করুন, অথবা একটি URL বা Font Awesome আইকন লিখুন।</target>
+</trans-unit>
+<trans-unit id="file-picker.documentation-link.label">
+  <source>Supported values</source>
+  <target>সমর্থিত মানসমূহ</target>
+</trans-unit>
+<trans-unit id="file.name.validation.html">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${unsafeHTML(replacements)}"/>.</source>
+  <target>বৈধ ফাইলের নামে অক্ষর, সংখ্যা, ডট, হাইফেন, আন্ডারস্কোর, স্ল্যাশ এবং
+        প্রতিস্থাপক যেমন <x id="0" equiv-text="${unsafeHTML(replacements)}"/> ব্যবহার করা যাবে।</target>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as code elements.</note>
+</trans-unit>
+<trans-unit id="file.name.validation.plaintext">
+  <source>Valid file names can contain letters, numbers, dots, hyphens, underscores, slashes, and
+        placeholders such as <x id="0" equiv-text="${replacements}"/>.</source>
+  <target>বৈধ ফাইলের নামে অক্ষর, সংখ্যা, ডট, হাইফেন, আন্ডারস্কোর, স্ল্যাশ এবং
+        প্রতিস্থাপক যেমন <x id="0" equiv-text="${replacements}"/> ব্যবহার করা যাবে।</target>
+  <note from="lit-localize">Validation message for file name input. The placeholders are displayed as plain text.</note>
+</trans-unit>
+<trans-unit id="sdcded316146a0b76">
+  <source>Object Attributes are in preview.</source>
+  <target>অবজেক্ট অ্যাট্রিবিউটগুলো প্রিভিউতে আছে।</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.label">
+  <source>Resume on matching failures</source>
+  <target>মিলকরণে ব্যর্থ হলে চালিয়ে যান</target>
+</trans-unit>
+<trans-unit id="stages.source.resume-on-match-failures.description">
+  <source>Resume this flow for the selected source matching failures. No source connection is created.</source>
+  <target>নির্বাচিত সোর্স মিলকরণে ব্যর্থ হলে এই ফ্লো চালিয়ে যান। কোনো সোর্স কানেকশন তৈরি করা হবে না।</target>
+</trans-unit>
+<trans-unit id="stages.source.match-failure.missing-property.label">
+  <source>Missing property</source>
+  <target>প্রপার্টি অনুপস্থিত</target>
 </trans-unit>
 </body>
 </file>

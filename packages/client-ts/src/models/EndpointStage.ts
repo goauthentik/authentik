@@ -27,62 +27,42 @@ import { StageModeEnumFromJSON, StageModeEnumToJSON } from "./StageModeEnum";
 export interface EndpointStage {
     /**
      *
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof EndpointStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof EndpointStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {string}
-     * @memberof EndpointStage
      */
     connector: string;
     /**
      *
-     * @type {Connector}
-     * @memberof EndpointStage
      */
     readonly connectorObj: Connector;
     /**
      *
-     * @type {StageModeEnum}
-     * @memberof EndpointStage
      */
     mode?: StageModeEnum;
 }

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroupRequest } from "./DeviceAccessGroupRequest";
 import {
     DeviceAccessGroupRequestFromJSON,
@@ -26,44 +27,30 @@ import {
 export interface PatchedEndpointDeviceRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
      */
     deviceUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
      */
     name?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedEndpointDeviceRequest
      */
     accessGroup?: string | null;
     /**
      *
-     * @type {DeviceAccessGroupRequest}
-     * @memberof PatchedEndpointDeviceRequest
      */
     accessGroupObj?: DeviceAccessGroupRequest;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedEndpointDeviceRequest
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedEndpointDeviceRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedEndpointDeviceRequest
      */
     attributes?: { [key: string]: any };
 }
@@ -107,7 +94,7 @@ export function PatchedEndpointDeviceRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
     };
 }
@@ -130,7 +117,7 @@ export function PatchedEndpointDeviceRequestToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupRequestToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
     };
 }

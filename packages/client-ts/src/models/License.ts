@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * License Serializer
  * @export
@@ -20,38 +22,26 @@
 export interface License {
     /**
      *
-     * @type {string}
-     * @memberof License
      */
     readonly licenseUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof License
      */
     readonly name: string;
     /**
      *
-     * @type {string}
-     * @memberof License
      */
     key: string;
     /**
      *
-     * @type {Date}
-     * @memberof License
      */
     readonly expiry: Date;
     /**
      *
-     * @type {number}
-     * @memberof License
      */
     readonly internalUsers: number;
     /**
      *
-     * @type {number}
-     * @memberof License
      */
     readonly externalUsers: number;
 }
@@ -99,7 +89,7 @@ export function LicenseFromJSONTyped(json: any, ignoreDiscriminator: boolean): L
         licenseUuid: json["license_uuid"],
         name: json["name"],
         key: json["key"],
-        expiry: new Date(json["expiry"]),
+        expiry: json["expiry"] == null ? json["expiry"] : parseDateTime(json["expiry"]),
         internalUsers: json["internal_users"],
         externalUsers: json["external_users"],
     };

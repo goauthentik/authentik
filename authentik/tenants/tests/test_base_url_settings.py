@@ -35,6 +35,43 @@ class TestBaseURLSettings(APITestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_settings_accepts_internal_hostname(self):
+        """A hostname without a public-suffix shaped last label is accepted."""
+        response = self.client.patch(
+            reverse("authentik_api:tenant_settings"),
+            data={"base_url": "https://auth.svr001"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.tenant.refresh_from_db()
+        self.assertEqual(self.tenant.base_url, "https://auth.svr001")
+
+    def test_settings_saves_with_internal_hostname_stored(self):
+        """An unrelated setting can still be saved."""
+        self.tenant.base_url = "https://auth.svr001"
+        self.tenant.save()
+        current = self.client.get(reverse("authentik_api:tenant_settings")).json()
+        response = self.client.put(
+            reverse("authentik_api:tenant_settings"),
+            data={**current, "avatars": "initials"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.tenant.refresh_from_db()
+        self.assertEqual(self.tenant.avatars, "initials")
+        self.assertEqual(self.tenant.base_url, "https://auth.svr001")
+
+    def test_settings_accepts_empty(self):
+        """The field can be cleared, which means no base URL is configured"""
+        self.tenant.base_url = "https://auth.svr001"
+        self.tenant.save()
+        response = self.client.patch(
+            reverse("authentik_api:tenant_settings"),
+            data={"base_url": ""},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.tenant.refresh_from_db()
+        self.assertEqual(self.tenant.base_url, "")
+
     def test_settings_normalizes_trailing_slash(self):
         """A trailing slash is stripped when saving through the settings API"""
         response = self.client.patch(

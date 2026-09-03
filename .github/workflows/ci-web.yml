@@ -80,7 +80,7 @@ jobs:
       - lint
     runs-on: ubuntu-latest
     steps:
-      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   test:
@@ -108,4 +108,4 @@ jobs:
           pnpm --dir web install --frozen-lockfile
       - name: test
         working-directory: web/
-        run: pnpm run test || exit 0
+        run: pnpm exec vitest run --project "Unit Tests"

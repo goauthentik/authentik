@@ -23,74 +23,50 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface PatchedApplicationRequest {
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     name?: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     slug?: string;
     /**
      *
-     * @type {number}
-     * @memberof PatchedApplicationRequest
      */
     provider?: number | null;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedApplicationRequest
      */
     backchannelProviders?: Array<number>;
     /**
      * Open launch URL in a new browser tab or window.
-     * @type {boolean}
-     * @memberof PatchedApplicationRequest
      */
     openInNewTab?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     metaLaunchUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     metaIcon?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     metaDescription?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     metaPublisher?: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedApplicationRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      *
-     * @type {string}
-     * @memberof PatchedApplicationRequest
      */
     group?: string;
     /**
      * Hide this application from the user's My applications page.
-     * @type {boolean}
-     * @memberof PatchedApplicationRequest
      */
     metaHide?: boolean;
 }

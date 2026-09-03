@@ -24,38 +24,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface AuthenticatorSMSChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof AuthenticatorSMSChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof AuthenticatorSMSChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AuthenticatorSMSChallenge
      */
     phoneNumberRequired?: boolean;
 }

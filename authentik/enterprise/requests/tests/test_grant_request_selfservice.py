@@ -3,6 +3,7 @@ from django.urls import reverse
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_user
+from authentik.enterprise.requests.grants import assign_request_permissions
 from authentik.enterprise.requests.models import (
     GrantRequest,
     GrantRequestTarget,
@@ -10,7 +11,6 @@ from authentik.enterprise.requests.models import (
     RequestRuleBinding,
     RequestStatus,
 )
-from authentik.enterprise.requests.stage import GrantRequestFinalStageView
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
@@ -129,7 +129,7 @@ class GrantRequestsSelfServiceTests(FlowTestCase):
         req = GrantRequest.objects.create(created_by=requester)
         GrantRequestTarget.objects.create(request=req, target=app)
 
-        GrantRequestFinalStageView._assign_permissions([rule], req)
+        assign_request_permissions([rule], req)
 
         self.client.force_login(reviewer)
         res = self.client.get(reverse("authentik_api:grantrequest-detail", kwargs={"pk": req.pk}))

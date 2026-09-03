@@ -114,11 +114,13 @@ class AgentViewSet(
                 raise PermissionDenied(_("Only internal user accounts can create agents."))
 
         if self_service:
-            # Self-service agents always expire with the tenant default and MIRROR their owner,
-            # so they can never exceed the access of the user creating them.
+            # Self-service agents are least-privilege by construction: they always expire with the
+            # tenant default and inherit NO access from their owner. They earn access the same way
+            # a human does -- by filing a grant request their owner approves (see
+            # authentik.enterprise.requests).
             expiring = True
             expires = default_token_duration()
-            policy_behavior = ActorPolicyInheritance.MIRROR
+            policy_behavior = ActorPolicyInheritance.NONE
         else:
             # Provisioning for another user may set a custom/standing expiry and policy behavior.
             expiring = body.validated_data["expiring"]

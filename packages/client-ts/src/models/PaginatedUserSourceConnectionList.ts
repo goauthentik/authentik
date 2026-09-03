@@ -25,20 +25,14 @@ import { UserSourceConnectionFromJSON, UserSourceConnectionToJSON } from "./User
 export interface PaginatedUserSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserSourceConnection>}
-     * @memberof PaginatedUserSourceConnectionList
      */
     results: Array<UserSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

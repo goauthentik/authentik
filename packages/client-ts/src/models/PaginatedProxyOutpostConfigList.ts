@@ -25,20 +25,14 @@ import { ProxyOutpostConfigFromJSON, ProxyOutpostConfigToJSON } from "./ProxyOut
 export interface PaginatedProxyOutpostConfigList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedProxyOutpostConfigList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ProxyOutpostConfig>}
-     * @memberof PaginatedProxyOutpostConfigList
      */
     results: Array<ProxyOutpostConfig>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedProxyOutpostConfigList
      */
     autocomplete: { [key: string]: any };
 }

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { DeviceAccessGroup } from "./DeviceAccessGroup";
 import { DeviceAccessGroupFromJSON, DeviceAccessGroupToJSON } from "./DeviceAccessGroup";
 import type { DeviceConnection } from "./DeviceConnection";
@@ -27,74 +28,50 @@ import { DeviceFactSnapshotFromJSON } from "./DeviceFactSnapshot";
 export interface EndpointDeviceDetails {
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
      */
     deviceUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof EndpointDeviceDetails
      */
     accessGroup?: string | null;
     /**
      *
-     * @type {DeviceAccessGroup}
-     * @memberof EndpointDeviceDetails
      */
     accessGroupObj?: DeviceAccessGroup;
     /**
      *
-     * @type {boolean}
-     * @memberof EndpointDeviceDetails
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof EndpointDeviceDetails
      */
     expires?: Date | null;
     /**
      *
-     * @type {DeviceFactSnapshot}
-     * @memberof EndpointDeviceDetails
      */
-    readonly facts: DeviceFactSnapshot;
+    readonly facts: DeviceFactSnapshot | null;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof EndpointDeviceDetails
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {Array<DeviceConnection>}
-     * @memberof EndpointDeviceDetails
      */
     connectionsObj: Array<DeviceConnection>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof EndpointDeviceDetails
      */
     readonly policies: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof EndpointDeviceDetails
      */
     readonly connections: Array<string>;
 }
@@ -155,7 +132,7 @@ export function EndpointDeviceDetailsFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         facts: DeviceFactSnapshotFromJSON(json["facts"]),
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         connectionsObj: (json["connections_obj"] as Array<any>).map(DeviceConnectionFromJSON),
@@ -182,7 +159,7 @@ export function EndpointDeviceDetailsToJSONTyped(
         access_group: value["accessGroup"],
         access_group_obj: DeviceAccessGroupToJSON(value["accessGroupObj"]),
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         attributes: value["attributes"],
         connections_obj: (value["connectionsObj"] as Array<any>).map(DeviceConnectionToJSON),
     };
