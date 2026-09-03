@@ -10,6 +10,7 @@ import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -109,7 +110,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
-            html`<a href="#/events/log/${item.pk}">
+            html`<a href=${toAdminInterface(`events/log/${item.pk}`)}>
                 <pf-tooltip position="top" content=${msg("Show details")}>
                     <i class="fas fa-share-square" aria-hidden="true"></i>
                 </pf-tooltip>

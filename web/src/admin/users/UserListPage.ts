@@ -25,7 +25,8 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { toAdminInterface } from "#elements/router/core/interfaces";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { FilterOption } from "#elements/table/ak-table-filter-select";
 import { PaginatedResponse, TableColumn, Timestamp } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
@@ -107,7 +108,7 @@ export class UserListPage extends WithLicenseSummary(
     public defaultActivePath: string = DefaultUIConfig.defaults.userPath;
 
     @state()
-    protected filterStatus = getURLParam<boolean | undefined>("filterStatus", undefined);
+    protected filterStatus = getSearchParam<boolean | undefined>("filterStatus", undefined);
 
     @state()
     protected userPaths: UserPath | null = null;
@@ -133,7 +134,7 @@ export class UserListPage extends WithLicenseSummary(
         const initialDefaultUserPath = DefaultUIConfig.defaults.userPath;
         const brandDefaultUserPath = this.uiConfig.defaults.userPath;
         const defaultUserPath = brandDefaultUserPath || initialDefaultUserPath;
-        const userPathParam = getURLParam<string>("path", "");
+        const userPathParam = getSearchParam<string>("path", "");
 
         const pathPresent =
             (userPathParam && userPathParam !== "") || defaultUserPath !== initialDefaultUserPath;
@@ -283,7 +284,7 @@ export class UserListPage extends WithLicenseSummary(
                         this.filterStatus = ev.detail.value;
                         this.page = 1;
                         this.fetch();
-                        updateURLParams({
+                        updateSearchParams({
                             filterStatus: this.filterStatus,
                         });
                     }}
@@ -307,7 +308,7 @@ export class UserListPage extends WithLicenseSummary(
                 alt=${msg(str`Avatar for ${displayName}`)}
             />`,
             html`<a
-                href="#/identity/users/${item.pk}"
+                href=${toAdminInterface(`identity/users/${item.pk}`)}
                 aria-label=${msg(str`View details for ${displayName}`)}
             >
                 <div aria-label=${msg(str`Username: ${item.username}`)}>${item.username}</div>

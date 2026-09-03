@@ -25,7 +25,7 @@ import {
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
 import { WithSession } from "#elements/mixins/session";
-import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+import { getSearchParam, updateSearchParams } from "#elements/router/core/search-params";
 import { AKTableRefreshEvent } from "#elements/table/events";
 import Styles from "#elements/table/Table.css";
 import { TableSearchForm } from "#elements/table/TableSearch";
@@ -87,6 +87,41 @@ export interface ColumnOptions {
  * @template T The type of the items to display in the table.
  * @template D An optional `toJSON()` result type.
  */
+// Dev-only guard: warns when two connected searchable tables claim the same
+// search parameter on one document (they would clobber each other's `?q=`).
+const connectedSearchParams = new Map<string, number>();
+
+function registerSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 0) + 1;
+
+    connectedSearchParams.set(param, next);
+
+    if (next > 1) {
+        console.warn(
+            `Multiple connected tables share the search parameter "${param}". ` +
+                `Set a distinct \`search-param\` on all but one.`,
+        );
+    }
+}
+
+function unregisterSearchParam(param: string): void {
+    if (process.env.NODE_ENV === "production") {
+        return;
+    }
+
+    const next = (connectedSearchParams.get(param) ?? 1) - 1;
+
+    if (next <= 0) {
+        connectedSearchParams.delete(param);
+    } else {
+        connectedSearchParams.set(param, next);
+    }
+}
+
 export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
@@ -265,7 +300,6 @@ export abstract class Table<T extends object, D = T>
     }
 
     readonly #pageParam: string;
-    readonly #searchParam: string;
 
     /**
      * A mapping of the current items to their respective identifiers.
@@ -295,7 +329,7 @@ export abstract class Table<T extends object, D = T>
     public data: PaginatedResponse<T> | null = null;
 
     @property({ type: Number, useDefault: true })
-    public page: number;
+    public page = 1;
 
     /**
      * Set if your `selectedElements` use of the selection box is to enable bulk-delete,
@@ -354,6 +388,15 @@ export abstract class Table<T extends object, D = T>
 
     @property({ type: String, attribute: "search-placeholder" })
     public searchPlaceholder: string | null = null;
+
+    /**
+     * The search parameter this table's search and page are serialized to.
+     *
+     * This is used to synchronize the table's state with the URL,
+     * allowing for deep-linking and back/forward navigation.
+     */
+    @property({ type: String, attribute: "search-param" })
+    public searchParam: string | null = null;
 
     //#endregion
 
@@ -435,8 +478,6 @@ export abstract class Table<T extends object, D = T>
         const { localName } = this;
 
         this.#pageParam = `${localName}-page`;
-        this.#searchParam = `${localName}-search`;
-        this.page = getURLParam(this.#pageParam, 1);
 
         this.logger = ConsoleLogger.prefix(localName);
     }
@@ -447,8 +488,13 @@ export abstract class Table<T extends object, D = T>
         this.addEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.addEventListener("submit", this.refreshListener);
 
-        if (this.searchEnabled) {
-            this.search = getURLParam(this.#searchParam, "");
+        if (this.searchParam) {
+            this.page = getSearchParam(this.#pageParam, 1);
+
+            if (this.searchEnabled) {
+                this.search = getSearchParam(this.searchParam, "");
+                registerSearchParam(this.searchParam);
+            }
         }
 
         // Use `fetch()` rather than `#synchronizeRefreshSchedule()` here: the
@@ -462,26 +508,30 @@ export abstract class Table<T extends object, D = T>
         super.disconnectedCallback();
         this.removeEventListener(AKRefreshEvent.eventName, this.refreshListener);
         window.removeEventListener("submit", this.refreshListener);
+
+        if (this.searchEnabled && this.searchParam) {
+            unregisterSearchParam(this.searchParam);
+        }
     }
 
     protected override willUpdate(changedProperties: PropertyValues<this>): void {
         super.willUpdate(changedProperties);
 
-        const interactive = isInteractiveElement(this);
+        const { searchParam } = this;
 
-        if (!interactive) {
+        if (!searchParam || !isInteractiveElement(this)) {
             return;
         }
 
         if (changedProperties.has("page")) {
-            updateURLParams({
+            updateSearchParams({
                 [this.#pageParam]: this.page === 1 ? null : this.page,
             });
         }
 
         if (changedProperties.has("search")) {
-            updateURLParams({
-                [this.#searchParam]: this.search,
+            updateSearchParams({
+                [searchParam]: this.search,
             });
         }
     }

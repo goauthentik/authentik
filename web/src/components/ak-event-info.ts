@@ -6,6 +6,7 @@ import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
 
 import { AKElement } from "#elements/Base";
+import { toAdminInterface } from "#elements/router/core/interfaces";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
@@ -353,7 +354,10 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                                         flowUuid: this.event.context.flow as string,
                                     })
                                     .then((resp) => {
-                                        return html`<a href="#/flow/flows/${resp.results[0].slug}"
+                                        return html`<a
+                                            href=${toAdminInterface(
+                                                `flow/flows/${resp.results[0].slug}`,
+                                            )}
                                             >${resp.results[0].name}</a
                                         >`;
                                     }),
