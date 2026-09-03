@@ -96,7 +96,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         document.removeEventListener("visibilitychange", this.#visibilityListener);
     }
 
-    public updated(changed: PropertyValues<this>): void {
+    protected override updated(changed: PropertyValues<this>): void {
         super.updated(changed);
 
         // We're especially mindful of how often this runs to avoid

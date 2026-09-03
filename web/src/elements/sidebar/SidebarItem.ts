@@ -85,7 +85,9 @@ export class SidebarItem extends WithCapabilitiesConfig(WithLicenseSummary(AKEle
         cancelAnimationFrame(this.#scrollAnimationFrame);
     }
 
-    public updated(changedProperties: PropertyValues): void {
+    protected override updated(changedProperties: PropertyValues): void {
+        super.updated(changedProperties);
+
         const previousExpanded = changedProperties.get("expanded");
 
         if (typeof previousExpanded !== "boolean") return;
