@@ -16,7 +16,7 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `company.auth0.com` is the domain of your Auth0 tenant.
-- `<auth0-slug>` is the slug to assign to the source in authentik (for example, `auth0`).
+- `<auth0-slug>` is the slug of the source in authentik (for example, `auth0`).
 
 ## Configuration methods
 
@@ -39,10 +39,10 @@ Auth0 needs the public certificate of an authentik keypair to verify signed requ
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates**.
-3. Click the certificate you plan on using for signing and encryption (e.g., the default `authentik Self-signed Certificate`).
+3. Click the certificate that you want to use for signing and encryption, for example, the default `authentik Self-signed Certificate`.
 4. Click **Download Certificate**.
 
-To encrypt assertions, Auth0 requires the public key in a separate file in addition to the certificate. The certificate already contains the public key; the following OpenSSL command extracts it into its own file.
+To encrypt assertions, Auth0 requires the public key in a separate file in addition to the certificate. The certificate already contains the public key. Use the following OpenSSL command to extract it into a separate file.
 
 ```shell
 openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -noout > public_key.pem
@@ -59,9 +59,9 @@ openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -no
 5. Navigate to the **Addons** tab and enable **SAML2 Web App**.
 6. On the addon's **Settings** tab, configure the following settings:
     - **Application Callback URL**: `https://authentik.company/source/saml/<auth0-slug>/acs/`
-    - **Settings**: paste the following JSON, replacing the `signingCert` value with the contents of the authentik certificate you exported earlier (as a single line, with newlines replaced by `\n`). Auth0 uses this certificate to verify signatures on requests from authentik.
+    - **Settings**: paste the following JSON. Replace the `signingCert` value with the contents of the authentik certificate that you exported earlier. Format the certificate as a single line by replacing each line break with `\n`. Auth0 uses this certificate to verify signatures on requests from authentik.
 
-    ```json
+    ```json showlinenumbers
     {
         "audience": "https://authentik.company/source/saml/<auth0-slug>/metadata/",
         "nameIdentifierFormat": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
@@ -75,17 +75,17 @@ openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -no
     ```
 
 7. Click **Enable** to save the addon settings.
-8. On the addon's **Usage** tab, take note of the **Identity Provider Login URL** and click **Download Auth0 certificate**. These values will be required when configuring authentik.
+8. On the addon's **Usage** tab, take note of the **Identity Provider Login URL**, and then click **Download Auth0 certificate**. You will need the URL and certificate to configure authentik.
 
 #### Configure assertion encryption
 
-Auth0 encrypts assertions via a post-login Action rather than an addon setting.
+Auth0 encrypts assertions using a post-login Action rather than an addon setting.
 
 1. Navigate to **Actions** > **Library** and click **Create Action** > **Create custom action**.
 2. Set the name to `SAML encryption`, set **Trigger** to `Login / Post Login`, and click **Create**.
-3. Paste the following code, replacing `<client_id>` with the **Client ID** of the application you created earlier, and the certificate and public key with the contents of the files you exported earlier:
+3. Paste the following code. Replace `<client_id>` with the **Client ID** of the application that you created earlier. Replace the example certificate and public key with the contents of the files that you exported earlier:
 
-    ```javascript
+    ```javascript showlinenumbers
     exports.onExecutePostLogin = async (event, api) => {
         if (event.client.client_id === "<client_id>") {
             const encryptionCert = `-----BEGIN CERTIFICATE-----
@@ -111,7 +111,7 @@ Auth0 encrypts assertions via a post-login Action rather than an addon setting.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Import**.
-3. Give it a name like `Auth0 Signing Certificate`.
+3. Set **Name** to `Auth0 Signing Certificate`or similar.
 4. Paste the contents of the Auth0 certificate you downloaded earlier into the **Certificate** field.
 5. Leave the **Private Key** field empty.
 6. Click **Create**.
@@ -121,7 +121,7 @@ Auth0 encrypts assertions via a post-login Action rather than an addon setting.
 1. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 2. Select **SAML Source** and configure the following settings:
     - Set **Name** to `Auth0`.
-    - Set **Slug** to `<auth0-slug>`. This must match the slug used in the Auth0 **Application Callback URL** and **audience** fields.
+    - Set **Slug** to `auth0`.
     - Set **SSO URL** to the **Identity Provider Login URL** from Auth0 (`https://company.auth0.com/samlp/<client_id>`).
     - Set **SLO URL** to the **Identity Provider Login URL** with `/logout` appended (`https://company.auth0.com/samlp/<client_id>/logout`).
     - Set **Service Provider Binding** to `Post (Auto-Submit)`.
@@ -143,19 +143,19 @@ To integrate Auth0 with authentik, create an application in the Auth0 Dashboard.
 1. Log in to the Auth0 Dashboard as an administrator.
 2. Navigate to **Applications** > **Applications** and click **Create Application**.
 3. Set the name to `authentik`, select **Regular Web Applications**, and click **Create**.
-4. On the **Settings** tab, take note of the **Client ID** and **Client Secret**. These values will be required in the next section.
+4. On the **Settings** tab, take note of the **Client ID** and **Client Secret** values. You will need these values to configure authentik.
 5. Under **Application URIs**, set **Allowed Callback URLs** to `https://authentik.company/source/oauth/callback/<auth0-slug>/`.
 6. Click **Save Changes**.
 
 ### authentik configuration
 
-To support the integration of Auth0 with authentik, create an Auth0 OpenID Connect source in authentik.
+Create an Auth0 OpenID Connect source in authentik.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 3. Select **OpenID Connect OAuth Source** and configure the following settings:
     - Set **Name** to `Auth0`.
-    - Set **Slug** to `<auth0-slug>`. This must match the slug used in the Auth0 **Allowed Callback URLs** field.
+    - Set **Slug** to `<auth0-slug>`. Typically this is `auth0`.
     - Under **Protocol settings**:
         - Set **Consumer key** to the **Client ID** from Auth0.
         - Set **Consumer secret** to the **Client Secret** from Auth0.
@@ -164,7 +164,7 @@ To support the integration of Auth0 with authentik, create an Auth0 OpenID Conne
 
 4. Click **Finish**.
 
-authentik reads the authorization, token, user info, and JWKS URLs from the well-known URL, so you do not need to enter them individually.
+authentik discovers the authorization, token, user info, and JWKS endpoints from the well-known URL, so you do not need to enter them individually.
 
 </TabItem>
 </Tabs>
