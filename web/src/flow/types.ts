@@ -16,6 +16,7 @@ import type {
     ConsentChallenge,
     CurrentBrand,
     FlowChallengeResponseRequest,
+    FlowErrorChallenge,
     PasswordChallenge,
     SessionEndChallenge,
     UserLoginChallenge,
@@ -54,6 +55,22 @@ export type FormStaticChallenge =
 export type StageChallengeLike = Partial<
     Pick<FormStaticChallenge, "pendingUserAvatar" | "pendingUser" | "flowInfo" | "responseErrors">
 >;
+
+/**
+ * Type-predicate to determine if a given challenge is a {@linkcode FormStaticChallenge}.
+ */
+export function isFormStaticChallengeLike(
+    challenge: StageChallengeLike | FlowErrorChallenge | null | undefined,
+): challenge is FormStaticChallenge {
+    if (!challenge) return false;
+
+    return (
+        "pendingUser" in challenge ||
+        "pendingUserAvatar" in challenge ||
+        "flowInfo" in challenge ||
+        "responseErrors" in challenge
+    );
+}
 
 export interface SubmitOptions {
     invisible: boolean;

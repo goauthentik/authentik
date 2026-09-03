@@ -8,11 +8,13 @@ import { WithLocale } from "#elements/mixins/locale";
 import { findEmptyFocusCandidate, FocusTarget } from "#elements/utils/focus";
 
 import { FlowUserDetails } from "#flow/FormStatic";
-import { IBaseStage, StageChallengeLike, StageHost } from "#flow/types";
+import { IBaseStage, isFormStaticChallengeLike, StageChallengeLike, StageHost } from "#flow/types";
 
 import { ConsoleLogger } from "#logger/browser";
 
-import { html, nothing, PropertyValues } from "lit";
+import { FlowErrorChallenge } from "@goauthentik/api";
+
+import { html, PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
 export function readFileAsync(file: Blob) {
@@ -35,7 +37,7 @@ export function readFileAsync(file: Blob) {
  * @prop {StageHost} host The host managing this stage.
  * @prop {Tin} challenge The challenge provided to this stage.
  */
-export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
+export abstract class BaseStage<Tin extends StageChallengeLike | FlowErrorChallenge, Tout = unknown>
     extends WithLocale(AKElement)
     implements IBaseStage<Tin, Tout>
 {
@@ -142,7 +144,7 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         const nonFieldErrors = this.challenge?.responseErrors?.non_field_errors;
 
         if (!nonFieldErrors) {
-            return nothing;
+            return null;
         }
 
         return html`<div class="pf-c-form__alert">
@@ -163,20 +165,27 @@ export abstract class BaseStage<Tin extends StageChallengeLike, Tout = unknown>
         </div>`;
     }
 
+    /**
+     * Renders the user information section of the form, if applicable.
+     */
     protected renderUserInfo() {
-        if (!this.challenge?.pendingUser || !this.challenge?.pendingUserAvatar) {
-            return nothing;
+        const { challenge } = this;
+
+        // Do we have a challenge that isn't shaped like an error?
+        if (!isFormStaticChallengeLike(challenge)) return null;
+
+        // And do we have a pending user or avatar to display?
+        if (!challenge.pendingUser && !challenge.pendingUserAvatar) {
+            return null;
         }
 
-        return html`
-            ${FlowUserDetails({ challenge: this.challenge })}
+        return html`${FlowUserDetails({ challenge })}
             <input
                 name="username"
                 autocomplete="username"
                 type="hidden"
-                value="${this.challenge.pendingUser}"
-            />
-        `;
+                value="${challenge.pendingUser}"
+            />`;
     }
 
     /**
