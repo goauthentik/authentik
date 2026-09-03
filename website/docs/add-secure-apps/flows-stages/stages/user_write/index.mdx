@@ -1,5 +1,6 @@
 ---
 title: User write stage
+description: Create or update users with information collected during a flow.
 ---
 
 The User Write stage writes data from the current flow context into a user object.
