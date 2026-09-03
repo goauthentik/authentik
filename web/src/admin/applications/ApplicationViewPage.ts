@@ -296,7 +296,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
         }
 
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 ${this.missingOutpost
                     ? html`
                           <div

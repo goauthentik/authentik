@@ -38,7 +38,7 @@ export class UserCredentialsTab extends WithLazyTabs(WithLicenseSummary(AKElemen
             return nothing;
         }
 
-        return html`<ak-tabs pageIdentifier="userCredentialsTokens" vertical>
+        return html`<ak-tabs routed vertical>
             <div
                 role="tabpanel"
                 tabindex="0"

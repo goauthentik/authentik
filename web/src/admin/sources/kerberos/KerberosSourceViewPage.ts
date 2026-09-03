@@ -81,7 +81,7 @@ export class KerberosSourceViewPage extends AKElement {
             return nothing;
         }
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <div
                     role="tabpanel"
                     tabindex="0"

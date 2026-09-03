@@ -27,9 +27,7 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__title">${msg("Change your password")}</div>
             <div class="pf-c-card__body">
                 <a
-                    href="${ifDefined(this.configureUrl)}${AndNext(
-                        toUserInterface("settings", { page: "page-details" }),
-                    )}"
+                    href="${ifDefined(this.configureUrl)}${AndNext(toUserInterface("settings"))}"
                     class="pf-c-button pf-m-primary"
                 >
                     ${msg("Change password")}

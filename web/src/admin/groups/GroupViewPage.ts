@@ -84,7 +84,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
             return nothing;
         }
         return html`<main>
-            <ak-tabs>
+            <ak-tabs routed>
                 <section
                     role="tabpanel"
                     tabindex="0"
@@ -251,7 +251,7 @@ export class GroupViewPage extends WithLicenseSummary(AKElement) {
 
     protected renderTabRoles(group: Group): TemplateResult {
         return html`
-            <ak-tabs pageIdentifier="groupRoles" vertical>
+            <ak-tabs routed vertical>
                 <div
                     role="tabpanel"
                     tabindex="0"
