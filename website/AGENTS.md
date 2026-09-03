@@ -10,7 +10,7 @@ A shared `docusaurus-theme/` workspace package (`@goauthentik/docusaurus-theme`)
 
 Theme customizations live in `docusaurus-theme/theme/` as **swizzled** components — Docusaurus's mechanism for overriding a built-in theme component by shadowing it at the same import path (e.g. `theme/EditThisPage`, `theme/DocItem/Content`, `theme/NotFound`). Most are _wrappers_ (render the original and add to it); a few are _ejected_ (full replacements). Because these override theme internals, they can break on a Docusaurus upgrade — prefer wrapping over ejecting, keep overrides minimal, and re-check them when bumping Docusaurus. Scaffold a new one with the `docusaurus swizzle` CLI (`npm run --prefix website/docs docusaurus -- swizzle @docusaurus/theme-classic <ComponentName> --wrap`; use `--eject` only when wrapping cannot express the change), then move the result into `docusaurus-theme/theme/` so all three sites share it.
 
-You are most often editing **Markdown/MDX content**, not application code. Treat documentation as a product: every page has a URL that is a promise to readers, and prose must pass the linters and the spell checker.
+You are most often editing **MDX content**, not application code. Treat documentation as a product: every page has a URL that is a promise to readers, and prose must pass the linters and the spell checker.
 
 ## Commands
 
@@ -73,7 +73,7 @@ website/
   integrations/         # Integrations site (@goauthentik/integration-docs)
     <category>/<service>/index.mdx   # one folder per service
     categories.mjs      # Category list — drives the AUTO-GENERATED sidebar
-    template/service.md # Template for a new integration guide
+    template/service.mdx # Template for a new integration guide
     static/_redirects
   api/                  # API site (@goauthentik/api-docs) — generated from ../schema.yml
   docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
@@ -85,10 +85,10 @@ website/
 
 ### Author-facing guides (source of truth — keep content consistent with these)
 
-- `docs/developer-docs/docs/writing-documentation.md` — setup, build commands, glossary, page routing & redirects.
+- `docs/developer-docs/docs/writing-documentation.mdx` — setup, build commands, glossary, page routing & redirects.
 - `docs/developer-docs/docs/style-guide.mdx` — the canonical style guide (terminology, voice, formatting, accessibility, metadata).
-- `docs/developer-docs/docs/templates/` — `combo` / `procedural` / `conceptual` / `reference` templates (`*.tmpl.md`). Start from a template; default to **combo** unless the steps get buried, then split into procedural + conceptual.
-- `docs/developer-docs/contributing.md` — general contribution guidelines.
+- `docs/developer-docs/docs/templates/` — `combo` / `procedural` / `conceptual` / `reference` templates (`*.tmpl.mdx`). Start from a template; default to **combo** unless the steps get buried, then split into procedural + conceptual.
+- `docs/developer-docs/contributing.mdx` — general contribution guidelines.
 
 When you change a documented workflow (commands, structure, conventions), update both this file **and** the corresponding author-facing guide so they don't drift.
 
@@ -100,20 +100,20 @@ The one rule the linters and spell checker cannot enforce, and the one most ofte
 
 ### Adding a Topics page
 
-1. Create the `.md`/`.mdx` file under the appropriate `docs/<area>/` directory.
+1. Create the `.mdx` file under the appropriate `docs/<area>/` directory.
 2. **Add it to `docs/sidebar.mjs`** — otherwise it won't appear in the navigation.
 3. Run `make docs` before pushing.
 
 ### Adding an integration guide
 
-1. Copy `integrations/template/service.md` into `integrations/<category>/<service>/index.mdx`. Pick a `<category>` from `integrations/categories.mjs`.
+1. Copy `integrations/template/service.mdx` into `integrations/<category>/<service>/index.mdx`. Pick a `<category>` from `integrations/categories.mjs`.
 2. Use placeholder domains `authentik.company` and `<app-name>.company` (drop the service domain for SaaS).
 3. **Do not edit the integrations sidebar** — it is auto-generated from `categories.mjs`.
 4. Run `make integrations` before pushing.
 
 ### Adding a glossary term
 
-Create `docs/core/glossary/terms/<term>.mdx` with `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `authentikSpecific`, `shortDescription`, optional `longDescription`). See `writing-documentation.md` for the field reference.
+Create `docs/core/glossary/terms/<term>.mdx` with `sidebar_custom_props` frontmatter (`termName`, `tags`, optional `authentikSpecific`, `shortDescription`, optional `longDescription`). See `writing-documentation.mdx` for the field reference.
 
 ## URLs and redirects
 
@@ -156,7 +156,7 @@ Every PR gets a Netlify Deploy Preview — use it to verify rendering, links, an
 | Concern        | Tooling                                                                             |
 | -------------- | ----------------------------------------------------------------------------------- |
 | Site generator | Docusaurus 3.x (classic preset + Mermaid)                                           |
-| Content        | Markdown / MDX + React                                                              |
+| Content        | MDX + React                                                                         |
 | API reference  | `docusaurus-plugin-openapi-docs` (from schema)                                      |
 | Build runtime  | Node ≥ 24, npm ≥ 11 (run via `corepack`)                                            |
 | Package layout | NPM Workspaces (`docs`, `integrations`, `api`, `docusaurus-theme`)                  |

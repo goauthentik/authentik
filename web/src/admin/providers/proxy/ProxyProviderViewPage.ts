@@ -20,13 +20,13 @@ import { SlottedTemplateResult } from "#elements/types";
 
 import { ModelEnum, ProvidersApi, ProxyMode, ProxyProvider } from "@goauthentik/api";
 
-import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
-import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "~docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "~docs/add-secure-apps/providers/proxy/_traefik_compose.md";
-import MDTraefikIngress from "~docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
+import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.mdx";
+import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.mdx";
+import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.mdx";
+import MDNginxStandalone from "~docs/add-secure-apps/providers/proxy/_nginx_standalone.mdx";
+import MDTraefikCompose from "~docs/add-secure-apps/providers/proxy/_traefik_compose.mdx";
+import MDTraefikIngress from "~docs/add-secure-apps/providers/proxy/_traefik_ingress.mdx";
+import MDTraefikStandalone from "~docs/add-secure-apps/providers/proxy/_traefik_standalone.mdx";
 import MDHeaderAuthentication from "~docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 
 import { msg } from "@lit/localize";
