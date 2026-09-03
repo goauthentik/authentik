@@ -67,6 +67,8 @@ To check if your config has been applied correctly, you can run the following co
 
 authentik requires PostgreSQL for application data, configuration, sessions, and background task coordination. authentik supports PostgreSQL 14 - 18.
 
+The database must use the `UTF8` server encoding, which is PostgreSQL's default. Unless a different encoding was explicitly chosen when the database was created, no change is needed. Run `SHOW server_encoding;` to check; authentik logs a warning on any other encoding, and support for them will be removed in an upcoming version. Converting an existing database means dumping it, re-creating it with `ENCODING 'UTF8'`, and restoring the dump.
+
 Use the settings in this section to configure:
 
 - the primary PostgreSQL connection
@@ -74,7 +76,7 @@ Use the settings in this section to configure:
 - connection behavior and pooler compatibility
 - optional read replicas
 
-For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.md) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.md). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.md).
+For more information, see the PostgreSQL upgrade guides for [Docker Compose](../../troubleshooting/postgres/upgrade_docker.mdx) and [Kubernetes](../../troubleshooting/postgres/upgrade_kubernetes.mdx). For backup guidance, see [Backup and restore](../../sys-mgmt/ops/backup-restore.mdx).
 
 ### Connection settings
 
@@ -184,6 +186,10 @@ These settings control connection persistence and behavior, which is particularl
 
 - `AUTHENTIK_POSTGRESQL__CONN_OPTIONS`
 
+    :::info Deprecated
+    Deprecated as of version 2026.5 and will be removed in a future version. If you rely on a specific parameter, open an issue so we can discuss an alternative.
+    :::
+
     Additional `libpq` connection parameters for the primary database connection.
 
     A list of supported parameter keywords can be found in the [PostgreSQL documentation](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS).
@@ -213,11 +219,15 @@ For the first replica, use index `0`:
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_OPTIONS` (deprecated, see above)
 
 Use index `1`, `2`, and so on for additional replicas.
 
 - `AUTHENTIK_POSTGRESQL__REPLICA_CONN_OPTIONS`
+
+    :::info Deprecated
+    Deprecated as of version 2026.5 and will be removed in a future version. If you rely on a specific parameter, open an issue so we can discuss an alternative.
+    :::
 
     Additional `libpq` connection parameters for all read replica connections.
 
@@ -262,7 +272,7 @@ To run the bulk of ORM traffic through a transaction-pooling pooler while keepin
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLROOTCERT`
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLCERT`
 - `AUTHENTIK_POSTGRESQL__DIRECT__SSLKEY`
-- `AUTHENTIK_POSTGRESQL__DIRECT__CONN_OPTIONS`
+- `AUTHENTIK_POSTGRESQL__DIRECT__CONN_OPTIONS` (deprecated, see above)
 
 Any setting left unset falls back to the corresponding top-level `AUTHENTIK_POSTGRESQL__*` value, so the common case of "same database, different endpoint" only requires `AUTHENTIK_POSTGRESQL__DIRECT__HOST` (and optionally `AUTHENTIK_POSTGRESQL__DIRECT__PORT`).
 
@@ -407,6 +417,14 @@ Applies to LDAP outposts.
 
 Defaults to `[::]:6636`.
 
+##### `AUTHENTIK_LISTEN__RADIUS`
+
+List of comma-separated `address:port` values for RADIUS.
+
+Applies to RADIUS outposts.
+
+Defaults to `[::]:1812`.
+
 ##### `AUTHENTIK_LISTEN__METRICS`
 
 List of comma-separated `address:port` values for Prometheus metrics.
@@ -417,15 +435,15 @@ Defaults to `[::]:9300`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG`
 
-Listening address:port for Go Debugging metrics.
+Listening address:port for Go debugging metrics.
 
-Applies to all, except the worker.
+Applies to the LDAP, RADIUS, and RAC outposts, which are the remaining Go components.
 
 Defaults to `0.0.0.0:9900`.
 
 ##### `AUTHENTIK_LISTEN__DEBUG_PY`
 
-Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.md).
+Base listening address:port for the Python debugging server, see [Debugging](../../developer-docs/setup/debugging.mdx).
 
 Applies to the Server and the Worker. The Server listens on this exact port; each Worker process listens on a successive port (`9902`, `9903`, …).
 
@@ -467,7 +485,7 @@ Defaults to `minutes=15`.
 
 ### S3 storage backend settings
 
-For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.md).
+For more information on S3 storage, see [S3-compatible storage](../../sys-mgmt/ops/storage-s3/index.mdx).
 
 #### `AUTHENTIK_STORAGE__S3__REGION`
 
@@ -671,7 +689,7 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 The `AUTHENTIK_EMAIL` settings are used to configure SMTP email delivery from authentik.
 
-These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.md), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
+These global email settings are used for administrator notifications, release and configuration alerts, [notification rules](../../sys-mgmt/events/notifications.mdx), and any [Email stage](../../add-secure-apps/flows-stages/stages/email/) configured to use global settings.
 
 For complete setup examples, testing instructions, and TLS guidance, see the [Email configuration guide](../email.mdx).
 
@@ -783,9 +801,15 @@ If you are running a version earlier than 2025.4, you can configure if the sessi
 
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
-Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.md) for session validity.
+Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See the [user login stage](../../add-secure-apps/flows-stages/stages/user_login/index.mdx) for session validity.
 
 Defaults to `days=1`.
+
+### `AUTHENTIK_SESSIONS__USER_SWITCHING_AGE`:ak-version[2026.8]
+
+Configure how long the browser cookie that groups sessions for [user account switching](../../users-sources/user/user-switching.mdx) lasts. This setting does not change the validity of the grouped sessions.
+
+Defaults to `days=365`.
 
 ### `AUTHENTIK_WEB__WORKERS`
 
@@ -817,6 +841,22 @@ Configure the path under which authentik is served. For example to access authen
 
 Defaults to `/`.
 
+### `AUTHENTIK_WEB__BASE_URL`:ak-version[2026.8]
+
+The base URL under which this authentik instance is reachable, for example `https://authentik.company`.
+
+This option is a bootstrap value. On first start, authentik copies it into the **Base URL** [system setting](../../sys-mgmt/settings.mdx) when that setting has not been configured yet. It never overwrites a Base URL that was already set through the Admin interface or API, and when it is empty authentik falls back to the host configured on the embedded outpost. Once the system setting holds a value, this option is no longer consulted, so it does not need to remain in your environment configuration.
+
+Any trailing slash is removed, so `https://authentik.company` and `https://authentik.company/` are equivalent.
+
+:::info
+Set this to the scheme and host only, without a path. All of authentik is served under [`AUTHENTIK_WEB__PATH`](#authentik_web__path) (`/` by default), and that prefix is already part of every link authentik generates. So even when you serve authentik under a subpath, for example `AUTHENTIK_WEB__PATH=/authentik/`, the base URL stays `https://authentik.company`, and generated links resolve under `https://authentik.company/authentik/`.
+:::
+
+Defaults to an empty string.
+
+This setting is currently unused until it can be marked as required, starting from authentik version 2026.11.
+
 ### `AUTHENTIK_WEB__TIMEOUT_HTTP`
 
 Configure the timeouts for the web HTTP/HTTPS Server. Accepts duration in the format of "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
@@ -847,7 +887,7 @@ Defaults to `false`.
 
 ## System settings
 
-Additional [system settings](../../sys-mgmt/settings.md) are configurable using the Admin interface, under **System** > **Settings** or using the API.
+Additional [system settings](../../sys-mgmt/settings.mdx) are configurable using the Admin interface, under **System** > **Settings** or using the API.
 
 ## Custom python settings
 

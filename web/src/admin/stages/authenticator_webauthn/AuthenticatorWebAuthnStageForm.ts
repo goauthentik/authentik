@@ -1,9 +1,9 @@
 import "#components/ak-number-input";
+import "#components/ak-text-input";
 import "#elements/ak-dual-select/ak-dual-select-provider";
 import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
-import "#components/ak-switch-input";
 
 import { aki } from "#common/api/client";
 
@@ -66,14 +66,18 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${this.instance?.name ?? ""}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-element-horizontal
                 label=${msg("Authenticator type name")}
                 ?required=${false}
@@ -215,14 +219,6 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             "Maximum allowed registration attempts. When set to 0 attempts, attempts are not limited.",
                         )}
                     ></ak-number-input>
-                    <ak-switch-input
-                        name="preventDuplicateDevices"
-                        label=${msg("Prevent duplicate devices")}
-                        ?checked=${this.instance?.preventDuplicateDevices ?? true}
-                        help=${msg(
-                            "When enabled, any unique authenticator can only be registered once.",
-                        )}
-                    ></ak-switch-input>
                     <ak-form-element-horizontal
                         label=${msg("Device type restrictions")}
                         name="deviceTypeRestrictions"

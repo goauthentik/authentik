@@ -3,18 +3,18 @@ import { type AppGroupEntry, ViewMode } from "./types.js";
 
 import { LayoutType } from "#common/ui/config";
 
+import { AnchorPositionSupported } from "#elements/dialogs/positioning";
 import { ApplicationRoute } from "#elements/router/builders";
 import { LitFC } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 
-import { AnchorPositionSupported } from "#user/LibraryApplication/CardMenu";
 import { AKLibraryApp } from "#user/LibraryApplication/index";
 
 import { Application } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
 import { kebabCase } from "change-case";
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -35,6 +35,7 @@ export interface AKLibraryApplicationListProps extends HTMLAttributes<HTMLDivEle
     background?: string | null;
     selectedApp?: Application | null;
     targetRef?: RefOrCallback | null;
+    onAppClick?: (app: Application) => Promise<void>;
 }
 
 /**
@@ -48,6 +49,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
     background,
     selectedApp,
     targetRef,
+    onAppClick,
     ...props
 }) => {
     const columnCount = LayoutColumnCount[layout] ?? 1;
@@ -89,6 +91,7 @@ export const AKLibraryApplicationList: LitFC<AKLibraryApplicationListProps> = ({
                             background,
                             editURL,
                             targetRef: selected ? targetRef : null,
+                            onAppClick,
                         });
                     },
                 );

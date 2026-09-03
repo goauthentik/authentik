@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2026.8.0-rc1
+  version: 2026.11.0-rc1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -333,6 +333,183 @@ paths:
               schema:
                 $ref: '#/components/schemas/VersionHistory'
           description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/:
+    get:
+      operationId: agents_agents_list
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: parent
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAgentList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: agents_agents_create
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentCreateRequest'
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /agents/agents/{id}/:
+    get:
+      operationId: agents_agents_retrieve
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: agents_agents_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: agents_agents_partial_update
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAgentRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: agents_agents_destroy
+      description: |-
+        Admin-provisioned delegate identities. An admin creates a Agent for a given
+        parent user, then grants it access the same way as any other User -- ordinary
+        PolicyBindings pointed at whatever it needs.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Agent.
+        required: true
+      tags:
+      - agents
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -2734,6 +2911,42 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/application_entitlements/requestable/:
+    get:
+      operationId: core_application_entitlements_requestable_list
+      description: List application entitlements which the current user can request
+        access to
+      parameters:
+      - in: query
+        name: app
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestableTargetList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/applications/:
     get:
       operationId: core_applications_list
@@ -2981,6 +3194,51 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /core/applications/requestable/:
+    get:
+      operationId: core_applications_requestable_list
+      description: List applications which the current user can request access to
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+      - in: query
+        name: meta_description
+        schema:
+          type: string
+      - in: query
+        name: meta_launch_url
+        schema:
+          type: string
+      - in: query
+        name: meta_publisher
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: slug
+        schema:
+          type: string
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedApplicationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -3189,12 +3447,22 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: flow_request
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: flow_unenrollment
         schema:
           type: string
           format: uuid
       - in: query
         name: flow_user_settings
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: flow_user_switch
         schema:
           type: string
           format: uuid
@@ -3468,6 +3736,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3492,6 +3761,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -3539,6 +3809,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3571,6 +3842,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3602,6 +3874,7 @@ paths:
               $ref: '#/components/schemas/PatchedGroupRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -3628,6 +3901,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -3657,6 +3931,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User added
@@ -3688,6 +3963,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: User removed
@@ -3713,6 +3989,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4440,6 +4717,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4464,6 +4742,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4490,6 +4769,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4521,6 +4801,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4551,6 +4832,7 @@ paths:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4576,6 +4858,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: No response body
@@ -4604,6 +4887,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully started impersonation
@@ -4631,6 +4915,7 @@ paths:
               $ref: '#/components/schemas/UserRecoveryLinkRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4664,6 +4949,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully sent recover email
@@ -4692,6 +4978,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4727,6 +5014,7 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully changed password
@@ -4749,6 +5037,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4775,6 +5064,7 @@ paths:
               $ref: '#/components/schemas/UserAccountLockdownRequest'
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4933,6 +5223,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '201':
           content:
@@ -4952,6 +5243,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '204':
           description: Successfully ended impersonation
@@ -4967,6 +5259,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -4988,6 +5281,7 @@ paths:
       - core
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -5013,12 +5307,43 @@ paths:
         required: true
       security:
       - authentik: []
+      - authentik_device_auth: []
       responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserServiceAccountResponse'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /core/users/switch/:
+    post:
+      operationId: core_users_switch_create
+      description: Start browser user switching.
+      parameters:
+      - in: query
+        name: next
+        schema:
+          type: string
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSwitchRequest'
+      security:
+      - authentik: []
+      - authentik_device_auth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSwitchResponse'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -5604,10 +5929,15 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
-      - {}
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6114,6 +6444,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSODeviceRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -6136,6 +6468,8 @@ paths:
             schema:
               $ref: '#/components/schemas/AgentPSSOUserRegistrationRequest'
         required: true
+      security:
+      - authentik_device_auth: []
       responses:
         '200':
           content:
@@ -9641,6 +9975,118 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this lifecycle rule.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/:
+    get:
+      operationId: lifecycle_user_offboarding_list
+      parameters:
+      - in: query
+        name: action
+        schema:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/OffboardingStatusEnum'
+      - in: query
+        name: user__uuid
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserOffboardingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: lifecycle_user_offboarding_create
+      tags:
+      - lifecycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserOffboardingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /lifecycle/user_offboarding/{id}/:
+    get:
+      operationId: lifecycle_user_offboarding_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
+        required: true
+      tags:
+      - lifecycle
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOffboarding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: lifecycle_user_offboarding_destroy
+      description: |-
+        Cancel a pending offboarding instead of deleting the record.
+
+        The row is retained (as `CANCELED`) so the offboarding stays visible in
+        the audit history; deletion would erase who scheduled and cancelled it.
+        You cannot cancel an offboarding that targets you.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this User Offboarding.
         required: true
       tags:
       - lifecycle
@@ -18320,6 +18766,170 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2-dcr/:
+    get:
+      operationId: providers_oauth2_dcr_list
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOAuth2DynamicClientRegistrationList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: providers_oauth2_dcr_create
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /providers/oauth2-dcr/{pbm_uuid}/:
+    get:
+      operationId: providers_oauth2_dcr_retrieve
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: providers_oauth2_dcr_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OAuth2DynamicClientRegistrationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: providers_oauth2_dcr_partial_update
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOAuth2DynamicClientRegistrationRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: providers_oauth2_dcr_destroy
+      description: OAuth2 Dynamic Client Registration configuration ViewSet
+      parameters:
+      - in: path
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this OAuth2 Dynamic Client Registration.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /providers/oauth2/{id}/:
     get:
       operationId: providers_oauth2_retrieve
@@ -20412,6 +21022,14 @@ paths:
             format: uuid
         explode: true
         style: form
+      - in: query
+        name: saml_version
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: |+
+            SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
+
       - $ref: '#/components/parameters/QuerySearch'
       - in: query
         name: session_valid_not_on_or_after
@@ -21815,6 +22433,846 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/:
+    get:
+      operationId: requests_grant_requests_list
+      parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_grant_requests_create
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/:
+    get:
+      operationId: requests_grant_requests_retrieve
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrantRequest'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_grant_requests_destroy
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/fulfill/:
+    patch:
+      operationId: requests_grant_requests_fulfill_partial_update
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGrantRequestFulfillRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Request fulfilled
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/{uuid}/revoke/:
+    delete:
+      operationId: requests_grant_requests_revoke_destroy
+      description: |-
+        Immediately end an active grant. Available to the same reviewers who could
+        approve it in the first place.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Grant Request.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Grant revoked
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/agent/:
+    post:
+      operationId: requests_grant_requests_agent_create
+      description: |-
+        Delegate access an agent's owner already holds to the agent, time-boxed. Unlike
+        `create` this persists the request directly instead of returning a flow link -- an agent
+        authenticates with an API token and has no browser to run a flow in, so no justification
+        is ever collected. That is why the agent may only ask for what its owner already has:
+        the owner's approval is then the whole decision, and no reviewer is asked to judge a
+        request with nothing in it. The returned `fulfill_url` is what the agent hands to its
+        owner so they can act on it.
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentGrantRequestCreateRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGrantRequestCreated'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/grant-requests/pending_review/:
+    get:
+      operationId: requests_grant_requests_pending_review_list
+      description: List pending grant requests the current user is eligible to review.
+      parameters:
+      - in: query
+        name: agent_owner
+        schema:
+          type: integer
+      - in: query
+        name: created_by
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: status
+        schema:
+          $ref: '#/components/schemas/RequestStatus'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGrantRequestList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/:
+    get:
+      operationId: requests_rule_bindings_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: rule
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rule_bindings_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/{uuid}/:
+    get:
+      operationId: requests_rule_bindings_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rule_bindings_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rule_bindings_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rule_bindings_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-bindings/{uuid}/used_by/:
+    get:
+      operationId: requests_rule_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/:
+    get:
+      operationId: requests_rule_child_bindings_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: query
+        name: binding
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: target
+        schema:
+          type: string
+          format: uuid
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleChildBindingList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rule_child_bindings_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleChildBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/{uuid}/:
+    get:
+      operationId: requests_rule_child_bindings_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rule_child_bindings_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleChildBindingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rule_child_bindings_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleChildBindingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRuleChildBinding'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rule_child_bindings_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rule-child-bindings/{uuid}/used_by/:
+    get:
+      operationId: requests_rule_child_bindings_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule Child Binding.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/:
+    get:
+      operationId: requests_rules_list
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - in: query
+        name: pbm_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: request_flow__slug
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QuerySearch'
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRequestRuleList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: requests_rules_create
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/{uuid}/:
+    get:
+      operationId: requests_rules_retrieve
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: requests_rules_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestRuleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: requests_rules_partial_update
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRequestRuleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestRule'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: requests_rules_destroy
+      description: Mixin to add a used_by endpoint to return a list of all objects
+        using this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /requests/rules/{uuid}/used_by/:
+    get:
+      operationId: requests_rules_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Request Rule.
+        required: true
+      tags:
+      - requests
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
@@ -23725,6 +25183,10 @@ paths:
           type: boolean
       - in: query
         name: start_tls
+        schema:
+          type: boolean
+      - in: query
+        name: sync_group_hierarchy
         schema:
           type: boolean
       - in: query
@@ -33586,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -34234,6 +35711,78 @@ components:
             flow should not require authentication since the user's session is deleted.
       required:
       - name
+    Agent:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        uid:
+          type: string
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          readOnly: true
+        token_identifier:
+          type: string
+          nullable: true
+          description: Identifier of the agent's API token, so its key can be retrieved/copied
+            later.
+          readOnly: true
+      required:
+      - name
+      - parent
+      - pk
+      - policy_behavior
+      - token_identifier
+      - uid
+      - username
+      - uuid
     AgentAuthenticationResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -34404,6 +35953,71 @@ components:
             type: integer
       required:
       - name
+    AgentCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        parent:
+          type: integer
+        label:
+          type: string
+        expiring:
+          type: boolean
+          default: false
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        policy_behavior:
+          allOf:
+          - $ref: '#/components/schemas/PolicyBehaviorEnum'
+          default: mirror
+    AgentCreated:
+      type: object
+      description: Response returned once when an agent is created, carrying the one-time
+        API token.
+      properties:
+        agent:
+          allOf:
+          - $ref: '#/components/schemas/Agent'
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - agent
+      - token
+    AgentGrantRequestCreateRequest:
+      type: object
+      description: |-
+        Body for an agent requesting access for itself. Deliberately narrower than
+        `GrantRequestCreateSerializer`: an agent may not pick its own expiry, which is
+        derived from the granting rules and capped by the agent's own lifetime.
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+      - pbms
+    AgentGrantRequestCreated:
+      type: object
+      description: |-
+        Response to an agent's access request: the request it created, plus the URL to hand to
+        the human it acts for. An agent has no browser, so it cannot run the approval itself --
+        `fulfill_url` is what its owner opens to approve or deny.
+      properties:
+        grant_request:
+          allOf:
+          - $ref: '#/components/schemas/GrantRequest'
+          readOnly: true
+        fulfill_url:
+          type: string
+          readOnly: true
+      required:
+      - fulfill_url
+      - grant_request
     AgentPSSODeviceRegistrationRequest:
       type: object
       description: Register Apple device via Platform SSO
@@ -34465,6 +36079,49 @@ components:
       - enclave_key_id
       - user_auth
       - user_secure_enclave_key
+    AgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - name
+      - username
     AgentTokenResponse:
       type: object
       description: Base serializer class which doesn't implement create/update methods
@@ -34558,6 +36215,7 @@ components:
       - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
+      - authentik.enterprise.agents
       - authentik.enterprise.audit
       - authentik.enterprise.endpoints.connectors.agent
       - authentik.enterprise.endpoints.connectors.fleet
@@ -34571,6 +36229,7 @@ components:
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.providers.ws_federation
       - authentik.enterprise.reports
+      - authentik.enterprise.requests
       - authentik.enterprise.stages.account_lockdown
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.mtls
@@ -34665,6 +36324,10 @@ components:
           format: uuid
           readOnly: true
           title: Pbm uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
         name:
           type: string
           description: Application's display Name.
@@ -34729,6 +36392,7 @@ components:
       - meta_icon_themed_urls
       - meta_icon_url
       - name
+      - pbm_uuid
       - pk
       - provider_obj
       - slug
@@ -36070,9 +37734,6 @@ components:
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
           readOnly: true
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -36118,9 +37779,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -36328,7 +37986,18 @@ components:
           type: string
         branding_default_flow_background:
           type: string
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -36353,6 +38022,10 @@ components:
           format: uuid
           nullable: true
         flow_lockdown:
+          type: string
+          format: uuid
+          nullable: true
+        flow_request:
           type: string
           format: uuid
           nullable: true
@@ -36404,7 +38077,18 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -36429,6 +38113,10 @@ components:
           format: uuid
           nullable: true
         flow_lockdown:
+          type: string
+          format: uuid
+          nullable: true
+        flow_request:
           type: string
           format: uuid
           nullable: true
@@ -36479,6 +38167,8 @@ components:
       - can_impersonate
       - can_debug
       - is_enterprise
+      - can_request
+      - can_agent_self_service
       type: string
     CaptchaChallenge:
       type: object
@@ -37118,6 +38808,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -37407,6 +39101,8 @@ components:
           nullable: true
         branding_custom_css:
           type: string
+        branding_map_tiles:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -37418,6 +39114,8 @@ components:
           readOnly: true
           default: automatic
         flow_authentication:
+          type: string
+        flow_user_switch:
           type: string
         flow_invalidation:
           type: string
@@ -37431,33 +39129,20 @@ components:
           type: string
         flow_lockdown:
           type: string
+        flow_request:
+          type: string
         default_locale:
           type: string
           readOnly: true
         flags:
           type: object
           properties:
-            core_default_app_access:
-              type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
-            enterprise_audit_include_expanded_diff:
-              type: boolean
-              description: Include additional information in audit logs, may incur
-                a performance penalty.
             flows_continuous_login:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
-          - core_default_app_access
-          - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -37465,6 +39150,7 @@ components:
       - branding_favicon_themed_urls
       - branding_logo
       - branding_logo_themed_urls
+      - branding_map_tiles
       - branding_title
       - default_locale
       - flags
@@ -38761,6 +40447,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -38796,6 +40483,7 @@ components:
           allOf:
           - $ref: '#/components/schemas/DeviceFactSnapshot'
           readOnly: true
+          nullable: true
         attributes:
           type: object
           additionalProperties: {}
@@ -39095,6 +40783,7 @@ components:
       - login_failed
       - logout
       - user_write
+      - user_offboarded
       - suspicious_request
       - password_set
       - secret_view
@@ -39123,6 +40812,10 @@ components:
       - review_overdue
       - review_attested
       - review_completed
+      - access_request_created
+      - access_request_approved
+      - access_request_denied
+      - access_request_revoked
       - custom_
       type: string
     EventMatcherPolicy:
@@ -39819,6 +41512,25 @@ components:
       - sidebar_left_frame_background
       - sidebar_right_frame_background
       type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
+      type: string
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -40431,6 +42143,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -40611,6 +42327,10 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -40660,7 +42380,86 @@ components:
       - google_id
       - provider
       - user
-    GrantTypesEnum:
+    GrantRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        requester_data:
+          type: object
+          additionalProperties: {}
+        fulfiller_data:
+          type: object
+          additionalProperties: {}
+        revoked_by:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+          nullable: true
+        agent_owner:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+          nullable: true
+        is_active:
+          type: boolean
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RequestStatus'
+          readOnly: true
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        target_objs:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
+          readOnly: true
+        uuid:
+          type: string
+          format: uuid
+      required:
+      - agent_owner
+      - created
+      - created_by
+      - is_active
+      - revoked_by
+      - status
+      - target_objs
+      - targets
+    GrantRequestCreateRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        pbms:
+          type: array
+          items:
+            type: string
+            format: uuid
+        expiry:
+          type: string
+          description: Optional override for how long the grant should last once approved.
+            Clamped to the granting rule binding(s)' expiry_granted_max.
+      required:
+      - pbms
+    GrantTypeEnum:
       enum:
       - authorization_code
       - implicit
@@ -42563,6 +44362,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - component
@@ -42782,6 +44584,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
       required:
       - base_dn
       - name
@@ -43406,6 +45211,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
@@ -43580,6 +45389,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           minLength: 1
@@ -43646,6 +45459,7 @@ components:
       - authentik_core.applicationentitlement
       - authentik_core.token
       - authentik_core.objectattribute
+      - authentik_core.actor
       - authentik_crypto.certificatekeypair
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
@@ -43675,6 +45489,7 @@ components:
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_oauth2.oauth2dynamicclientregistration
       - authentik_providers_proxy.proxyprovider
       - authentik_providers_rac.racprovider
       - authentik_providers_rac.endpoint
@@ -43745,11 +45560,13 @@ components:
       - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
+      - authentik_agents.agent
       - authentik_endpoints_connectors_fleet.fleetconnector
       - authentik_endpoints_connectors_google_chrome.googlechromeconnector
       - authentik_lifecycle.lifecyclerule
       - authentik_lifecycle.lifecycleiteration
       - authentik_lifecycle.review
+      - authentik_lifecycle.useroffboarding
       - authentik_policies_unique_password.uniquepasswordpolicy
       - authentik_providers_google_workspace.googleworkspaceprovider
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
@@ -43758,6 +45575,10 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_providers_ws_federation.wsfederationprovider
       - authentik_reports.dataexport
+      - authentik_requests.requestrulechildbinding
+      - authentik_requests.requestrulebinding
+      - authentik_requests.requestrule
+      - authentik_requests.grantrequest
       - authentik_stages_account_lockdown.accountlockdownstage
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_mtls.mutualtlsstage
@@ -44009,6 +45830,12 @@ components:
       - created
       - pk
       - severity
+    NotificationModeEnum:
+      enum:
+      - all
+      - direct
+      - random_min_reviewers
+      type: string
     NotificationRequest:
       type: object
       description: Notification Serializer
@@ -44232,6 +46059,95 @@ components:
       required:
       - expression
       - name
+    OAuth2DynamicClientRegistration:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        provider:
+          type: integer
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        override_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        override_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        override_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - pbm_uuid
+      - provider
+    OAuth2DynamicClientRegistrationRequest:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        provider:
+          type: integer
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        override_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        override_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        override_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+      required:
+      - provider
     OAuth2Provider:
       type: object
       description: OAuth2Provider Serializer
@@ -44305,7 +46221,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           maxLength: 255
@@ -44430,7 +46346,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           minLength: 1
@@ -44537,8 +46453,13 @@ components:
         jwks:
           type: string
           readOnly: true
+        dcr_registration:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - authorize
+      - dcr_registration
       - issuer
       - jwks
       - logout
@@ -45020,6 +46941,18 @@ components:
       - number
       - boolean
       type: string
+    OffboardingActionEnum:
+      enum:
+      - deactivate
+      - delete
+      type: string
+    OffboardingStatusEnum:
+      enum:
+      - pending
+      - completed
+      - failed
+      - canceled
+      type: string
     OpenIDConnectConfiguration:
       type: object
       description: rest_framework Serializer for OIDC Configuration
@@ -45319,6 +47252,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AgentConnector'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedAgentList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Agent'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -46060,6 +48008,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedGrantRequestList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantRequest'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedGroupKerberosSourceConnectionList:
       type: object
       properties:
@@ -46525,6 +48488,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedOAuth2DynamicClientRegistrationList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OAuth2DynamicClientRegistration'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedOAuth2ProviderList:
       type: object
       properties:
@@ -46924,6 +48902,66 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRequestRuleBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRuleBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRequestRuleChildBindingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRuleChildBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRequestRuleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedRequestableTargetList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestableTarget'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -47524,6 +49562,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedUserOffboardingList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOffboarding'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
@@ -48166,6 +50219,46 @@ components:
           type: array
           items:
             type: integer
+    PatchedAgentRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        expiring:
+          type: boolean
+        expires:
+          type: string
+          format: date-time
+          nullable: true
     PatchedAppleIndependentSecureEnclaveRequest:
       type: object
       properties:
@@ -48501,9 +50594,6 @@ components:
           items:
             type: string
             format: uuid
-        prevent_duplicate_devices:
-          type: boolean
-          description: When enabled, a given device can only be registered once.
         max_attempts:
           type: integer
           maximum: 2147483647
@@ -48550,7 +50640,18 @@ components:
         branding_default_flow_background:
           type: string
           minLength: 1
+        branding_map_tiles:
+          type: string
+          description: URL template for the vector tile source used by the events
+            map. Supports XYZ templates with {z}, {x} and {y} placeholders, or pmtiles://
+            archive URLs. When empty, the frontend uses the bundled hexworld basemap.
+            This value is part of the brand information served to unauthenticated
+            clients; do not embed API keys or other credentials in it.
         flow_authentication:
+          type: string
+          format: uuid
+          nullable: true
+        flow_user_switch:
           type: string
           format: uuid
           nullable: true
@@ -48575,6 +50676,10 @@ components:
           format: uuid
           nullable: true
         flow_lockdown:
+          type: string
+          format: uuid
+          nullable: true
+        flow_request:
           type: string
           format: uuid
           nullable: true
@@ -49293,6 +51398,19 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
+    PatchedGrantRequestFulfillRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+        status:
+          $ref: '#/components/schemas/RequestStatus'
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: Group Source Connection
@@ -49879,6 +51997,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        sync_group_hierarchy:
+          type: boolean
+          description: Sync group parentage/hierarchy from LDAP directories.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -49992,6 +52113,10 @@ components:
           maximum: 2147483647
           minimum: 1
           description: Controls the number of objects synced in a single task
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         sync_page_timeout:
           type: string
           minLength: 1
@@ -50116,6 +52241,47 @@ components:
         expression:
           type: string
           minLength: 1
+    PatchedOAuth2DynamicClientRegistrationRequest:
+      type: object
+      description: Serializer for OAuth2DynamicClientRegistration
+      properties:
+        provider:
+          type: integer
+        default_application_group:
+          type: string
+          description: Group to assign to automatically created applications.
+        override_authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Authorization flow applied to dynamically registered clients.
+        override_invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+        override_property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Scope mappings applied to dynamically registered clients.
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum access token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
+          type: string
+          minLength: 1
+          description: 'Maximum refresh token validity for registered clients (Format:
+            hours=1;minutes=2;seconds=3).'
+        allowed_grant_types:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrantTypeEnum'
+          description: If empty, all grant types are allowed.
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
     PatchedOAuth2ProviderRequest:
       type: object
       description: OAuth2Provider Serializer
@@ -50150,7 +52316,7 @@ components:
         grant_types:
           type: array
           items:
-            $ref: '#/components/schemas/GrantTypesEnum'
+            $ref: '#/components/schemas/GrantTypeEnum'
         client_id:
           type: string
           minLength: 1
@@ -50957,6 +53123,76 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    PatchedRequestRuleBindingRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding
+            can last.
+    PatchedRequestRuleChildBindingRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+    PatchedRequestRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
     PatchedRoleRequest:
       type: object
       description: Role serializer
@@ -51342,6 +53578,10 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
@@ -51514,6 +53754,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -51574,8 +53820,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -51584,15 +53830,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -51608,6 +53849,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
     PatchedStaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -52034,6 +54280,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -52472,6 +54724,12 @@ components:
       - pk
       - verbose_name
       - verbose_name_plural
+    PolicyBehaviorEnum:
+      enum:
+      - mirror
+      - copy
+      - none
+      type: string
     PolicyBinding:
       type: object
       description: PolicyBinding Serializer
@@ -52985,10 +55243,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -53036,9 +55296,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -54107,6 +56365,34 @@ components:
       - name
       - reviewer_groups
       - reviewers
+    RelatedTarget:
+      type: object
+      description: Simplified related target object
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+      required:
+      - label
+      - meta_model_name
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
     Reputation:
       type: object
       description: Reputation Serializer
@@ -54214,6 +56500,243 @@ components:
       enum:
       - application/x-www-form-urlencoded
       - application/json
+      type: string
+    RequestRule:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+        targets:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - name
+      - pbm_uuid
+      - targets
+    RequestRuleBinding:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        pbm_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        rule_obj:
+          allOf:
+          - $ref: '#/components/schemas/RequestRule'
+          readOnly: true
+        target:
+          type: string
+          format: uuid
+        related:
+          type: array
+          items:
+            type: string
+            format: uuid
+          readOnly: true
+        related_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedTarget'
+          readOnly: true
+        expiry_pending:
+          type: string
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          description: The maximum duration a grant approved against this binding
+            can last.
+      required:
+      - pbm_uuid
+      - related
+      - related_obj
+      - rule
+      - rule_obj
+      - target
+    RequestRuleBindingRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        rule:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+        expiry_pending:
+          type: string
+          minLength: 1
+          description: How long a request against this binding stays pending before
+            it automatically lapses if not approved or denied.
+        expiry_granted_max:
+          type: string
+          minLength: 1
+          description: The maximum duration a grant approved against this binding
+            can last.
+      required:
+      - rule
+      - target
+    RequestRuleChildBinding:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+      required:
+      - binding
+      - target
+    RequestRuleChildBindingRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        binding:
+          type: string
+          format: uuid
+        target:
+          type: string
+          format: uuid
+      required:
+      - binding
+      - target
+    RequestRuleRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        policy_engine_mode:
+          $ref: '#/components/schemas/PolicyEngineMode'
+        name:
+          type: string
+          minLength: 1
+        notification_transports:
+          type: array
+          items:
+            type: string
+            format: uuid
+        notification_mode:
+          $ref: '#/components/schemas/NotificationModeEnum'
+        min_reviewers:
+          type: integer
+          maximum: 32767
+          minimum: 0
+        min_reviewers_is_per_group:
+          type: boolean
+        request_flow:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - name
+    RequestStatus:
+      enum:
+      - created
+      - approved
+      - denied
+      - revoked
+      type: string
+    RequestableTarget:
+      type: object
+      description: |-
+        Generic representation of a single request target: whatever was actually
+        requested (an Application, an Application Entitlement, ...), always paired with the
+        parent it belongs to, so the UI/audit trail has that context even when the
+        request itself was scoped narrower than the whole app.
+      properties:
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        pbm_uuid:
+          type: string
+          readOnly: true
+        label:
+          type: string
+          readOnly: true
+        parent:
+          allOf:
+          - $ref: '#/components/schemas/Application'
+          readOnly: true
+          nullable: true
+      required:
+      - label
+      - meta_model_name
+      - parent
+      - pbm_uuid
+      - verbose_name
+      - verbose_name_plural
+    ResumeOnMatchFailuresEnum:
+      enum:
+      - missing_property
       type: string
     Review:
       type: object
@@ -55403,6 +57926,10 @@ components:
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
@@ -55532,6 +58059,10 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        discovery_enabled:
+          type: boolean
+          description: When enabled, authentik will attempt to discover existing resources
+            in the remote system.
         group_filters:
           type: array
           items:
@@ -56025,6 +58556,11 @@ components:
       - disabled
       - disabled_deleted
       type: string
+    SamlVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     Schedule:
       type: object
       properties:
@@ -56296,8 +58832,13 @@ components:
           $ref: '#/components/schemas/UserSelf'
         original:
           $ref: '#/components/schemas/UserSelf'
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserSelf'
       required:
       - user
+      - users
     Settings:
       type: object
       description: Settings Serializer
@@ -56305,6 +58846,12 @@ components:
         avatars:
           type: string
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56363,8 +58910,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56373,15 +58920,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -56392,6 +58934,12 @@ components:
           type: string
           minLength: 1
           description: Configure how authentik should show avatars for users.
+        base_url:
+          type: string
+          description: Configure the base URL under which this authentik instance
+            is reachable, e.g. https://authentik.company
+          format: uri
+          maxLength: 200
         default_user_change_name:
           type: boolean
           description: Enable the ability for users to change their name.
@@ -56452,8 +59000,8 @@ components:
           properties:
             core_default_app_access:
               type: boolean
-              description: Configure if applications without any policy/group/user
-                bindings should be accessible to any user.
+              description: Applications with no policies bound can be accessed by
+                any user.
             enterprise_audit_include_expanded_diff:
               type: boolean
               description: Include additional information in audit logs, may incur
@@ -56462,15 +59010,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:
@@ -56679,6 +59222,11 @@ components:
           type: string
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - component
       - flow_set
@@ -56703,6 +59251,11 @@ components:
           minLength: 1
           description: 'Amount of time a user can take to return from the source to
             continue the flow (Format: hours=-1;minutes=-2;seconds=-3)'
+        resume_on_match_failures:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeOnMatchFailuresEnum'
+          description: Source matching failure reasons for which the flow should resume.
       required:
       - name
       - source
@@ -57001,7 +59554,12 @@ components:
           type: string
           description: Get the FQDN configured on the embedded outpost
           readOnly: true
+        base_url:
+          type: string
+          description: Configured external base URL. Can be empty
+          readOnly: true
       required:
+      - base_url
       - brand
       - embedded_outpost_disabled
       - embedded_outpost_host
@@ -58460,6 +61018,83 @@ components:
       required:
       - identifier
       - source
+    UserOffboarding:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+        user_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OffboardingStatusEnum'
+          readOnly: true
+        created_by_obj:
+          allOf:
+          - $ref: '#/components/schemas/PartialUser'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        executed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - created_by_obj
+      - executed_at
+      - id
+      - scheduled_at
+      - status
+      - user
+      - user_obj
+    UserOffboardingRequest:
+      type: object
+      description: |-
+        Mixin to validate that a valid enterprise license
+        exists before allowing to save the object
+      properties:
+        user:
+          type: integer
+        scheduled_at:
+          type: string
+          format: date-time
+          description: Absolute time at which the offboarding action is executed.
+        action:
+          $ref: '#/components/schemas/OffboardingActionEnum'
+        revoke_sessions:
+          type: boolean
+          description: Revoke all of the user's sessions when offboarding.
+        revoke_tokens:
+          type: boolean
+          description: Revoke all of the user's tokens when offboarding.
+      required:
+      - scheduled_at
+      - user
     UserPasswordHashSetRequest:
       type: object
       description: Payload to set a users' password hash directly
@@ -58682,6 +61317,10 @@ components:
         is_superuser:
           type: boolean
           readOnly: true
+        is_current:
+          type: boolean
+          description: Return whether this user owns the current browser session.
+          readOnly: true
         groups:
           type: array
           items:
@@ -58721,6 +61360,7 @@ components:
       - avatar
       - groups
       - is_active
+      - is_current
       - is_superuser
       - name
       - pk
@@ -58857,6 +61497,30 @@ components:
       required:
       - identifier
       - source
+    UserSwitchActionEnum:
+      enum:
+      - add
+      - switch
+      type: string
+    UserSwitchRequest:
+      type: object
+      description: Request to add or switch users in the current browser.
+      properties:
+        action:
+          allOf:
+          - $ref: '#/components/schemas/UserSwitchActionEnum'
+          default: switch
+        user_pk:
+          type: integer
+    UserSwitchResponse:
+      type: object
+      description: Redirect returned after planning a user switch.
+      properties:
+        redirect:
+          type: string
+          readOnly: true
+      required:
+      - redirect
     UserTelegramSourceConnection:
       type: object
       description: User source connection
@@ -59165,6 +61829,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -59198,6 +61868,10 @@ components:
           type: string
           description: Get WS-Fed url
           readOnly: true
+        url_issuer:
+          type: string
+          description: Get Issuer/EntityID URL
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -59211,6 +61885,7 @@ components:
       - pk
       - reply_url
       - url_download_metadata
+      - url_issuer
       - url_wsfed
       - verbose_name
       - verbose_name_plural
@@ -59278,6 +61953,12 @@ components:
           description: Configure how the AuthnContextClassRef value will be created.
             When left empty, the AuthnContextClassRef will be set based on which authentication
             methods the user used to authenticate.
+        saml_version:
+          allOf:
+          - $ref: '#/components/schemas/SamlVersionEnum'
+          description: SAML assertion version to issue in the security token. Microsoft
+            Entra ID and classic ADFS-style relying parties typically require SAML
+            1.1.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -59413,6 +62094,15 @@ components:
           authentik_providers_ws_federation.wsfederationprovider: '#/components/schemas/WSFederationProviderRequest'
   securitySchemes:
     authentik:
+      type: http
+      scheme: bearer
+    authentik_device_auth:
+      type: http
+      scheme: bearer+agent
+    authentik_device_enroll:
+      type: http
+      scheme: bearer
+    authentik_device_federation:
       type: http
       scheme: bearer
 servers:

@@ -104,14 +104,43 @@ Example:
 
 {/* prettier-ignore-start */}
 
-
 ```yaml
-configure_flow: !Context foo
+context:
+    foo: some-value
+    some:
+      nested:
+        - value
+entries:
+    - ...
+      configure_flow: !Context foo # Resolves to `some-value`
+      authentication_flow: !Context some.nested.0 # Resolves to `value`
 ```
 
 {/* prettier-ignore-end */}
 
 Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
+
+:::note
+The nested value dot notation (`some.nested.0`) requires authentik 2026.11.
+:::
+
+:::tip
+If a key name matches a nested dot notation key, the regular key name takes precedence over the nested key. For example:
+
+{/* prettier-ignore-start */}
+
+```yaml
+context:
+    foo.bar: some-value
+    foo:
+      bar: another-value
+entries:
+  - ...
+    configure_flow: !Context foo.bar # Resolves to `some-value`
+```
+
+{/* prettier-ignore-end */}
+:::
 
 #### `!Format`
 
@@ -180,7 +209,7 @@ Full example:
 
 ```yaml
 required: !Condition [
-    AND, # Valid modes are: AND, NAND, OR, NOR, XOR, XNOR
+    AND, # Valid modes are: EQ, NEQ, AND, NAND, OR, NOR, XOR, XNOR
     !Context instance_name,
     !Find [authentik_flows.flow, [slug, default-password-change],
     "My string",
@@ -193,7 +222,7 @@ Requires at least one argument after the mode selection.
 
 If only a single argument is provided, its boolean representation will be returned for all normal modes and its negated boolean representation will be returned for all negated modes.
 
-Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.md)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
+Normally, it should be used to define complex conditions for use with an `!If` tag or for the `conditions` attribute of a blueprint entry (see [the blueprint file structure](./structure.mdx)). However, this is essentially just a boolean evaluator so it can be used everywhere a boolean representation is required.
 
 #### `!Enumerate`, `!Index` and `!Value`
 

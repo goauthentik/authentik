@@ -15,10 +15,10 @@ from authentik.core.api.utils import JSONDictField, ModelSerializer
 from authentik.rbac.permissions import HasPermission
 from authentik.tenants.flags import Flag
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import normalize_base_url
 
 
 class FlagJSONField(JSONDictField):
-
     def to_internal_value(self, data: str):
         flags = super().to_internal_value(data)
         for flag in Flag.available(visibility="system", exclude_system=False):
@@ -60,6 +60,7 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
 
     def map_serializer_field(self, auto_schema, direction):
         props = {}
+        required = []
         for flag in Flag.available():
             _flag = flag()
             props[_flag.key] = build_basic_type(get_args(_flag.__orig_bases__[0])[0])
@@ -67,7 +68,9 @@ class FlagsJSONExtension(OpenApiSerializerFieldExtension):
                 props[_flag.key]["description"] = _flag.description
             if _flag.deprecated:
                 props[_flag.key]["deprecated"] = _flag.deprecated
-        return build_object_type(props, required=props.keys())
+            if not _flag.deprecated:
+                required.append(_flag.key)
+        return build_object_type(props, required=required)
 
 
 class SettingsSerializer(ModelSerializer):
@@ -80,6 +83,7 @@ class SettingsSerializer(ModelSerializer):
         model = Tenant
         fields = [
             "avatars",
+            "base_url",
             "default_user_change_name",
             "default_user_change_email",
             "default_user_change_username",
@@ -96,6 +100,9 @@ class SettingsSerializer(ModelSerializer):
             "pagination_max_page_size",
             "flags",
         ]
+
+    def validate_base_url(self, value: str) -> str:
+        return normalize_base_url(value)
 
 
 class SettingsView(RetrieveUpdateAPIView):

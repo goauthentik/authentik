@@ -10,7 +10,7 @@ DOCKER_IMAGE ?= "authentik:test"
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
-	SED_INPLACE = sed -i ''
+	SED_INPLACE = /usr/bin/sed -i ''
 else
 	SED_INPLACE = sed -i
 endif
@@ -117,7 +117,7 @@ run:  ## Run the main authentik server and worker processes
 	$(UV) run ak allinone
 
 run-watch:  ## Run the authentik server and worker, with auto reloading
-	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs,go --no-meta --notify -- $(UV) run ak allinone
+	watchexec --on-busy-update=restart --stop-signal=SIGINT --exts py,rs --no-meta --notify -- $(UV) run ak allinone
 
 core-i18n-extract:
 	$(UV) run ak makemessages \
@@ -361,7 +361,7 @@ ci-lint-rustfmt: ci--meta-debug
 	$(CARGO) +nightly fmt --all --check -- --config-path "${PWD}/.cargo/rustfmt.toml"
 
 ci-lint-clippy: ci--meta-debug
-	$(CARGO) clippy --workspace -- -D warnings
+	$(CARGO) clippy --workspace --all-targets -- -D warnings
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts

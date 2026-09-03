@@ -1,3 +1,4 @@
+import "#elements/banner/BaseURLBanner";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/sidebar/Sidebar";
@@ -14,7 +15,6 @@ import {
 } from "./navigation/sidebar.js";
 
 import { isAPIResultReady } from "#common/api/responses";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
@@ -130,8 +130,6 @@ export class AdminInterface extends WithCapabilitiesConfig(
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
@@ -272,6 +270,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
                     ${this.renderCommandPaletteButton()}
                     <ak-version-banner></ak-version-banner>
+                    <ak-base-url-banner></ak-base-url-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 

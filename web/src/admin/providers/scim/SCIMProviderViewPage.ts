@@ -34,7 +34,7 @@ import {
     SCIMProvider,
 } from "@goauthentik/api";
 
-import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.md";
+import MDSCIMProvider from "~docs/add-secure-apps/providers/scim/index.mdx";
 
 import { msg } from "@lit/localize";
 import { CSSResult, html, nothing, PropertyValues } from "lit";

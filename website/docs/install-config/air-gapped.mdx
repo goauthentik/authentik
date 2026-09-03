@@ -1,5 +1,6 @@
 ---
 title: Air-gapped environments
+sidebar_position: 9
 ---
 
 import TabItem from "@theme/TabItem";
@@ -13,7 +14,8 @@ By default, authentik creates outbound connections to the following URLs:
 - https://goauthentik.io: Anonymous analytics on startup
 - https://secure.gravatar.com: Avatars for users
 - https://authentik.error-reporting.a7k.io: Error reporting
-- https://tile.openstreetmap.org: Map tiles for event logs :ak-enterprise
+
+The [events map](../sys-mgmt/events/index.mdx#event-map) ships with a bundled basemap and makes no outbound connections. If a custom basemap is configured under **System** > **Brands** (**Map tiles**), the browser loads tiles from the configured URL — in an air-gapped environment, point it at an internally reachable tile source or leave it empty to keep the bundled default.
 
 ## Configuration
 
@@ -55,7 +57,7 @@ Afterwards, run the upgrade commands from the latest release notes.
   </TabItem>
 </Tabs>
 
-Additionally, adjust the following [System settings](../sys-mgmt/settings.md):
+Additionally, adjust the following [System settings](../sys-mgmt/settings.mdx):
 
 - **Avatars**: By default this setting connects to [Gravatar](https://secure.gravatar.com/). To avoid outgoing connections, set this to a combination of other options, such as `initials`.
 

@@ -113,6 +113,7 @@ function createGuestSession(): SessionUser {
             pk: -1,
             isSuperuser: false,
             isActive: true,
+            isCurrent: true,
             groups: [],
             roles: [],
             avatar: "",
@@ -122,6 +123,7 @@ function createGuestSession(): SessionUser {
             settings: {},
             systemPermissions: [],
         },
+        users: [],
     };
 
     return guest;

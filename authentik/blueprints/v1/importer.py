@@ -20,6 +20,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 from yaml import load
+from yaml.error import YAMLError
 
 from authentik.blueprints.v1.common import (
     Blueprint,
@@ -52,7 +53,7 @@ from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.rbac.models import Role
 
 # Context set when the serializer is created in a blueprint context
-# Update website/docs/customize/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.mdx when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -154,13 +155,16 @@ class Importer:
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
-        import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            import_dict = load(yaml_input, BlueprintLoader)
+        except YAMLError as exc:
+            raise EntryInvalidError(exc) from exc
         try:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
             )
         except DaciteError as exc:
-            raise EntryInvalidError from exc
+            raise EntryInvalidError(exc) from exc
         return Importer(_import, context)
 
     @property

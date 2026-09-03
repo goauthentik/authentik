@@ -1,7 +1,7 @@
 """transfer common classes"""
 
 from collections import OrderedDict
-from collections.abc import Generator, Iterable, Mapping
+from collections.abc import Generator, Iterable, Mapping, Sequence
 from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
@@ -268,7 +268,11 @@ class Env(YAMLTag):
             self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key) or self.default
+        if env := getenv(self.key):
+            return env
+        if isinstance(self.default, YAMLTag):
+            return self.default.resolve(entry, blueprint)
+        return self.default
 
 
 class File(YAMLTag):
@@ -314,13 +318,47 @@ class Context(YAMLTag):
             self.key = loader.construct_object(node.value[0])
             self.default = loader.construct_object(node.value[1])
 
+    def _resolve(
+        self,
+        entry: BlueprintEntry,
+        blueprint: Blueprint,
+        context: Sequence | Mapping,
+        path: str,
+        _segment: str | int | None = None,
+    ) -> Any:
+        """Recursively resolve context"""
+        if _segment is not None:
+            context = context[_segment]
+
+        if isinstance(context, YAMLTag):
+            context = context.resolve(entry, blueprint)
+
+        value = UNSET
+
+        if isinstance(context, Sequence) and not isinstance(context, (str, bytes)):
+            if path.isdigit() and 0 <= int(path) < len(context):
+                value = context[int(path)]
+        elif path in context:
+            value = context[path]
+
+        if value is not UNSET:
+            if isinstance(value, YAMLTag):
+                value = value.resolve(entry, blueprint)
+            return value
+
+        if "." in path:
+            new_head, new_key = path.split(".", 1)
+
+            if isinstance(context, Sequence) and not isinstance(context, (str, bytes)):
+                if new_head.isdigit() and 0 <= int(new_head) < len(context):
+                    return self._resolve(entry, blueprint, context, new_key, int(new_head))
+            elif new_head in context:
+                return self._resolve(entry, blueprint, context, new_key, new_head)
+
+        return self.default
+
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        value = self.default
-        if self.key in blueprint.context:
-            value = blueprint.context[self.key]
-        if isinstance(value, YAMLTag):
-            return value.resolve(entry, blueprint)
-        return value
+        return self._resolve(entry, blueprint, blueprint.context, self.key)
 
 
 class ParseJSON(YAMLTag):
@@ -430,12 +468,14 @@ class FindObject(Find):
 class Condition(YAMLTag):
     """Convert all values to a single boolean"""
 
-    mode: Literal["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
+    mode: Literal["EQ", "NEQ", "AND", "NAND", "OR", "NOR", "XOR", "XNOR"]
     args: list[Any]
 
     _COMPARATORS = {
         # Using all and any here instead of from operator import iand, ior
         # to improve performance
+        "EQ": lambda args: all(x == args[0] for x in args),
+        "NEQ": lambda args: not all(x == args[0] for x in args),
         "AND": all,
         "NAND": lambda args: not all(args),
         "OR": any,

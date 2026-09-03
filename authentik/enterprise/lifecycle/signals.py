@@ -1,25 +1,12 @@
-from django.db.models import Q
-from django.db.models.signals import post_save, pre_delete
-from django.dispatch import receiver
+"""Signal registry for the lifecycle app.
 
-from authentik.enterprise.lifecycle.models import LifecycleRule, ReviewState
-from authentik.tasks.schedules.models import Schedule
+Receivers live in each feature package; importing them here connects them, as
+the app framework auto-imports `<app>.signals`.
+"""
 
+from authentik.enterprise.lifecycle.review.signals import post_rule_save, pre_rule_delete
 
-@receiver(post_save, sender=LifecycleRule)
-def post_rule_save(sender, instance: LifecycleRule, created: bool, **_):
-    from authentik.enterprise.lifecycle.tasks import apply_lifecycle_rule
-
-    apply_lifecycle_rule.send_with_options(
-        args=(instance.id,),
-        rel_obj=Schedule.objects.get(
-            actor_name="authentik.enterprise.lifecycle.tasks.apply_lifecycle_rules"
-        ),
-    )
-
-
-@receiver(pre_delete, sender=LifecycleRule)
-def pre_rule_delete(sender, instance: LifecycleRule, **_):
-    instance.lifecycleiteration_set.filter(
-        Q(state=ReviewState.PENDING) | Q(state=ReviewState.OVERDUE)
-    ).update(state=ReviewState.CANCELED)
+__all__ = [
+    "post_rule_save",
+    "pre_rule_delete",
+]
