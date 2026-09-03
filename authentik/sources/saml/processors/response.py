@@ -41,9 +41,9 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    InvalidTime,
     MismatchedRequestID,
     MissingSAMLResponse,
-    SAMLException,
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import (
@@ -139,11 +139,11 @@ class ResponseProcessor:
         before = conditions.attrib.get("NotBefore")
         if before:
             if datetime.fromisoformat(before).replace(tzinfo=UTC) > _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
         on_or_after = conditions.attrib.get("NotOnOrAfter")
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
 
     def _verify_signature(self, signature_node: _Element, target: _Element):
         """Verify a single signature node against the given target element."""

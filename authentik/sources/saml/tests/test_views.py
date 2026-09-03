@@ -71,7 +71,7 @@ class TestViews(TestCase):
             },
         )
         self.assertEqual(response.status_code, 400)
-        self.assertIn(b"Assertion is not valid yet or expired.", response.content)
+        self.assertIn(b"The SAML assertion is not valid yet or has expired.", response.content)
 
     @freeze_time("2022-10-14T14:15:00")
     def test_enroll_redirect(self):
