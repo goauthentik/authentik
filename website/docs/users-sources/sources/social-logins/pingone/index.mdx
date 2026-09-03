@@ -6,9 +6,13 @@ tags:
     - source
     - pingone
     - saml
+    - oidc
 ---
 
-This source lets users authenticate with their PingOne credentials by configuring PingOne as a federated identity provider with SAML.
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This source lets users authenticate with their PingOne credentials by configuring PingOne as a federated identity provider using SAML or OpenID Connect (OIDC).
 
 ## Preparation
 
@@ -16,9 +20,24 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `<environment-id>` is the ID of your PingOne environment.
-- `<pingone-slug>` is the slug to assign to the SAML source in authentik (for example, `pingone`).
+- `<pingone-slug>` is the slug to assign to the source in authentik (for example, `pingone`).
 
-## Export the authentik signing certificate
+## Configuration methods
+
+You can integrate PingOne with authentik using either SAML or OpenID Connect (OIDC). Select a tab below for the corresponding instructions.
+
+<Tabs
+    defaultValue="saml"
+    values={[
+        { label: "SAML", value: "saml" },
+        { label: "OIDC", value: "oidc" },
+    ]}
+>
+<TabItem value="saml">
+
+## SAML
+
+### Export the authentik signing certificate
 
 PingOne needs the authentik certificate to verify signed requests from authentik and to encrypt assertions.
 
@@ -27,9 +46,9 @@ PingOne needs the authentik certificate to verify signed requests from authentik
 3. Click the certificate you plan on using for signing (e.g., the default `authentik Self-signed Certificate`).
 4. Click **Download Certificate**.
 
-## PingOne configuration
+### PingOne configuration
 
-### Create a SAML application
+#### Create a SAML application
 
 1. Log in to the PingOne admin console.
 2. Navigate to **Applications** > **Applications** and click **+**.
@@ -39,7 +58,7 @@ PingOne needs the authentik certificate to verify signed requests from authentik
     - **Entity ID**: `https://authentik.company/source/saml/<pingone-slug>/metadata/`
 5. Click **Save**.
 
-### Configure signing, encryption, and request verification
+#### Configure signing, encryption, and request verification
 
 1. On the application's **Configuration** tab, click the **Edit** (pencil) icon.
 2. Configure the following settings:
@@ -50,24 +69,24 @@ PingOne needs the authentik certificate to verify signed requests from authentik
     - Select **Enforce Signed Authn Request** and import the authentik certificate you exported earlier as the **Verification Certificate**.
 3. Click **Save**.
 
-### Configure attribute mapping
+#### Configure attribute mapping
 
 1. On the application's **Attribute Mappings** tab, click the **Edit** (pencil) icon.
 2. Set the **saml_subject** attribute to **Username**.
 3. Click **Save**.
 
-### Download the PingOne signing certificate
+#### Download the PingOne signing certificate
 
 1. On the application's **Overview** tab, under **Connection Details**, click **Download Signing Certificate** and select **X509 PEM (.crt)**.
 2. Take note of the **Single Signon Service** and **Single Logout Service** URLs. These values are required in the next section.
 
-### Enable the application
+#### Enable the application
 
 1. Toggle on the switch in the top right of the application panel to enable the application.
 
-## authentik configuration
+### authentik configuration
 
-### Upload the PingOne certificate to authentik
+#### Upload the PingOne certificate to authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Import**.
@@ -76,7 +95,7 @@ PingOne needs the authentik certificate to verify signed requests from authentik
 5. Leave the **Private Key** field empty.
 6. Click **Create**.
 
-### Create a SAML source in authentik
+#### Create a SAML source in authentik
 
 1. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 2. Select **SAML Source** and configure the following settings:
@@ -90,6 +109,53 @@ PingOne needs the authentik certificate to verify signed requests from authentik
     - Enable **Verify Assertion Signature**.
     - Set **Encryption Certificate** to the authentik certificate you exported earlier (e.g., the default `authentik Self-signed Certificate`).
 3. Click **Finish**.
+
+</TabItem>
+<TabItem value="oidc">
+
+## OIDC
+
+### PingOne configuration
+
+#### Create an OIDC application
+
+1. Log in to the PingOne admin console.
+2. Navigate to **Applications** > **Applications** and click **+**.
+3. Set **Application Name** to `authentik`, select **OIDC Web App** as the application type, and then click **Save**.
+
+#### Configure the redirect URI
+
+1. On the application's **Configuration** tab, click the **Edit** (pencil) icon.
+2. Set **Redirect URIs** to `https://authentik.company/source/oauth/callback/<pingone-slug>/`.
+4. Click **Save**.
+
+#### Grant scopes
+
+1. On the application's **Resources** tab, click the **Edit** (pencil) icon.
+2. Grant the **profile** and **email** scopes (the **openid** scope is granted by default).
+3. Click **Save**.
+
+#### Enable the application
+
+1. Toggle on the switch in the top right of the application panel to enable the application.
+2. On the **Configuration** tab, take note of the **Client ID** and **Client Secret**. These values are required in the next section.
+
+### authentik configuration
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+3. Select **OpenID Connect OAuth Source** and configure the following settings:
+    - Set **Name** to `PingOne`.
+    - Set **Slug** to `pingone`. The slug must match the slug used in the PingOne **Redirect URIs** field.
+    - Under **Protocol settings**:
+        - Set **Consumer key** to the **Client ID** from PingOne.
+        - Set **Consumer secret** to the **Client Secret** from PingOne.
+    - Under **URL settings**:
+        - Set **OIDC Well-known URL** to `https://auth.pingone.com/<environment-id>/as/.well-known/openid-configuration`. authentik reads the authorization, token, user info, and JWKS URLs from the well-known URL.
+4. Click **Finish**.
+
+</TabItem>
+</Tabs>
 
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
@@ -107,3 +173,4 @@ Source property mappings allow you to modify or gather extra information from so
 
 - [PingOne documentation - Configuring a SAML application](https://docs.pingidentity.com/solution-guides/workforce_use_cases/htg_config_saml_app.html)
 - [PingOne documentation - Editing an application - SAML](https://docs.pingidentity.com/pingone/applications/p1_edit_application_saml.html)
+- [PingOne documentation - Editing an application - OIDC](https://docs.pingidentity.com/pingone/applications/p1_edit_application_oidc.html)
