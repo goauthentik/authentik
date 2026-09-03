@@ -1,0 +1,126 @@
+---
+title: Integrate with Auth0
+sidebar_label: Auth0
+support_level: community
+---
+
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+
+## What is Auth0?
+
+> Auth0 is an identity platform that provides authentication and authorization services for applications. It can delegate authentication to external identity providers via enterprise connections.
+>
+> -- https://auth0.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+- `company.auth0.com` is the domain of your Auth0 tenant.
+- `<tenant-name>` is the name of your Auth0 tenant (the first part of `company.auth0.com`).
+- `<connection-name>` is the name of the SAML enterprise connection in Auth0 (for example, `authentik`).
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Auth0 with authentik, you need to import the Auth0 encryption certificate and create an application/provider pair in authentik.
+
+### Import the Auth0 certificate
+
+Auth0 uses its tenant keypair to decrypt assertions and to sign SAML requests. Import the public certificate into authentik so authentik can encrypt assertions for Auth0 and verify the signatures on requests from Auth0.
+
+1. Download the Auth0 tenant certificate from `https://company.auth0.com/pem?cert=connection`.
+2. Log in to authentik as an administrator and open the authentik Admin interface.
+3. Navigate to **System** > **Certificates** and click **Import**.
+4. Give it a name like `Auth0 Certificate`.
+5. Paste the contents of the downloaded certificate into the **Certificate** field.
+6. Leave the **Private Key** field empty.
+7. Click **Create**.
+
+### Create an application and provider
+
+<SAMLProvider20265Warning />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - **ACS URL**: `https://company.auth0.com/login/callback?connection=<connection-name>`
+        - **Audience**: `urn:auth0:<tenant-name>:<connection-name>`
+        - **SLS URL**: `https://company.auth0.com/logout`
+        - **SLS Binding**: `Redirect`
+        - **Logout Method**: `Front-channel (Iframe)`.
+        - Under **Advanced protocol settings**:
+            - Select an available **Signing Certificate**.
+            - Set **Verification Certificate** to the Auth0 certificate you imported earlier. authentik will then reject unsigned requests, so **Sign Request** must be enabled on the Auth0 connection.
+            - Set **Encryption Certificate** to the Auth0 certificate you imported earlier.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the signing certificate
+
+1. Navigate to **Applications** > **Providers** and click the name of the provider that you created in the previous section.
+2. Under **Related objects** > **Download signing certificate**, click **Download**. This certificate will be required in the next section.
+
+## Auth0 configuration
+
+To integrate authentik with Auth0, create a SAML enterprise connection in the Auth0 Dashboard.
+
+1. Log in to the Auth0 Dashboard as an administrator.
+2. Navigate to **Authentication** > **Enterprise**, find **SAML**, and click the **Create** button.
+3. Configure the following settings:
+    - **Connection name**: `<connection-name>`. This value cannot be changed later and must match the connection name used in the authentik **ACS URL** and **Audience** fields.
+    - **Sign In URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **Sign Out URL**: `https://authentik.company/application/saml/<application_slug>/`
+    - **X509 Signing Certificate**: upload the authentik signing certificate you downloaded earlier.
+    - Under advanced settings, enable **Sign Request** so that authentik can verify the signature of requests from Auth0.
+4. Click **Create**.
+5. Navigate to the connection's **Applications** tab and enable the connection for each application that should allow logging in with authentik.
+
+### Allow the authentik encryption algorithm
+
+authentik encrypts assertions using AES-128-CBC, which Auth0's default algorithm profile rejects. This setting is not available in the Auth0 Dashboard; allow the algorithm on the connection using the [Update a Connection](https://auth0.com/docs/api/management/v2/connections/patch-connections-by-id) endpoint of the Auth0 Management API.
+
+1. To get an API token, navigate to **Applications** > **APIs** > **Auth0 Management API** > **API Explorer** in the Auth0 Dashboard and copy the test token.
+2. Fetch the connection's `id` and current `options`:
+
+    ```shell
+    curl -H "Authorization: Bearer <api-token>" \
+        "https://company.auth0.com/api/v2/connections?strategy=samlp&name=<connection-name>"
+    ```
+
+3. Update the connection, sending back the entire `options` object from the previous response with the following property added to it:
+
+    ```json
+    "assertion_decryption_settings": {
+        "algorithm_profile": "v2026-1",
+        "algorithm_exceptions": ["http://www.w3.org/2001/04/xmlenc#aes128-cbc"]
+    }
+    ```
+
+    ```shell
+    curl -X PATCH "https://company.auth0.com/api/v2/connections/<connection-id>" \
+        -H "Authorization: Bearer <api-token>" \
+        -H "Content-Type: application/json" \
+        -d '{"options": {<merged options object>}}'
+    ```
+
+:::warning
+Updating `options` replaces the entire object. Send the connection's existing `options` with `assertion_decryption_settings` added; sending only the new property removes all other connection settings.
+:::
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Auth0, navigate to **Authentication** > **Enterprise** > **SAML** in the Auth0 Dashboard, click the **...** menu next to the connection, and select **Try**. The connection must be enabled for at least one application, or Auth0 returns a `the connection is not enabled` error. You should be redirected to authentik to authenticate, and back to Auth0 with an **It works!** page showing the received user profile.
+
+## Resources
+
+- [Auth0 Docs — Connect Your App to SAML Identity Providers](https://auth0.com/docs/authenticate/identity-providers/enterprise-identity-providers/saml)
+- [Auth0 Docs — Configure Auth0 as SAML Service Provider](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-service-provider)
+- [Auth0 Docs — Log Users Out of SAML Identity Providers](https://auth0.com/docs/authenticate/login/logout/log-users-out-of-saml-idps)
