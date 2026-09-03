@@ -1,22 +1,22 @@
 {% load i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<script data-id="authentik-config">
-    "use strict";
+{% comment %}
+    Server-injected values are rendered as data, not as executable script, so
+    the interface pages can eventually be served under a strict CSP. The web UI
+    reads them back in `web/src/common/global.ts`.
+{% endcomment %}
 
-    window.authentik = {
-        locale: "{{ LANGUAGE_CODE }}",
-        config: JSON.parse('{{ config_json|escapejs }}' || "{}"),
-        brand: JSON.parse('{{ brand_json|escapejs }}' || "{}"),
-        versionFamily: "{{ version_family }}",
-        versionSubdomain: "{{ version_subdomain }}",
-        build: "{{ build }}",
-        api: {
-            base: "{{ base_url }}",
-            relBase: "{{ base_url_rel }}",
-        },
-    };
-</script>
+{{ config_json|json_script:"ak-config" }}
+
+{{ brand_json|json_script:"ak-brand" }}
+
+<meta name="ak-locale" content="{{ LANGUAGE_CODE }}">
+<meta name="ak-version-family" content="{{ version_family }}">
+<meta name="ak-version-subdomain" content="{{ version_subdomain }}">
+<meta name="ak-build" content="{{ build }}">
+<meta name="ak-base-url" content="{{ base_url }}">
+<meta name="ak-base-url-rel" content="{{ base_url_rel }}">
 
 <script data-id="authentik-messages" type="application/json">
   [{% for message in messages %}
@@ -26,4 +26,3 @@
     }{% if not forloop.last %},{% endif %}
     {% endfor %}]
 </script>
-

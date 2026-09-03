@@ -159,9 +159,9 @@ class TestInterfaceCatchAll(TestCase):
         """The deep-path shell carries the same injected config as the root."""
         response = self.client.get("/if/admin/core/applications")
         self.assertEqual(response.status_code, 200)
-        # base/header_js.html injects window.authentik from the InterfaceView context.
-        self.assertIn(b"window.authentik", response.content)
-        self.assertIn(b'relBase: "/"', response.content)
+        # base/header_js.html injects the interface context as data, not script.
+        self.assertIn(b'id="ak-config"', response.content)
+        self.assertIn(b'<meta name="ak-base-url-rel" content="/">', response.content)
 
     def test_exact_admin_prefix_not_shadowed_by_catchall(self):
         """Ordering: the exact route wins over the catch-all for /if/admin/."""
@@ -184,7 +184,7 @@ class TestInterfaceCatchAll(TestCase):
         self.assertNotIn(resolve("/api/v3/core/users/").url_name, ("if-admin-path", "if-user-path"))
 
     def test_web_path_reflected_in_shell_context(self):
-        """When web.path is non-root, the shell advertises it via relBase.
+        """When web.path is non-root, the shell advertises it as ak-base-url-rel.
 
         Routing under web.path is resolved at import time in the root urlconf, so
         only the request-time context value is exercised here; deployment-prefix
@@ -193,4 +193,4 @@ class TestInterfaceCatchAll(TestCase):
         with CONFIG.patch("web.path", "/auth/"):
             response = self.client.get("/if/user/settings")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'relBase: "/auth/"', response.content)
+        self.assertIn(b'<meta name="ak-base-url-rel" content="/auth/">', response.content)
