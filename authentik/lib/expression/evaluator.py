@@ -208,7 +208,11 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = deepcopy(self._context["request"])
+            request = self._context["request"]
+            # `http_request` is a live Django HttpRequest which may carry an
+            # unpicklable `resolver_match`; pass the same instance through
+            # instead of deep-copying it.
+            req = deepcopy(request, memo={id(request.http_request): request.http_request})
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
