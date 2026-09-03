@@ -79,35 +79,32 @@ To integrate authentik with PingOne, create an external identity provider in the
 10. Click **Save**.
 11. To enable the IdP, click the toggle at the top of the details panel.
 
-## Upload the PingOne certificate to authentik
+## Download the PingOne encryption certificate
 
-To allow authentik to verify the signature of requests from PingOne, import the PingOne signing certificate you downloaded earlier and select it on the provider.
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **System** > **Certificates** and click **Import**.
-3. Give it a name like `PingOne Signing Certificate`.
-4. Paste the contents of the downloaded certificate into the **Certificate** field.
-5. Leave the **Private Key** field empty.
-6. Click **Create**.
-7. Navigate to **Applications** > **Providers** and click the **Edit** icon of the PingOne provider.
-8. Under **Advanced protocol settings**, set **Verification Certificate** to the PingOne certificate you imported.
-9. Click **Update**.
-
-## Encrypt assertions
-
-PingOne automatically attempts to decrypt encrypted assertions using the encryption certificates in your environment, starting with the default, so no connection settings are required. To have authentik encrypt its assertions, import the PingOne encryption certificate into authentik and select it on the provider.
+PingOne automatically attempts to decrypt encrypted assertions using the encryption certificates in your environment, starting with the default, so no connection settings are required.
 
 1. In the PingOne admin console, navigate to **Settings** > **Certificates & Key Pairs**.
 2. Locate the default key pair with usage type **Encryption**, click the **Details** icon, and then click **Download** and select **X509 PEM (.crt)**.
-3. Log in to authentik as an administrator and open the authentik Admin interface.
-4. Navigate to **System** > **Certificates** and click **Import**.
-5. Give it a name like `PingOne Encryption Certificate`.
-6. Paste the contents of the downloaded certificate into the **Certificate** field.
-7. Leave the **Private Key** field empty.
-8. Click **Create**.
-9. Navigate to **Applications** > **Providers** and click the **Edit** icon of the PingOne provider.
-10. Under **Advanced protocol settings**, set **Encryption Certificate** to the PingOne encryption certificate you imported.
-11. Click **Update**.
+
+## Upload the PingOne certificates to authentik
+
+Import the PingOne signing certificate so authentik can verify the signature of requests from PingOne, and the PingOne encryption certificate so authentik can encrypt its assertions.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **System** > **Certificates** and click **Import**.
+3. Set the name to `pingverify`.
+4. Paste the contents of the PingOne signing certificate you downloaded earlier into the **Certificate** field.
+5. Leave the **Private Key** field empty.
+6. Click **Create**.
+7. Repeat the import with the name `pingencrypt`, pasting the contents of the PingOne encryption certificate.
+
+## Reconfigure the authentik provider
+
+1. Navigate to **Applications** > **Providers** and click the **Edit** icon of the PingOne provider.
+2. Under **Advanced protocol settings**, configure the following settings:
+    - Set **Verification Certificate** to `pingverify`.
+    - Set **Encryption Certificate** to `pingencrypt`.
+3. Click **Update**.
 
 </TabItem>
 <TabItem value="oidc">
