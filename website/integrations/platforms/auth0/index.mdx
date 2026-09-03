@@ -4,7 +4,10 @@ sidebar_label: Auth0
 support_level: community
 ---
 
+import RedirectURI20265Note from "../../_redirect-uri-2026-5-note.mdx";
 import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 ## What is Auth0?
 
@@ -19,11 +22,21 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 - `company.auth0.com` is the domain of your Auth0 tenant.
 - `<tenant-name>` is the name of your Auth0 tenant (the first part of `company.auth0.com`).
-- `<connection-name>` is the name of the SAML enterprise connection in Auth0 (for example, `authentik`).
+- `<connection-name>` is the name of the enterprise connection in Auth0 (for example, `authentik`).
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
+
+Auth0 can delegate authentication to authentik using either SAML or OpenID Connect (OIDC). Choose one protocol and follow the matching tab throughout this guide.
+
+<Tabs
+  defaultValue="saml"
+  values={[
+    { label: "SAML", value: "saml" },
+    { label: "OIDC", value: "oidc" },
+  ]}>
+<TabItem value="saml">
 
 ## authentik configuration
 
@@ -119,8 +132,59 @@ Updating `options` replaces the entire object. Send the connection's existing `o
 
 To confirm that authentik is properly configured with Auth0, navigate to **Authentication** > **Enterprise** > **SAML** in the Auth0 Dashboard, click the **...** menu next to the connection, and select **Try**. The connection must be enabled for at least one application, or Auth0 returns a `the connection is not enabled` error. You should be redirected to authentik to authenticate, and back to Auth0 with an **It works!** page showing the received user profile.
 
+</TabItem>
+<TabItem value="oidc">
+
+## authentik configuration
+
+To support the integration of Auth0 with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider
+
+<RedirectURI20265Note />
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because you will use it when configuring Auth0.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because you will use them when configuring Auth0.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://company.auth0.com/login/callback`.
+        - Set **Logout URI** to `https://company.auth0.com/logout`.
+        - Set **Logout Method** to `Front-channel`.
+        - Select an RSA **Signing Key**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Auth0 configuration
+
+To integrate authentik with Auth0, create an OpenID Connect enterprise connection in the Auth0 Dashboard.
+
+1. Log in to the Auth0 Dashboard as an administrator.
+2. Navigate to **Authentication** > **Enterprise**, find **Open ID Connect**, and click the **Create** button.
+3. Configure the following settings:
+    - **Purpose**: **Authentication**.
+    - **Connection name**: `<connection-name>`. This value cannot be changed later.
+    - **Issuer URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Client ID**: enter the **Client ID** from authentik.
+4. Click **Create**.
+5. On the connection's **Settings** tab, configure the following settings:
+    - **Type**: `Back Channel`
+    - **Client Secret**: enter the **Client Secret** from authentik.
+6. Click **Save Changes**.
+7. Navigate to the connection's **Applications** tab and enable the connection for each application that should allow logging in with authentik.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Auth0, navigate to **Authentication** > **Enterprise** > **Open ID Connect** in the Auth0 Dashboard, click the **...** menu next to the connection, and select **Try**. The connection must be enabled for at least one application, or Auth0 returns a `the connection is not enabled` error. You should be redirected to authentik to authenticate, and back to Auth0 with an **It works!** page showing the received user profile.
+
+</TabItem>
+</Tabs>
+
 ## Resources
 
 - [Auth0 Docs — Connect Your App to SAML Identity Providers](https://auth0.com/docs/authenticate/identity-providers/enterprise-identity-providers/saml)
+- [Auth0 Docs — Connect Your App to OpenID Connect Identity Providers](https://auth0.com/docs/authenticate/identity-providers/enterprise-identity-providers/oidc)
 - [Auth0 Docs — Configure Auth0 as SAML Service Provider](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-service-provider)
 - [Auth0 Docs — Log Users Out of SAML Identity Providers](https://auth0.com/docs/authenticate/login/logout/log-users-out-of-saml-idps)
