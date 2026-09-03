@@ -118,7 +118,7 @@
         "@patternfly/patternfly": "^4.224.5",
         "@playwright/test": "catalog:",
         "@protomaps/basemaps": "^5.7.2",
-        "@sentry/browser": "^10.70.0",
+        "@sentry/browser": "^10.71.0",
         "@storybook/addon-docs": "^10.5.10",
         "@storybook/addon-links": "^10.5.10",
         "@storybook/web-components": "^10.5.10",
