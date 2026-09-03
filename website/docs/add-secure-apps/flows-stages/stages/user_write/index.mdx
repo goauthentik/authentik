@@ -36,17 +36,17 @@ The stage reads values from `prompt_data` in the [flow context](../../flow/conte
 For example, prompt fields with the keys `attributes.given_name` and `attributes.family_name` produce these user attributes:
 
 ```yaml
-family_name: Smith
-given_name: Jane
+family_name: Roy
+given_name: Dominic
 ```
 
-Use `attributes.<key>` for custom attributes. A key such as `department` is not stored on the user unless it starts with `attributes.`. The value remains available to stages and policies through `prompt_data` until the flow ends.
+Use `attributes.<key>` for custom attributes. The stage does not write other keys, such as `department`, to the user; their values remain in `prompt_data` until the flow ends, available to later stages and policies.
 
 For a complete configuration procedure, see [Collect custom user attributes during enrollment](../../flow/collect-user-attributes.mdx).
 
 ## Flow integration
 
-Use this stage after one or more stages that populate flow context, usually a [Identification stage](../identification/index.mdx), [Prompt stage](../prompt/index.mdx), or [Email stage](../email/index.mdx).
+Use this stage after one or more stages that populate flow context, usually an [Identification stage](../identification/index.mdx), [Prompt stage](../prompt/index.mdx), or [Email stage](../email/index.mdx).
 
 In enrollment flows, this stage is often followed by a [User Login](../user_login/index.mdx) stage so the newly created user is immediately signed in.
 
@@ -54,7 +54,7 @@ In enrollment flows, this stage is often followed by a [User Login](../user_logi
 
 ### Invitation data
 
-An [Invitation](../invitation/index.mdx) stage can add built-in properties or custom attributes to `prompt_data`. The User Write stage stores an `attributes` dictionary or dotted keys such as `attributes.department` in the same way as submitted prompt values.
+An [Invitation](../invitation/index.mdx) stage adds the invitation's built-in properties and custom attributes to `prompt_data`. The User Write stage stores an `attributes` dictionary or dotted keys such as `attributes.department` in the same way as submitted prompt values. For more information, see [Invitations](../../../../users-sources/user/invitations.mdx).
 
 ### Dynamic groups
 

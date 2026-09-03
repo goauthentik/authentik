@@ -47,7 +47,7 @@ The invitation wizard, available from the **Directory** > **Invitations** page i
 - **Name**: provide a slug-style name for your invitation object (lowercase letters, numbers, and hyphens only).
 - **Expires**: select a date and time for when the invitation should expire. Defaults to 48 hours from now.
 - **Flow**: read-only; reflects the flow chosen in the previous step.
-- **Custom attributes**: (_optional_) YAML or JSON that is added to the flow's `prompt_data`. The data can set built-in user properties, such as `name` and `email`. It can also set custom user attributes under `attributes`. A key only needs to match a field in the flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.mdx) if you want the value to appear in that field. See the [example custom attributes](#step-3-create-the-invitation-object) below.
+- **Custom attributes**: (_optional_) YAML or JSON that authentik adds to the flow's `prompt_data`. The data can set built-in user properties, such as `name` and `email`, and custom user attributes under `attributes`. A key only needs to match a field in the flow's [prompt stage](../../add-secure-apps/flows-stages/stages/prompt/index.mdx) if you want the value to appear in that field. See the [example custom attributes](#step-3-create-the-invitation-object) below.
 - **Single use**: when enabled, the invitation is deleted after the first successful enrollment.
 
 Click **Next** to create the invitation. If you chose **with New Enrollment Flow and Invitation Stage...**, the supporting blueprint is imported at this point as well.
@@ -122,7 +122,7 @@ Configure the following settings:
 - **Name**: provide a name for your invitation object.
 - **Expires**: select a date for when you want the invitation to expire.
 - **Flow**: In the drop-down menu, select the enrollment flow to use (`invitation-enrollment-flow-external`, `invitation-enrollment-flow-internal`, `invitation-enrollment-flow-internal-engineering`, or ` default-enrollment-flow` depending on which blueprint you used).
-- **Custom attributes**: (_optional_) Enter JSON or YAML to pre-fill user information. This data is merged with the user's input during enrollment.
+- **Custom attributes**: (_optional_) Enter JSON or YAML to add data to the flow's `prompt_data`, for example to pre-fill prompt fields or set custom user attributes.
 
 <details>
 <summary>Example custom attributes:</summary>
@@ -138,38 +138,38 @@ Configure the following settings:
         **Pre-fill multiple fields (YAML)**:
 
             ```yaml
-            name: Jane Smith
-            email: jane.smith@company.com
+            name: Dominic Roy
+            email: dominic.roy@company.com
             ```
 
         **Set built-in properties and custom user attributes (JSON)**:
 
             ```json
             {
-                "name": "John Doe",
-                "email": "john@example.com",
+                "name": "Dominic Roy",
+                "email": "dominic.roy@company.com",
                 "attributes": {
                     "department": "Engineering",
                     "employee_type": "contractor",
-                    "family_name": "Doe",
-                    "given_name": "John",
+                    "family_name": "Roy",
+                    "given_name": "Dominic",
                     "start_date": "2025-01-15"
                 }
             }
             ```
 
-        You can also use dotted keys that match prompt fields:
+        Dotted keys that match prompt fields work as well:
 
             ```json
             {
-                "attributes.family_name": "Doe",
-                "attributes.given_name": "John"
+                "attributes.family_name": "Roy",
+                "attributes.given_name": "Dominic"
             }
             ```
     </details>
 
     :::info How invitation data is used
-    authentik adds invitation data to the flow's `prompt_data`. A later [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) can store keys such as `email` and `name`. It can also store an `attributes` dictionary or dotted keys such as `attributes.department`. A key only needs to match a prompt field if you want the value to appear in that field.
+    authentik adds the invitation's custom attributes to the flow's `prompt_data`. A later [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx) stores keys such as `email` and `name` on the user, along with an `attributes` dictionary or dotted keys such as `attributes.department`. A key only needs to match a prompt field if you want the value to appear in that field.
     :::
 
     For an end-to-end example, see [Collect custom user attributes during enrollment](../../add-secure-apps/flows-stages/flow/collect-user-attributes.mdx).
@@ -337,13 +337,12 @@ Possible causes:
 
 Possible causes:
 
-- The enrollment flow does not run a User Write stage after the invitation and prompt stages.
-- A custom value uses a key such as `department` instead of an `attributes` dictionary or a dotted key such as `attributes.department`.
-- The value is displayed by a prompt field whose **Field Key** does not start with `attributes.`.
+- The enrollment flow does not include a [User Write stage](../../add-secure-apps/flows-stages/stages/user_write/index.mdx), or the stage runs before the Invitation or Prompt stages.
+- The custom attributes use a key such as `department` instead of an `attributes` dictionary or a dotted key such as `attributes.department`.
 
 ### Application receives a default or empty value
 
-If the value appears in the user's attributes but not in the application, review the provider's [property mappings](../../add-secure-apps/providers/property-mappings/index.mdx). Storing an attribute on a user does not automatically send that value through the provider.
+If the value appears in the user's attributes but not in the application, review the provider's [property mappings](../../add-secure-apps/providers/property-mappings/index.mdx). Storing an attribute on a user does not send that value through a provider. For OAuth2/OIDC, also confirm that the scope mapping is assigned to the provider and that the application requests the scope.
 
 :::info Invitation links validity
 Be aware that when an authentik administrator or any other user creates an invitation link, that link remains valid even if the administrator is deactivated or has permissions revoked. However, if the user who created the link is deleted and removed from the authentik system, the link is also deleted.

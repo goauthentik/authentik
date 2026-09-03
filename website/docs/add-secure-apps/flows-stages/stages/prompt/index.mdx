@@ -67,9 +67,9 @@ Some field types also have special behavior:
 
 ## Use prompt data to update a user
 
-The Prompt stage does not update the user. It adds each submitted value to `prompt_data` under the prompt's **Field Key**.
+The Prompt stage does not update the user. It stores each submitted value in `prompt_data` under the prompt's **Field Key**.
 
-A later [User Write](../user_write/index.mdx) stage can read `prompt_data` and update the user. The **Field Key** must identify either a user property or a key in the user's **Attributes** dictionary.
+To write a value to the user, bind a [User Write](../user_write/index.mdx) stage after the Prompt stage. The User Write stage stores the value on the user when the **Field Key** is a user property or starts with `attributes.`:
 
 | Field key                    | Result after the User Write stage                                      |
 | ---------------------------- | ---------------------------------------------------------------------- |
@@ -81,9 +81,9 @@ A later [User Write](../user_write/index.mdx) stage can read `prompt_data` and u
 | `attributes.department`      | Adds or updates `department` in the user's **Attributes** dictionary.  |
 | `attributes.settings.locale` | Adds or updates the nested value `settings.locale` in **Attributes**.  |
 
-For example, a prompt with the **Field Key** `department` adds the submitted value to `prompt_data`, where a policy or another stage can use it. The User Write stage does not add that value to the user because `department` is not a user property.
+A prompt with a **Field Key** such as `department` only adds the value to `prompt_data`, where policies and later stages can use it. The User Write stage does not store the value on the user because `department` is not a user property.
 
-To add the value to the user's **Attributes** dictionary, set the prompt's **Field Key** to `attributes.department` and place a User Write stage after the Prompt stage.
+To store the value as a custom attribute, set the prompt's **Field Key** to `attributes.department`.
 
 For a complete enrollment example, see [Collect custom user attributes during enrollment](../../flow/collect-user-attributes.mdx).
 

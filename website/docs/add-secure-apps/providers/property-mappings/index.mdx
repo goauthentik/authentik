@@ -5,9 +5,9 @@ sidebar_position: 1
 sidebar_label: "Property Mappings"
 ---
 
-Provider property mappings allow you to send information to integrated applications. For example, a SAML property mapping can send a user's groups to an integrated application as a SAML attribute.
+Provider property mappings send information from authentik to integrated applications. For example, a SAML property mapping can send a user's groups to an application as a SAML attribute.
 
-To instead import data from a source into authentik, see [source property mappings](../../../users-sources/sources/property-mappings/index.mdx).
+To map data from a source into authentik instead, see [source property mappings](../../../users-sources/sources/property-mappings/index.mdx).
 
 ## Choose a property mapping type
 
@@ -33,7 +33,7 @@ If the default mappings do not send the data that your application needs, create
 5. Enter a **Name** and configure the fields for that mapping type. Most mapping types include an **Expression** field.
 6. Click **Finish**.
 7. Open the provider or endpoint that should use the mapping.
-8. Add the mapping to the appropriate field, such as **Property mappings**, **User Property Mappings**, **Group Property Mappings**, or **Additional scopes**.
+8. Add the mapping to the appropriate field, such as **Property mappings**, **User Property Mappings**, **Group Property Mappings**, or **Scopes**.
 9. Save the provider or endpoint.
 
 ## Write a mapping expression
@@ -48,11 +48,13 @@ Returning `None` skips the mapping. For the available functions, objects, and va
 
 ## Map stored user attributes
 
-A provider property mapping reads user data and sends it to an integrated application. It does not collect or store data on the user. If you collect data with prompt fields in an enrollment flow, add a [User Write stage](../../flows-stages/stages/user_write/index.mdx) to store the data before a property mapping can use it.
+A property mapping reads user data and sends it to an integrated application. It does not collect or store data on the user. If you collect data with prompt fields in an enrollment flow, add a [User Write stage](../../flows-stages/stages/user_write/index.mdx) to store the data on the user first.
 
-A mapping can read built-in user properties, such as `user.name`, and custom user attributes. Use `ak_obj_attr()` to read a custom user attribute. The name sent to the integrated application does not need to match the key stored on the user.
+A mapping can read built-in user properties, such as `user.name`, and custom user attributes. Use `ak_obj_attr()` to read a custom attribute. The name sent to the application does not need to match the key stored on the user.
 
-For example, a user can have the custom attributes `given_name` and `family_name`, while an OAuth2/OIDC application expects `first_name` and `last_name`. An OAuth2/OIDC scope mapping can return:
+**Example**:
+
+A user stores the custom attributes `given_name` and `family_name`, but an OAuth2/OIDC application expects the claims `first_name` and `last_name`. A scope mapping can rename the values:
 
 ```python
 return {
@@ -61,15 +63,13 @@ return {
 }
 ```
 
-In this example, `first_name` and `last_name` are the OAuth2/OIDC claim names sent to the integrated application. `given_name` and `family_name` are the keys stored in the user's attributes.
-
-For SAML, create a SAML property mapping for each value. Set **SAML Attribute Name** to the name that the application expects, such as `first_name`. The mapping expression returns the stored value:
+For SAML, create a SAML property mapping for each value. Set **SAML Attribute Name** to the name that the application expects, and return the stored value:
 
 ```python
 return ak_obj_attr(user, "given_name", user.name)
 ```
 
-This approach lets different integrated applications use different names for the same stored user attribute.
+Different applications can use different names for the same stored attribute.
 
 ## SAML property mappings
 
@@ -81,15 +81,15 @@ See [SAML property mappings](../saml/index.mdx#saml-property-mappings) for the d
 
 An OAuth2/OIDC scope mapping defines a scope and the claims that authentik returns when a client requests that scope. The expression must return a dictionary.
 
-The returned claims are available from the `UserInfo` endpoint. authentik also includes them in the ID token when **Include claims in id_token** is enabled on the provider. Scope mappings do not always add claims to access tokens.
-
 The client must request the scope, and the scope mapping must be assigned to the provider. If either condition is missing, authentik does not return the mapping's claims.
+
+The returned claims are available from the `UserInfo` endpoint. authentik includes them in the ID token and access token only when **Include claims in id_token** is enabled on the provider.
 
 See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization, default scopes, and special scopes.
 
 ## Synchronization property mappings
 
-Synchronization providers use property mappings to build user and group data for integrated services. The mapping must return the format required by the integrated service.
+Synchronization providers use property mappings to build the user and group data that they send to integrated services. The mapping must return data in the format that the integrated service expects.
 
 Refer to the provider documentation for supported fields and examples:
 
@@ -101,9 +101,11 @@ Refer to the provider documentation for supported fields and examples:
 
 For SCIM, Google Workspace, and Microsoft Entra ID, raise `SkipObject` to skip the current user or group. The synchronization continues with the next object.
 
+**Example**:
+
 ```python
 if user.username == "example_username":
     raise SkipObject
 ```
 
-Use this only with mapping types that support `SkipObject`. It does not apply to SAML attributes or OAuth2/OIDC claims.
+Only synchronization mappings handle `SkipObject`. It does not apply to SAML attributes or OAuth2/OIDC claims.

@@ -1,38 +1,38 @@
 ---
 title: Collect custom user attributes during enrollment
-description: Collect user data via an enrollment flow and store it as custom user attributes.
-sidebar_position: 3
+description: Collect user data with an enrollment flow and store it as custom user attributes.
+sidebar_position: 9
 ---
 
-Use Prompt and User Write stages to collect user data during enrollment and save it as custom attributes on the new authentik user.
+Use a Prompt stage and a User Write stage to collect user data during enrollment and store it as custom attributes on the new user.
 
 ## About the workflow
 
-The workflow has three steps:
+The workflow has three parts:
 
-1. A prompt field in a Prompt stage collects a value from a user and stores it in the flow's `prompt_data` context.
-2. A User Write stage stores the value as an attribute on the authentik user.
-3. A provider property mapping sends the stored value to an application, or an authentik policy uses the attribute.
+1. A prompt field in a Prompt stage collects a value and stores it in the flow's `prompt_data` context.
+2. A User Write stage writes the value from `prompt_data` to the user.
+3. A provider property mapping sends the stored value to an application, or a policy reads the attribute.
 
-The prompt field's **Field Key** controls where authentik stores the value. Use built-in property names for standard user fields. Start custom attribute keys with `attributes.`.
+The prompt field's **Field Key** controls where the User Write stage stores the value:
 
-| Value                             | Field key                    |
-| --------------------------------- | ---------------------------- |
-| Username                          | `username`                   |
-| Display name                      | `name`                       |
-| Email address                     | `email`                      |
-| Given name attribute              | `attributes.given_name`      |
-| Family name attribute             | `attributes.family_name`     |
-| Department attribute              | `attributes.department`      |
-| Nested preferred locale attribute | `attributes.settings.locale` |
+| Field key                    | Where the value is stored              |
+| ---------------------------- | -------------------------------------- |
+| `username`                   | The user's username                    |
+| `name`                       | The user's display name                |
+| `email`                      | The user's email address               |
+| `attributes.given_name`      | The `given_name` attribute             |
+| `attributes.family_name`     | The `family_name` attribute            |
+| `attributes.department`      | The `department` attribute             |
+| `attributes.settings.locale` | The nested `settings.locale` attribute |
 
 :::warning Field key naming
-A field key such as `department`, `first_name`, or `last_name` is available to later stages and policies in `prompt_data`. However, the User Write stage does not store it on the user. Start the field key with `attributes.` to store it as an attribute on the user.
+A field key such as `department` is available to later stages and policies in `prompt_data`, but the User Write stage does not store it on the user. Start the field key with `attributes.` to store the value as a user attribute.
 :::
 
 ## Create the prompt fields
 
-This example collects separate given and family names. The default object attribute keys for these values are `given_name` and `family_name`.
+This example collects a given name and a family name. The default [object attribute](../../../sys-mgmt/object-attributes.mdx) keys for these values are `given_name` and `family_name`.
 
 1. Log in to authentik as an administrator and open the Admin interface.
 2. Navigate to **Flows and Stages** > **Prompts**, and click **New Prompt**.
@@ -53,9 +53,9 @@ This example collects separate given and family names. The default object attrib
     - **Order**: enter a value greater than the given name prompt's order.
 6. Click **Create Prompt**.
 
-You can use the same pattern for any custom attribute. For example, use `attributes.department` to store a `department` attribute.
+The same pattern works for any custom attribute. For example, use the field key `attributes.department` to store a `department` attribute.
 
-You can also create or enable [object attribute definitions](../../../sys-mgmt/object-attributes.mdx) for these keys. Definitions add labeled fields and validation to user forms. They do not add fields to enrollment flows.
+To show these attributes as labeled fields with validation on the user forms in the Admin interface, create or enable [object attribute definitions](../../../sys-mgmt/object-attributes.mdx) for the keys. Definitions do not add fields to enrollment flows.
 
 ## Add the prompts to a Prompt stage
 
@@ -65,7 +65,7 @@ You can also create or enable [object attribute definitions](../../../sys-mgmt/o
 4. Add the given name and family name prompts to **Fields**.
 5. Click **Create Stage**.
 
-Alternatively, you can add the prompts to an existing Prompt stage in the enrollment flow.
+You can also add the prompts to an existing Prompt stage in the enrollment flow.
 
 ## Bind the stages to the enrollment flow
 
@@ -79,48 +79,48 @@ Alternatively, you can add the prompts to an existing Prompt stage in the enroll
     3. The User Write stage.
     4. An optional User Login stage.
 
-The User Write stage reads the submitted values from `prompt_data`. It writes `attributes.given_name` and `attributes.family_name` into the user's attributes as `given_name` and `family_name`.
+The User Write stage reads the submitted values from `prompt_data` and writes `attributes.given_name` and `attributes.family_name` to the user's attributes as `given_name` and `family_name`.
 
 ## Set attributes from an invitation
 
-An invitation can provide values without asking the user to enter them. In the invitation's **Custom attributes** field, use an `attributes` dictionary:
+An [invitation](../../../users-sources/user/invitations.mdx) can provide attribute values without asking the user to enter them. In the invitation's **Custom attributes** field, set an `attributes` dictionary:
 
 ```json
 {
-    "email": "jane.smith@example.com",
-    "name": "Jane Smith",
+    "email": "dominic.roy@example.com",
+    "name": "Dominic Roy",
     "attributes": {
         "department": "Engineering",
-        "family_name": "Smith",
-        "given_name": "Jane"
+        "family_name": "Roy",
+        "given_name": "Dominic"
     }
 }
 ```
 
-You can also use dotted keys that match the prompt fields:
+Dotted keys that match the prompt fields work as well:
 
 ```json
 {
-    "attributes.family_name": "Smith",
-    "attributes.given_name": "Jane"
+    "attributes.family_name": "Roy",
+    "attributes.given_name": "Dominic"
 }
 ```
 
-Bind the Invitation stage before the Prompt and User Write stages. For more information, see [Invitations](../../../users-sources/user/invitations.mdx).
+Bind the Invitation stage before the Prompt and User Write stages.
 
 ## Map the attributes to an application
 
-Storing an attribute on the user does not automatically send that value through a provider. Configure a [provider property mapping](../../providers/property-mappings/index.mdx#map-stored-user-attributes) when an OAuth2/OIDC application requires a specific claim or a SAML application requires a specific attribute.
+Storing an attribute on the user does not send it to an application. When an OAuth2/OIDC application requires a specific claim or a SAML application requires a specific attribute, configure a [provider property mapping](../../providers/property-mappings/index.mdx#map-stored-user-attributes) that returns the stored value.
 
 ## Verify the result
 
 1. Run the enrollment flow and enter values in the new fields.
 2. In the Admin interface, navigate to **Directory** > **Users**.
-3. Open the enrolled user and confirm that **Attributes** contains:
+3. Open the enrolled user and confirm that **Attributes** contains the new values:
 
     ```yaml
-    family_name: Smith
-    given_name: Jane
+    family_name: Roy
+    given_name: Dominic
     ```
 
-4. If an application uses the values, preview or test the provider output. Confirm that it includes the expected values.
+4. If an application uses the values, test the property mapping or sign in to the application, and confirm that it receives the expected values.
