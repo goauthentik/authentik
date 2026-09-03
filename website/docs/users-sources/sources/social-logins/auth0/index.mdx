@@ -2,10 +2,13 @@
 title: Log in with Auth0
 sidebar_label: Auth0
 description: "Integrate Auth0 as a source in authentik"
-tags: [source, auth0, saml]
+tags: [source, auth0, saml, oidc]
 ---
 
-This source lets users authenticate with their Auth0 credentials by configuring Auth0 as a federated identity provider with SAML.
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+This source lets users authenticate with their Auth0 credentials by configuring Auth0 as a federated identity provider using SAML or OpenID Connect (OIDC).
 
 ## Preparation
 
@@ -13,9 +16,24 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 - `company.auth0.com` is the domain of your Auth0 tenant.
-- `<auth0-slug>` is the slug to assign to the SAML source in authentik (for example, `auth0`).
+- `<auth0-slug>` is the slug to assign to the source in authentik (for example, `auth0`).
 
-## Export the authentik signing certificate
+## Configuration methods
+
+You can integrate Auth0 with authentik using either SAML or OpenID Connect (OIDC). Select a tab below for the corresponding instructions.
+
+<Tabs
+    defaultValue="saml"
+    values={[
+        { label: "SAML", value: "saml" },
+        { label: "OIDC", value: "oidc" },
+    ]}
+>
+<TabItem value="saml">
+
+## SAML
+
+### Export the authentik signing certificate
 
 Auth0 needs the public certificate of an authentik keypair to verify signed requests from authentik and to encrypt assertions.
 
@@ -30,9 +48,9 @@ To encrypt assertions, Auth0 requires the public key in a separate file in addit
 openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -noout > public_key.pem
 ```
 
-## Auth0 configuration
+### Auth0 configuration
 
-### Create an application with the SAML2 Web App addon
+#### Create an application with the SAML2 Web App addon
 
 1. Log in to the Auth0 Dashboard as an administrator.
 2. Navigate to **Applications** > **Applications** and click **Create Application**.
@@ -59,7 +77,7 @@ openssl x509 -in authentik\ Self-signed\ Certificate_certificate.pem -pubkey -no
 7. Click **Enable** to save the addon settings.
 8. On the addon's **Usage** tab, take note of the **Identity Provider Login URL** and click **Download Auth0 certificate**. These values will be required when configuring authentik.
 
-### Configure assertion encryption
+#### Configure assertion encryption
 
 Auth0 encrypts assertions via a post-login Action rather than an addon setting.
 
@@ -87,9 +105,9 @@ Auth0 encrypts assertions via a post-login Action rather than an addon setting.
 5. Navigate to **Actions** > **Triggers** and select **post-login**.
 6. Drag the `SAML encryption` Action into the flow and click **Apply**.
 
-## authentik configuration
+### authentik configuration
 
-### Upload the Auth0 certificate to authentik
+#### Upload the Auth0 certificate to authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates** and click **Import**.
@@ -98,7 +116,7 @@ Auth0 encrypts assertions via a post-login Action rather than an addon setting.
 5. Leave the **Private Key** field empty.
 6. Click **Create**.
 
-### Create a SAML source in authentik
+#### Create a SAML source in authentik
 
 1. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
 2. Select **SAML Source** and configure the following settings:
@@ -112,6 +130,44 @@ Auth0 encrypts assertions via a post-login Action rather than an addon setting.
     - Enable **Verify Assertion Signature**.
     - Under **Advanced protocol settings**, set **Encryption Certificate** to the authentik certificate you exported earlier. Its private key is used to decrypt the assertions encrypted by Auth0.
 3. Click **Finish**.
+
+</TabItem>
+<TabItem value="oidc">
+
+## OIDC
+
+### Auth0 configuration
+
+To integrate Auth0 with authentik, create an application in the Auth0 Dashboard.
+
+1. Log in to the Auth0 Dashboard as an administrator.
+2. Navigate to **Applications** > **Applications** and click **Create Application**.
+3. Set the name to `authentik`, select **Regular Web Applications**, and click **Create**.
+4. On the **Settings** tab, take note of the **Client ID** and **Client Secret**. These values will be required in the next section.
+5. Under **Application URIs**, set **Allowed Callback URLs** to `https://authentik.company/source/oauth/callback/<auth0-slug>/`.
+6. Click **Save Changes**.
+
+### authentik configuration
+
+To support the integration of Auth0 with authentik, create an Auth0 OpenID Connect source in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **New Source**.
+3. Select **OpenID Connect OAuth Source** and configure the following settings:
+    - Set **Name** to `Auth0`.
+    - Set **Slug** to `<auth0-slug>`. This must match the slug used in the Auth0 **Allowed Callback URLs** field.
+    - Under **Protocol settings**:
+        - Set **Consumer key** to the **Client ID** from Auth0.
+        - Set **Consumer secret** to the **Client Secret** from Auth0.
+    - Under **URL settings**:
+        - Set **OIDC Well-known URL** to `https://company.auth0.com/.well-known/openid-configuration`.
+
+4. Click **Finish**.
+
+authentik reads the authorization, token, user info, and JWKS URLs from the well-known URL, so you do not need to enter them individually.
+
+</TabItem>
+</Tabs>
 
 :::info Display new source on login screen
 For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
@@ -130,3 +186,4 @@ Source property mappings allow you to modify or gather extra information from so
 - [Auth0 Docs — Configure Auth0 as SAML Identity Provider](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/configure-auth0-saml-identity-provider)
 - [Auth0 Docs — Sign and Encrypt SAML Requests](https://auth0.com/docs/authenticate/protocols/saml/saml-sso-integrations/sign-and-encrypt-saml-requests)
 - [Auth0 Docs — Customize SAML Assertions](https://auth0.com/docs/authenticate/protocols/saml/saml-configuration/customize-saml-assertions)
+- [Auth0 Docs — Authentication API Endpoints](https://auth0.com/docs/api/authentication)
