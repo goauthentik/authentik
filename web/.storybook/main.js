@@ -3,9 +3,10 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  */
 
-import { copyAssets } from "../scripts/build-assets.mjs";
-import { join } from 'path';
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { copyAssets } from "../scripts/build-assets.mjs";
 
 /**
  * @param {TemplateStringsArray} strings
@@ -49,7 +50,6 @@ const config = {
         newConfig.server.fs.allow.push(join(__dirname, "../../packages/fonts"));
         newConfig.server.fs.allow.push(join(__dirname, ".."));
         return newConfig;
-        
     },
 
     previewBody: (body) => html`
