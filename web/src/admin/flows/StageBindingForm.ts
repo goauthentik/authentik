@@ -140,6 +140,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                             args.search = query;
                         }
                         const stages = await aki(StagesApi).stagesAllList(args);
+                        const selectedStage = this.instance?.stageObj;
+                        if (
+                            selectedStage &&
+                            !stages.results.some((stage) => stage.pk === selectedStage.pk)
+                        ) {
+                            return [selectedStage, ...stages.results];
+                        }
                         return stages.results;
                     }}
                     .groupBy=${(items: Stage[]) => {

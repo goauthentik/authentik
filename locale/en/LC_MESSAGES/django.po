@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-26 00:13+0000\n"
+"POT-Creation-Date: 2026-09-03 00:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3577,6 +3577,10 @@ msgstr ""
 msgid "Can manage media files"
 msgstr ""
 
+#: authentik/rbac/tasks.py
+msgid "Remove object-level permissions whose object no longer exists."
+msgstr ""
+
 #: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
 msgstr ""
@@ -5457,6 +5461,10 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Configure how authentik should show avatars for users."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Enter a valid URL, for example https://authentik.company"
 msgstr ""
 
 #: authentik/tenants/models.py
