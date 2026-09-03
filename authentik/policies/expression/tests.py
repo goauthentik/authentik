@@ -1,6 +1,7 @@
 """evaluator tests"""
 
 from django.test import RequestFactory, TestCase
+from django.urls import ResolverMatch
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
@@ -129,6 +130,26 @@ class TestEvaluator(TestCase):
         proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, (True, False))
+
+    def test_call_policy_with_resolver_match(self):
+        """test ak_call_policy when http_request carries an unpicklable resolver_match"""
+        expr = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression="return True",
+        )
+        expr2 = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression=f"return ak_call_policy('{expr.name}').passing",
+        )
+        # Real requests (e.g. the policy test dialog) have resolver_match set by
+        # URL resolution; RequestFactory requests do not, which is why the
+        # deepcopy regression in #25462 was not caught.
+        self.http_request.resolver_match = ResolverMatch(lambda: None, (), {})
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        res = proc.profiling_wrapper()
+        self.assertTrue(res.passing)
 
     def test_call_policy_test_like(self):
         """test ak_call_policy without `obj` set, as if it was when testing policies"""
