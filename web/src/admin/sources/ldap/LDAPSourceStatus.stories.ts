@@ -2,7 +2,7 @@ import "./LDAPSourceStatus.js";
 
 import { LDAPSourceStatus } from "./LDAPSourceStatus.js";
 
-import { LDAPSourceSync, LDAPSourceSyncStatusEnum } from "@goauthentik/api";
+import { LDAPSourceSync, SyncStatusEnum } from "@goauthentik/api";
 
 import type { Meta, StoryObj } from "@storybook/web-components";
 
@@ -19,7 +19,7 @@ function makeSync(sync: Partial<LDAPSourceSync> = {}): LDAPSourceSync {
         source: "1b3a0d9e-1d7a-4c1e-9a1e-3c5d7f9b2a10",
         startedAt: minutesAgo(12),
         finishedAt: minutesAgo(9),
-        status: LDAPSourceSyncStatusEnum.Done,
+        status: SyncStatusEnum.Done,
         usersCount: 1_204,
         groupsCount: 87,
         membershipCount: 3_311,
@@ -130,7 +130,7 @@ export const OneServerDown: Story = {
     ...Template,
     args: {
         connectivity: PARTIAL_OUTAGE,
-        lastSync: makeSync({ status: LDAPSourceSyncStatusEnum.Warning }),
+        lastSync: makeSync({ status: SyncStatusEnum.Warning }),
     },
 };
 
@@ -140,7 +140,7 @@ export const AllServersDown: Story = {
     args: {
         connectivity: TOTAL_OUTAGE,
         lastSync: makeSync({
-            status: LDAPSourceSyncStatusEnum.Error,
+            status: SyncStatusEnum.Error,
             startedAt: minutesAgo(65),
             finishedAt: minutesAgo(64),
         }),
@@ -183,7 +183,7 @@ export const SyncRunning: Story = {
     args: {
         connectivity: CONNECTED,
         lastSync: makeSync({
-            status: LDAPSourceSyncStatusEnum.Running,
+            status: SyncStatusEnum.Running,
             startedAt: minutesAgo(2),
             finishedAt: null,
         }),
@@ -194,7 +194,7 @@ export const SyncWarning: Story = {
     ...Template,
     args: {
         connectivity: CONNECTED,
-        lastSync: makeSync({ status: LDAPSourceSyncStatusEnum.Warning }),
+        lastSync: makeSync({ status: SyncStatusEnum.Warning }),
     },
 };
 
@@ -202,7 +202,7 @@ export const SyncError: Story = {
     ...Template,
     args: {
         connectivity: CONNECTED,
-        lastSync: makeSync({ status: LDAPSourceSyncStatusEnum.Error }),
+        lastSync: makeSync({ status: SyncStatusEnum.Error }),
     },
 };
 
@@ -210,7 +210,7 @@ export const SyncFinishedWithoutTimestamp: Story = {
     ...Template,
     args: {
         connectivity: CONNECTED,
-        lastSync: makeSync({ status: LDAPSourceSyncStatusEnum.Error, finishedAt: null }),
+        lastSync: makeSync({ status: SyncStatusEnum.Error, finishedAt: null }),
     },
 };
 
@@ -218,7 +218,7 @@ export const SyncUnknownStatus: Story = {
     ...Template,
     args: {
         connectivity: CONNECTED,
-        lastSync: makeSync({ status: LDAPSourceSyncStatusEnum.UnknownDefaultOpenApi }),
+        lastSync: makeSync({ status: SyncStatusEnum.UnknownDefaultOpenApi }),
     },
 };
 
