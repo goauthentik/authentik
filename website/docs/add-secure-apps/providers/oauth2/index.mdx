@@ -274,7 +274,7 @@ return {
 
 When a **Signing Key** is selected in the provider, authentik signs JWTs asymmetrically using the private key of the selected certificate-key pair. Clients can verify the signature using the corresponding public key. The signing key's public key is available through the JWKS endpoint listed on the provider page.
 
-When no **Signing Key** is selected, authentik signs JWTs symmetrically using the provider's **Client secret**.
+When no **Signing Key** is selected, authentik uses `HS256` and the provider’s **Client secret** to sign JWTs. This does not publish a public signing key through JWKS; select a certificate key pair to use asymmetric signing, such as `RS256`.
 
 ### Encryption
 
