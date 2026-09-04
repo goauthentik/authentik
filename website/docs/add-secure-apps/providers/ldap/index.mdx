@@ -107,16 +107,16 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 ## Searching
 
-A user must have access to the LDAP application before they can bind and search the directory. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), the user must satisfy them.
+A user must have access to the LDAP application before they can bind and search the directory. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), they must allow the user access according to the application's **Policy engine mode**.
 
-By default, users can search only for information about themselves, including their user details, group information, and group memberships. Explicit permissions are required to perform broader searches.
+By default, users can search only for their own user details and the groups they belong to. Group results include only the searching user as a member.
 
 To search the full directory, add the [user](../../../users-sources/user/index.mdx) to a [role](../../../users-sources/roles/index.mdx) and assign the role the **Search full LDAP directory** permission. This permission allows the user to retrieve all users and groups that the LDAP provider exposes.
 
 You can assign the permission in one of two ways:
 
-- **Object permission** _(recommended)_: Open the LDAP provider's **Permissions** tab, click **Assign Object Permissions**, select the role, enable **Search full LDAP directory**, and click **Assign**. This permission applies only to that LDAP provider.
-- **Global permission**: Open the role's **Permissions** tab and assign **Search full LDAP directory** under **Assigned global permissions**. This permission applies to every LDAP provider. For detailed instructions, see [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
+- **Object permission** _(recommended)_: Open the LDAP provider's **Permissions** tab, click **Assign Role Object Permission**, select the role, enable **Search full LDAP directory**, and click **Assign Role Object Permission**. This permission applies only to that LDAP provider.
+- **Global permission**: Open the role's **Permissions** tab and assign **Search full LDAP directory** under **Assigned global permissions**. This permission applies to every LDAP provider, but the user still needs access to each provider's application. For detailed instructions, see [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
 
 ### Search modes
 

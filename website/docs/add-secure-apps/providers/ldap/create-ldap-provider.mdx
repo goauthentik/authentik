@@ -101,19 +101,19 @@ The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthen
 
 ### Assign the LDAP search permission to the service account
 
-The service account must have access to the LDAP application. If the application uses application bindings, add the service account to an appropriate binding.
+The service account must have access to the LDAP application. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), configure them to allow the service account access.
 
-The service account also needs permission to search the LDAP directory. Create a role with the permission and assign the service account to that role:
+To search for other users and groups, the service account also needs the **Search full LDAP directory** permission. Create a role with this permission and add the service account to it:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Directory** > **Roles** and click **Create**.
-3. Provide a name for the role (e.g. `LDAP search`) and then click **Create**.
+2. Navigate to **Directory** > **Roles** and click **New Role**.
+3. Provide a name for the role (e.g. `LDAP search`) and then click **Create Role**.
 4. Click on the newly created role and open the **Users** tab.
 5. Click **Add Existing User**, select the service account, and then click **Assign**.
 6. Navigate to **Applications** > **Providers**.
 7. Click on the name of the newly created LDAP provider and open the **Permissions** tab.
-8. Click **Assign Object Permissions**.
-9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign**.
+8. Click **Assign Role Object Permission**.
+9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign Role Object Permission**.
 
 This object permission grants the service account full search access to this LDAP provider only. For more information, see [Searching](./index.mdx#searching).
 
