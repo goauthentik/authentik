@@ -109,6 +109,7 @@ export class AKSecretSearchInput extends HorizontalLightComponent<string> {
                 ${ref(this.secretSearchRef)}
                 class="ak-secret-search-input__select"
                 .fieldID=${this.fieldID}
+                .label=${this.label ?? undefined}
                 .fetchObjects=${this.refresh}
                 .renderElement=${renderElement}
                 .value=${renderValue}
