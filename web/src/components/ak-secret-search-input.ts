@@ -89,7 +89,7 @@ export class AKSecretSearchInput extends AKElement {
             const secretSearch = this.secretSearchRef.value;
             if (secretSearch) {
                 secretSearch.query = undefined;
-                void secretSearch.updateData();
+                return secretSearch.updateData();
             }
         });
 
@@ -126,16 +126,11 @@ export class AKSecretSearchInput extends AKElement {
         // The selected secret may sort beyond the first page; make sure it is present so
         // the control can display and keep it instead of silently clearing on save.
         if (!query && this.value && !secrets.results.some((secret) => secret.pk === this.value)) {
-            try {
-                const selected = await aki(SecretsApi).secretsSecretsRetrieve({
-                    secretUuid: this.value,
-                });
-                this.selectedType = selected.type;
-                return [selected, ...secrets.results];
-            } catch {
-                this.selectedType = undefined;
-                return secrets.results;
-            }
+            const selected = await aki(SecretsApi).secretsSecretsRetrieve({
+                secretUuid: this.value,
+            });
+            this.selectedType = selected.type;
+            return [selected, ...secrets.results];
         }
 
         return secrets.results;

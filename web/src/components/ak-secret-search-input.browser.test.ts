@@ -50,3 +50,21 @@ test("loads a selected secret outside the first page", async () => {
     await vi.waitFor(() => expect(select.toForm()).toBe(secret.pk));
     expect(retrieve).toHaveBeenCalledWith({ secretUuid: secret.pk });
 });
+
+test("reports failure to load the selected secret instead of presenting an empty selection", async () => {
+    vi.spyOn(SecretsApi.prototype, "secretsSecretsList").mockResolvedValue({ results: [] });
+    vi.spyOn(SecretsApi.prototype, "secretsSecretsRetrieve").mockRejectedValue(
+        new Error("Unavailable"),
+    );
+    const picker = document.createElement("ak-secret-search-input");
+    picker.value = secret.pk;
+    document.body.append(picker);
+    await picker.updateComplete;
+    const select = picker.querySelector("ak-search-select")!;
+
+    await vi.waitFor(() =>
+        expect(select.shadowRoot?.textContent).toContain("Failed to fetch objects"),
+    );
+    expect(() => select.toForm()).toThrow();
+    expect(picker.value).toBe(secret.pk);
+});
