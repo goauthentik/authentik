@@ -124,12 +124,12 @@ def on_password_changed(
     user: User,
     password: str | None = None,
     request: HttpRequest | None = None,
-    hasher_defaults_overridden: bool | None = None,
+    hasher_defaults_overridden: bool = False,
     **_,
 ):
     """Log password change"""
     context = {}
-    if hasher_defaults_overridden is not None:
+    if hasher_defaults_overridden:
         context["hasher_defaults_overridden"] = hasher_defaults_overridden
     Event.new(EventAction.PASSWORD_SET, **context).from_http(request, user=user)
 
