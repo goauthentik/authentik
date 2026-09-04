@@ -158,8 +158,8 @@ export function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] 
                 id: "command-palette.about-authentik",
             }),
             action: () => {
+                // AboutModal.open resolves when About closes, so don't return its promise.
                 AboutModal.open();
-                return true;
             },
             prefix: msg("View", { id: "command-palette.prefix.view" }),
             group: msg("authentik"),
