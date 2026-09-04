@@ -602,5 +602,6 @@ MIDDLEWARE = list(OrderedDict.fromkeys(MIDDLEWARE_FIRST + MIDDLEWARE + MIDDLEWAR
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 
-# OpenTelemetry is initialized from AuthentikCoreConfig.ready(), since it needs to run
-# after Django settings have fully loaded (see authentik/core/apps.py)
+# Error-reporting tracers (OpenTelemetry, Sentry) are initialized from
+# AuthentikCoreConfig.ready(), since it needs to run after Django settings have fully
+# loaded (see authentik/core/apps.py)

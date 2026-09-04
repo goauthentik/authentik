@@ -14,7 +14,7 @@ from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
-from authentik.lib.tracing import OTEL_DEFER_PROVIDER_ENV_VAR
+from authentik.lib.tracing import TRACER_DEFER_POSTFORK_ENV_VAR
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
@@ -29,9 +29,9 @@ if TYPE_CHECKING:
     from authentik.root.asgi import AuthentikAsgi
 
 # preload_app below means the app (and AuthentikCoreConfig.ready()) loads once in this
-# master process before workers are forked; tell it to skip creating the real
-# TracerProvider so post_fork can do that instead, after the fork (see otel_init_provider)
-os.environ[OTEL_DEFER_PROVIDER_ENV_VAR] = "true"
+# master process before workers are forked; tell it to defer each tracer's post-fork setup
+# to the post_fork hook below instead (see authentik.lib.tracing.setup_post_fork)
+os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
 
 setup()
 
@@ -86,13 +86,13 @@ def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037
 
     start_pyroscope("server", worker_id=str(worker._worker_id))
 
-    # The real TracerProvider is created here rather than before the fork above, since
+    # OTel's real TracerProvider is created here rather than before the fork above, since
     # BatchSpanProcessor's background export thread and locks do not survive fork() and
-    # can deadlock a forked worker that inherits them (see otel_init_provider's docstring)
+    # can deadlock a forked worker that inherits them (see OpenTelemetryTracer.setup_post_fork)
     if CONFIG.get_bool("error_reporting.enabled", False):
-        from authentik.lib.tracing import otel_init_provider
+        from authentik.lib.tracing import setup_post_fork
 
-        otel_init_provider()
+        setup_post_fork()
 
 
 def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):  # noqa: UP037

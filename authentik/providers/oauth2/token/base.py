@@ -20,7 +20,7 @@ from authentik.core.models import (
     Application,
 )
 from authentik.events.models import Event, EventAction
-from authentik.lib.tracing import start_span
+from authentik.lib.tracing import active_tracer
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.dpop import DPoPError, DPoPValidator
 from authentik.providers.oauth2.errors import TokenError
@@ -118,7 +118,7 @@ class TokenRequest:
             self.scope = self.scope.intersection(allowed_scope_names)
 
     def check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
             user = self.user if self.user else get_anonymous_user()

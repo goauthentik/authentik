@@ -22,7 +22,7 @@ from structlog.stdlib import get_logger
 from authentik.core import user_switching
 from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.lib.config import CONFIG
-from authentik.lib.tracing import set_tag
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.crypto import get_cookie_signing_key
 
 LOGGER = get_logger("authentik.asgi")
@@ -257,7 +257,7 @@ class ClientIPMiddleware:
             )
             return None
         # Update the current span to include the correct client IP
-        set_tag("client.address", delegated_ip)
+        active_tracer().set_tag("client.address", delegated_ip)
         # Set the outpost service account on the request
         setattr(request, self.request_attr_outpost_user, user)
         try:

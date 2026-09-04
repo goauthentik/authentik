@@ -22,7 +22,7 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.events.signals import get_login_event
-from authentik.lib.tracing import start_span
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.errors import (
     DeviceCodeError,
@@ -68,7 +68,7 @@ class TokenView(View):
     def post(self, request: HttpRequest) -> HttpResponse:
         """Generate tokens for clients"""
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
@@ -79,7 +79,7 @@ class TokenView(View):
                 self.params = parse_token_request(request, self.provider, client_id, client_secret)
                 CTX_AUTH_VIA.set("oauth_client_secret")
 
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.providers.oauth2.post.response",
             ):
                 if self.params.grant_type == GRANT_TYPE_AUTHORIZATION_CODE:

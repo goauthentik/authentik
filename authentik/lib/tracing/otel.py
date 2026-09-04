@@ -25,6 +25,7 @@ from structlog.stdlib import get_logger
 
 from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing.common import Tracer
 from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
@@ -32,30 +33,10 @@ _root_path = CONFIG.get("web.path", "/")
 
 tracer = trace.get_tracer("authentik")
 
-# Set by lifecycle/gunicorn.conf.py before the app is preloaded, to tell
-# AuthentikCoreConfig.ready() to skip otel_init_provider() (see its docstring)
-OTEL_DEFER_PROVIDER_ENV_VAR = "AUTHENTIK_OTEL_DEFER_PROVIDER"
 
-
-def otel_instrument():
-    """Wire up automatic instrumentation. Safe to call before a fork; must run after
-    Django settings have fully loaded, since DjangoInstrumentor patches MIDDLEWARE.
-
-    Needs opentelemetry-instrumentation-asgi installed (never imported directly here),
-    or DjangoInstrumentor silently falls back to WSGI-only, which authentik never uses."""
-    ThreadingInstrumentor().instrument()
-    RequestsInstrumentor().instrument()
-    StructlogInstrumentor().instrument()
-    PsycopgInstrumentor().instrument()
-    DjangoInstrumentor().instrument(
-        excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
-        is_sql_commentor_enabled=True,
-    )
-
-
-def trace_middleware_list(middleware_paths: list[str]) -> list[str]:
+def _trace_middleware_list(middleware_paths: list[str]) -> list[str]:
     """Wrap each MIDDLEWARE entry so it gets a span named after its dotted path.
-    Call on the final assembled MIDDLEWARE list, before Django builds the handler."""
+    Must run before Django builds the handler from the final MIDDLEWARE list."""
     return [_traced_middleware_path(path) for path in middleware_paths]
 
 
@@ -93,68 +74,14 @@ def _traced_middleware_path(path: str) -> str:
     return f"{__name__}.{attr_name}"
 
 
-def otel_init_provider():
-    """Create and set the real OpenTelemetry TracerProvider and span exporter.
-
-    Must run after any fork: BatchSpanProcessor's background export thread doesn't
-    survive fork() safely. Under gunicorn's preload_app, call this from a post_fork
-    hook, after otel_instrument() has run pre-fork."""
-    sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
-    provider = TracerProvider(
-        resource=Resource.create(
-            {
-                "service.name": "authentik-v2",
-                "service.version": authentik_version(),
-                "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
-                "authentik.build_hash": authentik_build_hash("tagged"),
-                "authentik.env": get_env(),
-                "authentik.component": "backend",
-            }
-        ),
-        sampler=ParentBased(TraceIdRatioBased(sample_rate)),
-    )
-    # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
-    # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
-    # unlike OTEL_EXPORTER_OTLP_ENDPOINT, passing `endpoint=` directly skips that step
-    endpoint = CONFIG.get("error_reporting.otel_endpoint")
-    exporter = (
-        OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
-        if endpoint
-        else OTLPSpanExporter()
-    )
-    provider.add_span_processor(SimpleSpanProcessor(exporter))
-    trace.set_tracer_provider(provider)
-    LOGGER.info("Enabled Open Telemetry tracing")
-
-
-def otel_init():
-    """Full init for single-process entrypoints that never fork afterwards. Gunicorn's
-    preloaded web server calls otel_instrument()/otel_init_provider() separately instead"""
-    otel_instrument()
-    otel_init_provider()
-
-
-def record_exception(exc: Exception):
-    """Record an exception on the current span"""
-    span = trace.get_current_span()
-    span.record_exception(exc)
-    span.set_status(Status(StatusCode.ERROR))
-
-
-def set_tag(key: str, value: Any):
-    """Set an attribute on the current span"""
-    trace.get_current_span().set_attribute(key, str(value))
-
-
-class Span:
+class _Span:
     """Thin wrapper around an OpenTelemetry span exposing a sentry_sdk-like API"""
 
     def __init__(self, span: OtelSpan):
         self._span = span
         self._description: str | None = None
 
-    def set_data(self, key: str, value: Any):
-        """Set an attribute on the wrapped span"""
+    def set_data(self, key: str, value: Any) -> None:
         self._span.set_attribute(key, str(value))
 
     @property
@@ -162,20 +89,82 @@ class Span:
         return self._description
 
     @description.setter
-    def description(self, value: str):
+    def description(self, value: str) -> None:
         self._description = value
         self._span.set_attribute("description", str(value))
 
 
-@contextmanager
-def start_span(op: str, name: str | None = None):
-    """Start a new span, compatible with the previous sentry_sdk.start_span API"""
-    with tracer.start_as_current_span(op, attributes={"name": name}) as span:
-        yield Span(span)
+class OpenTelemetryTracer(Tracer):
+    """Tracer backed by OpenTelemetry, exporting spans over OTLP to
+    error_reporting.otel_endpoint"""
 
+    def setup_pre_fork(self) -> None:
+        """Wire up automatic instrumentation and per-middleware spans. Safe to call
+        before a fork; must run after Django settings have fully loaded, since
+        DjangoInstrumentor patches MIDDLEWARE.
 
-def get_http_meta() -> dict[str, str]:
-    """Get trace-context propagation headers for the current span"""
-    carrier: dict[str, str] = {}
-    inject(carrier)
-    return carrier
+        Needs opentelemetry-instrumentation-asgi installed (never imported directly
+        here), or DjangoInstrumentor silently falls back to WSGI-only, which authentik
+        never uses."""
+        # Must run before instrument() below, so DjangoInstrumentor's own middleware is
+        # inserted afterwards and doesn't get wrapped a second time
+        settings.MIDDLEWARE = _trace_middleware_list(settings.MIDDLEWARE)
+        ThreadingInstrumentor().instrument()
+        RequestsInstrumentor().instrument()
+        StructlogInstrumentor().instrument()
+        PsycopgInstrumentor().instrument()
+        DjangoInstrumentor().instrument(
+            excluded_urls=f"{_root_path}-/health,{_root_path}-/metrics",
+            is_sql_commentor_enabled=True,
+        )
+
+    def setup_post_fork(self) -> None:
+        """Create and set the real OpenTelemetry TracerProvider and span exporter.
+
+        Must run after any fork: BatchSpanProcessor's background export thread doesn't
+        survive fork() safely. Under gunicorn's preload_app, call this from a post_fork
+        hook, after setup_pre_fork() has run pre-fork."""
+        sample_rate = 1 if settings.DEBUG else float(CONFIG.get("error_reporting.sample_rate", 0.1))
+        provider = TracerProvider(
+            resource=Resource.create(
+                {
+                    "service.name": "authentik-v2",
+                    "service.version": authentik_version(),
+                    "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
+                    "authentik.build_hash": authentik_build_hash("tagged"),
+                    "authentik.env": get_env(),
+                    "authentik.component": "backend",
+                }
+            ),
+            sampler=ParentBased(TraceIdRatioBased(sample_rate)),
+        )
+        # error_reporting.otel_endpoint is the base OTLP endpoint (matching the standard
+        # OTEL_EXPORTER_OTLP_ENDPOINT convention), so the per-signal path must be appended here;
+        # unlike OTEL_EXPORTER_OTLP_ENDPOINT, passing `endpoint=` directly skips that step
+        endpoint = CONFIG.get("error_reporting.otel_endpoint")
+        exporter = (
+            OTLPSpanExporter(endpoint=f"{endpoint.rstrip('/')}/v1/traces")
+            if endpoint
+            else OTLPSpanExporter()
+        )
+        provider.add_span_processor(SimpleSpanProcessor(exporter))
+        trace.set_tracer_provider(provider)
+        LOGGER.info("Enabled Open Telemetry tracing")
+
+    def record_exception(self, exc: Exception) -> None:
+        span = trace.get_current_span()
+        span.record_exception(exc)
+        span.set_status(Status(StatusCode.ERROR))
+
+    def get_http_meta(self) -> dict[str, str]:
+        carrier: dict[str, str] = {}
+        inject(carrier)
+        return carrier
+
+    def set_tag(self, key: str, value: Any) -> None:
+        trace.get_current_span().set_attribute(key, str(value))
+
+    @contextmanager
+    def active_tracer().start_span(self, op: str, name: str | None = None):
+        with tracer.start_as_current_span(op, attributes={"name": name}) as span:
+            yield _Span(span)
