@@ -52,7 +52,7 @@ def kerberos_sync(pk: str):
             return
 
         previous_sync = (
-            KerberosSourceSync.objects.filter(source=source).order_by("-started_by").first()
+            KerberosSourceSync.objects.filter(source=source).order_by("-started_at").first()
         )
         if previous_sync and previous_sync.status == SyncStatus.RUNNING:
             self.info("Synchronization is already running. Skipping")
@@ -60,8 +60,7 @@ def kerberos_sync(pk: str):
                 "Previous Kerberos sync detected as running, skipping task", source=source.slug
             )
 
-        current_sync = KerberosSourceSync.objects.create(source=source)
-        current_sync.tasks.add(self)
+        current_sync = KerberosSourceSync.objects.create(source=source, tasks=[self.pk])
 
     try:
         syncer = KerberosSync(source, self)
