@@ -12,6 +12,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
@@ -83,7 +84,7 @@ class TestSourceOAuth1(SeleniumTestCase):
             enrollment_flow=enrollment_flow,
             provider_type="oauth1",
             consumer_key=self.client_id,
-            consumer_secret=self.client_secret,
+            secret=create_test_secret(self.client_secret),
         )
         ident_stage = IdentificationStage.objects.first()
         ident_stage.sources.set([source])

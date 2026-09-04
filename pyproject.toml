@@ -223,6 +223,7 @@ module = [
   "authentik.rbac.*",
   "authentik.recovery.*",
   "authentik.root.*",
+  "authentik.secrets.*",
   "authentik.sources.kerberos.*",
   "authentik.sources.ldap.*",
   "authentik.sources.oauth.*",

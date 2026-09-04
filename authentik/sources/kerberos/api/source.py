@@ -36,7 +36,7 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_users",
             "sync_users_password",
             "sync_principal",
-            "sync_password",
+            "secret",
             "sync_keytab",
             "sync_ccache",
             "connectivity",
@@ -47,7 +47,6 @@ class KerberosSourceSerializer(SourceSerializer):
             "sync_outgoing_trigger_mode",
         ]
         extra_kwargs = {
-            "sync_password": {"write_only": True},
             "sync_keytab": {"write_only": True},
             "spnego_keytab": {"write_only": True},
         }

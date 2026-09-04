@@ -28,7 +28,7 @@ type ProxyOutpostConfig struct {
 	// Validate SSL Certificates of upstream servers
 	InternalHostSslValidation *bool                      `json:"internal_host_ssl_validation,omitempty"`
 	ClientId                  *string                    `json:"client_id,omitempty"`
-	ClientSecret              *string                    `json:"client_secret,omitempty"`
+	ClientSecret              string                     `json:"client_secret"`
 	OidcConfiguration         OpenIDConnectConfiguration `json:"oidc_configuration"`
 	CookieSecret              *string                    `json:"cookie_secret,omitempty"`
 	Certificate               NullableString             `json:"certificate,omitempty"`
@@ -62,11 +62,12 @@ type _ProxyOutpostConfig ProxyOutpostConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProxyOutpostConfig(pk int32, name string, externalHost string, oidcConfiguration OpenIDConnectConfiguration, accessTokenValidity NullableFloat64, scopesToRequest []string, assignedApplicationSlug string, assignedApplicationName string) *ProxyOutpostConfig {
+func NewProxyOutpostConfig(pk int32, name string, externalHost string, clientSecret string, oidcConfiguration OpenIDConnectConfiguration, accessTokenValidity NullableFloat64, scopesToRequest []string, assignedApplicationSlug string, assignedApplicationName string) *ProxyOutpostConfig {
 	this := ProxyOutpostConfig{}
 	this.Pk = pk
 	this.Name = name
 	this.ExternalHost = externalHost
+	this.ClientSecret = clientSecret
 	this.OidcConfiguration = oidcConfiguration
 	this.AccessTokenValidity = accessTokenValidity
 	this.ScopesToRequest = scopesToRequest
@@ -251,36 +252,28 @@ func (o *ProxyOutpostConfig) SetClientId(v string) {
 	o.ClientId = &v
 }
 
-// GetClientSecret returns the ClientSecret field value if set, zero value otherwise.
+// GetClientSecret returns the ClientSecret field value
 func (o *ProxyOutpostConfig) GetClientSecret() string {
-	if o == nil || IsNil(o.ClientSecret) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.ClientSecret
+
+	return o.ClientSecret
 }
 
-// GetClientSecretOk returns a tuple with the ClientSecret field value if set, nil otherwise
+// GetClientSecretOk returns a tuple with the ClientSecret field value
 // and a boolean to check if the value has been set.
 func (o *ProxyOutpostConfig) GetClientSecretOk() (*string, bool) {
-	if o == nil || IsNil(o.ClientSecret) {
+	if o == nil {
 		return nil, false
 	}
-	return o.ClientSecret, true
+	return &o.ClientSecret, true
 }
 
-// HasClientSecret returns a boolean if a field has been set.
-func (o *ProxyOutpostConfig) HasClientSecret() bool {
-	if o != nil && !IsNil(o.ClientSecret) {
-		return true
-	}
-
-	return false
-}
-
-// SetClientSecret gets a reference to the given string and assigns it to the ClientSecret field.
+// SetClientSecret sets field value
 func (o *ProxyOutpostConfig) SetClientSecret(v string) {
-	o.ClientSecret = &v
+	o.ClientSecret = v
 }
 
 // GetOidcConfiguration returns the OidcConfiguration field value
@@ -726,9 +719,7 @@ func (o ProxyOutpostConfig) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ClientId) {
 		toSerialize["client_id"] = o.ClientId
 	}
-	if !IsNil(o.ClientSecret) {
-		toSerialize["client_secret"] = o.ClientSecret
-	}
+	toSerialize["client_secret"] = o.ClientSecret
 	toSerialize["oidc_configuration"] = o.OidcConfiguration
 	if !IsNil(o.CookieSecret) {
 		toSerialize["cookie_secret"] = o.CookieSecret
@@ -777,6 +768,7 @@ func (o *ProxyOutpostConfig) UnmarshalJSON(data []byte) (err error) {
 		"pk",
 		"name",
 		"external_host",
+		"client_secret",
 		"oidc_configuration",
 		"access_token_validity",
 		"scopes_to_request",

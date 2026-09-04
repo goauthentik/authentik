@@ -8828,10 +8828,6 @@ paths:
         name: send_once
         schema:
           type: boolean
-      - in: query
-        name: webhook_url
-        schema:
-          type: string
       tags:
       - events
       security:
@@ -23343,6 +23339,258 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/:
+    get:
+      operationId: secrets_secrets_list
+      description: Manage secrets.
+      parameters:
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - $ref: '#/components/parameters/QueryName'
+      - $ref: '#/components/parameters/QueryPaginationOrdering'
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
+      - $ref: '#/components/parameters/QuerySearch'
+      - in: query
+        name: type
+        schema:
+          $ref: '#/components/schemas/SecretTypeEnum'
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSecretList'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    post:
+      operationId: secrets_secrets_create
+      description: Manage secrets.
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecretRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/:
+    get:
+      operationId: secrets_secrets_retrieve
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    put:
+      operationId: secrets_secrets_update
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecretRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    patch:
+      operationId: secrets_secrets_partial_update
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSecretRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Secret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+    delete:
+      operationId: secrets_secrets_destroy
+      description: Manage secrets.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/rotate/:
+    post:
+      operationId: secrets_secrets_rotate_create
+      description: Replace a text secret with a generated value.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RotatedSecret'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/used_by/:
+    get:
+      operationId: secrets_secrets_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
+  /secrets/secrets/{secret_uuid}/view_value/:
+    get:
+      operationId: secrets_secrets_view_value_retrieve
+      description: Return and audit a secret value.
+      parameters:
+      - in: path
+        name: secret_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Secret.
+        required: true
+      tags:
+      - secrets
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretValue'
+          description: ''
+        '400':
+          $ref: '#/components/responses/ValidationErrorResponse'
+        '403':
+          $ref: '#/components/responses/GenericErrorResponse'
   /sources/all/:
     get:
       operationId: sources_all_list
@@ -29299,19 +29547,10 @@ paths:
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: query
-        name: password
-        schema:
-          type: string
-      - in: query
         name: port
         schema:
           type: integer
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: subject
         schema:
@@ -29734,14 +29973,6 @@ paths:
         schema:
           type: string
       - in: query
-        name: auth
-        schema:
-          type: string
-      - in: query
-        name: auth_password
-        schema:
-          type: string
-      - in: query
         name: auth_type
         schema:
           $ref: '#/components/schemas/AuthTypeEnum'
@@ -29772,11 +30003,6 @@ paths:
         schema:
           $ref: '#/components/schemas/ProviderEnum'
       - $ref: '#/components/parameters/QuerySearch'
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: verify_only
         schema:
@@ -36159,6 +36385,7 @@ components:
       - authentik.api
       - authentik.core
       - authentik.crypto
+      - authentik.secrets
       - authentik.endpoints
       - authentik.endpoints.connectors.agent
       - authentik.enterprise
@@ -36728,10 +36955,19 @@ components:
           type: string
         client_id:
           type: string
+        secret:
+          type: string
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
         admin_integration_key:
           type: string
+        admin_secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
@@ -36740,6 +36976,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - secret
       - verbose_name
       - verbose_name_plural
     AuthenticatorDuoStageDeviceImportResponse:
@@ -36784,23 +37021,25 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
       required:
       - api_hostname
       - client_id
-      - client_secret
       - name
+      - secret
     AuthenticatorEmailChallenge:
       type: object
       description: Authenticator Email Setup challenge
@@ -36895,8 +37134,11 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -36952,8 +37194,11 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -37137,10 +37382,15 @@ components:
           type: string
         account_sid:
           type: string
-        auth:
+        auth_secret:
           type: string
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37155,7 +37405,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
+      - auth_secret
       - component
       - flow_set
       - from_number
@@ -37188,11 +37438,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_secret:
           type: string
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -37207,7 +37461,7 @@ components:
           description: Optionally modify the payload being sent to custom providers.
       required:
       - account_sid
-      - auth
+      - auth_secret
       - from_number
       - name
       - provider
@@ -38249,6 +38503,11 @@ components:
         public_key:
           type: string
           description: Public key, acquired your captcha Provider.
+        secret:
+          type: string
+          format: uuid
+          title: Private key
+          description: Private key, acquired your captcha Provider.
         js_url:
           type: string
         api_url:
@@ -38276,6 +38535,7 @@ components:
       - name
       - pk
       - public_key
+      - secret
       - verbose_name
       - verbose_name_plural
     CaptchaStageRequest:
@@ -38289,10 +38549,10 @@ components:
           type: string
           minLength: 1
           description: Public key, acquired your captcha Provider.
-        private_key:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Private key
           description: Private key, acquired your captcha Provider.
         js_url:
           type: string
@@ -38318,8 +38578,8 @@ components:
             in the context for policy decisions
       required:
       - name
-      - private_key
       - public_key
+      - secret
     CertAttributeEnum:
       enum:
       - subject
@@ -40229,6 +40489,11 @@ components:
           minimum: -2147483648
         username:
           type: string
+        secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -40288,9 +40553,11 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -41218,6 +41485,10 @@ components:
           type: string
           format: uri
           maxLength: 200
+        secret:
+          type: string
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -41232,6 +41503,7 @@ components:
       - component
       - meta_model_name
       - name
+      - secret
       - url
       - verbose_name
       - verbose_name_plural
@@ -41252,10 +41524,10 @@ components:
           format: uri
           minLength: 1
           maxLength: 200
-        token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -41268,7 +41540,7 @@ components:
           type: boolean
       required:
       - name
-      - token
+      - secret
       - url
     Flow:
       type: object
@@ -43610,6 +43882,12 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
+        secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Sync password
+          description: Password to authenticate to kadmin for sync
         sync_ccache:
           type: string
           description: Credentials cache to authenticate to kadmin for sync. Must
@@ -43792,9 +44070,11 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Sync password
           description: Password to authenticate to kadmin for sync
         sync_keytab:
           type: string
@@ -44293,6 +44573,11 @@ components:
             Certificate.
         bind_cn:
           type: string
+        secret:
+          type: string
+          format: uuid
+          nullable: true
+          title: Bind password
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -44515,9 +44800,11 @@ components:
             Certificate.
         bind_cn:
           type: string
-        bind_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Bind password
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -45192,8 +45479,10 @@ components:
           readOnly: true
         client_id:
           type: string
-        client_secret:
+        secret:
           type: string
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
         exclude_users_service_account:
@@ -45226,11 +45515,11 @@ components:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - client_id
-      - client_secret
       - component
       - meta_model_name
       - name
       - pk
+      - secret
       - tenant_id
       - verbose_name
       - verbose_name_plural
@@ -45368,9 +45657,10 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
           minLength: 1
@@ -45403,8 +45693,8 @@ components:
             the remote system.
       required:
       - client_id
-      - client_secret
       - name
+      - secret
       - tenant_id
     MicrosoftEntraProviderUser:
       type: object
@@ -45461,6 +45751,7 @@ components:
       - authentik_core.objectattribute
       - authentik_core.actor
       - authentik_crypto.certificatekeypair
+      - authentik_secrets.secret
       - authentik_endpoints.deviceuserbinding
       - authentik_endpoints.deviceaccessgroup
       - authentik_endpoints.endpointstage
@@ -45945,9 +46236,11 @@ components:
           type: string
           description: Return selected mode with a UI Label
           readOnly: true
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid
@@ -45987,9 +46280,11 @@ components:
           minLength: 1
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid
@@ -46225,9 +46520,11 @@ components:
         client_id:
           type: string
           maxLength: 255
-        client_secret:
+        secret:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           description: 'Access codes not valid on or after current time + this value
@@ -46351,9 +46648,11 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        client_secret:
+        secret:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           minLength: 1
@@ -46632,6 +46931,10 @@ components:
           $ref: '#/components/schemas/PKCEMethodEnum'
         consumer_key:
           type: string
+        secret:
+          type: string
+          format: uuid
+          title: Consumer secret
         callback_url:
           type: string
           description: Get OAuth Callback URL
@@ -46665,6 +46968,7 @@ components:
       - name
       - pk
       - provider_type
+      - secret
       - slug
       - type
       - verbose_name
@@ -46816,10 +47120,10 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        consumer_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Consumer secret
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -46836,9 +47140,9 @@ components:
             token request flow
       required:
       - consumer_key
-      - consumer_secret
       - name
       - provider_type
+      - secret
       - slug
     ObjectAttribute:
       type: object
@@ -49253,6 +49557,21 @@ components:
       - autocomplete
       - pagination
       - results
+    PaginatedSecretList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Secret'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
     PaginatedServiceConnectionList:
       type: object
       properties:
@@ -50347,18 +50666,20 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Client secret
         api_hostname:
           type: string
           minLength: 1
         admin_integration_key:
           type: string
-        admin_secret_key:
+        admin_secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Admin secret key
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
@@ -50387,8 +50708,11 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -50453,11 +50777,15 @@ components:
         account_sid:
           type: string
           minLength: 1
-        auth:
+        auth_secret:
           type: string
-          minLength: 1
-        auth_password:
+          format: uuid
+          title: Auth token
+        auth_password_secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Auth password
         auth_type:
           $ref: '#/components/schemas/AuthTypeEnum'
         verify_only:
@@ -50714,10 +51042,10 @@ components:
           type: string
           minLength: 1
           description: Public key, acquired your captcha Provider.
-        private_key:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Private key
           description: Private key, acquired your captcha Provider.
         js_url:
           type: string
@@ -50950,9 +51278,11 @@ components:
           minimum: -2147483648
         username:
           type: string
-        password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: SMTP password
         use_tls:
           type: boolean
         use_ssl:
@@ -51168,10 +51498,10 @@ components:
           format: uri
           minLength: 1
           maxLength: 200
-        token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Fleet API Token
         headers_mapping:
           type: string
           format: uuid
@@ -51726,9 +52056,11 @@ components:
         sync_principal:
           type: string
           description: Principal to authenticate to kadmin for sync.
-        sync_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Sync password
           description: Password to authenticate to kadmin for sync
         sync_keytab:
           type: string
@@ -51928,9 +52260,11 @@ components:
             Certificate.
         bind_cn:
           type: string
-        bind_password:
+        secret:
           type: string
-          writeOnly: true
+          format: uuid
+          nullable: true
+          title: Bind password
         start_tls:
           type: boolean
           title: Enable Start TLS
@@ -52092,9 +52426,10 @@ components:
         client_id:
           type: string
           minLength: 1
-        client_secret:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          title: Client Secret
         tenant_id:
           type: string
           minLength: 1
@@ -52201,9 +52536,11 @@ components:
           minLength: 1
         mode:
           $ref: '#/components/schemas/TransportModeEnum'
-        webhook_url:
+        secret:
           type: string
-          format: uri
+          format: uuid
+          nullable: true
+          title: Webhook URL
         webhook_ca:
           type: string
           format: uuid
@@ -52321,9 +52658,11 @@ components:
           type: string
           minLength: 1
           maxLength: 255
-        client_secret:
+        secret:
           type: string
-          maxLength: 255
+          format: uuid
+          nullable: true
+          title: Client Secret
         access_code_validity:
           type: string
           minLength: 1
@@ -52492,10 +52831,10 @@ components:
         consumer_key:
           type: string
           minLength: 1
-        consumer_secret:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Consumer secret
         additional_scopes:
           type: string
         oidc_well_known_url:
@@ -52781,9 +53120,10 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
     PatchedPolicyBindingRequest:
       type: object
@@ -53072,9 +53412,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         mfa_support:
           type: boolean
@@ -53543,8 +53885,11 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Token
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -53746,6 +54091,18 @@ components:
           type: string
           description: Description shown to the user when consenting. If left empty,
             the user won't be informed.
+    PatchedSecretRequest:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        value:
+          type: string
+          writeOnly: true
     PatchedSettingsRequest:
       type: object
       description: Settings Serializer
@@ -53946,10 +54303,10 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        bot_token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Bot token
           description: Telegram bot token
         request_message_access:
           type: boolean
@@ -54512,8 +54869,10 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        secret:
           type: string
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
       required:
       - component
@@ -54523,7 +54882,7 @@ components:
       - meta_model_name
       - name
       - pk
-      - plex_token
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -54664,13 +55023,14 @@ components:
         allow_friends:
           type: boolean
           description: Allow friends to authenticate, even if you don't share a server.
-        plex_token:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          title: Plex token
           description: Plex token used to check friends
       required:
       - name
-      - plex_token
+      - secret
       - slug
     PlexTokenRedeemRequest:
       type: object
@@ -55370,7 +55730,7 @@ components:
           maxLength: 255
         client_secret:
           type: string
-          maxLength: 255
+          readOnly: true
         oidc_configuration:
           allOf:
           - $ref: '#/components/schemas/OpenIDConnectConfiguration'
@@ -55437,6 +55797,7 @@ components:
       - access_token_validity
       - assigned_application_name
       - assigned_application_slug
+      - client_secret
       - external_host
       - name
       - oidc_configuration
@@ -55925,7 +56286,7 @@ components:
             from a non-specified CIDR will be dropped.
         shared_secret:
           type: string
-          description: Shared secret between clients and server to hash packets.
+          readOnly: true
         mfa_support:
           type: boolean
           description: When enabled, code-based multi-factor authentication can be
@@ -55942,6 +56303,7 @@ components:
       - auth_flow_slug
       - name
       - pk
+      - shared_secret
     RadiusProvider:
       type: object
       description: RadiusProvider Serializer
@@ -56012,8 +56374,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         outpost_set:
           type: array
@@ -56144,9 +56509,11 @@ components:
           description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
-        shared_secret:
+        secret:
           type: string
-          minLength: 1
+          format: uuid
+          nullable: true
+          title: Shared Secret
           description: Shared secret between clients and server to hash packets.
         mfa_support:
           type: boolean
@@ -56883,6 +57250,16 @@ components:
           minLength: 1
       required:
       - name
+    RotatedSecret:
+      type: object
+      description: A rotated value, hidden when the caller cannot view it.
+      properties:
+        value:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - value
     SAMLBindingsEnum:
       enum:
       - redirect
@@ -57875,8 +58252,11 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Token
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -58024,8 +58404,11 @@ components:
           description: Base URL to SCIM requests, usually ends in /v2
         verify_certificates:
           type: boolean
-        token:
+        secret:
           type: string
+          format: uuid
+          nullable: true
+          title: Token
           description: Authentication token
         auth_mode:
           $ref: '#/components/schemas/SCIMAuthenticationModeEnum'
@@ -58715,6 +59098,71 @@ components:
       - expression
       - name
       - scope_name
+    Secret:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Secret uuid
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        managed:
+          type: string
+          readOnly: true
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - last_updated
+      - managed
+      - name
+      - pk
+    SecretRequest:
+      type: object
+      description: Create and configure a secret without exposing its value.
+      properties:
+        name:
+          type: string
+          minLength: 1
+        type:
+          $ref: '#/components/schemas/SecretTypeEnum'
+        value:
+          type: string
+          writeOnly: true
+      required:
+      - name
+    SecretTypeEnum:
+      enum:
+      - text
+      - multiline
+      - file
+      type: string
+    SecretValue:
+      type: object
+      description: A secret value.
+      properties:
+        value:
+          type: string
+          readOnly: true
+      required:
+      - value
     SelectableStage:
       type: object
       description: Serializer for stages which can be selected by users
@@ -59868,6 +60316,11 @@ components:
         bot_username:
           type: string
           description: Telegram bot username
+        secret:
+          type: string
+          format: uuid
+          title: Bot token
+          description: Telegram bot token
         request_message_access:
           type: boolean
           description: Request access to send messages from your bot.
@@ -59885,6 +60338,7 @@ components:
       - name
       - pk
       - pre_authentication_flow
+      - secret
       - slug
       - verbose_name
       - verbose_name_plural
@@ -60010,10 +60464,10 @@ components:
           type: string
           minLength: 1
           description: Telegram bot username
-        bot_token:
+        secret:
           type: string
-          writeOnly: true
-          minLength: 1
+          format: uuid
+          title: Bot token
           description: Telegram bot token
         request_message_access:
           type: boolean
@@ -60023,10 +60477,10 @@ components:
           format: uuid
           description: Flow used before authentication.
       required:
-      - bot_token
       - bot_username
       - name
       - pre_authentication_flow
+      - secret
       - slug
     Tenant:
       type: object

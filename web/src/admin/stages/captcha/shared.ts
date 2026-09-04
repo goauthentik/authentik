@@ -241,7 +241,7 @@ export function detectProviderFromInstance(stage?: CaptchaStage | null): Captcha
 export function pluckFormValues(
     instance?: CaptchaStage | null,
     preset: CaptchaProviderPreset = CAPTCHA_PROVIDERS.custom,
-): Omit<CaptchaStageRequest, "name" | "publicKey" | "privateKey"> {
+): Omit<CaptchaStageRequest, "name" | "publicKey" | "secret"> {
     if (instance) {
         return {
             jsUrl: instance.jsUrl,

@@ -8,6 +8,7 @@ from django.core.management import call_command
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.stages.email.models import EmailStage
 
 
@@ -58,7 +59,7 @@ class TestEmailManagementCommands(TestCase):
             host="stage.authentik.local",
             port=587,
             username="stage-user",
-            password="stage-password",  # nosec
+            secret=create_test_secret("stage-password"),  # nosec
             use_tls=True,
         )
 

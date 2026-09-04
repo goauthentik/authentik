@@ -91,7 +91,16 @@ class LDAPSource(IncomingSyncSource):
     )
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
-    bind_password = models.TextField(blank=True)
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Bind password"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="ldap_sources",
+    )
+    _bind_password = models.TextField(blank=True, db_column="bind_password")
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
     sni = models.BooleanField(default=False, verbose_name=_("Use Server URI for SNI verification"))
 
@@ -272,8 +281,8 @@ class LDAPSource(IncomingSyncSource):
         connection_kwargs = connection_kwargs or {}
         if self.bind_cn is not None:
             connection_kwargs.setdefault("user", self.bind_cn)
-        if self.bind_password is not None:
-            connection_kwargs.setdefault("password", self.bind_password)
+        if self.secret:
+            connection_kwargs.setdefault("password", self.secret.value)
         conn = Connection(
             server or self.server(**server_kwargs),
             raise_exceptions=True,

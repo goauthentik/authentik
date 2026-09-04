@@ -68,8 +68,20 @@ class KerberosSource(IncomingSyncSource):
     sync_principal = models.TextField(
         help_text=_("Principal to authenticate to kadmin for sync."), blank=True
     )
-    sync_password = models.TextField(
-        help_text=_("Password to authenticate to kadmin for sync"), blank=True
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Sync password"),
+        help_text=_("Password to authenticate to kadmin for sync"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="kerberos_sources",
+    )
+    _sync_password = models.TextField(
+        help_text=_("Password to authenticate to kadmin for sync"),
+        blank=True,
+        db_column="sync_password",
     )
     sync_keytab = models.TextField(
         help_text=_(
@@ -253,11 +265,11 @@ class KerberosSource(IncomingSyncSource):
         # as such, we don't need to create a separate ccache for each source
         if not self.sync_principal:
             return None
-        if self.sync_password:
+        if self.secret:
             return KAdmin.with_password(
                 variant,
                 self.sync_principal,
-                self.sync_password,
+                self.secret.value,
                 api_version=api_version,
             )
         if self.sync_keytab:

@@ -36,8 +36,11 @@ class PlexSourceSerializer(SourceSerializer):
             "client_id",
             "allowed_servers",
             "allow_friends",
-            "plex_token",
+            "secret",
         ]
+        extra_kwargs = {
+            "secret": {"required": True, "allow_null": False},
+        }
 
 
 class PlexTokenRedeemSerializer(PassiveSerializer):
@@ -98,15 +101,15 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = body.validated_data.get("plex_token", None)
-        if not plex_token:
-            raise ValidationError("No plex token given")
+        if source.allow_friends and not source.secret_id:
+            raise ValidationError("Source has no Plex token configured.")
+        plex_token = body.validated_data["plex_token"]
         auth_api = PlexAuth(source, plex_token)
         user_info, identifier = auth_api.get_user_info()
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.plex_token)
+            owner_api = PlexAuth(source, source.secret.value)
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):
@@ -157,15 +160,15 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = body.validated_data.get("plex_token", None)
-        if not plex_token:
-            raise ValidationError("No plex token given")
+        if source.allow_friends and not source.secret_id:
+            raise ValidationError("Source has no Plex token configured.")
+        plex_token = body.validated_data["plex_token"]
         auth_api = PlexAuth(source, plex_token)
         user_info, identifier = auth_api.get_user_info()
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.plex_token)
+            owner_api = PlexAuth(source, source.secret.value)
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):

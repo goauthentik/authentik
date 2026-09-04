@@ -370,7 +370,19 @@ class NotificationTransport(TasksModel, SerializerModel):
     email_subject_prefix = models.TextField(default="authentik Notification: ", blank=True)
     email_template = models.TextField(default=EmailTemplates.EVENT_NOTIFICATION)
 
-    webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Webhook URL"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="notification_transports",
+    )
+    _webhook_url = models.TextField(
+        blank=True, validators=[DomainlessURLValidator()], db_column="webhook_url"
+    )
+
     webhook_ca = models.ForeignKey(
         CertificateKeyPair,
         null=True,
@@ -468,7 +480,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         def send(**kwargs):
             try:
                 response = get_http_session().post(
-                    self.webhook_url,
+                    self.secret.value,
                     json=default_body,
                     headers=headers,
                     **kwargs,
@@ -555,7 +567,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         try:
             response = get_http_session().post(
-                self.webhook_url,
+                self.secret.value,
                 json=body,
                 headers=headers,
             )

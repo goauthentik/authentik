@@ -101,7 +101,7 @@ class OAuthClient(BaseOAuthClient):
             resource_owner_key=resource_owner_key,
             resource_owner_secret=resource_owner_secret,
             client_key=self.source.consumer_key,
-            client_secret=self.source.consumer_secret,
+            client_secret=self.source.secret.value,
             verifier=verifier,
             callback_uri=callback,
         )

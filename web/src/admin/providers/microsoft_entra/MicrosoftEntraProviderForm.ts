@@ -1,6 +1,6 @@
 import "#components/ak-radio-input";
-import "#components/ak-hidden-text-input";
 import "#components/ak-number-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#elements/utils/TimeDeltaHelp";
 import "#components/ak-text-input";
@@ -12,6 +12,8 @@ import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/index";
 
 import { aki } from "#common/api/client";
+
+import { ifPresent } from "#elements/utils/attributes";
 
 import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
@@ -70,16 +72,15 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client ID for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-hidden-text-input
-                        name="clientSecret"
+                    <ak-secret-search-input
+                        name="secret"
                         label=${msg("Client Secret")}
-                        autocomplete="off"
-                        value="${this.instance?.clientSecret ?? ""}"
-                        input-hint="code"
+                        value=${ifPresent(this.instance?.secret ?? undefined)}
                         required
-                        .help=${msg("Client secret for the app registration.")}
-                    >
-                    </ak-hidden-text-input>
+                        help=${msg("Client secret for the app registration.", {
+                            id: "provider.microsoft-entra.form.secret.description",
+                        })}
+                    ></ak-secret-search-input>
                     <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"

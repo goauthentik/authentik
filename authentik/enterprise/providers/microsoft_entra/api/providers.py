@@ -30,7 +30,7 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "verbose_name_plural",
             "meta_model_name",
             "client_id",
-            "client_secret",
+            "secret",
             "tenant_id",
             "exclude_users_service_account",
             "filter_group",
@@ -41,7 +41,9 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "sync_page_timeout",
             "dry_run",
         ]
-        extra_kwargs = {}
+        extra_kwargs = {
+            "secret": {"required": True, "allow_null": False},
+        }
 
 
 class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelViewSet):

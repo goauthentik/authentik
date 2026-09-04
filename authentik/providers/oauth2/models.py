@@ -23,7 +23,7 @@ from dacite import Config
 from dacite.core import from_dict
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import HashIndex
-from django.db import models
+from django.db import models, transaction
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.urls import reverse
@@ -64,6 +64,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.policies.models import PolicyBindingModel
+from authentik.secrets.models import create_named_secret
 from authentik.sources.oauth.models import OAuthSource
 
 if TYPE_CHECKING:
@@ -236,11 +237,21 @@ class OAuth2Provider(WebfingerProvider, Provider):
         verbose_name=_("Client ID"),
         default=generate_id,
     )
-    client_secret = models.CharField(
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Client Secret"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="oauth2_providers",
+    )
+    _client_secret = models.CharField(
         max_length=255,
         blank=True,
         verbose_name=_("Client Secret"),
         default=generate_client_secret,
+        db_column="client_secret",
     )
     _redirect_uris = models.JSONField(
         default=list,
@@ -357,10 +368,18 @@ class OAuth2Provider(WebfingerProvider, Provider):
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
-            return self.client_secret, JWTAlgorithms.HS256
+            return self.secret.value, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)
+
+    def save(self, *args, **kwargs):
+        with transaction.atomic():
+            if not self.secret_id:
+                self.secret = create_named_secret(f"{self.name} client secret")
+                if (update_fields := kwargs.get("update_fields")) is not None:
+                    kwargs["update_fields"] = set(update_fields) | {"secret"}
+            return super().save(*args, **kwargs)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""

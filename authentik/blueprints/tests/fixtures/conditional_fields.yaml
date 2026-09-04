@@ -26,6 +26,12 @@ entries:
         name: "%(uid)s-app"
         icon: https://goauthentik.io/img/icon.png
   source:
+    - model: authentik_secrets.secret
+      id: source-secret
+      identifiers:
+        name: "%(uid)s-source"
+      attrs:
+        value: "%(uid)s"
     - model: authentik_sources_oauth.oauthsource
       identifiers:
         slug: "%(uid)s-source"
@@ -33,7 +39,7 @@ entries:
         name: "%(uid)s-source"
         provider_type: entraid
         consumer_key: "%(uid)s"
-        consumer_secret: "%(uid)s"
+        secret: !KeyOf source-secret
         icon: https://goauthentik.io/img/icon.png
   flow:
     - model: authentik_flows.flow

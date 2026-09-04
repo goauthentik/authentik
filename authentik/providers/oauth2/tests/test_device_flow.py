@@ -72,7 +72,7 @@ class TestOAuth2DeviceFlow(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "client_id": self.provider.client_id,
-                "client_secret": self.provider.client_secret,
+                "client_secret": self.provider.secret.value,
                 "grant_type": GRANT_TYPE_DEVICE_CODE,
                 "device_code": device_code,
             },

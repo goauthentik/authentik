@@ -6,9 +6,17 @@ draft: true
 
 ## Highlights
 
-<!-- ## Breaking changes -->
+## Breaking changes
+
+### Credential fields are now Secret objects
+
+Credentials stored on authentik objects now live in a [Secret](../../sys-mgmt/secrets/index.mdx) object the owning object references. This covers OAuth2/OpenID client secrets, RADIUS shared secrets, LDAP and Kerberos source bind/sync passwords, OAuth, Plex, and Telegram source credentials, SCIM provider tokens, SMTP passwords, Duo, captcha and SMS stage keys, notification transport webhook URLs, and the Microsoft Entra and Fleet enterprise credentials. The migration creates a Secret for each non-empty credential, keeping the existing value. The previous string API fields (`client_secret`, `shared_secret`, `bind_password`, `token`, and the like) are removed from the API and blueprints: set the new `secret` reference field instead, pointing at a Secret object. Blueprints define the Secret as its own entry and reference it with `!KeyOf` or `!Find`; omitting `value` on the Secret generates one server-side. See [Secrets in the API and blueprints](../../sys-mgmt/secrets/api-and-blueprints.mdx).
 
 ## New features and improvements
+
+### Secrets
+
+Secrets used by providers, sources, stages, and connectors can now be managed under **System** > **Secrets**. Each secret has its own permissions and can be rotated from the Admin interface or API. See [Secrets](../../sys-mgmt/secrets/index.mdx).
 
 ## Upgrading
 

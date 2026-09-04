@@ -15,13 +15,13 @@ class FleetConnectorSerializer(EnterpriseRequiredMixin, ConnectorSerializer):
         model = FleetConnector
         fields = ConnectorSerializer.Meta.fields + [
             "url",
-            "token",
+            "secret",
             "headers_mapping",
             "map_users",
             "map_teams_access_group",
         ]
         extra_kwargs = {
-            "token": {"write_only": True},
+            "secret": {"required": True, "allow_null": False},
         }
 
 

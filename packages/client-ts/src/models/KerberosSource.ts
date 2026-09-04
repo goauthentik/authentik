@@ -146,6 +146,10 @@ export interface KerberosSource {
      */
     syncPrincipal?: string;
     /**
+     * Password to authenticate to kadmin for sync
+     */
+    secret?: string | null;
+    /**
      * Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
      */
     syncCcache?: string;
@@ -283,6 +287,12 @@ export function KerberosSourceFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncPrincipal: json["sync_principal"] == null ? undefined : json["sync_principal"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         syncCcache: json["sync_ccache"] == null ? undefined : json["sync_ccache"],
         connectivity: json["connectivity"],
         spnegoServerName:
@@ -342,6 +352,7 @@ export function KerberosSourceToJSONTyped(
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_principal: value["syncPrincipal"],
+        secret: value["secret"],
         sync_ccache: value["syncCcache"],
         spnego_server_name: value["spnegoServerName"],
         spnego_ccache: value["spnegoCcache"],

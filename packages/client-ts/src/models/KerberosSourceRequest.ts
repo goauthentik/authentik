@@ -114,7 +114,7 @@ export interface KerberosSourceRequest {
     /**
      * Password to authenticate to kadmin for sync
      */
-    syncPassword?: string;
+    secret?: string | null;
     /**
      * Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
      */
@@ -210,7 +210,12 @@ export function KerberosSourceRequestFromJSONTyped(
         syncUsersPassword:
             json["sync_users_password"] == null ? undefined : json["sync_users_password"],
         syncPrincipal: json["sync_principal"] == null ? undefined : json["sync_principal"],
-        syncPassword: json["sync_password"] == null ? undefined : json["sync_password"],
+        secret:
+            json["secret"] === undefined
+                ? undefined
+                : json["secret"] === null
+                  ? null
+                  : json["secret"],
         syncKeytab: json["sync_keytab"] == null ? undefined : json["sync_keytab"],
         syncCcache: json["sync_ccache"] == null ? undefined : json["sync_ccache"],
         spnegoServerName:
@@ -260,7 +265,7 @@ export function KerberosSourceRequestToJSONTyped(
         sync_users: value["syncUsers"],
         sync_users_password: value["syncUsersPassword"],
         sync_principal: value["syncPrincipal"],
-        sync_password: value["syncPassword"],
+        secret: value["secret"],
         sync_keytab: value["syncKeytab"],
         sync_ccache: value["syncCcache"],
         spnego_server_name: value["spnegoServerName"],

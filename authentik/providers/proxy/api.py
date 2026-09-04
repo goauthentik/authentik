@@ -138,6 +138,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     oidc_configuration = SerializerMethodField()
     access_token_validity = SerializerMethodField()
     scopes_to_request = SerializerMethodField()
+    client_secret = CharField(source="secret.value", read_only=True)
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
     def get_oidc_configuration(self, obj: ProxyProvider):
@@ -186,7 +187,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
 class ProxyOutpostConfigViewSet(ListModelMixin, GenericViewSet):
     """ProxyProvider Viewset"""
 
-    queryset = ProxyProvider.objects.filter(application__isnull=False)
+    queryset = ProxyProvider.objects.filter(application__isnull=False).select_related("secret")
     serializer_class = ProxyOutpostConfigSerializer
     ordering = ["name"]
     search_fields = ["name"]

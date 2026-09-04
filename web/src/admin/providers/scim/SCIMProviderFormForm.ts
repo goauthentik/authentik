@@ -1,5 +1,5 @@
-import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
+import "#components/ak-secret-search-input";
 import "#components/ak-switch-input";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -21,6 +21,8 @@ import {
 
 import { aki } from "#common/api/client";
 
+import { ifPresent } from "#elements/utils/attributes";
+
 import {
     CompatibilityModeEnum,
     OAuthSource,
@@ -37,16 +39,16 @@ import { msg } from "@lit/localize";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-export function renderAuthToken(provider?: Partial<SCIMProvider>, errors: ValidationError = {}) {
-    return html`<ak-hidden-text-input
-        name="token"
+export function renderAuthToken(provider?: Partial<SCIMProvider>) {
+    return html`<ak-secret-search-input
+        name="secret"
         label=${msg("Token")}
-        value="${provider?.token ?? ""}"
-        .errorMessages=${errors?.token}
-        required
-        help=${msg("Token to authenticate with.")}
-        input-hint="code"
-    ></ak-hidden-text-input>`;
+        value=${ifPresent(provider?.secret ?? undefined)}
+        blankable
+        help=${msg("Token to authenticate with.", {
+            id: "provider.scim.form.secret.description",
+        })}
+    ></ak-secret-search-input>`;
 }
 
 export function renderAuthOAuth(provider?: Partial<SCIMProvider>, _errors: ValidationError = {}) {
@@ -91,7 +93,7 @@ export function renderAuth(provider?: Partial<SCIMProvider>, errors: ValidationE
     switch (provider?.authMode) {
         default:
         case SCIMAuthenticationModeEnum.Token:
-            return renderAuthToken(provider, errors);
+            return renderAuthToken(provider);
         case SCIMAuthenticationModeEnum.Oauth:
         case SCIMAuthenticationModeEnum.OauthInteractive:
             return renderAuthOAuth(provider, errors);

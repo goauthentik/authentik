@@ -1,6 +1,8 @@
 """authentik outpost signals"""
 
 from django.core.cache import cache
+from django.db import transaction
+from django.db.models import Q
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from structlog.stdlib import get_logger
@@ -15,6 +17,7 @@ from authentik.outposts.tasks import (
     outpost_send_update,
     outpost_session_end,
 )
+from authentik.secrets.models import Secret, secret_value_changed
 
 LOGGER = get_logger()
 
@@ -146,6 +149,25 @@ def outpost_reverse_related_post_save(sender, instance: CertificateKeyPair | Bra
 
 post_save.connect(outpost_reverse_related_post_save, sender=Brand, weak=False)
 post_save.connect(outpost_reverse_related_post_save, sender=CertificateKeyPair, weak=False)
+
+
+@receiver(secret_value_changed, sender=Secret)
+def outpost_secret_value_changed(sender, secret: Secret, **_):
+    """Send new credentials to affected outposts after the database commit."""
+
+    def send_updates():
+        outposts = Outpost.objects.filter(
+            Q(providers__radiusprovider__secret=secret)
+            | Q(providers__oauth2provider__secret=secret)
+        ).distinct()
+        for outpost in outposts:
+            outpost_send_update.send_with_options(
+                args=(outpost.pk,),
+                rel_obj=outpost,
+                uid=outpost.name,
+            )
+
+    transaction.on_commit(send_updates)
 
 
 @receiver(pre_delete, sender=Outpost)

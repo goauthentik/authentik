@@ -59,7 +59,19 @@ class PlexSource(ScheduledModel, Source):
         default=True,
         help_text=_("Allow friends to authenticate, even if you don't share a server."),
     )
-    plex_token = models.TextField(help_text=_("Plex token used to check friends"))
+    secret = models.ForeignKey(
+        "authentik_secrets.Secret",
+        verbose_name=_("Plex token"),
+        help_text=_("Plex token used to check friends"),
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        default=None,
+        related_name="plex_sources",
+    )
+    _plex_token = models.TextField(
+        help_text=_("Plex token used to check friends"), db_column="plex_token"
+    )
 
     @property
     def component(self) -> str:

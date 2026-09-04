@@ -16,6 +16,7 @@ from authentik.providers.scim.models import (
     SCIMProviderGroup,
 )
 from authentik.providers.scim.tasks import scim_sync
+from authentik.secrets.tests.utils import create_test_secret
 from authentik.tenants.models import Tenant
 
 
@@ -39,7 +40,7 @@ class SCIMMembershipTests(TestCase):
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
-            token=generate_id(),
+            secret=create_test_secret(generate_id()),
             **kwargs,
         )
         self.app: Application = Application.objects.create(
