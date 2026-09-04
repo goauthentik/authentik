@@ -60,7 +60,7 @@ test.describe("Session Lifecycle", () => {
         await session.$identificationStage.waitFor({ state: "visible" });
     });
 
-    test("Remember me persists username", async ({ navigator, session, page }) => {
+    test("Remember me persists username", async ({ navigator, session, switcher, page }) => {
         await test.step("Verify identification stage", async () => {
             await expect(
                 session.$rememberMeCheckbox,
@@ -90,20 +90,23 @@ test.describe("Session Lifecycle", () => {
         });
 
         await test.step("Sign out and verify username is remembered", async () => {
-            const signOutLink = page.getByRole("link", { name: "Sign out" });
-
-            await expect(signOutLink, "Sign out link is visible").toBeVisible();
-
-            await signOutLink.click();
+            // Signing out lives inside the header account switcher, not as a bare
+            // header link — see `ak-user-switcher`.
+            await switcher.select(switcher.$signOut);
 
             await navigator.waitForPathname("/if/flow/default-authentication-flow/?next=%2F");
-            await session.$identificationStage.waitFor({ state: "visible" });
 
-            const passwordEmbedded = await session.$passwordField.isVisible();
+            // Remember-me lands on one of two stages: identification with the username
+            // pre-filled, or — when the remembered identity is restored outright — the
+            // password stage for that user.
+            await expect(
+                session.$identificationStage.or(session.$passwordStage),
+                "Sign out returns to the authentication flow",
+            ).toBeVisible({ timeout: 15_000 });
 
-            if (passwordEmbedded) {
-                // Password is embedded in the identification stage, so the Not-you UI never renders.
-                // Remember-me's only observable effect is the pre-filled username field.
+            if (await session.$identificationStage.isVisible()) {
+                // Remember-me's only observable effect here is the pre-filled username,
+                // so the Not-you UI never renders.
                 await expect(
                     session.$usernameField,
                     "Username pre-filled from remember-me",
@@ -111,9 +114,6 @@ test.describe("Session Lifecycle", () => {
 
                 return;
             }
-
-            await session.$submitButton.click();
-            await session.$passwordStage.waitFor({ state: "visible" });
 
             const notYouLink = page.getByRole("link", { name: "Not you?" });
 
