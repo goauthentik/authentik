@@ -16,10 +16,11 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import ProviderSync, OutgoingSyncProvider
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth
+from authentik.tasks.models import Task
 
 LOGGER = get_logger()
 
@@ -170,6 +171,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
         return scim_sync
 
+    @property
+    def sync_model(self) -> type[ProviderSync]:
+        return SCIMProviderSync
+
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]
     ) -> BaseOutgoingSyncClient[User | Group, Any, Any, Self]:
@@ -273,6 +278,40 @@ class SCIMProviderGroupFilter(SimpleThroughModel):
             f"SCIMProviderGroupFilter for SCIMProvider {self.scim_provider_id} "
             f"and Group {self.group_id}."
         )
+
+
+class SCIMProviderSync(ProviderSync):
+    tasks = models.ManyToManyField(
+        Task,
+        related_name="+",
+        through="SCIMProviderSyncTask",
+        through_fields=("scim_provider_sync", "task"),
+    )
+    provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("SCIM provider sync")
+        verbose_name_plural = _("SCIM provider syncs")
+
+    def __str__(self):
+        return f"SCIM Provider ({self.provider_id}) Sync ({self.pk})"
+
+
+class SCIMProviderSyncTask(InternallyManagedMixin, models.Model):
+    pk = models.CompositePrimaryKey("scim_provider_sync", "task")
+    scim_provider_sync = models.ForeignKey(
+        SCIMProviderSync, on_delete=models.CASCADE, related_name="+"
+    )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("SCIM provider sync task")
+        verbose_name_plural = _("SCIM provider sync tasks")
+
+    def __str__(self):
+        return f"SCIM Provider Sync ({self.scim_provider_sync_id}) Task ({self.task_id})"
 
 
 class SCIMProviderGroupPropertyMapping(SimpleThroughModel):

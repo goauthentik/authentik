@@ -20,7 +20,12 @@ from authentik.core.models import (
 )
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import (
+    ProviderSync,
+    OutgoingSyncDeleteAction,
+    OutgoingSyncProvider,
+)
+from authentik.tasks.models import Task
 
 
 class MicrosoftEntraProviderUser(InternallyManagedMixin, SerializerModel):
@@ -107,6 +112,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
 
         return microsoft_entra_sync
 
+    @property
+    def sync_model(self) -> type[ProviderSync]:
+        return MicrosoftEntraProviderSync
+
     def client_for_model(
         self,
         model: type[User | Group | MicrosoftEntraProviderUser | MicrosoftEntraProviderGroup],
@@ -183,6 +192,40 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     class Meta:
         verbose_name = _("Microsoft Entra Provider")
         verbose_name_plural = _("Microsoft Entra Providers")
+
+
+class MicrosoftEntraProviderSync(ProviderSync):
+    tasks = models.ManyToManyField(
+        Task,
+        related_name="+",
+        through="MicrosoftEntraProviderSyncTask",
+        through_fields=("microsoft_entra_provider_sync", "task"),
+    )
+    provider = models.ForeignKey(MicrosoftEntraProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Microsoft Entra provider sync")
+        verbose_name_plural = _("Microsoft Entra provider syncs")
+
+    def __str__(self):
+        return f"Microsoft Entra Provider ({self.provider_id}) Sync ({self.pk})"
+
+
+class MicrosoftEntraProviderSyncTask(InternallyManagedMixin, models.Model):
+    pk = models.CompositePrimaryKey("microsoft_entra_provider_sync", "task")
+    microsoft_entra_provider_sync = models.ForeignKey(
+        MicrosoftEntraProviderSync, on_delete=models.CASCADE, related_name="+"
+    )
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("Microsoft Entra provider sync task")
+        verbose_name_plural = _("Microsoft Entra provider sync tasks")
+
+    def __str__(self):
+        return f"Microsoft Entra Provider Sync ({self.microsoft_entra_provider_sync_id}) Task ({self.task_id})"
 
 
 class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):

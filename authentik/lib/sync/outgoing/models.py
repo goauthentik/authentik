@@ -11,6 +11,7 @@ from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
 from authentik.lib.config import advisory_lock_db_alias
+from authentik.lib.sync.models import Sync
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand, timedelta_from_string, timedelta_string_validator
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -93,7 +94,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         )
 
     @property
-    def sync_lock(self) -> pglock.advisory:
+    def start_sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/providers/outgoing-sync/{str(self.pk)}",
@@ -105,6 +106,19 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     @property
     def sync_actor(self) -> Actor:
         raise NotImplementedError
+
+    @property
+    def sync_model(self) -> type[Sync]:
+        raise NotImplementedError
+
+    @property
+    def last_sync(self) -> OutgoingSync | None:
+        return (
+            getattr(self, f"{self.sync_model._meta.model_name}_set")
+            .objects.filter(partial=False)
+            .order_by("-started_at")
+            .first()
+        )
 
     def sync_dispatch(self) -> None:
         for schedule in self.schedules.all():
@@ -124,3 +138,13 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",
             ),
         ]
+
+
+class ProviderSync(Sync):
+    partial = models.BooleanField(default=False)
+
+    users_count = models.PositiveBigIntegerField(default=0)
+    groups_count = models.PositiveBigIntegerField(default=0)
+
+    class Meta:
+        abstract = True
