@@ -1,11 +1,10 @@
-import "#admin/rbac/ObjectPermissionModal";
 import "#elements/forms/DeleteBulkForm";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 
 import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
-import { ModalInvokerButton } from "#elements/dialogs";
+import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
+import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
@@ -103,28 +102,17 @@ export class SecretListPage extends TablePage<Secret> {
                     : nothing}`,
             html`${this.typeLabel(item.type)}`,
             html`<div>
-                ${SecretValueButton(item)}
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-plain"
-                    aria-label=${msg("Edit", { id: "secret.list.edit" })}
-                    ${SecretForm.asInstanceInvoker(item.pk)}
-                >
-                    <pf-tooltip position="top" content=${msg("Edit", { id: "secret.list.edit" })}>
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                    </pf-tooltip>
-                </button>
+                ${SecretValueButton(item)} ${IconEditButton(SecretForm, item.pk, item.name)}
                 ${item.type === SecretTypeEnum.Text
                     ? IconRotateSecretButton({
                           rotate: () =>
                               aki(SecretsApi).secretsSecretsRotateCreate({ secretUuid: item.pk }),
                       })
                     : nothing}
-                <ak-rbac-object-permission-modal
-                    model=${ModelEnum.AuthentikSecretsSecret}
-                    objectPk=${item.pk}
-                >
-                </ak-rbac-object-permission-modal>
+                ${IconPermissionButton(item.name, {
+                    model: ModelEnum.AuthentikSecretsSecret,
+                    objectPk: item.pk,
+                })}
             </div>`,
         ];
     }
