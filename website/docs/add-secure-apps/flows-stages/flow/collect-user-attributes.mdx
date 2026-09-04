@@ -1,0 +1,126 @@
+---
+title: Collect custom user attributes during enrollment
+description: Collect user data with an enrollment flow and store it as custom user attributes.
+sidebar_position: 9
+---
+
+Use a Prompt stage and a User Write stage to collect user data during enrollment and store it as custom attributes on the new user.
+
+## About the workflow
+
+The workflow has three parts:
+
+1. A prompt field in a Prompt stage collects a value and stores it in the flow's `prompt_data` context.
+2. A User Write stage writes the value from `prompt_data` to the user.
+3. A provider property mapping sends the stored value to an application, or a policy reads the attribute.
+
+The prompt field's **Field Key** controls where the User Write stage stores the value:
+
+| Field key                    | Where the value is stored              |
+| ---------------------------- | -------------------------------------- |
+| `username`                   | The user's username                    |
+| `name`                       | The user's display name                |
+| `email`                      | The user's email address               |
+| `attributes.given_name`      | The `given_name` attribute             |
+| `attributes.family_name`     | The `family_name` attribute            |
+| `attributes.department`      | The `department` attribute             |
+| `attributes.settings.locale` | The nested `settings.locale` attribute |
+
+:::warning Field key naming
+A field key such as `department` is available to later stages and policies in `prompt_data`, but the User Write stage does not store it on the user. Start the field key with `attributes.` to store the value as a user attribute.
+:::
+
+## Create the prompt fields
+
+This example collects a given name and a family name. The default [object attribute](../../../sys-mgmt/object-attributes.mdx) keys for these values are `given_name` and `family_name`.
+
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Flows and Stages** > **Prompts**, and click **New Prompt**.
+3. Configure the given name prompt:
+    - **Name**: enter a descriptive name, such as `enrollment-given-name`.
+    - **Field Key**: enter `attributes.given_name`.
+    - **Label**: enter `Given name`.
+    - **Type**: select **Text**.
+    - **Required**: enable this option if every user must provide a given name.
+    - **Order**: enter an order value.
+4. Click **Create Prompt**.
+5. Create a second prompt with these values:
+    - **Name**: enter a descriptive name, such as `enrollment-family-name`.
+    - **Field Key**: enter `attributes.family_name`.
+    - **Label**: enter `Family name`.
+    - **Type**: select **Text**.
+    - **Required**: enable this option if every user must provide a family name.
+    - **Order**: enter a value greater than the given name prompt's order.
+6. Click **Create Prompt**.
+
+The same pattern works for any custom attribute. For example, use the field key `attributes.department` to store a `department` attribute.
+
+To show these attributes as labeled fields with validation on the user forms in the Admin interface, create or enable [object attribute definitions](../../../sys-mgmt/object-attributes.mdx) for the keys. Definitions do not add fields to enrollment flows.
+
+## Add the prompts to a Prompt stage
+
+1. Navigate to **Flows and Stages** > **Stages**, and click **New Stage**.
+2. Select **Prompt Stage**, and click **Next**.
+3. Enter a descriptive **Name**.
+4. Add the given name and family name prompts to **Fields**.
+5. Click **Create Stage**.
+
+You can also add the prompts to an existing Prompt stage in the enrollment flow.
+
+## Bind the stages to the enrollment flow
+
+1. Navigate to **Flows and Stages** > **Flows**, and open the enrollment flow.
+2. Open the **Stage Bindings** tab.
+3. Bind the Prompt stage before the User Write stage.
+4. If the flow does not have a User Write stage, create and bind one that allows user creation.
+5. Confirm that the stages run in this order:
+    1. Any identification, invitation, or verification stages.
+    2. The Prompt stage that collects the attributes.
+    3. The User Write stage.
+    4. An optional User Login stage.
+
+The User Write stage reads the submitted values from `prompt_data` and writes `attributes.given_name` and `attributes.family_name` to the user's attributes as `given_name` and `family_name`.
+
+## Set attributes from an invitation
+
+An [invitation](../../../users-sources/user/invitations.mdx) can provide attribute values without asking the user to enter them. In the invitation's **Custom attributes** field, set an `attributes` dictionary:
+
+```json
+{
+    "email": "dominic.roy@example.com",
+    "name": "Dominic Roy",
+    "attributes": {
+        "department": "Engineering",
+        "family_name": "Roy",
+        "given_name": "Dominic"
+    }
+}
+```
+
+Dotted keys that match the prompt fields work as well:
+
+```json
+{
+    "attributes.family_name": "Roy",
+    "attributes.given_name": "Dominic"
+}
+```
+
+Bind the Invitation stage before the Prompt and User Write stages.
+
+## Map the attributes to an application
+
+Storing an attribute on the user does not send it to an application. When an OAuth2/OIDC application requires a specific claim or a SAML application requires a specific attribute, configure a [provider property mapping](../../providers/property-mappings/index.mdx#map-stored-user-attributes) that returns the stored value.
+
+## Verify the result
+
+1. Run the enrollment flow and enter values in the new fields.
+2. In the Admin interface, navigate to **Directory** > **Users**.
+3. Open the enrolled user and confirm that **Attributes** contains the new values:
+
+    ```yaml
+    family_name: Roy
+    given_name: Dominic
+    ```
+
+4. If an application uses the values, test the property mapping or sign in to the application, and confirm that it receives the expected values.

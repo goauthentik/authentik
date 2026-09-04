@@ -2,7 +2,6 @@
 
 import re
 import socket
-from copy import deepcopy
 from ipaddress import ip_address, ip_network
 from smtplib import SMTPException
 from textwrap import indent
@@ -208,7 +207,8 @@ class BaseEvaluator:
         user = self._context.get("user", get_anonymous_user())
         req = PolicyRequest(user)
         if "request" in self._context:
-            req = deepcopy(self._context["request"])
+            current_req: PolicyRequest = self._context["request"]
+            req = current_req.deepcopy()
         req.context.update(kwargs)
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
