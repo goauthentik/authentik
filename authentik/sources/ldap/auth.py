@@ -38,6 +38,8 @@ class LDAPBackend(InbuiltBackend):
         if LDAP_DISTINGUISHED_NAME not in user.attributes:
             LOGGER.debug("User doesn't have DN set, assuming not LDAP imported.", user=user)
             return None
+        if not self.user_can_authenticate(user):
+            return None
         # Either has unusable password,
         # or has a password, but couldn't be authenticated by ModelBackend.
         # This means we check with a bind to see if the LDAP password has changed
