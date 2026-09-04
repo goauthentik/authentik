@@ -1,9 +1,9 @@
 """Time utilities"""
 
 import datetime
+import socket
 from hashlib import sha256
 from random import randrange, seed
-from socket import getfqdn
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -45,8 +45,10 @@ def timedelta_from_string(expr: str) -> datetime.timedelta:
 
 
 def fqdn_rand(task: str, stop: int = 60) -> int:
-    """Get a random number within max based on the FQDN and task name"""
-    entropy = f"{getfqdn()}:{task}"
+    """Get a random number within max based on the hostname and task name"""
+    # Schedule reconciliation can run while holding a database lock; DNS/NSS resolution must not
+    # block this startup path.
+    entropy = f"{socket.gethostname()}:{task}"
     hasher = sha256()
     hasher.update(entropy.encode("utf-8"))
     seed(hasher.hexdigest())
