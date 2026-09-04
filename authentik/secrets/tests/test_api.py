@@ -77,6 +77,7 @@ class TestSecretsAPI(APITestCase):
         list_url = reverse("authentik_api:secret-list")
         response = self.client.post(list_url, {"name": "file", "type": "file"})
         self.assertEqual(response.status_code, 400)
+
         response = self.client.post(
             list_url, {"name": "file", "type": "file", "value": "not base64"}
         )
@@ -86,6 +87,23 @@ class TestSecretsAPI(APITestCase):
             reverse("authentik_api:secret-rotate", kwargs={"pk": secret.pk})
         )
         self.assertEqual(response.status_code, 400)
+
+    def test_blank_value_keeps_existing_value_without_rotate_permission(self):
+        self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
+        self.user.assign_perms_to_managed_role("authentik_secrets.change_secret", self.secret)
+        self.client.force_login(self.user)
+        previous = self.secret.value
+
+        response = self.client.patch(
+            reverse("authentik_api:secret-detail", kwargs={"pk": self.secret.pk}),
+            {"name": "renamed", "value": ""},
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.secret.refresh_from_db()
+        self.assertEqual(self.secret.name, "renamed")
+        self.assertEqual(self.secret.value, previous)
+        self.assertFalse(Event.objects.filter(action=EventAction.SECRET_ROTATE).exists())
 
     def test_oauth_consumer_requires_ascii_value(self):
         self.client.force_login(self.admin)

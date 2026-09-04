@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, SkipField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -26,13 +26,9 @@ from authentik.secrets.models import Secret, SecretType
 class SecretSerializer(ManagedSerializer, ModelSerializer):
     """Create and configure a secret without exposing its value."""
 
-    def to_internal_value(self, data):
-        values = super().to_internal_value(data)
-        if values.get("value") == "":
-            values.pop("value")
-        return values
-
     def validate_value(self, value: str) -> str:
+        if value == "":
+            raise SkipField
         instance = self.instance
         if not instance or value == instance.value:
             return value
