@@ -30,11 +30,10 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG, advisory_lock_db_alias
-from authentik.lib.models import DomainlessURLValidator, InternallyManagedMixin
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.sync.models import Sync
 from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.models import Task
 from authentik.tasks.schedules.common import ScheduleSpec
 
 LDAP_TIMEOUT = 15

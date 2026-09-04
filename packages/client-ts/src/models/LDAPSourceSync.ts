@@ -29,7 +29,7 @@ export interface LDAPSourceSync {
     /**
      *
      */
-    tasks: Array<string>;
+    tasks?: Array<string>;
     /**
      *
      */
@@ -77,7 +77,6 @@ export interface LDAPSourceSync {
  */
 export function instanceOfLDAPSourceSync(value: object): value is LDAPSourceSync {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("tasks" in value) || value["tasks"] === undefined) return false;
     if (
         (!("startedAt" in (value as Record<string, any>)) &&
             !("started_at" in (value as Record<string, any>))) ||
@@ -102,7 +101,7 @@ export function LDAPSourceSyncFromJSONTyped(
     }
     return {
         pk: json["pk"],
-        tasks: json["tasks"],
+        tasks: json["tasks"] == null ? undefined : json["tasks"],
         startedAt:
             json["started_at"] == null ? json["started_at"] : parseDateTime(json["started_at"]),
         finishedAt:
