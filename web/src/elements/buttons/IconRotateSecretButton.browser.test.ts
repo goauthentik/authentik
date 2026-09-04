@@ -1,4 +1,6 @@
 import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { RouteChangeEvent } from "#elements/router/events";
 
 import { afterEach, expect, test, vi } from "vitest";
 import { userEvent } from "vitest/browser";
@@ -17,8 +19,9 @@ afterEach(() => {
     container.remove();
 });
 
-test("rotation runs once and cannot be dismissed with Escape while pending", async () => {
-    const response = Promise.withResolvers<{ value: null }>();
+test.each([false, true])("rotation completes once even after navigation: %s", async (navigate) => {
+    vi.mocked(showMessage).mockClear();
+    const response = Promise.withResolvers<{ value: string | null }>();
     const rotate = vi.fn(() => response.promise);
     document.body.append(container);
     render(IconRotateSecretButton({ rotate }), container);
@@ -31,6 +34,19 @@ test("rotation runs once and cannot be dismissed with Escape while pending", asy
     await userEvent.keyboard("{Escape}");
     expect(dialog.open).toBe(true);
     expect(rotate).toHaveBeenCalledTimes(1);
-    response.resolve({ value: null });
+    if (navigate) {
+        window.dispatchEvent(new Event(RouteChangeEvent.eventName));
+        await vi.waitFor(() => expect(dialog.isConnected).toBe(false));
+    }
+    response.resolve({ value: navigate ? "replacement" : null });
     await vi.waitFor(() => expect(dialog.isConnected).toBe(false));
+    if (navigate) {
+        await vi.waitFor(() =>
+            expect(document.querySelector("ak-hidden-text-input")?.getAttribute("value")).toBe(
+                "replacement",
+            ),
+        );
+        document.querySelector<HTMLDialogElement>("dialog[open]")!.close();
+    }
+    await vi.waitFor(() => expect(showMessage).toHaveBeenCalledTimes(1));
 });

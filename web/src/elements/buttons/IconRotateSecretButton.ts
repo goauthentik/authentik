@@ -32,12 +32,11 @@ export function IconRotateSecretButton({
 }: RotateSecretProps): SlottedTemplateResult {
     const headline = msg("Rotate secret", { id: "secret-rotate.confirm.header" });
 
-    const open = async (event: Event) => {
+    const open = (event: Event) => {
         // Read the invoker before any await: event targets inside a shadow tree are cleared once
         // dispatch finishes.
         const invoker = event.currentTarget as HTMLElement;
 
-        let result: RotatedSecret | undefined;
         const confirm = async (event: Event) => {
             const dialog = (event.currentTarget as HTMLElement).closest("dialog")!;
             const modal = dialog.querySelector("ak-modal")!;
@@ -46,8 +45,32 @@ export function IconRotateSecretButton({
             const closedBy = dialog.closedBy;
             dialog.closedBy = "none";
             try {
-                result = await rotate();
+                const result = await rotate();
                 dialog.close();
+
+                if (result.value) {
+                    await renderModal(
+                        html`<ak-hidden-text-input
+                            label=${msg("New secret", { id: "secret-rotate.result.label" })}
+                            value=${result.value}
+                            readonly
+                            revealed
+                            copyable
+                            input-hint="code"
+                        ></ak-hidden-text-input>`,
+                        {
+                            headline: msg("Secret rotated", { id: "secret-rotate.result.header" }),
+                            invokerElement: invoker,
+                            size: PFSize.Medium,
+                        },
+                    );
+                }
+
+                invoker.dispatchEvent(new AKRefreshEvent());
+                showMessage({
+                    message: msg("Successfully rotated secret.", { id: "secret-rotate.success" }),
+                    level: MessageLevel.success,
+                });
             } catch (error) {
                 await showAPIErrorMessage(error);
             } finally {
@@ -56,7 +79,7 @@ export function IconRotateSecretButton({
             }
         };
 
-        await renderModal(
+        return renderModal(
             html`<p>
                     ${msg(
                         "This replaces the value for every object using this secret. Update any external systems that use it.",
@@ -93,33 +116,6 @@ export function IconRotateSecretButton({
                 invokerElement: invoker,
             },
         );
-
-        if (!result) return;
-
-        if (result.value) {
-            await renderModal(
-                html`<ak-hidden-text-input
-                    label=${msg("New secret", { id: "secret-rotate.result.label" })}
-                    value=${result.value}
-                    readonly
-                    revealed
-                    copyable
-                    input-hint="code"
-                ></ak-hidden-text-input>`,
-                {
-                    headline: msg("Secret rotated", { id: "secret-rotate.result.header" }),
-                    invokerElement: invoker,
-                    size: PFSize.Medium,
-                },
-            );
-        }
-
-        invoker.dispatchEvent(new AKRefreshEvent());
-
-        showMessage({
-            message: msg("Successfully rotated secret.", { id: "secret-rotate.success" }),
-            level: MessageLevel.success,
-        });
     };
 
     return html`<button
