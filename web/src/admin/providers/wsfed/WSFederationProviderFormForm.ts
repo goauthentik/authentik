@@ -32,9 +32,9 @@ import {
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
-    WSFedSAMLVersionEnum,
     ValidationError,
     WSFederationProvider,
+    WSFedSAMLVersionEnum,
 } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";

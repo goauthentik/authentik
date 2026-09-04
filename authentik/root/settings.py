@@ -222,7 +222,9 @@ SPECTACULAR_SETTINGS = {
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "WebAuthnHintEnum": "authentik.stages.authenticator_webauthn.models.WebAuthnHint",
-        "WSFedSAMLVersionEnum": "authentik.enterprise.providers.ws_federation.models.WSFederationSAMLVersion",
+        "WSFedSAMLVersionEnum": (
+            "authentik.enterprise.providers.ws_federation.models.WSFederationSAMLVersion"
+        ),
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
