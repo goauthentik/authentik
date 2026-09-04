@@ -226,7 +226,36 @@ PostgreSQL enforces this when the connection is made. A user whose claim resolve
 
 The cost is that `system_user` then reports the role rather than the person, because it reflects whichever claim `authn_field` names. Choose this when you want group membership in authentik to drive database access, and keep `email` when you want each connection attributable to an individual.
 
-Privileges stay with PostgreSQL either way. authentik selects the role, and `GRANT` decides what that role can do. Removing someone's access to the application in authentik stops new tokens, but a token that has already been issued remains valid until it expires, so keep **Access token validity** short if that matters to you.
+### Limiting access by scope
+
+`pg_hba.conf` matches on database as well as address, and the validator checks that the token carries every scope the matching line requires. Two lines can therefore hold one database to a higher bar than the rest:
+
+```text
+# TYPE   DATABASE   USER  ADDRESS  METHOD  OPTIONS
+hostssl  analytics  all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email analytics" map=authentik
+hostssl  all        all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email" map=authentik
+```
+
+A token carrying only `openid email` reaches the other databases and is refused on `analytics`. Add a scope mapping named `analytics` to the provider as well, because authentik drops requested scopes that the provider does not define.
+
+### Filtering rows by identity
+
+`system_user` holds the authenticated identity, so a row-level security policy can narrow what each person reads even when several of them share one role:
+
+```sql
+ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY own_notes ON notes USING (owner = system_user);
+```
+
+Under the shared `employees` map above, two people connecting as that same role each read only their own rows.
+
+[Row-level security does not apply to the role that owns the table](https://www.postgresql.org/docs/18/ddl-rowsecurity.html). A shared role that owns the tables it reads sees every row and the policy has no effect, so either add `ALTER TABLE ... FORCE ROW LEVEL SECURITY` or keep table ownership separate from the roles people log in as.
+
+### Privileges and session lifetime
+
+Privileges stay with PostgreSQL either way. authentik selects the role, and `GRANT` decides what that role can do.
+
+The validator runs once, when the connection is made, and nothing re-checks the token after that. A session therefore stays usable after its token expires, and removing someone's access in authentik stops their next connection rather than one they already hold. Keep **Access token validity** short, and use `pg_terminate_backend()` when you need to close sessions that are already open.
 
 ## Resources
 
@@ -234,4 +263,5 @@ Privileges stay with PostgreSQL either way. authentik selects the role, and `GRA
 - [PostgreSQL documentation - OAuth Support in libpq](https://www.postgresql.org/docs/18/libpq-oauth.html)
 - [PostgreSQL documentation - OAuth Validator Modules](https://www.postgresql.org/docs/18/oauth-validators.html)
 - [pg_oidc_validator repository](https://github.com/percona/pg_oidc_validator)
+- [PostgreSQL documentation - Row Security Policies](https://www.postgresql.org/docs/18/ddl-rowsecurity.html)
 - [RFC 8414 - OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
