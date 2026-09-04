@@ -15,7 +15,7 @@ _enabled = CONFIG.get_bool("error_reporting.enabled", False)
 _sentry_tracer = SentryTracer() if _enabled and CONFIG.get("error_reporting.sentry_dsn") else None
 # Every configured backend gets exceptions; only one of them handles spans/tags, since
 # authentik only ever needs one trace tree and picking one avoids double request overhead
-_error_tracers: list[Tracer] = [t for t in (_sentry_tracer) if t is not None]
+_error_tracers: list[Tracer] = [t for t in (_sentry_tracer,) if t is not None]
 _active_tracer: Tracer = _sentry_tracer or Tracer()
 
 
