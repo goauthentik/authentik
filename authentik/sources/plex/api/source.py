@@ -101,9 +101,9 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = body.validated_data.get("plex_token", None)
-        if not plex_token:
-            raise ValidationError("No plex token given")
+        if source.allow_friends and not source.secret_id:
+            raise ValidationError("Source has no Plex token configured.")
+        plex_token = body.validated_data["plex_token"]
         auth_api = PlexAuth(source, plex_token)
         user_info, identifier = auth_api.get_user_info()
         # Check friendship first, then check server overlay
@@ -160,9 +160,9 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         source: PlexSource = get_object_or_404(
             PlexSource, slug=request.query_params.get("slug", "")
         )
-        plex_token = body.validated_data.get("plex_token", None)
-        if not plex_token:
-            raise ValidationError("No plex token given")
+        if source.allow_friends and not source.secret_id:
+            raise ValidationError("Source has no Plex token configured.")
+        plex_token = body.validated_data["plex_token"]
         auth_api = PlexAuth(source, plex_token)
         user_info, identifier = auth_api.get_user_info()
         # Check friendship first, then check server overlay

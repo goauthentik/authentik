@@ -1,9 +1,11 @@
 """plex Source tests"""
 
 from django.test import TestCase
+from django.urls import reverse
 from requests.exceptions import RequestException
 from requests_mock import Mocker
 
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
 from authentik.secrets.models import Secret
@@ -85,12 +87,20 @@ class TestPlexSource(TestCase):
             check_plex_token.send(self.source.pk)
             self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
 
-    def test_check_missing_token(self):
+    def test_missing_token(self):
         """Missing credentials produce a configuration error without contacting Plex."""
         self.source.secret = None
         self.source.save()
+        self.client.force_login(create_test_admin_user())
         with Mocker() as mocker:
             check_plex_token.send(self.source.pk)
+            for action in ["redeem-token", "redeem-token-authenticated"]:
+                response = self.client.post(
+                    reverse(f"authentik_api:plexsource-{action}", query={"slug": self.source.slug}),
+                    {"plex_token": "test"},
+                    content_type="application/json",
+                )
+                self.assertEqual(response.status_code, 400, response.content)
             self.assertFalse(mocker.called)
         event = Event.objects.get(action=EventAction.CONFIGURATION_ERROR)
         self.assertIn("No Plex token configured", event.context["message"])
