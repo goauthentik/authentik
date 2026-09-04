@@ -111,7 +111,7 @@ The service account needs permissions to search the LDAP directory. You'll need 
 6. Navigate to **Applications** > **Providers**.
 7. Click on the name of the newly created LDAP provider and open the **Permissions** tab.
 8. Click **Assign Object Permissions**.
-9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign**.
+9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign**. This creates an object permission that grants the service account access to this provider's directory without granting it access to every LDAP provider. See [LDAP Provider Searching](./index.mdx#searching) for more details.
 
 ## Create an LDAP Outpost
 
