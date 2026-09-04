@@ -6,8 +6,8 @@ import { convertContent } from "./utils.js";
 
 import { AKElement } from "#elements/Base";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
+    NamedEntityElement,
     TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -85,7 +85,7 @@ export class SimpleTable
     extends WithLocale(AKElement)
     implements ISimpleTable, TransclusionChildElement
 {
-    declare ["constructor"]: Required<EntityDescriptorElement>;
+    declare ["constructor"]: Required<NamedEntityElement>;
 
     public static verboseName: string = msg("Object");
     public static verboseNamePlural: string = msg("Objects");

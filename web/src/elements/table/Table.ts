@@ -19,8 +19,8 @@ import { GroupResult } from "#common/utils";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
+    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -92,7 +92,7 @@ export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
 {
-    declare ["constructor"]: EntityDescriptorElement;
+    declare ["constructor"]: NamedEntityElement;
 
     static styles: CSSResult[] = [
         PFTable,

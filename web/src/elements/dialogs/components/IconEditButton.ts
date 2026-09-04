@@ -1,7 +1,7 @@
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { modalInvoker, ModelFormLikeConstructor } from "#elements/dialogs/directives";
-import type { DialogInit, TransclusionElementConstructor } from "#elements/dialogs/shared";
+import type { DialogInit, NamedEntityElementConstructor } from "#elements/dialogs/shared";
 import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 
 import { msg, str } from "@lit/localize";
@@ -16,16 +16,16 @@ import { html } from "lit-html";
  * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
  * @param options Initialization options for the modal dialog.
  */
-export function IconEditButton<T extends TransclusionElementConstructor>(
+export function IconEditButton<T extends NamedEntityElementConstructor>(
     factory: T,
     instancePk?: string | number | null,
     itemName?: string | null,
-    modalProps?: T extends TransclusionElementConstructor
+    modalProps?: T extends NamedEntityElementConstructor
         ? LitPropertyRecord<InstanceType<T>>
         : null,
     options?: DialogInit,
 ): SlottedTemplateResult {
-    const noun = (factory as TransclusionElementConstructor).verboseName ?? msg("Entity");
+    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Entity");
     const label = itemName
         ? msg(str`Edit "${itemName}" ${noun}`, {
               id: "entity.edit.named",
