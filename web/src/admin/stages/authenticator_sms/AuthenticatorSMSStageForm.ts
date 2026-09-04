@@ -88,10 +88,9 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 })}
                 value=${ifPresent(this.instance?.authSecret ?? undefined)}
                 required
-                help=${msg(
-                    "Auth token from https://console.twilio.com. Create or select the secret holding the value.",
-                    { id: "stage.authenticator-sms.form.twilio-auth-secret.description" },
-                )}
+                help=${msg("Auth token from https://console.twilio.com.", {
+                    id: "stage.authenticator-sms.form.twilio-auth-secret.description",
+                })}
             ></ak-secret-search-input>`;
     }
 
@@ -137,27 +136,27 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-secret-search-input
                 name="authSecret"
-                label=${msg("API Auth Username", {
-                    id: "stage.authenticator-sms.form.api-auth-username-secret.label",
-                })}
+                label=${this.authType === AuthTypeEnum.Bearer
+                    ? msg("Bearer token", {
+                          id: "stage.authenticator-sms.form.bearer-token.label",
+                      })
+                    : msg("API Auth Username", {
+                          id: "stage.authenticator-sms.form.api-auth-username-secret.label",
+                      })}
                 value=${ifPresent(this.instance?.authSecret ?? undefined)}
                 required
-                help=${msg(
-                    "The username to be used with basic auth or the token when used with bearer token. Create or select the secret holding the value.",
-                    { id: "stage.authenticator-sms.form.generic-auth-secret.description" },
-                )}
             ></ak-secret-search-input>
             <ak-secret-search-input
                 name="authPasswordSecret"
+                ?hidden=${this.authType === AuthTypeEnum.Bearer}
                 label=${msg("API Auth password", {
                     id: "stage.authenticator-sms.form.api-auth-password-secret.label",
                 })}
                 value=${ifPresent(this.instance?.authPasswordSecret ?? undefined)}
                 blankable
-                help=${msg(
-                    "The password to be used with basic auth. Create or select the secret holding the value.",
-                    { id: "stage.authenticator-sms.form.auth-password-secret.description" },
-                )}
+                help=${msg("The password to be used with basic auth.", {
+                    id: "stage.authenticator-sms.form.auth-password-secret.description",
+                })}
             ></ak-secret-search-input>
         `;
     }
