@@ -74,7 +74,12 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         fields = ["pk", "name", "type", "managed", "value", "created", "last_updated"]
         extra_kwargs = {
             "managed": {"read_only": True},
-            "value": {"write_only": True, "required": False, "allow_blank": True},
+            "value": {
+                "write_only": True,
+                "required": False,
+                "allow_blank": True,
+                "trim_whitespace": False,
+            },
             "created": {"read_only": True},
             "last_updated": {"read_only": True},
         }

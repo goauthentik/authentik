@@ -34,6 +34,27 @@ class TestSecretsAPI(APITestCase):
         self.assertEqual(response.status_code, 201, response.content)
         self.assertEqual(Secret.objects.get(name="external").value, "provided-value")
 
+    def test_value_whitespace_is_preserved(self):
+        self.client.force_login(self.admin)
+        for secret_type in [SecretType.TEXT, SecretType.MULTILINE]:
+            with self.subTest(type=secret_type):
+                value = "  exact credential\n"
+                response = self.client.post(
+                    reverse("authentik_api:secret-list"),
+                    {"name": secret_type, "type": secret_type, "value": value},
+                )
+                self.assertEqual(response.status_code, 201, response.content)
+                secret = Secret.objects.get(pk=response.json()["pk"])
+                self.assertEqual(secret.value, value)
+
+                response = self.client.patch(
+                    reverse("authentik_api:secret-detail", kwargs={"pk": secret.pk}),
+                    {"value": " replacement "},
+                )
+                self.assertEqual(response.status_code, 200, response.content)
+                secret.refresh_from_db()
+                self.assertEqual(secret.value, " replacement ")
+
     def test_view_value_permission_and_audit(self):
         self.user.assign_perms_to_managed_role("authentik_secrets.view_secret", self.secret)
         self.client.force_login(self.user)
