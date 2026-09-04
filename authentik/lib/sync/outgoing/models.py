@@ -112,7 +112,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         raise NotImplementedError
 
     @property
-    def last_sync(self) -> OutgoingSync | None:
+    def last_sync(self) -> ProviderSync | None:
         return (
             getattr(self, f"{self.sync_model._meta.model_name}_set")
             .objects.filter(partial=False)

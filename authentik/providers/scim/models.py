@@ -16,7 +16,7 @@ from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import ProviderSync, OutgoingSyncProvider
+from authentik.lib.sync.outgoing.models import OutgoingSyncProvider, ProviderSync
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.policies.engine import FilterPolicyEngine
 from authentik.providers.scim.clients.auth import SCIMTokenAuth

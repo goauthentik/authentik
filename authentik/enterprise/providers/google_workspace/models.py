@@ -21,9 +21,9 @@ from authentik.core.models import (
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import (
-    ProviderSync,
     OutgoingSyncDeleteAction,
     OutgoingSyncProvider,
+    ProviderSync,
 )
 from authentik.tasks.models import Task
 
@@ -236,7 +236,10 @@ class GoogleWorkspaceProviderSyncTask(InternallyManagedMixin, models.Model):
         verbose_name_plural = _("Google Workspace provider sync tasks")
 
     def __str__(self):
-        return f"Google Workspace Provider Sync ({self.google_workspace_provider_sync_id}) Task ({self.task_id})"
+        return (
+            f"Google Workspace Provider Sync ({self.google_workspace_provider_sync_id}) "
+            f"Task ({self.task_id})"
+        )
 
 
 class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):

@@ -11,11 +11,11 @@ from authentik.api.validation import validate
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEventSerializer
-from authentik.lib.sync.api import SyncSerializer, SyncStatusSerializer
+from authentik.lib.sync.api import SyncSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider, ProviderSync
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.rbac.filters import ObjectFilter
-from authentik.tasks.models import Task, TaskStatus
+from authentik.tasks.models import Task
 
 
 class SyncObjectSerializer(PassiveSerializer):

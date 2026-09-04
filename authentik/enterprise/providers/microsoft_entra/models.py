@@ -21,9 +21,9 @@ from authentik.core.models import (
 from authentik.lib.models import InternallyManagedMixin, SerializerModel, SimpleThroughModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import (
-    ProviderSync,
     OutgoingSyncDeleteAction,
     OutgoingSyncProvider,
+    ProviderSync,
 )
 from authentik.tasks.models import Task
 
@@ -225,7 +225,10 @@ class MicrosoftEntraProviderSyncTask(InternallyManagedMixin, models.Model):
         verbose_name_plural = _("Microsoft Entra provider sync tasks")
 
     def __str__(self):
-        return f"Microsoft Entra Provider Sync ({self.microsoft_entra_provider_sync_id}) Task ({self.task_id})"
+        return (
+            f"Microsoft Entra Provider Sync ({self.microsoft_entra_provider_sync_id}) "
+            f"Task ({self.task_id})"
+        )
 
 
 class MicrosoftEntraProviderPropertyMappingsGroup(SimpleThroughModel):
