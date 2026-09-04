@@ -19,10 +19,11 @@ def check_plex_token(source_pk: str):
     if not sources.exists():
         return
     source: PlexSource = sources.first()
-    plex_token = source.secret.value
-    auth = PlexAuth(source, plex_token)
+    plex_token = source.secret.value if source.secret else ""
     try:
-        auth.get_user_info()
+        if not plex_token:
+            raise RequestException("No Plex token configured")
+        PlexAuth(source, plex_token).get_user_info()
         self.info("Plex token is valid.")
     except RequestException as exc:
         error = exception_to_string(exc)

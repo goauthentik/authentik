@@ -6,6 +6,7 @@ from requests_mock import Mocker
 
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_key
+from authentik.secrets.models import Secret
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.sources.plex.tasks import check_plex_token
@@ -38,6 +39,7 @@ class TestPlexSource(TestCase):
         self.source: PlexSource = PlexSource.objects.create(
             name="test",
             slug="test",
+            secret=Secret.objects.create(name="Plex token"),
         )
 
     def test_login_challenge(self):
@@ -82,6 +84,16 @@ class TestPlexSource(TestCase):
             mocker.get("https://plex.tv/api/v2/user", exc=RequestException())
             check_plex_token.send(self.source.pk)
             self.assertTrue(Event.objects.filter(action=EventAction.CONFIGURATION_ERROR).exists())
+
+    def test_check_missing_token(self):
+        """Missing credentials produce a configuration error without contacting Plex."""
+        self.source.secret = None
+        self.source.save()
+        with Mocker() as mocker:
+            check_plex_token.send(self.source.pk)
+            self.assertFalse(mocker.called)
+        event = Event.objects.get(action=EventAction.CONFIGURATION_ERROR)
+        self.assertIn("No Plex token configured", event.context["message"])
 
     def test_user_base_properties(self):
         """Test user base properties"""
