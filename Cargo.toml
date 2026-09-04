@@ -136,7 +136,7 @@ tokio-tungstenite = { version = "= 0.30.0", features = [
 ] }
 tokio-util = { version = "= 0.7.19", features = ["full"] }
 tower = "= 0.5.3"
-tower-http = { version = "= 0.7.0", features = [
+tower-http = { version = "= 0.7.1", features = [
   "compression-full",
   "fs",
   "limit",
