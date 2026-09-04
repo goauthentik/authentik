@@ -8,6 +8,7 @@ from django.contrib.auth.hashers import (
     identify_hasher,
     must_update_salt,
 )
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import Serializer
@@ -54,7 +55,10 @@ class PasswordHashImportValidator(PasswordHashValidator):
     def __call__(self, password_hash: str) -> None:
         hasher, decoded = self._decode(password_hash)
         messages: list[str] = []
-        if hasher.algorithm not in settings.PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS:
+        allowed_algorithms = [
+            import_string(path)().algorithm for path in settings.PASSWORD_HASHERS_IMPORT_ALLOWED
+        ]
+        if hasher.algorithm not in allowed_algorithms:
             messages.append(
                 _(
                     "Password hash algorithm %(algorithm)s is not accepted. Accepted algorithms: "
@@ -62,9 +66,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
                 )
                 % {
                     "algorithm": hasher.algorithm,
-                    "accepted_algorithms": ", ".join(
-                        settings.PASSWORD_HASH_IMPORT_ALLOWED_ALGORITHMS
-                    ),
+                    "accepted_algorithms": ", ".join(allowed_algorithms),
                 }
             )
 
