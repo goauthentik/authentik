@@ -174,7 +174,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         """Get provider's sync statuses"""
         source: LDAPSource = self.get_object()
 
-        syncs = LDAPSourceSync.objects.filter(source=source).order_by("-started_at")
+        syncs = source.ldapsourcesync_set.order_by("-started_at")
 
         page = self.paginate_queryset(syncs)
         if page is not None:
