@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import (
     Argon2PasswordHasher,
     PBKDF2PasswordHasher,
     PBKDF2SHA1PasswordHasher,
+    ScryptPasswordHasher,
     check_password,
 )
 from django.test import TestCase
@@ -71,3 +72,16 @@ class TestPasswordHashImportValidator(TestCase):
         )
         self.assertNotIn("argon2", str(ctx.exception.detail[0]))
         self.assertIn("entropy", str(ctx.exception.detail[1]))
+
+    def test_salt_check_independent_of_hasher_update_check(self):
+        """Salt entropy is checked when Django's hasher does not check it."""
+        password = generate_key()
+        validator = PasswordHashImportValidator()
+        hasher = ScryptPasswordHasher()
+        password_hash = hasher.encode(password, "salt")
+        self.assertFalse(hasher.must_update(password_hash))
+
+        with self.assertRaises(PasswordHashRequiresOverride) as ctx:
+            validator(password_hash)
+        self.assertEqual(len(ctx.exception.detail), 1)
+        self.assertIn("entropy", str(ctx.exception.detail[0]))

@@ -54,21 +54,43 @@ class PasswordHashImportValidator(PasswordHashValidator):
 
     def __call__(self, password_hash: str) -> None:
         hasher, decoded = self._decode(password_hash)
-        messages: list[str] = []
+        messages = self._algorithm_messages(hasher)
+        messages.extend(self._update_messages(password_hash, hasher, decoded))
+        if messages:
+            raise PasswordHashRequiresOverride(messages)
+
+    def _algorithm_messages(self, hasher: BasePasswordHasher) -> list[str]:
+        """Describe an algorithm that is not accepted for import."""
         allowed_algorithms = [
             import_string(path)().algorithm for path in settings.PASSWORD_HASHERS_IMPORT_ALLOWED
         ]
-        if hasher.algorithm not in allowed_algorithms:
-            messages.append(
-                _(
-                    "Password hash algorithm %(algorithm)s is not accepted. Accepted algorithms: "
-                    "%(accepted_algorithms)s."
-                )
-                % {
-                    "algorithm": hasher.algorithm,
-                    "accepted_algorithms": ", ".join(allowed_algorithms),
-                }
+        if hasher.algorithm in allowed_algorithms:
+            return []
+        return [
+            _(
+                "Password hash algorithm %(algorithm)s is not accepted. Accepted algorithms: "
+                "%(accepted_algorithms)s."
             )
+            % {
+                "algorithm": hasher.algorithm,
+                "accepted_algorithms": ", ".join(allowed_algorithms),
+            }
+        ]
+
+    def _update_messages(
+        self,
+        password_hash: str,
+        hasher: BasePasswordHasher,
+        decoded: dict[str, Any],
+    ) -> list[str]:
+        """Describe why Django requires an update to the password hash."""
+        messages: list[str] = []
+        parameters = self._parameters(hasher, decoded)
+        requires_update = hasher.must_update(password_hash)
+        if requires_update and any(
+            provided != expected for _, provided, expected in parameters
+        ):
+            messages.append(self._settings_message(hasher, parameters))
 
         salt_needs_update = must_update_salt(decoded["salt"], hasher.salt_entropy)
         if salt_needs_update:
@@ -80,13 +102,10 @@ class PasswordHashImportValidator(PasswordHashValidator):
                 % {"bits": hasher.salt_entropy}
             )
 
-        parameters = self._parameters(hasher, decoded)
-        parameters_changed = any(provided != expected for _, provided, expected in parameters)
-        if hasher.must_update(password_hash) and (parameters_changed or not salt_needs_update):
-            messages.insert(0, self._settings_message(hasher, parameters))
-
-        if messages:
-            raise PasswordHashRequiresOverride(messages)
+        # must_update() remains authoritative when the displayed fields do not expose its reason.
+        if requires_update and not messages:
+            messages.append(self._settings_message(hasher, parameters))
+        return messages
 
     def _parameters(
         self,
