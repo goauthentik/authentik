@@ -29,7 +29,7 @@ export interface KerberosSourceSync {
     /**
      *
      */
-    readonly tasks: Array<string>;
+    tasks?: Array<string>;
     /**
      *
      */
@@ -57,7 +57,6 @@ export interface KerberosSourceSync {
  */
 export function instanceOfKerberosSourceSync(value: object): value is KerberosSourceSync {
     if (!("pk" in value) || value["pk"] === undefined) return false;
-    if (!("tasks" in value) || value["tasks"] === undefined) return false;
     if (
         (!("startedAt" in (value as Record<string, any>)) &&
             !("started_at" in (value as Record<string, any>))) ||
@@ -82,7 +81,7 @@ export function KerberosSourceSyncFromJSONTyped(
     }
     return {
         pk: json["pk"],
-        tasks: json["tasks"],
+        tasks: json["tasks"] == null ? undefined : json["tasks"],
         startedAt:
             json["started_at"] == null ? json["started_at"] : parseDateTime(json["started_at"]),
         finishedAt:
@@ -102,7 +101,7 @@ export function KerberosSourceSyncToJSON(json: any): KerberosSourceSync {
 }
 
 export function KerberosSourceSyncToJSONTyped(
-    value?: Omit<KerberosSourceSync, "pk" | "tasks" | "startedAt"> | null,
+    value?: Omit<KerberosSourceSync, "pk" | "startedAt"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -110,6 +109,7 @@ export function KerberosSourceSyncToJSONTyped(
     }
 
     return {
+        tasks: value["tasks"],
         finished_at:
             value["finishedAt"] == null
                 ? value["finishedAt"]

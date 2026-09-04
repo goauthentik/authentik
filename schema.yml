@@ -43851,7 +43851,6 @@ components:
           items:
             type: string
             format: uuid
-          readOnly: true
         started_at:
           type: string
           format: date-time
@@ -43874,7 +43873,6 @@ components:
       - pk
       - source
       - started_at
-      - tasks
     KeyTypeEnum:
       type: string
       enum:
