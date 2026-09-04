@@ -1,9 +1,9 @@
 """exceptions used by the kubernetes reconciler to trigger updates"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
-class ReconcileTrigger(SentryIgnoredException):
+class ReconcileTrigger(TracingIgnoredException):
     """Base trigger raised by child classes to notify us"""
 
 

@@ -11,7 +11,6 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField
-from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
@@ -25,6 +24,7 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import path_to_class
 from authentik.policies.reputation.models import Reputation
 from authentik.stages.password.models import PasswordStage
@@ -49,7 +49,7 @@ def authenticate(
             LOGGER.warning("Failed to import backend", path=backend_path)
             continue
         LOGGER.debug("Attempting authentication...", backend=backend_path)
-        with start_span(
+        with active_tracer().start_span(
             op="authentik.stages.password.authenticate",
             name=backend_path,
         ):
@@ -101,7 +101,7 @@ class PasswordChallengeResponse(ChallengeResponse):
             "username": pending_user.username,
         }
         try:
-            with start_span(
+            with active_tracer().start_span(
                 op="authentik.stages.password.authenticate",
                 name="User authenticate call",
             ):

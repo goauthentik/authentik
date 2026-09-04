@@ -22,7 +22,7 @@ from structlog.stdlib import get_logger
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()
@@ -776,7 +776,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!ParseJSON", ParseJSON)
 
 
-class EntryInvalidError(SentryIgnoredException):
+class EntryInvalidError(TracingIgnoredException):
     """Error raised when an entry is invalid"""
 
     entry_model: str | None

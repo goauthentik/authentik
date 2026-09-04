@@ -17,13 +17,12 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session
@@ -346,7 +345,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with active_tracer().start_span(op="authentik.lib.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)
