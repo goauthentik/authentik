@@ -8,7 +8,7 @@ import SAMLProvider20265Warning from "../../\_saml-provider-2026-5-warning.mdx";
 
 ## What is GitHub Enterprise Server?
 
-> GitHub Enterprise Server is a self-hosted software development platform. It provides Git repository hosting, collaboration tools, and enterprise identity and access management.
+> GitHub Enterprise Server is GitHub's self-hosted product for running repositories, collaboration, and enterprise user management inside an organization’s own infrastructure.
 >
 > -- https://github.com/enterprise
 
@@ -134,6 +134,9 @@ Complete this section if you want to use SCIM provisioning. This mapping sends t
 4. Click **Save settings** and wait for the changes to apply.
 
 ![Populated GitHub Enterprise Server SAML settings](ghes_saml_settings.png)
+
+:::info Local account authentication
+After configuring SAML, you can allow local authentication by selecting the **Allow creation of accounts with built-in authentication (for users not in SAML)** checkbox. This can have security implications when self-registration is enabled.
 
 ### Create a SCIM setup user and token _(optional)_
 

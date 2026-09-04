@@ -65,13 +65,35 @@ Some field types also have special behavior:
 - **Hidden** and **Static** use their configured values without user editing.
 - **Radio Button Group** and **Dropdown** only allow values from the defined choice set.
 
+## Use prompt data to update a user
+
+The Prompt stage does not update the user. It stores each submitted value in `prompt_data` under the prompt's **Field Key**.
+
+To write a value to the user, bind a [User Write](../user_write/index.mdx) stage after the Prompt stage. The User Write stage stores the value on the user when the **Field Key** is a user property or starts with `attributes.`:
+
+| Field key                    | Result after the User Write stage                                      |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| `username`                   | Sets the user's username.                                              |
+| `name`                       | Sets the user's display name.                                          |
+| `email`                      | Sets the user's email address.                                         |
+| `attributes.given_name`      | Adds or updates `given_name` in the user's **Attributes** dictionary.  |
+| `attributes.family_name`     | Adds or updates `family_name` in the user's **Attributes** dictionary. |
+| `attributes.department`      | Adds or updates `department` in the user's **Attributes** dictionary.  |
+| `attributes.settings.locale` | Adds or updates the nested value `settings.locale` in **Attributes**.  |
+
+A prompt with a **Field Key** such as `department` only adds the value to `prompt_data`, where policies and later stages can use it. The User Write stage does not store the value on the user because `department` is not a user property.
+
+To store the value as a custom attribute, set the prompt's **Field Key** to `attributes.department`.
+
+For a complete enrollment example, see [Collect custom user attributes during enrollment](../../flow/collect-user-attributes.mdx).
+
 ## Flow integration
 
 Use this stage anywhere a flow needs user-provided input.
 
 Common follow-ups include:
 
-- A [User Write](../user_write/index.mdx) stage to persist collected values
+- A [User Write](../user_write/index.mdx) stage to store collected values
 - An [Email](../email/index.mdx) or [Invitation](../invitation/index.mdx) stage to act on collected data
 - Policy checks that read from `request.context["prompt_data"]`
 

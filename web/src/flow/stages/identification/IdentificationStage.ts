@@ -21,6 +21,8 @@ import {
     OR_LIST_FORMATTERS,
 } from "#flow/stages/identification/utils";
 
+import AKFieldset from "#styles/authentik/components/Fieldset/fieldset.css";
+
 import {
     FlowDesignationEnum,
     IdentificationChallenge,
@@ -68,6 +70,7 @@ export class IdentificationStage extends BaseStage<
         PFFormControl,
         PFTitle,
         PFButton,
+        AKFieldset,
         ...RememberMeController.styles,
         Styles,
     ];
