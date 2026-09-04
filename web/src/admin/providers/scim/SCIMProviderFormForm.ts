@@ -45,7 +45,7 @@ export function renderAuthToken(provider?: Partial<SCIMProvider>) {
         label=${msg("Token")}
         value=${ifPresent(provider?.secret ?? undefined)}
         blankable
-        help=${msg("Token to authenticate with. Create or select the secret holding the value.", {
+        help=${msg("Token to authenticate with.", {
             id: "provider.scim.form.secret.description",
         })}
     ></ak-secret-search-input>`;

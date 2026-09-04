@@ -224,7 +224,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 value=${ifPresent(this.instance?.secret ?? undefined)}
                 required
                 help=${msg(
-                    "The secret key allows communication between authentik and the CAPTCHA provider to validate user responses. Create or select the secret holding the value.",
+                    "The secret key allows communication between authentik and the CAPTCHA provider to validate user responses.",
                     {
                         id: "captcha.form.secret.description",
                         desc: "Description for CAPTCHA secret key field.",

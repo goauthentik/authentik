@@ -84,10 +84,9 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     label=${msg("SMTP Password")}
                     value=${ifPresent(this.instance?.secret ?? undefined)}
                     blankable
-                    help=${msg(
-                        "Password used to authenticate with the SMTP server. Create or select the secret holding the value.",
-                        { id: "stage.email.form.secret.description" },
-                    )}
+                    help=${msg("Password used to authenticate with the SMTP server.", {
+                        id: "stage.email.form.secret.description",
+                    })}
                 ></ak-secret-search-input>
                 <ak-switch-input
                     name="useTls"

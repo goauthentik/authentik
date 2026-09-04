@@ -255,7 +255,7 @@ export class KerberosSourceForm extends BaseSourceForm<KerberosSource> {
                         value=${ifPresent(this.instance?.secret)}
                         blankable
                         help=${msg(
-                            "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided. Create or select the secret holding the value.",
+                            "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                             { id: "source.kerberos.form.secret.description" },
                         )}
                     ></ak-secret-search-input>

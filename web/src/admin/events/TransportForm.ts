@@ -147,10 +147,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 blankable
                 ?required=${this.showWebhook}
                 ?hidden=${!this.showWebhook}
-                help=${msg(
-                    "URL the notification is sent to. Create or select the secret holding the value.",
-                    { id: "event.transport.form.secret.description" },
-                )}
+                help=${msg("URL the notification is sent to.", {
+                    id: "event.transport.form.secret.description",
+                })}
             ></ak-secret-search-input>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}

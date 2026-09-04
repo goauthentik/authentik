@@ -104,10 +104,9 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         label=${msg("Secret key")}
                         value=${ifPresent(this.instance?.secret ?? undefined)}
                         required
-                        help=${msg(
-                            "Secret key of the Duo Auth API application. Create or select the secret holding the value.",
-                            { id: "stage.authenticator-duo.form.secret.description" },
-                        )}
+                        help=${msg("Secret key of the Duo Auth API application.", {
+                            id: "stage.authenticator-duo.form.secret.description",
+                        })}
                     ></ak-secret-search-input>
                 </div>
             </ak-form-group>
@@ -135,10 +134,9 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         label=${msg("Secret key")}
                         value=${ifPresent(this.instance?.adminSecret ?? undefined)}
                         blankable
-                        help=${msg(
-                            "Secret key of the Duo Admin API application. Create or select the secret holding the value.",
-                            { id: "stage.authenticator-duo.form.admin-secret.description" },
-                        )}
+                        help=${msg("Secret key of the Duo Admin API application.", {
+                            id: "stage.authenticator-duo.form.admin-secret.description",
+                        })}
                     ></ak-secret-search-input>
                 </div>
             </ak-form-group>

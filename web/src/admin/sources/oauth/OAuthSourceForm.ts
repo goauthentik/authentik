@@ -413,10 +413,9 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
                         label=${msg("Consumer secret")}
                         value=${ifPresent(this.instance?.secret)}
                         required
-                        help=${msg(
-                            "Also known as Client Secret. Create or select the secret holding the value.",
-                            { id: "source.oauth.form.secret.description" },
-                        )}
+                        help=${msg("Also known as Client Secret.", {
+                            id: "source.oauth.form.secret.description",
+                        })}
                     ></ak-secret-search-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
