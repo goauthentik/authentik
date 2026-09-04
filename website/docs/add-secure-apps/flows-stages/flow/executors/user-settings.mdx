@@ -1,5 +1,6 @@
 ---
 title: User settings
+description: Use the user settings flow to let users update their profiles.
 ---
 
 The user interface (/if/user/) uses a specialized flow executor to allow individual users to customize their profile. A user's profile consists of key/value fields, so this executor only supports Prompt or User Write stages. If the configured flow contains another stage, a button will be shown to open the default executor.

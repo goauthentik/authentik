@@ -332,7 +332,11 @@ export function renderForm({
                         certificate=${ifPresent(provider.signingKey)}
                         singleton
                     ></ak-crypto-certificate-search>
-                    <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.",
+                        )}
+                    </p>
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>

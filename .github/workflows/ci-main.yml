@@ -265,7 +265,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1.14.0
+        uses: helm/kind-action@06c1ae10762d3b9c1644e7fe69596ae519e015a2 # v1.15.0
       - name: run integration
         run: |
           uv run coverage run manage.py test tests/integration
@@ -508,9 +508,9 @@ jobs:
           - radius
           - rac
     steps:
-      - uses: regclient/actions/regctl-installer@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-installer@ba687069a65d03e9214808f16f3f0b3933c2048b
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-login@ba687069a65d03e9214808f16f3f0b3933c2048b
       # Docker login is required for attestations
       - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:

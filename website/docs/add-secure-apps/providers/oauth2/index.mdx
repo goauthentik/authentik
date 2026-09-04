@@ -70,11 +70,19 @@ sequenceDiagram
 Because of how the OAuth 2.0 provider endpoints are structured, you cannot create applications with the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke`. These slugs conflict with the global OAuth 2.0 endpoints.
 :::
 
+### Reverse proxy and firewall access
+
+OAuth 2.0 and OIDC clients access some endpoints directly from the application server instead of through a user's browser. Ensure that reverse proxies, content delivery networks (CDNs), web application firewalls, and bot protection services permit these server-to-server requests. Interactive challenges on endpoints such as the OpenID configuration and JWKS endpoints can prevent clients from validating tokens and can cause repeated authentication redirects.
+
+If an endpoint returns `403 Forbidden`, inspect the proxy or firewall logs. For example, Cloudflare [Browser Integrity Check](https://developers.cloudflare.com/waf/tools/browser-integrity-check/) can reject clients that use non-standard user agents. Configure a narrowly scoped Cloudflare configuration rule or custom skip rule for the affected endpoint. Do not disable security controls for the entire authentik deployment.
+
+The JWKS endpoint is intentionally publicly accessible and contains public keys that clients use to verify tokens. It does not expose the private signing key.
+
 ### Cross-provider token introspection and revocation
 
-The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens remains scoped by provider. A confidential provider can introspect tokens that it issued. Both public and confidential providers can revoke their own tokens.
 
-For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
+To allow confidential provider B to introspect or revoke tokens issued by provider A, open provider A and add provider B under **Federated OAuth2/OpenID Providers**. Authenticate introspection and revocation requests using provider B's client credentials. This permission is directional and does not grant provider A access to provider B's tokens.
 
 ### Redirect URIs
 
@@ -266,7 +274,7 @@ return {
 
 When a **Signing Key** is selected in the provider, authentik signs JWTs asymmetrically using the private key of the selected certificate-key pair. Clients can verify the signature using the corresponding public key. The signing key's public key is available through the JWKS endpoint listed on the provider page.
 
-When no **Signing Key** is selected, authentik signs JWTs symmetrically using the provider's **Client secret**.
+When no **Signing Key** is selected, authentik uses `HS256` and the provider’s **Client secret** to sign JWTs. This does not publish a public signing key through JWKS; select a certificate key pair to use asymmetric signing, such as `RS256`.
 
 ### Encryption
 
