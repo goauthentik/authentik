@@ -96,9 +96,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(
-            request, provider, provider.client_id, provider.secret.value
-        )
+        params = parse_token_request(request, provider, provider.client_id, provider.secret.value)
         self.assertEqual(params.provider, provider)
         with self.assertRaises(TokenError):
             parse_token_request(request, provider, provider.client_id, generate_id())
@@ -148,9 +146,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(
-            request, provider, provider.client_id, provider.secret.value
-        )
+        params = parse_token_request(request, provider, provider.client_id, provider.secret.value)
         self.assertEqual(params.provider, provider)
 
     def test_invalid_redirect_uri_regex(self):
@@ -265,9 +261,7 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        params = parse_token_request(
-            request, provider, provider.client_id, provider.secret.value
-        )
+        params = parse_token_request(request, provider, provider.client_id, provider.secret.value)
         self.assertEqual(params.provider, provider)
 
     def test_extract_client_auth_basic_auth_percent_decodes(self):

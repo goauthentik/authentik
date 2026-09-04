@@ -74,9 +74,7 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join(
-                    (self.source.consumer_key.encode(), self.source.secret.value.encode())
-                )
+                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
             )
             .strip()
             .decode()
@@ -112,9 +110,7 @@ class TestSCIMOAuthToken(APITestCase):
         self.assertTrue(conn.is_valid)
         auth = (
             b64encode(
-                b":".join(
-                    (self.source.consumer_key.encode(), self.source.secret.value.encode())
-                )
+                b":".join((self.source.consumer_key.encode(), self.source.secret.value.encode()))
             )
             .strip()
             .decode()

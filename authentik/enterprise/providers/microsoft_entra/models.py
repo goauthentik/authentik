@@ -165,9 +165,7 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
 
     def microsoft_credentials(self):
         return {
-            "credentials": ClientSecretCredential(
-                self.tenant_id, self.client_id, self.secret.value
-            )
+            "credentials": ClientSecretCredential(self.tenant_id, self.client_id, self.secret.value)
         }
 
     @property
