@@ -18,8 +18,6 @@ import { AKLabel } from "#components/ak-label";
 
 import { SecretForm } from "#admin/secrets/SecretForm";
 
-import { ConsoleLogger } from "#logger/browser";
-
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
@@ -48,8 +46,6 @@ export class AKSecretSearchInput extends AKElement {
     protected createRenderRoot() {
         return this;
     }
-
-    protected logger = ConsoleLogger.prefix(`model-form/${this.localName}`);
 
     @property({ type: String })
     public name: string | null = null;
@@ -88,10 +84,13 @@ export class AKSecretSearchInput extends AKElement {
 
         const secretForm = new SecretForm();
 
-        let createdSecret: Secret | null = null;
-
         secretForm.addEventListener(AKFormSubmittedEvent.eventName, (event) => {
-            createdSecret = (event as AKFormSubmittedEvent<Secret>).response;
+            this.value = (event as AKFormSubmittedEvent<Secret>).response.pk;
+            const secretSearch = this.secretSearchRef.value;
+            if (secretSearch) {
+                secretSearch.query = undefined;
+                void secretSearch.updateData();
+            }
         });
 
         return renderModal(secretForm, {
@@ -100,36 +99,6 @@ export class AKSecretSearchInput extends AKElement {
                     ? invocationEvent.currentTarget
                     : this,
             size: PFSize.Medium,
-            onDispose: (disposeEvent) => {
-                const { target } = disposeEvent || {};
-
-                if (!(target instanceof HTMLDialogElement) || target.returnValue !== "submitted") {
-                    return;
-                }
-
-                const secretSearch = this.secretSearchRef.value;
-
-                if (!secretSearch) {
-                    this.logger.error(
-                        "Failed to refresh secret search after creating new secret. No secret search found.",
-                    );
-
-                    return;
-                }
-
-                // Refresh the secret search and select the newly created secret.
-                if (!createdSecret) {
-                    this.logger.error(
-                        "Secret form closed as submitted, but no created secret was captured.",
-                    );
-
-                    return;
-                }
-
-                this.value = createdSecret.pk;
-
-                return secretSearch.updateData();
-            },
         });
     };
 
@@ -195,7 +164,7 @@ export class AKSecretSearchInput extends AKElement {
                     ${ref(this.secretSearchRef)}
                     class="ak-secret-search-input__select"
                     .fieldID=${this.fieldID}
-                    .fetchObjects=${this.refresh.bind(this)}
+                    .fetchObjects=${this.refresh}
                     .renderElement=${renderElement}
                     .value=${renderValue}
                     .selected=${this.#selected}
