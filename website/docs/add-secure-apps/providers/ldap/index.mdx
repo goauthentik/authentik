@@ -107,20 +107,16 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 ## Searching
 
-Users authorized to access the LDAP provider's application can search the LDAP directory. If the LDAP application uses bindings, ensure that the the user is included in a [user, group, role, or policy binding](../../applications/manage_apps.mdx#use-bindings-to-control-access). Without access to the LDAP application, a user cannot search the directory.
+A user must have access to the LDAP application before they can bind and search the directory. If the application uses [bindings](../../applications/manage_apps.mdx#use-bindings-to-control-access), the user must satisfy them.
 
 By default, users can search only for information about themselves, including their user details, group information, and group memberships. Explicit permissions are required to perform broader searches.
 
-To search the full directory, a [user](../../../users-sources/user/index.mdx) requires a [role](../../../users-sources/roles/index.mdx) with the **Search full LDAP directory** permission. This permission allows the account to retrieve information about all users and groups that an LDAP provider exposes.
+To search the full directory, add the [user](../../../users-sources/user/index.mdx) to a [role](../../../users-sources/roles/index.mdx) and assign the role the **Search full LDAP directory** permission. This permission allows the user to retrieve all users and groups that the LDAP provider exposes.
 
 You can assign the permission in one of two ways:
 
-- **LDAP provider object permission** _(recommended)_: Limits the account to one LDAP provider. Open an LDAPprovider's **Permissions** tab, click **Assign Object Permissions**, select a role, enable **Search full LDAP directory**, and click **Assign**. Assign a user to that role to grant access to search the LDAP provider.
-- **Global permission**: Allows searching the full directory of every LDAP provider. Assign **Search full LDAP directory** under a role's **Assigned global permissions** tab. Assign a user to that role to grant access to search all LDAP provider. For detailed instructions, refer to [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
-
-:::info
-Up to authentik version 2024.8 this was managed using the LDAP provider's **Search group** setting, where users could be added to a group to grant them this permission. With authentik 2024.8 this is automatically migrated to the **Search full LDAP directory** permission, which can be assigned more flexibly.
-:::
+- **Object permission** _(recommended)_: Open the LDAP provider's **Permissions** tab, click **Assign Object Permissions**, select the role, enable **Search full LDAP directory**, and click **Assign**. This permission applies only to that LDAP provider.
+- **Global permission**: Open the role's **Permissions** tab and assign **Search full LDAP directory** under **Assigned global permissions**. This permission applies to every LDAP provider. For detailed instructions, see [Manage permissions](../../../users-sources/access-control/manage_permissions.mdx#assign-or-remove-permissions-for-a-specific-role).
 
 ### Search modes
 
@@ -132,9 +128,7 @@ In this mode, every LDAP search request will trigger one or more requests to the
 
 #### Cached search
 
-In this mode, the outpost periodically fetches all users and groups from the backend, holds them in memory, and responds to search queries directly. This improves performance, but can return stale or invalid data.
-
-When testing changes to directory membership or search permissions, use **Direct search** to receive the latest directory data. If you use cached search, wait for the outpost to refresh its cache or restart the LDAP outpost before retesting.
+In this mode, the outpost periodically fetches all users and groups from the backend, holds them in memory, and responds to search queries directly. This improves performance, but can return stale data.
 
 ## Code-based MFA support
 
