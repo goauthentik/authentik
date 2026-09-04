@@ -16,6 +16,7 @@ import { html } from "lit-html";
  * @param modalProps Properties to pass to the custom element constructor when the factory is a constructor.
  * @param options Initialization options for the modal dialog.
  */
+// eslint-disable-next-line max-params
 export function IconEditButton<T extends TransclusionElementConstructor>(
     factory: T,
     instancePk?: string | number | null,
@@ -24,6 +25,7 @@ export function IconEditButton<T extends TransclusionElementConstructor>(
         ? LitPropertyRecord<InstanceType<T>>
         : null,
     options?: DialogInit,
+    iconName: string = "fa-edit",
 ): SlottedTemplateResult {
     const noun = (factory as TransclusionElementConstructor).verboseName ?? msg("Entity");
     const label = itemName
@@ -42,8 +44,8 @@ export function IconEditButton<T extends TransclusionElementConstructor>(
         class="pf-c-button pf-m-plain"
         ${modalInvoker(factory, props as unknown as undefined, options)}
     >
-        <pf-tooltip position="top" content=${msg("Edit")}>
-            <i aria-hidden="true" class="fas fa-edit"></i>
+        <pf-tooltip position="top" content=${label}>
+            <i aria-hidden="true" class="fas ${iconName}"></i>
         </pf-tooltip>
     </button>`;
 }
