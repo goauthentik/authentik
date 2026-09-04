@@ -575,7 +575,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         signal=True,
         sender=None,
         request=None,
-        hasher_defaults_overridden: bool | None = None,
+        hasher_defaults_overridden: bool = False,
     ):
         """Set password directly from a pre-hashed value.
 
