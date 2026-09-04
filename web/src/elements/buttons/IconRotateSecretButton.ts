@@ -5,7 +5,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 
-import { renderConfirmation, renderModal } from "#elements/dialogs/utils";
+import { renderModal } from "#elements/dialogs/utils";
 import { showAPIErrorMessage, showMessage } from "#elements/messages/MessageContainer";
 import { SlottedTemplateResult } from "#elements/types";
 
@@ -36,12 +36,29 @@ export function IconRotateSecretButton({
         // dispatch finishes.
         const invoker = event.currentTarget as HTMLElement;
 
-        let secret: string | null | undefined;
+        let result: RotatedSecret | undefined;
+        const confirm = async (event: Event) => {
+            const dialog = (event.currentTarget as HTMLElement).closest("dialog")!;
+            const modal = dialog.querySelector("ak-modal")!;
+            if (modal.inert) return;
+            modal.inert = true;
+            const closedBy = dialog.closedBy;
+            dialog.closedBy = "none";
+            try {
+                result = await rotate();
+                dialog.close();
+            } catch (error) {
+                await showAPIErrorMessage(error);
+            } finally {
+                modal.inert = false;
+                dialog.closedBy = closedBy;
+            }
+        };
 
-        const confirmed = await renderConfirmation(
+        await renderModal(
             html`<p>
                     ${msg(
-                        "The old value stops working immediately. Update any external systems that use it.",
+                        "This replaces the value for every object using this secret. Update any external systems that use it.",
                         { id: "secret-rotate.confirm.warning" },
                     )}
                 </p>
@@ -51,30 +68,37 @@ export function IconRotateSecretButton({
                               id: "secret-rotate.confirm.unsaved",
                           })}
                       </p>`
-                    : nothing}`,
-            async () => {
-                try {
-                    secret = (await rotate()).value;
-                } catch (error) {
-                    await showAPIErrorMessage(error);
-
-                    throw error;
-                }
-            },
+                    : nothing}
+                <button
+                    slot="actions"
+                    type="button"
+                    class="pf-c-button pf-m-link"
+                    @click=${(event: Event) =>
+                        (event.currentTarget as HTMLElement).closest("dialog")?.close()}
+                >
+                    ${msg("Cancel", { id: "common.actions.cancel.label" })}
+                </button>
+                <button
+                    slot="actions"
+                    type="button"
+                    class="pf-c-button pf-m-danger"
+                    @click=${confirm}
+                >
+                    ${msg("Rotate", { id: "secret-rotate.confirm.action" })}
+                </button>`,
             {
                 headline,
-                action: msg("Rotate", { id: "secret-rotate.confirm.action" }),
                 invokerElement: invoker,
             },
         );
 
-        if (!confirmed) return;
+        if (!result) return;
 
-        if (secret) {
+        if (result.value) {
             await renderModal(
                 html`<ak-hidden-text-input
                     label=${msg("New secret", { id: "secret-rotate.result.label" })}
-                    value=${secret}
+                    value=${result.value}
                     readonly
                     revealed
                     copyable
