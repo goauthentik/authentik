@@ -387,7 +387,7 @@ requires-dist = [
     { name = "django-postgres-extra", specifier = "==2.0.9" },
     { name = "django-prometheus", specifier = "==2.5.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tenants", specifier = "==3.13.0" },
+    { name = "django-tenants", specifier = "==3.14.0" },
     { name = "djangoql", specifier = "==0.19.1" },
     { name = "djangorestframework", specifier = "==3.18.0" },
     { name = "docker", specifier = "==7.2.0" },
@@ -1383,14 +1383,14 @@ wheels = [
 
 [[package]]
 name = "django-tenants"
-version = "3.13.0"
+version = "3.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/01/bc/3b1d6350064cd75c94840833bd85422d56695161cfa98d657c54b4ca75b6/django_tenants-3.13.0.tar.gz", hash = "sha256:c4c0fa6057e832f61eb66256eb7738153a44f9f654d59bec930eacb2b804fee9", size = 165487, upload-time = "2026-08-04T13:08:35.473Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/44/f78ed75c27e019be3ba915d88484bf57355cc7dd92745ff27d23431fe61c/django_tenants-3.14.0.tar.gz", hash = "sha256:55dc64bcd4293a03fab7108f4c4e1724c2f53ef09a1c7f9e5f75a136fccc3146", size = 168058, upload-time = "2026-08-05T15:19:37.753Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8d/80/fd514b0c3def0e3d064f62e25f17c422ea289f3c7a351d2013bbb9c0fa22/django_tenants-3.13.0-py3-none-any.whl", hash = "sha256:ffbed2df21d77ae2d4e7ce6b76ffeb9abf9fdf7919eb0eee5f04cdb1b5db2f30", size = 123733, upload-time = "2026-08-04T13:08:33.837Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/a2/c4d45511b0c1c3868fafa9e745b6089c0e0b30959b8191ac4a5643bac9ae/django_tenants-3.14.0-py3-none-any.whl", hash = "sha256:f2c17b05d03c8b8d79c8e190ca2da14fdc36d52553d216b1dbb09c4adbda2eb6", size = 127095, upload-time = "2026-08-05T15:19:36.478Z" },
 ]
 
 [[package]]
