@@ -25,7 +25,6 @@ from authentik.lib.sync.outgoing.models import (
     OutgoingSyncProvider,
     ProviderSync,
 )
-from authentik.tasks.models import Task
 
 
 def default_scopes() -> list[str]:
@@ -206,12 +205,6 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
 
 
 class GoogleWorkspaceProviderSync(ProviderSync):
-    tasks = models.ManyToManyField(
-        Task,
-        related_name="+",
-        through="GoogleWorkspaceProviderSyncTask",
-        through_fields=("google_workspace_provider_sync", "task"),
-    )
     provider = models.ForeignKey(GoogleWorkspaceProvider, on_delete=models.CASCADE)
 
     class Meta:
@@ -221,25 +214,6 @@ class GoogleWorkspaceProviderSync(ProviderSync):
 
     def __str__(self):
         return f"Google Workspace Provider ({self.provider_id}) Sync ({self.pk})"
-
-
-class GoogleWorkspaceProviderSyncTask(InternallyManagedMixin, models.Model):
-    pk = models.CompositePrimaryKey("google_workspace_provider_sync", "task")
-    google_workspace_provider_sync = models.ForeignKey(
-        GoogleWorkspaceProviderSync, on_delete=models.CASCADE, related_name="+"
-    )
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
-
-    class Meta:
-        default_permissions = []
-        verbose_name = _("Google Workspace provider sync task")
-        verbose_name_plural = _("Google Workspace provider sync tasks")
-
-    def __str__(self):
-        return (
-            f"Google Workspace Provider Sync ({self.google_workspace_provider_sync_id}) "
-            f"Task ({self.task_id})"
-        )
 
 
 class GoogleWorkspaceProviderPropertyMappingsGroup(SimpleThroughModel):
