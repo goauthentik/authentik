@@ -13,7 +13,8 @@ class Span(Protocol):
 
     description: str | None
 
-    def set_data(self, key: str, value: Any) -> None: ...
+    def set_data(self, key: str, value: Any) -> None:
+        pass
 
 
 class NoOpSpan:
