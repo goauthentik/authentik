@@ -16,12 +16,14 @@ import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
  *
  * @see {@link IconEditButton} for the underlying button rendering logic.
  */
+// eslint-disable-next-line max-params
 export function IconEditButtonByTagName<T extends object = object>(
     tagName: string,
     instancePk?: string | number | null,
     itemName?: string | null,
     modalProps?: LitPropertyRecord<T> | null,
     options?: DialogInit,
+    icon?: string,
 ): SlottedTemplateResult {
     const Constructor = lookupElementConstructor(tagName);
 
@@ -31,5 +33,6 @@ export function IconEditButtonByTagName<T extends object = object>(
         itemName,
         modalProps as unknown as undefined,
         options,
+        icon,
     );
 }

@@ -11,7 +11,7 @@ import "#elements/forms/ModalForm";
 import { aki } from "#common/api/client";
 import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#common/policies/utils";
 
-import { asInstanceInvokerByTagName, modalInvoker } from "#elements/dialogs";
+import { IconEditButton, IconEditButtonByTagName, modalInvoker } from "#elements/dialogs";
 import { IconPermissionButton } from "#elements/dialogs/components/IconPermissionButton";
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -114,31 +114,15 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
 
     protected getObjectEditButton(item: PolicyBinding): SlottedTemplateResult {
         if (item.policyObj) {
-            return html`<button
-                type="button"
-                class="pf-c-button pf-m-secondary"
-                ${asInstanceInvokerByTagName(item.policyObj?.component, item.policyObj?.pk)}
-            >
-                ${msg("Edit Policy")}
-            </button>`;
+            return IconEditButtonByTagName(item.policyObj.component, item.policyObj.pk);
         }
 
         if (item.groupObj) {
-            return html`<button
-                class="pf-c-button pf-m-secondary"
-                ${GroupForm.asInstanceInvoker(item.groupObj?.pk)}
-            >
-                ${msg("Edit Group")}
-            </button>`;
+            return IconEditButton(GroupForm, item.groupObj.pk);
         }
 
         if (item.userObj) {
-            return html`<button
-                class="pf-c-button pf-m-secondary"
-                ${UserForm.asInstanceInvoker(item.userObj?.pk)}
-            >
-                ${msg("Edit User")}
-            </button>`;
+            return IconEditButton(UserForm, item.userObj.pk);
         }
 
         return null;
@@ -214,20 +198,18 @@ export class BoundPoliciesList<T extends PolicyBinding = PolicyBinding> extends 
             html`${item.timeout}`,
             html`<div class="ak-c-table__actions">
                 ${this.getObjectEditButton(item)}
-                <button
-                    type="button"
-                    class="pf-c-button pf-m-secondary"
-                    ${modalInvoker(() => {
-                        return StrictUnsafe<PolicyBindingForm>(this.bindingEditForm, {
-                            instancePk: item.pk,
-                            allowedTypes: this.allowedTypes,
-                            typeNotices: this.typeNotices,
-                            targetPk: this.target || "",
-                        });
-                    })}
-                >
-                    ${msg("Edit Binding")}
-                </button>
+                ${IconEditButtonByTagName(
+                    this.bindingEditForm,
+                    item.pk,
+                    null,
+                    {
+                        allowedTypes: this.allowedTypes,
+                        typeNotices: this.typeNotices,
+                        targetPk: this.target || "",
+                    },
+                    undefined,
+                    "fa-link",
+                )}
                 ${IconPermissionButton(this.getPolicyUserGroupRowLabel(item), {
                     model: ModelEnum.AuthentikPoliciesPolicybinding,
                     objectPk: item.pk,
