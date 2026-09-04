@@ -395,7 +395,7 @@ class LDAPSourceSync(Sync):
         verbose_name_plural = _("LDAP source syncs")
 
     def __str__(self):
-        return f"LDAP Source ({self.source.pk}) Sync ({self.pk})"
+        return f"LDAP Source ({self.source_id}) Sync ({self.pk})"
 
 
 class LDAPSourceSyncTask(InternallyManagedMixin, models.Model):
@@ -409,7 +409,7 @@ class LDAPSourceSyncTask(InternallyManagedMixin, models.Model):
         verbose_name_plural = _("LDAP source syncs tasks")
 
     def __str__(self):
-        return f"LDAP Source Sync ({self.ldap_source_sync.pk}) Task ({self.task.pk})"
+        return f"LDAP Source Sync ({self.ldap_source_sync_id}) Task ({self.task_id})"
 
 
 class LDAPSourcePropertyMapping(PropertyMapping):
