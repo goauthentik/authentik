@@ -102,7 +102,7 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
         """Get provider's sync statuses"""
         source: KerberosSource = self.get_object()
 
-        syncs = KerberosSourceSync.objects.filter(source=source).order_by("-started_at")
+        syncs = source.kerberossourcesync_set.order_by("-started_at")
 
         page = self.paginate_queryset(syncs)
         if page is not None:
