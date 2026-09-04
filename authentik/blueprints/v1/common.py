@@ -22,7 +22,7 @@ from structlog.stdlib import get_logger
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.lib.models import SerializerModel
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
 LOGGER = get_logger()

@@ -10,7 +10,7 @@ from authentik.core.middleware import get_user
 from authentik.core.models import Session
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 

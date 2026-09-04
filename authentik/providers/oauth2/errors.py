@@ -6,7 +6,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from authentik.events.models import Event, EventAction
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantType, RedirectURI, ResponseMode
 

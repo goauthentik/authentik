@@ -3,7 +3,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 MERGED_VENDOR = "goauthentik.io/@merged"
 

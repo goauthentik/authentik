@@ -1,6 +1,6 @@
 """authentik saml source exceptions"""
 
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
 class SAMLException(TracingIgnoredException):

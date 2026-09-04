@@ -7,7 +7,7 @@ from structlog.stdlib import get_logger
 from authentik import authentik_build_hash, authentik_version
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.lib.config import CONFIG
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.outposts.models import (
     Outpost,
     OutpostServiceConnection,

@@ -1,4 +1,4 @@
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
 class ControlFlowException(TracingIgnoredException):

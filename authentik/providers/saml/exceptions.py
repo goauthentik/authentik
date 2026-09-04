@@ -1,6 +1,6 @@
 """authentik SAML IDP Exceptions"""
 
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 
 class CannotHandleAssertion(TracingIgnoredException):

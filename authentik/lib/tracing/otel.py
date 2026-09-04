@@ -1,20 +1,12 @@
 """authentik OpenTelemetry integration"""
 
 import sys
-from asyncio.exceptions import CancelledError
 from contextlib import contextmanager
 from typing import Any
 
 from asgiref.sync import iscoroutinefunction, markcoroutinefunction
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
-from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
-from django.http.response import Http404
 from django.utils.module_loading import import_string
-from docker.errors import DockerException
-from dramatiq.errors import Retry
-from h11 import LocalProtocolError
-from ldap3.core.exceptions import LDAPException
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
@@ -29,10 +21,7 @@ from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.trace import Span as OtelSpan
 from opentelemetry.trace import Status, StatusCode
-from psycopg.errors import Error
-from rest_framework.exceptions import APIException
 from structlog.stdlib import get_logger
-from websockets.exceptions import WebSocketException
 
 from authentik import authentik_build_hash, authentik_version
 from authentik.lib.config import CONFIG
@@ -46,45 +35,6 @@ tracer = trace.get_tracer("authentik")
 # Set by lifecycle/gunicorn.conf.py before the app is preloaded, to tell
 # AuthentikCoreConfig.ready() to skip otel_init_provider() (see its docstring)
 OTEL_DEFER_PROVIDER_ENV_VAR = "AUTHENTIK_OTEL_DEFER_PROVIDER"
-
-
-class TracingIgnoredException(Exception):
-    """Base Class for all errors that are suppressed, and not recorded as span errors."""
-
-
-ignored_classes = (
-    # Inbuilt types
-    KeyboardInterrupt,
-    ConnectionResetError,
-    OSError,
-    PermissionError,
-    # Django Errors
-    Error,
-    ImproperlyConfigured,
-    DatabaseError,
-    OperationalError,
-    InternalError,
-    ProgrammingError,
-    SuspiciousOperation,
-    ValidationError,
-    # websocket errors
-    WebSocketException,
-    LocalProtocolError,
-    # rest_framework error
-    APIException,
-    # dramatiq errors
-    Retry,
-    # custom baseclass
-    TracingIgnoredException,
-    # ldap errors
-    LDAPException,
-    # Docker errors
-    DockerException,
-    # End-user errors
-    Http404,
-    # AsyncIO
-    CancelledError,
-)
 
 
 def otel_instrument():
@@ -182,11 +132,6 @@ def otel_init():
     preloaded web server calls otel_instrument()/otel_init_provider() separately instead"""
     otel_instrument()
     otel_init_provider()
-
-
-def should_ignore_exception(exc: Exception) -> bool:
-    """Check if an exception should be dropped"""
-    return isinstance(exc, ignored_classes)
 
 
 def record_exception(exc: Exception):

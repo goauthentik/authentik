@@ -46,7 +46,7 @@ from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel

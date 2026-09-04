@@ -16,7 +16,7 @@ from requests.exceptions import RequestException
 from structlog import get_logger
 from structlog.stdlib import BoundLogger
 
-from authentik.lib.tracing import TracingIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.http import authentik_user_agent
 
 OCI_MEDIA_TYPE = "application/vnd.goauthentik.blueprint.v1+yaml"
