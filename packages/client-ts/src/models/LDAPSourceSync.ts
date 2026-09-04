@@ -29,7 +29,7 @@ export interface LDAPSourceSync {
     /**
      *
      */
-    readonly tasks: Array<string>;
+    tasks: Array<string>;
     /**
      *
      */
@@ -130,7 +130,7 @@ export function LDAPSourceSyncToJSON(json: any): LDAPSourceSync {
 }
 
 export function LDAPSourceSyncToJSONTyped(
-    value?: Omit<LDAPSourceSync, "pk" | "tasks" | "startedAt"> | null,
+    value?: Omit<LDAPSourceSync, "pk" | "startedAt"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
@@ -138,6 +138,7 @@ export function LDAPSourceSyncToJSONTyped(
     }
 
     return {
+        tasks: value["tasks"],
         finished_at:
             value["finishedAt"] == null
                 ? value["finishedAt"]

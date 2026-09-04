@@ -76,8 +76,7 @@ def ldap_sync(source_pk: str):
             )
             return
 
-        current_sync = LDAPSourceSync.objects.create(source=source)
-        current_sync.tasks.add(task)
+        current_sync = LDAPSourceSync.objects.create(source=source, tasks=[task.pk])
 
         # User and group sync can happen at once, they have no dependencies on each other
         current_sync.enqueue(
@@ -169,7 +168,9 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
         self.info(f"Synced {count} objects.")
         sync_field_name = f"{sync_inst.name()}_count"
         sync_field_update = {sync_field_name: F(sync_field_name) + count}
-        LDAPSourceSync.objects.filter(source=source, tasks=self).update(**sync_field_update)
+        LDAPSourceSync.objects.filter(source=source, tasks__contains=[self.pk]).update(
+            **sync_field_update
+        )
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:
         # No explicit event is created here as .error will do that

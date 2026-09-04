@@ -374,12 +374,6 @@ class LDAPSource(IncomingSyncSource):
 
 
 class LDAPSourceSync(Sync):
-    tasks = models.ManyToManyField(
-        Task,
-        related_name="+",
-        through="LDAPSourceSyncTask",
-        through_fields=("ldap_source_sync", "task"),
-    )
     source = models.ForeignKey(LDAPSource, on_delete=models.CASCADE)
 
     users_count = models.PositiveBigIntegerField(default=0)
@@ -396,20 +390,6 @@ class LDAPSourceSync(Sync):
 
     def __str__(self):
         return f"LDAP Source ({self.source_id}) Sync ({self.pk})"
-
-
-class LDAPSourceSyncTask(InternallyManagedMixin, models.Model):
-    pk = models.CompositePrimaryKey("ldap_source_sync", "task")
-    ldap_source_sync = models.ForeignKey(LDAPSourceSync, on_delete=models.CASCADE, related_name="+")
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="+")
-
-    class Meta:
-        default_permissions = []
-        verbose_name = _("LDAP source sync task")
-        verbose_name_plural = _("LDAP source syncs tasks")
-
-    def __str__(self):
-        return f"LDAP Source Sync ({self.ldap_source_sync_id}) Task ({self.task_id})"
 
 
 class LDAPSourcePropertyMapping(PropertyMapping):
