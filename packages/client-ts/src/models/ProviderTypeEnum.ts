@@ -33,6 +33,7 @@ export const ProviderTypeEnum = {
     Twitch: "twitch",
     Twitter: "twitter",
     Wechat: "wechat",
+    Wechatserviceaccount: "wechatserviceaccount",
     UnknownDefaultOpenApi: "11184809",
 } as const;
 export type ProviderTypeEnum = (typeof ProviderTypeEnum)[keyof typeof ProviderTypeEnum];
