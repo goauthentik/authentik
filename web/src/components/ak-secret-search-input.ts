@@ -1,4 +1,3 @@
-import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 
 import HostStyles from "./ak-secret-search-input.css";
@@ -6,21 +5,18 @@ import HostStyles from "./ak-secret-search-input.css";
 import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
-import { AKElement } from "#elements/Base";
 import { IconRotateSecretButton } from "#elements/buttons/IconRotateSecretButton";
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmittedEvent } from "#elements/forms/events";
 import SearchSelect from "#elements/forms/SearchSelect/index";
 import { SlottedTemplateResult } from "#elements/types";
-import { ifPresent } from "#elements/utils/attributes";
 
-import { AKLabel } from "#components/ak-label";
+import { HorizontalLightComponent } from "#components/HorizontalLightComponent";
 
 import { SecretForm } from "#admin/secrets/SecretForm";
 import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
-import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -40,40 +36,14 @@ const renderValue = (item?: Secret | null) => item?.pk;
  * create one on the fly without leaving the form. Mirrors `ak-file-search-input`.
  */
 @customElement("ak-secret-search-input")
-export class AKSecretSearchInput extends AKElement {
+export class AKSecretSearchInput extends HorizontalLightComponent<string> {
     public static hostStyles = [PFButton, PFInputGroup, HostStyles];
 
-    // Render into the lightDOM
-    protected createRenderRoot() {
-        return this;
-    }
-
     @property({ type: String })
-    public name: string | null = null;
-
-    @property({ type: String })
-    public label: string | null = null;
-
-    /**
-     * The selected secret's primary key.
-     */
-    @property({ type: String })
-    public value: string = "";
-
-    @property({ type: Boolean })
-    public required = false;
+    public override value = "";
 
     @property({ type: Boolean })
     public blankable = false;
-
-    @property({ type: Boolean })
-    public hidden = false;
-
-    @property({ type: String })
-    public help: string | null = null;
-
-    @property({ type: String, reflect: false })
-    public fieldID?: string = IDGenerator.elementID().toString();
 
     protected secretSearchRef = createRef<SearchSelect>();
 
@@ -131,63 +101,46 @@ export class AKSecretSearchInput extends AKElement {
         return secrets.results;
     };
 
-    protected override render(): SlottedTemplateResult {
+    protected override renderControl(): SlottedTemplateResult {
         const createLabel = msg("Create secret", { id: "secret-picker.create-action.label" });
 
-        return html`<ak-form-element-horizontal
-            name=${ifPresent(this.name)}
-            ?required=${this.required}
-            ?hidden=${this.hidden}
-        >
-            ${AKLabel(
-                {
-                    slot: "label",
-                    className: "pf-c-form__group-label",
-                    htmlFor: this.fieldID,
-                    required: this.required,
-                },
-                this.label,
-            )}
-
-            <div class="pf-c-input-group">
-                <ak-search-select
-                    ${ref(this.secretSearchRef)}
-                    class="ak-secret-search-input__select"
-                    .fieldID=${this.fieldID}
-                    .fetchObjects=${this.refresh}
-                    .renderElement=${renderElement}
-                    .value=${renderValue}
-                    .selected=${this.#selected}
-                    placeholder=${msg("Select a secret...", {
-                        id: "secret-picker.value.placeholder",
-                    })}
-                    ?blankable=${this.blankable}
-                    @ak-change=${this.changeListener}
-                    action-label=${createLabel}
-                    @ak-search-select-action=${this.openSecretCreateModal}
-                ></ak-search-select>
-                <button
-                    @click=${this.openSecretCreateModal}
-                    type="button"
-                    class="pf-c-button pf-m-control"
-                    aria-label=${createLabel}
-                    title=${createLabel}
-                >
-                    <i class="fas fa-plus" aria-hidden="true"></i>
-                </button>
-                ${this.selectedSecret ? SecretValueButton(this.selectedSecret, true) : nothing}
-                ${this.value && this.selectedSecret?.type === SecretTypeEnum.Text
-                    ? IconRotateSecretButton({
-                          control: true,
-                          rotate: () =>
-                              aki(SecretsApi).secretsSecretsRotateCreate({
-                                  secretUuid: this.value,
-                              }),
-                      })
-                    : nothing}
-            </div>
-            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
-        </ak-form-element-horizontal>`;
+        return html`<div class="pf-c-input-group">
+            <ak-search-select
+                ${ref(this.secretSearchRef)}
+                class="ak-secret-search-input__select"
+                .fieldID=${this.fieldID}
+                .fetchObjects=${this.refresh}
+                .renderElement=${renderElement}
+                .value=${renderValue}
+                .selected=${this.#selected}
+                placeholder=${msg("Select a secret...", {
+                    id: "secret-picker.value.placeholder",
+                })}
+                ?blankable=${this.blankable}
+                @ak-change=${this.changeListener}
+                action-label=${createLabel}
+                @ak-search-select-action=${this.openSecretCreateModal}
+            ></ak-search-select>
+            <button
+                @click=${this.openSecretCreateModal}
+                type="button"
+                class="pf-c-button pf-m-control"
+                aria-label=${createLabel}
+                title=${createLabel}
+            >
+                <i class="fas fa-plus" aria-hidden="true"></i>
+            </button>
+            ${this.selectedSecret ? SecretValueButton(this.selectedSecret, true) : nothing}
+            ${this.value && this.selectedSecret?.type === SecretTypeEnum.Text
+                ? IconRotateSecretButton({
+                      control: true,
+                      rotate: () =>
+                          aki(SecretsApi).secretsSecretsRotateCreate({
+                              secretUuid: this.value,
+                          }),
+                  })
+                : nothing}
+        </div>`;
     }
 }
 

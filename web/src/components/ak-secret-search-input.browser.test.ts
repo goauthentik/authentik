@@ -1,6 +1,7 @@
 import "#components/ak-secret-search-input";
 
 import { AKFormSubmittedEvent } from "#elements/forms/events";
+import { serializeForm } from "#elements/forms/serialization";
 
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 
@@ -42,6 +43,7 @@ test("loads a selected secret outside the first page", async () => {
         .spyOn(SecretsApi.prototype, "secretsSecretsRetrieve")
         .mockResolvedValue(secret);
     const picker = document.createElement("ak-secret-search-input");
+    picker.name = "secret";
     picker.value = secret.pk;
     document.body.append(picker);
     await picker.updateComplete;
@@ -59,6 +61,7 @@ test.each([false, true])(
             new Error("Unavailable"),
         );
         const picker = document.createElement("ak-secret-search-input");
+        picker.name = "secret";
         picker.value = secret.pk;
         picker.blankable = blankable;
         document.body.append(picker);
@@ -68,7 +71,9 @@ test.each([false, true])(
         await vi.waitFor(() =>
             expect(select.shadowRoot?.textContent).toContain("Failed to fetch objects"),
         );
-        expect(() => select.toForm()).toThrow();
+        expect(() =>
+            serializeForm([picker.querySelector("ak-form-element-horizontal")!]),
+        ).toThrow();
         expect(picker.value).toBe(secret.pk);
     },
 );
