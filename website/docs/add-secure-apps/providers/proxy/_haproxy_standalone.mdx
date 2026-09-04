@@ -1,0 +1,76 @@
+```haproxy
+global
+    # Load haproxy-lua-http and haproxy-auth-request. Adjust these paths to
+    # match your installation.
+    lua-prepend-path /usr/share/haproxy/?/http.lua
+    lua-load /usr/share/haproxy/auth-request.lua
+
+defaults
+    mode http
+    option forwardfor
+
+frontend https
+    bind :443 ssl crt /etc/haproxy/certs/app.company.pem
+
+    # Protect only the application hosts that you specify.
+    acl protected_frontends hdr(host) -i app.company
+
+    # Do not authenticate authentik outpost endpoints.
+    acl authentik_outpost path_beg /outpost.goauthentik.io/
+
+    # Pass the original request information to authentik.
+    http-request set-var(req.scheme) str(https) if { ssl_fc }
+    http-request set-var(req.scheme) str(http) if !{ ssl_fc }
+    http-request set-header X-Real-IP %[src]
+    http-request set-header X-Forwarded-Method %[method]
+    http-request set-header X-Forwarded-Proto %[var(req.scheme)]
+    http-request set-header X-Forwarded-Host %[req.hdr(Host)]
+    # authentik requires an absolute URL for the nginx-compatible endpoint.
+    http-request set-header X-Original-URL %[var(req.scheme)]://%[req.hdr(Host)]%[pathq]
+
+    # Do not allow clients to spoof identity or authorization headers. The
+    # outpost adds trusted identity headers after a successful authorization.
+    http-request del-header X-authentik-username
+    http-request del-header X-authentik-groups
+    http-request del-header X-authentik-entitlements
+    http-request del-header X-authentik-email
+    http-request del-header X-authentik-name
+    http-request del-header X-authentik-uid
+    http-request del-header X-authentik-jwt
+    http-request del-header X-authentik-meta-jwks
+    http-request del-header X-authentik-meta-outpost
+    http-request del-header X-authentik-meta-provider
+    http-request del-header X-authentik-meta-app
+    http-request del-header X-authentik-meta-version
+    http-request del-header Authorization
+
+    # Verify protected requests with the authentik outpost. Keep the request
+    # header allowlist narrow because forwarding WebSocket Upgrade headers
+    # prevents the authorization request from completing.
+    http-request lua.auth-intercept authentik_auth_request /outpost.goauthentik.io/auth/nginx HEAD x-original-url,x-real-ip,x-forwarded-host,x-forwarded-proto,user-agent,cookie,accept,x-forwarded-method x-authentik-username,x-authentik-groups,x-authentik-entitlements,x-authentik-email,x-authentik-name,x-authentik-uid,x-authentik-jwt,x-authentik-meta-jwks,x-authentik-meta-outpost,x-authentik-meta-provider,x-authentik-meta-app,x-authentik-meta-version - if protected_frontends !authentik_outpost
+
+    # Preserve session cookies returned by successful authorization checks.
+    http-request set-var(txn.auth_response_set_cookie) var(req.auth_response_header.set_cookie) if { var(req.auth_response_header.set_cookie) -m found }
+
+    # Redirect unauthenticated users to authentik, deny explicitly forbidden
+    # requests, and pass other redirect responses through unchanged. Deny all
+    # remaining failed checks so a failed or unreachable outpost cannot expose
+    # the protected application.
+    http-request redirect code 302 location /outpost.goauthentik.io/start?rd=%[hdr(X-Original-URL),url_enc] if protected_frontends !authentik_outpost !{ var(txn.auth_response_successful) -m bool } { var(txn.auth_response_code) -m int 401 }
+    http-request deny if protected_frontends !authentik_outpost !{ var(txn.auth_response_successful) -m bool } { var(txn.auth_response_code) -m int 403 }
+    http-request redirect location %[var(txn.auth_response_location)] if protected_frontends !authentik_outpost !{ var(txn.auth_response_successful) -m bool } { var(txn.auth_response_location) -m found }
+    http-request deny deny_status 401 if protected_frontends !authentik_outpost !{ var(txn.auth_response_successful) -m bool }
+
+    use_backend authentik_outpost if protected_frontends authentik_outpost
+    default_backend application
+
+backend authentik_auth_request
+    server outpost outpost.company:9000 check
+
+backend authentik_outpost
+    server outpost outpost.company:9000 check
+
+backend application
+    http-response add-header Set-Cookie %[var(txn.auth_response_set_cookie)] if { var(txn.auth_response_set_cookie) -m found }
+    server application app.company:8080 check
+```

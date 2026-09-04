@@ -1,0 +1,43 @@
+---
+title: HAProxy
+---
+
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
+
+HAProxy requires Lua support and the third-party [haproxy-auth-request](https://github.com/TimWolla/haproxy-auth-request) module to make forward-auth subrequests. This template requires HAProxy 2.2.3 or later. Install the module, its [haproxy-lua-http](https://github.com/haproxytech/haproxy-lua-http) dependency, and the JSON library required by `haproxy-lua-http`. Ensure that both Lua dependencies are available on HAProxy's Lua search path before using this configuration.
+
+This configuration uses authentik's forward-auth endpoint. It sends the original request URL in the `X-Original-URL` header and redirects unauthenticated requests to the outpost's `/start` endpoint.
+
+The template below protects a single application using a **Forward auth (single application)** proxy provider. Create a separate proxy provider for each application you want to protect.
+
+:::warning
+The authorization-request backend must connect to the outpost over HTTP. The `haproxy-auth-request` module does not support TLS for this backend. Restrict this HTTP connection to a trusted network.
+:::
+
+:::note
+The default template does not forward `Authorization` headers. If your application requires authentik to send an HTTP Basic authentication header, add `authorization` to the successful response-header allowlist only.
+:::
+
+:::note
+The example expects `haproxy-lua-http` at `/usr/share/haproxy/haproxy-lua-http/http.lua`. If you use a flat Lua directory such as `/etc/haproxy/lua/`, save its `http.lua` file as `haproxy-lua-http.lua` and set `lua-prepend-path /etc/haproxy/lua/?.lua`.
+:::
+
+import Placeholders from "./__placeholders.mdx";
+import HAProxyStandalone from "./_haproxy_standalone.mdx";
+
+<Placeholders />
+
+<Tabs
+  defaultValue="haproxy-standalone"
+  values={[
+    {label: "HAProxy (standalone)", value: "haproxy-standalone"},
+  ]}>
+  <TabItem value="haproxy-standalone">
+
+<HAProxyStandalone />
+
+  </TabItem>
+</Tabs>
+
+Update the `protected_frontends` ACL and the `application` backend to match the application that you want to protect.
