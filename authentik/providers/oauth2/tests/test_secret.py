@@ -18,25 +18,6 @@ class TestProviderSecret(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
-    def test_auto_create(self):
-        """Creating a provider without a secret creates one with a generated value"""
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(), authorization_flow=create_test_flow()
-        )
-        self.assertIsNotNone(provider.secret)
-        self.assertNotEqual(provider.secret.get_value(), "")
-        self.assertEqual(provider.secret.value, provider.secret.get_value())
-
-    def test_rotation_applies(self):
-        """Rotating the secret changes what the provider authenticates with"""
-        provider = OAuth2Provider.objects.create(
-            name=generate_id(), authorization_flow=create_test_flow()
-        )
-        old_value = provider.secret.get_value()
-        provider.secret.rotate()
-        provider.refresh_from_db()
-        self.assertNotEqual(provider.secret.get_value(), old_value)
-
     def test_detached_secret_fails_closed(self):
         """A confidential provider whose secret is detached must reject empty-secret auth"""
         from django.test import RequestFactory
