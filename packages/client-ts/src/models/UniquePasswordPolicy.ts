@@ -20,62 +20,42 @@
 export interface UniquePasswordPolicy {
     /**
      *
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof UniquePasswordPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof UniquePasswordPolicy
      */
     readonly boundTo: number;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof UniquePasswordPolicy
      */
     passwordField?: string;
     /**
      * Number of passwords to check against.
-     * @type {number}
-     * @memberof UniquePasswordPolicy
      */
     numHistoricalPasswords?: number;
 }

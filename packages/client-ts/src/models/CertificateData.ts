@@ -20,8 +20,6 @@
 export interface CertificateData {
     /**
      *
-     * @type {string}
-     * @memberof CertificateData
      */
     readonly data: string;
 }

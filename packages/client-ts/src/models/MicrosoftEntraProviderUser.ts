@@ -23,38 +23,26 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface MicrosoftEntraProviderUser {
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderUser
      */
     readonly id: string;
     /**
      *
-     * @type {string}
-     * @memberof MicrosoftEntraProviderUser
      */
     microsoftId: string;
     /**
      *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUser
      */
     user: number;
     /**
      *
-     * @type {PartialUser}
-     * @memberof MicrosoftEntraProviderUser
      */
     readonly userObj: PartialUser;
     /**
      *
-     * @type {number}
-     * @memberof MicrosoftEntraProviderUser
      */
     provider: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof MicrosoftEntraProviderUser
      */
     readonly attributes: { [key: string]: any };
 }

@@ -20,8 +20,6 @@
 export interface FlowDiagram {
     /**
      *
-     * @type {string}
-     * @memberof FlowDiagram
      */
     readonly diagram: string;
 }

@@ -22,8 +22,6 @@
 export interface AgentGrantRequestCreateRequest {
     /**
      *
-     * @type {Array<string>}
-     * @memberof AgentGrantRequestCreateRequest
      */
     pbms: Array<string>;
 }

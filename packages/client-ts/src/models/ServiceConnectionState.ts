@@ -20,14 +20,10 @@
 export interface ServiceConnectionState {
     /**
      *
-     * @type {boolean}
-     * @memberof ServiceConnectionState
      */
     readonly healthy: boolean;
     /**
      *
-     * @type {string}
-     * @memberof ServiceConnectionState
      */
     readonly version: string;
 }

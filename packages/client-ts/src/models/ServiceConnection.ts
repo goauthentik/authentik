@@ -20,44 +20,30 @@
 export interface ServiceConnection {
     /**
      *
-     * @type {string}
-     * @memberof ServiceConnection
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ServiceConnection
      */
     name: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-     * @type {boolean}
-     * @memberof ServiceConnection
      */
     local?: boolean;
     /**
      * Return component used to edit this object
-     * @type {string}
-     * @memberof ServiceConnection
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ServiceConnection
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ServiceConnection
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ServiceConnection
      */
     readonly metaModelName: string;
 }

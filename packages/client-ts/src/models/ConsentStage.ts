@@ -25,56 +25,38 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface ConsentStage {
     /**
      *
-     * @type {string}
-     * @memberof ConsentStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ConsentStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof ConsentStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ConsentStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ConsentStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ConsentStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof ConsentStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {ConsentModeEnum}
-     * @memberof ConsentStage
      */
     mode?: ConsentModeEnum;
     /**
      * Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof ConsentStage
      */
     consentExpireIn?: string;
 }

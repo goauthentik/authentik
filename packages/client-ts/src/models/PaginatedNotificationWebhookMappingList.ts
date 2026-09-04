@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedNotificationWebhookMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedNotificationWebhookMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<NotificationWebhookMapping>}
-     * @memberof PaginatedNotificationWebhookMappingList
      */
     results: Array<NotificationWebhookMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedNotificationWebhookMappingList
      */
     autocomplete: { [key: string]: any };
 }

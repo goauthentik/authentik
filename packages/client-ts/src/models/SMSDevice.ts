@@ -23,26 +23,18 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface SMSDevice {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof SMSDevice
      */
     name: string;
     /**
      *
-     * @type {number}
-     * @memberof SMSDevice
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof SMSDevice
      */
     readonly phoneNumber: string;
     /**
      *
-     * @type {PartialUser}
-     * @memberof SMSDevice
      */
     readonly user: PartialUser;
 }

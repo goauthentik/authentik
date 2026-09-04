@@ -6,7 +6,7 @@ import { ifPresent } from "#elements/utils/attributes";
 import type { ThemedUrls } from "@goauthentik/api";
 
 import { spread } from "@open-wc/lit-helpers";
-import { ImgHTMLAttributes } from "react";
+import type { ImgHTMLAttributes } from "react";
 
 import { html, nothing } from "lit";
 

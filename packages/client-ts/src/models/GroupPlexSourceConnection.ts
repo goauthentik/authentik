@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -23,44 +24,30 @@ import { SourceFromJSON } from "./Source";
 export interface GroupPlexSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof GroupPlexSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof GroupPlexSourceConnection
      */
     readonly group: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupPlexSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof GroupPlexSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof GroupPlexSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof GroupPlexSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof GroupPlexSourceConnection
      */
     readonly lastUpdated: Date;
 }
@@ -110,8 +97,11 @@ export function GroupPlexSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 

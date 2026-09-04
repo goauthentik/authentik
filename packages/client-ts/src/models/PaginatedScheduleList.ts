@@ -25,20 +25,14 @@ import { ScheduleFromJSON, ScheduleToJSON } from "./Schedule";
 export interface PaginatedScheduleList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedScheduleList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Schedule>}
-     * @memberof PaginatedScheduleList
      */
     results: Array<Schedule>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedScheduleList
      */
     autocomplete: { [key: string]: any };
 }

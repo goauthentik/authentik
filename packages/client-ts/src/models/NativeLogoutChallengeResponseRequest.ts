@@ -20,8 +20,6 @@
 export interface NativeLogoutChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof NativeLogoutChallengeResponseRequest
      */
     component?: string;
 }

@@ -20,50 +20,34 @@
 export interface Policy {
     /**
      *
-     * @type {string}
-     * @memberof Policy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Policy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof Policy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Policy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Policy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Policy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Policy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof Policy
      */
     readonly boundTo: number;
 }

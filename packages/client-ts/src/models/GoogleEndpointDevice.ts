@@ -20,14 +20,10 @@
 export interface GoogleEndpointDevice {
     /**
      *
-     * @type {string}
-     * @memberof GoogleEndpointDevice
      */
     pk?: string;
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof GoogleEndpointDevice
      */
     name: string;
 }

@@ -21,20 +21,47 @@ import { type SSFStream, SSFStreamFromJSON } from "../models/SSFStream";
 import * as runtime from "../runtime";
 
 export interface SsfStreamsDestroyRequest {
+    /**
+     * A UUID string identifying this SSF Stream.
+     */
     uuid: string;
 }
 
 export interface SsfStreamsListRequest {
+    /**
+     *
+     */
     deliveryMethod?: DeliveryMethodEnum;
+    /**
+     *
+     */
     endpointUrl?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface SsfStreamsRetrieveRequest {
+    /**
+     * A UUID string identifying this SSF Stream.
+     */
     uuid: string;
 }
 

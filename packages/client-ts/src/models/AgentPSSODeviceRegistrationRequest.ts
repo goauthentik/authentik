@@ -20,26 +20,18 @@
 export interface AgentPSSODeviceRegistrationRequest {
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationRequest
      */
     deviceSigningKey: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationRequest
      */
     deviceEncryptionKey: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationRequest
      */
     signKeyId: string;
     /**
      *
-     * @type {string}
-     * @memberof AgentPSSODeviceRegistrationRequest
      */
     encKeyId: string;
 }

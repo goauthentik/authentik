@@ -20,8 +20,6 @@
 export interface UserAccountRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserAccountRequest
      */
     pk: number;
 }

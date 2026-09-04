@@ -424,1131 +424,2655 @@ import { type WebAuthnDeviceType, WebAuthnDeviceTypeFromJSON } from "../models/W
 import * as runtime from "../runtime";
 
 export interface StagesAccountLockdownCreateRequest {
+    /**
+     *
+     */
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownDestroyRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAccountLockdownListRequest {
+    /**
+     *
+     */
     deactivateUser?: boolean;
+    /**
+     *
+     */
     deleteSessions?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     revokeTokens?: boolean;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     selfServiceCompletionFlow?: string;
+    /**
+     *
+     */
     setUnusablePassword?: boolean;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesAccountLockdownPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAccountLockdownStageRequest?: PatchedAccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownRetrieveRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAccountLockdownUpdateRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     accountLockdownStageRequest: AccountLockdownStageRequest;
 }
 
 export interface StagesAccountLockdownUsedByListRequest {
+    /**
+     * A UUID string identifying this Account Lockdown Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllDestroyRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAllRetrieveRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAllUsedByListRequest {
+    /**
+     * A UUID string identifying this stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoCreateRequest {
+    /**
+     *
+     */
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
 export interface StagesAuthenticatorDuoDestroyRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoEnrollmentStatusCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoImportDeviceManualCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorDuoStageManualDeviceImportRequest: AuthenticatorDuoStageManualDeviceImportRequest;
 }
 
 export interface StagesAuthenticatorDuoImportDevicesAutomaticCreateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoListRequest {
+    /**
+     *
+     */
     apiHostname?: string;
+    /**
+     *
+     */
     clientId?: string;
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorDuoPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorDuoStageRequest?: PatchedAuthenticatorDuoStageRequest;
 }
 
 export interface StagesAuthenticatorDuoRetrieveRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorDuoUpdateRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorDuoStageRequest: AuthenticatorDuoStageRequest;
 }
 
 export interface StagesAuthenticatorDuoUsedByListRequest {
+    /**
+     * A UUID string identifying this Duo Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEmailCreateRequest {
+    /**
+     *
+     */
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
 export interface StagesAuthenticatorEmailDestroyRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEmailListRequest {
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     friendlyName?: string;
+    /**
+     *
+     */
     fromAddress?: string;
+    /**
+     *
+     */
     host?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     password?: string;
+    /**
+     *
+     */
     port?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     subject?: string;
+    /**
+     *
+     */
     template?: string;
+    /**
+     *
+     */
     timeout?: number;
+    /**
+     *
+     */
     tokenExpiry?: string;
+    /**
+     *
+     */
     useGlobalSettings?: boolean;
+    /**
+     *
+     */
     useSsl?: boolean;
+    /**
+     *
+     */
     useTls?: boolean;
+    /**
+     *
+     */
     username?: string;
 }
 
 export interface StagesAuthenticatorEmailPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorEmailStageRequest?: PatchedAuthenticatorEmailStageRequest;
 }
 
 export interface StagesAuthenticatorEmailRetrieveRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEmailUpdateRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorEmailStageRequest: AuthenticatorEmailStageRequest;
 }
 
 export interface StagesAuthenticatorEmailUsedByListRequest {
+    /**
+     * A UUID string identifying this Email Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcCreateRequest {
+    /**
+     *
+     */
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
 
 export interface StagesAuthenticatorEndpointGdtcDestroyRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcListRequest {
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorEndpointGDTCStageRequest?: PatchedAuthenticatorEndpointGDTCStageRequest;
 }
 
 export interface StagesAuthenticatorEndpointGdtcRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorEndpointGdtcUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorEndpointGDTCStageRequest: AuthenticatorEndpointGDTCStageRequest;
 }
 
 export interface StagesAuthenticatorEndpointGdtcUsedByListRequest {
+    /**
+     * A UUID string identifying this Endpoint Authenticator Google Device Trust Connector Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorSmsCreateRequest {
+    /**
+     *
+     */
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
 export interface StagesAuthenticatorSmsDestroyRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorSmsListRequest {
+    /**
+     *
+     */
     accountSid?: string;
+    /**
+     *
+     */
     auth?: string;
+    /**
+     *
+     */
     authPassword?: string;
+    /**
+     *
+     */
     authType?: AuthTypeEnum;
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     friendlyName?: string;
+    /**
+     *
+     */
     fromNumber?: string;
+    /**
+     *
+     */
     mapping?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     provider?: ProviderEnum;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     verifyOnly?: boolean;
 }
 
 export interface StagesAuthenticatorSmsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorSMSStageRequest?: PatchedAuthenticatorSMSStageRequest;
 }
 
 export interface StagesAuthenticatorSmsRetrieveRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorSmsUpdateRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorSMSStageRequest: AuthenticatorSMSStageRequest;
 }
 
 export interface StagesAuthenticatorSmsUsedByListRequest {
+    /**
+     * A UUID string identifying this SMS Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorStaticCreateRequest {
+    /**
+     *
+     */
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
 
 export interface StagesAuthenticatorStaticDestroyRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorStaticListRequest {
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     friendlyName?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     tokenCount?: number;
+    /**
+     *
+     */
     tokenLength?: number;
 }
 
 export interface StagesAuthenticatorStaticPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorStaticStageRequest?: PatchedAuthenticatorStaticStageRequest;
 }
 
 export interface StagesAuthenticatorStaticRetrieveRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorStaticUpdateRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorStaticStageRequest: AuthenticatorStaticStageRequest;
 }
 
 export interface StagesAuthenticatorStaticUsedByListRequest {
+    /**
+     * A UUID string identifying this Static Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorTotpCreateRequest {
+    /**
+     *
+     */
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
 export interface StagesAuthenticatorTotpDestroyRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorTotpListRequest {
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     digits?: DigitsEnum;
+    /**
+     *
+     */
     friendlyName?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesAuthenticatorTotpPartialUpdateRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorTOTPStageRequest?: PatchedAuthenticatorTOTPStageRequest;
 }
 
 export interface StagesAuthenticatorTotpRetrieveRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorTotpUpdateRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorTOTPStageRequest: AuthenticatorTOTPStageRequest;
 }
 
 export interface StagesAuthenticatorTotpUsedByListRequest {
+    /**
+     * A UUID string identifying this TOTP Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorValidateCreateRequest {
+    /**
+     *
+     */
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
 
 export interface StagesAuthenticatorValidateDestroyRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorValidateListRequest {
+    /**
+     *
+     */
     configurationStages?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     notConfiguredAction?: NotConfiguredActionEnum;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorValidatePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorValidateStageRequest?: PatchedAuthenticatorValidateStageRequest;
 }
 
 export interface StagesAuthenticatorValidateRetrieveRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorValidateUpdateRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorValidateStageRequest: AuthenticatorValidateStageRequest;
 }
 
 export interface StagesAuthenticatorValidateUsedByListRequest {
+    /**
+     * A UUID string identifying this Authenticator Validation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnCreateRequest {
+    /**
+     *
+     */
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
 export interface StagesAuthenticatorWebauthnDestroyRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnDeviceTypesListRequest {
+    /**
+     *
+     */
     aaguid?: string;
+    /**
+     *
+     */
     description?: string;
+    /**
+     *
+     */
     icon?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesAuthenticatorWebauthnDeviceTypesRetrieveRequest {
+    /**
+     * A UUID string identifying this WebAuthn Device type.
+     */
     aaguid: string;
 }
 
 export interface StagesAuthenticatorWebauthnListRequest {
+    /**
+     *
+     */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     deviceTypeRestrictions?: Array<string>;
+    /**
+     *
+     */
     maxAttempts?: number;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     residentKeyRequirement?: UserVerificationEnum;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     userVerification?: UserVerificationEnum;
 }
 
 export interface StagesAuthenticatorWebauthnPartialUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedAuthenticatorWebAuthnStageRequest?: PatchedAuthenticatorWebAuthnStageRequest;
 }
 
 export interface StagesAuthenticatorWebauthnRetrieveRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesAuthenticatorWebauthnUpdateRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     authenticatorWebAuthnStageRequest: AuthenticatorWebAuthnStageRequest;
 }
 
 export interface StagesAuthenticatorWebauthnUsedByListRequest {
+    /**
+     * A UUID string identifying this WebAuthn Authenticator Setup Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesCaptchaCreateRequest {
+    /**
+     *
+     */
     captchaStageRequest: CaptchaStageRequest;
 }
 
 export interface StagesCaptchaDestroyRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesCaptchaListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     publicKey?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesCaptchaPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedCaptchaStageRequest?: PatchedCaptchaStageRequest;
 }
 
 export interface StagesCaptchaRetrieveRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesCaptchaUpdateRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     captchaStageRequest: CaptchaStageRequest;
 }
 
 export interface StagesCaptchaUsedByListRequest {
+    /**
+     * A UUID string identifying this Captcha Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesConsentCreateRequest {
+    /**
+     *
+     */
     consentStageRequest: ConsentStageRequest;
 }
 
 export interface StagesConsentDestroyRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesConsentListRequest {
+    /**
+     *
+     */
     consentExpireIn?: string;
+    /**
+     *
+     */
     mode?: ConsentModeEnum;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesConsentPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedConsentStageRequest?: PatchedConsentStageRequest;
 }
 
 export interface StagesConsentRetrieveRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesConsentUpdateRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     consentStageRequest: ConsentStageRequest;
 }
 
 export interface StagesConsentUsedByListRequest {
+    /**
+     * A UUID string identifying this Consent Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDenyCreateRequest {
+    /**
+     *
+     */
     denyStageRequest: DenyStageRequest;
 }
 
 export interface StagesDenyDestroyRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDenyListRequest {
+    /**
+     *
+     */
     denyMessage?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesDenyPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedDenyStageRequest?: PatchedDenyStageRequest;
 }
 
 export interface StagesDenyRetrieveRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDenyUpdateRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     denyStageRequest: DenyStageRequest;
 }
 
 export interface StagesDenyUsedByListRequest {
+    /**
+     * A UUID string identifying this Deny Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDummyCreateRequest {
+    /**
+     *
+     */
     dummyStageRequest: DummyStageRequest;
 }
 
 export interface StagesDummyDestroyRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDummyListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     throwError?: boolean;
 }
 
 export interface StagesDummyPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedDummyStageRequest?: PatchedDummyStageRequest;
 }
 
 export interface StagesDummyRetrieveRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesDummyUpdateRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     dummyStageRequest: DummyStageRequest;
 }
 
 export interface StagesDummyUsedByListRequest {
+    /**
+     * A UUID string identifying this Dummy Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEmailCreateRequest {
+    /**
+     *
+     */
     emailStageRequest: EmailStageRequest;
 }
 
 export interface StagesEmailDestroyRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEmailListRequest {
+    /**
+     *
+     */
     activateUserOnSuccess?: boolean;
+    /**
+     *
+     */
     fromAddress?: string;
+    /**
+     *
+     */
     host?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     port?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     subject?: string;
+    /**
+     *
+     */
     template?: string;
+    /**
+     *
+     */
     timeout?: number;
+    /**
+     *
+     */
     tokenExpiry?: string;
+    /**
+     *
+     */
     useGlobalSettings?: boolean;
+    /**
+     *
+     */
     useSsl?: boolean;
+    /**
+     *
+     */
     useTls?: boolean;
+    /**
+     *
+     */
     username?: string;
 }
 
 export interface StagesEmailPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedEmailStageRequest?: PatchedEmailStageRequest;
 }
 
 export interface StagesEmailRetrieveRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEmailUpdateRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     emailStageRequest: EmailStageRequest;
 }
 
 export interface StagesEmailUsedByListRequest {
+    /**
+     * A UUID string identifying this Email Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEndpointsCreateRequest {
+    /**
+     *
+     */
     endpointStageRequest: EndpointStageRequest;
 }
 
 export interface StagesEndpointsDestroyRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEndpointsListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesEndpointsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedEndpointStageRequest?: PatchedEndpointStageRequest;
 }
 
 export interface StagesEndpointsRetrieveRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesEndpointsUpdateRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     endpointStageRequest: EndpointStageRequest;
 }
 
 export interface StagesEndpointsUsedByListRequest {
+    /**
+     * A UUID string identifying this Endpoint Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesIdentificationCreateRequest {
+    /**
+     *
+     */
     identificationStageRequest: IdentificationStageRequest;
 }
 
 export interface StagesIdentificationDestroyRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesIdentificationListRequest {
+    /**
+     *
+     */
     captchaStage?: string;
+    /**
+     *
+     */
     caseInsensitiveMatching?: boolean;
+    /**
+     *
+     */
     enrollmentFlow?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     passwordStage?: string;
+    /**
+     *
+     */
     passwordlessFlow?: string;
+    /**
+     *
+     */
     recoveryFlow?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     showMatchedUser?: boolean;
+    /**
+     *
+     */
     showSourceLabels?: boolean;
+    /**
+     *
+     */
     webauthnStage?: string;
 }
 
 export interface StagesIdentificationPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedIdentificationStageRequest?: PatchedIdentificationStageRequest;
 }
 
 export interface StagesIdentificationRetrieveRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesIdentificationUpdateRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     identificationStageRequest: IdentificationStageRequest;
 }
 
 export interface StagesIdentificationUsedByListRequest {
+    /**
+     * A UUID string identifying this Identification Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesInvitationInvitationsCreateRequest {
+    /**
+     *
+     */
     invitationRequest: InvitationRequest;
 }
 
 export interface StagesInvitationInvitationsDestroyRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
 export interface StagesInvitationInvitationsListRequest {
+    /**
+     *
+     */
     createdByUsername?: string;
+    /**
+     *
+     */
     expires?: Date;
+    /**
+     *
+     */
     flowSlug?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesInvitationInvitationsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
+    /**
+     *
+     */
     patchedInvitationRequest?: PatchedInvitationRequest;
 }
 
 export interface StagesInvitationInvitationsRetrieveRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
 export interface StagesInvitationInvitationsSendEmailCreateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
+    /**
+     *
+     */
     invitationSendEmailRequest: InvitationSendEmailRequest;
 }
 
 export interface StagesInvitationInvitationsUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
+    /**
+     *
+     */
     invitationRequest: InvitationRequest;
 }
 
 export interface StagesInvitationInvitationsUsedByListRequest {
+    /**
+     * A UUID string identifying this Invitation.
+     */
     inviteUuid: string;
 }
 
 export interface StagesInvitationStagesCreateRequest {
+    /**
+     *
+     */
     invitationStageRequest: InvitationStageRequest;
 }
 
 export interface StagesInvitationStagesDestroyRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesInvitationStagesListRequest {
+    /**
+     *
+     */
     continueFlowWithoutInvitation?: boolean;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     noFlows?: boolean;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesInvitationStagesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedInvitationStageRequest?: PatchedInvitationStageRequest;
 }
 
 export interface StagesInvitationStagesRetrieveRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesInvitationStagesUpdateRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     invitationStageRequest: InvitationStageRequest;
 }
 
 export interface StagesInvitationStagesUsedByListRequest {
+    /**
+     * A UUID string identifying this Invitation Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesMtlsCreateRequest {
+    /**
+     *
+     */
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
 export interface StagesMtlsDestroyRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesMtlsListRequest {
+    /**
+     *
+     */
     certAttribute?: CertAttributeEnum;
+    /**
+     *
+     */
     certificateAuthorities?: Array<string>;
+    /**
+     *
+     */
     mode?: StageModeEnum;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     userAttribute?: UserAttributeEnum;
 }
 
 export interface StagesMtlsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedMutualTLSStageRequest?: PatchedMutualTLSStageRequest;
 }
 
 export interface StagesMtlsRetrieveRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesMtlsUpdateRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     mutualTLSStageRequest: MutualTLSStageRequest;
 }
 
 export interface StagesMtlsUsedByListRequest {
+    /**
+     * A UUID string identifying this Mutual TLS Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPasswordCreateRequest {
+    /**
+     *
+     */
     passwordStageRequest: PasswordStageRequest;
 }
 
 export interface StagesPasswordDestroyRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPasswordListRequest {
+    /**
+     *
+     */
     allowShowPassword?: boolean;
+    /**
+     *
+     */
     configureFlow?: string;
+    /**
+     *
+     */
     failedAttemptsBeforeCancel?: number;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesPasswordPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedPasswordStageRequest?: PatchedPasswordStageRequest;
 }
 
 export interface StagesPasswordRetrieveRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPasswordUpdateRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     passwordStageRequest: PasswordStageRequest;
 }
 
 export interface StagesPasswordUsedByListRequest {
+    /**
+     * A UUID string identifying this Password Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPromptPromptsCreateRequest {
+    /**
+     *
+     */
     promptRequest: PromptRequest;
 }
 
 export interface StagesPromptPromptsDestroyRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
 export interface StagesPromptPromptsListRequest {
+    /**
+     *
+     */
     fieldKey?: string;
+    /**
+     *
+     */
     label?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     placeholder?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     type?: PromptTypeEnum;
 }
 
 export interface StagesPromptPromptsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
+    /**
+     *
+     */
     patchedPromptRequest?: PatchedPromptRequest;
 }
 
 export interface StagesPromptPromptsPreviewCreateRequest {
+    /**
+     *
+     */
     promptRequest: PromptRequest;
 }
 
 export interface StagesPromptPromptsRetrieveRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
 export interface StagesPromptPromptsUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
+    /**
+     *
+     */
     promptRequest: PromptRequest;
 }
 
 export interface StagesPromptPromptsUsedByListRequest {
+    /**
+     * A UUID string identifying this Prompt.
+     */
     promptUuid: string;
 }
 
 export interface StagesPromptStagesCreateRequest {
+    /**
+     *
+     */
     promptStageRequest: PromptStageRequest;
 }
 
 export interface StagesPromptStagesDestroyRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPromptStagesListRequest {
+    /**
+     *
+     */
     fields?: Array<string>;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     validationPolicies?: Array<string>;
 }
 
 export interface StagesPromptStagesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedPromptStageRequest?: PatchedPromptStageRequest;
 }
 
 export interface StagesPromptStagesRetrieveRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesPromptStagesUpdateRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     promptStageRequest: PromptStageRequest;
 }
 
 export interface StagesPromptStagesUsedByListRequest {
+    /**
+     * A UUID string identifying this Prompt Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesRedirectCreateRequest {
+    /**
+     *
+     */
     redirectStageRequest: RedirectStageRequest;
 }
 
 export interface StagesRedirectDestroyRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesRedirectListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface StagesRedirectPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedRedirectStageRequest?: PatchedRedirectStageRequest;
 }
 
 export interface StagesRedirectRetrieveRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesRedirectUpdateRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     redirectStageRequest: RedirectStageRequest;
 }
 
 export interface StagesRedirectUsedByListRequest {
+    /**
+     * A UUID string identifying this Redirect Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesSourceCreateRequest {
+    /**
+     *
+     */
     sourceStageRequest: SourceStageRequest;
 }
 
 export interface StagesSourceDestroyRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesSourceListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     resumeTimeout?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     source?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesSourcePartialUpdateRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedSourceStageRequest?: PatchedSourceStageRequest;
 }
 
 export interface StagesSourceRetrieveRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesSourceUpdateRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     sourceStageRequest: SourceStageRequest;
 }
 
 export interface StagesSourceUsedByListRequest {
+    /**
+     * A UUID string identifying this Source Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserDeleteCreateRequest {
+    /**
+     *
+     */
     userDeleteStageRequest: UserDeleteStageRequest;
 }
 
 export interface StagesUserDeleteDestroyRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserDeleteListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesUserDeletePartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedUserDeleteStageRequest?: PatchedUserDeleteStageRequest;
 }
 
 export interface StagesUserDeleteRetrieveRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserDeleteUpdateRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     userDeleteStageRequest: UserDeleteStageRequest;
 }
 
 export interface StagesUserDeleteUsedByListRequest {
+    /**
+     * A UUID string identifying this User Delete Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLoginCreateRequest {
+    /**
+     *
+     */
     userLoginStageRequest: UserLoginStageRequest;
 }
 
 export interface StagesUserLoginDestroyRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLoginListRequest {
+    /**
+     *
+     */
     geoipBinding?: GeoipBindingEnum;
+    /**
+     *
+     */
     name?: string;
+    /**
+     *
+     */
     networkBinding?: NetworkBindingEnum;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     rememberDevice?: string;
+    /**
+     *
+     */
     rememberMeOffset?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     sessionDuration?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     terminateOtherSessions?: boolean;
 }
 
 export interface StagesUserLoginPartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedUserLoginStageRequest?: PatchedUserLoginStageRequest;
 }
 
 export interface StagesUserLoginRetrieveRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLoginUpdateRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     userLoginStageRequest: UserLoginStageRequest;
 }
 
 export interface StagesUserLoginUsedByListRequest {
+    /**
+     * A UUID string identifying this User Login Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLogoutCreateRequest {
+    /**
+     *
+     */
     userLogoutStageRequest: UserLogoutStageRequest;
 }
 
 export interface StagesUserLogoutDestroyRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLogoutListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
 }
 
 export interface StagesUserLogoutPartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedUserLogoutStageRequest?: PatchedUserLogoutStageRequest;
 }
 
 export interface StagesUserLogoutRetrieveRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserLogoutUpdateRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     userLogoutStageRequest: UserLogoutStageRequest;
 }
 
 export interface StagesUserLogoutUsedByListRequest {
+    /**
+     * A UUID string identifying this User Logout Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserWriteCreateRequest {
+    /**
+     *
+     */
     userWriteStageRequest: UserWriteStageRequest;
 }
 
 export interface StagesUserWriteDestroyRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserWriteListRequest {
+    /**
+     *
+     */
     createUsersAsInactive?: boolean;
+    /**
+     *
+     */
     createUsersGroup?: string;
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     stageUuid?: string;
+    /**
+     *
+     */
     userCreationMode?: UserCreationModeEnum;
+    /**
+     *
+     */
     userPathTemplate?: string;
+    /**
+     *
+     */
     userType?: UserTypeEnum;
 }
 
 export interface StagesUserWritePartialUpdateRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     patchedUserWriteStageRequest?: PatchedUserWriteStageRequest;
 }
 
 export interface StagesUserWriteRetrieveRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
 export interface StagesUserWriteUpdateRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
+    /**
+     *
+     */
     userWriteStageRequest: UserWriteStageRequest;
 }
 
 export interface StagesUserWriteUsedByListRequest {
+    /**
+     * A UUID string identifying this User Write Stage.
+     */
     stageUuid: string;
 }
 
@@ -10730,7 +12254,9 @@ export class StagesApi extends runtime.BaseAPI {
         }
 
         if (requestParameters["expires"] != null) {
-            queryParameters["expires"] = (requestParameters["expires"] as any).toISOString();
+            queryParameters["expires"] = runtime.serializeDateTime(
+                requestParameters["expires"] as any,
+            );
         }
 
         if (requestParameters["flowSlug"] != null) {

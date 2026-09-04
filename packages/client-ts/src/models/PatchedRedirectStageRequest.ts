@@ -26,32 +26,22 @@ import {
 export interface PatchedRedirectStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedRedirectStageRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedRedirectStageRequest
      */
     keepContext?: boolean;
     /**
      *
-     * @type {RedirectStageModeEnum}
-     * @memberof PatchedRedirectStageRequest
      */
     mode?: RedirectStageModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRedirectStageRequest
      */
     targetStatic?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRedirectStageRequest
      */
     targetFlow?: string | null;
 }

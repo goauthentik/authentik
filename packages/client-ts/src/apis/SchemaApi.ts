@@ -17,7 +17,13 @@ import { type LangEnum } from "../models/LangEnum";
 import * as runtime from "../runtime";
 
 export interface SchemaRetrieveRequest {
+    /**
+     *
+     */
     format?: FormatEnum;
+    /**
+     *
+     */
     lang?: LangEnum;
 }
 

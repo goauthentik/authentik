@@ -23,14 +23,10 @@ import { PolicyTestResultFromJSON, PolicyTestResultToJSON } from "./PolicyTestRe
 export interface LDAPCheckAccess {
     /**
      *
-     * @type {boolean}
-     * @memberof LDAPCheckAccess
      */
     hasSearchPermission?: boolean;
     /**
      *
-     * @type {PolicyTestResult}
-     * @memberof LDAPCheckAccess
      */
     access: PolicyTestResult;
 }

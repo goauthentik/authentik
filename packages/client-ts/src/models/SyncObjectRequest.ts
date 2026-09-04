@@ -23,20 +23,14 @@ import { SyncObjectModelEnumFromJSON, SyncObjectModelEnumToJSON } from "./SyncOb
 export interface SyncObjectRequest {
     /**
      *
-     * @type {SyncObjectModelEnum}
-     * @memberof SyncObjectRequest
      */
     syncObjectModel: SyncObjectModelEnum;
     /**
      *
-     * @type {string}
-     * @memberof SyncObjectRequest
      */
     syncObjectId: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SyncObjectRequest
      */
     overrideDryRun?: boolean;
 }

@@ -23,80 +23,54 @@ import { LDAPAPIAccessModeFromJSON, LDAPAPIAccessModeToJSON } from "./LDAPAPIAcc
 export interface LDAPOutpostConfig {
     /**
      *
-     * @type {number}
-     * @memberof LDAPOutpostConfig
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     name: string;
     /**
      * DN under which objects are accessible.
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     baseDn?: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     bindFlowSlug: string;
     /**
      * Get slug for unbind flow, defaulting to brand's default flow.
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     readonly unbindFlowSlug: string | null;
     /**
      * Prioritize backchannel slug over direct application slug
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     readonly applicationSlug: string;
     /**
      *
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     certificate?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof LDAPOutpostConfig
      */
     tlsServerName?: string;
     /**
      * The start for uidNumbers, this number is added to the user.pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber
-     * @type {number}
-     * @memberof LDAPOutpostConfig
      */
     uidStartNumber?: number;
     /**
      * The start for gidNumbers, this number is added to a number generated from the group.pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber
-     * @type {number}
-     * @memberof LDAPOutpostConfig
      */
     gidStartNumber?: number;
     /**
      *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPOutpostConfig
      */
     searchMode?: LDAPAPIAccessMode;
     /**
      *
-     * @type {LDAPAPIAccessMode}
-     * @memberof LDAPOutpostConfig
      */
     bindMode?: LDAPAPIAccessMode;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof LDAPOutpostConfig
      */
     mfaSupport?: boolean;
 }

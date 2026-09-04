@@ -38,11 +38,6 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v8
         with:
-          # latest (v2.13.0) bundles honnef.co/go/tools v0.8.0-rc.1, whose nilness
-          # analyzer panics on getsentry/sentry-go ("unhandled builtin recover",
-          # https://github.com/dominikh/go-tools/issues/1725). Unpin once a
-          # release with the fix ships.
-          version: v2.12.2
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
@@ -67,7 +62,7 @@ jobs:
       - test-unittest
     runs-on: ubuntu-latest
     steps:
-      - uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe # release/v1
+      - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
           jobs: ${{ toJSON(needs) }}
   build-binary:

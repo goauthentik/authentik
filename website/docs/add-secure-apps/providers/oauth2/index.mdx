@@ -2,7 +2,7 @@
 title: OAuth 2.0 provider
 ---
 
-In authentik, you can [create](./create-oauth2-provider.md) an [OAuth 2.0](https://oauth.net/2/) provider to authenticate users to an associated application. The provider supports both OAuth 2.0 and OpenID Connect (OIDC).
+In authentik, you can [create](./create-oauth2-provider.mdx) an [OAuth 2.0](https://oauth.net/2/) provider to authenticate users to an associated application. The provider supports both OAuth 2.0 and OpenID Connect (OIDC).
 
 ## authentik and OAuth 2.0
 
@@ -11,11 +11,11 @@ Before taking a [closer look at OAuth 2.0 and OIDC](#about-oauth-20-and-oidc), i
 authentik can act as either an OpenID Provider (OP) or a Relying Party (RP):
 
 - To use authentik as an OP, create an OAuth 2.0 provider and associate it with an application.
-- To use authentik as an RP, configure an OAuth or OIDC [source](../../../users-sources/sources/index.md).
+- To use authentik as an RP, configure an OAuth or OIDC [source](../../../users-sources/sources/index.mdx).
 
 authentik can act as both an OP and an RP in the same deployment.
 
-authentik supports common OAuth 2.0 and OIDC flows and grant types, including authorization code, client credentials, implicit, hybrid, device code, refresh token, and token exchange. authentik follows the [OpenID Connect specification](https://openid.net/specs/openid-connect-core-1_0.html) and supports PKCE, [GitHub compatibility](./github-compatibility.md), and scope mappings.
+authentik supports common OAuth 2.0 and OIDC flows and grant types, including authorization code, client credentials, implicit, hybrid, device code, refresh token, and token exchange. authentik follows the [OpenID Connect specification](https://openid.net/specs/openid-connect-core-1_0.html) and supports PKCE, [GitHub compatibility](./github-compatibility.mdx), and scope mappings.
 
 The authentik OAuth 2.0 provider supports standard OAuth 2.0 security features, including secure credential storage, configurable signing and encryption, configurable token expiration times, and automatic refresh token rotation.
 
@@ -70,6 +70,14 @@ sequenceDiagram
 Because of how the OAuth 2.0 provider endpoints are structured, you cannot create applications with the slugs `authorize`, `token`, `device`, `userinfo`, `introspect`, or `revoke`. These slugs conflict with the global OAuth 2.0 endpoints.
 :::
 
+### Reverse proxy and firewall access
+
+OAuth 2.0 and OIDC clients access some endpoints directly from the application server instead of through a user's browser. Ensure that reverse proxies, content delivery networks (CDNs), web application firewalls, and bot protection services permit these server-to-server requests. Interactive challenges on endpoints such as the OpenID configuration and JWKS endpoints can prevent clients from validating tokens and can cause repeated authentication redirects.
+
+If an endpoint returns `403 Forbidden`, inspect the proxy or firewall logs. For example, Cloudflare [Browser Integrity Check](https://developers.cloudflare.com/waf/tools/browser-integrity-check/) can reject clients that use non-standard user agents. Configure a narrowly scoped Cloudflare configuration rule or custom skip rule for the affected endpoint. Do not disable security controls for the entire authentik deployment.
+
+The JWKS endpoint is intentionally publicly accessible and contains public keys that clients use to verify tokens. It does not expose the private signing key.
+
 ### Cross-provider token introspection and revocation
 
 The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
@@ -122,7 +130,7 @@ authentik supports the following general OAuth 2.0 and OpenID Connect flows:
 
 The [refresh token](#refresh-token-grant) grant allows a client to obtain new access tokens without repeating the original authorization flow.
 
-You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.md). By default, all types are selected.
+You can define which grant types are available for your OAuth2 provider when you [create and configure the provider](./create-oauth2-provider.mdx). By default, all types are selected.
 
 ### 1. Web-based application authorization
 
@@ -172,7 +180,7 @@ For more information, see [Machine-to-machine authentication](./machine_to_machi
 
 The device code flow is intended for devices that have limited input capabilities or do not have a suitable browser. For example, a television application can display a code that the user enters on a website using a phone or computer. After the user authenticates, the television application receives authorization.
 
-For more information, see [Device code flow](./device_code.md).
+For more information, see [Device code flow](./device_code.mdx).
 
 ### 4. Token exchange
 
@@ -180,7 +188,7 @@ The token exchange grant allows a client to exchange an existing token for a new
 
 With delegation, also known as on-behalf-of (OBO) token exchange, the issued token identifies both the user and the authentik Actor acting on the user's behalf.
 
-For configuration instructions and information about supported parameters, see [Token exchange](./token_exchange.md).
+For configuration instructions and information about supported parameters, see [Token exchange](./token_exchange.mdx).
 
 :::info
 Delegation and on-behalf-of token exchange are available in authentik 2026.8 and later.
@@ -192,7 +200,7 @@ The refresh token grant allows a client to obtain a new access token without req
 
 ## Scope mappings
 
-Scopes can be configured using scope mappings, which are a type of [property mapping](../property-mappings/index.md#scope-mappings-with-oauth2).
+Scopes can be configured using scope mappings, which are a type of [property mapping](../property-mappings/index.mdx#scope-mappings-with-oauth2).
 
 ## Scope authorization
 
@@ -266,7 +274,7 @@ return {
 
 When a **Signing Key** is selected in the provider, authentik signs JWTs asymmetrically using the private key of the selected certificate-key pair. Clients can verify the signature using the corresponding public key. The signing key's public key is available through the JWKS endpoint listed on the provider page.
 
-When no **Signing Key** is selected, authentik signs JWTs symmetrically using the provider's **Client secret**.
+When no **Signing Key** is selected, authentik uses `HS256` and the provider’s **Client secret** to sign JWTs. This does not publish a public signing key through JWKS; select a certificate key pair to use asymmetric signing, such as `RS256`.
 
 ### Encryption
 

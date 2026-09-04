@@ -23,74 +23,50 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface AccountLockdownStage {
     /**
      *
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AccountLockdownStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Deactivate the user account (set is_active to False)
-     * @type {boolean}
-     * @memberof AccountLockdownStage
      */
     deactivateUser?: boolean;
     /**
      * Set an unusable password for the user
-     * @type {boolean}
-     * @memberof AccountLockdownStage
      */
     setUnusablePassword?: boolean;
     /**
      * Delete all active sessions for the user
-     * @type {boolean}
-     * @memberof AccountLockdownStage
      */
     deleteSessions?: boolean;
     /**
      * Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
-     * @type {boolean}
-     * @memberof AccountLockdownStage
      */
     revokeTokens?: boolean;
     /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
-     * @type {string}
-     * @memberof AccountLockdownStage
      */
     selfServiceCompletionFlow?: string | null;
 }

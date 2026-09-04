@@ -25,20 +25,14 @@ import { SCIMProviderGroupFromJSON, SCIMProviderGroupToJSON } from "./SCIMProvid
 export interface PaginatedSCIMProviderGroupList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMProviderGroupList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SCIMProviderGroup>}
-     * @memberof PaginatedSCIMProviderGroupList
      */
     results: Array<SCIMProviderGroup>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMProviderGroupList
      */
     autocomplete: { [key: string]: any };
 }

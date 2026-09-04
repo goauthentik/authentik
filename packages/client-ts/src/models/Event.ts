@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { EventActions } from "./EventActions";
 import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 
@@ -23,56 +24,38 @@ import { EventActionsFromJSON, EventActionsToJSON } from "./EventActions";
 export interface Event {
     /**
      *
-     * @type {string}
-     * @memberof Event
      */
     readonly pk: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Event
      */
     user?: { [key: string]: any };
     /**
      *
-     * @type {EventActions}
-     * @memberof Event
      */
     action: EventActions;
     /**
      *
-     * @type {string}
-     * @memberof Event
      */
     app: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Event
      */
     context?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof Event
      */
     clientIp?: string | null;
     /**
      *
-     * @type {Date}
-     * @memberof Event
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof Event
      */
     expires?: Date;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof Event
      */
     brand?: { [key: string]: any };
 }
@@ -108,8 +91,8 @@ export function EventFromJSONTyped(json: any, ignoreDiscriminator: boolean): Eve
                 : json["client_ip"] === null
                   ? null
                   : json["client_ip"],
-        created: new Date(json["created"]),
-        expires: json["expires"] == null ? undefined : new Date(json["expires"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        expires: json["expires"] == null ? undefined : parseDateTime(json["expires"]),
         brand: json["brand"] == null ? undefined : json["brand"],
     };
 }
@@ -132,7 +115,7 @@ export function EventToJSONTyped(
         app: value["app"],
         context: value["context"],
         client_ip: value["clientIp"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         brand: value["brand"],
     };
 }

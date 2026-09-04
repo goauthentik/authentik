@@ -6656,10 +6656,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
-<trans-unit id="s5170f9ef331949c0">
-  <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-  <target>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</target>
-</trans-unit>
 <trans-unit id="s36cb242ac90353bc">
   <source>Fields</source>
   <target>Fields</target>
@@ -9585,10 +9581,6 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>Paste your CAPTCHA secret key...</source>
   <target>Paste your CAPTCHA secret key...</target>
 </trans-unit>
-<trans-unit id="s896c7fc0f9277a74">
-  <source>Stage Name</source>
-  <target>Stage Name</target>
-</trans-unit>
 <trans-unit id="s1baea28d44c34fef">
   <source>Type a stage name...</source>
   <target>Type a stage name...</target>
@@ -11761,10 +11753,6 @@ Bindings to groups/users are checked against the user of the event.</target>
   <source>This stage executes account lockdown actions on a target user. Configure which actions to perform when this stage runs.</source>
   <target>تُنفِّذ هذه المرحلة إجراءات قفل الحساب على مستخدم مستهدف. قم بتكوين الإجراءات التي تريد تنفيذها عند تشغيل هذه المرحلة.</target>
 </trans-unit>
-<trans-unit id="sc2908875e6774352">
-  <source>Type a name for this stage...</source>
-  <target>اكتب اسماً لهذه المرحلة...</target>
-</trans-unit>
 <trans-unit id="scf443deca2f466b6">
   <source>Deactivate user</source>
   <target>تعطيل المستخدم</target>
@@ -13202,6 +13190,17 @@ Bindings to groups/users are checked against the user of the event.</target>
 </trans-unit>
 <trans-unit id="stages.source.match-failure.missing-property.label">
   <source>Missing property</source>
+</trans-unit>
+<trans-unit id="stage.name.label">
+  <source>Stage Name</source>
+</trans-unit>
+<trans-unit id="stage.name.placeholder">
+  <source>Type a name for this stage...</source>
+</trans-unit>
+<trans-unit id="hc50d8e6b4c9f79f1">
+  <source>Show arbitrary input fields to the user, for example during enrollment.
+                        Data is saved in the flow context under the
+                        <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
 </trans-unit>
 </body>
 </file>

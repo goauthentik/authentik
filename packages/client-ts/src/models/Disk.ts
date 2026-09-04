@@ -20,38 +20,26 @@
 export interface Disk {
     /**
      *
-     * @type {string}
-     * @memberof Disk
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof Disk
      */
     mountpoint: string;
     /**
      *
-     * @type {string}
-     * @memberof Disk
      */
     label?: string;
     /**
      *
-     * @type {number}
-     * @memberof Disk
      */
     capacityTotalBytes?: number;
     /**
      *
-     * @type {number}
-     * @memberof Disk
      */
     capacityUsedBytes?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof Disk
      */
     encryptionEnabled?: boolean;
 }
