@@ -5,6 +5,7 @@ import "#components/ak-textarea-input";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
+import { PFSize } from "#common/enums";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -30,6 +31,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     public static override verboseName = msg("Secret", { id: "secret.verbose-name" });
     public static override verboseNamePlural = msg("Secrets", { id: "secret.verbose-name-plural" });
+
+    public override size = PFSize.Medium;
 
     @state()
     protected type: SecretTypeEnum = SecretTypeEnum.Text;

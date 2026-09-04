@@ -2,6 +2,7 @@ import "#components/ak-hidden-text-input";
 import "#elements/dialogs/ak-modal";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { PFSize } from "#common/enums";
 import { AKRefreshEvent } from "#common/events";
 import { MessageLevel } from "#common/messages";
 
@@ -88,6 +89,7 @@ export function IconRotateSecretButton({
                 </button>`,
             {
                 headline,
+                size: PFSize.Medium,
                 invokerElement: invoker,
             },
         );
@@ -107,6 +109,7 @@ export function IconRotateSecretButton({
                 {
                     headline: msg("Secret rotated", { id: "secret-rotate.result.header" }),
                     invokerElement: invoker,
+                    size: PFSize.Medium,
                 },
             );
         }

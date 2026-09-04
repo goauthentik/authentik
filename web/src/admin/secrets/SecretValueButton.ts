@@ -2,6 +2,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
 import { downloadFile } from "#common/download";
+import { PFSize } from "#common/enums";
 
 import { IconCopyButton } from "#elements/buttons/IconCopyButton";
 import { renderModal } from "#elements/dialogs";
@@ -34,6 +35,7 @@ export function SecretValueButton(secret: Secret, control = false) {
                 });
             } else {
                 button.disabled = false;
+                button.focus();
                 await renderModal(
                     html`<textarea
                             class="pf-c-form-control pf-m-monospace"
@@ -44,7 +46,7 @@ export function SecretValueButton(secret: Secret, control = false) {
                             .value=${value}
                         ></textarea>
                         ${IconCopyButton({ source: value, entityLabel: secret.name })}`,
-                    { headline: secret.name, invokerElement: button },
+                    { headline: secret.name, invokerElement: button, size: PFSize.Medium },
                 );
             }
         } catch (error) {
