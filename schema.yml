@@ -42364,7 +42364,6 @@ components:
           items:
             type: string
             format: uuid
-          readOnly: true
         started_at:
           type: string
           format: date-time
@@ -42393,7 +42392,6 @@ components:
       - pk
       - provider
       - started_at
-      - tasks
     GoogleWorkspaceProviderUser:
       type: object
       description: GoogleWorkspaceProviderUser Serializer
@@ -45587,7 +45585,6 @@ components:
           items:
             type: string
             format: uuid
-          readOnly: true
         started_at:
           type: string
           format: date-time
@@ -45616,7 +45613,6 @@ components:
       - pk
       - provider
       - started_at
-      - tasks
     MicrosoftEntraProviderUser:
       type: object
       description: MicrosoftEntraProviderUser Serializer
@@ -58380,7 +58376,6 @@ components:
           items:
             type: string
             format: uuid
-          readOnly: true
         started_at:
           type: string
           format: date-time
@@ -58409,7 +58404,6 @@ components:
       - pk
       - provider
       - started_at
-      - tasks
     SCIMProviderUser:
       type: object
       description: SCIMProviderUser Serializer
