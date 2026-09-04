@@ -32,14 +32,13 @@ def generate_secret_value() -> str:
     return generate_id(128)
 
 
-def create_named_secret(name: str, value: str | None = None) -> Secret:
+def create_named_secret(name: str) -> Secret:
     """Create a secret with a readable, collision-safe name."""
     for suffix in range(1, 100):
         candidate = name if suffix == 1 else f"{name} ({suffix})"
         try:
             with transaction.atomic():
-                values = {} if value is None else {"value": value}
-                return Secret.objects.create(name=candidate, **values)
+                return Secret.objects.create(name=candidate)
         except IntegrityError:
             continue
     raise IntegrityError(f"Could not allocate a name for {name!r}")
@@ -54,7 +53,7 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     value = models.TextField(default=generate_secret_value)
 
     def replace_value(self, value: str, request: Request | None = None) -> None:
-        """Replace and audit the value, then notify consumers after commit."""
+        """Replace and audit the value, then signal consumers."""
         if value == self.value:
             return
         from authentik.events.middleware import audit_ignore
