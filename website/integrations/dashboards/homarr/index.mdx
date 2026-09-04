@@ -63,6 +63,7 @@ To keep local Homarr account login available, set `AUTH_PROVIDERS=oidc,credentia
 If you want Homarr to skip the login page and send users directly to authentik, also add `AUTH_OIDC_AUTO_LOGIN=true`.
 
 If you are intentionally linking existing Homarr accounts by email during an OIDC provider migration, and the email addresses from your IdP are verified, also add `AUTH_OIDC_ENABLE_DANGEROUS_ACCOUNT_LINKING=true`.
+If you are intentionally linking an existing Homarr credentials account to an OIDC identity with the same email address, also add `AUTH_OIDC_ENABLE_DANGEROUS_CREDENTIALS_LINKING=true`. The email address from your IdP must be verified (`email_verified: true`).
 
 Restart the Homarr service for the changes to take effect.
 
