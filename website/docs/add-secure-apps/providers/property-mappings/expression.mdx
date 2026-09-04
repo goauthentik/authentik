@@ -1,24 +1,28 @@
 ---
-title: Expressions
+title: Property mapping expressions
+description: Write Python expressions for provider property mappings.
+sidebar_position: 2
 ---
 
-The property mapping should return a value that is expected by the provider. Supported types are documented in the individual provider. Returning `None` is always accepted and would simply skip the mapping for which `None` was returned.
+A provider property mapping runs a Python expression to produce the data that the provider sends to the integrated application. The documentation for each provider lists the types that its mappings must return. Returning `None` skips the mapping.
 
-## Available Functions
+## Available functions
 
 import Functions from "../../../expressions/reference/_functions.mdx";
 
 <Functions />
 
-## Variables
+## Available objects
 
 import Objects from "../../../expressions/reference/_objects.mdx";
 
 <Objects />
 
-import User from "../../../expressions/reference/_user.mdx";
+## Available context
 
-<User />
+- `request`: an authentik [policy request object](../../../customize/policies/types/expression/reference.mdx#request). Use `request.user` for the contextual user and `request.context` for additional context data.
+- `request.http_request`: the underlying Django request when one is available. This value can be `None`. See the [Django request documentation](https://docs.djangoproject.com/en/stable/ref/request-response/).
+- `user`: the contextual user when the mapping type provides one. See [User object properties](../../../users-sources/user/user_ref.mdx#object-properties).
+- `group`: the contextual group when the mapping type provides one.
 
-- `request`: The current request. This may be `None` if there is no contextual request. See ([Django documentation](https://docs.djangoproject.com/en/3.0/ref/request-response/#httprequest-objects))
-- Other arbitrary arguments given by the provider, this is documented on the provider.
+Providers can add more variables, such as `provider`, `token`, or `endpoint`. Refer to the provider's documentation for the variables that each mapping type receives.
