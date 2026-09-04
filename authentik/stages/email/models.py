@@ -156,7 +156,7 @@ class EmailStage(Stage):
             host=self.host,
             port=self.port,
             username=self.username,
-            password=self.secret.get_value() if self.secret else "",
+            password=self.secret.value if self.secret else "",
             use_tls=self.use_tls,
             use_ssl=self.use_ssl,
             timeout=self.timeout,

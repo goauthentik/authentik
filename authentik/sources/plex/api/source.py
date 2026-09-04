@@ -109,7 +109,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.secret.get_value())
+            owner_api = PlexAuth(source, source.secret.value)
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):
@@ -168,7 +168,7 @@ class PlexSourceViewSet(UsedByMixin, ModelViewSet):
         # Check friendship first, then check server overlay
         friends_allowed = False
         if source.allow_friends:
-            owner_api = PlexAuth(source, source.secret.get_value())
+            owner_api = PlexAuth(source, source.secret.value)
             friends_allowed = owner_api.check_friends_overlap(identifier)
         servers_allowed = auth_api.check_server_overlap()
         if any([friends_allowed, servers_allowed]):

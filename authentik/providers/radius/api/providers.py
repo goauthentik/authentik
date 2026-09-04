@@ -73,7 +73,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
 
     application_slug = CharField(source="application.slug")
     auth_flow_slug = CharField(source="authorization_flow.slug")
-    shared_secret = CharField(source="secret.get_value", read_only=True)
+    shared_secret = CharField(source="secret.value", read_only=True)
 
     class Meta:
         model = RadiusProvider
@@ -120,7 +120,7 @@ class RadiusOutpostConfigViewSet(ListModelMixin, GenericViewSet):
         )
 
         packet = AuthPacket()
-        packet.secret = provider.secret.get_value()
+        packet.secret = provider.secret.value
         packet.dict = dict
 
         def define_attribute(

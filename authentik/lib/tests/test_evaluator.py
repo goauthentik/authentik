@@ -89,7 +89,7 @@ class TestEvaluator(TestCase):
             "return ak_create_jwt(user, provider, ['openid', 'email', 'profile'])"
         )
         decoded = decode(
-            jwt, provider.secret.get_value(), algorithms=["HS256"], audience=provider.client_id
+            jwt, provider.secret.value, algorithms=["HS256"], audience=provider.client_id
         )
         self.assertEqual(decoded["preferred_username"], user.username)
 
@@ -109,7 +109,7 @@ class TestEvaluator(TestCase):
         }
         jwt = evaluator.evaluate("return ak_create_jwt_raw(provider, foo='bar')")
         decoded = decode(
-            jwt, provider.secret.get_value(), algorithms=["HS256"], audience=provider.client_id
+            jwt, provider.secret.value, algorithms=["HS256"], audience=provider.client_id
         )
         self.assertEqual(decoded["foo"], "bar")
 

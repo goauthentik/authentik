@@ -23,12 +23,6 @@ class TestSecret(TestCase):
         self.assertEqual(event.context["secret"]["pk"], secret.pk.hex)
         self.assertNotIn(value, str(event.context))
 
-    def test_get_value_is_keyed(self):
-        secret = Secret.objects.create(name="test", value="value")
-        self.assertEqual(secret.get_value(), "value")
-        with self.assertRaises(KeyError):
-            secret.get_value("missing")
-
     def test_non_text_cannot_rotate(self):
         secret = Secret.objects.create(name="file", type=SecretType.FILE, value="aGk=")
         with self.assertRaises(ValueError):

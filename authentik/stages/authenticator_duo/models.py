@@ -61,7 +61,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
         """Get an API Client to talk to duo"""
         return Auth(
             self.client_id,
-            self.secret.get_value(),
+            self.secret.value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )
@@ -72,7 +72,7 @@ class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
             raise ValueError("Admin credentials not configured")
         client = Admin(
             self.admin_integration_key,
-            self.admin_secret.get_value(),
+            self.admin_secret.value,
             self.api_hostname,
             user_agent=authentik_user_agent(),
         )

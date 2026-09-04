@@ -75,7 +75,7 @@ class TestSCIMOAuthToken(APITestCase):
         auth = (
             b64encode(
                 b":".join(
-                    (self.source.consumer_key.encode(), self.source.secret.get_value().encode())
+                    (self.source.consumer_key.encode(), self.source.secret.value.encode())
                 )
             )
             .strip()
@@ -113,7 +113,7 @@ class TestSCIMOAuthToken(APITestCase):
         auth = (
             b64encode(
                 b":".join(
-                    (self.source.consumer_key.encode(), self.source.secret.get_value().encode())
+                    (self.source.consumer_key.encode(), self.source.secret.value.encode())
                 )
             )
             .strip()

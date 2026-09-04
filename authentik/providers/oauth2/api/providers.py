@@ -56,7 +56,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
         return secret
 
     def validate_secret(self, secret: Secret | None) -> Secret | None:
-        if secret and not is_all_vschar(secret.get_value()):
+        if secret and not is_all_vschar(secret.value):
             raise ValidationError("Client secret must consist of only ASCII characters.")
         return secret
 

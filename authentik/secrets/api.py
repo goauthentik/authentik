@@ -127,7 +127,7 @@ class SecretViewSet(UsedByMixin, ModelViewSet):
         """Return and audit a secret value."""
         secret = self.get_object()
         Event.new(EventAction.SECRET_VIEW, secret=secret).from_http(request)  # noqa: S105
-        return Response(SecretValueSerializer({"value": secret.get_value()}).data)
+        return Response(SecretValueSerializer({"value": secret.value}).data)
 
     @extend_schema(request=None, responses={200: RotatedSecretSerializer})
     @action(

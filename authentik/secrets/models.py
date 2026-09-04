@@ -53,12 +53,6 @@ class Secret(SerializerModel, ManagedModel, CreatedUpdatedModel):
     type = models.TextField(choices=SecretType.choices, default=SecretType.TEXT)
     value = models.TextField(default=generate_secret_value)
 
-    def get_value(self, key: str = "value") -> str:
-        """Return a value through a key-based interface that can grow later."""
-        if key != "value":
-            raise KeyError(key)
-        return self.value
-
     def replace_value(self, value: str, request: Request | None = None) -> None:
         """Replace and audit the value, then notify consumers after commit."""
         if value == self.value:

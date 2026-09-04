@@ -204,7 +204,7 @@ class DynamicClientRegistrationView(View):
         }
 
         if client_type == ClientType.CONFIDENTIAL:
-            response_data["client_secret"] = provider.secret.get_value()
+            response_data["client_secret"] = provider.secret.value
             response_data["client_secret_expires_at"] = 0
 
         if client_name:

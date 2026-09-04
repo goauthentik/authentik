@@ -36,7 +36,7 @@ class CaptchaChallenge(WithUserInfoChallenge):
 def verify_captcha_token(stage: CaptchaStage, token: str, remote_ip: str, key: str | None = None):
     """Validate captcha token"""
     payload = {
-        "secret": key or stage.secret.get_value(),
+        "secret": key or stage.secret.value,
         "response": token,
         "remoteip": remote_ip,
     }

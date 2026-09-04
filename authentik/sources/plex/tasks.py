@@ -19,7 +19,7 @@ def check_plex_token(source_pk: str):
     if not sources.exists():
         return
     source: PlexSource = sources.first()
-    plex_token = source.secret.get_value()
+    plex_token = source.secret.value
     auth = PlexAuth(source, plex_token)
     try:
         auth.get_user_info()

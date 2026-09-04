@@ -42,7 +42,7 @@ class TesOAuth2Revoke(OAuthTestCase):
         self.app.save()
         self.user = create_test_admin_user()
         self.auth = b64encode(
-            f"{self.provider.client_id}:{self.provider.secret.get_value()}".encode()
+            f"{self.provider.client_id}:{self.provider.secret.value}".encode()
         ).decode()
 
     def test_revoke_refresh(self):

@@ -25,7 +25,7 @@ class MockTelegramResponseMixin:
     def _add_hash(self, response):
         to_hash = "\n".join([f"{key}={value}" for key, value in sorted(response.items())])
         response["hash"] = hmac.new(
-            hashlib.sha256(self.source.secret.get_value().encode("utf-8")).digest(),
+            hashlib.sha256(self.source.secret.value.encode("utf-8")).digest(),
             to_hash.encode("utf-8"),
             "sha256",
         ).hexdigest()

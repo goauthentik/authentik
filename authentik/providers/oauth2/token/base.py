@@ -88,7 +88,7 @@ class TokenRequest:
             if self.provider.client_type == ClientType.CONFIDENTIAL and (
                 not self.provider.secret
                 or not is_all_vschar(self.client_secret)
-                or not compare_digest(self.provider.secret.get_value(), self.client_secret)
+                or not compare_digest(self.provider.secret.value, self.client_secret)
             ):
                 self.logger.warning(
                     "Invalid client secret",

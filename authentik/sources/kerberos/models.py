@@ -269,7 +269,7 @@ class KerberosSource(IncomingSyncSource):
             return KAdmin.with_password(
                 variant,
                 self.sync_principal,
-                self.secret.get_value(),
+                self.secret.value,
                 api_version=api_version,
             )
         if self.sync_keytab:

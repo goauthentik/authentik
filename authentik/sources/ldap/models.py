@@ -282,7 +282,7 @@ class LDAPSource(IncomingSyncSource):
         if self.bind_cn is not None:
             connection_kwargs.setdefault("user", self.bind_cn)
         if self.secret:
-            connection_kwargs.setdefault("password", self.secret.get_value())
+            connection_kwargs.setdefault("password", self.secret.value)
         conn = Connection(
             server or self.server(**server_kwargs),
             raise_exceptions=True,

@@ -368,7 +368,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
-            return self.secret.get_value(), JWTAlgorithms.HS256
+            return self.secret.value, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
         return private_key, JWTAlgorithms.from_private_key(private_key)

@@ -480,7 +480,7 @@ class NotificationTransport(TasksModel, SerializerModel):
         def send(**kwargs):
             try:
                 response = get_http_session().post(
-                    self.secret.get_value(),
+                    self.secret.value,
                     json=default_body,
                     headers=headers,
                     **kwargs,
@@ -567,7 +567,7 @@ class NotificationTransport(TasksModel, SerializerModel):
             )
         try:
             response = get_http_session().post(
-                self.secret.get_value(),
+                self.secret.value,
                 json=body,
                 headers=headers,
             )

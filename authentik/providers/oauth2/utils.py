@@ -214,7 +214,7 @@ def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     if (
         not provider.secret
         or not compare_digest(client_id, provider.client_id)
-        or not compare_digest(client_secret, provider.secret.get_value())
+        or not compare_digest(client_secret, provider.secret.value)
     ):
         LOGGER.debug("(basic) Provider for basic auth does not exist")
         return None

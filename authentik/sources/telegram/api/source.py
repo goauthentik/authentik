@@ -77,7 +77,7 @@ class TelegramSourceViewSet(UsedByMixin, ModelViewSet):
     def connect_user(self, request: Request, slug: str) -> Response:
 
         source: TelegramSource = get_object_or_404(TelegramSource, slug=slug)
-        serializer = TelegramAuthSerializer(bot_token=source.secret.get_value(), data=request.data)
+        serializer = TelegramAuthSerializer(bot_token=source.secret.value, data=request.data)
         serializer.is_valid(raise_exception=True)
 
         connection, created = UserTelegramSourceConnection.objects.get_or_create(

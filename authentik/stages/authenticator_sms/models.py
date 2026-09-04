@@ -100,7 +100,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def send_twilio(self, request: HttpRequest, token: str, device: SMSDevice):
         """send sms via twilio provider"""
-        client = Client(self.account_sid, self.auth_secret.get_value())
+        client = Client(self.account_sid, self.auth_secret.value)
         message_body = str(self.get_message(token))
         if self.mapping:
             payload = sanitize_item(
@@ -147,15 +147,15 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
-                headers={"Authorization": f"Bearer {self.auth_secret.get_value()}"},
+                headers={"Authorization": f"Bearer {self.auth_secret.value}"},
             )
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
                 self.account_sid,
                 json=payload,
                 auth=(
-                    self.auth_secret.get_value(),
-                    self.auth_password_secret.get_value() if self.auth_password_secret else "",
+                    self.auth_secret.value,
+                    self.auth_password_secret.value if self.auth_password_secret else "",
                 ),
             )
         else:
