@@ -17,12 +17,13 @@ import { ifPresent } from "#elements/utils/attributes";
 import { AKLabel } from "#components/ak-label";
 
 import { SecretForm } from "#admin/secrets/SecretForm";
+import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 
 import { Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 import { IDGenerator } from "@goauthentik/core/id";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
@@ -77,7 +78,7 @@ export class AKSecretSearchInput extends AKElement {
     protected secretSearchRef = createRef<SearchSelect>();
 
     @state()
-    protected selectedType?: SecretTypeEnum;
+    protected selectedSecret?: Secret;
 
     protected openSecretCreateModal = (invocationEvent?: Event) => {
         invocationEvent?.stopPropagation();
@@ -108,7 +109,7 @@ export class AKSecretSearchInput extends AKElement {
 
     protected changeListener = (event: CustomEvent<{ value: Secret | null }>) => {
         this.value = event.detail.value?.pk ?? "";
-        this.selectedType = event.detail.value?.type;
+        this.selectedSecret = event.detail.value ?? undefined;
     };
 
     protected refresh = async (query?: string): Promise<Secret[]> => {
@@ -118,18 +119,12 @@ export class AKSecretSearchInput extends AKElement {
             ...(query ? { search: query } : {}),
         });
 
-        const selected = secrets.results.find((secret) => secret.pk === this.value);
-        if (selected) {
-            this.selectedType = selected.type;
-        }
-
         // The selected secret may sort beyond the first page; make sure it is present so
         // the control can display and keep it instead of silently clearing on save.
         if (!query && this.value && !secrets.results.some((secret) => secret.pk === this.value)) {
             const selected = await aki(SecretsApi).secretsSecretsRetrieve({
                 secretUuid: this.value,
             });
-            this.selectedType = selected.type;
             return [selected, ...secrets.results];
         }
 
@@ -180,7 +175,8 @@ export class AKSecretSearchInput extends AKElement {
                 >
                     <i class="fas fa-plus" aria-hidden="true"></i>
                 </button>
-                ${this.value && this.selectedType === SecretTypeEnum.Text
+                ${this.selectedSecret ? SecretValueButton(this.selectedSecret, true) : nothing}
+                ${this.value && this.selectedSecret?.type === SecretTypeEnum.Text
                     ? IconRotateSecretButton({
                           control: true,
                           rotate: () =>
@@ -188,9 +184,9 @@ export class AKSecretSearchInput extends AKElement {
                                   secretUuid: this.value,
                               }),
                       })
-                    : html``}
+                    : nothing}
             </div>
-            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : html``}
+            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
         </ak-form-element-horizontal>`;
     }
 }

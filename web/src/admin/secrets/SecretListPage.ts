@@ -1,7 +1,5 @@
 import "#admin/rbac/ObjectPermissionModal";
-import "#admin/secrets/SecretForm";
 import "#elements/forms/DeleteBulkForm";
-import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { aki } from "#common/api/client";
@@ -13,6 +11,7 @@ import { TablePage } from "#elements/table/TablePage";
 import { SlottedTemplateResult } from "#elements/types";
 
 import { SecretForm } from "#admin/secrets/SecretForm";
+import { SecretValueButton } from "#admin/secrets/SecretValueButton";
 
 import { ModelEnum, Secret, SecretsApi, SecretTypeEnum } from "@goauthentik/api";
 
@@ -104,19 +103,17 @@ export class SecretListPage extends TablePage<Secret> {
                     : nothing}`,
             html`${this.typeLabel(item.type)}`,
             html`<div>
-                <ak-forms-modal>
-                    <span slot="submit">${msg("Save Changes", { id: "secret.list.save" })}</span>
-                    <span slot="header">${msg("Update Secret", { id: "secret.list.update" })}</span>
-                    <ak-secret-form slot="form" .instancePk=${item.pk}> </ak-secret-form>
-                    <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <pf-tooltip
-                            position="top"
-                            content=${msg("Edit", { id: "secret.list.edit" })}
-                        >
-                            <i class="fas fa-edit" aria-hidden="true"></i>
-                        </pf-tooltip>
-                    </button>
-                </ak-forms-modal>
+                ${SecretValueButton(item)}
+                <button
+                    type="button"
+                    class="pf-c-button pf-m-plain"
+                    aria-label=${msg("Edit", { id: "secret.list.edit" })}
+                    ${SecretForm.asInstanceInvoker(item.pk)}
+                >
+                    <pf-tooltip position="top" content=${msg("Edit", { id: "secret.list.edit" })}>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
+                    </pf-tooltip>
+                </button>
                 ${item.type === SecretTypeEnum.Text
                     ? IconRotateSecretButton({
                           rotate: () =>
