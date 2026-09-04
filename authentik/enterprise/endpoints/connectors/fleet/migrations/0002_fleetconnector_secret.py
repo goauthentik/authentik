@@ -30,10 +30,8 @@ def rollback_token(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     FleetConnector = apps.get_model("authentik_endpoints_connectors_fleet", "FleetConnector")
-    for connector in (
-        FleetConnector.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        connector._token = connector.secret.value
+    for connector in FleetConnector.objects.using(db_alias).select_related("secret"):
+        connector._token = connector.secret.value if connector.secret else ""
         connector.save(update_fields=["_token"])
 
 

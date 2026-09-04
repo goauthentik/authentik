@@ -29,10 +29,8 @@ def rollback_client_secret(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     OAuth2Provider = apps.get_model("authentik_providers_oauth2", "OAuth2Provider")
-    for provider in (
-        OAuth2Provider.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        provider._client_secret = provider.secret.value
+    for provider in OAuth2Provider.objects.using(db_alias).select_related("secret"):
+        provider._client_secret = provider.secret.value if provider.secret else ""
         provider.save(update_fields=["_client_secret"])
 
 

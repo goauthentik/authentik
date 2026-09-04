@@ -48,15 +48,9 @@ def rollback_secrets(apps, schema_editor):
     for stage in AuthenticatorDuoStage.objects.using(db_alias).select_related(
         "secret", "admin_secret"
     ):
-        update_fields = []
-        if stage.secret:
-            stage._client_secret = stage.secret.value
-            update_fields.append("_client_secret")
-        if stage.admin_secret:
-            stage._admin_secret_key = stage.admin_secret.value
-            update_fields.append("_admin_secret_key")
-        if update_fields:
-            stage.save(update_fields=update_fields)
+        stage._client_secret = stage.secret.value if stage.secret else ""
+        stage._admin_secret_key = stage.admin_secret.value if stage.admin_secret else ""
+        stage.save(update_fields=["_client_secret", "_admin_secret_key"])
 
 
 class Migration(migrations.Migration):

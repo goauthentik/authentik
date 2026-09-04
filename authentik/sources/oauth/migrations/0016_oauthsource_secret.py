@@ -30,8 +30,8 @@ def rollback_consumer_secret(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     OAuthSource = apps.get_model("authentik_sources_oauth", "OAuthSource")
-    for source in OAuthSource.objects.using(db_alias).exclude(secret=None).select_related("secret"):
-        source._consumer_secret = source.secret.value
+    for source in OAuthSource.objects.using(db_alias).select_related("secret"):
+        source._consumer_secret = source.secret.value if source.secret else ""
         source.save(update_fields=["_consumer_secret"])
 
 

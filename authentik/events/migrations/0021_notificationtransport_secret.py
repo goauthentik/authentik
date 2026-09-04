@@ -32,10 +32,8 @@ def rollback_webhook_url(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     NotificationTransport = apps.get_model("authentik_events", "NotificationTransport")
-    for transport in (
-        NotificationTransport.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        transport._webhook_url = transport.secret.value
+    for transport in NotificationTransport.objects.using(db_alias).select_related("secret"):
+        transport._webhook_url = transport.secret.value if transport.secret else ""
         transport.save(update_fields=["_webhook_url"])
 
 

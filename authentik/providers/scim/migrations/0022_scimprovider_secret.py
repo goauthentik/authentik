@@ -30,10 +30,8 @@ def rollback_token(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     SCIMProvider = apps.get_model("authentik_providers_scim", "SCIMProvider")
-    for provider in (
-        SCIMProvider.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        provider._token = provider.secret.value
+    for provider in SCIMProvider.objects.using(db_alias).select_related("secret"):
+        provider._token = provider.secret.value if provider.secret else ""
         provider.save(update_fields=["_token"])
 
 

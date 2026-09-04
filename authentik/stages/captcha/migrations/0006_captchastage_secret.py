@@ -30,8 +30,8 @@ def rollback_private_key(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     CaptchaStage = apps.get_model("authentik_stages_captcha", "CaptchaStage")
-    for stage in CaptchaStage.objects.using(db_alias).exclude(secret=None).select_related("secret"):
-        stage._private_key = stage.secret.value
+    for stage in CaptchaStage.objects.using(db_alias).select_related("secret"):
+        stage._private_key = stage.secret.value if stage.secret else ""
         stage.save(update_fields=["_private_key"])
 
 

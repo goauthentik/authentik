@@ -34,12 +34,8 @@ def rollback_password(apps, schema_editor):
     AuthenticatorEmailStage = apps.get_model(
         "authentik_stages_authenticator_email", "AuthenticatorEmailStage"
     )
-    for stage in (
-        AuthenticatorEmailStage.objects.using(db_alias)
-        .exclude(secret=None)
-        .select_related("secret")
-    ):
-        stage._password = stage.secret.value
+    for stage in AuthenticatorEmailStage.objects.using(db_alias).select_related("secret"):
+        stage._password = stage.secret.value if stage.secret else ""
         stage.save(update_fields=["_password"])
 
 

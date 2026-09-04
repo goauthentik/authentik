@@ -30,8 +30,8 @@ def rollback_password(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
-    for stage in EmailStage.objects.using(db_alias).exclude(secret=None).select_related("secret"):
-        stage._password = stage.secret.value
+    for stage in EmailStage.objects.using(db_alias).select_related("secret"):
+        stage._password = stage.secret.value if stage.secret else ""
         stage.save(update_fields=["_password"])
 
 

@@ -29,10 +29,8 @@ def rollback_shared_secret(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     RadiusProvider = apps.get_model("authentik_providers_radius", "RadiusProvider")
-    for provider in (
-        RadiusProvider.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        provider._shared_secret = provider.secret.value
+    for provider in RadiusProvider.objects.using(db_alias).select_related("secret"):
+        provider._shared_secret = provider.secret.value if provider.secret else ""
         provider.save(update_fields=["_shared_secret"])
 
 

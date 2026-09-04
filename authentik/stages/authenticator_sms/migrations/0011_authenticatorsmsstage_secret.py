@@ -46,15 +46,11 @@ def rollback_secrets(apps, schema_editor):
     for stage in AuthenticatorSMSStage.objects.using(db_alias).select_related(
         "auth_secret", "auth_password_secret"
     ):
-        update_fields = []
-        if stage.auth_secret:
-            stage._auth = stage.auth_secret.value
-            update_fields.append("_auth")
-        if stage.auth_password_secret:
-            stage._auth_password = stage.auth_password_secret.value
-            update_fields.append("_auth_password")
-        if update_fields:
-            stage.save(update_fields=update_fields)
+        stage._auth = stage.auth_secret.value if stage.auth_secret else ""
+        stage._auth_password = (
+            stage.auth_password_secret.value if stage.auth_password_secret else ""
+        )
+        stage.save(update_fields=["_auth", "_auth_password"])
 
 
 class Migration(migrations.Migration):

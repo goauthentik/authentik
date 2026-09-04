@@ -30,8 +30,8 @@ def rollback_plex_token(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     PlexSource = apps.get_model("authentik_sources_plex", "PlexSource")
-    for source in PlexSource.objects.using(db_alias).exclude(secret=None).select_related("secret"):
-        source._plex_token = source.secret.value
+    for source in PlexSource.objects.using(db_alias).select_related("secret"):
+        source._plex_token = source.secret.value if source.secret else ""
         source.save(update_fields=["_plex_token"])
 
 

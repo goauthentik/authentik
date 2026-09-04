@@ -30,10 +30,8 @@ def rollback_sync_password(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     KerberosSource = apps.get_model("authentik_sources_kerberos", "KerberosSource")
-    for source in (
-        KerberosSource.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        source._sync_password = source.secret.value
+    for source in KerberosSource.objects.using(db_alias).select_related("secret"):
+        source._sync_password = source.secret.value if source.secret else ""
         source.save(update_fields=["_sync_password"])
 
 

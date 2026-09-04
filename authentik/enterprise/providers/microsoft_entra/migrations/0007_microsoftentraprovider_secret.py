@@ -34,10 +34,8 @@ def rollback_client_secret(apps, schema_editor):
     MicrosoftEntraProvider = apps.get_model(
         "authentik_providers_microsoft_entra", "MicrosoftEntraProvider"
     )
-    for provider in (
-        MicrosoftEntraProvider.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        provider._client_secret = provider.secret.value
+    for provider in MicrosoftEntraProvider.objects.using(db_alias).select_related("secret"):
+        provider._client_secret = provider.secret.value if provider.secret else ""
         provider.save(update_fields=["_client_secret"])
 
 

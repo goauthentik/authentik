@@ -30,10 +30,8 @@ def rollback_bot_token(apps, schema_editor):
     set or rotated after the upgrade"""
     db_alias = schema_editor.connection.alias
     TelegramSource = apps.get_model("authentik_sources_telegram", "TelegramSource")
-    for source in (
-        TelegramSource.objects.using(db_alias).exclude(secret=None).select_related("secret")
-    ):
-        source._bot_token = source.secret.value
+    for source in TelegramSource.objects.using(db_alias).select_related("secret"):
+        source._bot_token = source.secret.value if source.secret else ""
         source.save(update_fields=["_bot_token"])
 
 
