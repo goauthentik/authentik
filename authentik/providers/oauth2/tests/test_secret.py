@@ -73,6 +73,25 @@ class TestProviderSecret(APITestCase):
         provider = OAuth2Provider.objects.get(pk=response.json()["pk"])
         self.assertEqual(provider.secret, secret)
 
+    def test_api_create_with_empty_secret_reference(self):
+        """An empty picker requests a generated secret."""
+        for value in [None, ""]:
+            with self.subTest(value=value):
+                response = self.client.post(
+                    reverse("authentik_api:oauth2provider-list"),
+                    data={
+                        "name": generate_id(),
+                        "authorization_flow": create_test_flow().pk,
+                        "invalidation_flow": create_test_flow().pk,
+                        "secret": value,
+                        "redirect_uris": [],
+                    },
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 201, response.content)
+                provider = OAuth2Provider.objects.get(pk=response.json()["pk"])
+                self.assertTrue(provider.secret.value)
+
     def test_api_rejects_non_ascii_secret_reference(self):
         """OAuth client secrets must remain valid HTTP Basic credentials."""
         secret = Secret.objects.create(name=generate_id(), value="non-ascii-ú")
