@@ -1,5 +1,6 @@
 ---
 title: Google Chrome Device Trust authenticator stage
+description: An overview of the deprecated Google Chrome Device Trust stage.
 authentik_enterprise: true
 support_level: deprecated
 ---

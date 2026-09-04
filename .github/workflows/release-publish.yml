@@ -52,10 +52,10 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: regclient/actions/regctl-installer@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-installer@ba687069a65d03e9214808f16f3f0b3933c2048b
       # logs in to ghcr.io by default
-      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
-      - uses: regclient/actions/regctl-login@f9ceff9bbbc63cd1008e60cec2b27627eedc7322
+      - uses: regclient/actions/regctl-login@ba687069a65d03e9214808f16f3f0b3933c2048b
+      - uses: regclient/actions/regctl-login@ba687069a65d03e9214808f16f3f0b3933c2048b
         with:
           registry: docker.io
           username: "${{ secrets.DOCKER_CORP_USERNAME }}"
@@ -101,7 +101,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
       - name: Login to GitHub Container Registry
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
-      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+      - uses: aws-actions/configure-aws-credentials@cbe3b392738ccf3f987d68400dafcf4b0624a56c # v6.2.4
         with:
           role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
           aws-region: ${{ env.AWS_REGION }}
