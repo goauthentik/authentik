@@ -16,6 +16,8 @@ import { aki } from "#common/api/client";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "#common/helpers/plex";
 import { ascii_letters, digits, randomString } from "#common/utils";
 
+import { showAPIErrorMessage } from "#elements/messages/MessageContainer";
+
 import { iconHelperText, placeholderHelperText } from "#admin/helperText";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
@@ -25,7 +27,6 @@ import {
     FlowDesignationEnum,
     GroupMatchingModeEnum,
     PlexSource,
-    ResponseError,
     SecretsApi,
     SourcesApi,
     UsageEnum,
@@ -50,10 +51,9 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
                 });
                 this.plexToken = value;
                 this.initialToken = value;
-                this.loadServers();
-            } catch {
-                // Without permission to view the secret's value, re-authentication with
-                // Plex is required before servers can be listed.
+                await this.loadServers();
+            } catch (error) {
+                await showAPIErrorMessage(error);
             }
         }
         return source;
@@ -74,6 +74,10 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     }
 
     async send(data: PlexSource): Promise<PlexSource> {
+        if (!this.plexResources && this.instance) {
+            data.allowedServers = this.instance.allowedServers;
+            data.allowFriends = this.instance.allowFriends;
+        }
         if (this.instance?.secret) {
             data.secret = this.instance.secret;
         }
@@ -96,11 +100,6 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
     // save reuses it instead of leaving an orphan and creating another.
     private createdSecretPk?: string;
 
-    /**
-     * Store the token from the Plex popup in a secret: update the source's existing one,
-     * reuse a secret already created this session, or create one named after the source
-     * (suffixing the name only when that specific name is taken).
-     */
     private async saveTokenSecret(sourceName: string): Promise<string> {
         const target = this.instance?.secret ?? this.createdSecretPk;
         if (target) {
@@ -110,26 +109,14 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
             });
             return target;
         }
-        const base = `${sourceName} Plex token`;
-        for (let idx = 1; ; idx++) {
-            const name = idx === 1 ? base : `${base} (${idx})`;
-            try {
-                const secret = await aki(SecretsApi).secretsSecretsCreate({
-                    secretRequest: { name, value: this.plexToken },
-                });
-                this.createdSecretPk = secret.pk;
-                return secret.pk;
-            } catch (error) {
-                let body: unknown;
-                if (error instanceof ResponseError && error.response.status === 400) {
-                    body = await error.response.clone().json();
-                }
-                const nameTaken = typeof body === "object" && body !== null && "name" in body;
-                if (!nameTaken) {
-                    throw error;
-                }
-            }
-        }
+        const secret = await aki(SecretsApi).secretsSecretsCreate({
+            secretRequest: {
+                name: `${sourceName} Plex token (${crypto.randomUUID()})`,
+                value: this.plexToken,
+            },
+        });
+        this.createdSecretPk = secret.pk;
+        return secret.pk;
     }
 
     async doAuth(): Promise<void> {
@@ -146,11 +133,15 @@ export class PlexSourceForm extends BaseSourceForm<PlexSource> {
         if (!this.plexToken) {
             return;
         }
-        this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
+        try {
+            this.plexResources = await new PlexAPIClient(this.plexToken).getServers();
+        } catch (error) {
+            await showAPIErrorMessage(error);
+        }
     }
 
     renderSettings(): TemplateResult {
-        if (!this.plexToken) {
+        if (!this.plexResources) {
             return html` <button
                 class="pf-c-button pf-m-primary"
                 type="button"
