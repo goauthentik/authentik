@@ -399,7 +399,7 @@ class KerberosSourceSync(Sync):
         verbose_name_plural = _("Kerberos source syncs")
 
     def __str__(self):
-        return f"Kerberos Source ({self.source.pk}) Sync ({self.pk})"
+        return f"Kerberos Source ({self.source_id}) Sync ({self.pk})"
 
 
 class KerberosSourceSyncTask(InternallyManagedMixin, models.Model):
@@ -415,7 +415,7 @@ class KerberosSourceSyncTask(InternallyManagedMixin, models.Model):
         verbose_name_plural = _("Kerberos source sync tasks")
 
     def __str__(self):
-        return f"Kerberos Source Sync ({self.kerberos_source_sync.pk}) Task ({self.task.pk})"
+        return f"Kerberos Source Sync ({self.kerberos_source_sync_id}) Task ({self.task_id})"
 
 
 class KerberosSourcePropertyMapping(PropertyMapping):
