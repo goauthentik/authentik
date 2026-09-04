@@ -18,31 +18,12 @@ import {
     SecretTypeEnum,
 } from "@goauthentik/api";
 
+import { fromByteArray } from "base64-js";
+
 import { msg } from "@lit/localize";
 import { html, nothing, TemplateResult } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-/**
- * Read a file as base64 without spreading its bytes onto the call stack, which
- * overflows for files of even a few hundred KB.
- */
-async function readFileBase64(file: File): Promise<string> {
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (typeof reader.result === "string") {
-                resolve(reader.result);
-            } else {
-                reject(new TypeError("FileReader did not return a data URL."));
-            }
-        };
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-    });
-    // Strip the "data:...;base64," prefix
-    return dataUrl.slice(dataUrl.indexOf(",") + 1);
-}
 
 @customElement("ak-secret-form")
 export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
@@ -80,7 +61,7 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
         if (this.type === SecretTypeEnum.File) {
             const file = this.files<"value">().get("value");
             if (file) {
-                data.value = await readFileBase64(file);
+                data.value = fromByteArray(new Uint8Array(await file.arrayBuffer()));
             } else {
                 delete data.value;
             }
