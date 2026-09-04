@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
-from enum import StrEnum
 
+from django.db import models
 from django.db.models import Model, QuerySet
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import CharField, ChoiceField, IntegerField
@@ -15,7 +15,8 @@ from authentik.flows.models import (
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
-class DiagramNodeTypes(StrEnum):
+class DiagramNodeTypes(models.TextChoices):
+
     FLOW_START = "flow-start"
     PRE_FLOW_POLICIES = "pre-flow-policies"
     AUTHENTICATION_REQUIREMENT = "authentication-requirement"
@@ -24,7 +25,8 @@ class DiagramNodeTypes(StrEnum):
     FLOW_END = "flow-end"
 
 
-class DiagramEdgeTypes(StrEnum):
+class DiagramEdgeTypes(models.TextChoices):
+
     PROCEED = "proceed"
     BINDING = "binding"
     POLICY_PASSED = "policy-passed"
@@ -39,6 +41,7 @@ def model_label(instance: Model) -> str:
 
 @dataclass
 class DiagramNode:
+
     identifier: str
     type: DiagramNodeTypes
 
@@ -58,6 +61,7 @@ class DiagramNode:
 
 @dataclass
 class DiagramEdge:
+
     source: str
     target: str
     type: DiagramEdgeTypes = DiagramEdgeTypes.PROCEED
@@ -65,6 +69,7 @@ class DiagramEdge:
 
 @dataclass
 class DiagramGraph:
+
     nodes: list[DiagramNode] = field(default_factory=list)
     edges: list[DiagramEdge] = field(default_factory=list)
 
@@ -227,8 +232,9 @@ class FlowDiagram:
 
 
 class DiagramNodeSerializer(PassiveSerializer):
+
     identifier = CharField(read_only=True)
-    type = ChoiceField(choices=[(k.value, k.name) for k in DiagramNodeTypes], read_only=True)
+    type = ChoiceField(choices=DiagramNodeTypes.choices, read_only=True)
     name = CharField(read_only=True, allow_blank=True)
     verbose_name = CharField(read_only=True, allow_blank=True)
 
@@ -242,13 +248,15 @@ class DiagramNodeSerializer(PassiveSerializer):
 
 
 class DiagramEdgeSerializer(PassiveSerializer):
+
     # Can't call it "source" at the serialization layer as that's a keyword in the serializer base
     # class
     origin = CharField(source="source", read_only=True)
     target = CharField(read_only=True)
-    type = ChoiceField(choices=[(k.value, k.name) for k in DiagramEdgeTypes], read_only=True)
+    type = ChoiceField(choices=DiagramEdgeTypes.choices, read_only=True)
 
 
 class FlowDiagramSerializer(PassiveSerializer):
+
     nodes = DiagramNodeSerializer(many=True, read_only=True)
     edges = DiagramEdgeSerializer(many=True, read_only=True)
