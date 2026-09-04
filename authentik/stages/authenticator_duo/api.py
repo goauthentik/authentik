@@ -45,6 +45,7 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
             "api_hostname",
             "admin_integration_key",
             "admin_secret_key",
+            "ca_chain",
         ]
         extra_kwargs = {
             "client_secret": {"write_only": True},

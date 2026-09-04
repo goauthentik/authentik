@@ -1,6 +1,8 @@
 """Test duo stage"""
 
+from pathlib import Path
 from ssl import SSLCertVerificationError, SSLError
+from stat import S_IMODE
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
@@ -8,7 +10,7 @@ from django.db.models.deletion import ProtectedError
 from django.test.client import RequestFactory
 from django.urls import reverse
 
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
@@ -22,6 +24,79 @@ class AuthenticatorDuoStageTests(FlowTestCase):
     def setUp(self) -> None:
         self.user = create_test_admin_user()
         self.request_factory = RequestFactory()
+
+    def test_client_without_ca_chain_uses_bundled_certs(self):
+        """No CA configured must not pass ca_certs, so duo_client keeps its own bundle."""
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        self.assertEqual(stage._duo_client_kwargs(), {})
+
+    def test_client_with_ca_chain_passes_ca_certs_path(self):
+        """Regression for #22891.
+
+        duo_client accepts `ca_certs` only as a path to a PEM bundle, while authentik keeps
+        certificates in the database, so the chain has to be materialised to a file.
+        """
+        cert = create_test_cert()
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            ca_chain=cert,
+        )
+
+        kwargs = stage._duo_client_kwargs()
+        self.assertIn("ca_certs", kwargs)
+        ca_path = Path(kwargs["ca_certs"])
+        self.assertTrue(ca_path.exists())
+        # The file must hold the configured chain, or verification silently uses the wrong roots.
+        self.assertEqual(ca_path.read_text(), cert.certificate_data)
+        # Public certificate material, but still not world-readable.
+        self.assertEqual(S_IMODE(ca_path.stat().st_mode), 0o600)
+
+    def test_ca_chain_reaches_the_duo_auth_client(self):
+        """The kwarg has to survive all the way into the client constructor."""
+        cert = create_test_cert()
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            ca_chain=cert,
+        )
+        client = stage.auth_client()
+        self.assertEqual(Path(client.ca_certs).read_text(), cert.certificate_data)
+
+    def test_ca_chain_reaches_the_duo_admin_client(self):
+        cert = create_test_cert()
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+            admin_integration_key=generate_id(),
+            admin_secret_key=generate_id(),
+            ca_chain=cert,
+        )
+        client = stage.admin_client()
+        self.assertEqual(Path(client.ca_certs).read_text(), cert.certificate_data)
+
+    def test_bundled_ca_still_used_when_no_chain_configured(self):
+        """Without a chain, duo_client must fall back to its own bundle rather than nothing."""
+        from duo_client.client import DEFAULT_CA_CERTS
+
+        stage = AuthenticatorDuoStage.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            client_secret=generate_id(),
+            api_hostname=generate_id(),
+        )
+        self.assertEqual(stage.auth_client().ca_certs, DEFAULT_CA_CERTS)
 
     def test_client(self):
         """Test Duo client setup"""

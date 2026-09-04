@@ -36732,6 +36732,14 @@ components:
           type: string
         admin_integration_key:
           type: string
+        ca_chain:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the Duo API server's certificate against
+            the CA Chain in this keypair, instead of the CA bundle shipped with the
+            Duo client. Required when Duo is reached through a TLS-inspecting proxy
+            that re-signs with an internal CA.
       required:
       - api_hostname
       - client_id
@@ -36796,6 +36804,14 @@ components:
         admin_secret_key:
           type: string
           writeOnly: true
+        ca_chain:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the Duo API server's certificate against
+            the CA Chain in this keypair, instead of the CA bundle shipped with the
+            Duo client. Required when Duo is reached through a TLS-inspecting proxy
+            that re-signs with an internal CA.
       required:
       - api_hostname
       - client_id
@@ -50359,6 +50375,14 @@ components:
         admin_secret_key:
           type: string
           writeOnly: true
+        ca_chain:
+          type: string
+          format: uuid
+          nullable: true
+          description: Optionally verify the Duo API server's certificate against
+            the CA Chain in this keypair, instead of the CA bundle shipped with the
+            Duo client. Required when Duo is reached through a TLS-inspecting proxy
+            that re-signs with an internal CA.
     PatchedAuthenticatorEmailStageRequest:
       type: object
       description: AuthenticatorEmailStage Serializer
