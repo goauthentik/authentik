@@ -1,7 +1,7 @@
 import "#components/ak-hidden-text-input";
 import "#components/ak-radio-input";
 import "#components/ak-text-input";
-import "#elements/CodeMirror";
+import "#components/ak-textarea-input";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
@@ -9,6 +9,7 @@ import { aki } from "#common/api/client";
 import { ModelForm } from "#elements/forms/ModelForm";
 
 import { AKLabel } from "#components/ak-label";
+import type { AkRadioInput } from "#components/ak-radio-input";
 
 import {
     PatchedSecretRequest,
@@ -51,12 +52,6 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
         this.type = instance?.type ?? SecretTypeEnum.Text;
     }
 
-    getSuccessMessage(): string {
-        return this.instance
-            ? msg("Successfully updated secret.", { id: "secret.form.success.update" })
-            : msg("Successfully created secret.", { id: "secret.form.success.create" });
-    }
-
     protected override async send(data: SecretRequest): Promise<unknown> {
         if (this.type === SecretTypeEnum.File) {
             const file = this.files<"value">().get("value");
@@ -70,24 +65,24 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
     }
 
     protected renderValueInput(): TemplateResult {
+        const label = this.instance
+            ? msg("New value", { id: "secret.form.new-value.label" })
+            : msg("Value", { id: "secret.form.value.label" });
+        const help = this.instance
+            ? msg("Leave empty to keep the current value.", {
+                  id: "secret.form.new-value.description",
+              })
+            : "";
         switch (this.type) {
             case SecretTypeEnum.Multiline:
-                return html`<ak-form-element-horizontal
+                return html`<ak-textarea-input
                     name="value"
+                    label=${label}
+                    help=${help}
+                    rows="8"
+                    input-hint="code"
                     ?required=${!this.instance}
-                    label=${msg(this.instance ? "New value" : "Value", {
-                        id: this.instance
-                            ? "secret.form.new-value.label"
-                            : "secret.form.value.label",
-                    })}
-                >
-                    <ak-codemirror mode="yaml" raw ?required=${!this.instance}></ak-codemirror>
-                    <p class="pf-c-form__helper-text">
-                        ${msg("A multi-line value, such as a PEM key or JSON.", {
-                            id: "secret.type.multiline.description",
-                        })}
-                    </p>
-                </ak-form-element-horizontal>`;
+                ></ak-textarea-input>`;
             case SecretTypeEnum.File:
                 return html`<ak-form-element-horizontal name="value" ?required=${!this.instance}>
                     ${AKLabel(
@@ -97,11 +92,9 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                             htmlFor: "secret-file-input",
                             required: !this.instance,
                         },
-                        msg(this.instance ? "New file" : "File", {
-                            id: this.instance
-                                ? "secret.form.new-file.label"
-                                : "secret.form.file.label",
-                        }),
+                        this.instance
+                            ? msg("New file", { id: "secret.form.new-file.label" })
+                            : msg("File", { id: "secret.form.file.label" }),
                     )}
                     <input
                         type="file"
@@ -109,32 +102,18 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                         id="secret-file-input"
                         ?required=${!this.instance}
                     />
-                    <p class="pf-c-form__helper-text">
-                        ${msg("The file's content is stored base64-encoded.", {
-                            id: "secret.form.file.description",
-                        })}
-                    </p>
+                    ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
                 </ak-form-element-horizontal>`;
             default:
                 return html`<ak-hidden-text-input
-                    label=${msg(this.instance ? "New value" : "Value", {
-                        id: this.instance
-                            ? "secret.form.new-value.label"
-                            : "secret.form.value.label",
-                    })}
+                    label=${label}
                     name="value"
-                    autocomplete="off"
+                    autocomplete="new-password"
                     input-hint="code"
-                    help=${msg(
-                        this.instance
-                            ? "Leave empty to keep the current value."
-                            : "Leave empty to generate a value. Set it only when the secret must match an existing value.",
-                        {
-                            id: this.instance
-                                ? "secret.form.new-value.description"
-                                : "secret.form.value.description",
-                        },
-                    )}
+                    help=${help ||
+                    msg("Leave empty to generate a value.", {
+                        id: "secret.form.value.generate-description",
+                    })}
                 ></ak-hidden-text-input>`;
         }
     }
@@ -178,18 +157,13 @@ export class SecretForm extends ModelForm<Secret, string, SecretRequest> {
                           {
                               label: msg("File", { id: "secret.type.file.label" }),
                               value: SecretTypeEnum.File,
-                              description: html`${msg("An uploaded file, stored base64-encoded.", {
+                              description: html`${msg("An uploaded file.", {
                                   id: "secret.type.file.description",
                               })}`,
                           },
                       ]}
                       @input=${(ev: InputEvent) => {
-                          const target = ev.target as HTMLElement & {
-                              value?: SecretTypeEnum;
-                          };
-                          if (target.value) {
-                              this.type = target.value;
-                          }
+                          this.type = (ev.currentTarget as AkRadioInput<SecretTypeEnum>).value;
                       }}
                   ></ak-radio-input> `}
             ${this.renderValueInput()}`;
