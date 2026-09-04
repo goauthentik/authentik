@@ -110,6 +110,7 @@ export function renderDialog(
     shadowRoot.appendChild(dialog);
 
     const dispose = (event?: Event) => {
+        eventAbortController.abort();
         const { returnValue } = dialog;
 
         if (returnValue === "submitted") {
@@ -124,7 +125,6 @@ export function renderDialog(
         setDialogCountAttribute(-1, ownerDocument);
 
         onDispose?.(event);
-        eventAbortController.abort();
     };
 
     window.addEventListener(RouteChangeEvent.eventName, dispose, {
@@ -136,11 +136,13 @@ export function renderDialog(
     dialog.addEventListener("close", dispose, {
         passive: true,
         once: true,
+        signal: eventAbortController.signal,
     });
 
     signal?.addEventListener("abort", dispose, {
         passive: true,
         once: true,
+        signal: eventAbortController.signal,
     });
 
     render(renderable, dialog);
