@@ -33,6 +33,7 @@ export function SecretValueButton(secret: Secret, control = false) {
                     filename: secret.name,
                 });
             } else {
+                button.disabled = false;
                 await renderModal(
                     html`<textarea
                             class="pf-c-form-control pf-m-monospace"
