@@ -32,7 +32,7 @@ import {
     PropertymappingsApi,
     SAMLNameIDPolicyEnum,
     SAMLPropertyMapping,
-    SamlVersionEnum,
+    WSFedSAMLVersionEnum,
     ValidationError,
     WSFederationProvider,
 } from "@goauthentik/api";
@@ -43,12 +43,12 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 const samlVersionAndLabel = [
     [
-        SamlVersionEnum._11,
+        WSFedSAMLVersionEnum._11,
         msg("SAML 1.1 (required by Microsoft Entra ID / ADFS)", {
             id: "wsfed.saml-version.option.saml11",
         }),
     ],
-    [SamlVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
+    [WSFedSAMLVersionEnum._20, msg("SAML 2.0", { id: "wsfed.saml-version.option.saml20" })],
 ];
 
 const samlNameIDPolicyAndLabel = [
