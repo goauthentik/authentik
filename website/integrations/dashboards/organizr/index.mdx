@@ -15,7 +15,7 @@ import Tabs from "@theme/Tabs";
 >
 > -- https://organizr.app/
 
-Organizr supports native OpenID Connect (OIDC) login and proxy authentication. Proxy authentication requires an authentik proxy outpost and LDAP outpost.
+Organizr supports native OpenID Connect (OIDC) login and proxy authentication. OIDC does not require an outpost.
 
 ## Preparation
 
@@ -47,38 +47,40 @@ To support the integration of Organizr with authentik, create an application/pro
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
-    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **Choose a Provider Type**: select **OAuth2/OpenID Provider** as the provider type.
+    - **Configure OAuth2 Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they are required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` with a value of `https://organizr.company/api/v2/oidc/authentik/callback`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
-3. Click **Submit** to save the new application and provider.
+3. Click **Create Application** to save the new application and provider.
 
 ### Organizr configuration
 
 1. Log in to Organizr as an administrator.
-2. Navigate to **Settings** > **System Settings** > **Main** > **OIDC Global**.
+2. Navigate to **Settings** > **System Settings** > **SSO** > **OIDC Global**.
 3. Configure the following settings:
     - **Enable OIDC Authentication**: enable this setting.
     - **Auto-Redirect to OIDC** _(optional)_: enable this setting to send users directly to authentik from the Organizr login page.
     - **Auto-Redirect Provider**: select **Authentik** if you enabled automatic redirects.
-    - **Auto-Create Users**: enable this setting to create an Organizr account when a user first logs in through authentik.
-    - **Link Existing Users**: enable this setting to link existing Organizr accounts by email address.
-    - **Default Group**: select the Organizr group for new OIDC users.
-4. Navigate to **Settings** > **System Settings** > **Main** > **OIDC: Authentik**.
+    - **Default Group**: select the Organizr group to assign to new OIDC users when no group mapping matches.
+4. Navigate to **Settings** > **System Settings** > **SSO** > **OIDC: Authentik**.
 5. Configure the following settings:
     - **Enable Authentik**: enable this setting.
     - **Discovery URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Client ID**: enter the Client ID from authentik.
     - **Client Secret**: enter the Client Secret from authentik.
     - **Scopes**: `openid,profile,email`
-6. Click **Test** to verify that Organizr can retrieve the authentik OpenID Connect configuration.
-7. Save your changes.
+6. Click **Save** to save your changes.
+7. Under **OIDC: Authentik**, click **Test** to verify that Organizr can retrieve the authentik OpenID Connect configuration.
+
+Organizr matches existing accounts by username first, then by email if **Link Existing Users** is enabled. If no account matches, **Auto-Create Users** allows Organizr to create one. Ensure that matching usernames and email addresses belong to the same people in both systems.
+
+If you are switching from proxy authentication, disable **Auth Proxy** under **Settings** > **System Settings** > **Main** > **Auth Proxy** and save your changes. Update your reverse proxy to route requests to Organizr without authentik proxy authentication before testing OIDC.
 
 ### Configuration verification
 
-To confirm that authentik is properly configured with Organizr, open the Organizr login page and select **Login with Authentik**. You should be redirected to authentik and returned to Organizr after authentication.
+Open Organizr in a private browser window and select **Login with Authentik**. If you enabled automatic redirects, Organizr sends you to authentik without showing the login page. After authentication, confirm that you return to Organizr signed in as the expected user.
 
   </TabItem>
   <TabItem value="proxy">
@@ -109,8 +111,8 @@ To support the integration of Organizr with authentik, you need to create an app
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - **Choose a Provider type**: select **Proxy Provider** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **Choose a Provider Type**: select **Proxy Provider** as the provider type.
+    - **Configure Proxy Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Set **Mode** to **Proxy**.
         - Set **External host** to `https://organizr.company`.
         - Set **Internal host** to the URL that the authentik proxy outpost uses to reach Organizr.
@@ -122,7 +124,7 @@ To support the integration of Organizr with authentik, you need to create an app
 
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
-3. Click **Submit** to save the new application and provider.
+3. Click **Create Application** to save the new application and provider.
 
 #### Configure proxy outpost
 
@@ -138,9 +140,7 @@ Add the Organizr application to a proxy outpost that will serve it:
 
 ### Organizr configuration
 
-:::warning Protect the Organizr backend
-When Organizr is configured for proxy authentication, Organizr trusts the proxy headers that it receives. Make sure users can access Organizr only through the authentik proxy outpost, and do not expose the Organizr backend directly to the internet.
-:::
+Configure Organizr to trust the username and email headers sent by the authentik proxy outpost.
 
 :::warning User conflicts
 Ensure that local Organizr usernames and email addresses do not conflict with usernames and email addresses in authentik.
@@ -179,6 +179,5 @@ To verify the login flow, open Organizr. You should be redirected to authentik b
 
 ## Resources
 
-- [Organizr Proxy Auth SSO documentation](https://docs.organizr.app/features/sso/proxy-auth-sso)
-- [Organizr Auth Proxy and LDAP settings source](https://github.com/causefx/Organizr/blob/v2-master/api/classes/organizr.class.php#L2413)
-- [Organizr OIDC Discussion](https://github.com/causefx/Organizr/issues/2070)
+- [Organizr LDAP backend documentation](https://docs.organizr.app/features/authentication-backends/ldap-backend)
+- [Organizr OIDC support discussion](https://github.com/causefx/Organizr/issues/2070#issuecomment-4957190082)
