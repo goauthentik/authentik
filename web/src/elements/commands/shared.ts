@@ -157,7 +157,9 @@ export function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] 
             label: msg("About authentik", {
                 id: "command-palette.about-authentik",
             }),
-            action: AboutModal.open,
+            action: () => {
+                AboutModal.open();
+            },
             prefix: msg("View", { id: "command-palette.prefix.view" }),
             group: msg("authentik"),
         },
