@@ -36,11 +36,9 @@ authentik issues access tokens as JWTs signed with the provider's signing key, s
 
 Several modules exist, and they differ in how much they actually check:
 
-| Module                                                                           | Notes                                                                                                                                                                                                       |
-| -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator) (Percona)    | Version 1.1.0 validates JWTs against the provider's JWKS and lets you pick the claim that identifies the user. The most actively developed of the three. Its authors describe the packages as experimental. |
-| [`oauth_validator`](https://github.com/TantorLabs/oauth_validator) (Tantor Labs) | Reads `sub` and `scope` straight out of the JWT payload without verifying the signature, so a forged token is accepted. Not suitable unless you add signature verification.                                 |
-| [`pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator) (dvob)          | Verifies JWTs through OIDC discovery and JWKS, but is published as a proof of concept written to explore Kubernetes service account authentication.                                                         |
+- [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator) (Percona): version 1.1.0 validates JWTs against the provider's JWKS and lets you pick the claim that identifies the user. The most actively developed of the three. Its authors describe the packages as experimental.
+- [`oauth_validator`](https://github.com/TantorLabs/oauth_validator) (Tantor Labs): reads `sub` and `scope` straight out of the JWT payload without verifying the signature, so a forged token is accepted. Not suitable unless you add signature verification.
+- [`pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator) (dvob): verifies JWTs through OIDC discovery and JWKS, but is published as a proof of concept written to explore Kubernetes service account authentication.
 
 These notes describe each project as of August 2026. None of them ships with PostgreSQL, and each is developed independently of it, so check the current state of the one you choose rather than relying on this comparison.
 
@@ -181,6 +179,54 @@ FATAL:  OAuth bearer authentication failed for user "alice"
 ```
 
 If the database server reaches authentik through a different URL than clients do, for example inside a container network, set `pg_oidc_validator.discovery_url_override` to the internal URL. It changes only where the validator fetches metadata and JWKS, not the issuer it expects in the token.
+
+## Mapping users to roles
+
+OAuth authenticates a user and maps their identity onto a database role. It does not create roles. Someone who authenticates successfully but has no matching role is refused with `role "<name>" does not exist`, so create the roles in PostgreSQL before anyone connects, either by hand or through whatever tooling manages your database.
+
+### Shared roles
+
+The map in [Configure authentication](#configure-authentication) gives each person their own role. You can instead point several people at one role, which keeps the number of roles you have to create small:
+
+```text
+# MAPNAME    SYSTEM-USERNAME         PG-USERNAME
+authentik    /^(.*)@company\.com$    employees
+```
+
+PostgreSQL still records who connected. `current_user` returns the role, and `system_user` returns the authenticated identity:
+
+```text
+ current_user |       system_user
+--------------+--------------------------
+ employees    | oauth:alice@company.com
+```
+
+### Letting authentik choose the role
+
+`authn_field` can read any claim in the token, so authentik can decide which role someone receives. Add a scope mapping to the provider that returns the role name, for example from group membership:
+
+```python
+return {"pg_role": "analyst" if user.ak_groups.filter(name="db-analysts").exists() else "readonly"}
+```
+
+Read that claim instead of `email`:
+
+```ini
+pg_oidc_validator.authn_field = 'pg_role'
+```
+
+With a map that passes the claim through unchanged, the role someone can connect as follows their groups in authentik, and moving them between groups changes it without touching PostgreSQL:
+
+```text
+# MAPNAME   SYSTEM-USERNAME   PG-USERNAME
+pgrole      /^(.*)$           \1
+```
+
+PostgreSQL enforces this when the connection is made. A user whose claim resolves to `readonly` is refused if they ask for the `analyst` role.
+
+The cost is that `system_user` then reports the role rather than the person, because it reflects whichever claim `authn_field` names. Choose this when you want group membership in authentik to drive database access, and keep `email` when you want each connection attributable to an individual.
+
+Privileges stay with PostgreSQL either way. authentik selects the role, and `GRANT` decides what that role can do. Removing someone's access to the application in authentik stops new tokens, but a token that has already been issued remains valid until it expires, so keep **Access token validity** short if that matters to you.
 
 ## Resources
 
