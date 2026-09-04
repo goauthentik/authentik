@@ -80,9 +80,9 @@ The JWKS endpoint is intentionally publicly accessible and contains public keys 
 
 ### Cross-provider token introspection and revocation
 
-The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens is still scoped by provider. A client can introspect or revoke tokens issued by the same OAuth2 provider that authenticated the request.
+The token introspection and revocation endpoints are global OAuth 2.0 endpoints, but access to tokens remains scoped by provider. A confidential provider can introspect tokens that it issued. A provider can revoke tokens that it issued.
 
-For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider.
+For cross-provider introspection or revocation, authenticate the request with a confidential provider. Then, on the provider that issues the token, select the authenticating provider under **Federated OAuth2/OpenID Providers**. This allows the authenticating provider to introspect and revoke tokens issued by the federated provider. The relationship is directional: configure it on the provider that issues the token, and add the confidential provider that will introspect or revoke that token.
 
 ### Redirect URIs
 
