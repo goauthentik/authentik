@@ -114,6 +114,6 @@ class SentryTracer(Tracer):
         sentry_sdk.set_tag(key, value)
 
     @contextmanager
-    def active_tracer().start_span(self, op: str, name: str | None = None):
+    def start_span(self, op: str, name: str | None = None):
         with sentry_sdk.start_span(op=op, name=name) as span:
             yield span

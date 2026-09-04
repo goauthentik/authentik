@@ -22,7 +22,7 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.tracing import Span, start_span
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.email import normalize_addresses
 from authentik.lib.utils.http import get_http_session

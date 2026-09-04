@@ -55,7 +55,6 @@ from authentik.flows.stage import AccessDeniedStage, StageView
 from authentik.lib.tracing import (
     active_tracer,
     record_exception,
-    start_span,
 )
 from authentik.lib.tracing.exceptions import TracingIgnoredException, should_ignore_exception
 from authentik.lib.utils.reflection import all_subclasses, class_to_path

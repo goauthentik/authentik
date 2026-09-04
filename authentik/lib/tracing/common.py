@@ -45,5 +45,5 @@ class Tracer:
         pass
 
     @contextmanager
-    def active_tracer().start_span(self, op: str, name: str | None = None):
+    def start_span(self, op: str, name: str | None = None):
         yield NoOpSpan()

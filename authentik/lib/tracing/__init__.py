@@ -1,9 +1,6 @@
 """authentik error reporting: one active tracer handles spans/tags, but every
 configured backend gets exceptions"""
 
-from contextlib import contextmanager
-from typing import Any
-
 from authentik.lib.config import CONFIG
 from authentik.lib.tracing.common import (
     TRACER_DEFER_POSTFORK_ENV_VAR as TRACER_DEFER_POSTFORK_ENV_VAR,
@@ -12,18 +9,14 @@ from authentik.lib.tracing.common import Span as Span
 from authentik.lib.tracing.common import Tracer
 from authentik.lib.tracing.exceptions import TracingIgnoredException as TracingIgnoredException
 from authentik.lib.tracing.exceptions import should_ignore_exception as should_ignore_exception
-from authentik.lib.tracing.otel import OpenTelemetryTracer
 from authentik.lib.tracing.sentry import SentryTracer
 
 _enabled = CONFIG.get_bool("error_reporting.enabled", False)
-_otel_tracer = (
-    OpenTelemetryTracer() if _enabled and CONFIG.get("error_reporting.otel_endpoint") else None
-)
 _sentry_tracer = SentryTracer() if _enabled and CONFIG.get("error_reporting.sentry_dsn") else None
 # Every configured backend gets exceptions; only one of them handles spans/tags, since
 # authentik only ever needs one trace tree and picking one avoids double request overhead
-_error_tracers: list[Tracer] = [t for t in (_otel_tracer, _sentry_tracer) if t is not None]
-_active_tracer: Tracer = _otel_tracer or _sentry_tracer or Tracer()
+_error_tracers: list[Tracer] = [t for t in (_sentry_tracer) if t is not None]
+_active_tracer: Tracer = _sentry_tracer or Tracer()
 
 
 def active_tracer() -> Tracer:
@@ -54,4 +47,3 @@ def record_exception(exc: Exception) -> None:
     """Record an exception on every configured backend"""
     for backend in _error_tracers:
         backend.record_exception(exc)
-
