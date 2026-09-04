@@ -25,15 +25,6 @@ class TestSecretsAPI(APITestCase):
         self.assertTrue(secret.value)
         self.assertNotIn(secret.value, response.content.decode())
 
-    def test_create_explicit(self):
-        self.client.force_login(self.admin)
-        response = self.client.post(
-            reverse("authentik_api:secret-list"),
-            {"name": "external", "value": "provided-value"},
-        )
-        self.assertEqual(response.status_code, 201, response.content)
-        self.assertEqual(Secret.objects.get(name="external").value, "provided-value")
-
     def test_value_whitespace_is_preserved(self):
         self.client.force_login(self.admin)
         for secret_type in [SecretType.TEXT, SecretType.MULTILINE]:

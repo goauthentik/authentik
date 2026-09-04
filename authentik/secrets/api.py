@@ -30,7 +30,7 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
         if value == "":
             raise SkipField
         instance = self.instance
-        if not instance or value == instance.value:
+        if not instance:
             return value
         request = self.context.get("request")
         if request and not (
@@ -64,7 +64,10 @@ class SecretSerializer(ManagedSerializer, ModelSerializer):
     def update(self, instance: Secret, validated_data: dict) -> Secret:
         value = validated_data.pop("value", None)
         with transaction.atomic():
-            instance = super().update(instance, validated_data)
+            if validated_data:
+                for field, field_value in validated_data.items():
+                    setattr(instance, field, field_value)
+                instance.save(update_fields=[*validated_data, "last_updated"])
             if value is not None:
                 instance.replace_value(value, self.context.get("request"))
         return instance
