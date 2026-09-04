@@ -1,41 +1,111 @@
 ---
 title: Provider property mappings
+description: Configure how authentik sends user, group, and other data to integrated applications.
 sidebar_position: 1
 sidebar_label: "Property Mappings"
 ---
 
-Property mappings allow you to pass information to external applications. For example, pass the current user's groups as a SAML parameter.
+Provider property mappings send information from authentik to integrated applications. For example, a SAML property mapping can send a user's groups to an application as a SAML attribute.
+
+To map data from a source into authentik instead, see [source property mappings](../../../users-sources/sources/property-mappings/index.mdx).
+
+## Choose a property mapping type
+
+Select the mapping type that matches the provider. Each type expects a different result from its expression.
+
+| Mapping type                                                         | Use                                                                                                                                                                                                                         |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [SAML property mapping](../saml/index.mdx#saml-property-mappings)    | Send an attribute to an integrated application in a SAML assertion.                                                                                                                                                         |
+| [OAuth2/OIDC scope mapping](../oauth2/index.mdx#scope-mappings)      | Add claims that an OAuth2/OIDC application can request through a scope.                                                                                                                                                     |
+| [Proxy scope mapping](../proxy/custom_headers.mdx#property-mappings) | Send dynamic headers to a proxied application or configure other proxy behavior.                                                                                                                                            |
+| [RADIUS property mapping](../radius/index.mdx#radius-attributes)     | Add attributes to the RADIUS response sent to a client.                                                                                                                                                                     |
+| [RAC property mapping](../rac/index.mdx#rac-property-mappings)       | Configure credentials and connection settings for an integrated RAC endpoint.                                                                                                                                               |
+| Synchronization provider mapping                                     | Build user or group data for integrated services such as [SCIM](../scim/index.mdx#attribute-mapping), [Google Workspace](../gws/index.mdx#property-mapping), and [Microsoft Entra ID](../entra/index.mdx#property-mapping). |
 
 ## Create a custom provider property mapping
 
-If the default provider mappings are not enough, create a custom provider property mapping and assign it to the provider that should use it.
+If the default mappings do not send the data that your application needs, create a custom mapping.
 
-1. In authentik, open the Admin interface, and then navigate to **Customization** > **Property Mappings**.
-2. Click **Create**, select the provider property mapping type for your provider, and then click **Next**.
-3. Configure the property mapping. Most provider property mappings use an **Expression** field for the Python code that returns the mapped data.
-4. In the provider configuration, select the newly created property mapping in the appropriate property mapping field, such as **User Property Mappings** or **Group Property Mappings**.
+1. Log in to authentik as an administrator and open the Admin interface.
+2. Navigate to **Customization** > **Property Mappings**.
+3. Click **New Property Mapping**.
+4. Select the mapping type that matches your provider, and then click **Next**.
+5. Enter a **Name** and configure the fields for that mapping type. Most mapping types include an **Expression** field.
+6. Click **Finish**.
+7. Open the provider or endpoint that should use the mapping.
+8. Add the mapping to the appropriate field, such as **Property mappings**, **User Property Mappings**, **Group Property Mappings**, or **Scopes**.
+9. Save the provider or endpoint.
+
+## Write a mapping expression
+
+Most property mappings use a Python expression to create their output. The required output depends on the mapping type. For example:
+
+- A SAML property mapping returns a value, such as a string or a list of group names.
+- An OAuth2/OIDC scope mapping returns a dictionary of claim names and values.
+- A synchronization mapping returns data in the format that the integrated service expects.
+
+Returning `None` skips the mapping. For the available functions, objects, and variables, see [Property mapping expressions](./expression.mdx).
+
+## Map stored user attributes
+
+A property mapping reads user data and sends it to an integrated application. It does not collect or store data on the user. If you collect data with prompt fields in an enrollment flow, add a [User Write stage](../../flows-stages/stages/user_write/index.mdx) to store the data on the user first.
+
+A mapping can read built-in user properties, such as `user.name`, and custom user attributes. Use `ak_obj_attr()` to read a custom attribute. The name sent to the application does not need to match the key stored on the user.
+
+**Example**:
+
+A user stores the custom attributes `given_name` and `family_name`, but an OAuth2/OIDC application expects the claims `first_name` and `last_name`. A scope mapping can rename the values:
+
+```python
+return {
+    "first_name": ak_obj_attr(user, "given_name", user.name),
+    "last_name": ak_obj_attr(user, "family_name", ""),
+}
+```
+
+For SAML, create a SAML property mapping for each value. Set **SAML Attribute Name** to the name that the application expects, and return the stored value:
+
+```python
+return ak_obj_attr(user, "given_name", user.name)
+```
+
+Different applications can use different names for the same stored attribute.
 
 ## SAML property mappings
 
-SAML property mappings allow you embed information into the SAML authentication request. This information can then be used by the application to, for example, assign permissions to the object.
+A SAML property mapping adds an attribute to the SAML assertion that authentik sends to the service provider (SP). It does not add data to the authentication request that authentik receives from the SP.
+
+See [SAML property mappings](../saml/index.mdx#saml-property-mappings) for the default mappings and more details.
 
 ## Scope mappings with OAuth2
 
-Scope mappings are used by the OAuth2 provider to map information from authentik to OAuth2/OIDC claims. Values returned by a scope mapping are added as custom claims to access and ID tokens.
+An OAuth2/OIDC scope mapping defines a scope and the claims that authentik returns when a client requests that scope. The expression must return a dictionary.
 
-:::info Default value for `email_verified`
-By default, authentik sets the `email_verified` claim to `False`, since it has no way to confirm whether a user's email is verified. Setting this claim to `True` by default could introduce unintended security risks.
+The client must request the scope, and the scope mapping must be assigned to the provider. If either condition is missing, authentik does not return the mapping's claims.
 
-Be aware that some applications might require this claim to be true to successfully authenticate users. See [Email scope verification](../oauth2/index.mdx#email-scope-verification) for more information.
-:::
+The returned claims are available from the `UserInfo` endpoint. authentik includes them in the ID token and access token only when **Include claims in id_token** is enabled on the provider.
 
-## Skip objects during synchronization
+See [Scope mappings](../oauth2/index.mdx#scope-mappings) for scope authorization, default scopes, and special scopes.
 
-To skip synchronization for a specific object, you can create a property mapping with an expression that triggers the `SkipObject` exception. This functionality is supported by the following providers: [**Google Workspace**](../gws/), [**Microsoft Entra ID**](../entra/), and [**SCIM**](../scim/).
+## Synchronization property mappings
 
-**Example:**
+Synchronization providers use property mappings to build the user and group data that they send to integrated services. The mapping must return data in the format that the integrated service expects.
+
+Refer to the provider documentation for supported fields and examples:
+
+- [SCIM](../scim/index.mdx#attribute-mapping)
+- [Google Workspace](../gws/index.mdx#property-mapping)
+- [Microsoft Entra ID](../entra/index.mdx#property-mapping)
+
+### Skip objects during synchronization
+
+For SCIM, Google Workspace, and Microsoft Entra ID, raise `SkipObject` to skip the current user or group. The synchronization continues with the next object.
+
+**Example**:
 
 ```python
-if request.user.username == "example_username":
-	raise SkipObject
+if user.username == "example_username":
+    raise SkipObject
 ```
+
+Only synchronization mappings handle `SkipObject`. It does not apply to SAML attributes or OAuth2/OIDC claims.
