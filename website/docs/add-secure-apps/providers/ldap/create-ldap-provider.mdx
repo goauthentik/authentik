@@ -101,7 +101,9 @@ The default DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthen
 
 ### Assign the LDAP search permission to the service account
 
-The service account needs permissions to search the LDAP directory. You'll need to create a role with the permission and assign the service account to that role.
+Ensure that the service account can access the LDAP application. If the application uses application bindings, include the service account in an appropriate binding.
+
+The service account also needs permission to search the LDAP directory. Create a role with the permission and assign the service account to that role:
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Roles** and click **Create**.
@@ -111,7 +113,9 @@ The service account needs permissions to search the LDAP directory. You'll need 
 6. Navigate to **Applications** > **Providers**.
 7. Click on the name of the newly created LDAP provider and open the **Permissions** tab.
 8. Click **Assign Object Permissions**.
-9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign**. This creates an object permission that grants the service account access to this provider's directory without granting it access to every LDAP provider. See [LDAP Provider Searching](./index.mdx#searching) for more details.
+9. Select the role that you created (e.g. `LDAP search`), enable the **Search full LDAP directory** permission, and then click **Assign**. This creates an object permission that grants the service account access to this provider's directory without granting it access to every LDAP provider. 
+
+See [LDAP Provider Searching](./index.mdx#searching) for more details.
 
 ## Create an LDAP Outpost
 

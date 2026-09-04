@@ -107,7 +107,9 @@ This mode uses the same logic as direct bind, however the result is cached for t
 
 ## Searching
 
-Any user that is authorized to access the LDAP provider's application can search the LDAP directory. Without explicit permissions to do broader searches, a user's search request will return information about themselves, including user info, group info, and group membership.
+Users authorized to access the LDAP provider's application can search the LDAP directory. If the LDAP application uses bindings, ensure that the the user is included in a [user, group, role, or policy binding](../../applications/manage_apps.mdx#use-bindings-to-control-access). Without access to the LDAP application, a user cannot search the directory.
+
+By default, users can search only for information about themselves, including their user details, group information, and group memberships. Explicit permissions are required to perform broader searches.
 
 To search the full directory, a [user](../../../users-sources/user/index.mdx) requires a [role](../../../users-sources/roles/index.mdx) with the **Search full LDAP directory** permission. This permission allows the account to retrieve information about all users and groups that an LDAP provider exposes.
 
