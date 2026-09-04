@@ -159,6 +159,7 @@ export function createCommonCommands(): PaletteCommandDefinitionInit<unknown>[] 
             }),
             action: () => {
                 AboutModal.open();
+                return true;
             },
             prefix: msg("View", { id: "command-palette.prefix.view" }),
             group: msg("authentik"),
