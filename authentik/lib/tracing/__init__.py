@@ -9,14 +9,18 @@ from authentik.lib.tracing.common import Span as Span
 from authentik.lib.tracing.common import Tracer
 from authentik.lib.tracing.exceptions import TracingIgnoredException as TracingIgnoredException
 from authentik.lib.tracing.exceptions import should_ignore_exception as should_ignore_exception
+from authentik.lib.tracing.otel import OpenTelemetryTracer
 from authentik.lib.tracing.sentry import SentryTracer
 
 _enabled = CONFIG.get_bool("error_reporting.enabled", False)
+_otel_tracer = (
+    OpenTelemetryTracer() if _enabled and CONFIG.get("error_reporting.otel_endpoint") else None
+)
 _sentry_tracer = SentryTracer() if _enabled and CONFIG.get("error_reporting.sentry_dsn") else None
 # Every configured backend gets exceptions; only one of them handles spans/tags, since
 # authentik only ever needs one trace tree and picking one avoids double request overhead
-_error_tracers: list[Tracer] = [t for t in (_sentry_tracer,) if t is not None]
-_active_tracer: Tracer = _sentry_tracer or Tracer()
+_error_tracers: list[Tracer] = [t for t in (_otel_tracer, _sentry_tracer) if t is not None]
+_active_tracer: Tracer = _otel_tracer or _sentry_tracer or Tracer()
 
 
 def active_tracer() -> Tracer:
