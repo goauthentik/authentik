@@ -2,6 +2,11 @@
 
 from uuid import uuid4
 
+from msgspec import DecodeError
+from msgspec.json import Decoder
+from requests.adapters import HTTPAdapter
+from requests.exceptions import JSONDecodeError
+from requests.models import Response
 from requests.sessions import PreparedRequest, Session
 from structlog.stdlib import get_logger
 
@@ -10,13 +15,47 @@ from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
+_DECODER = Decoder()
+
 
 def authentik_user_agent() -> str:
     """Get a common user agent"""
     return f"authentik@{authentik_full_version()}"
 
 
-class TimeoutSession(Session):
+class MsgspecResponse(Response):
+    """requests response which decodes JSON bodies using msgspec"""
+
+    def json(self, **kwargs):
+        # msgspec's decoder doesn't support any of the options json.loads takes
+        if kwargs:
+            LOGGER.warning("Falling back to stdlib json parsing due to kwargs")
+            return super().json(**kwargs)
+        try:
+            return _DECODER.decode(self.content)
+        except DecodeError as exc:
+            raise JSONDecodeError(str(exc), self.text, 0) from exc
+
+
+class MsgspecHTTPAdapter(HTTPAdapter):
+    """HTTP adapter which returns MsgspecResponse objects"""
+
+    def build_response(self, req, resp) -> MsgspecResponse:
+        response = super().build_response(req, resp)
+        response.__class__ = MsgspecResponse
+        return response
+
+
+class BaseSession(Session):
+    """Session which decodes JSON responses using msgspec"""
+
+    def __init__(self):
+        super().__init__()
+        self.mount("https://", MsgspecHTTPAdapter())
+        self.mount("http://", MsgspecHTTPAdapter())
+
+
+class TimeoutSession(BaseSession):
     """Always set a default HTTP request timeout"""
 
     def __init__(self, default_timeout=None):
