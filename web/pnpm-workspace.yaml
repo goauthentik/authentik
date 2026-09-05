@@ -34,8 +34,8 @@ catalog:
   "@typescript-eslint/parser": "^8.65.0"
   "@typescript-eslint/utils": "^8.65.0"
   "@types/node": "^26.1.2"
-  "@vitest/browser": "^4.1.10"
-  "@vitest/browser-playwright": "^4.1.10"
+  "@vitest/browser": "^4.1.11"
+  "@vitest/browser-playwright": "^4.1.11"
   esbuild: "^0.28.1"
   eslint: "^9.39.5"
   playwright: "^1.62.1"
@@ -44,7 +44,7 @@ catalog:
   typescript: "^6.0.3"
   typescript-eslint: "^8.65.0"
   vite: "^8.2.0"
-  vitest: "^4.1.10"
+  vitest: "^4.1.11"
 
 overrides:
   "@goauthentik/esbuild-plugin-live-reload>esbuild": "catalog:"
