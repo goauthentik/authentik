@@ -19,7 +19,6 @@ package resources
 import (
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // outpostVerbs are the verbs the worker needs on the objects it creates for a
@@ -127,7 +126,7 @@ func (b *Builder) Role() *rbacv1.Role {
 				// before trying to create the objects that need them.
 				APIGroups: []string{"apiextensions.k8s.io"},
 				Resources: []string{"customresourcedefinitions"},
-				Verbs:     []string{verbList},
+				Verbs:     []string{"list"},
 			},
 		},
 	}
@@ -158,7 +157,7 @@ func (b *Builder) RoleBinding() *rbacv1.RoleBinding {
 // ClusterRole lets the worker list CRDs, which is cluster-scoped and so cannot
 // be granted by a Role.
 func (b *Builder) ClusterRole() *rbacv1.ClusterRole {
-	if !b.clusterRoleEnabled() {
+	if !b.serviceAccountEnabled() {
 		return nil
 	}
 
@@ -167,7 +166,7 @@ func (b *Builder) ClusterRole() *rbacv1.ClusterRole {
 		Rules: []rbacv1.PolicyRule{{
 			APIGroups: []string{"apiextensions.k8s.io"},
 			Resources: []string{"customresourcedefinitions"},
-			Verbs:     []string{verbList},
+			Verbs:     []string{"list"},
 		}},
 	}
 	// Cluster-scoped objects have no namespace, and setting one makes the API
@@ -178,7 +177,7 @@ func (b *Builder) ClusterRole() *rbacv1.ClusterRole {
 
 // ClusterRoleBinding binds the ClusterRole to the ServiceAccount.
 func (b *Builder) ClusterRoleBinding() *rbacv1.ClusterRoleBinding {
-	if !b.clusterRoleEnabled() {
+	if !b.serviceAccountEnabled() {
 		return nil
 	}
 
@@ -198,26 +197,4 @@ func (b *Builder) ClusterRoleBinding() *rbacv1.ClusterRoleBinding {
 	}
 	binding.Namespace = ""
 	return binding
-}
-
-// clusterRoleEnabled reports whether the cluster-scoped RBAC is wanted. The
-// chart's subchart defaults it on alongside the ServiceAccount.
-func (b *Builder) clusterRoleEnabled() bool {
-	return b.serviceAccountEnabled()
-}
-
-// ClusterScopedObjects lists the cluster-scoped objects this instance owns.
-//
-// Owner references cannot span from a namespaced resource to a cluster-scoped
-// one, so these are not garbage collected with the Authentik resource and have
-// to be deleted explicitly when it goes away.
-func (b *Builder) ClusterScopedObjects() []metav1.Object {
-	objects := []metav1.Object{}
-	if role := b.ClusterRole(); role != nil {
-		objects = append(objects, role)
-	}
-	if binding := b.ClusterRoleBinding(); binding != nil {
-		objects = append(objects, binding)
-	}
-	return objects
 }

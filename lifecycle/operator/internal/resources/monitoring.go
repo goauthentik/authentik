@@ -17,6 +17,7 @@ limitations under the License.
 package resources
 
 import (
+	"cmp"
 	"embed"
 	"fmt"
 	"maps"
@@ -72,10 +73,10 @@ func (b *Builder) ServiceMonitor(c *component) (*unstructured.Unstructured, erro
 	}
 
 	endpoint := map[string]any{
-		fieldPort:       portName,
-		fieldPath:       metricsPath,
-		"interval":      firstNonZero(spec.Interval, defaultScrapeInterval),
-		"scrapeTimeout": firstNonZero(spec.ScrapeTimeout, defaultScrapeTimeout),
+		"port":          portName,
+		"path":          metricsPath,
+		"interval":      cmp.Or(spec.Interval, defaultScrapeInterval),
+		"scrapeTimeout": cmp.Or(spec.ScrapeTimeout, defaultScrapeTimeout),
 	}
 	if spec.Scheme != "" {
 		endpoint["scheme"] = spec.Scheme
@@ -99,9 +100,9 @@ func (b *Builder) ServiceMonitor(c *component) (*unstructured.Unstructured, erro
 	metricsComponent := c.name + "-metrics"
 
 	monitor := &unstructured.Unstructured{Object: map[string]any{
-		fieldAPIVersion: monitoringAPIVersion,
-		fieldKind:       "ServiceMonitor",
-		fieldSpec: map[string]any{
+		"apiVersion": monitoringAPIVersion,
+		"kind":       "ServiceMonitor",
+		"spec": map[string]any{
 			"endpoints": []any{endpoint},
 			"namespaceSelector": map[string]any{
 				"matchNames": []any{b.Namespace()},
@@ -114,7 +115,7 @@ func (b *Builder) ServiceMonitor(c *component) (*unstructured.Unstructured, erro
 	monitor.SetName(c.objectName)
 	// A ServiceMonitor may live in the namespace Prometheus watches rather than
 	// alongside authentik.
-	monitor.SetNamespace(firstNonZero(spec.Namespace, b.Namespace()))
+	monitor.SetNamespace(cmp.Or(spec.Namespace, b.Namespace()))
 	monitor.SetLabels(mergedMap(b.Labels(metricsComponent), spec.Selector, spec.Labels))
 	monitor.SetAnnotations(spec.Annotations)
 
@@ -137,12 +138,12 @@ func (b *Builder) PrometheusRule() (*unstructured.Unstructured, error) {
 	groups = withGroupAnnotations(groups, spec)
 
 	rule := &unstructured.Unstructured{Object: map[string]any{
-		fieldAPIVersion: monitoringAPIVersion,
-		fieldKind:       "PrometheusRule",
-		fieldSpec:       map[string]any{"groups": groups},
+		"apiVersion": monitoringAPIVersion,
+		"kind":       "PrometheusRule",
+		"spec":       map[string]any{"groups": groups},
 	}}
 	rule.SetName(b.Authentik.Fullname())
-	rule.SetNamespace(firstNonZero(spec.Namespace, b.Namespace()))
+	rule.SetNamespace(cmp.Or(spec.Namespace, b.Namespace()))
 	rule.SetLabels(mergedMap(b.Labels(""), spec.Selector, spec.Labels))
 	rule.SetAnnotations(spec.Annotations)
 

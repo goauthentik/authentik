@@ -197,18 +197,6 @@ type GlobalSpec struct {
 	// volumes are extra volumes for all authentik pods.
 	// +optional
 	Volumes []corev1.Volume `json:"volumes,omitempty"`
-
-	// security configures workarounds for the bundled Bitnami PostgreSQL
-	// subchart's image checks.
-	// +optional
-	Security *GlobalSecuritySpec `json:"security,omitempty"`
-}
-
-// GlobalSecuritySpec mirrors the Bitnami common chart's security switches.
-type GlobalSecuritySpec struct {
-	// allowInsecureImages permits overriding the Bitnami subchart images.
-	// +optional
-	AllowInsecureImages *bool `json:"allowInsecureImages,omitempty"`
 }
 
 // AutoscalingSpec configures a HorizontalPodAutoscaler for a component.

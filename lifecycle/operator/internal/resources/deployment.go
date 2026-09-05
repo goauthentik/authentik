@@ -17,6 +17,7 @@ limitations under the License.
 package resources
 
 import (
+	"cmp"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
@@ -28,6 +29,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/utils/ptr"
 
 	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
@@ -68,9 +70,9 @@ func (b *Builder) ServerComponent() *component {
 
 	http, https, metrics := defaultHTTPPort, defaultHTTPSPort, defaultMetricsPort
 	if ports != nil {
-		http = valueOr(ports.HTTP, http)
-		https = valueOr(ports.HTTPS, https)
-		metrics = valueOr(ports.Metrics, metrics)
+		http = ptr.Deref(ports.HTTP, http)
+		https = ptr.Deref(ports.HTTPS, https)
+		metrics = ptr.Deref(ports.Metrics, metrics)
 	}
 
 	path := b.webPath()
@@ -104,8 +106,8 @@ func (b *Builder) WorkerComponent() *component {
 
 	http, metrics := defaultHTTPPort, defaultMetricsPort
 	if ports != nil {
-		http = valueOr(ports.HTTP, http)
-		metrics = valueOr(ports.Metrics, metrics)
+		http = ptr.Deref(ports.HTTP, http)
+		metrics = ptr.Deref(ports.Metrics, metrics)
 	}
 
 	return &component{
@@ -143,7 +145,7 @@ func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 		ObjectMeta: b.objectMeta(c.objectName, c.name, nil,
 			mergedMap(global.DeploymentAnnotations, c.spec.DeploymentAnnotations)),
 		Spec: appsv1.DeploymentSpec{
-			RevisionHistoryLimit: ptr(valueOr(global.RevisionHistoryLimit, defaultRevisionHistoryLimit)),
+			RevisionHistoryLimit: ptr.To(ptr.Deref(global.RevisionHistoryLimit, defaultRevisionHistoryLimit)),
 			Selector:             &metav1.LabelSelector{MatchLabels: b.SelectorLabels(c.name)},
 			Template:             *template,
 			Strategy:             strategy,
@@ -153,7 +155,7 @@ func (b *Builder) Deployment(c *component) (*appsv1.Deployment, error) {
 	// Leaving replicas unset hands the count to the HorizontalPodAutoscaler;
 	// setting both would have the two fight over it.
 	if c.spec.Autoscaling == nil || !c.spec.Autoscaling.Enabled {
-		deployment.Spec.Replicas = ptr(valueOr(c.spec.Replicas, defaultReplicas))
+		deployment.Spec.Replicas = ptr.To(ptr.Deref(c.spec.Replicas, defaultReplicas))
 	}
 
 	return deployment, nil
@@ -195,7 +197,7 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 		ImagePullSecrets:              firstNonEmpty(c.spec.ImagePullSecrets, global.ImagePullSecrets),
 		HostAliases:                   global.HostAliases,
 		SecurityContext:               securityContext,
-		PriorityClassName:             firstNonZero(c.spec.PriorityClassName, global.PriorityClassName),
+		PriorityClassName:             cmp.Or(c.spec.PriorityClassName, global.PriorityClassName),
 		Affinity:                      b.affinity(c),
 		NodeSelector:                  firstNonEmptyMap(c.spec.NodeSelector, global.NodeSelector),
 		Tolerations:                   firstNonEmpty(c.spec.Tolerations, global.Tolerations),
@@ -203,8 +205,8 @@ func (b *Builder) podTemplate(c *component) (*corev1.PodTemplateSpec, error) {
 		Volumes:                       b.volumes(c),
 		DNSConfig:                     c.spec.DNSConfig,
 		DNSPolicy:                     c.spec.DNSPolicy,
-		TerminationGracePeriodSeconds: ptr(valueOr(c.spec.TerminationGracePeriodSeconds, defaultTerminationGracePeriod)),
-		EnableServiceLinks:            ptr(true),
+		TerminationGracePeriodSeconds: ptr.To(ptr.Deref(c.spec.TerminationGracePeriodSeconds, defaultTerminationGracePeriod)),
+		EnableServiceLinks:            ptr.To(true),
 	}
 
 	if c.spec.HostNetwork != nil {
@@ -272,10 +274,10 @@ func (b *Builder) geoipSidecar() *corev1.Container {
 
 	repository, tag, digest, pullPolicy := defaultGeoIPRepository, defaultGeoIPTag, "", corev1.PullPolicy(defaultPullPolicy)
 	if geoip.Image != nil {
-		repository = firstNonZero(geoip.Image.Repository, repository)
-		tag = firstNonZero(geoip.Image.Tag, tag)
+		repository = cmp.Or(geoip.Image.Repository, repository)
+		tag = cmp.Or(geoip.Image.Tag, tag)
 		digest = geoip.Image.Digest
-		pullPolicy = firstNonZero(geoip.Image.PullPolicy, pullPolicy)
+		pullPolicy = cmp.Or(geoip.Image.PullPolicy, pullPolicy)
 	}
 	image := fmt.Sprintf("%s:%s", repository, tag)
 	if digest != "" {
@@ -286,17 +288,17 @@ func (b *Builder) geoipSidecar() *corev1.Container {
 	secretName := b.Authentik.Fullname()
 	if existing := geoip.ExistingSecret; existing != nil && existing.SecretName != "" {
 		secretName = existing.SecretName
-		accountKey = firstNonZero(existing.AccountID, "account_id")
-		licenseKey = firstNonZero(existing.LicenseKey, "license_key")
+		accountKey = cmp.Or(existing.AccountID, "account_id")
+		licenseKey = cmp.Or(existing.LicenseKey, "license_key")
 	}
 
 	env := slices.Clone(geoip.Env)
 	env = append(env,
-		corev1.EnvVar{Name: "GEOIPUPDATE_FREQUENCY", Value: fmt.Sprint(valueOr(geoip.UpdateInterval, defaultGeoIPUpdateInterval))},
+		corev1.EnvVar{Name: "GEOIPUPDATE_FREQUENCY", Value: fmt.Sprint(ptr.Deref(geoip.UpdateInterval, defaultGeoIPUpdateInterval))},
 		corev1.EnvVar{Name: "GEOIPUPDATE_PRESERVE_FILE_TIMES", Value: "1"},
 		corev1.EnvVar{Name: "GEOIPUPDATE_ACCOUNT_ID", ValueFrom: secretKeyRef(secretName, accountKey)},
 		corev1.EnvVar{Name: "GEOIPUPDATE_LICENSE_KEY", ValueFrom: secretKeyRef(secretName, licenseKey)},
-		corev1.EnvVar{Name: "GEOIPUPDATE_EDITION_IDS", Value: firstNonZero(geoip.EditionIDs, defaultGeoIPEditionIDs)},
+		corev1.EnvVar{Name: "GEOIPUPDATE_EDITION_IDS", Value: cmp.Or(geoip.EditionIDs, defaultGeoIPEditionIDs)},
 	)
 
 	resources := corev1.ResourceRequirements{}
@@ -537,14 +539,8 @@ func (b *Builder) configChecksum() (string, error) {
 
 	// Map iteration order is random, so the keys have to be sorted or the
 	// checksum would change on every reconcile and restart the pods.
-	keys := make([]string, 0, len(secret.Data))
-	for key := range secret.Data {
-		keys = append(keys, key)
-	}
-	slices.Sort(keys)
-
 	digest := sha256.New()
-	for _, key := range keys {
+	for _, key := range slices.Sorted(maps.Keys(secret.Data)) {
 		digest.Write([]byte(key))
 		digest.Write([]byte{0})
 		digest.Write(secret.Data[key])
@@ -622,54 +618,20 @@ func mergeStructs[T any](base, override *T) (*T, error) {
 		return base, nil
 	}
 
-	baseTree, err := structToTree(base)
-	if err != nil {
-		return nil, err
-	}
-	overrideTree, err := structToTree(override)
-	if err != nil {
-		return nil, err
-	}
-	mergeTree(baseTree, overrideTree)
-
-	encoded, err := json.Marshal(baseTree)
-	if err != nil {
-		return nil, fmt.Errorf("failed to encode the merged value: %w", err)
-	}
+	// Decoding each in turn onto a fresh value is the merge: a field the
+	// override does not mention keeps the base's value. The base is copied
+	// through JSON as well, so merging cannot reach into its nested pointers.
 	merged := new(T)
-	if err := json.Unmarshal(encoded, merged); err != nil {
-		return nil, fmt.Errorf("failed to decode the merged value: %w", err)
+	for _, value := range []*T{base, override} {
+		encoded, err := json.Marshal(value)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encode for merging: %w", err)
+		}
+		if err := json.Unmarshal(encoded, merged); err != nil {
+			return nil, fmt.Errorf("failed to decode for merging: %w", err)
+		}
 	}
 	return merged, nil
-}
-
-func structToTree(value any) (map[string]any, error) {
-	encoded, err := json.Marshal(value)
-	if err != nil {
-		return nil, fmt.Errorf("failed to encode for merging: %w", err)
-	}
-	tree := map[string]any{}
-	if err := json.Unmarshal(encoded, &tree); err != nil {
-		return nil, fmt.Errorf("failed to decode for merging: %w", err)
-	}
-	return tree, nil
-}
-
-func ptr[T any](v T) *T { return &v }
-
-func valueOr[T any](value *T, fallback T) T {
-	if value != nil {
-		return *value
-	}
-	return fallback
-}
-
-func firstNonZero[T comparable](value, fallback T) T {
-	var zero T
-	if value != zero {
-		return value
-	}
-	return fallback
 }
 
 func firstNonEmpty[T any](value, fallback []T) []T {

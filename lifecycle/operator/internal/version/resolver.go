@@ -23,7 +23,6 @@ import (
 	"strings"
 	"time"
 
-	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote"
 	"oras.land/oras-go/v2/registry/remote/auth"
 	"oras.land/oras-go/v2/registry/remote/retry"
@@ -195,10 +194,4 @@ func parseTag(pattern *regexp.Regexp, tag string) (Result, bool) {
 		BuildTime: time.Unix(seconds, 0).UTC(),
 		Commit:    match[2],
 	}, true
-}
-
-// ParseReference splits a repository reference into its registry and path, for
-// error messages and logging.
-func ParseReference(repository string) (registry.Reference, error) {
-	return registry.ParseReference(repository)
 }

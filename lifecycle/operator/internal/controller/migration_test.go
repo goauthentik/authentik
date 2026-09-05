@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/utils/ptr"
 
 	instancev1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
@@ -198,7 +199,7 @@ func TestMigrationJobNameIgnoresUnrelatedChanges(t *testing.T) {
 	base := testAuthentik(instancev1alpha1.AuthentikSpec{})
 	scaled := testAuthentik(instancev1alpha1.AuthentikSpec{
 		Server: &instancev1alpha1.ServerSpec{
-			ComponentSpec: instancev1alpha1.ComponentSpec{Replicas: ptr(int32(5))},
+			ComponentSpec: instancev1alpha1.ComponentSpec{Replicas: ptr.To(int32(5))},
 		},
 	})
 
@@ -304,12 +305,12 @@ func TestLabelSafeVersion(t *testing.T) {
 	}
 
 	for version, want := range cases {
-		got := labelSafeVersion(version)
+		got := instancev1alpha1.LabelSafeVersion(version)
 		if got != want {
-			t.Errorf("labelSafeVersion(%q) = %q, want %q", version, got, want)
+			t.Errorf("instancev1alpha1.LabelSafeVersion(%q) = %q, want %q", version, got, want)
 		}
 		if errs := validation.IsValidLabelValue(got); len(errs) > 0 {
-			t.Errorf("labelSafeVersion(%q) = %q, which is not a valid label value: %v", version, got, errs)
+			t.Errorf("instancev1alpha1.LabelSafeVersion(%q) = %q, which is not a valid label value: %v", version, got, errs)
 		}
 	}
 }
@@ -428,5 +429,3 @@ func TestMigrationTroubleReasons(t *testing.T) {
 		}
 	}
 }
-
-func ptr[T any](v T) *T { return &v }

@@ -31,6 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
@@ -149,7 +150,7 @@ func (a *Applier) forApply(object client.Object) (*unstructured.Unstructured, er
 		return copied, nil
 	}
 
-	gvk, err := apiutilGVK(object, a.Scheme)
+	gvk, err := apiutil.GVKForObject(object, a.Scheme)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +181,7 @@ func (a *Applier) canOwn(owner, object client.Object) bool {
 
 // objectKey identifies an object for logging and comparison.
 func (a *Applier) objectKey(object client.Object) (ObjectKey, error) {
-	gvk, err := apiutilGVK(object, a.Scheme)
+	gvk, err := apiutil.GVKForObject(object, a.Scheme)
 	if err != nil {
 		return ObjectKey{}, err
 	}
@@ -189,23 +190,6 @@ func (a *Applier) objectKey(object client.Object) (ObjectKey, error) {
 		Namespace:        object.GetNamespace(),
 		Name:             object.GetName(),
 	}, nil
-}
-
-// apiutilGVK resolves an object's kind, preferring what the object already
-// carries so unstructured objects work without being in the scheme.
-func apiutilGVK(object client.Object, scheme *runtime.Scheme) (schema.GroupVersionKind, error) {
-	if gvk := object.GetObjectKind().GroupVersionKind(); gvk.Kind != "" {
-		return gvk, nil
-	}
-
-	kinds, _, err := scheme.ObjectKinds(object)
-	if err != nil {
-		return schema.GroupVersionKind{}, fmt.Errorf("failed to resolve the kind of %T: %w", object, err)
-	}
-	if len(kinds) == 0 {
-		return schema.GroupVersionKind{}, fmt.Errorf("no kind registered for %T", object)
-	}
-	return kinds[0], nil
 }
 
 // isMissingKind reports whether an error means the cluster does not know the

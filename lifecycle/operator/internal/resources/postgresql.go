@@ -17,6 +17,7 @@ limitations under the License.
 package resources
 
 import (
+	"cmp"
 	"fmt"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -24,6 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/utils/ptr"
 
 	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
@@ -48,7 +50,7 @@ func (b *Builder) postgresqlEnabled() bool {
 // subchart's own naming produce. Using the fullname would move the database for
 // any release whose name does not already contain "authentik".
 func (b *Builder) PostgreSQLName() string {
-	return truncate63(fmt.Sprintf("%s-%s", b.Authentik.ReleaseName(), postgresqlComponent))
+	return akv1alpha1.TruncateName(fmt.Sprintf("%s-%s", b.Authentik.ReleaseName(), postgresqlComponent))
 }
 
 // PostgreSQLServiceName is the hostname authentik connects to. It matches the
@@ -127,8 +129,8 @@ func (b *Builder) PostgreSQLStatefulSet() (*appsv1.StatefulSet, error) {
 		return nil, err
 	}
 
-	database := firstNonZero(spec.Auth.Database, defaultPostgresDatabase)
-	user := firstNonZero(spec.Auth.Username, defaultPostgresUser)
+	database := cmp.Or(spec.Auth.Database, defaultPostgresDatabase)
+	user := cmp.Or(spec.Auth.Username, defaultPostgresUser)
 
 	env := []corev1.EnvVar{
 		{Name: "POSTGRES_DB", Value: database},
@@ -142,7 +144,7 @@ func (b *Builder) PostgreSQLStatefulSet() (*appsv1.StatefulSet, error) {
 	args := spec.Args
 	if len(args) == 0 {
 		args = []string{"-c", fmt.Sprintf("max_connections=%d",
-			valueOr(spec.MaxConnections, defaultPostgresMaxConnections))}
+			ptr.Deref(spec.MaxConnections, defaultPostgresMaxConnections))}
 	}
 
 	resources := corev1.ResourceRequirements{}
@@ -177,7 +179,7 @@ func (b *Builder) PostgreSQLStatefulSet() (*appsv1.StatefulSet, error) {
 		ObjectMeta: b.objectMeta(b.PostgreSQLName(), postgresqlComponent, nil, nil),
 		Spec: appsv1.StatefulSetSpec{
 			ServiceName: b.PostgreSQLName(),
-			Replicas:    ptr(int32(1)),
+			Replicas:    ptr.To(int32(1)),
 			Selector:    &metav1.LabelSelector{MatchLabels: b.SelectorLabels(postgresqlComponent)},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{Labels: b.Labels(postgresqlComponent)},
@@ -224,9 +226,9 @@ func (b *Builder) attachPostgreSQLStorage(statefulSet *appsv1.StatefulSet, spec 
 	size := defaultPostgresStorage
 	var storageClass *string
 	if persistence != nil {
-		size = firstNonZero(persistence.Size, size)
+		size = cmp.Or(persistence.Size, size)
 		if persistence.StorageClass != "" {
-			storageClass = ptr(persistence.StorageClass)
+			storageClass = ptr.To(persistence.StorageClass)
 		}
 	}
 
@@ -248,7 +250,7 @@ func (b *Builder) postgresqlPasswordRef() (*corev1.EnvVarSource, error) {
 
 	if spec.Auth.ExistingSecret != "" {
 		return secretKeyRef(spec.Auth.ExistingSecret,
-			firstNonZero(spec.Auth.SecretKey, defaultPostgresSecretKey)), nil
+			cmp.Or(spec.Auth.SecretKey, defaultPostgresSecretKey)), nil
 	}
 	if spec.Auth.Password == "" {
 		return nil, fmt.Errorf("postgresql.auth.password or postgresql.auth.existingSecret is required when postgresql is enabled")
@@ -260,9 +262,9 @@ func (b *Builder) postgresqlPasswordRef() (*corev1.EnvVarSource, error) {
 func (b *Builder) postgresqlImage(spec *akv1alpha1.PostgreSQLSpec) string {
 	registry, repository, tag := defaultPostgresRegistry, defaultPostgresRepository, defaultPostgresTag
 	if spec.Image != nil {
-		registry = firstNonZero(spec.Image.Registry, registry)
-		repository = firstNonZero(spec.Image.Repository, repository)
-		tag = firstNonZero(spec.Image.Tag, tag)
+		registry = cmp.Or(spec.Image.Registry, registry)
+		repository = cmp.Or(spec.Image.Repository, repository)
+		tag = cmp.Or(spec.Image.Tag, tag)
 	}
 	return fmt.Sprintf("%s/%s:%s", registry, repository, tag)
 }

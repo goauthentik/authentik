@@ -86,7 +86,7 @@ NAME        PHASE   VERSION    OBJECTS   READY   AGE
 authentik   Ready   2026.8.0   11        True    5d
 ```
 
-`phase` is one of `Pending`, `Migrating`, `Deploying`, `Ready`, `Failed`.
+`phase` is one of `Migrating`, `Deploying`, `Ready`, `Failed`.
 Conditions carry the detail: `Ready`, `Progressing`, `Degraded`, `Migrated` and
 `Deployed`.
 
