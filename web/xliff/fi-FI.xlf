@@ -1805,10 +1805,6 @@
   <source>Select a signing key...</source>
   <target>Valitse allekirjoitusavain...</target>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-  <target>Avain, jota käytetään tunnisteiden allekirjoittamiseen.</target>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
   <target>Prosessin lisäasetukset</target>
@@ -3582,14 +3578,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
   <target>Polut eivät voi alkaa eivätkä päättyä kauttaviivaan, mutta ne voivat sisältää mitä tahansa muita merkkejä polkusegmenteissään. Polkuja käytetään pelkästään organisointiin, ne eivät vaikuta käyttöoikeuksiin, ryhmien jäsenyyksiin tai mihinkään muuhun.</target>
-</trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-  <target>Muokkaa käytäntöä</target>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
-  <target>Muokkaa ryhmää</target>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -7087,10 +7075,6 @@ läpäisy estyy kun jompi kumpi tai molemmat vaihtoehdot ylittävät raja-arvon.
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
   <target>Vaiheen tyyppi</target>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
-  <target>Muokkaa vaihetta</target>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -12293,6 +12277,9 @@ Liitokset käyttäjiin/ryhmiin tarkistetaan tapahtuman käyttäjästä.</target>
   <source>Show arbitrary input fields to the user, for example during enrollment.
                         Data is saved in the flow context under the
                         <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
 </trans-unit>
 </body>
 </file>

@@ -1804,10 +1804,6 @@
   <source>Select a signing key...</source>
   <target>选择一个签名密钥..</target>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-  <target>用于签名令牌的密钥。</target>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
   <target>高级流程设置</target>
@@ -3581,14 +3577,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
   <target>用户路径不能以斜杠开头或结尾，但可以包含任何其他字符作为路径段。路径目前仅用于组织，不会影响其权限、组成员身份或其他任何内容。</target>
-</trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-  <target>编辑策略</target>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
-  <target>编辑组</target>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -7147,10 +7135,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
   <target>阶段类型</target>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
-  <target>编辑阶段</target>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -12689,6 +12673,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Show arbitrary input fields to the user, for example during enrollment.
                         Data is saved in the flow context under the
                         <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
 </trans-unit>
 </body>
 </file>
