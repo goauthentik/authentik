@@ -7,6 +7,18 @@ import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
 import { msg, str } from "@lit/localize";
 import { html } from "lit-html";
 
+export interface IconEditButtonProps<T> {
+    modalProps?: T extends NamedEntityElementConstructor
+        ? LitPropertyRecord<InstanceType<T>>
+        : null;
+    options?: DialogInit;
+    iconName?: string;
+}
+
+export const defaultIconEditButtonProps = {
+    iconName: "fa-edit",
+};
+
 /**
  * A helper function to render a button that opens a modal for editing an existing model instance.
  *
@@ -20,12 +32,11 @@ export function IconEditButton<T extends NamedEntityElementConstructor>(
     factory: T,
     instancePk?: string | number | null,
     itemName?: string | null,
-    modalProps?: T extends NamedEntityElementConstructor
-        ? LitPropertyRecord<InstanceType<T>>
-        : null,
-    options?: DialogInit,
+    props: IconEditButtonProps<T> = defaultIconEditButtonProps,
 ): SlottedTemplateResult {
-    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Entity");
+    props = { ...defaultIconEditButtonProps, ...props };
+    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Object");
+    const { modalProps, options, iconName } = props;
     const label = itemName
         ? msg(str`Edit "${itemName}" ${noun}`, {
               id: "entity.edit.named",
@@ -34,16 +45,15 @@ export function IconEditButton<T extends NamedEntityElementConstructor>(
               id: "entity.edit",
           });
 
-    const props: LitPropertyRecord<ModelFormLikeConstructor> = { ...modalProps, instancePk };
-
+    const invokerProps: LitPropertyRecord<ModelFormLikeConstructor> = { ...modalProps, instancePk };
     return html`<button
         type="button"
         aria-label=${label}
         class="pf-c-button pf-m-plain"
-        ${modalInvoker(factory, props as unknown as undefined, options)}
+        ${modalInvoker(factory, invokerProps as unknown as undefined, options)}
     >
-        <pf-tooltip position="top" content=${msg("Edit")}>
-            <i aria-hidden="true" class="fas fa-edit"></i>
+        <pf-tooltip position="top" content=${label}>
+            <i aria-hidden="true" class="fas ${iconName}"></i>
         </pf-tooltip>
     </button>`;
 }

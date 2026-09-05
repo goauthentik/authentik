@@ -108,7 +108,9 @@ export class BoundRequestRulesTable extends Table<RequestRuleBinding> {
                 : html`${msg("-")}`}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(RequestRuleBindingForm, item.uuid, null, {
-                    targetPk: this.target || "",
+                    modalProps: {
+                        targetPk: this.target || "",
+                    },
                 })}
             </div>`,
         ];

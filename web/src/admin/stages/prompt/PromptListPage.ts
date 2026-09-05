@@ -83,7 +83,7 @@ export class PromptListPage extends TablePage<Prompt> {
             })}`,
             html`<div class="ak-c-table__actions">
                 ${IconEditButton(PromptForm, item.pk, item.name, {
-                    size: PFSize.XLarge,
+                    modalProps: { size: PFSize.XLarge },
                 })}
                 ${IconPermissionButton(item.name, {
                     model: ModelEnum.AuthentikStagesPromptPrompt,
