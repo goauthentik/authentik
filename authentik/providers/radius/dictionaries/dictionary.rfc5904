@@ -1,0 +1,25 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 5904.
+#	http://www.ietf.org/rfc/rfc5904.txt
+#
+#	$Id$
+#
+
+# The next two attributes are continued, like EAP-Message
+ATTRIBUTE	PKM-SS-Cert				137	octets concat
+ATTRIBUTE	PKM-CA-Cert				138	octets concat
+
+# 28 bytes of data, 7 integers
+ATTRIBUTE	PKM-Config-Settings			139	octets
+ATTRIBUTE	PKM-Cryptosuite-List			140	octets
+ATTRIBUTE	PKM-SAID				141	short
+
+# 6 bytes of data: SAID, 1 byte of type, 3 of cryptosuite
+ATTRIBUTE	PKM-SA-Descriptor			142	octets
+
+# 133 bytes of data: integer lifetime, 1 byte sequence, 128 bytes of key
+ATTRIBUTE	PKM-Auth-Key				143	octets

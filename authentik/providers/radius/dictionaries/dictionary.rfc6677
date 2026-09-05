@@ -1,0 +1,21 @@
+# -*- text -*-
+# Copyright (C) 2023 The FreeRADIUS Server project and contributors
+# This work is licensed under CC-BY version 4.0 https://creativecommons.org/licenses/by/4.0
+# Version $Id$
+#
+#	Attributes and values defined in RFC 6677
+#	http://www.ietf.org/rfc/rfc6677.txt
+#
+
+ATTRIBUTE	EAP-Lower-Layer				163	integer
+
+VALUE	EAP-Lower-Layer			Wired-IEEE-802.1X	1
+VALUE	EAP-Lower-Layer			IEEE-802.1X-No-Preauth	2
+VALUE	EAP-Lower-Layer			IEEE-802.1X-Preauth	3
+VALUE	EAP-Lower-Layer			IEEE-802.16e		4
+VALUE	EAP-Lower-Layer			IKEv2			5
+VALUE	EAP-Lower-Layer			PPP			6
+VALUE	EAP-Lower-Layer			PANA-No-Preauth		7
+VALUE	EAP-Lower-Layer			GSS-API			8
+VALUE	EAP-Lower-Layer			PANA-Preauth		9
+
