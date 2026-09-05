@@ -19,6 +19,7 @@ package resources
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -136,9 +137,9 @@ func (b *Builder) configDefaults() map[string]any {
 				"asn":   geoipMountPath + "/GeoLite2-ASN.mmdb",
 			},
 		},
-		"web": map[string]any{fieldPath: defaultWebPath},
+		"web": map[string]any{"path": defaultWebPath},
 		"email": map[string]any{
-			fieldPort: float64(587),
+			"port":    float64(587),
 			"use_tls": false,
 			"use_ssl": false,
 			"timeout": float64(30),
@@ -155,10 +156,10 @@ func (b *Builder) configDefaults() map[string]any {
 			// The chart points authentik at the bundled database's name whether
 			// or not it is enabled, so an external database is named explicitly
 			// either way.
-			"host":    b.PostgreSQLServiceName(),
-			"name":    defaultPostgresDatabase,
-			"user":    defaultPostgresUser,
-			fieldPort: float64(defaultPostgresPort),
+			"host": b.PostgreSQLServiceName(),
+			"name": defaultPostgresDatabase,
+			"user": defaultPostgresUser,
+			"port": float64(defaultPostgresPort),
 		},
 	}
 }
@@ -167,13 +168,7 @@ func (b *Builder) configDefaults() map[string]any {
 func flatten(prefix string, tree map[string]any, out map[string]string) error {
 	// Sorted for a stable result, so an unchanged config produces an unchanged
 	// Secret and does not churn the pod template hash.
-	keys := make([]string, 0, len(tree))
-	for key := range tree {
-		keys = append(keys, key)
-	}
-	slices.Sort(keys)
-
-	for _, key := range keys {
+	for _, key := range slices.Sorted(maps.Keys(tree)) {
 		name := strings.ToUpper(key)
 		if prefix != "" {
 			name = prefix + "__" + name
@@ -209,10 +204,8 @@ func renderValue(value any) (string, error) {
 	case bool:
 		return strconv.FormatBool(typed), nil
 	case float64:
-		// JSON numbers decode as float64; integers must not gain a ".0".
-		if typed == float64(int64(typed)) {
-			return strconv.FormatInt(int64(typed), 10), nil
-		}
+		// JSON numbers decode as float64; 'f' with precision -1 renders a whole
+		// number without gaining a ".0".
 		return strconv.FormatFloat(typed, 'f', -1, 64), nil
 	default:
 		encoded, err := json.Marshal(typed)

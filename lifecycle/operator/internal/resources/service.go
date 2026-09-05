@@ -17,11 +17,13 @@ limitations under the License.
 package resources
 
 import (
+	"cmp"
 	"fmt"
 	"strconv"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/utils/ptr"
 
 	akv1alpha1 "goauthentik.io/lifecycle/operator/api/v1alpha1"
 )
@@ -33,30 +35,30 @@ func (b *Builder) ServerService(c *component) *corev1.Service {
 		spec = s.Service
 	}
 
-	serviceType := corev1.ServiceType(firstNonZero(string(spec.Type), defaultServiceType))
+	serviceType := corev1.ServiceType(cmp.Or(string(spec.Type), defaultServiceType))
 
 	httpPort := corev1.ServicePort{
-		Name:       firstNonZero(spec.ServicePortHTTPName, defaultServicePortHTTPName),
+		Name:       cmp.Or(spec.ServicePortHTTPName, defaultServicePortHTTPName),
 		Protocol:   corev1.ProtocolTCP,
-		Port:       valueOr(spec.ServicePortHTTP, defaultServicePortHTTP),
+		Port:       ptr.Deref(spec.ServicePortHTTP, defaultServicePortHTTP),
 		TargetPort: intstr.FromInt32(b.containerPort(c, "http")),
 	}
 	httpsPort := corev1.ServicePort{
-		Name:       firstNonZero(spec.ServicePortHTTPSName, defaultServicePortHTTPSName),
+		Name:       cmp.Or(spec.ServicePortHTTPSName, defaultServicePortHTTPSName),
 		Protocol:   corev1.ProtocolTCP,
-		Port:       valueOr(spec.ServicePortHTTPS, defaultServicePortHTTPS),
+		Port:       ptr.Deref(spec.ServicePortHTTPS, defaultServicePortHTTPS),
 		TargetPort: intstr.FromInt32(b.containerPort(c, "https")),
 	}
 
 	if serviceType == corev1.ServiceTypeNodePort {
-		httpPort.NodePort = valueOr(spec.NodePortHTTP, defaultNodePortHTTP)
-		httpsPort.NodePort = valueOr(spec.NodePortHTTPS, defaultNodePortHTTPS)
+		httpPort.NodePort = ptr.Deref(spec.NodePortHTTP, defaultNodePortHTTP)
+		httpsPort.NodePort = ptr.Deref(spec.NodePortHTTPS, defaultNodePortHTTPS)
 	}
 	if spec.ServicePortHTTPAppProtocol != "" {
-		httpPort.AppProtocol = ptr(spec.ServicePortHTTPAppProtocol)
+		httpPort.AppProtocol = ptr.To(spec.ServicePortHTTPAppProtocol)
 	}
 	if spec.ServicePortHTTPSAppProtocol != "" {
-		httpsPort.AppProtocol = ptr(spec.ServicePortHTTPSAppProtocol)
+		httpsPort.AppProtocol = ptr.To(spec.ServicePortHTTPSAppProtocol)
 	}
 
 	service := &corev1.Service{
@@ -102,7 +104,7 @@ func (b *Builder) MetricsService(c *component) *corev1.Service {
 		spec = metrics.Service
 	}
 
-	port := valueOr(spec.ServicePort, defaultMetricsServicePort)
+	port := ptr.Deref(spec.ServicePort, defaultMetricsServicePort)
 	annotations := spec.Annotations
 	if g := b.Authentik.Spec.Global; g != nil && g.AddPrometheusAnnotations != nil && *g.AddPrometheusAnnotations {
 		// An alternative to a ServiceMonitor, for clusters without the
@@ -113,13 +115,13 @@ func (b *Builder) MetricsService(c *component) *corev1.Service {
 		}, annotations)
 	}
 
-	serviceType := corev1.ServiceType(firstNonZero(string(spec.Type), defaultServiceType))
+	serviceType := corev1.ServiceType(cmp.Or(string(spec.Type), defaultServiceType))
 	service := &corev1.Service{
 		ObjectMeta: b.objectMeta(b.metricsName(c), c.name+"-metrics", spec.Labels, annotations),
 		Spec: corev1.ServiceSpec{
 			Type: serviceType,
 			Ports: []corev1.ServicePort{{
-				Name:       firstNonZero(spec.PortName, defaultMetricsPortName),
+				Name:       cmp.Or(spec.PortName, defaultMetricsPortName),
 				Protocol:   corev1.ProtocolTCP,
 				Port:       port,
 				TargetPort: intstr.FromString(defaultMetricsPortName),
@@ -139,7 +141,7 @@ func (b *Builder) MetricsService(c *component) *corev1.Service {
 
 // metricsName is the name of a component's metrics Service.
 func (b *Builder) metricsName(c *component) string {
-	return truncate63(fmt.Sprintf("%s-metrics", c.objectName))
+	return akv1alpha1.TruncateName(fmt.Sprintf("%s-metrics", c.objectName))
 }
 
 // containerPort looks up a named port on the component's container.

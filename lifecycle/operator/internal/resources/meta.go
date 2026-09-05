@@ -26,7 +26,6 @@ package resources
 import (
 	"fmt"
 	"maps"
-	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -60,7 +59,7 @@ func (b *Builder) Namespace() string {
 func (b *Builder) Labels(component string) map[string]string {
 	labels := map[string]string{
 		"app.kubernetes.io/part-of": "authentik",
-		"app.kubernetes.io/version": versionLabelValue(b.Version),
+		"app.kubernetes.io/version": akv1alpha1.LabelSafeVersion(b.Version),
 		ManagedByLabel:              ManagedByValue,
 		InstanceOwnerLabel:          b.Authentik.OwnerLabelValue(),
 	}
@@ -84,26 +83,6 @@ func (b *Builder) SelectorLabels(component string) map[string]string {
 		labels["app.kubernetes.io/component"] = component
 	}
 	return labels
-}
-
-// versionLabelValue makes an image tag usable as a label value, matching the
-// chart's authentik.versionLabelValue helper.
-func versionLabelValue(version string) string {
-	var b strings.Builder
-	for _, c := range version {
-		switch {
-		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9', c == '-', c == '_', c == '.':
-			b.WriteRune(c)
-		default:
-			b.WriteRune('-')
-		}
-	}
-
-	value := b.String()
-	if len(value) > 63 {
-		value = value[:63]
-	}
-	return strings.Trim(value, "-_.")
 }
 
 // objectMeta is the metadata shared by every built object.
@@ -142,20 +121,20 @@ func (b *Builder) ServiceAccountName() string {
 		override = g.FullnameOverride
 	}
 	if override != "" {
-		return truncate63(override)
+		return akv1alpha1.TruncateName(override)
 	}
 
 	// The subchart's own name is "authentik-remote-cluster", but the parent
 	// chart pins fullnameOverride to "authentik", so this is the fallback that
 	// actually applies in practice.
-	return truncate63(akv1alpha1.DefaultChartName)
+	return akv1alpha1.TruncateName(akv1alpha1.DefaultChartName)
 }
 
 // ClusterScopedName is the name for the cluster-scoped RBAC objects. It carries
 // the namespace because ClusterRoles are global and two installs in different
 // namespaces must not collide.
 func (b *Builder) ClusterScopedName() string {
-	return truncate63(fmt.Sprintf("%s-%s", b.ServiceAccountName(), b.Namespace()))
+	return akv1alpha1.TruncateName(fmt.Sprintf("%s-%s", b.ServiceAccountName(), b.Namespace()))
 }
 
 // mergedMap layers maps left to right, returning nil when the result is empty
@@ -173,11 +152,4 @@ func nilIfEmpty(m map[string]string) map[string]string {
 		return nil
 	}
 	return m
-}
-
-func truncate63(name string) string {
-	if len(name) > 63 {
-		name = name[:63]
-	}
-	return strings.TrimSuffix(name, "-")
 }

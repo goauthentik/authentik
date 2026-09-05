@@ -33,6 +33,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/events"
+	"oras.land/oras-go/v2/registry"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -53,12 +54,10 @@ const (
 	// namespaced resource and so are not garbage collected with it.
 	finalizer = "instance.goauthentik.io/finalizer"
 
-	// versionLabel records which authentik version an object belongs to.
-	versionLabel = "instance.goauthentik.io/version"
-
-	// versionAnnotation carries the unmodified image tag, since a tag is not
-	// always a valid label value.
-	versionAnnotation = "instance.goauthentik.io/version"
+	// versionKey records which authentik version an object belongs to. As a
+	// label its value is sanitized, since a tag is not always a valid label
+	// value; as an annotation it carries the unmodified image tag.
+	versionKey = "instance.goauthentik.io/version"
 
 	// appliedHashAnnotation records on the server Deployment which desired
 	// state produced it.
@@ -346,7 +345,7 @@ func (r *AuthentikReconciler) currentState(ctx context.Context, ak *akv1alpha1.A
 		appliedHash: deployment.Annotations[appliedHashAnnotation],
 		lastApplied: deployment.CreationTimestamp.Time,
 	}
-	if annotated := deployment.Annotations[versionAnnotation]; annotated != "" {
+	if annotated := deployment.Annotations[versionKey]; annotated != "" {
 		state.version = annotated
 	}
 	// Fall back to the image itself, so an instance adopted from a chart
@@ -561,7 +560,7 @@ func (r *AuthentikReconciler) registryCredential(
 		return version.Credential{}, fmt.Errorf("failed to read pull secret %q: %w", name, err)
 	}
 
-	repository, err := version.ParseReference(ak.AutoUpdateRepository())
+	repository, err := registry.ParseReference(ak.AutoUpdateRepository())
 	if err != nil {
 		return version.Credential{}, fmt.Errorf("failed to parse repository %q: %w", ak.AutoUpdateRepository(), err)
 	}
@@ -641,7 +640,7 @@ func annotateAppliedHash(desired []client.Object, serverName, hash, tag string) 
 			annotations = map[string]string{}
 		}
 		annotations[appliedHashAnnotation] = hash
-		annotations[versionAnnotation] = tag
+		annotations[versionKey] = tag
 		object.SetAnnotations(annotations)
 		return
 	}

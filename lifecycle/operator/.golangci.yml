@@ -29,6 +29,11 @@ linters:
       logcheck:
         type: "module"
         description: Checks Go logging calls for Kubernetes logging conventions.
+    goconst:
+      # Building unstructured objects repeats field names like "kind" and
+      # "port" by nature. A constant that spells its own value reads worse than
+      # the literal, so only flag something that really does repeat.
+      min-occurrences: 6
     depguard:
       rules:
         forbid-sort-pkg:

@@ -1,10 +1,12 @@
 package v1alpha1
 
 import (
+	"cmp"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -77,7 +79,7 @@ func (a *Authentik) ChartObjectName() string {
 	if g := a.Spec.Global; g != nil && g.NameOverride != "" {
 		name = g.NameOverride
 	}
-	return truncateName(name)
+	return TruncateName(name)
 }
 
 // Fullname mirrors the chart's "authentik.fullname" template: the prefix shared
@@ -88,22 +90,22 @@ func (a *Authentik) Fullname() string {
 		fullnameOverride = g.FullnameOverride
 	}
 	if fullnameOverride != "" {
-		return truncateName(fullnameOverride)
+		return TruncateName(fullnameOverride)
 	}
 
 	name := a.ChartObjectName()
 	release := a.ReleaseName()
 	if strings.Contains(release, name) {
-		return truncateName(release)
+		return TruncateName(release)
 	}
-	return truncateName(fmt.Sprintf("%s-%s", release, name))
+	return TruncateName(fmt.Sprintf("%s-%s", release, name))
 }
 
 // ComponentFullname is the name of the objects belonging to one component,
 // mirroring the chart's "authentik.server.fullname" and
 // "authentik.worker.fullname" templates.
 func (a *Authentik) ComponentFullname(component string) string {
-	return truncateName(fmt.Sprintf("%s-%s", a.Fullname(), component))
+	return TruncateName(fmt.Sprintf("%s-%s", a.Fullname(), component))
 }
 
 // ServerComponentName is the server's component name, which the chart uses as
@@ -132,13 +134,23 @@ func (a *Authentik) ConfigSecretName() string {
 	return a.Fullname()
 }
 
-// truncateName applies the 63-character DNS label limit the chart's naming
+// TruncateName applies the 63-character DNS label limit the chart's naming
 // templates enforce.
-func truncateName(name string) string {
+func TruncateName(name string) string {
 	if len(name) > 63 {
 		name = name[:63]
 	}
 	return strings.TrimSuffix(name, "-")
+}
+
+// unsafeLabelChars matches everything a label value may not contain.
+var unsafeLabelChars = regexp.MustCompile(`[^a-zA-Z0-9._-]`)
+
+// LabelSafeVersion makes an image tag usable as a label value, matching the
+// chart's authentik.versionLabelValue helper: at most 63 characters of
+// alphanumerics, dashes, underscores and dots, with alphanumeric ends.
+func LabelSafeVersion(version string) string {
+	return strings.Trim(TruncateName(unsafeLabelChars.ReplaceAllString(version, "-")), "-_.")
 }
 
 // ImageRepository is the repository the authentik server and worker images come
@@ -322,16 +334,9 @@ func (g *GlobalSpec) GetAffinity() AffinityPreset {
 	}
 	if node := g.Affinity.NodeAffinity; node != nil {
 		preset.NodeAffinity = &NodeAffinityPreset{
-			Type:             firstNonEmptyString(node.Type, preset.NodeAffinity.Type),
+			Type:             cmp.Or(node.Type, preset.NodeAffinity.Type),
 			MatchExpressions: node.MatchExpressions,
 		}
 	}
 	return preset
-}
-
-func firstNonEmptyString(value, fallback string) string {
-	if value != "" {
-		return value
-	}
-	return fallback
 }

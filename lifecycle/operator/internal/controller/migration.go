@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
+	"slices"
 	"strings"
 
 	batchv1 "k8s.io/api/batch/v1"
@@ -15,6 +16,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -91,20 +93,9 @@ func (r *AuthentikReconciler) buildMigrationJob(
 		worker = ak.Spec.Worker.ComponentSpec
 	}
 
-	backoffLimit := instancev1alpha1.DefaultMigrationBackoffLimit
-	if spec.BackoffLimit != nil {
-		backoffLimit = *spec.BackoffLimit
-	}
-
-	deadline := instancev1alpha1.DefaultMigrationDeadlineSeconds
-	if spec.ActiveDeadlineSeconds != nil {
-		deadline = *spec.ActiveDeadlineSeconds
-	}
-
-	ttl := instancev1alpha1.DefaultMigrationTTLSeconds
-	if spec.TTLSecondsAfterFinished != nil {
-		ttl = *spec.TTLSecondsAfterFinished
-	}
+	backoffLimit := ptr.Deref(spec.BackoffLimit, instancev1alpha1.DefaultMigrationBackoffLimit)
+	deadline := ptr.Deref(spec.ActiveDeadlineSeconds, instancev1alpha1.DefaultMigrationDeadlineSeconds)
+	ttl := ptr.Deref(spec.TTLSecondsAfterFinished, instancev1alpha1.DefaultMigrationTTLSeconds)
 
 	resources := corev1.ResourceRequirements{}
 	switch {
@@ -122,14 +113,14 @@ func (r *AuthentikReconciler) buildMigrationJob(
 		"app.kubernetes.io/managed-by": instancev1alpha1.ManagedByLabelValue,
 		// Makes it obvious which Job belongs to which rollout, and lets the
 		// operator find its own Jobs without parsing names.
-		versionLabel: labelSafeVersion(version),
+		versionKey: instancev1alpha1.LabelSafeVersion(version),
 	}
 	maps.Copy(labels, global.AdditionalLabels)
 	if spec.Metadata != nil {
 		maps.Copy(labels, spec.Metadata.Labels)
 	}
 
-	annotations := map[string]string{versionAnnotation: version}
+	annotations := map[string]string{versionKey: version}
 	podAnnotations := maps.Clone(global.PodAnnotations)
 	if spec.Metadata != nil {
 		maps.Copy(annotations, spec.Metadata.Annotations)
@@ -152,9 +143,9 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	envFrom = append(envFrom, global.EnvFrom...)
 	envFrom = append(envFrom, worker.EnvFrom...)
 
-	env := append(append([]corev1.EnvVar{}, global.Env...), worker.Env...)
-	volumeMounts := append(append([]corev1.VolumeMount{}, global.VolumeMounts...), worker.VolumeMounts...)
-	volumes := append(append([]corev1.Volume{}, global.Volumes...), worker.Volumes...)
+	env := slices.Concat(global.Env, worker.Env)
+	volumeMounts := slices.Concat(global.VolumeMounts, worker.VolumeMounts)
+	volumes := slices.Concat(global.Volumes, worker.Volumes)
 
 	// The chart lets a component override each of these, falling back to the
 	// global value when it does not.
@@ -170,10 +161,7 @@ func (r *AuthentikReconciler) buildMigrationJob(
 	if len(tolerations) == 0 {
 		tolerations = global.Tolerations
 	}
-	securityContext := worker.SecurityContext
-	if securityContext == nil {
-		securityContext = global.SecurityContext
-	}
+	securityContext := cmp.Or(worker.SecurityContext, global.SecurityContext)
 	var pullPolicy corev1.PullPolicy
 	if worker.Image != nil {
 		pullPolicy = worker.Image.PullPolicy
@@ -306,27 +294,6 @@ func jobFailureReason(job *batchv1.Job) string {
 	return "the migration Job failed"
 }
 
-// labelSafeVersion turns an image tag into something usable as a label value:
-// at most 63 characters of alphanumerics, dashes, underscores and dots, with
-// alphanumeric ends.
-func labelSafeVersion(version string) string {
-	var b strings.Builder
-	for _, c := range version {
-		switch {
-		case c >= 'a' && c <= 'z', c >= 'A' && c <= 'Z', c >= '0' && c <= '9', c == '-', c == '_', c == '.':
-			b.WriteRune(c)
-		default:
-			b.WriteRune('-')
-		}
-	}
-
-	value := b.String()
-	if len(value) > 63 {
-		value = value[:63]
-	}
-	return strings.Trim(value, "-_.")
-}
-
 // stuckWaitingReasons are container waiting reasons that will not clear on
 // their own within a useful timeframe. A Job whose pod is in one of these never
 // reaches JobFailed, so without reporting them the rollout would sit held for
@@ -369,8 +336,7 @@ func (r *AuthentikReconciler) migrationTrouble(ctx context.Context, job *batchv1
 			}
 		}
 
-		statuses := append(append([]corev1.ContainerStatus{},
-			pod.Status.InitContainerStatuses...), pod.Status.ContainerStatuses...)
+		statuses := slices.Concat(pod.Status.InitContainerStatuses, pod.Status.ContainerStatuses)
 		for _, status := range statuses {
 			waiting := status.State.Waiting
 			if waiting != nil && stuckWaitingReasons[waiting.Reason] {

@@ -22,6 +22,7 @@ import (
 	policyv1 "k8s.io/api/policy/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+	"k8s.io/utils/ptr"
 )
 
 // HorizontalPodAutoscaler scales a component, or nil when autoscaling is off.
@@ -52,7 +53,7 @@ func (b *Builder) HorizontalPodAutoscaler(c *component) *autoscalingv2.Horizonta
 				Name:       c.objectName,
 			},
 			MinReplicas: spec.MinReplicas,
-			MaxReplicas: valueOr(spec.MaxReplicas, 5),
+			MaxReplicas: ptr.Deref(spec.MaxReplicas, 5),
 			Metrics:     metrics,
 			Behavior:    spec.Behavior,
 		},
@@ -66,7 +67,7 @@ func utilizationMetric(name corev1.ResourceName, target int32) autoscalingv2.Met
 			Name: name,
 			Target: autoscalingv2.MetricTarget{
 				Type:               autoscalingv2.UtilizationMetricType,
-				AverageUtilization: ptr(target),
+				AverageUtilization: ptr.To(target),
 			},
 		},
 	}
@@ -95,7 +96,7 @@ func (b *Builder) PodDisruptionBudget(c *component) *policyv1.PodDisruptionBudge
 	case spec.MinAvailable != nil:
 		pdb.Spec.MinAvailable = spec.MinAvailable
 	default:
-		pdb.Spec.MinAvailable = ptr(intstr.FromInt32(0))
+		pdb.Spec.MinAvailable = ptr.To(intstr.FromInt32(0))
 	}
 
 	return pdb

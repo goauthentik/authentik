@@ -206,10 +206,6 @@ type PostgreSQLAuthSpec struct {
 	// +optional
 	Password string `json:"password,omitempty"`
 
-	// postgresPassword is the superuser password. Prefer existingSecret.
-	// +optional
-	PostgresPassword string `json:"postgresPassword,omitempty"`
-
 	// existingSecret reads the passwords from an existing Secret.
 	// +optional
 	ExistingSecret string `json:"existingSecret,omitempty"`
@@ -529,14 +525,10 @@ const (
 )
 
 // Phase is a coarse, human-facing summary of what the operator is doing.
-// +kubebuilder:validation:Enum=Pending;Migrating;Deploying;Ready;Failed
+// +kubebuilder:validation:Enum=Migrating;Deploying;Ready;Failed
 type Phase string
 
 const (
-	// PhasePending means reconciliation has not started or is resolving the
-	// desired version.
-	PhasePending Phase = "Pending"
-
 	// PhaseMigrating means the migration Job is running and the rollout is
 	// held back until it finishes.
 	PhaseMigrating Phase = "Migrating"

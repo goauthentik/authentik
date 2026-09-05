@@ -139,19 +139,5 @@ const (
 // pods, which is how the chart behaves too.
 const configChecksumAnnotation = "checksum/secret"
 
-// Field names used when building unstructured objects, where there is no Go
-// type to spell them for us.
-const (
-	fieldAPIVersion = "apiVersion"
-	fieldKind       = "kind"
-	fieldSpec       = "spec"
-	fieldPort       = "port"
-	fieldPath       = "path"
-)
-
 // volumeNameData is the volume and claim name for the database's storage.
 const volumeNameData = "data"
-
-// verbList is read-only access, used where the worker only needs to discover
-// what a cluster supports.
-const verbList = "list"
