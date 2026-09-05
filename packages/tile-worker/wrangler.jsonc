@@ -1,0 +1,28 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "authentik-tile-worker",
+    "main": "src/worker.ts",
+    "compatibility_date": "2025-04-01",
+    "compatibility_flags": ["nodejs_compat"],
+    "minify": true,
+    "observability": {
+        "enabled": true
+    },
+    "r2_buckets": [
+        {
+            "binding": "TILES_BUCKET",
+            "bucket_name": "authentik-tiles"
+        }
+    ],
+    "vars": {
+        "TILES_PATH": "tiles",
+        "ALLOWED_ORIGINS": "*"
+    }
+    // To bind a custom domain, uncomment and edit the route below:
+    // "routes": [
+    //     {
+    //         "pattern": "tiles.goauthentik.io",
+    //         "custom_domain": true
+    //     }
+    // ]
+}
