@@ -5817,6 +5817,7 @@
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleuserkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -5826,6 +5827,7 @@
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleuserkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -5835,6 +5837,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleuserkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -5844,6 +5847,7 @@
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleuserkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -7211,6 +7215,7 @@
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleuserkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -7220,6 +7225,7 @@
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleuserkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -7229,6 +7235,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleuserkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -7238,6 +7245,7 @@
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleuserkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
@@ -8102,6 +8110,93 @@
                         "type": "integer"
                     },
                     "title": "Jwt federation providers"
+                },
+                "apple_psso_authentication_method": {
+                    "type": "string",
+                    "enum": [
+                        "user_secure_enclave_key",
+                        "password"
+                    ],
+                    "title": "Apple psso authentication method"
+                },
+                "apple_psso_authentication_grace_period": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso authentication grace period"
+                },
+                "apple_psso_offline_grace_period": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso offline grace period"
+                },
+                "apple_psso_non_platform_sso_accounts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "title": "Apple psso non platform sso accounts"
+                    },
+                    "title": "Apple psso non platform sso accounts"
+                },
+                "apple_psso_enable_create_user_at_login": {
+                    "type": "boolean",
+                    "title": "Apple psso enable create user at login"
+                },
+                "apple_psso_login_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso login policy"
+                },
+                "apple_psso_unlock_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso unlock policy"
+                },
+                "apple_psso_unlock_allow_touch_id_or_watch": {
+                    "type": "boolean",
+                    "title": "Apple psso unlock allow touch id or watch"
+                },
+                "apple_psso_filevault_policy": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "attempt",
+                        "require"
+                    ],
+                    "title": "Apple psso filevault policy"
+                },
+                "apple_psso_login_frequency": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Apple psso login frequency"
+                },
+                "apple_psso_biometric_requirement": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "current_set",
+                        "any"
+                    ],
+                    "title": "Apple psso biometric requirement"
+                },
+                "apple_psso_biometric_password_fallback": {
+                    "type": "boolean",
+                    "title": "Apple psso biometric password fallback"
+                },
+                "apple_psso_biometric_reuse_during_unlock": {
+                    "type": "boolean",
+                    "title": "Apple psso biometric reuse during unlock"
                 }
             },
             "required": []
@@ -13711,6 +13806,7 @@
                             "authentik_endpoints_connectors_agent.add_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.add_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.add_applenonce",
+                            "authentik_endpoints_connectors_agent.add_appleuserkey",
                             "authentik_endpoints_connectors_agent.add_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.add_devicetoken",
                             "authentik_endpoints_connectors_agent.add_enrollmenttoken",
@@ -13720,6 +13816,7 @@
                             "authentik_endpoints_connectors_agent.change_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.change_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.change_applenonce",
+                            "authentik_endpoints_connectors_agent.change_appleuserkey",
                             "authentik_endpoints_connectors_agent.change_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.change_devicetoken",
                             "authentik_endpoints_connectors_agent.change_enrollmenttoken",
@@ -13729,6 +13826,7 @@
                             "authentik_endpoints_connectors_agent.delete_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.delete_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.delete_applenonce",
+                            "authentik_endpoints_connectors_agent.delete_appleuserkey",
                             "authentik_endpoints_connectors_agent.delete_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.delete_devicetoken",
                             "authentik_endpoints_connectors_agent.delete_enrollmenttoken",
@@ -13738,6 +13836,7 @@
                             "authentik_endpoints_connectors_agent.view_agentdeviceuserbinding",
                             "authentik_endpoints_connectors_agent.view_appleindependentsecureenclave",
                             "authentik_endpoints_connectors_agent.view_applenonce",
+                            "authentik_endpoints_connectors_agent.view_appleuserkey",
                             "authentik_endpoints_connectors_agent.view_deviceauthenticationtoken",
                             "authentik_endpoints_connectors_agent.view_devicetoken",
                             "authentik_endpoints_connectors_agent.view_enrollment_token_key",
