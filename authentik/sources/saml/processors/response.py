@@ -22,6 +22,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
+    SAML_NAME_ID_FORMAT_UNSPECIFIED,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
     SAML_STATUS_SUCCESS,
@@ -40,9 +41,9 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    InvalidTime,
     MismatchedRequestID,
     MissingSAMLResponse,
-    SAMLException,
     UnsupportedNameIDFormat,
 )
 from authentik.sources.saml.models import (
@@ -138,11 +139,11 @@ class ResponseProcessor:
         before = conditions.attrib.get("NotBefore")
         if before:
             if datetime.fromisoformat(before).replace(tzinfo=UTC) > _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
         on_or_after = conditions.attrib.get("NotOnOrAfter")
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
-                raise SAMLException("Assertion is not valid yet or expired.")
+                raise InvalidTime()
 
     def _verify_signature(self, signature_node: _Element, target: _Element):
         """Verify a single signature node against the given target element."""
@@ -301,7 +302,7 @@ class ResponseProcessor:
         name_id_el, name_id = self._get_name_id()
         if not name_id:
             raise UnsupportedNameIDFormat("Subject's NameID is empty.")
-        _format = name_id_el.attrib["Format"]
+        _format = name_id_el.attrib.get("Format", SAML_NAME_ID_FORMAT_UNSPECIFIED)
         if _format == SAML_NAME_ID_FORMAT_EMAIL:
             return {"email": name_id}
         if _format == SAML_NAME_ID_FORMAT_PERSISTENT:
@@ -320,15 +321,17 @@ class ResponseProcessor:
     def prepare_flow_manager(self) -> SourceFlowManager:
         """Prepare flow plan depending on whether or not the user exists"""
         name_id_el, name_id = self._get_name_id()
+        # The Format attribute is optional, and defaults to unspecified
+        name_id_format = name_id_el.attrib.get("Format", SAML_NAME_ID_FORMAT_UNSPECIFIED)
         # Sanity check, show a warning if NameIDPolicy doesn't match what we go
-        if self._source.name_id_policy != name_id_el.attrib["Format"]:
+        if self._source.name_id_policy != name_id_format:
             LOGGER.warning(
                 "NameID from IdP doesn't match our policy",
                 expected=self._source.name_id_policy,
-                got=name_id_el.attrib["Format"],
+                got=name_id_format,
             )
         # transient NameIDs are handled separately as they don't have to go through flows.
-        if name_id_el.attrib["Format"] == SAML_NAME_ID_FORMAT_TRANSIENT:
+        if name_id_format == SAML_NAME_ID_FORMAT_TRANSIENT:
             return self._handle_name_id_transient()
 
         return SAMLSourceFlowManager(

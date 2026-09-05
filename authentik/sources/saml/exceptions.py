@@ -26,6 +26,12 @@ class InvalidSignature(SAMLException):
     default_message = "The signature of the SAML object is either missing or invalid."
 
 
+class InvalidTime(SAMLException):
+    """Exception raised when the current time is outside the Assertion's validity window."""
+
+    default_message = "The SAML assertion is not valid yet or has expired."
+
+
 class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 
