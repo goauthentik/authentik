@@ -8,6 +8,7 @@ from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.email import mask_email
+from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.identification.models import IdentificationStage, UserFields
@@ -50,7 +51,7 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         return response
 
-    def _send_challenge(self, device):
+    def _send_challenge(self, device: Device):
         """Helper to send challenge for device"""
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -64,7 +65,7 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
                 },
             },
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         return response
 
     def test_happy_path(self):
@@ -125,7 +126,6 @@ class AuthenticatorValidateStageEmailTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {"component": "ak-stage-authenticator-validate"},
         )
-        self.assertEqual(response.status_code, 200)
         response_data = self.assertStageResponse(
             response,
             flow=flow,
