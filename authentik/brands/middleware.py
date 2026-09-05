@@ -18,6 +18,10 @@ class BrandMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
+        # Skip for liveness probe
+        if request.path == "/-/health/live/":
+            return self.get_response(request)
+
         locale_to_set = None
         if not hasattr(request, "brand"):
             brand = get_brand_for_request(request)
