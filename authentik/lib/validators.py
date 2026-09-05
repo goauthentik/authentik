@@ -87,9 +87,7 @@ class PasswordHashImportValidator(PasswordHashValidator):
         messages: list[str] = []
         parameters = self._parameters(hasher, decoded)
         requires_update = hasher.must_update(password_hash)
-        if requires_update and any(
-            provided != expected for _, provided, expected in parameters
-        ):
+        if requires_update and any(provided != expected for _, provided, expected in parameters):
             messages.append(self._settings_message(hasher, parameters))
 
         salt_needs_update = must_update_salt(decoded["salt"], hasher.salt_entropy)
