@@ -166,6 +166,7 @@ class DatabaseCache(BaseCache):
         Complex patterns (wildcards in non-suffix position, multiple
         wildcards) fall back to ``__regex``.
         """
+        qs: QuerySet[CacheEntry]
         wildcard_count = keys_pattern.count("*")
         if wildcard_count == 0:
             key = self.make_key(keys_pattern, version=version)

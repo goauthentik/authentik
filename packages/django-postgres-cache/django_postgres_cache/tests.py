@@ -1,7 +1,6 @@
 """Tests for django_postgres_cache.backend"""
 
-from django.core.cache import cache
-from django.test import SimpleTestCase, TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 from django.utils.timezone import is_aware, is_naive
 
 from django_postgres_cache.backend import DatabaseCache
@@ -19,25 +18,6 @@ def _cache() -> DatabaseCache:
             "REVERSE_KEY_FUNCTION": "django.core.cache.backends.base.default_key_func",
         },
     )
-
-
-class CountKeysTests(TestCase):
-    """Counts use the same matching and expiry rules as key listing."""
-
-    def test_matching_keys(self):
-        cache.set_many({"count/first": 1, "count/last": 2}, version=7)
-        cache.set("count/expired", 3, timeout=0, version=7)
-        cache.set("count/other-version", 4, version=8)
-        for pattern, expected in (
-            ("count/first", 1),
-            ("count/*", 3),
-            ("count/*st", 2),
-            ("count/missing*", 0),
-        ):
-            with self.subTest(pattern=pattern):
-                self.assertEqual(cache.count_keys(pattern, version=7), expected)
-                self.assertEqual(len(cache.keys(pattern, version=7)), expected)
-        self.assertEqual(cache.count_keys("count/*", version=8), 1)
 
 
 class MakeExpiryTests(SimpleTestCase):

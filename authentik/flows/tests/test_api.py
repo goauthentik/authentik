@@ -34,6 +34,21 @@ flow_start --> done[["End of the flow"]]"""
 class TestFlowsAPI(APITestCase):
     """API tests"""
 
+    def test_cache_key_matching(self) -> None:
+        cache.set_many({"count/first": 1, "count/last": 2}, version=7)
+        cache.set("count/expired", 3, timeout=0, version=7)
+        cache.set("count/other-version", 4, version=8)
+        for pattern, expected in (
+            ("count/first", 1),
+            ("count/*", 3),
+            ("count/*st", 2),
+            ("count/missing*", 0),
+        ):
+            with self.subTest(pattern=pattern):
+                self.assertEqual(cache.count_keys(pattern, version=7), expected)
+                self.assertEqual(len(cache.keys(pattern, version=7)), expected)
+        self.assertEqual(cache.count_keys("count/*", version=8), 1)
+
     def test_models(self):
         """Test that ui_user_settings returns none"""
         self.assertIsNone(Stage().ui_user_settings())
@@ -91,6 +106,7 @@ class TestFlowsAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
         self.assertEqual(body["cache_count"], 1)
+        self.assertEqual(self.client.get(reverse("authentik_api:flow-cache-info")).data["count"], 1)
         self.assertEqual(body["background_url"], "/static/dist/assets/images/flow_background.jpg")
 
         flow.background = "https://goauthentik.io/img/icon.png"
