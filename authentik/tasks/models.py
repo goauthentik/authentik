@@ -124,9 +124,11 @@ class Task(InternallyManagedMixin, SerializerModel, TaskBase):
                 "exception": exception_to_dict(exc),
                 **attributes,
             }
-            message = str(message)
-            if not message and isinstance(exc, Retry):
-                message = "Task has encountered an error and will be retried"
+            message = (
+                "Task has encountered an error and will be retried"
+                if isinstance(exc, Retry)
+                else "Task has encountered an error"
+            )
         return LogEvent(
             message,
             logger=logger,
