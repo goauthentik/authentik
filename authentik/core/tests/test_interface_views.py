@@ -3,6 +3,7 @@
 from django.test import TestCase
 from django.urls import resolve, reverse
 
+from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.apps import Setup
 from authentik.core.models import Application, UserTypes
@@ -194,3 +195,58 @@ class TestInterfaceCatchAll(TestCase):
             response = self.client.get("/if/user/settings")
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'relBase: "/auth/"', response.content)
+
+
+class TestInterfaceFavicon(TestCase):
+    """The favicon links follow the brand's configured theme, and fall back to the
+    system color scheme only when the brand expresses none."""
+
+    def setUp(self):
+        Setup.set(True)
+        self.user = create_test_user(type=UserTypes.INTERNAL)
+        self.brand = create_test_brand(
+            branding_favicon="https://example.com/icon-%(theme)s.png",
+        )
+        self.client.force_login(self.user)
+
+    def _render(self, ui_theme: str | None = None) -> str:
+        if ui_theme:
+            self.brand.attributes = {"settings": {"theme": {"base": ui_theme}}}
+            self.brand.save()
+        response = self.client.get(reverse("authentik_core:if-user"))
+        self.assertEqual(response.status_code, 200)
+        return response.content.decode()
+
+    def test_automatic_theme_uses_media_queries(self):
+        """Without a brand theme, the browser picks the favicon by system color scheme."""
+        content = self._render()
+        self.assertIn(
+            '<link rel="icon" href="https://example.com/icon-light.png" '
+            'media="(prefers-color-scheme: light)">',
+            content,
+        )
+        self.assertIn(
+            '<link rel="icon" href="https://example.com/icon-dark.png" '
+            'media="(prefers-color-scheme: dark)">',
+            content,
+        )
+
+    def test_dark_theme_pins_favicon(self):
+        """A brand pinned to dark gets the dark favicon regardless of the system scheme."""
+        content = self._render(Themes.DARK)
+        self.assertIn('<link rel="icon" href="https://example.com/icon-dark.png">', content)
+        self.assertNotIn('href="https://example.com/icon-light.png"', content)
+
+    def test_light_theme_pins_favicon(self):
+        """A brand pinned to light gets the light favicon regardless of the system scheme."""
+        content = self._render(Themes.LIGHT)
+        self.assertIn('<link rel="icon" href="https://example.com/icon-light.png">', content)
+        self.assertNotIn('href="https://example.com/icon-dark.png"', content)
+
+    def test_untemplated_favicon_unchanged(self):
+        """A favicon without a %(theme)s variable renders a single plain link."""
+        self.brand.branding_favicon = "https://example.com/icon.png"
+        self.brand.save()
+        content = self._render()
+        self.assertIn('<link rel="icon" href="https://example.com/icon.png">', content)
+        self.assertIn('<link rel="shortcut icon" href="https://example.com/icon.png">', content)
