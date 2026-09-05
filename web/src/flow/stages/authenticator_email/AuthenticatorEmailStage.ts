@@ -8,6 +8,7 @@ import { AKLabel } from "#components/ak-label";
 
 import { FlowUserDetails } from "#flow/FormStatic";
 import { BaseStage } from "#flow/stages/base";
+import { RESEND_COOLDOWN_SECONDS, startResendCooldown } from "#flow/stages/resend-cooldown";
 
 import {
     AuthenticatorEmailChallenge,
@@ -16,7 +17,7 @@ import {
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, html, nothing, TemplateResult } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -40,6 +41,55 @@ export class AuthenticatorEmailStage extends BaseStage<
         PFTitle,
         PFButton,
     ];
+
+    @state()
+    protected resendCooldown = 0;
+
+    #cancelCooldown?: () => void;
+    #cooldownStarted = false;
+
+    #beginCooldown() {
+        this.#cancelCooldown?.();
+        this.#cancelCooldown = startResendCooldown(RESEND_COOLDOWN_SECONDS, (remaining) => {
+            this.resendCooldown = remaining;
+        });
+    }
+
+    #resend = () => {
+        if (this.resendCooldown > 0) {
+            return;
+        }
+        // Submit with neither code nor email; the backend treats this as a resend request and
+        // re-sends a fresh code to the same address. Only start the visible cooldown once the
+        // submit resolves successfully, so a failed resend doesn't disable the button for nothing.
+        this.host
+            ?.submit(
+                {
+                    component: "ak-stage-authenticator-email",
+                } as AuthenticatorEmailChallengeResponseRequest,
+                { invisible: true },
+            )
+            ?.then((ok) => {
+                if (ok) {
+                    this.#beginCooldown();
+                }
+            })
+            .catch(() => undefined);
+    };
+
+    protected override willUpdate(): void {
+        // The OTP screen is only reached once a code has been mailed out, so start counting from
+        // there rather than from the first click.
+        if (!this.#cooldownStarted && this.challenge && !this.challenge.emailRequired) {
+            this.#cooldownStarted = true;
+            this.#beginCooldown();
+        }
+    }
+
+    override disconnectedCallback(): void {
+        this.#cancelCooldown?.();
+        super.disconnectedCallback();
+    }
 
     renderEmailInput(): TemplateResult {
         return html`<ak-flow-card .challenge=${this.challenge}>
@@ -120,6 +170,15 @@ export class AuthenticatorEmailStage extends BaseStage<
                     ${AKFormErrors({ errors: this.challenge.responseErrors?.code })}
                 </div>
                 ${this.renderNonFieldErrors()}
+                <div class="pf-c-form__helper-text">
+                    ${this.resendCooldown > 0
+                        ? msg(
+                              str`Didn't get the code? It can take a moment and may land in your spam or junk folder. You can request a new code in ${this.resendCooldown} seconds.`,
+                          )
+                        : msg(
+                              "Didn't get the code? It can take a moment and may land in your spam or junk folder. You can also resend it.",
+                          )}
+                </div>
                 <fieldset class="ak-c-fieldset pf-c-form__group pf-m-action">
                     <legend class="sr-only">${msg("Form actions")}</legend>
                     <button
@@ -128,6 +187,17 @@ export class AuthenticatorEmailStage extends BaseStage<
                         class="pf-c-button pf-m-primary pf-m-block"
                     >
                         ${msg("Continue")}
+                    </button>
+                    <button
+                        name="resend"
+                        type="button"
+                        class="pf-c-button pf-m-secondary pf-m-block"
+                        ?disabled=${this.resendCooldown > 0}
+                        @click=${this.#resend}
+                    >
+                        ${this.resendCooldown > 0
+                            ? msg(str`Resend code (${this.resendCooldown}s)`)
+                            : msg("Resend code")}
                     </button>
                 </fieldset>
             </form>
