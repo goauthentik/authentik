@@ -193,18 +193,12 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const policies = await aki(PoliciesApi).policiesAllList(args);
-                        const selectedPolicy = this.instance?.policyObj;
-                        if (
-                            selectedPolicy &&
-                            !policies.results.some((policy) => policy.pk === selectedPolicy.pk)
-                        ) {
-                            return [selectedPolicy, ...policies.results];
-                        }
                         return policies.results;
                     }}
                     .renderElement=${(policy: Policy) => policy.name}
                     .value=${(policy: Policy | null) => policy?.pk}
                     .selected=${(policy: Policy) => policy.pk === this.instance?.policy}
+                    .selectedObject=${this.instance?.policyObj ?? null}
                     blankable
                 >
                 </ak-search-select>
@@ -229,13 +223,6 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const groups = await aki(CoreApi).coreGroupsList(args);
-                        const selectedGroup = this.instance?.groupObj;
-                        if (
-                            selectedGroup &&
-                            !groups.results.some((group) => group.pk === selectedGroup.pk)
-                        ) {
-                            return [selectedGroup as Group, ...groups.results];
-                        }
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
@@ -243,6 +230,7 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                     }}
                     .value=${(group: Group | null) => String(group?.pk ?? "")}
                     .selected=${(group: Group) => group.pk === this.instance?.group}
+                    .selectedObject=${(this.instance?.groupObj ?? null) as Group | null}
                     blankable
                 >
                 </ak-search-select>
@@ -266,19 +254,13 @@ export class PolicyBindingForm<T extends PolicyBinding = PolicyBinding> extends 
                             args.search = query;
                         }
                         const users = await aki(CoreApi).coreUsersList(args);
-                        const selectedUser = this.instance?.userObj;
-                        if (
-                            selectedUser &&
-                            !users.results.some((user) => user.pk === selectedUser.pk)
-                        ) {
-                            return [selectedUser as User, ...users.results];
-                        }
                         return users.results;
                     }}
                     .renderElement=${(user: User) => user.username}
                     .renderDescription=${(user: User) => html`${user.name}`}
                     .value=${(user: User | null) => user?.pk}
                     .selected=${(user: User) => user.pk === this.instance?.user}
+                    .selectedObject=${(this.instance?.userObj ?? null) as User | null}
                     blankable
                 >
                 </ak-search-select>

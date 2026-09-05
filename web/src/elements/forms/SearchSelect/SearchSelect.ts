@@ -358,8 +358,29 @@ export abstract class SearchSelectBase<T>
         this.dispatchChangeEvent(this.selectedObject);
     }
 
+    /**
+     * The objects to render as options. The current selection is included even when the fetched
+     * page does not contain it (e.g. a paginated list where the selected item sorts onto a later
+     * page), so it always renders instead of falling back to the placeholder. Skipped while the
+     * user is actively searching, so a stale selection doesn't pin itself atop filtered results.
+     */
+    private get renderableObjects(): T[] {
+        const objects = [...(this.objects ?? [])];
+        const selected = this.selectedObject;
+
+        if (
+            !this.query &&
+            selected &&
+            !objects.some((object) => `${this.value(object)}` === `${this.value(selected)}`)
+        ) {
+            objects.unshift(selected);
+        }
+
+        return objects;
+    }
+
     private getGroupedItems(): GroupedOptions {
-        const groupedItems = this.groupBy(this.objects || []);
+        const groupedItems = this.groupBy(this.renderableObjects);
 
         const makeSearchTuples = (items: T[]): SelectOption[] =>
             items.map((item) => [
