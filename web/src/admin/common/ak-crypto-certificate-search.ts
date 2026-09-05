@@ -4,6 +4,7 @@ import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { CustomListenerElement } from "#elements/utils/eventEmitter";
 
@@ -51,8 +52,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public placeholder: string | null = msg("Select a certificate...");
 
     /**
-     * Set to `true` to allow certificates without private key to show up. When set to `false`,
-     * a private key is not required to be set.
+     * Set to `true` to allow certificates without private key to be selected. When set to `false`,
+     * keypairs without a private key are listed but cannot be chosen.
      * @attr
      */
     @property({ type: Boolean, attribute: "nokey" })
@@ -69,7 +70,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
 
     /**
      * When allowedKeyTypes is set, only certificates or keypairs with matching
-     * key algorithms will be shown.
+     * key algorithms can be selected. Others are listed but cannot be chosen.
      * @attr
      * @example [KeyTypeEnum.Rsa, KeyTypeEnum.Ec]
      */
@@ -104,26 +105,85 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     };
 
+    /**
+     * Why this keypair cannot be used for the field it is being offered in, or `null` if it can.
+     *
+     * Unusable keypairs used to be filtered out of the query entirely, which left no trace of them
+     * in the menu — a certificate simply wasn't there, with no hint as to why. They are listed
+     * instead, sorted last and inert, carrying the reason as their description.
+     */
+    #unusableReason = (item: CertificateKeyPair): string | null => {
+        if (!this.noKey && !item.privateKeyAvailable) {
+            return msg("This certificate is not a valid option here: it has no private key.", {
+                id: "crypto.certificate-search.missing-private-key.description",
+            });
+        }
+
+        if (
+            this.allowedKeyTypes?.length &&
+            (!item.keyType || !this.allowedKeyTypes.includes(item.keyType))
+        ) {
+            return msg("This certificate is not a valid option here: unsupported key type.", {
+                id: "crypto.certificate-search.unsupported-key-type.description",
+            });
+        }
+
+        return null;
+    };
+
     fetchObjects = async (query?: string): Promise<CertificateKeyPair[]> => {
         const args: CryptoCertificatekeypairsListRequest = {
             ordering: "name",
-            hasKey: !this.noKey,
         };
         if (query !== undefined) {
             args.search = query;
         }
-        if (this.allowedKeyTypes?.length) {
-            args.keyType = this.allowedKeyTypes;
+
+        const restrictions: CryptoCertificatekeypairsListRequest = {};
+        if (!this.noKey) {
+            restrictions.hasKey = true;
         }
-        const certificates = await aki(CryptoApi).cryptoCertificatekeypairsList(args);
-        return certificates.results;
+        if (this.allowedKeyTypes?.length) {
+            restrictions.keyType = this.allowedKeyTypes;
+        }
+
+        const api = aki(CryptoApi);
+
+        if (Object.keys(restrictions).length === 0) {
+            const { results } = await api.cryptoCertificatekeypairsList(args);
+            return results;
+        }
+
+        // The API only returns one page of results, so ask it for the usable keypairs directly.
+        // Otherwise, a page full of unusable ones could push the usable ones out of the list.
+        const [{ results: usable }, { results: all }] = await Promise.all([
+            api.cryptoCertificatekeypairsList({ ...args, ...restrictions }),
+            api.cryptoCertificatekeypairsList(args),
+        ]);
+
+        const unusable = all.filter((item) => this.#unusableReason(item) !== null);
+
+        return [...usable, ...unusable];
     };
 
+    optionDisabled = (item: CertificateKeyPair): boolean => this.#unusableReason(item) !== null;
+
+    renderDescription = (item: CertificateKeyPair): SlottedTemplateResult =>
+        this.#unusableReason(item);
+
     selected = (item: CertificateKeyPair, items: CertificateKeyPair[]) => {
-        return (
-            (this.singleton && !this.certificate && items.length === 1) ||
-            (!!this.certificate && this.certificate === item.pk)
-        );
+        if (this.certificate) {
+            return this.certificate === item.pk;
+        }
+
+        if (!this.singleton) {
+            return false;
+        }
+
+        // Only a lone *selectable* certificate can stand in as the default.
+        const usable = items.filter((candidate) => !this.#unusableReason(candidate));
+
+        return usable.length === 1 && usable[0].pk === item.pk;
     };
 
     render() {
@@ -134,6 +194,8 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
                 placeholder=${ifPresent(this.placeholder)}
                 .fetchObjects=${this.fetchObjects}
                 .renderElement=${renderElement}
+                .renderDescription=${this.renderDescription}
+                .optionDisabled=${this.optionDisabled}
                 .value=${renderValue}
                 .selected=${this.selected}
                 @ak-change=${this.handleSearchUpdate}
