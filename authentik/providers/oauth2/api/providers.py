@@ -114,7 +114,9 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
-    queryset = OAuth2Provider.objects.all()
+    queryset = OAuth2Provider.objects.select_related(
+        "application", "backchannel_application"
+    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",
