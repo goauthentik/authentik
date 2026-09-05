@@ -59,13 +59,13 @@ export interface FlowUserDetailsProps {
 }
 
 export const FlowUserDetails: LitFC<FlowUserDetailsProps> = ({ challenge }) => {
-    const { pendingUserAvatar, pendingUser, flowInfo } = challenge || {};
+    const { pendingUserAvatar, pendingUser, pendingUserDisplay, flowInfo } = challenge || {};
     return guard(
-        [pendingUserAvatar, pendingUser, flowInfo],
+        [pendingUserAvatar, pendingUser, pendingUserDisplay, flowInfo],
         () =>
             html`<ak-form-static
                 .avatar=${ifPresent(pendingUserAvatar)}
-                username=${ifPresent(pendingUser)}
+                username=${ifPresent(pendingUserDisplay || pendingUser)}
             >
                 ${flowInfo?.cancelUrl
                     ? html`
