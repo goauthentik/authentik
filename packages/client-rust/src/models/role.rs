@@ -17,11 +17,17 @@ pub struct Role {
     pub pk: uuid::Uuid,
     #[serde(rename = "name")]
     pub name: String,
+    #[serde(rename = "user_count")]
+    pub user_count: i32,
 }
 
 impl Role {
     /// Role serializer
-    pub fn new(pk: uuid::Uuid, name: String) -> Role {
-        Role { pk, name }
+    pub fn new(pk: uuid::Uuid, name: String, user_count: i32) -> Role {
+        Role {
+            pk,
+            name,
+            user_count,
+        }
     }
 }

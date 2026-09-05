@@ -56793,9 +56793,13 @@ components:
           title: Uuid
         name:
           type: string
+        user_count:
+          type: integer
+          readOnly: true
       required:
       - name
       - pk
+      - user_count
     RoleAssignedObjectPermission:
       type: object
       description: Roles assigned object permission serializer
