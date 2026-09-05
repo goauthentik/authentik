@@ -23,6 +23,14 @@ import {
  */
 const LEGACY_PARAM_SEPARATOR = ";";
 
+/**
+ * Search-parameter key a bare legacy tab token decodes to.
+ *
+ * Mirrors the default `pageIdentifier` of `ak-tabs`, which is what the bare
+ * form (`#/settings;page-sources`) always selected.
+ */
+const LEGACY_TAB_KEY = "page";
+
 export interface HashRouteScope {
     base: string;
     interfaceName: string;
@@ -31,8 +39,9 @@ export interface HashRouteScope {
 /**
  * Decode the serialized-parameter tail of a legacy hash route.
  *
- * Handles the JSON-blob encoding (`{"page":2}`, possibly percent-encoded) and
- * the `URLSearchParams` encoding (`a=1&b=true`).
+ * Handles the JSON-blob encoding (`{"page":2}`, possibly percent-encoded), the
+ * `URLSearchParams` encoding (`a=1&b=true`), and the bare tab token
+ * (`page-sources`), which the legacy router treated as a tab selector.
  */
 function decodeLegacyParams(serialized: string | undefined): RouteParameterRecord {
     if (!serialized) return {};
@@ -45,6 +54,13 @@ function decodeLegacyParams(serialized: string | undefined): RouteParameterRecor
         } catch {
             return {};
         }
+    }
+
+    // A bare token carries no `=`: the legacy router read it as a tab selector.
+    // Feeding it to `URLSearchParams` would yield a valueless key that
+    // serializes away, silently dropping the tab.
+    if (!serialized.includes("=")) {
+        return { [LEGACY_TAB_KEY]: decodeURIComponent(serialized) };
     }
 
     return searchParamsToRecord(new URLSearchParams(serialized));
