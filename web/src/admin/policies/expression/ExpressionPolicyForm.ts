@@ -6,6 +6,8 @@ import "#elements/forms/HorizontalFormElement";
 import { aki } from "#common/api/client";
 import { docLink } from "#common/global";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
@@ -39,8 +41,18 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
                     class="pf-c-form-control"
@@ -58,12 +70,18 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
             </ak-switch-input>
             <ak-form-group open label="${msg("Policy-specific settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Expression")}
-                        required
-                        name="expression"
-                    >
+                    <ak-form-element-horizontal required name="expression">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "expression",
+                                required: true,
+                            },
+                            msg("Expression"),
+                        )}
                         <ak-codemirror
+                            id="expression"
                             mode="python"
                             value="${ifDefined(this.instance?.expression)}"
                         >

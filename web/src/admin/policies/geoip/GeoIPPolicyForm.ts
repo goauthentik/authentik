@@ -10,6 +10,8 @@ import { aki } from "#common/api/client";
 
 import { DataProvision, DualSelectPair } from "#elements/ak-dual-select/types";
 
+import { AKLabel } from "#components/ak-label";
+
 import { BasePolicyForm } from "#admin/policies/BasePolicyForm";
 
 import { GeoIPPolicy, GeoIPPolicyCountriesObjInner, PoliciesApi } from "@goauthentik/api";
@@ -54,8 +56,18 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     "Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal required name="name">
+                ${AKLabel(
+                    {
+                        slot: "label",
+                        className: "pf-c-form__group-label",
+                        htmlFor: "name",
+                        required: true,
+                    },
+                    msg("Name"),
+                )}
                 <input
+                    id="name"
                     type="text"
                     value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
@@ -82,11 +94,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         )}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Maximum distance")}
-                        name="historyMaxDistanceKm"
-                    >
+                    <ak-form-element-horizontal name="historyMaxDistanceKm">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "historyMaxDistanceKm",
+                            },
+                            msg("Maximum distance"),
+                        )}
                         <input
+                            id="historyMaxDistanceKm"
                             type="number"
                             min="1"
                             value="${this.instance?.historyMaxDistanceKm ?? 100}"
@@ -98,11 +116,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Distance tolerance")}
-                        name="distanceToleranceKm"
-                    >
+                    <ak-form-element-horizontal name="distanceToleranceKm">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "distanceToleranceKm",
+                            },
+                            msg("Distance tolerance"),
+                        )}
                         <input
+                            id="distanceToleranceKm"
                             type="number"
                             min="1"
                             value="${this.instance?.distanceToleranceKm ?? 50}"
@@ -112,11 +136,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             ${msg("Tolerance in checking for distances in kilometers.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Historical Login Count")}
-                        name="historyLoginCount"
-                    >
+                    <ak-form-element-horizontal name="historyLoginCount">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "historyLoginCount",
+                            },
+                            msg("Historical Login Count"),
+                        )}
                         <input
+                            id="historyLoginCount"
                             type="number"
                             min="1"
                             value="${this.instance?.historyLoginCount ?? 5}"
@@ -135,11 +165,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         )}
                     >
                     </ak-switch-input>
-                    <ak-form-element-horizontal
-                        label=${msg("Impossible travel tolerance")}
-                        name="impossibleToleranceKm"
-                    >
+                    <ak-form-element-horizontal name="impossibleToleranceKm">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "impossibleToleranceKm",
+                            },
+                            msg("Impossible travel tolerance"),
+                        )}
                         <input
+                            id="impossibleToleranceKm"
                             type="number"
                             min="1"
                             value="${this.instance?.impossibleToleranceKm ?? 50}"
@@ -153,8 +189,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
             </ak-form-group>
             <ak-form-group label="${msg("Static rule settings")}">
                 <div class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
+                    <ak-form-element-horizontal name="asns">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "asns",
+                            },
+                            msg("ASNs"),
+                        )}
                         <input
+                            id="asns"
                             type="text"
                             value="${this.instance?.asns?.join(",") ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
@@ -167,8 +212,17 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Countries")} name="countries">
+                    <ak-form-element-horizontal name="countries">
+                        ${AKLabel(
+                            {
+                                slot: "label",
+                                className: "pf-c-form__group-label",
+                                htmlFor: "countries",
+                            },
+                            msg("Countries"),
+                        )}
                         <ak-dual-select-provider
+                            id="countries"
                             .provider=${(page: number, search?: string): Promise<DataProvision> => {
                                 return countryCache
                                     .getCountries()
