@@ -7,6 +7,7 @@ from typing import Any
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache, get_key_func
 from django.db import DatabaseError
+from django.db.models import QuerySet
 from django.utils.timezone import now
 from psqlextra.types import ConflictAction
 
@@ -147,7 +148,16 @@ class DatabaseCache(BaseCache):
         CacheEntry.objects.truncate()
 
     def keys(self, keys_pattern: str, version: int | None = None) -> list[str]:
-        """Return cache keys matching a glob pattern (``*`` wildcard).
+        """Return cache keys matching a glob pattern."""
+        qs = self._matching_keys(keys_pattern, version)
+        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
+
+    def count_keys(self, keys_pattern: str, version: int | None = None) -> int:
+        """Count matching cache keys without fetching the key strings."""
+        return self._matching_keys(keys_pattern, version).count()
+
+    def _matching_keys(self, keys_pattern: str, version: int | None) -> QuerySet[CacheEntry]:
+        """Match cache entries using a glob pattern (``*`` wildcard).
 
         Simple ``prefix*`` patterns use Django's ``__startswith`` lookup
         (``LIKE 'prefix%'``), which can be answered by a B-tree index on
@@ -169,4 +179,4 @@ class DatabaseCache(BaseCache):
             regex = self.make_key(keys_pattern.replace("*", ".*"), version=version)
             qs = CacheEntry.objects.filter(cache_key__regex=regex)
 
-        return [self.reverse_key_func(key) for key in qs.values_list("cache_key", flat=True)]
+        return qs

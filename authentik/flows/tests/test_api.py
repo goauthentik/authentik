@@ -2,12 +2,14 @@
 
 from json import loads
 
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
+from authentik.flows.planner import cache_key
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -85,8 +87,10 @@ class TestFlowsAPI(APITestCase):
         self.client.force_login(user)
 
         flow = create_test_flow()
+        cache.set(f"{cache_key(flow)}#test-user", "cached-plan")
         response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
+        self.assertEqual(body["cache_count"], 1)
         self.assertEqual(body["background_url"], "/static/dist/assets/images/flow_background.jpg")
 
         flow.background = "https://goauthentik.io/img/icon.png"

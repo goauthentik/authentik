@@ -57,7 +57,7 @@ class FlowSerializer(ModelSerializer):
 
     def get_cache_count(self, flow: Flow) -> int:
         """Get count of cached flows"""
-        return len(cache.keys(f"{cache_key(flow)}*"))
+        return cache.count_keys(f"{cache_key(flow)}*")
 
     def get_export_url(self, flow: Flow) -> str:
         """Get export URL for flow"""
@@ -123,7 +123,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, pagination_class=None, filter_backends=[])
     def cache_info(self, request: Request) -> Response:
         """Info about cached flows"""
-        return Response(data={"count": len(cache.keys(f"{CACHE_PREFIX}*"))})
+        return Response(data={"count": cache.count_keys(f"{CACHE_PREFIX}*")})
 
     @permission_required(None, ["authentik_flows.clear_flow_cache"])
     @extend_schema(
