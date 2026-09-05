@@ -12419,6 +12419,11 @@
                     "title": "Issuer mode",
                     "description": "Configure how the issuer field of the ID Token should be filled."
                 },
+                "issuer_override": {
+                    "type": "string",
+                    "title": "Issuer override",
+                    "description": "Use this exact value as the issuer instead of deriving one from Issuer mode. Leave empty to use Issuer mode. Set this when several providers must share a single issuer, for example an application whose desktop and mobile clients ship their own fixed client IDs and therefore need one provider each, while the application itself only trusts a single issuer."
+                },
                 "jwt_federation_sources": {
                     "type": "array",
                     "items": {
