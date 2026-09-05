@@ -1,7 +1,7 @@
 import { renderForm } from "./SAMLProviderImportFormForm.js";
 
 import { DEFAULT_CONFIG } from "#common/api/config";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { Form } from "#elements/forms/Form";
 

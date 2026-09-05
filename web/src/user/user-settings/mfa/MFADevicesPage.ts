@@ -9,7 +9,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
 import { globalAK } from "#common/global";
 import { deviceTypeName } from "#common/labels";
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 import { PaginatedResponse, Table, TableColumn, Timestamp } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
