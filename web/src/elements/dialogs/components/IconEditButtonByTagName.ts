@@ -1,7 +1,10 @@
-import { IconEditButton } from "#elements/dialogs/components/IconEditButton";
+import {
+    defaultIconEditButtonProps,
+    IconEditButton,
+    type IconEditButtonProps,
+} from "#elements/dialogs/components/IconEditButton";
 import { lookupElementConstructor } from "#elements/dialogs/directives";
-import type { DialogInit } from "#elements/dialogs/shared";
-import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
+import type { SlottedTemplateResult } from "#elements/types";
 
 /**
  * A helper function to render an edit button by looking up a custom element constructor based on a tag name.
@@ -12,24 +15,15 @@ import type { LitPropertyRecord, SlottedTemplateResult } from "#elements/types";
  * @param modalProps Properties to pass to the custom element constructor when found.
  * @param options Initialization options for the modal dialog.
  *
- * @throws {TypeError} If no custom element is defined for the given tag name.
- *
  * @see {@link IconEditButton} for the underlying button rendering logic.
  */
-export function IconEditButtonByTagName<T extends object = object>(
+export function IconEditButtonByTagName(
     tagName: string,
     instancePk?: string | number | null,
     itemName?: string | null,
-    modalProps?: LitPropertyRecord<T> | null,
-    options?: DialogInit,
+    props: IconEditButtonProps<CustomElementConstructor> = defaultIconEditButtonProps,
 ): SlottedTemplateResult {
     const Constructor = lookupElementConstructor(tagName);
-
-    return IconEditButton(
-        Constructor,
-        instancePk,
-        itemName,
-        modalProps as unknown as undefined,
-        options,
-    );
+    props = { ...defaultIconEditButtonProps, ...props };
+    return IconEditButton(Constructor, instancePk, itemName, props);
 }
