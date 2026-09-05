@@ -100,7 +100,11 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.lib.utils.reflection import ConditionalInheritance
 from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
-from authentik.lib.validators import validate_password_hash
+from authentik.lib.validators import (
+    PasswordHashImportValidator,
+    PasswordHashRequiresOverride,
+    PasswordHashValidator,
+)
 from authentik.rbac.api.roles import RoleSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role, get_permission_choices
@@ -498,7 +502,33 @@ class UserPasswordSetSerializer(PassiveSerializer):
 class UserPasswordHashSetSerializer(PassiveSerializer):
     """Payload to set a users' password hash directly"""
 
-    password = CharField(required=True, validators=[validate_password_hash])
+    password = CharField(required=True)
+    override = BooleanField(
+        default=False,
+        help_text=_(
+            "Import a valid password hash even when its parameters do not match authentik's "
+            "current password hashing settings."
+        ),
+    )
+
+    def validate(self, attrs: dict) -> dict:
+        """Validate the password hash with the requested override."""
+        validator = PasswordHashValidator() if attrs["override"] else PasswordHashImportValidator()
+        try:
+            validator(attrs["password"])
+        except PasswordHashRequiresOverride as exc:
+            raise ValidationError(
+                {
+                    "password": [
+                        _('%(reason)s Set "override" to true to import it anyway.')
+                        % {"reason": reason}
+                        for reason in exc.detail
+                    ]
+                }
+            ) from exc
+        except ValidationError as exc:
+            raise ValidationError({"password": exc.detail}) from exc
+        return attrs
 
 
 class UserServiceAccountSerializer(PassiveSerializer):
@@ -958,12 +988,12 @@ class UserViewSet(
         is available from the request payload.
         """
         user: User = self.get_object()
-        try:
-            user.set_password_from_hash(body.validated_data["password"], request=request)
-            user.save()
-        except (ValidationError, IntegrityError) as exc:
-            LOGGER.debug("Failed to set password hash", exc=exc)
-            return Response(status=400)
+        user.set_password_from_hash(
+            body.validated_data["password"],
+            request=request,
+            hasher_defaults_overridden=body.validated_data["override"],
+        )
+        user.save()
         self._update_session_hash_after_password_change(request, user)
         return Response(status=204)
 

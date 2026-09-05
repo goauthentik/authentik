@@ -120,6 +120,7 @@ class TestUsers(TestCase):
 
         self.assertEqual(password_changed_captured, [])
         self.assertEqual(len(password_hash_changed_captured), 1)
+        self.assertFalse(password_hash_changed_captured[0]["hasher_defaults_overridden"])
         ldap_sources_filter.assert_not_called()
         kerberos_connections_select.assert_not_called()
 
