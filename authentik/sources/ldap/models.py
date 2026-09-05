@@ -32,6 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG, advisory_lock_db_alias
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
+from authentik.lib.sync.models import Sync
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.common import ScheduleSpec
 
@@ -313,7 +314,7 @@ class LDAPSource(IncomingSyncSource):
         return RuntimeError("Failed to bind")
 
     @property
-    def sync_lock(self) -> pglock.advisory:
+    def start_sync_lock(self) -> pglock.advisory:
         """Postgres lock for syncing LDAP to prevent multiple parallel syncs happening"""
         return pglock.advisory(
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
@@ -321,6 +322,10 @@ class LDAPSource(IncomingSyncSource):
             side_effect=pglock.Return,
             using=advisory_lock_db_alias(),
         )
+
+    @property
+    def last_sync(self) -> LDAPSourceSync | None:
+        return self.ldapsourcesync_set.order_by("-started_at").first()
 
     def get_ldap_server_info(self, srv: Server) -> dict[str, str]:
         info = {
@@ -365,6 +370,25 @@ class LDAPSource(IncomingSyncSource):
     class Meta:
         verbose_name = _("LDAP Source")
         verbose_name_plural = _("LDAP Sources")
+
+
+class LDAPSourceSync(Sync):
+    source = models.ForeignKey(LDAPSource, on_delete=models.CASCADE)
+
+    users_count = models.PositiveBigIntegerField(default=0)
+    groups_count = models.PositiveBigIntegerField(default=0)
+    membership_count = models.PositiveBigIntegerField(default=0)
+    group_hierarchy_count = models.PositiveBigIntegerField(default=0)
+    user_deletions_count = models.PositiveBigIntegerField(default=0)
+    group_deletions_count = models.PositiveBigIntegerField(default=0)
+
+    class Meta:
+        default_permissions = []
+        verbose_name = _("LDAP source sync")
+        verbose_name_plural = _("LDAP source syncs")
+
+    def __str__(self):
+        return f"LDAP Source ({self.source_id}) Sync ({self.pk})"
 
 
 class LDAPSourcePropertyMapping(PropertyMapping):
