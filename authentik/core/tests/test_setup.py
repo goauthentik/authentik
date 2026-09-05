@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.apps import Setup
 from authentik.core.models import Token, TokenIntents, User
-from authentik.flows.models import Flow
+from authentik.flows.models import Flow, FlowAuthenticationRequirement
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.root.signals import post_startup, pre_startup
@@ -74,6 +74,66 @@ class TestSetup(FlowTestCase):
         self.assertRedirects(
             res,
             reverse("authentik_core:if-flow", kwargs={"flow_slug": "initial-setup"}),
+            fetch_redirect_response=False,
+        )
+
+    @patch_flag(Setup, False)
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flag_lost_flow_locked(self):
+        """The setup flag can be lost while the tenant schema still shows a completed
+        setup, for example when a blueprint export is applied to a fresh database. The
+        flag is repaired instead of stranding visitors on the setup flow."""
+        Flow.objects.filter(slug="initial-setup").update(
+            authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER
+        )
+
+        res = self.client.get(reverse("authentik_core:root-redirect"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(
+            res,
+            reverse("authentik_flows:default-authentication") + "?next=/",
+            fetch_redirect_response=False,
+        )
+        self.assertTrue(Setup.get())
+
+        res = self.client.head(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.SERVICE_UNAVAILABLE)
+
+    @patch_flag(Setup, False)
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flag_lost_password_set(self):
+        """akadmin having a usable password means the setup flow's policies will refuse
+        to plan it, so the instance counts as set up even with the flow unlocked."""
+        user = User.objects.get(username="akadmin")
+        user.set_password(generate_id())
+        user.save()
+
+        res = self.client.get(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(
+            res,
+            reverse("authentik_core:root-redirect"),
+            fetch_redirect_response=False,
+        )
+        self.assertTrue(Setup.get())
+
+    @patch_flag(Setup, False)
+    @apply_blueprint("default/flow-oobe.yaml")
+    @apply_blueprint("system/bootstrap.yaml")
+    def test_setup_flow_non_applicable(self):
+        """A setup flow that cannot be planned redirects to authentication rather than
+        raising, so the root of the instance stays usable."""
+        Flow.objects.filter(slug="initial-setup").update(
+            authentication=FlowAuthenticationRequirement.REQUIRE_AUTHENTICATED
+        )
+
+        res = self.client.get(reverse("authentik_core:setup"))
+        self.assertEqual(res.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(
+            res,
+            reverse("authentik_flows:default-authentication"),
             fetch_redirect_response=False,
         )
 
