@@ -56,6 +56,12 @@ export interface ContextualFlowInfo {
      * @memberof ContextualFlowInfo
      */
     layout: ContextualFlowInfoLayoutEnum;
+    /**
+     *
+     * @type {boolean}
+     * @memberof ContextualFlowInfo
+     */
+    continuousLoginHold?: boolean;
 }
 
 /**
@@ -87,6 +93,8 @@ export function ContextualFlowInfoFromJSONTyped(
                 : ThemedUrlsFromJSON(json["background_themed_urls"]),
         cancelUrl: json["cancel_url"],
         layout: ContextualFlowInfoLayoutEnumFromJSON(json["layout"]),
+        continuousLoginHold:
+            json["continuous_login_hold"] == null ? undefined : json["continuous_login_hold"],
     };
 }
 
@@ -108,5 +116,6 @@ export function ContextualFlowInfoToJSONTyped(
         background_themed_urls: ThemedUrlsToJSON(value["backgroundThemedUrls"]),
         cancel_url: value["cancelUrl"],
         layout: ContextualFlowInfoLayoutEnumToJSON(value["layout"]),
+        continuous_login_hold: value["continuousLoginHold"],
     };
 }
