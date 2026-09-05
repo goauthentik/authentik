@@ -80,6 +80,7 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import (
+    USER_ATTRIBUTE_NEXT_ACTIONS,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
@@ -92,6 +93,7 @@ from authentik.core.models import (
 )
 from authentik.core.views.user_switch import start_user_switch_flow
 from authentik.endpoints.connectors.agent.auth import AgentAuth
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
@@ -108,6 +110,7 @@ from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.user_login.next_actions import next_action_slugs, resolve_next_actions
 
 LOGGER = get_logger()
 
@@ -214,6 +217,7 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             permissions = validated_data.pop("permissions", [])
 
         instance: User = super().create(validated_data)
+        self._log_next_action_changes([], instance)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
@@ -232,7 +236,15 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             password_hash = validated_data.pop("password_hash", None)
             permissions = validated_data.pop("permissions", [])
 
-        instance = super().update(instance, validated_data)
+        previous_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
+        # When only the next-actions attribute changes, the dedicated events below
+        # replace the generic model update event
+        if self._is_next_actions_only_change(instance, validated_data):
+            with audit_ignore():
+                instance = super().update(instance, validated_data)
+        else:
+            instance = super().update(instance, validated_data)
+        self._log_next_action_changes(previous_actions, instance)
         if is_blueprint:
             self._set_password(instance, password, password_hash)
             perms_qs = Permission.objects.filter(
@@ -242,6 +254,43 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
             instance.assign_perms_to_managed_role(perms_list)
         self._ensure_password_not_empty(instance)
         return instance
+
+    def _is_next_actions_only_change(self, instance: User, validated_data: dict) -> bool:
+        """Check whether the update only changes the next-actions attribute."""
+        if set(validated_data.keys()) != {"attributes"}:
+            return False
+        previous = {
+            k: v for k, v in instance.attributes.items() if k != USER_ATTRIBUTE_NEXT_ACTIONS
+        }
+        updated = {
+            k: v
+            for k, v in validated_data["attributes"].items()
+            if k != USER_ATTRIBUTE_NEXT_ACTIONS
+        }
+        return previous == updated
+
+    def _log_next_action_changes(self, previous_actions: list[str], instance: User):
+        """Create events for next actions added to or removed from the user."""
+        current_actions = next_action_slugs(instance.attributes.get(USER_ATTRIBUTE_NEXT_ACTIONS))
+        request = self.context.get("request")
+        changes = (
+            (
+                EventAction.NEXT_ACTION_SET,
+                [s for s in current_actions if s not in previous_actions],
+            ),
+            (
+                EventAction.NEXT_ACTION_REMOVED,
+                [s for s in previous_actions if s not in current_actions],
+            ),
+        )
+        for event_action, slugs in changes:
+            for slug in slugs:
+                # `username` in the context makes the event visible on the user's events tab
+                event = Event.new(event_action, flow_slug=slug, username=instance.username)
+                if request:
+                    event.from_http(request)
+                else:
+                    event.save()
 
     def _set_password(self, instance: User, password: str | None, password_hash: str | None = None):
         """Set password from plain text or hash."""
@@ -287,6 +336,15 @@ class UserSerializer(AttributesMixinSerializer, ModelSerializer):
                     _("Can't change internal service account to other user type.")
                 )
         return user_type
+
+    def validate_attributes(self, attributes: dict) -> dict:
+        """Validate that the next-actions attribute only holds usable flows."""
+        if USER_ATTRIBUTE_NEXT_ACTIONS in attributes:
+            try:
+                resolve_next_actions(attributes[USER_ATTRIBUTE_NEXT_ACTIONS])
+            except ValueError as exc:
+                raise ValidationError(str(exc)) from exc
+        return attributes
 
     def validate_groups(self, groups: list) -> list:
         """Require enable_group_superuser permission when adding a user to a superuser group."""
