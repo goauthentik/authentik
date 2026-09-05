@@ -214,7 +214,6 @@ export class AKPageNavbar
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
-                                slot="extra"
                             >
                                 ${msg("User interface")}
                             </a>

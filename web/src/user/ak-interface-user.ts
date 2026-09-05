@@ -15,6 +15,7 @@ import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
+import { SlottedTemplateResult } from "#elements/types";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
 
@@ -105,20 +106,47 @@ class UserInterface extends WithLicenseSummary(
 
             const { base } = globalAK().api;
 
-            return html`<a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                    href="${base}if/admin/"
-                    slot="extra"
+            return html`<a class="pf-c-button pf-m-secondary pf-m-small" href="${base}if/admin/">
+                <span class="pf-u-display-none pf-u-display-block-on-md"
+                    >${msg("Admin interface")}</span
                 >
-                    ${msg("Admin interface")}
-                </a>
-                <a
-                    class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                    href="${base}if/admin/"
-                    slot="extra"
-                >
-                    ${msg("Admin")}
-                </a>`;
+                <span class="pf-u-display-none-on-md pf-u-display-block">${msg("Admin")}</span>
+            </a>`;
+        });
+    }
+
+    protected renderNavTabs(): SlottedTemplateResult {
+        const licensed = this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
+        const { requests, agents } = this.uiConfig.enabledFeatures;
+
+        // Capabilities can resolve after the feature flags settle, so they must be part of the guard's dependencies.
+        // Otherwise late-arriving permissions won't re-render the tabs.
+        const canRequest = this.can(CapabilitiesEnum.CanRequest);
+        const canAgentSelfService = this.can(CapabilitiesEnum.CanAgentSelfService);
+
+        return guard([licensed, requests, agents, canRequest, canAgentSelfService], () => {
+            if (licensed) return null;
+
+            const navItems = [];
+
+            // Requests are an enterprise feature, can be disabled for the user interface
+            // and are only shown when the admin has configured at least one request rule
+            // We can't easily check if this user actually has something they can request,
+            // that is a semi-expensive request.
+            if (requests && canRequest) {
+                navItems.push({ label: msg("Discover"), link: "/requests" });
+            }
+
+            if (agents && canAgentSelfService) {
+                navItems.push({ label: msg("Agents"), link: "/agents" });
+            }
+
+            if (!navItems.length) return null;
+
+            return html`<ak-nav-tabs
+                class="pf-c-page__header-nav"
+                .items=${[{ label: msg("Applications"), link: "/library" }, ...navItems]}
+            ></ak-nav-tabs>`;
         });
     }
 
@@ -140,26 +168,6 @@ class UserInterface extends WithLicenseSummary(
         }
 
         const backgroundStyles = this.uiConfig.theme.background;
-
-        const navItems = [{ label: msg("Applications"), link: "/library" }];
-        // Requests are an enterprise feature, can be disabled for the user interface
-        // and are only shown when the admin has configured at least one request rule
-        // We can't easily check if this user actually has something they can request,
-        // that is a semi-expensive request
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.requests &&
-            this.can(CapabilitiesEnum.CanRequest)
-        ) {
-            navItems.push({ label: msg("Discover"), link: "/requests" });
-        }
-        if (
-            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
-            this.uiConfig.enabledFeatures.agents &&
-            this.can(CapabilitiesEnum.CanAgentSelfService)
-        ) {
-            navItems.push({ label: msg("Agents"), link: "/agents" });
-        }
 
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
@@ -185,12 +193,7 @@ class UserInterface extends WithLicenseSummary(
                             })}
                         </a>
                     </div>
-                    ${navItems.length > 1
-                        ? html`<ak-nav-tabs
-                              class="pf-c-page__header-nav"
-                              .items=${navItems}
-                          ></ak-nav-tabs>`
-                        : nothing}
+                    ${this.renderNavTabs()}
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">
