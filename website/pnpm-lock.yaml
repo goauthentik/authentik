@@ -40,7 +40,7 @@ catalogs:
       specifier: ^9.39.5
       version: 9.39.5
     '@types/node':
-      specifier: ^26.1.2
+      specifier: ^26.1.1
       version: 26.1.2
     eslint:
       specifier: ^9.39.5
@@ -11849,7 +11849,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 26.1.2
 
   '@types/semver@7.8.0': {}
 
