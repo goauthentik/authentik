@@ -1,6 +1,9 @@
 """Invitation Stage API Views"""
 
+from urllib.parse import urlencode
+
 from django.http import HttpRequest
+from django.urls import reverse
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
@@ -26,6 +29,7 @@ from authentik.flows.api.flows import FlowSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.stages.invitation.models import Invitation, InvitationStage
+from authentik.stages.invitation.stage import QS_INVITATION_TOKEN_KEY
 
 LOGGER = get_logger()
 
@@ -134,20 +138,20 @@ class InvitationViewSet(UsedByMixin, ModelViewSet):
 
         if not email_addresses:
             return Response({"error": "No email addresses provided"}, status=400)
-
-        # Build the invitation link
-        http_request: HttpRequest = request._request
-        protocol = "https" if http_request.is_secure() else "http"
-        host = http_request.get_host()
-
         # Determine the flow slug
         flow_slug = invitation.flow.slug if invitation.flow else None
         if not flow_slug:
             return Response({"error": "Invitation has no associated flow"}, status=400)
 
-        invitation_link = f"{protocol}://{host}/if/flow/{flow_slug}/?itoken={invitation.pk}"
+        # Build the invitation link
+        invitation_link = request._request.build_absolute_uri(
+            reverse("authentik_core:if-flow", kwargs={"flow_slug": flow_slug})
+            + "?"
+            + urlencode({QS_INVITATION_TOKEN_KEY: invitation.pk})
+        )
 
         # Prepare template context
+        host = request.get_host()
         context = {
             "url": invitation_link,
             "expires": invitation.expires,
