@@ -69,6 +69,15 @@
     .pf-c-button:not(:has(i)):not(:first-child) {
         margin-inline-start: var(--pf-global--spacer--sm);
     }
+
+    pf-tooltip {
+        user-select: none;
+        cursor: help;
+
+        button:disabled {
+            opacity: 0.5;
+        }
+    }
 }
 
 td.pf-c-table__toggle:first-child > .pf-c-button {
