@@ -9564,8 +9564,7 @@ paths:
   /flows/instances/{slug}/diagram/:
     get:
       operationId: flows_instances_diagram_retrieve
-      description: Return diagram for flow with slug `slug`, in the format used by
-        flowchart.js
+      description: Return the graph of flow with slug `slug`, for the client to render
       parameters:
       - in: path
         name: slug
@@ -39746,6 +39745,89 @@ components:
           minLength: 1
       required:
       - id
+    DiagramEdge:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        origin:
+          type: string
+          readOnly: true
+        target:
+          type: string
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DiagramEdgeTypeEnum'
+          readOnly: true
+      required:
+      - origin
+      - target
+      - type
+    DiagramEdgeTypeEnum:
+      enum:
+      - proceed
+      - binding
+      - policy-passed
+      - policy-denied
+      - requirement-fulfilled
+      - requirement-unfulfilled
+      type: string
+    DiagramNode:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        identifier:
+          type: string
+          readOnly: true
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DiagramNodeTypeEnum'
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        pk:
+          type: string
+          readOnly: true
+        component:
+          type: string
+          readOnly: true
+        binding_model:
+          type: string
+          readOnly: true
+        binding_pk:
+          type: string
+          readOnly: true
+        binding_order:
+          type: integer
+          readOnly: true
+          nullable: true
+      required:
+      - binding_model
+      - binding_order
+      - binding_pk
+      - component
+      - identifier
+      - model
+      - name
+      - pk
+      - type
+      - verbose_name
+    DiagramNodeTypeEnum:
+      enum:
+      - flow-start
+      - pre-flow-policies
+      - authentication-requirement
+      - stage
+      - policy
+      - flow-end
+      type: string
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -41429,13 +41511,21 @@ components:
       type: string
     FlowDiagram:
       type: object
-      description: response of the flow's diagram action
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        diagram:
-          type: string
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagramNode'
+          readOnly: true
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiagramEdge'
           readOnly: true
       required:
-      - diagram
+      - edges
+      - nodes
     FlowErrorChallenge:
       type: object
       description: |-
