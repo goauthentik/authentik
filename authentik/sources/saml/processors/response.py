@@ -40,6 +40,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.exceptions import (
     InvalidEncryption,
     InvalidSignature,
+    MismatchedAudience,
     MismatchedRequestID,
     MissingSAMLResponse,
     SAMLException,
@@ -143,6 +144,24 @@ class ResponseProcessor:
         if on_or_after:
             if datetime.fromisoformat(on_or_after).replace(tzinfo=UTC) < _now:
                 raise SAMLException("Assertion is not valid yet or expired.")
+        self._verify_audience(conditions)
+
+    def _verify_audience(self, conditions: _Element):
+        """Verify that our entity ID is listed as an audience of the assertion. Each
+        AudienceRestriction is evaluated independently and must contain a matching Audience."""
+        entity_id = self._source.get_issuer(self._http_request)
+        for restriction in conditions.findall(f"{{{NS_SAML_ASSERTION}}}AudienceRestriction"):
+            audiences = [
+                get_element_text(audience).strip()
+                for audience in restriction.findall(f"{{{NS_SAML_ASSERTION}}}Audience")
+            ]
+            if entity_id not in audiences:
+                LOGGER.warning(
+                    "Assertion audience does not match source entity ID",
+                    entity_id=entity_id,
+                    audiences=audiences,
+                )
+                raise MismatchedAudience()
 
     def _verify_signature(self, signature_node: _Element, target: _Element):
         """Verify a single signature node against the given target element."""

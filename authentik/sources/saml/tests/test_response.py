@@ -16,7 +16,11 @@ from authentik.core.tests.utils import (
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
-from authentik.sources.saml.exceptions import InvalidEncryption, InvalidSignature
+from authentik.sources.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    MismatchedAudience,
+)
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,
@@ -33,7 +37,7 @@ class TestResponseProcessor(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer_override="authentik",
+            issuer_override="http://sp.example.com/demo1/metadata.php",
             allow_idp_initiated=True,
             pre_authentication_flow=create_test_flow(),
         )
@@ -70,6 +74,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
@@ -85,6 +90,22 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+    @freeze_time("2022-10-14T14:15:00")
+    def test_audience_mismatch(self):
+        """Test that an assertion whose audience doesn't match our entity ID is rejected"""
+        request = self.factory.post(
+            "/",
+            data={
+                "SAMLResponse": b64encode(
+                    load_fixture("fixtures/response_success.xml").encode()
+                ).decode()
+            },
+        )
+
+        parser = ResponseProcessor(self.source, request)
+        with self.assertRaises(MismatchedAudience):
+            parser.parse()
+
     @freeze_time("2022-10-14T14:16:40Z")
     def test_success_with_status_message_and_detail(self):
         """Test success with StatusMessage and StatusDetail present (should not raise error)"""
@@ -97,6 +118,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://accounts.google.com/o/saml2?idpid="
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         sfm = parser.prepare_flow_manager()
@@ -138,6 +160,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "authentik-saml-encrypt"
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
@@ -563,6 +586,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://sp.example.org/shibboleth/POST"
         parser = ResponseProcessor(self.source, request)
         parser.parse()
 
@@ -586,6 +610,7 @@ class TestResponseProcessor(TestCase):
             },
         )
 
+        self.source.issuer_override = "https://sp.example.org/shibboleth"
         parser = ResponseProcessor(self.source, request)
         parser.parse()
         parser.prepare_flow_manager()
