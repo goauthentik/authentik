@@ -92,6 +92,10 @@ import {
     PaginatedGoogleWorkspaceProviderListFromJSON,
 } from "../models/PaginatedGoogleWorkspaceProviderList";
 import {
+    type PaginatedGoogleWorkspaceProviderSyncList,
+    PaginatedGoogleWorkspaceProviderSyncListFromJSON,
+} from "../models/PaginatedGoogleWorkspaceProviderSyncList";
+import {
     type PaginatedGoogleWorkspaceProviderUserList,
     PaginatedGoogleWorkspaceProviderUserListFromJSON,
 } from "../models/PaginatedGoogleWorkspaceProviderUserList";
@@ -107,6 +111,10 @@ import {
     type PaginatedMicrosoftEntraProviderList,
     PaginatedMicrosoftEntraProviderListFromJSON,
 } from "../models/PaginatedMicrosoftEntraProviderList";
+import {
+    type PaginatedMicrosoftEntraProviderSyncList,
+    PaginatedMicrosoftEntraProviderSyncListFromJSON,
+} from "../models/PaginatedMicrosoftEntraProviderSyncList";
 import {
     type PaginatedMicrosoftEntraProviderUserList,
     PaginatedMicrosoftEntraProviderUserListFromJSON,
@@ -147,6 +155,10 @@ import {
     type PaginatedSCIMProviderList,
     PaginatedSCIMProviderListFromJSON,
 } from "../models/PaginatedSCIMProviderList";
+import {
+    type PaginatedSCIMProviderSyncList,
+    PaginatedSCIMProviderSyncListFromJSON,
+} from "../models/PaginatedSCIMProviderSyncList";
 import {
     type PaginatedSCIMProviderUserList,
     PaginatedSCIMProviderUserListFromJSON,
@@ -248,7 +260,6 @@ import { type SSFProviderRequest, SSFProviderRequestToJSON } from "../models/SSF
 import { type SubModeEnum } from "../models/SubModeEnum";
 import { type SyncObjectRequest, SyncObjectRequestToJSON } from "../models/SyncObjectRequest";
 import { type SyncObjectResult, SyncObjectResultFromJSON } from "../models/SyncObjectResult";
-import { type SyncStatus, SyncStatusFromJSON } from "../models/SyncStatus";
 import { type TypeCreate, TypeCreateFromJSON } from "../models/TypeCreate";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import {
@@ -447,11 +458,19 @@ export interface ProvidersGoogleWorkspaceSyncObjectCreateRequest {
     syncObjectRequest: SyncObjectRequest;
 }
 
-export interface ProvidersGoogleWorkspaceSyncStatusRetrieveRequest {
+export interface ProvidersGoogleWorkspaceSyncsListRequest {
     /**
      * A unique integer value identifying this Google Workspace Provider.
      */
     id: number;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
 }
 
 export interface ProvidersGoogleWorkspaceUpdateRequest {
@@ -769,11 +788,19 @@ export interface ProvidersMicrosoftEntraSyncObjectCreateRequest {
     syncObjectRequest: SyncObjectRequest;
 }
 
-export interface ProvidersMicrosoftEntraSyncStatusRetrieveRequest {
+export interface ProvidersMicrosoftEntraSyncsListRequest {
     /**
      * A unique integer value identifying this Microsoft Entra Provider.
      */
     id: number;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
 }
 
 export interface ProvidersMicrosoftEntraUpdateRequest {
@@ -1720,11 +1747,19 @@ export interface ProvidersScimSyncObjectCreateRequest {
     syncObjectRequest: SyncObjectRequest;
 }
 
-export interface ProvidersScimSyncStatusRetrieveRequest {
+export interface ProvidersScimSyncsListRequest {
     /**
      * A unique integer value identifying this SCIM Provider.
      */
     id: number;
+    /**
+     * A page number within the paginated result set.
+     */
+    page?: number;
+    /**
+     * Number of results to return per page.
+     */
+    pageSize?: number;
 }
 
 export interface ProvidersScimUpdateRequest {
@@ -3208,19 +3243,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersGoogleWorkspaceSyncStatusRetrieve without sending the request
+     * Creates request options for providersGoogleWorkspaceSyncsList without sending the request
      */
-    async providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(
-        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+    async providersGoogleWorkspaceSyncsListRequestOpts(
+        requestParameters: ProvidersGoogleWorkspaceSyncsListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
                 "id",
-                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncStatusRetrieve().',
+                'Required parameter "id" was null or undefined when calling providersGoogleWorkspaceSyncsList().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -3233,7 +3276,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/google_workspace/{id}/sync/status/`;
+        let urlPath = `/providers/google_workspace/{id}/syncs/`;
         urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
@@ -3245,27 +3288,29 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceSyncStatusRetrieveRaw(
-        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+    async providersGoogleWorkspaceSyncsListRaw(
+        requestParameters: ProvidersGoogleWorkspaceSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SyncStatus>> {
+    ): Promise<runtime.ApiResponse<PaginatedGoogleWorkspaceProviderSyncList>> {
         const requestOptions =
-            await this.providersGoogleWorkspaceSyncStatusRetrieveRequestOpts(requestParameters);
+            await this.providersGoogleWorkspaceSyncsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedGoogleWorkspaceProviderSyncListFromJSON(jsonValue),
+        );
     }
 
     /**
-     * Get provider\'s sync status
+     * GoogleWorkspaceProvider Viewset
      */
-    async providersGoogleWorkspaceSyncStatusRetrieve(
-        requestParameters: ProvidersGoogleWorkspaceSyncStatusRetrieveRequest,
+    async providersGoogleWorkspaceSyncsList(
+        requestParameters: ProvidersGoogleWorkspaceSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SyncStatus> {
-        const response = await this.providersGoogleWorkspaceSyncStatusRetrieveRaw(
+    ): Promise<PaginatedGoogleWorkspaceProviderSyncList> {
+        const response = await this.providersGoogleWorkspaceSyncsListRaw(
             requestParameters,
             initOverrides,
         );
@@ -5052,19 +5097,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersMicrosoftEntraSyncStatusRetrieve without sending the request
+     * Creates request options for providersMicrosoftEntraSyncsList without sending the request
      */
-    async providersMicrosoftEntraSyncStatusRetrieveRequestOpts(
-        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+    async providersMicrosoftEntraSyncsListRequestOpts(
+        requestParameters: ProvidersMicrosoftEntraSyncsListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
                 "id",
-                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncStatusRetrieve().',
+                'Required parameter "id" was null or undefined when calling providersMicrosoftEntraSyncsList().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -5077,7 +5130,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/microsoft_entra/{id}/sync/status/`;
+        let urlPath = `/providers/microsoft_entra/{id}/syncs/`;
         urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
@@ -5089,27 +5142,29 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraSyncStatusRetrieveRaw(
-        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+    async providersMicrosoftEntraSyncsListRaw(
+        requestParameters: ProvidersMicrosoftEntraSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SyncStatus>> {
+    ): Promise<runtime.ApiResponse<PaginatedMicrosoftEntraProviderSyncList>> {
         const requestOptions =
-            await this.providersMicrosoftEntraSyncStatusRetrieveRequestOpts(requestParameters);
+            await this.providersMicrosoftEntraSyncsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedMicrosoftEntraProviderSyncListFromJSON(jsonValue),
+        );
     }
 
     /**
-     * Get provider\'s sync status
+     * MicrosoftEntraProvider Viewset
      */
-    async providersMicrosoftEntraSyncStatusRetrieve(
-        requestParameters: ProvidersMicrosoftEntraSyncStatusRetrieveRequest,
+    async providersMicrosoftEntraSyncsList(
+        requestParameters: ProvidersMicrosoftEntraSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SyncStatus> {
-        const response = await this.providersMicrosoftEntraSyncStatusRetrieveRaw(
+    ): Promise<PaginatedMicrosoftEntraProviderSyncList> {
+        const response = await this.providersMicrosoftEntraSyncsListRaw(
             requestParameters,
             initOverrides,
         );
@@ -9770,19 +9825,27 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for providersScimSyncStatusRetrieve without sending the request
+     * Creates request options for providersScimSyncsList without sending the request
      */
-    async providersScimSyncStatusRetrieveRequestOpts(
-        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+    async providersScimSyncsListRequestOpts(
+        requestParameters: ProvidersScimSyncsListRequest,
     ): Promise<runtime.RequestOpts> {
         if (requestParameters["id"] == null) {
             throw new runtime.RequiredError(
                 "id",
-                'Required parameter "id" was null or undefined when calling providersScimSyncStatusRetrieve().',
+                'Required parameter "id" was null or undefined when calling providersScimSyncsList().',
             );
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters["page"] != null) {
+            queryParameters["page"] = requestParameters["page"];
+        }
+
+        if (requestParameters["pageSize"] != null) {
+            queryParameters["page_size"] = requestParameters["pageSize"];
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -9795,7 +9858,7 @@ export class ProvidersApi extends runtime.BaseAPI {
             }
         }
 
-        let urlPath = `/providers/scim/{id}/sync/status/`;
+        let urlPath = `/providers/scim/{id}/syncs/`;
         urlPath = urlPath.replace("{id}", encodeURIComponent(String(requestParameters["id"])));
 
         return {
@@ -9807,30 +9870,28 @@ export class ProvidersApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get provider\'s sync status
+     * SCIMProvider Viewset
      */
-    async providersScimSyncStatusRetrieveRaw(
-        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+    async providersScimSyncsListRaw(
+        requestParameters: ProvidersScimSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<runtime.ApiResponse<SyncStatus>> {
-        const requestOptions =
-            await this.providersScimSyncStatusRetrieveRequestOpts(requestParameters);
+    ): Promise<runtime.ApiResponse<PaginatedSCIMProviderSyncList>> {
+        const requestOptions = await this.providersScimSyncsListRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SyncStatusFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            PaginatedSCIMProviderSyncListFromJSON(jsonValue),
+        );
     }
 
     /**
-     * Get provider\'s sync status
+     * SCIMProvider Viewset
      */
-    async providersScimSyncStatusRetrieve(
-        requestParameters: ProvidersScimSyncStatusRetrieveRequest,
+    async providersScimSyncsList(
+        requestParameters: ProvidersScimSyncsListRequest,
         initOverrides?: RequestInit | runtime.InitOverrideFunction,
-    ): Promise<SyncStatus> {
-        const response = await this.providersScimSyncStatusRetrieveRaw(
-            requestParameters,
-            initOverrides,
-        );
+    ): Promise<PaginatedSCIMProviderSyncList> {
+        const response = await this.providersScimSyncsListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

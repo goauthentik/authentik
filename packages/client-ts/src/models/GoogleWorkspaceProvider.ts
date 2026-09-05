@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { GoogleWorkspaceProviderSync } from "./GoogleWorkspaceProviderSync";
+import { GoogleWorkspaceProviderSyncFromJSON } from "./GoogleWorkspaceProviderSync";
 import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
 import {
     OutgoingSyncDeleteActionFromJSON,
@@ -112,6 +114,10 @@ export interface GoogleWorkspaceProvider {
      * When enabled, authentik will attempt to discover existing resources in the remote system.
      */
     discoveryEnabled?: boolean;
+    /**
+     *
+     */
+    readonly lastSync: GoogleWorkspaceProviderSync;
 }
 
 /**
@@ -171,6 +177,13 @@ export function instanceOfGoogleWorkspaceProvider(value: object): value is Googl
             (value as Record<string, any>)["default_group_email_domain"] === undefined)
     )
         return false;
+    if (
+        (!("lastSync" in (value as Record<string, any>)) &&
+            !("last_sync" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastSync"] === undefined &&
+            (value as Record<string, any>)["last_sync"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -223,6 +236,7 @@ export function GoogleWorkspaceProviderFromJSONTyped(
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
+        lastSync: GoogleWorkspaceProviderSyncFromJSON(json["last_sync"]),
     };
 }
 
@@ -240,6 +254,7 @@ export function GoogleWorkspaceProviderToJSONTyped(
         | "verboseName"
         | "verboseNamePlural"
         | "metaModelName"
+        | "lastSync"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

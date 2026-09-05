@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { MicrosoftEntraProviderSync } from "./MicrosoftEntraProviderSync";
+import { MicrosoftEntraProviderSyncFromJSON } from "./MicrosoftEntraProviderSync";
 import type { OutgoingSyncDeleteAction } from "./OutgoingSyncDeleteAction";
 import {
     OutgoingSyncDeleteActionFromJSON,
@@ -108,6 +110,10 @@ export interface MicrosoftEntraProvider {
      * When enabled, provider will not modify or create objects in the remote system.
      */
     dryRun?: boolean;
+    /**
+     *
+     */
+    readonly lastSync: MicrosoftEntraProviderSync;
 }
 
 /**
@@ -173,6 +179,13 @@ export function instanceOfMicrosoftEntraProvider(value: object): value is Micros
             (value as Record<string, any>)["tenant_id"] === undefined)
     )
         return false;
+    if (
+        (!("lastSync" in (value as Record<string, any>)) &&
+            !("last_sync" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastSync"] === undefined &&
+            (value as Record<string, any>)["last_sync"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -224,6 +237,7 @@ export function MicrosoftEntraProviderFromJSONTyped(
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         syncPageTimeout: json["sync_page_timeout"] == null ? undefined : json["sync_page_timeout"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        lastSync: MicrosoftEntraProviderSyncFromJSON(json["last_sync"]),
     };
 }
 
@@ -241,6 +255,7 @@ export function MicrosoftEntraProviderToJSONTyped(
         | "verboseName"
         | "verboseNamePlural"
         | "metaModelName"
+        | "lastSync"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -23,6 +23,8 @@ import {
     SCIMAuthenticationModeEnumFromJSON,
     SCIMAuthenticationModeEnumToJSON,
 } from "./SCIMAuthenticationModeEnum";
+import type { SCIMProviderSync } from "./SCIMProviderSync";
+import { SCIMProviderSyncFromJSON } from "./SCIMProviderSync";
 
 /**
  * SCIMProvider Serializer
@@ -142,6 +144,10 @@ export interface SCIMProvider {
      * When enabled, provider will not modify or create objects in the remote system.
      */
     dryRun?: boolean;
+    /**
+     *
+     */
+    readonly lastSync: SCIMProviderSync;
 }
 
 /**
@@ -215,6 +221,13 @@ export function instanceOfSCIMProvider(value: object): value is SCIMProvider {
             (value as Record<string, any>)["auth_oauth_url_start"] === undefined)
     )
         return false;
+    if (
+        (!("lastSync" in (value as Record<string, any>)) &&
+            !("last_sync" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastSync"] === undefined &&
+            (value as Record<string, any>)["last_sync"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -280,6 +293,7 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         discoveryEnabled: json["discovery_enabled"] == null ? undefined : json["discovery_enabled"],
         groupFilters: json["group_filters"] == null ? undefined : json["group_filters"],
         dryRun: json["dry_run"] == null ? undefined : json["dry_run"],
+        lastSync: SCIMProviderSyncFromJSON(json["last_sync"]),
     };
 }
 
@@ -301,6 +315,7 @@ export function SCIMProviderToJSONTyped(
         | "authOauthTokenExpires"
         | "authOauthUrlCallback"
         | "authOauthUrlStart"
+        | "lastSync"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
