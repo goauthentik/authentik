@@ -45,6 +45,7 @@ from authentik.flows.models import (
 )
 from authentik.flows.planner import (
     CACHE_PREFIX,
+    PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD,
     PLAN_CONTEXT_IS_RESTORED,
     PLAN_CONTEXT_PENDING_USER,
     PLAN_CONTEXT_REDIRECT,
@@ -109,6 +110,7 @@ class FlowExecutorView(APIView):
     current_binding: FlowStageBinding | None = None
     current_stage: Stage
     current_stage_view: View
+    direct_execution = False
 
     _logger: BoundLogger
 
@@ -398,6 +400,9 @@ class FlowExecutorView(APIView):
         """User Successfully passed all stages"""
         # Since this is wrapped by the ExecutorShell, the next argument is saved in the session
         # extract the next param before cancel as that cleans it
+        continuous_login_hold = None
+        if self.plan:
+            continuous_login_hold = self.plan.context.get(PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD)
         if self.plan and PLAN_CONTEXT_REDIRECT in self.plan.context:
             # The context `redirect` variable can only be set by
             # an expression policy or authentik itself, so we don't
@@ -407,6 +412,7 @@ class FlowExecutorView(APIView):
                 self.request,
                 redirect(self.plan.context.get(PLAN_CONTEXT_REDIRECT)),
                 final_redirect=True,
+                continuous_login_hold=continuous_login_hold,
             )
         next_param = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:root-redirect"
@@ -414,7 +420,10 @@ class FlowExecutorView(APIView):
         self.cancel()
         if next_param and not is_url_absolute(next_param):
             return to_stage_response(
-                self.request, redirect_with_qs(next_param), final_redirect=True
+                self.request,
+                redirect_with_qs(next_param),
+                final_redirect=True,
+                continuous_login_hold=continuous_login_hold,
             )
         return to_stage_response(
             self.request, self.stage_invalid(error_message=_("Invalid next URL"))
@@ -558,7 +567,10 @@ class ToDefaultFlow(View):
 
 
 def to_stage_response(
-    request: HttpRequest, source: HttpResponse, final_redirect: bool = False
+    request: HttpRequest,
+    source: HttpResponse,
+    final_redirect: bool = False,
+    continuous_login_hold: bool | None = None,
 ) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
@@ -574,14 +586,13 @@ def to_stage_response(
             to=str(redirect_url),
             current=request.path,
         )
-        return HttpChallengeResponse(
-            RedirectChallenge(
-                {
-                    "to": str(redirect_url),
-                    "final_redirect": final_redirect,
-                }
-            )
-        )
+        challenge_data = {
+            "to": str(redirect_url),
+            "final_redirect": final_redirect,
+        }
+        if continuous_login_hold is not None:
+            challenge_data["continuous_login_hold"] = continuous_login_hold
+        return HttpChallengeResponse(RedirectChallenge(challenge_data))
     if isinstance(source, TemplateResponse):
         return HttpChallengeResponse(
             ShellChallenge(

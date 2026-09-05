@@ -30,7 +30,11 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
-from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.planner import (
+    PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD,
+    PLAN_CONTEXT_PENDING_USER,
+)
 from authentik.lib.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
@@ -201,18 +205,22 @@ class ChallengeStageView(StageView):
                     messages = get_messages(self.request)
                 # Flow payloads can outlive the previous signed media JWT, so
                 # refreshes must mint fresh URLs instead of reusing cached ones.
-                flow_info = ContextualFlowInfo(
-                    data={
-                        "title": self.format_title(),
-                        "background": self.executor.flow.background_url(use_cache=False),
-                        "background_themed_urls": self.executor.flow.background_themed_urls(
-                            use_cache=False,
-                        ),
-                        "cancel_url": self.cancel_url,
-                        "layout": self.executor.flow.layout,
-                        "messages": FlowMessageSerializer(messages, many=True).data,
-                    },
-                )
+                flow_info_data = {
+                    "title": self.format_title(),
+                    "background": self.executor.flow.background_url(use_cache=False),
+                    "background_themed_urls": self.executor.flow.background_themed_urls(
+                        use_cache=False,
+                    ),
+                    "cancel_url": self.cancel_url,
+                    "layout": self.executor.flow.layout,
+                    "messages": FlowMessageSerializer(messages, many=True).data,
+                }
+                plan_context = getattr(self.executor.plan, "context", {})
+                if PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD in plan_context:
+                    flow_info_data["continuous_login_hold"] = plan_context[
+                        PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD
+                    ]
+                flow_info = ContextualFlowInfo(data=flow_info_data)
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
             if isinstance(challenge, WithUserInfoChallenge):

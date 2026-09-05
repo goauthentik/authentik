@@ -52,6 +52,12 @@ export interface ContextualFlowInfo {
      *
      */
     messages?: Array<FlowMessage>;
+    /**
+     *
+     * @type {boolean}
+     * @memberof ContextualFlowInfo
+     */
+    continuousLoginHold?: boolean;
 }
 
 /**
@@ -95,6 +101,8 @@ export function ContextualFlowInfoFromJSONTyped(
             json["messages"] == null
                 ? undefined
                 : (json["messages"] as Array<any>).map(FlowMessageFromJSON),
+        continuousLoginHold:
+            json["continuous_login_hold"] == null ? undefined : json["continuous_login_hold"],
     };
 }
 
@@ -120,5 +128,6 @@ export function ContextualFlowInfoToJSONTyped(
             value["messages"] == null
                 ? undefined
                 : (value["messages"] as Array<any>).map(FlowMessageToJSON),
+        continuous_login_hold: value["continuousLoginHold"],
     };
 }

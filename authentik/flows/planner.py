@@ -45,6 +45,8 @@ PLAN_CONTEXT_USER_SWITCH_FROM_USER = "user_switch_from_user"
 PLAN_CONTEXT_USER_SWITCH_ADD_USER = "user_switch_add_user"
 PLAN_CONTEXT_USER_SWITCH_TARGET_SESSION = "user_switch_target_session"
 PLAN_CONTEXT_POST = "goauthentik.io/http/post"
+# Keep continuous-login tabs serialized through the provider authorization flow.
+PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD = "goauthentik.io/flows/continuous_login_hold"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
@@ -165,6 +167,7 @@ class FlowPlan:
             # No unskippable stages found, so we can directly return the response of the last stage
             final_stage: type[StageView] = self.bindings[-1].stage.view
             temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
+            temp_exec.direct_execution = True
             temp_exec.current_stage = self.bindings[-1].stage
             temp_exec.current_stage_view = final_stage
             temp_exec.setup(request, flow.slug)

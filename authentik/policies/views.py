@@ -15,6 +15,7 @@ from authentik.flows.exceptions import EmptyFlowException, FlowNonApplicableExce
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import (
     PLAN_CONTEXT_APPLICATION,
+    PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD,
     PLAN_CONTEXT_POST,
     FlowPlanner,
 )
@@ -59,6 +60,10 @@ class PolicyAccessView(AccessMixin, View):
         is not caught, and will return directly"""
         raise NotImplementedError
 
+    def continuous_login_hold_required(self) -> bool:
+        """Keep other tabs paused until this provider's authorization flow finishes."""
+        return True
+
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         try:
             self.pre_permission_check()
@@ -91,6 +96,8 @@ class PolicyAccessView(AccessMixin, View):
         authn_flow = None
         if self.application:
             flow_context[PLAN_CONTEXT_APPLICATION] = self.application
+            if not self.continuous_login_hold_required():
+                flow_context[PLAN_CONTEXT_CONTINUOUS_LOGIN_HOLD] = False
             if self.provider and self.provider.authentication_flow:
                 authn_flow = self.provider.authentication_flow
         # Because this view might get hit with a POST request, we need to preserve that data
