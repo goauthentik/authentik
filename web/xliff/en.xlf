@@ -1349,9 +1349,6 @@
 <trans-unit id="s9139b576e9944704">
   <source>Select a signing key...</source>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
 </trans-unit>
@@ -2682,12 +2679,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
-</trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -5349,9 +5340,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 </trans-unit>
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -10141,6 +10129,9 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Show arbitrary input fields to the user, for example during enrollment.
                         Data is saved in the flow context under the
                         <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
 </trans-unit>
 </body>
 </file>

@@ -1804,10 +1804,6 @@
   <source>Select a signing key...</source>
   <target>Sélectionnez une clé de signature...</target>
 </trans-unit>
-<trans-unit id="sc6c57419ad3a01a8">
-  <source>Key used to sign the tokens.</source>
-  <target>Clé utilisée pour signer les jetons.</target>
-</trans-unit>
 <trans-unit id="s4347135696fc7cde">
   <source>Advanced flow settings</source>
   <target>Paramètres avancés des flux</target>
@@ -3572,14 +3568,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s5701b3d3a6678723">
   <source>Paths may not start or end with a slash, but they can contain any other character as path segments. The paths are currently purely used for organization, it does not affect their permissions, group memberships, or anything else.</source>
   <target>Les chemins ne peuvent pas commencer ou se terminer par une barre oblique, mais ils peuvent contenir n'importe quel autre caractère comme segments de chemin. Les chemins sont actuellement purement utilisés pour l'organisation, cela n'affecte pas leurs permissions, leurs appartenances à des groupes, ou quoi que ce soit d'autre.</target>
-</trans-unit>
-<trans-unit id="s50c312bea93b6925">
-  <source>Edit Policy</source>
-  <target>Éditer la politique</target>
-</trans-unit>
-<trans-unit id="s494e1ed913d9351a">
-  <source>Edit Group</source>
-  <target>Éditer le groupe</target>
 </trans-unit>
 <trans-unit id="s5cd31f4a88adf180">
   <source>Edit User</source>
@@ -7077,10 +7065,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="sfa88f413e287bb0f">
   <source>Stage type</source>
   <target>Type d'étape</target>
-</trans-unit>
-<trans-unit id="s04440099d97c0bef">
-  <source>Edit Stage</source>
-  <target>Éditer l'étape</target>
 </trans-unit>
 <trans-unit id="sfe938c1585e0bf68">
   <source>These bindings control if this stage will be applied to the flow.</source>
@@ -12282,6 +12266,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Show arbitrary input fields to the user, for example during enrollment.
                         Data is saved in the flow context under the
                         <x id="0" equiv-text="&lt;code class=&quot;ak-m-code-emphasis&quot;&gt;"/>prompt_data<x id="1" equiv-text="&lt;/code&gt;"/> variable.</source>
+</trans-unit>
+<trans-unit id="s7f9ff4596805832a">
+  <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
 </trans-unit>
 </body>
 </file>
