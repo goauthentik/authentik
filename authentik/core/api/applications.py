@@ -13,7 +13,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -24,7 +24,7 @@ from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import ModelSerializer, ThemedUrlsSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer, ThemedUrlsSerializer
 from authentik.core.apps import AppAccessWithoutBindings
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
@@ -49,6 +49,38 @@ def user_app_cache_key(
     return key
 
 
+#: Only these schemes are accepted for administrator-supplied link URLs.
+#: Anything else — `javascript:` in particular — would be stored XSS on an
+#: identity provider.
+ALLOWED_LINK_SCHEMES = ("http://", "https://")
+
+
+class ApplicationLinkSerializer(PassiveSerializer):
+    """A single additional link shown on an application card."""
+
+    label = CharField(
+        max_length=150,
+        help_text=_("Shown as the link's tooltip and accessible name."),
+    )
+    url = CharField(max_length=500)
+    icon = CharField(
+        max_length=500,
+        required=False,
+        allow_blank=True,
+        default="",
+        help_text=_(
+            "Optional. Same convention as an application icon: an uploaded "
+            "file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph."
+        ),
+    )
+
+    def validate_url(self, url: str) -> str:
+        """Reject any scheme other than HTTP and HTTPS."""
+        if not url.lower().startswith(ALLOWED_LINK_SCHEMES):
+            raise ValidationError(_("Link URLs must start with http:// or https://."))
+        return url
+
+
 class ApplicationSerializer(ModelSerializer):
     """Application Serializer"""
 
@@ -67,6 +99,34 @@ class ApplicationSerializer(ModelSerializer):
     meta_icon_themed_urls = ThemedUrlsSerializer(
         source="get_meta_icon_themed_urls", read_only=True, allow_null=True
     )
+
+    application_links = ListField(
+        child=ApplicationLinkSerializer(),
+        required=False,
+        help_text=_("Additional links shown on the application card."),
+    )
+
+    def validate_application_links(self, links: list[dict]) -> list[dict]:
+        """Validate each link on its own, independently of the request being partial.
+
+        A nested serializer resolves `partial` from the root serializer, so during a
+        PATCH every key missing from a link is skipped instead of validated: an item
+        without a label would be stored as-is and then raise on the next read. The
+        list is replaced wholesale either way, so each item is re-validated here with
+        its own serializer, which keeps PUT and PATCH under the same rules and fills
+        in the icon default.
+        """
+        validated = []
+        errors = {}
+        for index, link in enumerate(links):
+            serializer = ApplicationLinkSerializer(data=link)
+            if serializer.is_valid():
+                validated.append(dict(serializer.validated_data))
+            else:
+                errors[index] = serializer.errors
+        if errors:
+            raise ValidationError(errors)
+        return validated
 
     def get_launch_url(self, app: Application) -> str | None:
         """Allow formatting of launch URL"""
@@ -123,6 +183,7 @@ class ApplicationSerializer(ModelSerializer):
             "policy_engine_mode",
             "group",
             "meta_hide",
+            "application_links",
         ]
         extra_kwargs = {
             "pbm_uuid": {"read_only": True},

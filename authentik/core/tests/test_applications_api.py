@@ -131,6 +131,7 @@ class TestApplicationsAPI(APITestCase):
                         "meta_icon_themed_urls": None,
                         "meta_description": "",
                         "meta_hide": False,
+                        "application_links": [],
                         "meta_publisher": "",
                         "policy_engine_mode": "any",
                     },
@@ -191,6 +192,7 @@ class TestApplicationsAPI(APITestCase):
                         "meta_icon_themed_urls": None,
                         "meta_description": "",
                         "meta_hide": False,
+                        "application_links": [],
                         "meta_publisher": "",
                         "policy_engine_mode": "any",
                     },
@@ -198,6 +200,7 @@ class TestApplicationsAPI(APITestCase):
                         "launch_url": None,
                         "meta_description": "",
                         "meta_hide": False,
+                        "application_links": [],
                         "meta_icon": "",
                         "meta_icon_url": None,
                         "meta_icon_themed_urls": None,
@@ -278,3 +281,113 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("slug", response.data)
         self.assertIn("reserved", response.data["slug"][0])
+
+    def test_application_links_default(self):
+        """Test application_links defaults to an empty list"""
+        self.client.force_login(self.user)
+        slug = generate_id()
+        response = self.client.post(
+            reverse("authentik_api:application-list"),
+            {"name": generate_id(), "slug": slug},
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data["application_links"], [])
+        self.assertEqual(Application.objects.get(slug=slug).application_links, [])
+
+    def test_application_links_set(self):
+        """Test setting application_links"""
+        self.client.force_login(self.user)
+        links = [
+            {"label": "App Store", "url": "https://example.com/app", "icon": "fa://fa-apple"},
+            {"label": "Docs", "url": "http://example.com/docs", "icon": ""},
+        ]
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+            {"application_links": links},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["application_links"], links)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.application_links, links)
+
+    def test_application_links_icon_optional(self):
+        """Test the icon of a link may be omitted"""
+        self.client.force_login(self.user)
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+            {"application_links": [{"label": "Docs", "url": "https://example.com/docs"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["application_links"][0]["icon"], "")
+
+    def test_application_links_label_required(self):
+        """Test a link without a label is rejected, on PATCH as well
+
+        A nested serializer inherits `partial` from its root, so without an explicit
+        guard a PATCH would skip the missing key rather than reject it.
+        """
+        self.client.force_login(self.user)
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+            {"application_links": [{"url": "https://example.com"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("label", response.data["application_links"][0])
+
+    def test_application_links_reject_unsafe_scheme(self):
+        """Test link URLs are restricted to HTTP and HTTPS
+
+        An administrator-supplied URL carrying a javascript: scheme would be stored
+        XSS on an identity provider, so the check lives in the serializer and not
+        only in the web component.
+        """
+        self.client.force_login(self.user)
+        self.allowed.application_links = [{"label": "kept", "url": "https://example.com"}]
+        self.allowed.save()
+        for url in (
+            "javascript:alert(1)",
+            "JavaScript:alert(1)",
+            "  javascript:alert(1)",
+            "data:text/html,<script>alert(1)</script>",
+            "file:///etc/passwd",
+            "example.com",
+        ):
+            with self.subTest(url=url):
+                response = self.client.patch(
+                    reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+                    {"application_links": [{"label": "unsafe", "url": url}]},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("url", response.data["application_links"][0])
+        self.allowed.refresh_from_db()
+        self.assertEqual(
+            self.allowed.application_links, [{"label": "kept", "url": "https://example.com"}]
+        )
+
+    def test_application_links_scheme_case_insensitive(self):
+        """Test the scheme check does not depend on case"""
+        self.client.force_login(self.user)
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+            {"application_links": [{"label": "Docs", "url": "HTTPS://example.com/docs"}]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_application_links_cleared(self):
+        """Test application_links can be emptied again"""
+        self.client.force_login(self.user)
+        self.allowed.application_links = [{"label": "Docs", "url": "https://example.com"}]
+        self.allowed.save()
+        response = self.client.patch(
+            reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+            {"application_links": []},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.application_links, [])

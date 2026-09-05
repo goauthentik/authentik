@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import type { ApplicationLink } from "./ApplicationLink";
+import { ApplicationLinkFromJSON, ApplicationLinkToJSON } from "./ApplicationLink";
 import type { PolicyEngineMode } from "./PolicyEngineMode";
 import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngineMode";
 import type { Provider } from "./Provider";
@@ -101,6 +103,10 @@ export interface Application {
      * Hide this application from the user's My applications page.
      */
     metaHide?: boolean;
+    /**
+     * Additional links shown on the application card.
+     */
+    applicationLinks?: Array<ApplicationLink>;
 }
 
 /**
@@ -194,6 +200,10 @@ export function ApplicationFromJSONTyped(json: any, ignoreDiscriminator: boolean
                 : PolicyEngineModeFromJSON(json["policy_engine_mode"]),
         group: json["group"] == null ? undefined : json["group"],
         metaHide: json["meta_hide"] == null ? undefined : json["meta_hide"],
+        applicationLinks:
+            json["application_links"] == null
+                ? undefined
+                : (json["application_links"] as Array<any>).map(ApplicationLinkFromJSON),
     };
 }
 
@@ -231,5 +241,9 @@ export function ApplicationToJSONTyped(
         policy_engine_mode: PolicyEngineModeToJSON(value["policyEngineMode"]),
         group: value["group"],
         meta_hide: value["metaHide"],
+        application_links:
+            value["applicationLinks"] == null
+                ? undefined
+                : (value["applicationLinks"] as Array<any>).map(ApplicationLinkToJSON),
     };
 }

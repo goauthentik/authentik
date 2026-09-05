@@ -51,6 +51,10 @@ export interface UIConfig {
         requests: boolean;
         // Agents
         agents: boolean;
+        // Additional links under application cards in the library
+        applicationLinks: boolean;
+        // Connection address under application cards in the library
+        applicationAddress: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
@@ -81,6 +85,9 @@ export const DefaultUIConfig = {
         search: true,
         requests: true,
         agents: true,
+        // Opt-in: an instance that enables neither sees no change.
+        applicationLinks: false,
+        applicationAddress: false,
     },
     layout: {
         type: LayoutType.row,

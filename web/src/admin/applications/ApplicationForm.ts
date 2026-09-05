@@ -12,6 +12,8 @@ import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/applications/ak-provider-table";
+import "#elements/ak-array-input";
+import "#admin/applications/components/ak-application-link-input";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 
@@ -19,15 +21,28 @@ import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithSession } from "#elements/mixins/session";
 import { navigate } from "#elements/router/RouterOutlet";
 import { ifPresent } from "#elements/utils/attributes";
 
+import {
+    akApplicationLinkInput,
+    type IApplicationLinkInput,
+} from "#admin/applications/components/ak-application-link-input";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
+import {
+    AdminApi,
+    Application,
+    ApplicationLink,
+    CoreApi,
+    FileList,
+    Provider,
+    UsageEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
-import { html, TemplateResult } from "lit";
+import { html, nothing, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -37,7 +52,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
  * @prop {string} instancePk - The primary key of the instance to load.
  */
 @customElement("ak-application-form")
-export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {
+export class ApplicationForm extends WithSession(
+    WithCapabilitiesConfig(ModelForm<Application, string>),
+) {
     #api = aki(CoreApi);
 
     public static override verboseName = msg("Application");
@@ -58,6 +75,39 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
     @state()
     protected backchannelProviders: Provider[] = [];
+
+    /**
+     * The file library, fetched once for the whole form and handed to every
+     * additional-link row. Rows never call the API themselves, so the number
+     * of requests does not grow with the number of links.
+     */
+    @state()
+    protected mediaFiles: FileList[] = [];
+
+    #mediaRequested = false;
+
+    /**
+     * Loaded on first approach of the links section — hover or focus — rather
+     * than on form load. The icon dropdown is optional and often untouched,
+     * so its file list should not be fetched with the rest of the form.
+     */
+    protected loadMediaFiles = (): void => {
+        if (this.#mediaRequested) return;
+        this.#mediaRequested = true;
+        aki(AdminApi)
+            .adminFileList({ usage: UsageEnum.Media })
+            .then((files) => {
+                this.mediaFiles = files;
+            })
+            // The dropdown stays usable with the bundled glyphs alone.
+            .catch(() => undefined);
+    };
+
+    /** Called after an upload, when the list genuinely changed. */
+    protected refreshMediaFiles = (): void => {
+        this.#mediaRequested = false;
+        this.loadMediaFiles();
+    };
 
     public override reset(): void {
         super.reset();
@@ -236,9 +286,51 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                             "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                         )}
                     ></ak-textarea-input>
+                    ${this.uiConfig.enabledFeatures.applicationLinks
+                        ? this.renderApplicationLinks()
+                        : nothing}
                 </div>
             </ak-form-group>
         `;
+    }
+
+    /**
+     * Editor for the additional links shown under the application card.
+     *
+     * Rendered only when `applicationLinks` is enabled. The field configures a
+     * feature that is off, so showing it would offer settings with no effect.
+     *
+     * The flag resolves per viewer through `User.group_attributes()`, so an
+     * administrator whose own account has the feature off will not see the field
+     * even if another group has it on. That is the accepted trade-off for not
+     * showing inert configuration.
+     */
+    private renderApplicationLinks(): TemplateResult {
+        return html`<ak-form-element-horizontal
+            label=${msg("Additional links")}
+            name="applicationLinks"
+            @mouseenter=${this.loadMediaFiles}
+            @focusin=${this.loadMediaFiles}
+            @ak-application-link-files-changed=${this.refreshMediaFiles}
+        >
+            <ak-array-input
+                .items=${this.instance?.applicationLinks ?? []}
+                .newItem=${() => ({ label: "", url: "", icon: "" })}
+                .row=${(link?: ApplicationLink) =>
+                    akApplicationLinkInput({
+                        ".applicationLink": link,
+                        ".files": this.mediaFiles,
+                        "style": "width: 100%",
+                        "name": "application-link",
+                    } as unknown as IApplicationLinkInput)}
+            >
+            </ak-array-input>
+            <p class="pf-c-form__helper-text">
+                ${msg(
+                    "Shown under the application card in the user dashboard. URLs are limited to http and https. For a platform or vendor logo, upload it to the file library and pick it here.",
+                )}
+            </p>
+        </ak-form-element-horizontal>`;
     }
 
     //#endregion

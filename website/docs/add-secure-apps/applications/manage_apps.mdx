@@ -123,6 +123,58 @@ Before authentik 2026.5, an application was hidden by setting its **Launch URL**
 
 To give users direct links to applications, you can now use a URL like `https://authentik.company/application/launch/<slug>/`. If the user is already logged in, they will be redirected to the application automatically. Otherwise, they'll be sent to the authentication flow and, if successful, forwarded to the application.
 
+## Additional links on application cards
+
+<div className="badge-group">
+
+:ak-version[2026.11]
+
+</div>
+
+By default an application card offers one way into the service: opening its **Launch URL** in a
+browser. Many services also ship native clients, and users have no way of knowing that from the
+**Application Dashboard**.
+
+You can add a list of links to each application. They are shown under the card, and each one is an
+icon that opens the URL you configured. Common uses are the App Store or Google Play entry for a
+native client, a desktop download page, documentation, or a support channel.
+
+Alongside the links, an optional **connection address** can be shown with a copy button. Native
+clients usually ask for a server address before they will connect, and the address shown here is
+derived from the application's **Launch URL**, so it cannot fall out of step with it.
+
+Both are turned off by default. To enable them, set the following on a brand, a group, or a user,
+under **Attributes**:
+
+```yaml
+settings:
+    enabledFeatures:
+        applicationLinks: true
+        applicationAddress: true
+```
+
+Because these resolve like every other interface setting, you can enable them for one group of
+users and leave the dashboard unchanged for everyone else.
+
+### Add links to an application
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications**, and click the edit icon beside the application
+   that you want to edit.
+3. Expand **UI settings** and find the **Additional links** field.
+4. Click the Add icon (**+**) and fill in the row:
+    - **Label**: shown as the link's tooltip and read out by screen readers. authentik does not
+      derive this from the URL, so it is up to you to keep it truthful.
+    - **URL**: must start with `http://` or `https://`. Other schemes are rejected.
+    - **Icon**: optional. Choose one of the bundled icons, pick a file you have already uploaded,
+      or upload a new one. A link with no icon is shown with a chain glyph.
+5. Repeat for each link, then click **Update**.
+
+:::info
+At most five links are shown on the card. Any beyond that are counted in a `+n` indicator, so a
+long list cannot distort the dashboard grid.
+:::
+
 ## Backchannel providers
 
 Backchannel providers can augment the functionality of applications by using additional protocols. The main provider of an application provides the SSO protocol that is used for logging into the application. Then, additional backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.mdx) and [LDAP](../providers/ldap/index.mdx) to provide directory syncing.

@@ -27,6 +27,8 @@ export * from "./AppleLoginChallenge";
 export * from "./Application";
 export * from "./ApplicationEntitlement";
 export * from "./ApplicationEntitlementRequest";
+export * from "./ApplicationLink";
+export * from "./ApplicationLinkRequest";
 export * from "./ApplicationRequest";
 export * from "./AuthTypeEnum";
 export * from "./AuthenticatedSession";
