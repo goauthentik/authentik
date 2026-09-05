@@ -1,5 +1,6 @@
 import "#elements/AppIcon";
 import "#user/LibraryApplication/RACLaunchEndpointModal";
+import "#user/LibraryApplication/ApplicationLinks";
 
 import { PFSize } from "#common/enums";
 
@@ -131,6 +132,11 @@ export const AKLibraryApp: LitFC<AKLibraryAppProps> = ({
                 .iconThemedUrls=${application.metaIconThemedUrls}
             ></ak-app-icon>
             ${main}
+            <ak-library-app-links
+                .links=${application.applicationLinks ?? []}
+                app-name=${application.name}
+                launch-url=${ifPresent(application.launchUrl)}
+            ></ak-library-app-links>
             ${CardMenu({
                 application,
                 cardID,

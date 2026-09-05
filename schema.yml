@@ -36386,6 +36386,11 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
+        application_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationLink'
+          description: Additional links shown on the application card.
       required:
       - backchannel_providers_obj
       - launch_url
@@ -36432,6 +36437,48 @@ components:
       required:
       - app
       - name
+    ApplicationLink:
+      type: object
+      description: A single additional link shown on an application card.
+      properties:
+        label:
+          type: string
+          description: Shown as the link's tooltip and accessible name.
+          maxLength: 150
+        url:
+          type: string
+          maxLength: 500
+        icon:
+          type: string
+          default: ''
+          description: 'Optional. Same convention as an application icon: an uploaded
+            file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph.'
+          maxLength: 500
+      required:
+      - label
+      - url
+    ApplicationLinkRequest:
+      type: object
+      description: A single additional link shown on an application card.
+      properties:
+        label:
+          type: string
+          minLength: 1
+          description: Shown as the link's tooltip and accessible name.
+          maxLength: 150
+        url:
+          type: string
+          minLength: 1
+          maxLength: 500
+        icon:
+          type: string
+          default: ''
+          description: 'Optional. Same convention as an application icon: an uploaded
+            file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph.'
+          maxLength: 500
+      required:
+      - label
+      - url
     ApplicationRequest:
       type: object
       description: Application Serializer
@@ -36471,6 +36518,11 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
+        application_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationLinkRequest'
+          description: Additional links shown on the application card.
       required:
       - name
       - slug
@@ -50329,6 +50381,11 @@ components:
         meta_hide:
           type: boolean
           description: Hide this application from the user's My applications page.
+        application_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationLinkRequest'
+          description: Additional links shown on the application card.
     PatchedAuthenticatorDuoStageRequest:
       type: object
       description: AuthenticatorDuoStage Serializer

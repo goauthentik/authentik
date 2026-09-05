@@ -185,6 +185,43 @@
     border-color: transparent;
 }
 
+/* #region Application links */
+
+/* Footer heights, shared between the space the card reserves and the
+   offset that keeps the icon centered in the square. */
+[part="app-list"]:not([data-view-mode="list"]) {
+    --app-links-height: 2.25rem;
+    --app-address-height: 1.4rem;
+}
+
+/* The wrapper no longer imposes the aspect ratio; the launch anchor carries
+   it, in flow. The card therefore grows by the height of the footer without
+   anything moving inside the square. */
+[part="card-wrapper"]:has(ak-library-app-links:not([hidden])) {
+    aspect-ratio: auto;
+
+    [part="card"] {
+        height: auto;
+    }
+
+    .card-header-aspect-wrapper {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        aspect-ratio: var(--app-card-aspect-ratio);
+    }
+
+    /* The icon stays positioned against the wrapper as it was; only its
+       bottom edge is raised by the footer height, so it re-centers in the
+       square rather than in the taller card. */
+    ak-app-icon::part(icon) {
+        inset-block-end: calc(
+            var(--app-links-height) + var(--app-address-height) + var(--app-icon-offset, 0px)
+        );
+    }
+}
+
 /* #region Card Wrapper */
 
 [part="card-wrapper"] {

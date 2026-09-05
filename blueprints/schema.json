@@ -6645,6 +6645,39 @@
                     "title": "Meta hide",
                     "description": "Hide this application from the user's My applications page."
                 },
+                "application_links": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "maxLength": 150,
+                                "minLength": 1,
+                                "title": "Label",
+                                "description": "Shown as the link's tooltip and accessible name."
+                            },
+                            "url": {
+                                "type": "string",
+                                "maxLength": 500,
+                                "minLength": 1,
+                                "title": "Url"
+                            },
+                            "icon": {
+                                "type": "string",
+                                "maxLength": 500,
+                                "title": "Icon",
+                                "description": "Optional. Same convention as an application icon: an uploaded file, or `fa://fa-name` for a bundled icon. Defaults to a link glyph."
+                            }
+                        },
+                        "required": [
+                            "label",
+                            "url"
+                        ]
+                    },
+                    "title": "Application links",
+                    "description": "Additional links shown on the application card."
+                },
                 "icon": {
                     "type": "string",
                     "minLength": 1,
