@@ -2,12 +2,14 @@
 
 from json import loads
 
+from django.core.cache import cache
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
+from authentik.flows.planner import cache_key
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -31,6 +33,21 @@ flow_start --> done[["End of the flow"]]"""
 
 class TestFlowsAPI(APITestCase):
     """API tests"""
+
+    def test_cache_key_matching(self) -> None:
+        cache.set_many({"count/first": 1, "count/last": 2}, version=7)
+        cache.set("count/expired", 3, timeout=0, version=7)
+        cache.set("count/other-version", 4, version=8)
+        for pattern, expected in (
+            ("count/first", 1),
+            ("count/*", 3),
+            ("count/*st", 2),
+            ("count/missing*", 0),
+        ):
+            with self.subTest(pattern=pattern):
+                self.assertEqual(cache.count_keys(pattern, version=7), expected)
+                self.assertEqual(len(cache.keys(pattern, version=7)), expected)
+        self.assertEqual(cache.count_keys("count/*", version=8), 1)
 
     def test_models(self):
         """Test that ui_user_settings returns none"""
@@ -85,8 +102,11 @@ class TestFlowsAPI(APITestCase):
         self.client.force_login(user)
 
         flow = create_test_flow()
+        cache.set(f"{cache_key(flow)}#test-user", "cached-plan")
         response = self.client.get(reverse("authentik_api:flow-detail", kwargs={"slug": flow.slug}))
         body = loads(response.content.decode())
+        self.assertEqual(body["cache_count"], 1)
+        self.assertEqual(self.client.get(reverse("authentik_api:flow-cache-info")).data["count"], 1)
         self.assertEqual(body["background_url"], "/static/dist/assets/images/flow_background.jpg")
 
         flow.background = "https://goauthentik.io/img/icon.png"
