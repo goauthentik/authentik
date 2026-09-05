@@ -3,6 +3,8 @@
 from typing import Any, get_args
 
 from django.db import models
+from django.db.models import Q
+from django.utils.translation import ngettext
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type, build_object_type
 from drf_spectacular.utils import extend_schema, extend_schema_field
@@ -48,7 +50,84 @@ class BrandSerializer(ModelSerializer):
                 brands = brands.exclude(pk=self.instance.pk)
             if brands.exists():
                 raise ValidationError({"default": "Only a single brand can be set as default."})
+        self._validate_webauthn_rp_config(attrs)
         return super().validate(attrs)
+
+    def _validate_webauthn_rp_config(self, attrs: dict[str, Any]):
+        """A brand's WebAuthn RP config determines the RP ID sent for all WebAuthn
+        ceremonies on that brand; credentials registered under a different RP ID become
+        unusable there. Block config or scope changes while users exist who registered
+        their only authenticator under an RP ID this brand previously served, as they
+        would be locked out without a self-service recovery path."""
+        old_config = self.instance.webauthn_rp_config if self.instance else None
+        rp_config = attrs.get("webauthn_rp_config", old_config)
+        if not rp_config:
+            return
+        config_changed = "webauthn_rp_config" in attrs and rp_config != old_config
+        # Changing the domain or the default flag re-scopes an already-assigned RP ID
+        # to a different set of hosts, which strands credentials the same way
+        scope_changed = old_config is not None and (
+            ("domain" in attrs and attrs["domain"] != self.instance.domain)
+            or ("default" in attrs and attrs["default"] != self.instance.default)
+        )
+        if not config_changed and not scope_changed:
+            return
+
+        from authentik.stages.authenticator import device_classes
+        from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
+
+        domain = attrs.get("domain", self.instance.domain if self.instance else "")
+        default = attrs.get("default", self.instance.default if self.instance else False)
+        # Devices whose RP ID was derived from a request host this brand matches
+        # (mirrors get_brand_for_request; the default brand matches every host), plus
+        # devices registered under the previously assigned RP ID.
+        affected = WebAuthnDevice.objects.filter(confirmed=True).exclude(rp_id=rp_config.rp_id)
+        if not default:
+            scope = Q(rp_id__iexact=domain) | Q(rp_id__iendswith=f".{domain}")
+            if old_config:
+                scope |= Q(rp_id=old_config.rp_id)
+            affected = affected.filter(scope)
+        affected_user_ids = set(affected.values_list("user_id", flat=True).distinct())
+        if not affected_user_ids:
+            return
+        # Users keeping a usable factor: a WebAuthn device already bound to the new RP ID,
+        # or a confirmed device of any other class. One query per device model.
+        covered = set(
+            WebAuthnDevice.objects.filter(
+                confirmed=True, user_id__in=affected_user_ids, rp_id=rp_config.rp_id
+            ).values_list("user_id", flat=True)
+        )
+        for device_class in device_classes():
+            if device_class is WebAuthnDevice:
+                continue
+            remaining = affected_user_ids - covered
+            if not remaining:
+                break
+            covered |= set(
+                device_class.objects.filter(confirmed=True, user_id__in=remaining).values_list(
+                    "user_id", flat=True
+                )
+            )
+        locked_out_users = len(affected_user_ids - covered)
+        if locked_out_users:
+            raise ValidationError(
+                {
+                    "webauthn_rp_config": ngettext(
+                        "Cannot apply this change: %(count)d user has WebAuthn devices "
+                        "registered under an RP ID this brand serves as their only "
+                        "authenticator and would be locked out. Ensure these users have "
+                        "a fallback authenticator or have re-registered their devices "
+                        "first.",
+                        "Cannot apply this change: %(count)d users have WebAuthn devices "
+                        "registered under an RP ID this brand serves as their only "
+                        "authenticator and would be locked out. Ensure these users have "
+                        "a fallback authenticator or have re-registered their devices "
+                        "first.",
+                        locked_out_users,
+                    )
+                    % {"count": locked_out_users}
+                }
+            )
 
     class Meta:
         model = Brand
@@ -74,6 +153,7 @@ class BrandSerializer(ModelSerializer):
             "default_application",
             "web_certificate",
             "client_certificates",
+            "webauthn_rp_config",
             "attributes",
         ]
         extra_kwargs = {
@@ -211,6 +291,7 @@ class BrandViewSet(UsedByMixin, ModelViewSet):
         "flow_request",
         "web_certificate",
         "client_certificates",
+        "webauthn_rp_config",
     ]
     ordering = ["domain"]
 

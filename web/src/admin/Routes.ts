@@ -79,6 +79,10 @@ export const ROUTES: Route[] = [
         await import("#admin/brands/BrandListPage");
         return html`<ak-brand-list></ak-brand-list>`;
     }),
+    new Route(new RegExp("^/core/webauthn-rp-configs$"), async () => {
+        await import("#admin/stages/authenticator_webauthn/WebAuthnRPConfigListPage");
+        return html`<ak-stage-authenticator-webauthn-rp-config-list></ak-stage-authenticator-webauthn-rp-config-list>`;
+    }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("#admin/policies/PolicyListPage");
         return html`<ak-policy-list></ak-policy-list>`;

@@ -30,7 +30,10 @@ import {
     Flow,
     FlowDesignationEnum,
     FlowsApi,
+    StagesApi,
+    StagesAuthenticatorWebauthnRpConfigsListRequest,
     UsageEnum,
+    WebAuthnRPConfig,
 } from "@goauthentik/api";
 
 import YAML from "yaml";
@@ -400,6 +403,46 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("WebAuthn RP Config", {
+                            id: "brand.form.webauthn-rp-config.label",
+                        })}
+                        name="webauthnRpConfig"
+                    >
+                        <ak-search-select
+                            placeholder=${msg("Select a WebAuthn RP config...", {
+                                id: "brand.form.webauthn-rp-config.placeholder",
+                            })}
+                            blankable
+                            .fetchObjects=${async (query?: string): Promise<WebAuthnRPConfig[]> => {
+                                const args: StagesAuthenticatorWebauthnRpConfigsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const configs =
+                                    await aki(StagesApi).stagesAuthenticatorWebauthnRpConfigsList(
+                                        args,
+                                    );
+
+                                return configs.results;
+                            }}
+                            .renderElement=${(item: WebAuthnRPConfig) => item.name}
+                            .renderDescription=${(item: WebAuthnRPConfig) => html`${item.rpId}`}
+                            .value=${(item: WebAuthnRPConfig | null) => item?.rpConfigUuid}
+                            .selected=${(item: WebAuthnRPConfig): boolean => {
+                                return item.rpConfigUuid === this.instance?.webauthnRpConfig;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When set, WebAuthn ceremonies on this brand use the config's RP ID and allowed origins instead of deriving them from the request, so credentials such as passkeys can be shared across brands. Warning: credentials already registered under a different RP ID become unusable on this brand.",
+                                { id: "brand.form.webauthn-rp-config.description" },
+                            )}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Client Certificates")}
