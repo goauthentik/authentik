@@ -22,24 +22,17 @@ export const DEFAULT_HEADERS = {
     "X-Plex-Device-Vendor": "goauthentik.io",
 };
 
-export async function popupCenterScreen(
-    url: string,
-    title: string,
-    w: number,
-    h: number,
-): Promise<Window | null> {
+/**
+ * Open a centered popup. Synchronous on purpose: `window.open` only has
+ * transient user activation while the task that handled the click is still
+ * running, so awaiting anything first gets the popup blocked. Callers that need
+ * a URL they do not have yet should open `about:blank` here and navigate the
+ * returned window once the URL arrives.
+ */
+export function popupCenterScreen(url: string, title: string, w: number, h: number): Window | null {
     const top = (screen.height - h) / 4,
         left = (screen.width - w) / 2;
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const popup = window.open(
-                url,
-                title,
-                `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`,
-            );
-            resolve(popup);
-        });
-    });
+    return window.open(url, title, `scrollbars=yes,width=${w},height=${h},top=${top},left=${left}`);
 }
 
 export class PlexAPIClient {
@@ -47,6 +40,16 @@ export class PlexAPIClient {
 
     constructor(token: string) {
         this.token = token;
+    }
+
+    // The #? form is the one app.plex.tv documents; forwardUrl is only known to
+    // work with it, not with the older #!? form.
+    static authUrl(clientIdentifier: string, code: string, forwardUrl?: string): string {
+        let url = `https://app.plex.tv/auth#?clientID=${encodeURIComponent(clientIdentifier)}&code=${encodeURIComponent(code)}&context[device][product]=authentik`;
+        if (forwardUrl) {
+            url += `&forwardUrl=${encodeURIComponent(forwardUrl)}`;
+        }
+        return url;
     }
 
     static async getPin(
@@ -62,7 +65,7 @@ export class PlexAPIClient {
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
+            authUrl: PlexAPIClient.authUrl(clientIdentifier, pin.code),
             pin: pin,
         };
     }
