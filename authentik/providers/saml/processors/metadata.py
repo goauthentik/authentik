@@ -14,8 +14,7 @@ from authentik.common.saml.constants import (
     NS_SAML_METADATA,
     NS_SAML_PROTOCOL,
     NS_SIGNATURE,
-    SAML_BINDING_POST,
-    SAML_BINDING_REDIRECT,
+    SAML_BINDINGS_SUPPORTED,
     SAML_NAME_ID_FORMAT_EMAIL,
     SAML_NAME_ID_FORMAT_PERSISTENT,
     SAML_NAME_ID_FORMAT_TRANSIENT,
@@ -93,7 +92,7 @@ class MetadataProcessor:
     def get_sso_bindings(self) -> Iterator[Element]:
         """Get all SSO Bindings - both point to unified endpoint"""
         unified_url = self._get_unified_url()
-        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
+        for binding in SAML_BINDINGS_SUPPORTED:
             if self.force_binding and self.force_binding != binding:
                 continue
             element = Element(f"{{{NS_SAML_METADATA}}}SingleSignOnService")
@@ -104,7 +103,7 @@ class MetadataProcessor:
     def get_slo_bindings(self) -> Iterator[Element]:
         """Get all SLO Bindings - both point to unified endpoint"""
         unified_url = self._get_unified_url()
-        for binding in [SAML_BINDING_REDIRECT, SAML_BINDING_POST]:
+        for binding in SAML_BINDINGS_SUPPORTED:
             if self.force_binding and self.force_binding != binding:
                 continue
             element = Element(f"{{{NS_SAML_METADATA}}}SingleLogoutService")

@@ -92,6 +92,43 @@ class TestServiceProviderMetadataParser(TestCase):
             len(SAMLPropertyMapping.objects.exclude(managed__isnull=True)),
         )
 
+    def test_multiple_bindings(self):
+        """Test metadata advertising endpoints with bindings authentik doesn't support"""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi_bindings.xml")
+        )
+        provider = metadata.to_provider("test", self.flow, self.flow)
+        self.assertEqual(provider.acs_url, "https://sp-b.example.org/Shibboleth.sso/SAML2/POST")
+        self.assertEqual(provider.sp_binding, SAMLBindings.POST)
+        self.assertEqual(provider.sls_url, "https://sp-b.example.org/Shibboleth.sso/SLO/POST")
+        self.assertEqual(provider.sls_binding, SAMLBindings.POST)
+        self.assertEqual(provider.default_name_id_policy, SAMLNameIDPolicy.EMAIL)
+
+    def test_multiple_bindings_default(self):
+        """Test that an ACS marked as isDefault takes precedence over the order they're listed in"""
+        metadata = ServiceProviderMetadataParser().parse(
+            load_fixture("fixtures/multi_bindings.xml").replace(
+                'bindings:HTTP-Artifact" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/Artifact"',
+                'bindings:HTTP-POST" '
+                'Location="https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default" '
+                'isDefault="true"',
+            )
+        )
+        self.assertEqual(
+            metadata.acs_location, "https://sp-b.example.org/Shibboleth.sso/SAML2/POST-Default"
+        )
+        self.assertEqual(metadata.acs_binding, SAMLBindings.POST)
+
+    def test_no_supported_binding(self):
+        """Test metadata with no ACS using a supported binding"""
+        with self.assertRaises(ValueError):
+            ServiceProviderMetadataParser().parse(
+                load_fixture("fixtures/multi_bindings.xml").replace(
+                    'bindings:HTTP-POST"', 'bindings:PAOS"'
+                )
+            )
+
     def test_with_signing_cert(self):
         """Test Metadata with signing cert"""
         create_test_cert()
