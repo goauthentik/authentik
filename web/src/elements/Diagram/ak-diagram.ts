@@ -9,10 +9,37 @@ import { EmptyState } from "#elements/EmptyState";
 import MermaidStyles from "#elements/mermaid/mermaid.css";
 import { loadMermaid } from "#elements/mermaid/utils";
 import { SlottedTemplateResult } from "#elements/types";
+import { isSafari } from "#elements/utils/useragent";
 
-import { CSSResult, PropertyValues } from "lit";
+import { css, CSSResult, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+// Safari has a [notoriously nasty positioning bug](https://bugs.webkit.org/show_bug.cgi?id=23113)
+// (as of 2026, the bug report has been open for 17 years!) when using `transition` on a group
+// (`<g>`) with a `<foreignobject>`. Using `position: fixed` works as long as the rendering object
+// isn't scaled. We don't scale our mermaid graphs (yet), so this is the accepted workaround until
+// (a) Safari is fixed or (b) we start scaling and have to figure something else out.
+//
+// Mermaid puts empty strings where the edge labels go when there's no edge label, and renders them
+// as empty. Safari, however, ignores the internal styling and shows a tiny little capsule
+// positioned in the upper-left-corner of the diagram. To make *that* go away, we have to check if
+// the label is empty and then shove it off-viewport.
+//
+// prettier-ignore
+const safariCSSBlock  = css`
+div[xmlns="http://www.w3.org/1999/xhtml"] {
+    position: fixed;
+}
+
+span.edgeLabel:empty {
+    position: absolute;
+    top: -200vh;
+    left: -200vw;
+}
+`;
+
+const safariCSS = safariCSSBlock.cssText;
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -121,7 +148,15 @@ export class Diagram extends AKElement {
     }
 
     protected override render(): SlottedTemplateResult {
-        return this.renderedSVG ?? this.loadingPlaceholder;
+        if (!this.renderedSVG) {
+            return this.loadingPlaceholder;
+        }
+
+        return isSafari()
+            ? html`<style>
+                      ${safariCSS}</style
+                  >${this.renderedSVG}`
+            : this.renderedSVG;
     }
 }
 
