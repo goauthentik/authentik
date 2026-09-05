@@ -193,18 +193,28 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
         if len(reference.spec.rules) < 1:
             self.logger.debug("No hosts defined, not creating ingress.")
             return None
-        return self.api.create_namespaced_ingress(
-            self.namespace, reference, field_manager=FIELD_MANAGER
+        return self.k8s_api_call(
+            self.api.create_namespaced_ingress_with_http_info,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )
 
     def delete(self, reference: V1Ingress):
-        return self.api.delete_namespaced_ingress(reference.metadata.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.delete_namespaced_ingress_with_http_info,
+            reference.metadata.name,
+            self.namespace,
+        )
 
     def retrieve(self) -> V1Ingress:
-        return self.api.read_namespaced_ingress(self.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.read_namespaced_ingress_with_http_info, self.name, self.namespace
+        )
 
     def update(self, current: V1Ingress, reference: V1Ingress):
-        return self.api.patch_namespaced_ingress(
+        return self.k8s_api_call(
+            self.api.patch_namespaced_ingress_with_http_info,
             current.metadata.name,
             self.namespace,
             reference,

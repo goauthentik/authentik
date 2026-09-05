@@ -179,18 +179,28 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         )
 
     def create(self, reference: V1Deployment):
-        return self.api.create_namespaced_deployment(
-            self.namespace, reference, field_manager=FIELD_MANAGER
+        return self.k8s_api_call(
+            self.api.create_namespaced_deployment_with_http_info,
+            self.namespace,
+            reference,
+            field_manager=FIELD_MANAGER,
         )
 
     def delete(self, reference: V1Deployment):
-        return self.api.delete_namespaced_deployment(reference.metadata.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.delete_namespaced_deployment_with_http_info,
+            reference.metadata.name,
+            self.namespace,
+        )
 
     def retrieve(self) -> V1Deployment:
-        return self.api.read_namespaced_deployment(self.name, self.namespace)
+        return self.k8s_api_call(
+            self.api.read_namespaced_deployment_with_http_info, self.name, self.namespace
+        )
 
     def update(self, current: V1Deployment, reference: V1Deployment):
-        return self.api.patch_namespaced_deployment(
+        return self.k8s_api_call(
+            self.api.patch_namespaced_deployment_with_http_info,
             current.metadata.name,
             self.namespace,
             reference,
