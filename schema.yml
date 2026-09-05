@@ -25037,11 +25037,13 @@ paths:
           $ref: '#/components/responses/ValidationErrorResponse'
         '403':
           $ref: '#/components/responses/GenericErrorResponse'
-  /sources/kerberos/{slug}/sync/status/:
+  /sources/kerberos/{slug}/syncs/:
     get:
-      operationId: sources_kerberos_sync_status_retrieve
-      description: Get provider's sync status
+      operationId: sources_kerberos_syncs_list
+      description: Get provider's sync statuses
       parameters:
+      - $ref: '#/components/parameters/QueryPaginationPage'
+      - $ref: '#/components/parameters/QueryPaginationPageSize'
       - in: path
         name: slug
         schema:
@@ -25057,7 +25059,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SyncStatus'
+                $ref: '#/components/schemas/PaginatedKerberosSourceSyncList'
           description: ''
         '400':
           $ref: '#/components/responses/ValidationErrorResponse'
@@ -43638,11 +43640,16 @@ components:
           allOf:
           - $ref: '#/components/schemas/SyncOutgoingTriggerModeEnum'
           description: When to trigger sync for outgoing providers
+        last_sync:
+          allOf:
+          - $ref: '#/components/schemas/KerberosSourceSync'
+          readOnly: true
       required:
       - component
       - connectivity
       - icon_themed_urls
       - icon_url
+      - last_sync
       - managed
       - meta_model_name
       - name
@@ -43831,6 +43838,41 @@ components:
       - name
       - realm
       - slug
+    KerberosSourceSync:
+      type: object
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        tasks:
+          type: array
+          items:
+            type: string
+            format: uuid
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          $ref: '#/components/schemas/SyncStatusEnum'
+        source:
+          type: string
+          format: uuid
+        users_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - pk
+      - source
+      - started_at
     KeyTypeEnum:
       type: string
       enum:
@@ -48294,6 +48336,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - autocomplete
+      - pagination
+      - results
+    PaginatedKerberosSourceSyncList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosSourceSync'
         autocomplete:
           $ref: '#/components/schemas/Autocomplete'
       required:
