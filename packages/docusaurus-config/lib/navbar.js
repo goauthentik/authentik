@@ -63,6 +63,12 @@ export const NavbarItemsTemplate = /** @type {const} */ ([
         position: "left",
         target: "_self",
     },
+    {
+        to: "{{WWW_URL}}/contact/",
+        label: "Contact",
+        position: "left",
+        target: "_self",
+    },
     ...SocialNavbarItems,
 ]);
 
