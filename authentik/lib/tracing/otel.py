@@ -2,9 +2,12 @@
 
 import sys
 from contextlib import contextmanager
+from inspect import iscoroutinefunction
+from platform import machine
+from socket import gethostname
 from typing import Any
 
-from asgiref.sync import iscoroutinefunction, markcoroutinefunction
+from asgiref.sync import markcoroutinefunction
 from django.conf import settings
 from django.utils.module_loading import import_string
 from opentelemetry import trace
@@ -15,7 +18,7 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.structlog import StructlogInstrumentor
 from opentelemetry.instrumentation.threading import ThreadingInstrumentor
 from opentelemetry.propagate import inject
-from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.resources import HOST_ARCH, HOST_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
@@ -134,6 +137,8 @@ class OpenTelemetryTracer(Tracer):
                     "authentik.build_hash": authentik_build_hash("tagged"),
                     "authentik.env": get_env(),
                     "authentik.component": "backend",
+                    HOST_NAME: gethostname(),
+                    HOST_ARCH: machine(),
                 }
             ),
             sampler=ParentBased(TraceIdRatioBased(sample_rate)),
