@@ -185,6 +185,85 @@
     border-color: transparent;
 }
 
+/* #region Application links */
+
+/* Footer height, shared between the space every card reserves and the offset
+   that keeps the icon centered in its square. Defined on the list rather than
+   on the grid view alone: the row view reads it too. */
+[part="app-list"] {
+    --app-links-height: 3.25rem;
+}
+
+/* One application with the block enabled changes the geometry of the WHOLE
+   grid, not of its own card only. Cards are read side by side; a single taller
+   card among short ones reads as a defect. The condition therefore sits on the
+   list, and every wrapper follows — including those whose component is hidden,
+   which reserve the footer without drawing anything in it. */
+[part="app-list"]:not([data-view-mode="list"]):has(ak-library-app-links:not([hidden])) {
+    /* The wrapper no longer imposes the aspect ratio; the launch anchor carries
+       it, in flow. The card therefore grows by the height of the footer without
+       anything moving inside the square. */
+    [part="card-wrapper"] {
+        aspect-ratio: auto;
+    }
+
+    /* A floor, not a ceiling. The card carries `height: 100%`, which pins it to
+       the row height: a card whose footer wraps to two rows then spills its icons
+       below its own border, which simply stops. `min-height` keeps the border
+       reaching the bottom of the row — so every outline in the row matches — while
+       letting a taller card be as tall as its content needs.
+
+       The block layout is left alone. Turning the card into a flex column looked
+       like the way to have the footer absorb the leftover height, and cost more
+       than it gave: `aspect-ratio` on the header resolves differently in a flex
+       context, and a few pixels there are not a few pixels on screen —
+       `[part="card-header"]` is an `auto-fill` grid whose title sits in the LAST
+       row, so one extra pixel band moves the application name a whole row down. */
+    [part="card"] {
+        height: auto;
+        min-height: 100%;
+    }
+
+    .card-header-aspect-wrapper {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        aspect-ratio: var(--app-card-aspect-ratio);
+    }
+
+    /* The icon stays positioned against the wrapper as it was; only its bottom
+       edge is raised by the footer height, so it re-centers in the square
+       rather than in the taller card. */
+    ak-app-icon::part(icon) {
+        inset-block-end: calc(var(--app-links-height) + var(--app-icon-offset, 0px));
+    }
+
+    /* The footer follows the header, which is identical on every card of the row
+       because its height comes from the aspect ratio and nothing else. The
+       separator therefore lands at the same height whether the card carries two
+       rows of icons, one, or none.
+
+       The grid stretches every card to the tallest of its row; a card with a
+       shorter footer simply leaves that difference below it, in the card's own
+       background, which is the same colour. Nothing has to grow to fill it, and
+       nothing above it moves.
+
+       `min-height` gives an empty footer the presence of a one-row one, so the
+       card does not read as truncated. */
+    ak-library-app-links,
+    ak-library-app-links[hidden] {
+        display: block;
+        min-height: var(--app-links-height);
+    }
+
+    /* Hidden means empty, not absent: the box still draws its separator so an
+       unconfigured card reads as deliberately empty rather than truncated. */
+    ak-library-app-links[hidden] {
+        border-block-start: 1px solid var(--pf-global--BorderColor--100);
+    }
+}
+
 /* #region Card Wrapper */
 
 [part="card-wrapper"] {
@@ -396,6 +475,59 @@
         line-height: 1.3;
         word-break: break-word;
         overflow-wrap: anywhere;
+    }
+
+    /* #region Application links, row view
+     *
+     * Below 768px the library forces this view — see synchronizeViewModeWithMediaQuery
+     * in ak-library-impl.ts — so this block is what phones and tablets actually get.
+     * Columns 1 and 2 belong to the launch anchor and column 3 to the kebab menu, so
+     * the links take a SECOND grid line rather than a fourth column, which would push
+     * the menu out of the row. */
+    .app-row-link,
+    [part="card-header-actions"] {
+        grid-row: 1;
+    }
+
+    /* Column 2 only, not through to the end: the block lines up with the
+       application name above it rather than running under the kebab menu. */
+    ak-library-app-links {
+        grid-column: 2;
+        grid-row: 2;
+        min-width: 0;
+    }
+
+    /* A row is read from its start, beside the name. The per-application
+       alignment is a card setting — centring a small block in the middle of a
+       full-width row would leave it stranded, detached from the name it
+       belongs to. Outer-tree part rules win over the component's own, so this
+       overrides the chosen alignment here and only here.
+
+       `start`, not `left`: lining up with the name means following the reading
+       direction, so this one flips in a right-to-left locale — unlike the
+       per-application setting, which is an authored choice and must not. */
+    ak-library-app-links::part(links-heading) {
+        text-align: start;
+    }
+
+    ak-library-app-links::part(application-links) {
+        justify-content: flex-start;
+    }
+
+    /* Rows keep their natural height here: unlike cards, they are read one under
+       the other, so an empty reserved footer would only waste vertical space on
+       the screens that have the least of it. */
+    ak-library-app-links[hidden] {
+        display: none;
+    }
+
+    /* The border and opaque background exist to separate the footer from a card
+       and to hide the absolutely-positioned card icon. Neither applies in a row. */
+    ak-library-app-links::part(links-footer) {
+        min-height: 0;
+        padding-inline: 0;
+        border-block-start: none;
+        background: none;
     }
 
     /* Re-anchor the kebab menu (CardMenu) to the right edge of the row

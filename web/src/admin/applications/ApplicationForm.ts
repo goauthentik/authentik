@@ -12,24 +12,75 @@ import "#elements/forms/ModalForm";
 import "#elements/forms/Radio";
 import "#elements/forms/SearchSelect/ak-search-select";
 import "#admin/applications/ak-provider-table";
+import "#elements/ak-array-input";
+import "#admin/applications/components/ak-application-link-input";
 import "#admin/applications/components/ak-backchannel-input";
 import "#admin/applications/components/ak-provider-search-input";
 
 import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
+import type { RadioOption } from "#elements/forms/Radio";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { navigate } from "#elements/router/RouterOutlet";
 import { ifPresent } from "#elements/utils/attributes";
 
+import {
+    akApplicationLinkInput,
+    type IApplicationLinkInput,
+} from "#admin/applications/components/ak-application-link-input";
 import { policyEngineModes } from "#admin/policies/PolicyEngineModes";
 
-import { Application, CoreApi, Provider, UsageEnum } from "@goauthentik/api";
+import {
+    AdminApi,
+    AlignEnum,
+    Application,
+    ApplicationLink,
+    CoreApi,
+    FileList,
+    Provider,
+    UsageEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+
+/**
+ * Horizontal alignment of the heading above the additional-links row.
+ *
+ * Physical rather than logical: an administrator sets this once and every user
+ * sees the result, whatever their locale. Logical values would hand a
+ * right-to-left reader the mirror of what was chosen.
+ *
+ * No descriptions: three words that need none, and rendered inline they cost one
+ * form row instead of six.
+ */
+const applicationLinkAlignments: RadioOption<AlignEnum>[] = [
+    {
+        label: msg("Left", {
+            id: "applications.links.align.left",
+            desc: "Text alignment option, one of Left/Center/Right. Aligns a heading to the left edge of a card.",
+        }),
+        value: AlignEnum.Left,
+    },
+    {
+        label: msg("Center", {
+            id: "applications.links.align.center",
+            desc: "Text alignment option, one of Left/Center/Right. Centers a heading on a card.",
+        }),
+        value: AlignEnum.Center,
+        default: true,
+    },
+    {
+        label: msg("Right", {
+            id: "applications.links.align.right",
+            desc: "Text alignment option, one of Left/Center/Right. Aligns a heading to the right edge of a card.",
+        }),
+        value: AlignEnum.Right,
+    },
+];
 
 /**
  * Application Form
@@ -58,6 +109,39 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
     @state()
     protected backchannelProviders: Provider[] = [];
+
+    /**
+     * The file library, fetched once for the whole form and handed to every
+     * additional-link row. Rows never call the API themselves, so the number
+     * of requests does not grow with the number of links.
+     */
+    @state()
+    protected mediaFiles: FileList[] = [];
+
+    #mediaRequested = false;
+
+    /**
+     * Loaded on first approach of the links section — hover or focus — rather
+     * than on form load. The icon dropdown is optional and often untouched,
+     * so its file list should not be fetched with the rest of the form.
+     */
+    protected loadMediaFiles = (): void => {
+        if (this.#mediaRequested) return;
+        this.#mediaRequested = true;
+        aki(AdminApi)
+            .adminFileList({ usage: UsageEnum.Media })
+            .then((files) => {
+                this.mediaFiles = files;
+            })
+            // The dropdown stays usable with the bundled glyphs alone.
+            .catch(() => undefined);
+    };
+
+    /** Called after an upload, when the list genuinely changed. */
+    protected refreshMediaFiles = (): void => {
+        this.#mediaRequested = false;
+        this.loadMediaFiles();
+    };
 
     public override reset(): void {
         super.reset();
@@ -236,6 +320,114 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                             "The description is shown in the Application Dashboard and may provide additional information about the application to end users.",
                         )}
                     ></ak-textarea-input>
+                </div>
+            </ak-form-group>
+            <ak-form-group
+                label="${msg("Additional links", {
+                    id: "applications.links.group",
+                    desc: "Title of the form section configuring extra links shown under an application card, such as native client downloads.",
+                })}"
+            >
+                <div class="pf-c-form">
+                    <ak-switch-input
+                        name="applicationLinks.enabled"
+                        ?checked=${this.instance?.applicationLinks?.enabled ?? false}
+                        label=${msg("Show additional links", {
+                            id: "applications.links.enabled",
+                            desc: "Label of the switch turning the extra links on for this application.",
+                        })}
+                        help=${msg(
+                            "If checked, the links configured below are shown under this application's card.",
+                            {
+                                id: "applications.links.enabled.help",
+                                desc: "Help text under the switch. 'Card' is the tile representing an application on the user dashboard.",
+                            },
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="applicationLinks.address"
+                        ?checked=${this.instance?.applicationLinks?.address ?? false}
+                        label=${msg("Show copy address button", {
+                            id: "applications.links.address",
+                            desc: "Label of the switch showing a button that copies the application's web address to the clipboard.",
+                        })}
+                        help=${msg(
+                            "If checked, a button that copies this application's address is shown alongside the links. The address is derived from the launch URL, never entered by hand.",
+                            {
+                                id: "applications.links.address.help",
+                                desc: "Help text under the switch. 'Address' means the web address (URL) of the service, not a postal address.",
+                            },
+                        )}
+                    >
+                    </ak-switch-input>
+                    <ak-text-input
+                        label=${msg("Heading", {
+                            id: "applications.links.title",
+                            desc: "Label of the field holding a short caption displayed above the row of links, such as 'Native clients'.",
+                        })}
+                        name="applicationLinks.title"
+                        value=${ifDefined(this.instance?.applicationLinks?.title)}
+                        placeholder=${msg("Type an optional heading...", {
+                            id: "applications.links.title.placeholder",
+                            desc: "Placeholder inside the empty heading field.",
+                        })}
+                        help=${msg(
+                            "Shown above the row of links on the card. Left out entirely when blank.",
+                            {
+                                id: "applications.links.title.help",
+                                desc: "Help text under the heading field. 'Left out' means the heading is not rendered at all.",
+                            },
+                        )}
+                    ></ak-text-input>
+                    <ak-radio-input
+                        label=${msg("Alignment", {
+                            id: "applications.links.align",
+                            desc: "Label of the Left/Center/Right choice positioning the heading horizontally.",
+                        })}
+                        name="applicationLinks.align"
+                        inline
+                        .options=${applicationLinkAlignments}
+                        .value=${this.instance?.applicationLinks?.align ?? AlignEnum.Center}
+                        help=${msg("Applies to the heading only. The links stay centered.", {
+                            id: "applications.links.align.help",
+                            desc: "Help text under the alignment choice, clarifying that the icons themselves do not move.",
+                        })}
+                    ></ak-radio-input>
+                    <ak-form-element-horizontal
+                        label=${msg("Links", {
+                            id: "applications.links.items",
+                            desc: "Label of the editable list of links. Each entry has a name, a web address and an icon.",
+                        })}
+                        name="applicationLinks.links"
+                        @mouseenter=${this.loadMediaFiles}
+                        @focusin=${this.loadMediaFiles}
+                        @ak-application-link-files-changed=${this.refreshMediaFiles}
+                    >
+                        <ak-array-input
+                            .items=${this.instance?.applicationLinks?.links ?? []}
+                            .newItem=${() => ({ label: "", url: "", icon: "" })}
+                            .row=${(link?: ApplicationLink, index?: number) =>
+                                akApplicationLinkInput({
+                                    ".applicationLink": link,
+                                    ".files": this.mediaFiles,
+                                    // Column headings on the first row only.
+                                    "?headers": index === 0,
+                                    "style": "width: 100%",
+                                    "name": "application-link",
+                                } as unknown as IApplicationLinkInput)}
+                        >
+                        </ak-array-input>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Shown under the application card in the user dashboard. URLs are limited to http and https. For a platform or vendor logo, upload it to the file library and pick it here.",
+                                {
+                                    id: "applications.links.items.help",
+                                    desc: "Help text under the list of links. 'File library' is the administration section holding uploaded images.",
+                                },
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         `;
