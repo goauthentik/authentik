@@ -70,7 +70,11 @@ class AuthNRequestParser:
                 f"ACS URL of {request_acs_url} doesn't match Provider "
                 f"ACS URL of {self.provider.acs_url}."
             )
-            self.logger.warning(msg)
+            self.logger.warning(
+                "saml_acs_url_mismatch",
+                request_acs_url=request_acs_url,
+                provider_acs_url=self.provider.acs_url,
+            )
             raise CannotHandleAssertion(msg)
 
         # `ForceAuthn` is an optional attribute. When true, the SP requires the IdP to
