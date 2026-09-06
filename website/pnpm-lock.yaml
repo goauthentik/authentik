@@ -40,8 +40,8 @@ catalogs:
       specifier: ^9.39.5
       version: 9.39.5
     '@types/node':
-      specifier: ^26.1.2
-      version: 26.1.2
+      specifier: ^26.2.0
+      version: 26.4.0
     eslint:
       specifier: ^9.39.5
       version: 9.39.5
@@ -101,7 +101,7 @@ importers:
         version: link:../packages/tsconfig
       '@types/node':
         specifier: 'catalog:'
-        version: 26.1.2
+        version: 26.4.0
       deepmerge-ts:
         specifier: ^7.1.5
         version: 7.1.5
@@ -2769,6 +2769,9 @@ packages:
 
   '@types/node@26.1.2':
     resolution: {integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==}
+
+  '@types/node@26.4.0':
+    resolution: {integrity: sha512-faiGnoIrLH/V8cibOMEAZ8pMw6oXqSukl29ra4mN8GdaB2ZewzeaLj+INpV5N+Z1eKWzY+IzaIZH2EIR6YZRNQ==}
 
   '@types/postman-collection@3.5.11':
     resolution: {integrity: sha512-BZgBJDdX6jyy9hzSTIMRhCsxhF0IlzPr1i98q2wdkDo8rZrbNoBvs+3/Vw+LOIIAFH1G+FyXo5Fjf8qbawGeHg==}
@@ -11862,6 +11865,10 @@ snapshots:
     dependencies:
       undici-types: 8.3.0
 
+  '@types/node@26.4.0':
+    dependencies:
+      undici-types: 8.3.0
+
   '@types/postman-collection@3.5.11':
     dependencies:
       '@types/node': 26.1.2
@@ -11905,7 +11912,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 17.0.45
+      '@types/node': 26.1.2
 
   '@types/semver@7.8.0': {}
 
