@@ -57,7 +57,7 @@ To support the integration of PostgreSQL with authentik, you need to create an a
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** value because it is required later.
         - Set **Client type** to `Public`.
-        - Under **Grant Types**, select `Device-code`. PostgreSQL clients use only this grant, so no **Redirect URI** is needed.
+        - Under **Grant Types**, select `Device-code`. This is the grant that `libpq`'s built-in flow uses, so no **Redirect URI** is needed. An application that installs its own OAuth hook can use a different grant.
         - Select any available signing key. The validator reads the access token as a signed JWT, so a signing key has to be set.
         - Leave **Include claims in id_token** enabled, so that the claims the validator maps users on are carried in the access token.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage access to PostgreSQL and its listing on a user's **Application Dashboard** page.
@@ -125,7 +125,15 @@ oauth_validator_libraries = 'pg_oidc_validator'
 pg_oidc_validator.authn_field = 'email'
 ```
 
-`authn_field` selects the claim that identifies the user. It defaults to `sub`, which holds an opaque identifier under authentik's default **Subject Mode**. Setting it to `email` gives a value that maps to database roles more directly. Restart PostgreSQL for `oauth_validator_libraries` to take effect.
+`authn_field` selects the claim that identifies the user. It defaults to `sub`, which holds an opaque identifier under authentik's default **Subject Mode**. Setting it to `email` gives a value that maps to database roles more directly.
+
+Apply these settings in order, and reload once at the end:
+
+1. Set `oauth_validator_libraries` in `postgresql.conf`.
+2. Add the `oauth` entry to `pg_hba.conf` and the map to `pg_ident.conf`, as described in the next section.
+3. Reload PostgreSQL.
+
+PostgreSQL checks every `oauth` entry in `pg_hba.conf` against `oauth_validator_libraries` while reading the file, and reports `oauth_validator_libraries must be set for authentication method oauth` when no validator is configured. At startup this is fatal and the server does not come up. On a running server the effect is quieter: PostgreSQL logs `pg_hba.conf was not reloaded`, keeps the rules it already had, and the edit appears to have done nothing.
 
 ### Configure authentication
 
@@ -136,7 +144,7 @@ Add an OAuth entry to `pg_hba.conf`, above any other entry that would match the 
 hostssl    all       all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email" map=authentik
 ```
 
-The `all` address keyword matches both IPv4 and IPv6 clients. A CIDR such as `0.0.0.0/0` matches IPv4 only, so an IPv6 client would fall through to the next matching entry. The `scope` value has to be covered by the provider's scope mappings in authentik. `openid email` matches the defaults and provides the `email` claim that `authn_field` reads.
+The `hostssl` type requires TLS to be configured and `ssl` to be `on`. PostgreSQL otherwise logs `hostssl record cannot match because SSL is disabled` at startup and ignores the entry, and the client sees only `no pg_hba.conf entry for host ...`, which does not point at the cause. Use `host` instead if you are terminating TLS elsewhere. The `all` address keyword matches both IPv4 and IPv6 clients. A CIDR such as `0.0.0.0/0` matches IPv4 only, so an IPv6 client would fall through to the next matching entry. The `scope` value has to be covered by the provider's scope mappings in authentik. `openid email` matches the defaults and provides the `email` claim that `authn_field` reads.
 
 Then map identities to database roles in `pg_ident.conf`:
 
@@ -247,7 +255,7 @@ ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY own_notes ON notes USING (owner = system_user);
 ```
 
-Under the shared `employees` map above, two people connecting as that same role each read only their own rows.
+The comparison is against the whole `system_user` value, including its authentication method prefix, so `owner` has to hold `oauth:alice@company.com` rather than `alice@company.com`. Under the shared `employees` map above, two people connecting as that same role each then read only their own rows.
 
 [Row-level security does not apply to the role that owns the table](https://www.postgresql.org/docs/18/ddl-rowsecurity.html). A shared role that owns the tables it reads sees every row and the policy has no effect, so either add `ALTER TABLE ... FORCE ROW LEVEL SECURITY` or keep table ownership separate from the roles people log in as.
 
@@ -255,7 +263,11 @@ Under the shared `employees` map above, two people connecting as that same role 
 
 Privileges stay with PostgreSQL either way. authentik selects the role, and `GRANT` decides what that role can do.
 
-The validator runs once, when the connection is made, and nothing re-checks the token after that. A session therefore stays usable after its token expires, and removing someone's access in authentik stops their next connection rather than one they already hold. Keep **Access token validity** short, and use `pg_terminate_backend()` when you need to close sessions that are already open.
+The validator runs once, when the connection is made, and nothing re-checks the token after that, so a session stays usable after its token expires.
+
+Revocation is limited in the same way. The validator verifies the token offline against the provider's JWKS and never asks authentik whether it is still valid, so for an individual token expiry is the only thing that ends it. An access token that has already been issued keeps working even after that token, or the user's access to the application, is removed in authentik. `libpq`'s built-in flow does not cache tokens, so in practice a revoked user cannot start a new `psql` session, but any client holding an already issued token can keep reconnecting with it.
+
+Replacing the provider's signing key makes every token signed with the old one fail the next time it is presented, once the validator picks up the new JWKS. It blocks new connections for everyone using the provider rather than for one person, and sessions that are already established keep running, so it is a break-glass measure rather than revocation. Keep **Access token validity** short, and use `pg_terminate_backend()` to close sessions that are already open.
 
 ## Resources
 
