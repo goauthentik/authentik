@@ -7,6 +7,7 @@ from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
+from authentik.lib.tracing import active_tracer
 from authentik.rbac.models import InitialPermissions
 
 LOGGER = get_logger()
@@ -15,6 +16,7 @@ LOGGER = get_logger()
 class ObjectPermissions(DjangoObjectPermissions):
     """RBAC Permissions"""
 
+    @active_tracer().instrument()
     def has_permission(self, request: Request, view) -> bool:
         """Always grant permission for object-specific requests
         as view permission checking is done by `ObjectFilter`,
@@ -35,6 +37,7 @@ class ObjectPermissions(DjangoObjectPermissions):
             return True
         return super().has_permission(request, view)
 
+    @active_tracer().instrument()
     def has_object_permission(self, request: Request, view, obj: Model) -> bool:
         queryset = self._queryset(view)
         model_cls = queryset.model
