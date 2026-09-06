@@ -319,6 +319,9 @@ updates:
       types:
         patterns:
           - types-*
+      opentelemetry:
+        patterns:
+          - opentelemetry-*
 
   #endregion
 
