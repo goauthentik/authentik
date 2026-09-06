@@ -33,21 +33,39 @@ frontend https
     # authentik requires an absolute URL for the nginx-compatible endpoint.
     http-request set-header X-Original-URL https://%[req.hdr(Host)]%[pathq]
 
-    # Remove client-supplied identity headers, including underscore aliases.
-    http-request del-header X-authentik- -m beg
-    http-request del-header _ -m sub
+    # Remove client-supplied identity headers before the authorization
+    # subrequest. Add any additional headers trusted by the application here.
+    http-request del-header X-authentik-Username
+    http-request del-header X-authentik-UID
+    http-request del-header X-authentik-Email
+    http-request del-header X-authentik-Name
+    http-request del-header X-authentik-Groups
+    http-request del-header X-authentik-Entitlements
+
+    # Remove underscore-form aliases if the application accepts them.
+    http-request del-header X_Authentik_Username
+    http-request del-header X_Authentik_UID
+    http-request del-header X_Authentik_Email
+    http-request del-header X_Authentik_Name
+    http-request del-header X_Authentik_Groups
+    http-request del-header X_Authentik_Entitlements
+
+    # Do not allow a client to supply credentials for the application.
     http-request del-header Authorization
 
-    # Verify protected requests with the authentik outpost. Keep the request
-    # header allowlist narrow because forwarding WebSocket Upgrade headers
-    # prevents the authorization request from completing.
-    http-request lua.auth-intercept authentik_outpost /outpost.goauthentik.io/auth/nginx HEAD x-original-url,x-real-ip,x-forwarded-for,x-forwarded-host,x-forwarded-proto,user-agent,cookie,accept,x-forwarded-method x-authentik-* - if !authentik_outpost
+    # Check authorization through authentik. Do not pass WebSocket Upgrade
+    # headers, as this prevents the authorization request from completing.
+    #
+    # Arguments:
+    #   backend, auth path, method, request-header allowlist,
+    #   successful-response-header allowlist, failed-response-header allowlist
+    http-request lua.auth-intercept authentik_outpost /outpost.goauthentik.io/auth/nginx HEAD x-original-url,x-real-ip,x-forwarded-for,x-forwarded-host,x-forwarded-proto,x-forwarded-method,user-agent,cookie,accept x-authentik-* - if !authentik_outpost
 
-    # Preserve session cookies returned by successful authorization checks.
+    # Preserve a session cookie returned by a successful auth check.
     http-request set-var(txn.auth_response_set_cookie) var(req.auth_response_header.set_cookie) if { var(req.auth_response_header.set_cookie) -m found }
 
-    # Start login on 401. Deny every other unsuccessful auth check, including
-    # errors or an unreachable outpost.
+    # A 401 starts the authentik login flow. Any other failed auth response,
+    # including an unavailable outpost, is denied.
     http-request redirect code 302 location /outpost.goauthentik.io/start?rd=%[hdr(X-Original-URL),url_enc] if !authentik_outpost !{ var(txn.auth_response_successful) -m bool } { var(txn.auth_response_code) -m int 401 }
     http-request deny if !authentik_outpost !{ var(txn.auth_response_successful) -m bool }
 
@@ -58,6 +76,8 @@ backend authentik_outpost
     server outpost outpost.company:9000 check
 
 backend application
+    # Forward a session cookie returned by authentik to the browser.
     http-response add-header Set-Cookie %[var(txn.auth_response_set_cookie)] if { var(txn.auth_response_set_cookie) -m found }
+
     server application app.company:8080 check
 ```
