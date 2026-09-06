@@ -128,7 +128,7 @@ class OpenTelemetryTracer(Tracer):
         provider = TracerProvider(
             resource=Resource.create(
                 {
-                    "service.name": "authentik-v2",
+                    "service.name": "authentik",
                     "service.version": authentik_version(),
                     "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
                     "authentik.build_hash": authentik_build_hash("tagged"),
@@ -166,5 +166,5 @@ class OpenTelemetryTracer(Tracer):
 
     @contextmanager
     def start_span(self, op: str, name: str | None = None):
-        with tracer.start_as_current_span(op, attributes={"name": name}) as span:
+        with tracer.start_as_current_span(op, attributes={"name": name or op}) as span:
             yield _Span(span)
