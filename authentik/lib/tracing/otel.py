@@ -11,19 +11,23 @@ from asgiref.sync import markcoroutinefunction
 from django.conf import settings
 from django.utils.module_loading import import_string
 from opentelemetry import trace
+from opentelemetry.baggage.propagation import W3CBaggagePropagator
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.structlog import StructlogInstrumentor
 from opentelemetry.instrumentation.threading import ThreadingInstrumentor
-from opentelemetry.propagate import inject
+from opentelemetry.propagate import inject, set_global_textmap
+from opentelemetry.propagators.b3 import B3MultiFormat
+from opentelemetry.propagators.composite import CompositePropagator
 from opentelemetry.sdk.resources import HOST_ARCH, HOST_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.trace import Span as OtelSpan
 from opentelemetry.trace import Status, StatusCode
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from structlog.stdlib import get_logger
 
 from authentik import authentik_build_hash, authentik_version
@@ -112,6 +116,11 @@ class OpenTelemetryTracer(Tracer):
         # Must run before instrument() below, so DjangoInstrumentor's own middleware is
         # inserted afterwards and doesn't get wrapped a second time
         settings.MIDDLEWARE = _trace_middleware_list(settings.MIDDLEWARE)
+        set_global_textmap(
+            CompositePropagator(
+                [TraceContextTextMapPropagator(), W3CBaggagePropagator(), B3MultiFormat()]
+            )
+        )
         ThreadingInstrumentor().instrument()
         RequestsInstrumentor().instrument()
         StructlogInstrumentor().instrument()

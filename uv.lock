@@ -307,6 +307,7 @@ dependencies = [
     { name = "opentelemetry-instrumentation-requests" },
     { name = "opentelemetry-instrumentation-structlog" },
     { name = "opentelemetry-instrumentation-threading" },
+    { name = "opentelemetry-propagator-b3" },
     { name = "opentelemetry-sdk" },
     { name = "packaging" },
     { name = "paramiko" },
@@ -425,6 +426,7 @@ requires-dist = [
     { name = "opentelemetry-instrumentation-requests", specifier = "==0.65b0" },
     { name = "opentelemetry-instrumentation-structlog", specifier = "==0.65b0" },
     { name = "opentelemetry-instrumentation-threading", specifier = "==0.65b0" },
+    { name = "opentelemetry-propagator-b3", specifier = "==1.44.0" },
     { name = "opentelemetry-sdk", specifier = "==1.44.0" },
     { name = "packaging", specifier = "==26.3" },
     { name = "paramiko", specifier = "==5.0.0" },
@@ -2795,6 +2797,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/17/f7/bfe74ba3baea8c61290c3ab1d692f841b695ccb6e40faf5ad55fd5412cf2/opentelemetry_instrumentation_wsgi-0.65b0.tar.gz", hash = "sha256:d4a62ae98667ddfe04fe538c3c54abad538feb8c9c7a407ba19f016e1ce4a89a", size = 19666, upload-time = "2026-07-16T15:26:25.485Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/05/af/9dfe500d3b816e4bd65f467c6275688744ed8186894c73223f7e3d6d9745/opentelemetry_instrumentation_wsgi-0.65b0-py3-none-any.whl", hash = "sha256:af23e6686c7cd2abcd7d14ac03fb7e3b438273eb2d54a8f8dc401dc71bc52a9f", size = 13787, upload-time = "2026-07-16T15:25:42.876Z" },
+]
+
+[[package]]
+name = "opentelemetry-propagator-b3"
+version = "1.44.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "opentelemetry-api" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e5/1c/c4cc2240caced529f8b40e72e59459ea6246e730c008c7bbb439b4fdefe4/opentelemetry_propagator_b3-1.44.0.tar.gz", hash = "sha256:93c94885fd75429121bb3d5c496c9bbd1b36199e194a0a6876867d7bf3999300", size = 9514, upload-time = "2026-07-16T15:25:43.891Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/2c/aa831025e6a9f9d7c459c9cbf0ef990137edd35669249b1571447179d2b1/opentelemetry_propagator_b3-1.44.0-py3-none-any.whl", hash = "sha256:18649bc511c550d2744da1d887bdce0d1a6bbe6a052f8721f3adac5d9f51b20e", size = 8352, upload-time = "2026-07-16T15:25:26.612Z" },
 ]
 
 [[package]]

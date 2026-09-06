@@ -54,6 +54,7 @@ dependencies = [
   "opentelemetry-instrumentation-requests==0.65b0",
   "opentelemetry-instrumentation-structlog==0.65b0",
   "opentelemetry-instrumentation-threading==0.65b0",
+  "opentelemetry-propagator-b3==1.44.0",
   "opentelemetry-sdk==1.44.0",
   "packaging==26.3",
   "paramiko==5.0.0",
