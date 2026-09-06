@@ -1,5 +1,7 @@
 """RBAC Permissions"""
 
+from typing import TYPE_CHECKING
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from guardian.shortcuts import assign_perm
@@ -9,6 +11,9 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.tracing import active_tracer
 from authentik.rbac.models import InitialPermissions
+
+if TYPE_CHECKING:
+    from authentik.core.models import User
 
 LOGGER = get_logger()
 
@@ -63,9 +68,7 @@ def HasPermission(*perm: str) -> type[BasePermission]:
     return checker
 
 
-# TODO: add `user: User` type annotation without circular dependencies.
-# The author of this function isn't proficient/patient enough to do it.
-def assign_initial_permissions(user, instance: Model):
+def assign_initial_permissions(user: User, instance: Model):
     # Performance here should not be an issue, but if needed, there are many optimization routes
     initial_permissions_list = InitialPermissions.objects.filter(role__in=user.all_roles())
     for initial_permissions in initial_permissions_list:
