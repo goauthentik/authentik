@@ -89,8 +89,7 @@ class TestSourceOAuthAppOIDC(SourceAppRedirectMixin, SeleniumTestCase):
         # so a consent stage is shown even with an implicit-consent flow
         self.wait.until(ec.url_contains(f"/if/flow/{AUTHORIZATION_FLOW}/"))
 
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage = self.get_stage_shadow_root("ak-stage-consent")
         consent_stage.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
     def assert_app_login(self, user: User, entry_uri: str):

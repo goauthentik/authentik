@@ -6,6 +6,8 @@ from urllib.parse import urlsplit, urlunsplit
 
 from docker.types import Healthcheck
 from selenium.common.exceptions import (
+    DetachedShadowRootException,
+    StaleElementReferenceException,
     TimeoutException,
 )
 from selenium.webdriver.common.by import By
@@ -20,7 +22,7 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.decorators import retry
+from tests.decorators import SHADOW_ROOT_RETRIES, retry
 
 APP_URL = "http://localhost:9009"
 # A non-root app URL, to check the original destination survives the source login
@@ -33,7 +35,43 @@ def initial_uri(entry: str) -> str:
     return urlunsplit(("", "", parts.path or "/", parts.query, "")) or "/"
 
 
-class DexOAuthSourceMixin:
+class FlowStageMixin:
+    """Reach into the flow executor's shadow DOM"""
+
+    def get_stage_shadow_root(self, stage: str):
+        """Dive to a flow stage's shadow root.
+
+        Right after a redirect the executor can still be swapping stages, which
+        detaches the outer shadow root part-way through the two-step dive.
+        """
+        for attempt in range(SHADOW_ROOT_RETRIES):
+            try:
+                flow_executor = self.get_shadow_root("ak-flow-executor")
+                return self.get_shadow_root(stage, flow_executor)
+            except DetachedShadowRootException, StaleElementReferenceException:
+                if attempt == SHADOW_ROOT_RETRIES - 1:
+                    raise
+                self.logger.debug("Flow stage went stale, retrying", stage=stage, attempt=attempt)
+                sleep(1)
+        return None
+
+
+class AppRedirectMixin:
+    """Assert the browser lands back at an application after logging in"""
+
+    def wait_for_app(self, destination: str):
+        """Wait until the browser has landed back at the expected application URL"""
+        try:
+            self.wait.until(lambda driver: driver.current_url.startswith(destination))
+        except TimeoutException:
+            self.fail(
+                "Expected to be redirected back to the application at "
+                f"{destination} after logging in via the source, "
+                f"but ended up at {self.driver.current_url}"
+            )
+
+
+class DexOAuthSourceMixin(FlowStageMixin):
     """Run a dex IdP container and create a matching OAuth source"""
 
     def setUp(self):
@@ -65,11 +103,13 @@ class DexOAuthSourceMixin:
 
     def create_source(self, **kwargs) -> OAuthSource:
         """Create an OAuth source pointing at dex, and show it on the login page"""
+        kwargs.setdefault(
+            "authentication_flow", Flow.objects.get(slug="default-source-authentication")
+        )
+        kwargs.setdefault("enrollment_flow", Flow.objects.get(slug="default-source-enrollment"))
         source = OAuthSource.objects.create(  # nosec
             name=generate_id(),
             slug=self.slug,
-            authentication_flow=Flow.objects.get(slug="default-source-authentication"),
-            enrollment_flow=Flow.objects.get(slug="default-source-enrollment"),
             provider_type="openidconnect",
             authorization_url=f"http://{self.host}:5556/dex/auth",
             access_token_url=f"http://{self.host}:5556/dex/token",
@@ -109,8 +149,7 @@ class DexOAuthSourceMixin:
     def click_source_button(self):
         """Click the source button on the identification stage"""
         selector = "fieldset[name='login-sources'] button"
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
+        identification_stage = self.get_stage_shadow_root("ak-stage-identification")
 
         WebDriverWait(identification_stage, self.wait_timeout).until(
             ec.presence_of_element_located((By.CSS_SELECTOR, selector))
@@ -119,15 +158,14 @@ class DexOAuthSourceMixin:
 
     def enroll_username(self, username: str):
         """Fill in the username asked for by the source enrollment prompt"""
-        flow_executor = self.get_shadow_root("ak-flow-executor")
-        prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
+        prompt_stage = self.get_stage_shadow_root("ak-stage-prompt")
 
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").click()
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(username)
         prompt_stage.find_element(By.CSS_SELECTOR, "input[name=username]").send_keys(Keys.ENTER)
 
 
-class SourceAppRedirectMixin(DexOAuthSourceMixin):
+class SourceAppRedirectMixin(AppRedirectMixin, DexOAuthSourceMixin):
     """Log in at an application via an OAuth source, and assert we land back at the app.
 
     Subclasses provide the application (`setup_app`), its claim assertions
@@ -163,17 +201,6 @@ class SourceAppRedirectMixin(DexOAuthSourceMixin):
         self.driver.get(entry)
         self.driver.delete_all_cookies()
         self.driver.get(entry)
-
-    def wait_for_app(self, destination: str):
-        """Wait until the browser has landed back at the expected application URL"""
-        try:
-            self.wait.until(lambda driver: driver.current_url.startswith(destination))
-        except TimeoutException:
-            self.fail(
-                "Expected to be redirected back to the application at "
-                f"{destination} after logging in via the source, "
-                f"but ended up at {self.driver.current_url}"
-            )
 
     def source_auth(self, entry: str, destination: str):
         """Log in at `entry` via the source as a user that already exists"""
