@@ -20,14 +20,10 @@
 export interface PatchedGoogleEndpointDeviceRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGoogleEndpointDeviceRequest
      */
     pk?: string;
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedGoogleEndpointDeviceRequest
      */
     name?: string;
 }

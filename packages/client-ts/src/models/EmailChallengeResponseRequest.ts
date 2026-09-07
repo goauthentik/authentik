@@ -21,8 +21,6 @@
 export interface EmailChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof EmailChallengeResponseRequest
      */
     component?: string;
 }

@@ -20,86 +20,58 @@
 export interface Provider {
     /**
      *
-     * @type {number}
-     * @memberof Provider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof Provider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof Provider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof Provider
      */
-    authorizationFlow: string;
+    authorizationFlow?: string | null;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof Provider
      */
-    invalidationFlow: string;
+    invalidationFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Provider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Provider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof Provider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Provider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Provider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Provider
      */
     readonly metaModelName: string;
 }
@@ -110,20 +82,6 @@ export interface Provider {
 export function instanceOfProvider(value: object): value is Provider {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
-    if (
-        (!("authorizationFlow" in (value as Record<string, any>)) &&
-            !("authorization_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["authorizationFlow"] === undefined &&
-            (value as Record<string, any>)["authorization_flow"] === undefined)
-    )
-        return false;
-    if (
-        (!("invalidationFlow" in (value as Record<string, any>)) &&
-            !("invalidation_flow" in (value as Record<string, any>))) ||
-        ((value as Record<string, any>)["invalidationFlow"] === undefined &&
-            (value as Record<string, any>)["invalidation_flow"] === undefined)
-    )
-        return false;
     if (!("component" in value) || value["component"] === undefined) return false;
     if (
         (!("assignedApplicationSlug" in (value as Record<string, any>)) &&
@@ -194,8 +152,18 @@ export function ProviderFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
                 : json["authentication_flow"] === null
                   ? null
                   : json["authentication_flow"],
-        authorizationFlow: json["authorization_flow"],
-        invalidationFlow: json["invalidation_flow"],
+        authorizationFlow:
+            json["authorization_flow"] === undefined
+                ? undefined
+                : json["authorization_flow"] === null
+                  ? null
+                  : json["authorization_flow"],
+        invalidationFlow:
+            json["invalidation_flow"] === undefined
+                ? undefined
+                : json["invalidation_flow"] === null
+                  ? null
+                  : json["invalidation_flow"],
         propertyMappings: json["property_mappings"] == null ? undefined : json["property_mappings"],
         component: json["component"],
         assignedApplicationSlug: json["assigned_application_slug"],

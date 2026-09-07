@@ -25,20 +25,14 @@ import { WebAuthnDeviceTypeFromJSON, WebAuthnDeviceTypeToJSON } from "./WebAuthn
 export interface PaginatedWebAuthnDeviceTypeList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedWebAuthnDeviceTypeList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<WebAuthnDeviceType>}
-     * @memberof PaginatedWebAuthnDeviceTypeList
      */
     results: Array<WebAuthnDeviceType>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedWebAuthnDeviceTypeList
      */
     autocomplete: { [key: string]: any };
 }

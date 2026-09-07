@@ -33,8 +33,12 @@ export class AccountLockdownStageForm extends BaseStageForm<AccountLockdownStage
                 )}
             </span>
             <ak-text-input
-                label=${msg("Stage Name")}
-                placeholder=${msg("Type a name for this stage...")}
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
                 required
                 name="name"
                 value=${ifPresent(this.instance?.name || "")}

@@ -27,140 +27,94 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface TelegramSource {
     /**
      *
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof TelegramSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof TelegramSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof TelegramSource
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof TelegramSource
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof TelegramSource
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof TelegramSource
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TelegramSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TelegramSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof TelegramSource
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof TelegramSource
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof TelegramSource
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramSource
      */
     icon?: string;
     /**
      *
-     * @type {string}
-     * @memberof TelegramSource
      */
     readonly iconUrl: string | null;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof TelegramSource
      */
     readonly iconThemedUrls: ThemedUrls | null;
     /**
      * Telegram bot username
-     * @type {string}
-     * @memberof TelegramSource
      */
     botUsername: string;
     /**
      * Request access to send messages from your bot.
-     * @type {boolean}
-     * @memberof TelegramSource
      */
     requestMessageAccess?: boolean;
     /**
      * Flow used before authentication.
-     * @type {string}
-     * @memberof TelegramSource
      */
     preAuthenticationFlow: string;
 }

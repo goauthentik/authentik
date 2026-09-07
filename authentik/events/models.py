@@ -29,6 +29,7 @@ from authentik.core.middleware import (
 )
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.crypto.models import CertificateKeyPair
+from authentik.events.consumer import build_user_group
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -43,14 +44,13 @@ from authentik.lib.models import (
     SerializerModel,
     SimpleThroughModel,
 )
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.errors import exception_to_dict
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.outposts.docker_tls import DockerInlineTLS
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
-from authentik.root.ws.consumer import build_user_group
 from authentik.stages.email.models import EmailTemplates
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tasks.models import TasksModel
@@ -83,7 +83,7 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+class NotificationTransportError(TracingIgnoredException):
     """Error raised when a notification fails to be delivered"""
 
 

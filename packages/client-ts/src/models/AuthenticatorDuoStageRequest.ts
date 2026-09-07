@@ -20,50 +20,34 @@
 export interface AuthenticatorDuoStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     clientId: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     clientSecret: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     apiHostname: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     adminIntegrationKey?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorDuoStageRequest
      */
     adminSecretKey?: string;
 }

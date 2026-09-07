@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { UserTypeEnum } from "./UserTypeEnum";
 import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 
@@ -23,62 +24,42 @@ import { UserTypeEnumFromJSON, UserTypeEnumToJSON } from "./UserTypeEnum";
 export interface PatchedUserRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserRequest
      */
     username?: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof PatchedUserRequest
      */
     name?: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof PatchedUserRequest
      */
     isActive?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedUserRequest
      */
     lastLogin?: Date | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedUserRequest
      */
     groups?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedUserRequest
      */
     roles?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserRequest
      */
     email?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedUserRequest
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof PatchedUserRequest
      */
     path?: string;
     /**
      *
-     * @type {UserTypeEnum}
-     * @memberof PatchedUserRequest
      */
     type?: UserTypeEnum;
 }
@@ -110,7 +91,7 @@ export function PatchedUserRequestFromJSONTyped(
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
+                  : parseDateTime(json["last_login"]),
         groups: json["groups"] == null ? undefined : json["groups"],
         roles: json["roles"] == null ? undefined : json["roles"],
         email: json["email"] == null ? undefined : json["email"],
@@ -137,7 +118,7 @@ export function PatchedUserRequestToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         groups: value["groups"],
         roles: value["roles"],
         email: value["email"],

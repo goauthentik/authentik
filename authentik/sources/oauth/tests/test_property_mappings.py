@@ -108,3 +108,20 @@ class TestPropertyMappings(TestCase):
                 },
             },
         )
+
+    def test_group_property_mappings_with_object_groups(self):
+        """An object-shaped `groups` entry is skipped instead of aborting the flow.
+
+        Added in #25195 asserting the `TypeError` that #25191 is about; the
+        identifier is still unusable as a key, so the entry is dropped rather
+        than mapped.
+        """
+        info = deepcopy(INFO)
+        info["groups"] = [
+            {"id": "group-1", "name": "Admins"},
+        ]
+
+        request = self.request_factory.get("/", user=AnonymousUser())
+
+        flow_manager = OAuthSourceFlowManager(self.source, request, IDENTIFIER, {"info": info}, {})
+        self.assertEqual(flow_manager.groups_properties, {})

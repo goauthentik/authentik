@@ -20,14 +20,10 @@
 export interface PasswordChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof PasswordChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordChallengeResponseRequest
      */
     password: string;
 }

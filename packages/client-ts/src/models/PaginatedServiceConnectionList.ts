@@ -25,20 +25,14 @@ import { ServiceConnectionFromJSON, ServiceConnectionToJSON } from "./ServiceCon
 export interface PaginatedServiceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedServiceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ServiceConnection>}
-     * @memberof PaginatedServiceConnectionList
      */
     results: Array<ServiceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedServiceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

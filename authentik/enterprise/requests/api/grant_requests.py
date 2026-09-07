@@ -94,8 +94,8 @@ def _binding_default(field_name: str) -> timedelta:
 class GrantRequestSerializer(EnterpriseRequiredMixin, ModelSerializer):
 
     created_by = PartialUserSerializer(read_only=True)
-    revoked_by = PartialUserSerializer(read_only=True)
-    agent_owner = PartialUserSerializer(read_only=True)
+    revoked_by = PartialUserSerializer(read_only=True, allow_null=True)
+    agent_owner = PartialUserSerializer(read_only=True, allow_null=True)
     is_active = BooleanField(read_only=True)
 
     target_objs = SerializerMethodField()

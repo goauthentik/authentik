@@ -20,20 +20,14 @@
 export interface Worker {
     /**
      *
-     * @type {string}
-     * @memberof Worker
      */
     workerId: string;
     /**
      *
-     * @type {string}
-     * @memberof Worker
      */
     version: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Worker
      */
     versionMatching: boolean;
 }

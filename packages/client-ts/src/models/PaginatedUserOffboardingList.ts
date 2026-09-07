@@ -25,20 +25,14 @@ import { UserOffboardingFromJSON, UserOffboardingToJSON } from "./UserOffboardin
 export interface PaginatedUserOffboardingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserOffboardingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserOffboarding>}
-     * @memberof PaginatedUserOffboardingList
      */
     results: Array<UserOffboarding>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserOffboardingList
      */
     autocomplete: { [key: string]: any };
 }

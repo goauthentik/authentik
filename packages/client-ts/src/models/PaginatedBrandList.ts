@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedBrandList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedBrandList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<Brand>}
-     * @memberof PaginatedBrandList
      */
     results: Array<Brand>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedBrandList
      */
     autocomplete: { [key: string]: any };
 }

@@ -29,62 +29,42 @@ import { SSFStreamStatusEnumFromJSON, SSFStreamStatusEnumToJSON } from "./SSFStr
 export interface SSFStream {
     /**
      *
-     * @type {string}
-     * @memberof SSFStream
      */
     readonly pk: string;
     /**
      *
-     * @type {SSFStreamStatusEnum}
-     * @memberof SSFStream
      */
     status?: SSFStreamStatusEnum;
     /**
      *
-     * @type {number}
-     * @memberof SSFStream
      */
     provider: number;
     /**
      *
-     * @type {SSFProvider}
-     * @memberof SSFStream
      */
     readonly providerObj: SSFProvider;
     /**
      *
-     * @type {DeliveryMethodEnum}
-     * @memberof SSFStream
      */
     deliveryMethod: DeliveryMethodEnum;
     /**
      *
-     * @type {string}
-     * @memberof SSFStream
      */
     endpointUrl?: string | null;
     /**
      *
-     * @type {Array<EventsRequestedEnum>}
-     * @memberof SSFStream
      */
     eventsRequested?: Array<EventsRequestedEnum>;
     /**
      *
-     * @type {string}
-     * @memberof SSFStream
      */
     format: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SSFStream
      */
     aud?: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof SSFStream
      */
     iss: string;
 }

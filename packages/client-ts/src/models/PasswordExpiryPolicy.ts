@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Password Expiry Policy Serializer
  * @export
@@ -20,62 +22,50 @@
 export interface PasswordExpiryPolicy {
     /**
      *
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PasswordExpiryPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PasswordExpiryPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof PasswordExpiryPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordExpiryPolicy
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
+    /**
+     *
      */
     days: number;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordExpiryPolicy
      */
     denyOnly?: boolean;
 }
@@ -115,6 +105,14 @@ export function instanceOfPasswordExpiryPolicy(value: object): value is Password
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("days" in value) || value["days"] === undefined) return false;
     return true;
 }
@@ -139,6 +137,11 @@ export function PasswordExpiryPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         days: json["days"],
         denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
     };
@@ -151,7 +154,14 @@ export function PasswordExpiryPolicyToJSON(json: any): PasswordExpiryPolicy {
 export function PasswordExpiryPolicyToJSONTyped(
     value?: Omit<
         PasswordExpiryPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

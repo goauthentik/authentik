@@ -4,7 +4,8 @@
  * @see https://github.com/atom/one-dark-syntax
  */
 
-:root {
+:root,
+:host {
     --one-dark-base: #282c34;
     --one-dark-mono-1: #abb2bf;
     --one-dark-mono-2: #818896;

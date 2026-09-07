@@ -27,116 +27,78 @@ import { ThemedUrlsFromJSON } from "./ThemedUrls";
 export interface Application {
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     readonly pbmUuid: string;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof Application
      */
     name: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof Application
      */
     slug: string;
     /**
      *
-     * @type {number}
-     * @memberof Application
      */
     provider?: number | null;
     /**
      *
-     * @type {Provider}
-     * @memberof Application
      */
     readonly providerObj: Provider | null;
     /**
      *
-     * @type {Array<number>}
-     * @memberof Application
      */
     backchannelProviders?: Array<number>;
     /**
      *
-     * @type {Array<Provider>}
-     * @memberof Application
      */
     readonly backchannelProvidersObj: Array<Provider>;
     /**
      * Allow formatting of launch URL
-     * @type {string}
-     * @memberof Application
      */
     readonly launchUrl: string | null;
     /**
      * Open launch URL in a new browser tab or window.
-     * @type {boolean}
-     * @memberof Application
      */
     openInNewTab?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     metaLaunchUrl?: string;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     metaIcon?: string;
     /**
      * Get the URL to the App Icon image
-     * @type {string}
-     * @memberof Application
      */
     readonly metaIconUrl: string | null;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof Application
      */
     readonly metaIconThemedUrls: ThemedUrls | null;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     metaDescription?: string;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     metaPublisher?: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof Application
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      *
-     * @type {string}
-     * @memberof Application
      */
     group?: string;
     /**
      * Hide this application from the user's My applications page.
-     * @type {boolean}
-     * @memberof Application
      */
     metaHide?: boolean;
 }

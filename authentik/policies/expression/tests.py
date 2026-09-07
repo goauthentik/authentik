@@ -1,11 +1,12 @@
 """evaluator tests"""
 
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
+from authentik.core.tests.utils import RequestFactory
 from authentik.lib.generators import generate_id
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.api import ExpressionPolicySerializer
@@ -110,6 +111,25 @@ class TestEvaluator(TestCase):
         proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
+
+    def test_call_policy_kwargs_pollute(self):
+        """test ak_call_policy"""
+        expr = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression="return context.get('subkey', False)",
+        )
+        expr2 = ExpressionPolicy.objects.create(
+            name=generate_id(),
+            execution_logging=True,
+            expression=f"""
+            ak_message(ak_call_policy('{expr.name}', subkey=True).passing)
+            ak_message(ak_call_policy('{expr.name}').passing)
+            """,
+        )
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        res = proc.profiling_wrapper()
+        self.assertEqual(res.messages, (True, False))
 
     def test_call_policy_test_like(self):
         """test ak_call_policy without `obj` set, as if it was when testing policies"""

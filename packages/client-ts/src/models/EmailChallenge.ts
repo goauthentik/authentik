@@ -24,20 +24,14 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface EmailChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof EmailChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof EmailChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof EmailChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
 }

@@ -20,38 +20,26 @@
 export interface PatchedAccountLockdownStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     name?: string;
     /**
      * Deactivate the user account (set is_active to False)
-     * @type {boolean}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     deactivateUser?: boolean;
     /**
      * Set an unusable password for the user
-     * @type {boolean}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     setUnusablePassword?: boolean;
     /**
      * Delete all active sessions for the user
-     * @type {boolean}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     deleteSessions?: boolean;
     /**
      * Revoke all tokens for the user (API, app password, recovery, verification, OAuth)
-     * @type {boolean}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     revokeTokens?: boolean;
     /**
      * Flow to redirect users to after self-service lockdown. This flow should not require authentication since the user's session is deleted.
-     * @type {string}
-     * @memberof PatchedAccountLockdownStageRequest
      */
     selfServiceCompletionFlow?: string | null;
 }

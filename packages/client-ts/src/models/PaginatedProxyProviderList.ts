@@ -25,20 +25,14 @@ import { ProxyProviderFromJSON, ProxyProviderToJSON } from "./ProxyProvider";
 export interface PaginatedProxyProviderList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedProxyProviderList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ProxyProvider>}
-     * @memberof PaginatedProxyProviderList
      */
     results: Array<ProxyProvider>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedProxyProviderList
      */
     autocomplete: { [key: string]: any };
 }

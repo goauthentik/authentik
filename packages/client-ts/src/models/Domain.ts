@@ -20,26 +20,18 @@
 export interface Domain {
     /**
      *
-     * @type {number}
-     * @memberof Domain
      */
     readonly id: number;
     /**
      *
-     * @type {string}
-     * @memberof Domain
      */
     domain: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Domain
      */
     isPrimary?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof Domain
      */
     tenant: string;
 }

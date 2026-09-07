@@ -20,14 +20,10 @@
 export interface EnrollRequest {
     /**
      *
-     * @type {string}
-     * @memberof EnrollRequest
      */
     deviceSerial: string;
     /**
      *
-     * @type {string}
-     * @memberof EnrollRequest
      */
     deviceName: string;
 }

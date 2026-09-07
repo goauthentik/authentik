@@ -34,98 +34,66 @@ import { WebAuthnHintEnumFromJSON, WebAuthnHintEnumToJSON } from "./WebAuthnHint
 export interface AuthenticatorWebAuthnStage {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorWebAuthnStage
      */
     friendlyName?: string;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorWebAuthnStage
      */
     userVerification?: UserVerificationEnum;
     /**
      *
-     * @type {AuthenticatorAttachmentEnum}
-     * @memberof AuthenticatorWebAuthnStage
      */
     authenticatorAttachment?: AuthenticatorAttachmentEnum | null;
     /**
      *
-     * @type {UserVerificationEnum}
-     * @memberof AuthenticatorWebAuthnStage
      */
     residentKeyRequirement?: UserVerificationEnum;
     /**
      *
-     * @type {Array<WebAuthnHintEnum>}
-     * @memberof AuthenticatorWebAuthnStage
      */
     hints?: Array<WebAuthnHintEnum>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof AuthenticatorWebAuthnStage
      */
     deviceTypeRestrictions?: Array<string>;
     /**
      *
-     * @type {Array<WebAuthnDeviceType>}
-     * @memberof AuthenticatorWebAuthnStage
      */
     readonly deviceTypeRestrictionsObj: Array<WebAuthnDeviceType>;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorWebAuthnStage
      */
     maxAttempts?: number;
 }

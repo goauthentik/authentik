@@ -20,26 +20,18 @@
 export interface AuthenticatorEndpointGDTCStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStageRequest
      */
     name: string;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStageRequest
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEndpointGDTCStageRequest
      */
     friendlyName?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof AuthenticatorEndpointGDTCStageRequest
      */
     credentials: { [key: string]: any };
 }

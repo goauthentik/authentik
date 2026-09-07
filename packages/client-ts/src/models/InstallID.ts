@@ -20,8 +20,6 @@
 export interface InstallID {
     /**
      *
-     * @type {string}
-     * @memberof InstallID
      */
     installId: string;
 }

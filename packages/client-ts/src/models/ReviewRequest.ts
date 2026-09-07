@@ -21,14 +21,10 @@
 export interface ReviewRequest {
     /**
      *
-     * @type {string}
-     * @memberof ReviewRequest
      */
     iteration: string;
     /**
      *
-     * @type {string}
-     * @memberof ReviewRequest
      */
     note?: string | null;
 }
