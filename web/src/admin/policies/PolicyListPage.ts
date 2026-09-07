@@ -55,7 +55,7 @@ export class PolicyListPage extends TablePage<Policy> {
         // ---
         [msg("Name"), "name"],
         [msg("Type")],
-        [msg("Last updated", { id: "policy.column.last-updated" }), "last_updated"],
+        [msg("Last updated"), "last_updated"],
         [msg("Actions")],
     ];
 
