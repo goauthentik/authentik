@@ -55409,6 +55409,7 @@ components:
       - twitch
       - twitter
       - wechat
+      - wechatserviceaccount
       type: string
     ProxyMode:
       enum:

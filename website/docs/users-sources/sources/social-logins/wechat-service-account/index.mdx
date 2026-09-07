@@ -1,0 +1,106 @@
+---
+title: Log in with a WeChat Service Account
+sidebar_label: WeChat Service Account
+tags:
+    - source
+    - wechat
+---
+
+This source lets users authenticate with a WeChat Service Account (服务号) by configuring it as a federated identity provider with OAuth 2.0.
+
+It uses WeChat's [web authorization](https://developers.weixin.qq.com/doc/service/guide/h5/auth.html) (网页授权) flow, which is complementary to the [WeChat](../wechat/index.mdx) source:
+
+|                    | WeChat                                 | WeChat Service Account                    |
+| :----------------- | :------------------------------------- | :---------------------------------------- |
+| WeChat application | Website Application (网站应用)         | Verified Service Account (已认证的服务号) |
+| Registered on      | WeChat Open Platform                   | WeChat Official Accounts Platform         |
+| Where users log in | Desktop browser, by scanning a QR code | Inside the WeChat app's built-in browser  |
+
+:::warning
+The web authorization flow only works inside WeChat's built-in browser. Opening the login page in a regular desktop or mobile browser shows a WeChat error page instead of the consent screen. If your users log in from a desktop browser, use the [WeChat](../wechat/index.mdx) source instead.
+:::
+
+:::info Account requirements
+WeChat restricts web authorization to **verified Service Accounts** (已认证的服务号). Subscription Accounts (订阅号, which WeChat's documentation now calls 公众号), unverified Service Accounts, Mini Programs and Mobile Applications cannot use it. WeChat makes a narrow exception for verified government, public institution and media accounts.
+:::
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+## WeChat configuration
+
+1. Log in to the [WeChat Official Accounts Platform](https://mp.weixin.qq.com/) with a verified Service Account.
+2. Navigate to **Settings and Development** (设置与开发) > **Basic Configuration** (基本配置). WeChat provides an **AppID** and an **AppSecret** there.
+3. Navigate to **Settings and Development** > **Account Settings** (账号设置) > **Function Settings** (功能设置) and set the **Web authorization domain** (网页授权域名) to `authentik.company`. WeChat asks you to serve a verification file from that domain to prove ownership.
+
+:::info
+The web authorization domain is a bare domain, not a URL — do not include a scheme. It is matched on the full domain: configuring `authentik.company` authorizes pages under `authentik.company` but not under `sso.authentik.company`. If the option is missing from the interface, the account is not eligible for web authorization.
+:::
+
+:::info
+To receive a `unionid`, [bind the Service Account to a WeChat Open Platform account](https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Union_ID.html). Without this binding WeChat only returns an `openid`, which is unique to this one application. See [User matching](#user-matching) below.
+:::
+
+## authentik configuration
+
+To support the integration of a WeChat Service Account with authentik, you need to create a WeChat Service Account OAuth source in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login**, click **New Source**, and then configure the following settings:
+    - **Select type**: select **WeChat Service Account OAuth Source** as the source type.
+    - **Create OAuth Source**: provide a name, a slug (e.g. `wechat-service-account`), and set the following required configurations:
+        - **Protocol settings**
+            - **Consumer key**: Enter the **AppID** from the WeChat Official Accounts Platform.
+            - **Consumer secret**: Enter the **AppSecret** from the WeChat Official Accounts Platform.
+            - **Scopes**: define any further access scopes.
+3. Click **Finish**.
+
+:::info Display new source on login screen
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.mdx#add-sources-to-default-login-page).
+:::
+
+:::info Embed new source in flow :ak-enterprise
+For instructions on embedding the new source within a flow, such as an authorization flow, refer to the [Source Stage documentation](../../../../../add-secure-apps/flows-stages/stages/source/).
+:::
+
+## Source property mappings
+
+Source property mappings allow you to modify or gather extra information from sources. See the [overview](../../property-mappings/index.mdx) for more information.
+
+The following data is retrieved from WeChat and mapped to the user's attributes in authentik:
+
+| WeChat Field            | authentik Attribute     | Description                     |
+| :---------------------- | :---------------------- | :------------------------------ |
+| `unionid` (or `openid`) | `username`              | Used as the primary identifier. |
+| `nickname`              | `name`                  | The user's display name.        |
+| `headimgurl`            | `attributes.headimgurl` | URL to the user's avatar.       |
+
+:::info
+WeChat does not provide the user's email address via the API. Since October 2021 it also no longer returns gender or region for this interface, so the `sex`, `city`, `province` and `country` attributes that the [WeChat](../wechat/index.mdx) source records are not populated here.
+:::
+
+### User matching
+
+WeChat users are identified by their `unionid` (if available) or `openid`.
+
+- **UnionID**: Unique across multiple applications under the same WeChat Open Platform account. authentik prioritizes this as the username. Because a Website Application and a Service Account bound to the same Open Platform account share the `unionid`, a user who logs in through both this source and the [WeChat](../wechat/index.mdx) source matches the same authentik user.
+- **OpenID**: Unique to the specific application. Used as a fallback if `unionid` is not returned. Note that the `openid` issued by a Service Account differs from the one issued by a Website Application, so without a `unionid` the same person enrolls as two separate authentik users.
+
+### Scopes
+
+This source requests the `snsapi_userinfo` scope, which shows a consent screen and returns the user's profile. Users do not need to follow the Service Account for this to work.
+
+The silent `snsapi_base` scope is not supported: it only yields an `openid` and WeChat then rejects calls to the userinfo endpoint, so authentik cannot retrieve the attributes it needs to enroll a user.
+
+:::warning
+Since July 2022 WeChat may serve a read-only "webpage snapshot" (网页快照) instead of the consent screen when it considers an application's use of `snsapi_userinfo` non-compliant. If users report that the login page renders but the consent prompt never appears, this is the likely cause.
+:::
+
+## Resources
+
+- [WeChat Official Accounts Platform](https://mp.weixin.qq.com/)
+- [WeChat web authorization documentation](https://developers.weixin.qq.com/doc/service/guide/h5/auth.html)
+- [WeChat UnionID documentation](https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Union_ID.html)
