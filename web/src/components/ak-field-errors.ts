@@ -15,7 +15,7 @@ export type FieldErrorTuple = [fieldName: string, detail: string];
 export type ErrorProp = string | Error | ErrorDetail | ValidationError | FieldErrorTuple;
 
 export interface AKFormErrorsProps {
-    errors?: ErrorProp[];
+    errors?: ErrorProp[] | readonly ErrorProp[] | null;
 }
 
 function renderError(detail: string) {
