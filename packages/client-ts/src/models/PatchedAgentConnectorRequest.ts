@@ -20,86 +20,58 @@
 export interface PatchedAgentConnectorRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     snapshotExpiry?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     authSessionDuration?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
      */
     authTerminateSessionOnExpiry?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     refreshInterval?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     authorizationFlow?: string | null;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
      */
     nssUidOffset?: number;
     /**
      *
-     * @type {number}
-     * @memberof PatchedAgentConnectorRequest
      */
     nssGidOffset?: number;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     challengeKey?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentConnectorRequest
      */
     challengeIdleTimeout?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedAgentConnectorRequest
      */
     challengeTriggerCheckIn?: boolean;
     /**
      *
-     * @type {Array<number>}
-     * @memberof PatchedAgentConnectorRequest
      */
     jwtFederationProviders?: Array<number>;
 }

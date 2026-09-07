@@ -25,56 +25,38 @@ import { PolicyEngineModeFromJSON, PolicyEngineModeToJSON } from "./PolicyEngine
 export interface PatchedOAuth2DynamicClientRegistrationRequest {
     /**
      *
-     * @type {number}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     provider?: number;
     /**
      * Group to assign to automatically created applications.
-     * @type {string}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     defaultApplicationGroup?: string;
     /**
      * Authorization flow applied to dynamically registered clients.
-     * @type {string}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     overrideAuthorizationFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     overrideInvalidationFlow?: string | null;
     /**
      * Scope mappings applied to dynamically registered clients.
-     * @type {Array<string>}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     overridePropertyMappings?: Array<string>;
     /**
      * Maximum access token validity for registered clients (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     accessTokenValidity?: string;
     /**
      * Maximum refresh token validity for registered clients (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     refreshTokenValidity?: string;
     /**
      * If empty, all grant types are allowed.
-     * @type {Array<GrantTypeEnum>}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     allowedGrantTypes?: Array<GrantTypeEnum>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof PatchedOAuth2DynamicClientRegistrationRequest
      */
     policyEngineMode?: PolicyEngineMode;
 }

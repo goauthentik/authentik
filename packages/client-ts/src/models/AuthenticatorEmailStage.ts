@@ -23,128 +23,86 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface AuthenticatorEmailStage {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorEmailStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     friendlyName?: string;
     /**
      * When enabled, global Email connection settings will be used and connection settings below will be ignored.
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStage
      */
     useGlobalSettings?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     host?: string;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorEmailStage
      */
     port?: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     username?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     password?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStage
      */
     useTls?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof AuthenticatorEmailStage
      */
     useSsl?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof AuthenticatorEmailStage
      */
     timeout?: number;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     fromAddress?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     subject?: string;
     /**
      * Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     tokenExpiry?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailStage
      */
     template?: string;
 }

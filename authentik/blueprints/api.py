@@ -23,7 +23,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.validation import validate
 from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.common import Blueprint
+from authentik.blueprints.v1.common import Blueprint, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
@@ -236,7 +236,10 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         else:
             raise ValidationError("Either path or file must be set")
         context = body.validated_data.get("context") or {}
-        importer = Importer.from_string(string_contents, context)
+        try:
+            importer = Importer.from_string(string_contents, context)
+        except EntryInvalidError as exc:
+            raise ValidationError(_("Invalid blueprint file: {exc}".format(exc=str(exc)))) from None
 
         check_blueprint_perms(importer.blueprint, request.user)
 

@@ -20,8 +20,6 @@
 export interface UserAccountSerializerForRoleRequest {
     /**
      *
-     * @type {number}
-     * @memberof UserAccountSerializerForRoleRequest
      */
     pk: number;
 }

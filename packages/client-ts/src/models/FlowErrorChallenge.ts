@@ -25,38 +25,26 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface FlowErrorChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof FlowErrorChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof FlowErrorChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof FlowErrorChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof FlowErrorChallenge
      */
     requestId: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowErrorChallenge
      */
     error?: string;
     /**
      *
-     * @type {string}
-     * @memberof FlowErrorChallenge
      */
     traceback?: string;
 }

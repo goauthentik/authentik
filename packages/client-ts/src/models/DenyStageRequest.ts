@@ -20,14 +20,10 @@
 export interface DenyStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof DenyStageRequest
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof DenyStageRequest
      */
     denyMessage?: string;
 }

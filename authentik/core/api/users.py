@@ -84,7 +84,6 @@ from authentik.core.models import (
     USER_PATH_SERVICE_ACCOUNT,
     USERNAME_MAX_LENGTH,
     Group,
-    Session,
     Token,
     TokenIntents,
     User,
@@ -556,7 +555,7 @@ class UsersFilter(FilterSet):
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
-    path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+    path_startswith = CharFilter(field_name="path", method="filter_path_startswith")
 
     type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
@@ -584,6 +583,15 @@ class UsersFilter(FilterSet):
         if value:
             return queryset.filter(groups__is_superuser=True).distinct()
         return queryset.exclude(groups__is_superuser=True).distinct()
+
+    def filter_path_startswith(self, queryset, name, value):
+        """Filter users by the given path and any of its sub-paths. A plain `startswith`
+        lookup would also match sibling paths sharing the same prefix, so that `foo/bar`
+        would incorrectly match users in `foo/bar2`."""
+        value = value.rstrip("/")
+        if not value:
+            return queryset
+        return queryset.filter(Q(path=value) | Q(path__startswith=f"{value}/"))
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -1117,11 +1125,3 @@ class UserViewSet(
                 )
             }
         )
-
-    def partial_update(self, request: Request, *args, **kwargs) -> Response:
-        response = super().partial_update(request, *args, **kwargs)
-        instance: User = self.get_object()
-        if not instance.is_active:
-            Session.objects.filter(authenticatedsession__user=instance).delete()
-            LOGGER.debug("Deleted user's sessions", user=instance.username)
-        return response

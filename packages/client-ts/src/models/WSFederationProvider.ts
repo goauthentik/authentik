@@ -16,13 +16,13 @@ import type { DigestAlgorithmEnum } from "./DigestAlgorithmEnum";
 import { DigestAlgorithmEnumFromJSON, DigestAlgorithmEnumToJSON } from "./DigestAlgorithmEnum";
 import type { SAMLNameIDPolicyEnum } from "./SAMLNameIDPolicyEnum";
 import { SAMLNameIDPolicyEnumFromJSON, SAMLNameIDPolicyEnumToJSON } from "./SAMLNameIDPolicyEnum";
-import type { SamlVersionEnum } from "./SamlVersionEnum";
-import { SamlVersionEnumFromJSON, SamlVersionEnumToJSON } from "./SamlVersionEnum";
 import type { SignatureAlgorithmEnum } from "./SignatureAlgorithmEnum";
 import {
     SignatureAlgorithmEnumFromJSON,
     SignatureAlgorithmEnumToJSON,
 } from "./SignatureAlgorithmEnum";
+import type { WSFedSAMLVersionEnum } from "./WSFedSAMLVersionEnum";
+import { WSFedSAMLVersionEnumFromJSON, WSFedSAMLVersionEnumToJSON } from "./WSFedSAMLVersionEnum";
 
 /**
  * WSFederationProvider Serializer
@@ -32,194 +32,130 @@ import {
 export interface WSFederationProvider {
     /**
      *
-     * @type {number}
-     * @memberof WSFederationProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     name: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     authorizationFlow: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     invalidationFlow: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof WSFederationProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly assignedApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly assignedApplicationName: string | null;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     replyUrl: string;
     /**
      *
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     wtrealm: string;
     /**
      * Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     assertionValidNotBefore?: string;
     /**
      * Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     assertionValidNotOnOrAfter?: string;
     /**
      * Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     sessionValidNotOnOrAfter?: string;
     /**
      * Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     nameIdMapping?: string | null;
     /**
      * Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     authnContextClassRefMapping?: string | null;
     /**
      * SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
-     * @type {SamlVersionEnum}
-     * @memberof WSFederationProvider
      */
-    samlVersion?: SamlVersionEnum;
+    samlVersion?: WSFedSAMLVersionEnum;
     /**
      *
-     * @type {DigestAlgorithmEnum}
-     * @memberof WSFederationProvider
      */
     digestAlgorithm?: DigestAlgorithmEnum;
     /**
      *
-     * @type {SignatureAlgorithmEnum}
-     * @memberof WSFederationProvider
      */
     signatureAlgorithm?: SignatureAlgorithmEnum;
     /**
      * Keypair used to sign outgoing Responses going to the Service Provider.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     signingKp?: string | null;
     /**
      * When selected, incoming assertions are encrypted by the IdP using the public key of the encryption keypair. The assertion is decrypted by the SP using the the private key.
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     encryptionKp?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof WSFederationProvider
      */
     signAssertion?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof WSFederationProvider
      */
     signLogoutRequest?: boolean;
     /**
      *
-     * @type {SAMLNameIDPolicyEnum}
-     * @memberof WSFederationProvider
      */
     defaultNameIdPolicy?: SAMLNameIDPolicyEnum;
     /**
      * Get metadata download URL
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly urlDownloadMetadata: string;
     /**
      * Get WS-Fed url
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly urlWsfed: string;
     /**
      * Get Issuer/EntityID URL
-     * @type {string}
-     * @memberof WSFederationProvider
      */
     readonly urlIssuer: string;
 }
@@ -386,7 +322,7 @@ export function WSFederationProviderFromJSONTyped(
         samlVersion:
             json["saml_version"] == null
                 ? undefined
-                : SamlVersionEnumFromJSON(json["saml_version"]),
+                : WSFedSAMLVersionEnumFromJSON(json["saml_version"]),
         digestAlgorithm:
             json["digest_algorithm"] == null
                 ? undefined
@@ -459,7 +395,7 @@ export function WSFederationProviderToJSONTyped(
         session_valid_not_on_or_after: value["sessionValidNotOnOrAfter"],
         name_id_mapping: value["nameIdMapping"],
         authn_context_class_ref_mapping: value["authnContextClassRefMapping"],
-        saml_version: SamlVersionEnumToJSON(value["samlVersion"]),
+        saml_version: WSFedSAMLVersionEnumToJSON(value["samlVersion"]),
         digest_algorithm: DigestAlgorithmEnumToJSON(value["digestAlgorithm"]),
         signature_algorithm: SignatureAlgorithmEnumToJSON(value["signatureAlgorithm"]),
         signing_kp: value["signingKp"],

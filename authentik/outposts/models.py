@@ -32,7 +32,7 @@ from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel, SimpleThroughModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
 from authentik.tasks.schedules.common import ScheduleSpec
@@ -45,7 +45,7 @@ LOGGER = get_logger()
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
-class ServiceConnectionInvalid(SentryIgnoredException):
+class ServiceConnectionInvalid(TracingIgnoredException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 
@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/add-secure-apps/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.mdx
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False

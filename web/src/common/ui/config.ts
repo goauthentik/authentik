@@ -18,7 +18,6 @@ export const DefaultBrand = {
     matchedDomain: "",
     defaultLocale: "",
     flags: {
-        flowsRefreshOthers: false,
         flowsContinuousLogin: false,
     },
 } as const satisfies CurrentBrand;
@@ -50,6 +49,8 @@ export interface UIConfig {
         search: boolean;
         // Requests
         requests: boolean;
+        // Agents
+        agents: boolean;
     };
     navbar: {
         userDisplay: UserDisplay;
@@ -79,6 +80,7 @@ export const DefaultUIConfig = {
         applicationEdit: true,
         search: true,
         requests: true,
+        agents: true,
     },
     layout: {
         type: LayoutType.row,

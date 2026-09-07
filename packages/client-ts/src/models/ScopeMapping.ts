@@ -20,62 +20,42 @@
 export interface ScopeMapping {
     /**
      *
-     * @type {string}
-     * @memberof ScopeMapping
      */
     readonly pk: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof ScopeMapping
      */
     managed?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof ScopeMapping
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof ScopeMapping
      */
     expression: string;
     /**
      * Get object's component so that we know how to edit the object
-     * @type {string}
-     * @memberof ScopeMapping
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ScopeMapping
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ScopeMapping
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ScopeMapping
      */
     readonly metaModelName: string;
     /**
      * Scope name requested by the client
-     * @type {string}
-     * @memberof ScopeMapping
      */
     scopeName: string;
     /**
      * Description shown to the user when consenting. If left empty, the user won't be informed.
-     * @type {string}
-     * @memberof ScopeMapping
      */
     description?: string;
 }

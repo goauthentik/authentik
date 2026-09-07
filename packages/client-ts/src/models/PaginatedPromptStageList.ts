@@ -25,20 +25,14 @@ import { PromptStageFromJSON, PromptStageToJSON } from "./PromptStage";
 export interface PaginatedPromptStageList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPromptStageList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PromptStage>}
-     * @memberof PaginatedPromptStageList
      */
     results: Array<PromptStage>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPromptStageList
      */
     autocomplete: { [key: string]: any };
 }

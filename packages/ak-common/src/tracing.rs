@@ -158,7 +158,7 @@ mod json {
 
 /// Utilities for Sentry
 pub mod sentry {
-    use std::{str::FromStr as _, time::Duration};
+    use std::{borrow::Cow, time::Duration};
 
     use ak_client::apis::root_api::root_config_retrieve;
     use eyre::{Error, Result};
@@ -225,21 +225,24 @@ pub mod sentry {
         if !config.enabled {
             return Ok(None);
         }
+        let Some(dsn) = config.sentry_dsn else {
+            return Ok(None);
+        };
         trace!("setting up sentry");
         let debug = config::get().debug;
-        Ok(Some(sentry::init(sentry::ClientOptions {
-            dsn: config.sentry_dsn.clone().map(|dsn| {
-                sentry::types::Dsn::from_str(&dsn).expect("Failed to create sentry DSN")
-            }),
-            release: Some(format!("authentik@{VERSION}").into()),
-            environment: Some(config.environment.clone().into()),
-            attach_stacktrace: true,
-            send_default_pii: config.send_pii,
-            sample_rate: config.sample_rate,
-            traces_sample_rate: if debug { 1.0 } else { config.sample_rate },
-            user_agent: authentik_user_agent().into(),
-            ..sentry::ClientOptions::default()
-        })))
+        let release: Cow<'static, str> = format!("authentik@{VERSION}").into();
+        let env: Cow<'static, str> = config.environment.clone().into();
+        Ok(Some(sentry::init(
+            sentry::ClientOptions::new()
+                .dsn(&dsn)
+                .release(release)
+                .environment(env)
+                .attach_stacktrace(true)
+                .send_default_pii(config.send_pii)
+                .sample_rate(config.sample_rate)
+                .traces_sample_rate(if debug { 1.0 } else { config.sample_rate })
+                .user_agent(authentik_user_agent()),
+        )))
     }
 }
 

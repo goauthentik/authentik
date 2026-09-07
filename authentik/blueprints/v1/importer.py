@@ -20,6 +20,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
 from yaml import load
+from yaml.error import YAMLError
 
 from authentik.blueprints.v1.common import (
     Blueprint,
@@ -45,14 +46,14 @@ from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import Stage
 from authentik.lib.models import InternallyManagedMixin, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.rbac.models import Role
 
 # Context set when the serializer is created in a blueprint context
-# Update website/docs/customize/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.mdx when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -96,7 +97,7 @@ def is_model_allowed(model: type[Model]) -> bool:
     )
 
 
-class DoRollback(SentryIgnoredException):
+class DoRollback(TracingIgnoredException):
     """Exception to trigger a rollback"""
 
 
@@ -154,13 +155,16 @@ class Importer:
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> Importer:
         """Parse YAML string and create blueprint importer from it"""
-        import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            import_dict = load(yaml_input, BlueprintLoader)
+        except YAMLError as exc:
+            raise EntryInvalidError(exc) from exc
         try:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
             )
         except DaciteError as exc:
-            raise EntryInvalidError from exc
+            raise EntryInvalidError(exc) from exc
         return Importer(_import, context)
 
     @property

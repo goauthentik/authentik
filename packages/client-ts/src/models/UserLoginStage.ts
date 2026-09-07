@@ -27,80 +27,54 @@ import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkB
 export interface UserLoginStage {
     /**
      *
-     * @type {string}
-     * @memberof UserLoginStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof UserLoginStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof UserLoginStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof UserLoginStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof UserLoginStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof UserLoginStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof UserLoginStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStage
      */
     sessionDuration?: string;
     /**
      * Terminate all other sessions of the user logging in.
-     * @type {boolean}
-     * @memberof UserLoginStage
      */
     terminateOtherSessions?: boolean;
     /**
      * Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStage
      */
     rememberMeOffset?: string;
     /**
      * Bind sessions created by this stage to the configured network
-     * @type {NetworkBindingEnum}
-     * @memberof UserLoginStage
      */
     networkBinding?: NetworkBindingEnum;
     /**
      * Bind sessions created by this stage to the configured GeoIP location
-     * @type {GeoipBindingEnum}
-     * @memberof UserLoginStage
      */
     geoipBinding?: GeoipBindingEnum;
     /**
      * When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStage
      */
     rememberDevice?: string;
 }

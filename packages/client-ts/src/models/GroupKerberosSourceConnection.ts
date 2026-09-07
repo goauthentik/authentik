@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -23,44 +24,30 @@ import { SourceFromJSON } from "./Source";
 export interface GroupKerberosSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof GroupKerberosSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof GroupKerberosSourceConnection
      */
     readonly group: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupKerberosSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof GroupKerberosSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof GroupKerberosSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof GroupKerberosSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof GroupKerberosSourceConnection
      */
     readonly lastUpdated: Date;
 }
@@ -110,8 +97,11 @@ export function GroupKerberosSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 

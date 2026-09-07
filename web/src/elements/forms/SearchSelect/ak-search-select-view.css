@@ -2,15 +2,11 @@
     --pf-c-select__toggle-wrapper--MaxWidth: initial;
 }
 
-input.pf-c-select__toggle-typeahead {
-    anchor-name: --ak-search-select-anchor;
-}
-
 ak-list-select[popover] {
     /**
      *  Strip the UA popover default (centered, bordered) so the menu is a bare box.
-     *  Placement is done either with CSS anchor positioning
-     *  (see the [data-anchor-css] rule) or imperatively in #positionMenu.
+     *  Placement and height come from placeAnchoredPopover, which — unlike CSS anchor
+     *  positioning — can hold the menu inside the dialog it was opened from.
      */
     position: fixed;
     margin: 0;
@@ -24,23 +20,6 @@ ak-list-select[popover] {
      *  so scroll state is readable here for wheel forwarding.
      */
     overflow-y: auto;
-}
-
-/**
- * Native CSS anchor positioning — used only where it is both supported and reliable
- * (not Firefox; see #elements/dialogs/positioning).
- *
- * Tracks scrolling for free, so no per-frame JS placement is needed.
- */
-:host([data-anchor-css]) ak-list-select[popover] {
-    position: absolute;
-    position-anchor: --ak-search-select-anchor;
-    top: anchor(bottom);
-    left: anchor(left);
-    width: anchor-size(width);
-
-    /* Flip above the input when there is no room below. */
-    position-try-fallbacks: flip-block;
 }
 
 /**

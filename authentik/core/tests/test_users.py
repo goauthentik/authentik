@@ -3,6 +3,7 @@
 from unittest.mock import patch
 
 from django.contrib.auth.hashers import make_password
+from django.http import HttpRequest
 from django.test.testcases import TestCase
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
@@ -39,6 +40,46 @@ class TestUsers(TestCase):
         self.assertEqual(Event.objects.count(), 1)
         user.ak_groups.all()
         self.assertEqual(Event.objects.count(), 1)
+
+    def test_locale_user_setting_wins_over_language_code(self):
+        """Test the user's saved locale takes precedence over request.LANGUAGE_CODE"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": "de"}},
+        )
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "de")
+
+    def test_locale_falls_back_to_language_code(self):
+        """Test request.LANGUAGE_CODE is used when the user has no saved locale"""
+        user = User.objects.create(username=generate_id())
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "fr")
+
+    def test_locale_empty_user_setting_falls_back_to_language_code(self):
+        """Test an empty saved locale does not shadow request.LANGUAGE_CODE"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": ""}},
+        )
+        request = HttpRequest()
+        request.LANGUAGE_CODE = "fr"
+        self.assertEqual(user.locale(request), "fr")
+
+    def test_locale_no_request_returns_user_setting(self):
+        """Test the user's saved locale is returned when there is no request"""
+        user = User.objects.create(
+            username=generate_id(),
+            attributes={"settings": {"locale": "de"}},
+        )
+        self.assertEqual(user.locale(), "de")
+
+    def test_locale_no_request_no_setting_returns_empty(self):
+        """Test an empty string is returned when there is no request and no saved locale"""
+        user = User.objects.create(username=generate_id())
+        self.assertEqual(user.locale(), "")
 
     def test_set_password_from_hash_signal_skips_source_sync_receivers(self):
         """Test hash password updates do not expose a raw password to sync receivers."""

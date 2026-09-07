@@ -25,80 +25,54 @@ import { PromptTypeEnumFromJSON, PromptTypeEnumToJSON } from "./PromptTypeEnum";
 export interface Prompt {
     /**
      *
-     * @type {string}
-     * @memberof Prompt
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Prompt
      */
     name: string;
     /**
      * Name of the form field, also used to store the value
-     * @type {string}
-     * @memberof Prompt
      */
     fieldKey: string;
     /**
      *
-     * @type {string}
-     * @memberof Prompt
      */
     label: string;
     /**
      *
-     * @type {PromptTypeEnum}
-     * @memberof Prompt
      */
     type: PromptTypeEnum;
     /**
      *
-     * @type {boolean}
-     * @memberof Prompt
      */
     required?: boolean;
     /**
      * Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.
-     * @type {string}
-     * @memberof Prompt
      */
     placeholder?: string;
     /**
      * Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.
-     * @type {string}
-     * @memberof Prompt
      */
     initialValue?: string;
     /**
      *
-     * @type {number}
-     * @memberof Prompt
      */
     order?: number;
     /**
      *
-     * @type {Array<PromptStage>}
-     * @memberof Prompt
      */
     readonly promptStagesObj: Array<PromptStage>;
     /**
      *
-     * @type {string}
-     * @memberof Prompt
      */
     subText?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Prompt
      */
     placeholderExpression?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof Prompt
      */
     initialValueExpression?: boolean;
 }

@@ -20,14 +20,10 @@
 export interface PatchedGroupKerberosSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupKerberosSourceConnectionRequest
      */
     source?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedGroupKerberosSourceConnectionRequest
      */
     identifier?: string;
 }

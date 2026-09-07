@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { PartialUser } from "./PartialUser";
 import { PartialUserFromJSON } from "./PartialUser";
 import type { RequestableTarget } from "./RequestableTarget";
@@ -28,68 +29,50 @@ import { RequestStatusFromJSON } from "./RequestStatus";
 export interface GrantRequest {
     /**
      *
-     * @type {Date}
-     * @memberof GrantRequest
      */
     readonly created: Date;
     /**
      *
-     * @type {PartialUser}
-     * @memberof GrantRequest
      */
     readonly createdBy: PartialUser;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GrantRequest
      */
     requesterData?: { [key: string]: any };
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof GrantRequest
      */
     fulfillerData?: { [key: string]: any };
     /**
      *
-     * @type {PartialUser}
-     * @memberof GrantRequest
      */
-    readonly revokedBy: PartialUser;
+    readonly revokedBy: PartialUser | null;
     /**
      *
-     * @type {boolean}
-     * @memberof GrantRequest
+     */
+    readonly agentOwner: PartialUser | null;
+    /**
+     *
      */
     readonly isActive: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof GrantRequest
      */
     expires?: Date | null;
     /**
      *
-     * @type {RequestStatus}
-     * @memberof GrantRequest
      */
     readonly status: RequestStatus;
     /**
      *
-     * @type {Array<string>}
-     * @memberof GrantRequest
      */
     readonly targets: Array<string>;
     /**
      *
-     * @type {Array<RequestableTarget>}
-     * @memberof GrantRequest
      */
     readonly targetObjs: Array<RequestableTarget>;
     /**
      *
-     * @type {string}
-     * @memberof GrantRequest
      */
     uuid?: string;
 }
@@ -111,6 +94,13 @@ export function instanceOfGrantRequest(value: object): value is GrantRequest {
             !("revoked_by" in (value as Record<string, any>))) ||
         ((value as Record<string, any>)["revokedBy"] === undefined &&
             (value as Record<string, any>)["revoked_by"] === undefined)
+    )
+        return false;
+    if (
+        (!("agentOwner" in (value as Record<string, any>)) &&
+            !("agent_owner" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["agentOwner"] === undefined &&
+            (value as Record<string, any>)["agent_owner"] === undefined)
     )
         return false;
     if (
@@ -141,18 +131,19 @@ export function GrantRequestFromJSONTyped(json: any, ignoreDiscriminator: boolea
         return json;
     }
     return {
-        created: new Date(json["created"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         createdBy: PartialUserFromJSON(json["created_by"]),
         requesterData: json["requester_data"] == null ? undefined : json["requester_data"],
         fulfillerData: json["fulfiller_data"] == null ? undefined : json["fulfiller_data"],
         revokedBy: PartialUserFromJSON(json["revoked_by"]),
+        agentOwner: PartialUserFromJSON(json["agent_owner"]),
         isActive: json["is_active"],
         expires:
             json["expires"] === undefined
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         status: RequestStatusFromJSON(json["status"]),
         targets: json["targets"],
         targetObjs: (json["target_objs"] as Array<any>).map(RequestableTargetFromJSON),
@@ -167,7 +158,14 @@ export function GrantRequestToJSON(json: any): GrantRequest {
 export function GrantRequestToJSONTyped(
     value?: Omit<
         GrantRequest,
-        "created" | "createdBy" | "revokedBy" | "isActive" | "status" | "targets" | "targetObjs"
+        | "created"
+        | "createdBy"
+        | "revokedBy"
+        | "agentOwner"
+        | "isActive"
+        | "status"
+        | "targets"
+        | "targetObjs"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
@@ -178,7 +176,7 @@ export function GrantRequestToJSONTyped(
     return {
         requester_data: value["requesterData"],
         fulfiller_data: value["fulfillerData"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         uuid: value["uuid"],
     };
 }

@@ -9,7 +9,7 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
-export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
+export class AKLicenseNotice extends WithLicenseSummary(AKElement) {
     public static styles = [
         css`
             ::part(container) {
@@ -44,6 +44,6 @@ export class AKLicenceNotice extends WithLicenseSummary(AKElement) {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-license-notice": AKLicenceNotice;
+        "ak-license-notice": AKLicenseNotice;
     }
 }

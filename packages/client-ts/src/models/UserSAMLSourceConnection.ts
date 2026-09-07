@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -23,44 +24,30 @@ import { SourceFromJSON } from "./Source";
 export interface UserSAMLSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof UserSAMLSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {number}
-     * @memberof UserSAMLSourceConnection
      */
     readonly user: number;
     /**
      *
-     * @type {string}
-     * @memberof UserSAMLSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof UserSAMLSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof UserSAMLSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof UserSAMLSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof UserSAMLSourceConnection
      */
     readonly lastUpdated: Date;
 }
@@ -110,8 +97,11 @@ export function UserSAMLSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 

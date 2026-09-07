@@ -23,14 +23,10 @@ import { DeviceFactsOSFamilyFromJSON, DeviceFactsOSFamilyToJSON } from "./Device
 export interface MDMConfigRequest {
     /**
      *
-     * @type {DeviceFactsOSFamily}
-     * @memberof MDMConfigRequest
      */
     platform: DeviceFactsOSFamily;
     /**
      *
-     * @type {string}
-     * @memberof MDMConfigRequest
      */
     enrollmentToken: string;
 }

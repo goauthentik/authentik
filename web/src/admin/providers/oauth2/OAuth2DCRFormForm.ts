@@ -1,7 +1,6 @@
 import "#admin/common/ak-flow-search/ak-flow-search";
 import "#components/ak-switch-input";
 import "#components/ak-text-input";
-import "#elements/LicenseNotice";
 import "#elements/ak-checkbox-group/ak-checkbox-group";
 import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
 import "#elements/forms/FormGroup";
@@ -27,8 +26,7 @@ export interface OAuth2DCRFormProps {
 
 export function renderForm({ dcr }: OAuth2DCRFormProps) {
     dcr ||= {};
-    return html`<ak-license-notice></ak-license-notice>
-        <ak-text-input
+    return html`<ak-text-input
             name="defaultApplicationGroup"
             label=${msg("Default application group")}
             value="${ifDefined(dcr.defaultApplicationGroup)}"

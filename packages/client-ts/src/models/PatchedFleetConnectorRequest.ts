@@ -20,50 +20,34 @@
 export interface PatchedFleetConnectorRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedFleetConnectorRequest
      */
     connectorUuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedFleetConnectorRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedFleetConnectorRequest
      */
     enabled?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedFleetConnectorRequest
      */
     url?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedFleetConnectorRequest
      */
     token?: string;
     /**
      * Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs
-     * @type {string}
-     * @memberof PatchedFleetConnectorRequest
      */
     headersMapping?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedFleetConnectorRequest
      */
     mapUsers?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedFleetConnectorRequest
      */
     mapTeamsAccessGroup?: boolean;
 }

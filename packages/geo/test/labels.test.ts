@@ -37,7 +37,6 @@ test("normalizePlace accepts legacy pmap:-prefixed names", () => {
 });
 
 test("normalizePlace rejects unwanted kinds and nameless places", () => {
-    // spellchecker:disable-next-line
     expect(normalizePlace({ kind: "neighbourhood", name: "Mitte" }, 0, 0)).toBe(null);
     expect(normalizePlace({ kind: "locality" }, 0, 0)).toBe(null);
 });
@@ -99,7 +98,6 @@ test("country reveal zoom is tiered by population, not the dump's min_zoom", () 
         normalizePlace(
             {
                 "kind": "country",
-                // spellchecker:disable-next-line
                 "name": "Österreich",
                 "name:en": "Austria",
                 "min_zoom": 4,

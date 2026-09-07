@@ -23,26 +23,18 @@ import { NetworkInterfaceFromJSON, NetworkInterfaceToJSON } from "./NetworkInter
 export interface Network {
     /**
      *
-     * @type {string}
-     * @memberof Network
      */
     hostname: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Network
      */
     firewallEnabled?: boolean;
     /**
      *
-     * @type {Array<NetworkInterface>}
-     * @memberof Network
      */
     interfaces: Array<NetworkInterface>;
     /**
      *
-     * @type {string}
-     * @memberof Network
      */
     gateway?: string;
 }

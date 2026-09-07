@@ -18,6 +18,7 @@ from authentik.enterprise.requests.models import (
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_id
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBinding
 
 
@@ -726,7 +727,9 @@ class GrantRequestCreateExpiryResolutionTests(APITestCase):
         self._run_flow(flow)
 
         req = GrantRequest.objects.get(targets=app)
-        self.assertEqual(req.requested_expiry, "minutes=20")
+        self.assertEqual(
+            timedelta_from_string(req.requested_expiry), timedelta_from_string("minutes=20")
+        )
         self.assertGreater(req.expires, before + timedelta(minutes=14))
         self.assertLess(req.expires, before + timedelta(minutes=16))
 
@@ -765,7 +768,9 @@ class GrantRequestCreateExpiryResolutionTests(APITestCase):
         self._run_flow(flow)
 
         req = GrantRequest.objects.filter(targets=app_a).filter(targets=app_b).get()
-        self.assertEqual(req.requested_expiry, "minutes=5")
+        self.assertEqual(
+            timedelta_from_string(req.requested_expiry), timedelta_from_string("minutes=5")
+        )
         self.assertGreater(req.expires, before + timedelta(minutes=9))
         self.assertLess(req.expires, before + timedelta(minutes=11))
 
@@ -792,7 +797,9 @@ class GrantRequestCreateExpiryResolutionTests(APITestCase):
         self._run_flow(flow)
 
         req = GrantRequest.objects.get(targets=app)
-        self.assertEqual(req.requested_expiry, "minutes=5")
+        self.assertEqual(
+            timedelta_from_string(req.requested_expiry), timedelta_from_string("minutes=5")
+        )
 
     def test_create_clamps_expiry_override_to_max(self):
         """A requester-supplied `expiry` override longer than the binding's max is
@@ -817,7 +824,9 @@ class GrantRequestCreateExpiryResolutionTests(APITestCase):
         self._run_flow(flow)
 
         req = GrantRequest.objects.get(targets=app)
-        self.assertEqual(req.requested_expiry, "minutes=10")
+        self.assertEqual(
+            timedelta_from_string(req.requested_expiry), timedelta_from_string("minutes=10")
+        )
 
     def test_create_rejects_malformed_expiry_override(self):
         """An unparsable `expiry` override is rejected at request-creation time"""

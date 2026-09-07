@@ -23,26 +23,18 @@ import { LoginChallengeTypesFromJSON, LoginChallengeTypesToJSON } from "./LoginC
 export interface LoginSource {
     /**
      *
-     * @type {string}
-     * @memberof LoginSource
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof LoginSource
      */
     iconUrl?: string | null;
     /**
      *
-     * @type {boolean}
-     * @memberof LoginSource
      */
     promoted?: boolean;
     /**
      *
-     * @type {LoginChallengeTypes}
-     * @memberof LoginSource
      */
     challenge: LoginChallengeTypes;
 }

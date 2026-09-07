@@ -241,6 +241,7 @@ async fn watch_server(arbiter: Arbiter, server: Arc<Server>) -> Result<()> {
             },
             _ = check_interval.tick() => {
                 if !server.is_alive().await {
+                    arbiter.do_fast_shutdown().await;
                     return Err(eyre!("the server has exited unexpectedly"));
                 }
             },

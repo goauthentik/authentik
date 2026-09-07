@@ -14,6 +14,11 @@
 
 import type { FlowSet } from "./FlowSet";
 import { FlowSetFromJSON } from "./FlowSet";
+import type { ResumeOnMatchFailuresEnum } from "./ResumeOnMatchFailuresEnum";
+import {
+    ResumeOnMatchFailuresEnumFromJSON,
+    ResumeOnMatchFailuresEnumToJSON,
+} from "./ResumeOnMatchFailuresEnum";
 
 /**
  * SourceStage Serializer
@@ -23,58 +28,44 @@ import { FlowSetFromJSON } from "./FlowSet";
 export interface SourceStage {
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof SourceStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     source: string;
     /**
      * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof SourceStage
      */
     resumeTimeout?: string;
+    /**
+     * Source matching failure reasons for which the flow should resume.
+     */
+    resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }
 
 /**
@@ -134,6 +125,12 @@ export function SourceStageFromJSONTyped(json: any, ignoreDiscriminator: boolean
         flowSet: (json["flow_set"] as Array<any>).map(FlowSetFromJSON),
         source: json["source"],
         resumeTimeout: json["resume_timeout"] == null ? undefined : json["resume_timeout"],
+        resumeOnMatchFailures:
+            json["resume_on_match_failures"] == null
+                ? undefined
+                : (json["resume_on_match_failures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumFromJSON,
+                  ),
     };
 }
 
@@ -156,5 +153,11 @@ export function SourceStageToJSONTyped(
         name: value["name"],
         source: value["source"],
         resume_timeout: value["resumeTimeout"],
+        resume_on_match_failures:
+            value["resumeOnMatchFailures"] == null
+                ? undefined
+                : (value["resumeOnMatchFailures"] as Array<any>).map(
+                      ResumeOnMatchFailuresEnumToJSON,
+                  ),
     };
 }

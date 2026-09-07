@@ -37,164 +37,110 @@ import { UserMatchingModeEnumFromJSON, UserMatchingModeEnumToJSON } from "./User
 export interface KerberosSourceRequest {
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof KerberosSourceRequest
      */
     enabled?: boolean;
     /**
      * When enabled, this source will be displayed as a prominent button on the login page, instead of a small icon.
-     * @type {boolean}
-     * @memberof KerberosSourceRequest
      */
     promoted?: boolean;
     /**
      * Flow to use when authenticating existing users.
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow to use when enrolling new users.
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     enrollmentFlow?: string | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof KerberosSourceRequest
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof KerberosSourceRequest
      */
     groupPropertyMappings?: Array<string>;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof KerberosSourceRequest
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * How the source determines if an existing user should be authenticated or a new user enrolled.
-     * @type {UserMatchingModeEnum}
-     * @memberof KerberosSourceRequest
      */
     userMatchingMode?: UserMatchingModeEnum;
     /**
      *
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     userPathTemplate?: string;
     /**
      *
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     icon?: string;
     /**
      * How the source determines if an existing group should be used or a new group created.
-     * @type {GroupMatchingModeEnum}
-     * @memberof KerberosSourceRequest
      */
     groupMatchingMode?: GroupMatchingModeEnum;
     /**
      * Kerberos realm
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     realm: string;
     /**
      * Custom krb5.conf to use. Uses the system one by default
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     krb5Conf?: string;
     /**
      * KAdmin server type
-     * @type {KadminTypeEnum}
-     * @memberof KerberosSourceRequest
      */
     kadminType?: KadminTypeEnum;
     /**
      * Sync users from Kerberos into authentik
-     * @type {boolean}
-     * @memberof KerberosSourceRequest
      */
     syncUsers?: boolean;
     /**
      * When a user changes their password, sync it back to Kerberos
-     * @type {boolean}
-     * @memberof KerberosSourceRequest
      */
     syncUsersPassword?: boolean;
     /**
      * Principal to authenticate to kadmin for sync.
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     syncPrincipal?: string;
     /**
      * Password to authenticate to kadmin for sync
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     syncPassword?: string;
     /**
      * Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the form TYPE:residual
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     syncKeytab?: string;
     /**
      * Credentials cache to authenticate to kadmin for sync. Must be in the form TYPE:residual
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     syncCcache?: string;
     /**
      * Force the use of a specific server name for SPNEGO. Must be in the form HTTP@hostname
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     spnegoServerName?: string;
     /**
      * SPNEGO keytab base64-encoded or path to keytab in the form FILE:path
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     spnegoKeytab?: string;
     /**
      * Credential cache to use for SPNEGO in form type:residual
-     * @type {string}
-     * @memberof KerberosSourceRequest
      */
     spnegoCcache?: string;
     /**
      * If enabled, the authentik-stored password will be updated upon login with the Kerberos password backend
-     * @type {boolean}
-     * @memberof KerberosSourceRequest
      */
     passwordLoginUpdateInternalPassword?: boolean;
     /**
      * When to trigger sync for outgoing providers
-     * @type {SyncOutgoingTriggerModeEnum}
-     * @memberof KerberosSourceRequest
      */
     syncOutgoingTriggerMode?: SyncOutgoingTriggerModeEnum;
 }

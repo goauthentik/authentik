@@ -21,14 +21,15 @@ type CapabilitiesEnum string
 
 // List of CapabilitiesEnum
 const (
-	CAPABILITIESENUM_CAN_SAVE_MEDIA   CapabilitiesEnum = "can_save_media"
-	CAPABILITIESENUM_CAN_SAVE_REPORTS CapabilitiesEnum = "can_save_reports"
-	CAPABILITIESENUM_CAN_GEO_IP       CapabilitiesEnum = "can_geo_ip"
-	CAPABILITIESENUM_CAN_ASN          CapabilitiesEnum = "can_asn"
-	CAPABILITIESENUM_CAN_IMPERSONATE  CapabilitiesEnum = "can_impersonate"
-	CAPABILITIESENUM_CAN_DEBUG        CapabilitiesEnum = "can_debug"
-	CAPABILITIESENUM_IS_ENTERPRISE    CapabilitiesEnum = "is_enterprise"
-	CAPABILITIESENUM_CAN_REQUEST      CapabilitiesEnum = "can_request"
+	CAPABILITIESENUM_CAN_SAVE_MEDIA         CapabilitiesEnum = "can_save_media"
+	CAPABILITIESENUM_CAN_SAVE_REPORTS       CapabilitiesEnum = "can_save_reports"
+	CAPABILITIESENUM_CAN_GEO_IP             CapabilitiesEnum = "can_geo_ip"
+	CAPABILITIESENUM_CAN_ASN                CapabilitiesEnum = "can_asn"
+	CAPABILITIESENUM_CAN_IMPERSONATE        CapabilitiesEnum = "can_impersonate"
+	CAPABILITIESENUM_CAN_DEBUG              CapabilitiesEnum = "can_debug"
+	CAPABILITIESENUM_IS_ENTERPRISE          CapabilitiesEnum = "is_enterprise"
+	CAPABILITIESENUM_CAN_REQUEST            CapabilitiesEnum = "can_request"
+	CAPABILITIESENUM_CAN_AGENT_SELF_SERVICE CapabilitiesEnum = "can_agent_self_service"
 )
 
 // All allowed values of CapabilitiesEnum enum
@@ -41,6 +42,7 @@ var AllowedCapabilitiesEnumEnumValues = []CapabilitiesEnum{
 	"can_debug",
 	"is_enterprise",
 	"can_request",
+	"can_agent_self_service",
 }
 
 func (v *CapabilitiesEnum) UnmarshalJSON(src []byte) error {

@@ -12,6 +12,14 @@
  * Do not edit the class manually.
  */
 
+import {
+    type AgentGrantRequestCreated,
+    AgentGrantRequestCreatedFromJSON,
+} from "../models/AgentGrantRequestCreated";
+import {
+    type AgentGrantRequestCreateRequest,
+    AgentGrantRequestCreateRequestToJSON,
+} from "../models/AgentGrantRequestCreateRequest";
 import { type GrantRequest, GrantRequestFromJSON } from "../models/GrantRequest";
 import {
     type GrantRequestCreateRequest,
@@ -69,148 +77,346 @@ import { type RequestStatus } from "../models/RequestStatus";
 import { type UsedBy, UsedByFromJSON } from "../models/UsedBy";
 import * as runtime from "../runtime";
 
+export interface RequestsGrantRequestsAgentCreateRequest {
+    /**
+     *
+     */
+    agentGrantRequestCreateRequest: AgentGrantRequestCreateRequest;
+}
+
 export interface RequestsGrantRequestsCreateRequest {
+    /**
+     *
+     */
     grantRequestCreateRequest: GrantRequestCreateRequest;
 }
 
 export interface RequestsGrantRequestsDestroyRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsGrantRequestsFulfillPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedGrantRequestFulfillRequest?: PatchedGrantRequestFulfillRequest;
 }
 
 export interface RequestsGrantRequestsListRequest {
+    /**
+     *
+     */
+    agentOwner?: number;
+    /**
+     *
+     */
     createdBy?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsPendingReviewListRequest {
+    /**
+     *
+     */
+    agentOwner?: number;
+    /**
+     *
+     */
     createdBy?: number;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     status?: RequestStatus;
 }
 
 export interface RequestsGrantRequestsRetrieveRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsGrantRequestsRevokeDestroyRequest {
+    /**
+     * A UUID string identifying this Grant Request.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsCreateRequest {
+    /**
+     *
+     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsListRequest {
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     rule?: string;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     target?: string;
 }
 
 export interface RequestsRuleBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleBindingRequest?: PatchedRequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleBindingRequest: RequestRuleBindingRequest;
 }
 
 export interface RequestsRuleBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsCreateRequest {
+    /**
+     *
+     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsListRequest {
+    /**
+     *
+     */
     binding?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     * A search term.
+     */
     search?: string;
+    /**
+     *
+     */
     target?: string;
 }
 
 export interface RequestsRuleChildBindingsPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleChildBindingRequest?: PatchedRequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRuleChildBindingsUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleChildBindingRequest: RequestRuleChildBindingRequest;
 }
 
 export interface RequestsRuleChildBindingsUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule Child Binding.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesCreateRequest {
+    /**
+     *
+     */
     requestRuleRequest: RequestRuleRequest;
 }
 
 export interface RequestsRulesDestroyRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesListRequest {
+    /**
+     *
+     */
     name?: string;
+    /**
+     * Which field to use when ordering the results.
+     */
     ordering?: string;
+    /**
+     * A page number within the paginated result set.
+     */
     page?: number;
+    /**
+     * Number of results to return per page.
+     */
     pageSize?: number;
+    /**
+     *
+     */
     pbmUuid?: string;
+    /**
+     *
+     */
     requestFlowSlug?: string;
+    /**
+     * A search term.
+     */
     search?: string;
 }
 
 export interface RequestsRulesPartialUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
+    /**
+     *
+     */
     patchedRequestRuleRequest?: PatchedRequestRuleRequest;
 }
 
 export interface RequestsRulesRetrieveRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 
 export interface RequestsRulesUpdateRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
+    /**
+     *
+     */
     requestRuleRequest: RequestRuleRequest;
 }
 
 export interface RequestsRulesUsedByListRequest {
+    /**
+     * A UUID string identifying this Request Rule.
+     */
     uuid: string;
 }
 
@@ -218,6 +424,77 @@ export interface RequestsRulesUsedByListRequest {
  *
  */
 export class RequestsApi extends runtime.BaseAPI {
+    /**
+     * Creates request options for requestsGrantRequestsAgentCreate without sending the request
+     */
+    async requestsGrantRequestsAgentCreateRequestOpts(
+        requestParameters: RequestsGrantRequestsAgentCreateRequest,
+    ): Promise<runtime.RequestOpts> {
+        if (requestParameters["agentGrantRequestCreateRequest"] == null) {
+            throw new runtime.RequiredError(
+                "agentGrantRequestCreateRequest",
+                'Required parameter "agentGrantRequestCreateRequest" was null or undefined when calling requestsGrantRequestsAgentCreate().',
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters["Content-Type"] = "application/json";
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("authentik", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/requests/grant-requests/agent/`;
+
+        return {
+            path: urlPath,
+            method: "POST",
+            headers: headerParameters,
+            query: queryParameters,
+            body: AgentGrantRequestCreateRequestToJSON(
+                requestParameters["agentGrantRequestCreateRequest"],
+            ),
+        };
+    }
+
+    /**
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
+     */
+    async requestsGrantRequestsAgentCreateRaw(
+        requestParameters: RequestsGrantRequestsAgentCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<runtime.ApiResponse<AgentGrantRequestCreated>> {
+        const requestOptions =
+            await this.requestsGrantRequestsAgentCreateRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) =>
+            AgentGrantRequestCreatedFromJSON(jsonValue),
+        );
+    }
+
+    /**
+     * Delegate access an agent\'s owner already holds to the agent, time-boxed. Unlike `create` this persists the request directly instead of returning a flow link -- an agent authenticates with an API token and has no browser to run a flow in, so no justification is ever collected. That is why the agent may only ask for what its owner already has: the owner\'s approval is then the whole decision, and no reviewer is asked to judge a request with nothing in it. The returned `fulfill_url` is what the agent hands to its owner so they can act on it.
+     */
+    async requestsGrantRequestsAgentCreate(
+        requestParameters: RequestsGrantRequestsAgentCreateRequest,
+        initOverrides?: RequestInit | runtime.InitOverrideFunction,
+    ): Promise<AgentGrantRequestCreated> {
+        const response = await this.requestsGrantRequestsAgentCreateRaw(
+            requestParameters,
+            initOverrides,
+        );
+        return await response.value();
+    }
+
     /**
      * Creates request options for requestsGrantRequestsCreate without sending the request
      */
@@ -413,6 +690,10 @@ export class RequestsApi extends runtime.BaseAPI {
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
+        if (requestParameters["agentOwner"] != null) {
+            queryParameters["agent_owner"] = requestParameters["agentOwner"];
+        }
+
         if (requestParameters["createdBy"] != null) {
             queryParameters["created_by"] = requestParameters["createdBy"];
         }
@@ -489,6 +770,10 @@ export class RequestsApi extends runtime.BaseAPI {
         requestParameters: RequestsGrantRequestsPendingReviewListRequest,
     ): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
+
+        if (requestParameters["agentOwner"] != null) {
+            queryParameters["agent_owner"] = requestParameters["agentOwner"];
+        }
 
         if (requestParameters["createdBy"] != null) {
             queryParameters["created_by"] = requestParameters["createdBy"];

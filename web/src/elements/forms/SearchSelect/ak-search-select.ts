@@ -53,7 +53,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
  */
 @customElement("ak-search-select")
 export class SearchSelect<
-    TFetch extends (query?: string) => Promise<never[]>,
+    TFetch extends (query?: string) => Promise<never[]> = (query?: string) => Promise<never[]>,
     T = AsyncReturnArrayElement<TFetch>,
 > extends SearchSelectBase<T> {
     @property({ attribute: false })

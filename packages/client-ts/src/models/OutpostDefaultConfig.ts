@@ -20,8 +20,6 @@
 export interface OutpostDefaultConfig {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof OutpostDefaultConfig
      */
     readonly config: { [key: string]: any };
 }

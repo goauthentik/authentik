@@ -25,44 +25,30 @@ import { NetworkBindingEnumFromJSON, NetworkBindingEnumToJSON } from "./NetworkB
 export interface UserLoginStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof UserLoginStageRequest
      */
     name: string;
     /**
      * Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStageRequest
      */
     sessionDuration?: string;
     /**
      * Terminate all other sessions of the user logging in.
-     * @type {boolean}
-     * @memberof UserLoginStageRequest
      */
     terminateOtherSessions?: boolean;
     /**
      * Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStageRequest
      */
     rememberMeOffset?: string;
     /**
      * Bind sessions created by this stage to the configured network
-     * @type {NetworkBindingEnum}
-     * @memberof UserLoginStageRequest
      */
     networkBinding?: NetworkBindingEnum;
     /**
      * Bind sessions created by this stage to the configured GeoIP location
-     * @type {GeoipBindingEnum}
-     * @memberof UserLoginStageRequest
      */
     geoipBinding?: GeoipBindingEnum;
     /**
      * When set to a non-zero value, authentik will save a cookie with a longer expiry,to remember the device the user is logging in from. (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof UserLoginStageRequest
      */
     rememberDevice?: string;
 }

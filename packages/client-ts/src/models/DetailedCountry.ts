@@ -23,14 +23,10 @@ import { CountryCodeEnumFromJSON, CountryCodeEnumToJSON } from "./CountryCodeEnu
 export interface DetailedCountry {
     /**
      *
-     * @type {CountryCodeEnum}
-     * @memberof DetailedCountry
      */
     code: CountryCodeEnum;
     /**
      *
-     * @type {string}
-     * @memberof DetailedCountry
      */
     name: string;
 }

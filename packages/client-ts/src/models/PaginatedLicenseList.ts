@@ -25,20 +25,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedLicenseList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedLicenseList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<License>}
-     * @memberof PaginatedLicenseList
      */
     results: Array<License>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedLicenseList
      */
     autocomplete: { [key: string]: any };
 }

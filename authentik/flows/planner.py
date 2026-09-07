@@ -6,8 +6,6 @@ from typing import TYPE_CHECKING, Any
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
-from sentry_sdk import start_span
-from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
@@ -24,6 +22,7 @@ from authentik.flows.models import (
     in_memory_stage,
 )
 from authentik.lib.config import CONFIG
+from authentik.lib.tracing import Span, active_tracer
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine
@@ -261,7 +260,9 @@ class FlowPlanner:
     def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        with start_span(op="authentik.flow.planner.plan", name=self.flow.slug) as span:
+        with active_tracer().start_span(
+            op="authentik.flow.planner.plan", name=self.flow.slug
+        ) as span:
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("request", request)
@@ -319,7 +320,7 @@ class FlowPlanner:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.flow.planner.build_plan",
                 name=self.flow.slug,
             ) as span,

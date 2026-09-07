@@ -30,101 +30,86 @@ const redirectPlugins = await createRedirectPlugins(resolve(packageStaticDirecto
 
 //#region Configuration
 
-export default createDocusaurusConfig(
-    extendConfig({
-        future: {
-            faster: true,
-        },
+export default /** @type {import("@docusaurus/types").Config} */ (
+    createDocusaurusConfig(
+        extendConfig({
+            future: {
+                faster: true,
+            },
 
-        url: DocusaurusURL.Integrations,
+            url: DocusaurusURL.Integrations,
 
-        //#region Preset
+            //#region Preset
 
-        presets: [
-            createClassicPreset({
-                docs: {
-                    path: ".",
-                    routeBasePath: "/",
-                    sidebarPath: "./sidebar.mjs",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/integrations/",
+            presets: [
+                createClassicPreset({
+                    docs: {
+                        path: ".",
+                        routeBasePath: "/",
+                        sidebarPath: "./sidebar.mjs",
+                        editUrl:
+                            "https://github.com/goauthentik/authentik/edit/main/website/integrations/",
 
-                    beforeDefaultRemarkPlugins: [
-                        remarkLinkRewrite([
-                            // ---
-                            ["/api", "https://api.goauthentik.io"],
-                            ["/docs", "https://docs.goauthentik.io"],
-                        ]),
-                    ],
-                },
-            }),
-        ],
-
-        //#endregion
-
-        //#region Plugins
-
-        plugins: [
-            createLLMSPlugin({
-                sections: [{ path: ".", routeBasePath: "/" }],
-                groupBy: "category",
-                categories,
-                // The integrations landing pages become an "## Overview" section
-                // (inlined prose) instead of link rows; the scaffold template is dropped.
-                overviewPages: ["index", "applications"],
-                ignoreFiles: ["**/template/**"],
-                crossLinks: [
-                    {
-                        label: "Documentation",
-                        url: new URL("llms.txt", DocusaurusURL.Docs).toString(),
+                        beforeDefaultRemarkPlugins: [
+                            remarkLinkRewrite([
+                                // ---
+                                ["/api", "https://api.goauthentik.io"],
+                                ["/docs", "https://docs.goauthentik.io"],
+                            ]),
+                        ],
                     },
-                ],
-            }),
-
-            ...redirectPlugins,
-        ],
-
-        //#endregion
-
-        //#region Theme
-
-        themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
-        favicon: "https://goauthentik.io/img/icon.png",
-        themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
-            algolia: createAlgoliaConfig({
-                externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
-            }),
-            image: "https://goauthentik.io/img/social.png",
-            navbarReplacements: {
-                INTEGRATIONS_URL: "/",
-            },
-            navbar: {
-                logo: {
-                    alt: "authentik logo",
-                    src: "https://goauthentik.io/img/icon_left_brand.svg",
-                    href: "https://goauthentik.io/",
-                    target: "_self",
-                },
-            },
-        }),
-
-        // TODO: This can be removed after https://github.com/goauthentik/authentik/pull/24687
-        // is merged and the docusaurus config dependency has been bumped
-        headTags: [
-            {
-                tagName: "script",
-                attributes: {
-                    type: "application/ld+json",
-                },
-                innerHTML: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "WebSite",
-                    "name": "authentik",
-                    "url": "https://integrations.goauthentik.io",
                 }),
-            },
-        ],
+            ],
 
-        //#endregion
-    }),
+            //#endregion
+
+            //#region Plugins
+
+            plugins: [
+                createLLMSPlugin({
+                    sections: [{ path: ".", routeBasePath: "/" }],
+                    groupBy: "category",
+                    categories,
+                    // The integrations landing pages become an "## Overview" section
+                    // (inlined prose) instead of link rows; the scaffold template is dropped.
+                    overviewPages: ["index", "applications"],
+                    ignoreFiles: ["**/template/**"],
+                    crossLinks: [
+                        {
+                            label: "Documentation",
+                            url: new URL("llms.txt", DocusaurusURL.Docs).toString(),
+                        },
+                    ],
+                }),
+
+                ...redirectPlugins,
+            ],
+
+            //#endregion
+
+            //#region Theme
+
+            themes: ["@goauthentik/docusaurus-theme", "@docusaurus/theme-mermaid"],
+            favicon: "https://goauthentik.io/img/icon.png",
+            themeConfig: /** @type {UserThemeConfig & UserThemeConfigExtra} */ ({
+                algolia: createAlgoliaConfig({
+                    externalUrlRegex: /^(?:https?:\/\/)(?!integrations\.goauthentik.io)/.source,
+                }),
+                image: "https://goauthentik.io/img/social.png",
+                navbarReplacements: {
+                    INTEGRATIONS_URL: "/",
+                },
+                navbar: {
+                    logo: {
+                        alt: "authentik logo",
+                        src: "https://goauthentik.io/img/icon_left_brand.svg",
+                        href: "https://goauthentik.io/",
+                        target: "_self",
+                    },
+                },
+            }),
+
+            //#endregion
+        }),
+    )
 );
