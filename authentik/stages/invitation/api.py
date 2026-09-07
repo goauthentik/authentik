@@ -2,7 +2,6 @@
 
 from urllib.parse import urlencode
 
-from django.http import HttpRequest
 from django.urls import reverse
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
