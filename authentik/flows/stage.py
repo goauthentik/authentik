@@ -221,6 +221,11 @@ class ChallengeStageView(StageView):
                 # If there's no user set, an error is raised later.
                 if user := self.get_pending_user(for_display=True):
                     challenge.initial_data["pending_user"] = user.username
+                    # Directories often make the login an opaque identifier: a
+                    # short uid, an employee number. Showing that back to
+                    # somebody who has just typed their e-mail address is
+                    # needlessly cold, and sometimes unrecognisable.
+                    challenge.initial_data["pending_user_display"] = user.name or user.username
                 challenge.initial_data["pending_user_avatar"] = DEFAULT_AVATAR
                 if not isinstance(user, AnonymousUser):
                     challenge.initial_data["pending_user_avatar"] = get_avatar(user, self.request)
