@@ -92,6 +92,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "sub_mode",
             "property_mappings",
             "issuer_mode",
+            "issuer_override",
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]

@@ -9,6 +9,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
+    IssuerMode,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
@@ -98,3 +99,49 @@ class TestProviderInfo(OAuthTestCase):
         )
         body = self.get_info()
         self.assertIn("email", body["claims_supported"])
+
+    def test_issuer_override_empty_uses_issuer_mode(self):
+        """An empty issuer_override leaves the existing Issuer mode behaviour untouched"""
+        self.assertEqual(self.provider.issuer_override, "")
+        self.assertTrue(self.get_info()["issuer"].endswith(f"/application/o/{self.app.slug}/"))
+
+    def test_issuer_override(self):
+        """issuer_override is used verbatim in the discovery document"""
+        self.provider.issuer_override = "https://id.local.invalid/"
+        self.provider.save()
+        self.assertEqual(self.get_info()["issuer"], "https://id.local.invalid/")
+
+    def test_issuer_override_takes_precedence_over_issuer_mode(self):
+        """issuer_override wins over Issuer mode rather than being combined with it"""
+        self.provider.issuer_mode = IssuerMode.GLOBAL
+        self.provider.issuer_override = "https://id.local.invalid/"
+        self.provider.save()
+        self.assertEqual(self.get_info()["issuer"], "https://id.local.invalid/")
+
+    def test_issuer_override_shared_between_providers(self):
+        """Two providers with different client IDs can present one issuer.
+
+        This is the case the field exists for: an application whose desktop and
+        mobile clients ship their own fixed client IDs needs one provider each,
+        while the application itself only ever trusts a single issuer.
+        """
+        shared = "https://id.local.invalid/"
+        self.provider.issuer_override = shared
+        self.provider.save()
+
+        second = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://local.invalid")],
+            signing_key=self.keypair,
+            issuer_override=shared,
+        )
+        second.property_mappings.set(ScopeMapping.objects.all())
+        second_app = Application.objects.create(
+            name=generate_id(), slug=generate_id(), provider=second
+        )
+
+        self.assertNotEqual(self.provider.client_id, second.client_id)
+        self.assertNotEqual(self.app.slug, second_app.slug)
+        self.assertEqual(self.get_info()["issuer"], self.get_info(second_app)["issuer"])

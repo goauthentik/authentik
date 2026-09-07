@@ -155,6 +155,12 @@ export interface OAuth2Provider {
      */
     issuerMode?: IssuerModeEnum;
     /**
+     * Use this exact value as the issuer instead of deriving one from Issuer mode. Leave empty to use Issuer mode. Set this when several providers must share a single issuer, for example an application whose desktop and mobile clients ship their own fixed client IDs and therefore need one provider each, while the application itself only trusts a single issuer.
+     * @type {string}
+     * @memberof OAuth2Provider
+     */
+    issuerOverride?: string;
+    /**
      *
      */
     jwtFederationSources?: Array<string>;
@@ -316,6 +322,7 @@ export function OAuth2ProviderFromJSONTyped(
         subMode: json["sub_mode"] == null ? undefined : SubModeEnumFromJSON(json["sub_mode"]),
         issuerMode:
             json["issuer_mode"] == null ? undefined : IssuerModeEnumFromJSON(json["issuer_mode"]),
+        issuerOverride: json["issuer_override"] == null ? undefined : json["issuer_override"],
         jwtFederationSources:
             json["jwt_federation_sources"] == null ? undefined : json["jwt_federation_sources"],
         jwtFederationProviders:
@@ -371,6 +378,7 @@ export function OAuth2ProviderToJSONTyped(
         logout_method: OAuth2ProviderLogoutMethodEnumToJSON(value["logoutMethod"]),
         sub_mode: SubModeEnumToJSON(value["subMode"]),
         issuer_mode: IssuerModeEnumToJSON(value["issuerMode"]),
+        issuer_override: value["issuerOverride"],
         jwt_federation_sources: value["jwtFederationSources"],
         jwt_federation_providers: value["jwtFederationProviders"],
     };
