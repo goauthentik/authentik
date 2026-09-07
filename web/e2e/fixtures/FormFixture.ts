@@ -68,7 +68,15 @@ export class FormFixture extends PageFixture {
         query: string,
         context: LocatorContext = this.page,
     ): Promise<Locator> => {
-        const searchInput = await this.findTextualInput(/search/i, context);
+        // Scoped to `ak-table-search` rather than the whole page: tables render either a
+        // plain searchbox or a query-language combobox, so the match has to stay
+        // role-based — but pages that mount a wizard (e.g. providers) also carry the
+        // dual-list-select search boxes for scopes, sources, and providers, which an
+        // unscoped match picks up and then fails strict mode on.
+        const searchInput = await this.findTextualInput(
+            /search/i,
+            context.locator("ak-table-search"),
+        );
         // We have to wait for the user to appear in the table,
         // but several UI elements will be rendered asynchronously.
         // We attempt several times to find the user to avoid flakiness.

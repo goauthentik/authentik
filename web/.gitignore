@@ -36,6 +36,10 @@ playwright-traces
 test-results
 *.lcov
 
+# Vitest browser mode writes these on a failing test
+.vitest-attachments/
+**/__screenshots__/
+
 # nyc test coverage
 .nyc_output
 

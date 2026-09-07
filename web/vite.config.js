@@ -57,6 +57,7 @@ export default defineConfig({
                     name: "Browser Tests",
                     browser: {
                         enabled: true,
+                        headless: true,
                         provider: playwright(),
 
                         instances: [
