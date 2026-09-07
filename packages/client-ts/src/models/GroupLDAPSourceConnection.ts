@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { PartialGroup } from "./PartialGroup";
 import { PartialGroupFromJSON } from "./PartialGroup";
 import type { Source } from "./Source";
@@ -25,50 +26,34 @@ import { SourceFromJSON } from "./Source";
 export interface GroupLDAPSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly group: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof GroupLDAPSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {PartialGroup}
-     * @memberof GroupLDAPSourceConnection
      */
     readonly groupObj: PartialGroup;
 }
@@ -125,8 +110,11 @@ export function GroupLDAPSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
         groupObj: PartialGroupFromJSON(json["group_obj"]),
     };
 }

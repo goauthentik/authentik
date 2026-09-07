@@ -20,14 +20,10 @@
 export interface GeoIPPolicyCountriesObjInner {
     /**
      *
-     * @type {string}
-     * @memberof GeoIPPolicyCountriesObjInner
      */
     code: string;
     /**
      *
-     * @type {string}
-     * @memberof GeoIPPolicyCountriesObjInner
      */
     name: string;
 }

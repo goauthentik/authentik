@@ -23,26 +23,18 @@ import { ThemedUrlsFromJSON, ThemedUrlsToJSON } from "./ThemedUrls";
 export interface FileList {
     /**
      *
-     * @type {string}
-     * @memberof FileList
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof FileList
      */
     mimeType: string;
     /**
      *
-     * @type {string}
-     * @memberof FileList
      */
     url: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof FileList
      */
     themedUrls?: ThemedUrls | null;
 }

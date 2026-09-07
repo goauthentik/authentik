@@ -20,14 +20,10 @@
 export interface GroupSAMLSourceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof GroupSAMLSourceConnectionRequest
      */
     source: string;
     /**
      *
-     * @type {string}
-     * @memberof GroupSAMLSourceConnectionRequest
      */
     identifier: string;
 }

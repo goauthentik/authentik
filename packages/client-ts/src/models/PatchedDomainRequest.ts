@@ -20,20 +20,14 @@
 export interface PatchedDomainRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedDomainRequest
      */
     domain?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedDomainRequest
      */
     isPrimary?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedDomainRequest
      */
     tenant?: string;
 }

@@ -24,13 +24,13 @@ Access requests provide:
 
 ## Terminology
 
-| Term                 | Description                                                                                                                                                                                                                                                     |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Access request       | A request from a specific user for access to an application. A request can be pending, approved, or denied.                                                                                                                                                     |
-| Request rule         | A configuration that determines which request flow is used, who reviews requests, and how reviewers are notified. If no request flow is set on the request rule, it falls back to the request flow value set on the [brand](../../customize/branding/index.md). |
-| Request rule binding | A binding between a request rule and a requestable application. It also determines which users or groups can request access.                                                                                                                                    |
-| Reviewer             | A user or group authorized to approve or deny an access request.                                                                                                                                                                                                |
-| Expiry               | The period for which access granted through an approved request remains valid.                                                                                                                                                                                  |
+| Term                 | Description                                                                                                                                                                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Access request       | A request from a specific user for access to an application. A request can be pending, approved, or denied.                                                                                                                                                      |
+| Request rule         | A configuration that determines which request flow is used, who reviews requests, and how reviewers are notified. If no request flow is set on the request rule, it falls back to the request flow value set on the [brand](../../customize/branding/index.mdx). |
+| Request rule binding | A binding between a request rule and a requestable application. It also determines which users or groups can request access.                                                                                                                                     |
+| Reviewer             | A user or group authorized to approve or deny an access request.                                                                                                                                                                                                 |
+| Expiry               | The period for which access granted through an approved request remains valid.                                                                                                                                                                                   |
 
 ## Access request lifecycle
 
@@ -55,7 +55,7 @@ Submitting a request executes a request flow. Use this to collect a justificatio
 Configure a **Request flow** on either:
 
 - The request rule itself.
-- As a default for the [brand](../../customize/branding/index.md). Used as a fallback when the request rule does not specify a request flow.
+- As a default for the [brand](../../customize/branding/index.mdx). Used as a fallback when the request rule does not specify a request flow.
 
 authentik includes a `default-request` flow that is empty. This flow can be configured with any required stages and policies. Any prompt data entered by a requester during a request flow is shown to the reviewer in the **Requester notes** field. Request flows can be left empty if you don't require user interaction.
 
@@ -73,7 +73,7 @@ authentik includes a `default-request` flow that is empty. This flow can be conf
         - **Everyone who can approve**
         - **Only individually-selected reviewers**
         - **A random subset (of size “minimum reviewers”) of everyone who can approve**
-    - **Notification transports** _(optional)_: The [notification transports](../../sys-mgmt/events/transports.md) used to notify reviewers.
+    - **Notification transports** _(optional)_: The [notification transports](../../sys-mgmt/events/transports.mdx) used to notify reviewers.
     - **Request flow** _(optional)_: The [request flow](#request-flows) presented to the user when requesting access.
 4. Click **Create Request Rule**.
 
@@ -146,7 +146,7 @@ Each stage of a request is recorded as an event and can be matched in event matc
 - `access_request_denied`
 - `access_request_revoked`
 
-Pair an event matcher policy with a notification rule to alert security teams of access events via Slack, email, or webhooks. See [Events](../../sys-mgmt/events/index.md) and [Notifications](../../sys-mgmt/events/notifications.md) for more information.
+Pair an event matcher policy with a notification rule to alert security teams of access events via Slack, email, or webhooks. See [Events](../../sys-mgmt/events/index.mdx) and [Notifications](../../sys-mgmt/events/notifications.mdx) for more information.
 
 ## Considerations and limitations
 

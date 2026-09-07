@@ -25,20 +25,14 @@ import { RequestRuleFromJSON, RequestRuleToJSON } from "./RequestRule";
 export interface PaginatedRequestRuleList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRequestRuleList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RequestRule>}
-     * @memberof PaginatedRequestRuleList
      */
     results: Array<RequestRule>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRequestRuleList
      */
     autocomplete: { [key: string]: any };
 }

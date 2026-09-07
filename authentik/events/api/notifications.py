@@ -47,7 +47,7 @@ class NotificationViewSet(
 ):
     """Notification Viewset"""
 
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.select_related("event")
     serializer_class = NotificationSerializer
     filterset_fields = [
         "severity",

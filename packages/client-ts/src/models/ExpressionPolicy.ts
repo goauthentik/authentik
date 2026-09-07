@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Group Membership Policy Serializer
  * @export
@@ -20,68 +22,46 @@
 export interface ExpressionPolicy {
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ExpressionPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ExpressionPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Date}
-     * @memberof ExpressionPolicy
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof ExpressionPolicy
      */
     readonly created: Date;
     /**
      *
-     * @type {string}
-     * @memberof ExpressionPolicy
      */
     expression: string;
 }
@@ -153,8 +133,11 @@ export function ExpressionPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        lastUpdated: new Date(json["last_updated"]),
-        created: new Date(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         expression: json["expression"],
     };
 }

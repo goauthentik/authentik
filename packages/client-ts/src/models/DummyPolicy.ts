@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Dummy Policy Serializer
  * @export
@@ -20,80 +22,54 @@
 export interface DummyPolicy {
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof DummyPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof DummyPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof DummyPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof DummyPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Date}
-     * @memberof DummyPolicy
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof DummyPolicy
      */
     readonly created: Date;
     /**
      *
-     * @type {boolean}
-     * @memberof DummyPolicy
      */
     result?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMin?: number;
     /**
      *
-     * @type {number}
-     * @memberof DummyPolicy
      */
     waitMax?: number;
 }
@@ -161,8 +137,11 @@ export function DummyPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        lastUpdated: new Date(json["last_updated"]),
-        created: new Date(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         result: json["result"] == null ? undefined : json["result"],
         waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
         waitMax: json["wait_max"] == null ? undefined : json["wait_max"],

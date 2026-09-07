@@ -28,20 +28,14 @@ import { PaginationFromJSON, PaginationToJSON } from "./Pagination";
 export interface PaginatedExtraRoleObjectPermissionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedExtraRoleObjectPermissionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<ExtraRoleObjectPermission>}
-     * @memberof PaginatedExtraRoleObjectPermissionList
      */
     results: Array<ExtraRoleObjectPermission>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedExtraRoleObjectPermissionList
      */
     autocomplete: { [key: string]: any };
 }

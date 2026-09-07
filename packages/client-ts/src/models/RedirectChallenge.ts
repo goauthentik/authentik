@@ -24,32 +24,22 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface RedirectChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof RedirectChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof RedirectChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof RedirectChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof RedirectChallenge
      */
     to: string;
     /**
      *
-     * @type {boolean}
-     * @memberof RedirectChallenge
      */
     finalRedirect?: boolean;
 }

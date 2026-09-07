@@ -28,62 +28,42 @@ import {
 export interface SourceStage {
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SourceStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof SourceStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      *
-     * @type {string}
-     * @memberof SourceStage
      */
     source: string;
     /**
      * Amount of time a user can take to return from the source to continue the flow (Format: hours=-1;minutes=-2;seconds=-3)
-     * @type {string}
-     * @memberof SourceStage
      */
     resumeTimeout?: string;
     /**
      * Source matching failure reasons for which the flow should resume.
-     * @type {Array<ResumeOnMatchFailuresEnum>}
-     * @memberof SourceStage
      */
     resumeOnMatchFailures?: Array<ResumeOnMatchFailuresEnum>;
 }

@@ -1,0 +1,93 @@
+---
+title: Integrate with Cisco Modeling Labs
+sidebar_label: Cisco Modeling Labs
+support_level: community
+---
+
+## What is Cisco Modeling Labs?
+
+> Cisco Modeling Labs is an on-premises network simulation platform for designing and testing Cisco and multivendor networks.
+>
+> -- https://www.cisco.com/site/us/en/learn/training-certifications/training/modeling-labs/index.html
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `ldap.company` is the FQDN of the authentik LDAP outpost.
+
+Cisco Modeling Labs (CML) authenticates users against LDAP. The CML server must be able to reach the authentik LDAP outpost on port `636` and trust the certificate that the outpost presents for `ldap.company`.
+
+:::info
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Cisco Modeling Labs with authentik, you need to create groups for CML access and configure an LDAP provider and outpost.
+
+### Create access groups
+
+Create groups that Cisco Modeling Labs uses to allow login and to grant administrator privileges. The CML user filter permits members of either group to log in, while the admin filter grants administrator privileges only to members of `cml-admins`.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set **Name** to `cml-users` and click **Create**.
+4. Open the group, select the **Users** tab, and add the users who should have non-administrative access to Cisco Modeling Labs.
+5. Repeat these steps with the name `cml-admins`, and add the users who should have CML administrator privileges.
+
+### Create the LDAP resources
+
+Follow the [LDAP provider setup](/docs/add-secure-apps/providers/ldap/create-ldap-provider/) to create or reuse an LDAP application and provider, create a service account with LDAP search permissions, and create an LDAP outpost.
+
+Use the following CML-specific settings while completing the LDAP provider setup:
+
+- Use `cml-ldap` as the service account username. Note its password and full DN for the CML configuration.
+- Note the LDAP provider's **Base DN** as `<base_dn>`.
+- On the LDAP provider, set **Certificate** to the certificate that CML should trust for `ldap.company`.
+- Set **TLS Server Name** to `ldap.company`.
+- Select the CML LDAP application on the outpost and expose the outpost as `ldap.company`.
+
+If you configure application bindings, ensure that `cml-ldap`, `cml-users`, and `cml-admins` have access to the LDAP application.
+
+## Cisco Modeling Labs configuration
+
+### Configure LDAP authentication
+
+:::warning LDAP lockout
+After you save LDAP as the authentication method, Cisco Modeling Labs authenticates every login against LDAP, including the local administrator account. Always use **Test Authentication** before you click **Save**. If you save incorrect settings and can no longer log in, recover access with the authentication reset in the CML cockpit.
+:::
+
+1. Log in to Cisco Modeling Labs as a user with administrator privileges.
+2. Navigate to **Tools** > **System Administration**.
+3. Click **User Authentication**.
+4. Set **Authentication Method** to `LDAP`.
+5. Configure the following settings. Replace `<base_dn>` with the **Base DN** of the authentik LDAP provider.
+    - **LDAP Servers**: `ldaps://ldap.company:636`
+    - **Verify TLS**: enabled
+    - **Root DN**: `<base_dn>`
+    - **User Search Base**: `ou=users`
+    - **User Filter**: `(&(cn={0})(|(memberOf=cn=cml-users,ou=groups,<base_dn>)(memberOf=cn=cml-admins,ou=groups,<base_dn>)))`
+    - **Admin Filter**: `(&(cn={0})(memberOf=cn=cml-admins,ou=groups,<base_dn>))`
+    - **Group Search Base**: `ou=groups`
+    - **Group Search Filter**: `(&(cn={0})(objectClass=group))`
+    - **Group Via User**: enabled
+    - **Group User Attribute**: `memberOf`
+    - **Manager DN**: `cn=cml-ldap,ou=users,<base_dn>`
+    - **Manager Password**: the password for the `cml-ldap` service account
+    - **Display Name LDAP Attribute**: `displayName`
+    - **Email Address LDAP Attribute**: `mail`
+6. If the LDAP outpost certificate is issued by a private CA, paste that CA certificate into **Certificate Chain**.
+7. Click **Test Authentication**, enter the **Manager Password** if the field is empty, and test with an authentik username and password. **Authenticated** should be `true`. For a user in `cml-admins`, the test should also show that the admin filter matched.
+8. Optionally, assign a **Resource Pool** template. This will clone the template for every user registered through LDAP. This is useful for preventing resource abuse on multi-user systems. Refer to the CML Documentation on how to create and configure a resource pool template.
+9. Click **Save**.
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Cisco Modeling Labs, open the CML UI and log in with an authentik username and password. A user in `cml-users` should reach the CML dashboard without administrator privileges, and a user in `cml-admins` should have administrator privileges.
+
+## Resources
+
+- [Cisco Modeling Labs documentation - Configuring LDAP Authentication](https://developer.cisco.com/docs/modeling-labs/configuring-ldap-authentication/)
+- [Cisco Modeling Labs documentation - CML User Authentication](https://developer.cisco.com/docs/modeling-labs/cml-user-authentication/)
+- [Cisco Modeling Labs documentation- Creating a Resource Pool](https://developer.cisco.com/docs/modeling-labs/creating-a-resource-pool/)

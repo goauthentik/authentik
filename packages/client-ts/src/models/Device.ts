@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Serializer for authenticator devices
  * @export
@@ -20,74 +22,50 @@
 export interface Device {
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Device
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Device
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Device
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {string}
-     * @memberof Device
      */
     pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Device
      */
     name: string;
     /**
      * Get type of device
-     * @type {string}
-     * @memberof Device
      */
     readonly type: string;
     /**
      *
-     * @type {boolean}
-     * @memberof Device
      */
     confirmed: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof Device
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof Device
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof Device
      */
     readonly lastUsed: Date | null;
     /**
      * Get extra description
-     * @type {string}
-     * @memberof Device
      */
     readonly extraDescription: string | null;
     /**
      * Get external Device ID
-     * @type {string}
-     * @memberof Device
      */
     readonly externalId: string | null;
 }
@@ -169,9 +147,12 @@ export function DeviceFromJSONTyped(json: any, ignoreDiscriminator: boolean): De
         name: json["name"],
         type: json["type"],
         confirmed: json["confirmed"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
-        lastUsed: json["last_used"] == null ? null : new Date(json["last_used"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        lastUsed: json["last_used"] == null ? null : parseDateTime(json["last_used"]),
         extraDescription: json["extra_description"],
         externalId: json["external_id"],
     };

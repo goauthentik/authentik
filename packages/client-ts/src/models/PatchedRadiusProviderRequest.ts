@@ -20,56 +20,38 @@
 export interface PatchedRadiusProviderRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     name?: string;
     /**
      * Flow used for authentication when the associated application is accessed by an un-authenticated user.
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     authenticationFlow?: string | null;
     /**
      * Flow used when authorizing this provider.
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     authorizationFlow?: string;
     /**
      * Flow used ending the session from a provider.
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     invalidationFlow?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedRadiusProviderRequest
      */
     propertyMappings?: Array<string>;
     /**
      * List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     clientNetworks?: string;
     /**
      * Shared secret between clients and server to hash packets.
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     sharedSecret?: string;
     /**
      * When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.
-     * @type {boolean}
-     * @memberof PatchedRadiusProviderRequest
      */
     mfaSupport?: boolean;
     /**
      *
-     * @type {string}
-     * @memberof PatchedRadiusProviderRequest
      */
     certificate?: string | null;
 }

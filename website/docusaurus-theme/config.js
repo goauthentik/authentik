@@ -3,6 +3,7 @@
  *
  * @import { Config } from "@docusaurus/types";
  * @import { UserThemeConfig } from "@goauthentik/docusaurus-config";
+ * @import { AKMDXOnlyPluginOptions } from "./mdx-only/plugin.mjs";
  * @import {Options as PresetOptions} from '@docusaurus/preset-classic';
  * @import { BuildUrlValues } from "remark-github";
  */
@@ -131,6 +132,19 @@ export function createLLMSPlugin(options) {
 }
 
 /**
+ * Create the MDX-only plugin tuple, which fails the build on `.md` content.
+ *
+ * @param {AKMDXOnlyPluginOptions} [options]
+ * @returns {[string, AKMDXOnlyPluginOptions]}
+ */
+export function createMDXOnlyPlugin(options) {
+    return [
+        "@goauthentik/docusaurus-theme/mdx-only/plugin",
+        { ignore: DocusaurusExcludePatterns, ...options },
+    ];
+}
+
+/**
  * Footer copyright line shared by every site.
  */
 export const FOOTER_COPYRIGHT = `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`;
@@ -144,6 +158,8 @@ export function extendConfig(overrides) {
      * @type {Partial<Config>}
      */
     const commonConfig = {
+        plugins: [createMDXOnlyPlugin()],
+
         staticDirectories: [
             // ---
             resolve(__dirname, "..", "static"),

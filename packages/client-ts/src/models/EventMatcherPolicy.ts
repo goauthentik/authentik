@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { AppEnum } from "./AppEnum";
 import { AppEnumFromJSON, AppEnumToJSON } from "./AppEnum";
 import type { EventActions } from "./EventActions";
@@ -27,92 +28,62 @@ import { ModelEnumFromJSON, ModelEnumToJSON } from "./ModelEnum";
 export interface EventMatcherPolicy {
     /**
      *
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof EventMatcherPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof EventMatcherPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Date}
-     * @memberof EventMatcherPolicy
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof EventMatcherPolicy
      */
     readonly created: Date;
     /**
      * Match created events with this action type. When left empty, all action types will be matched.
-     * @type {EventActions}
-     * @memberof EventMatcherPolicy
      */
     action?: EventActions | null;
     /**
      * Matches Event's Client IP (strict matching, for network matching use an Expression Policy)
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     clientIp?: string | null;
     /**
      * Match events created by selected application. When left empty, all applications are matched.
-     * @type {AppEnum}
-     * @memberof EventMatcherPolicy
      */
     app?: AppEnum | null;
     /**
      * Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
-     * @type {ModelEnum}
-     * @memberof EventMatcherPolicy
      */
     model?: ModelEnum | null;
     /**
      *
-     * @type {string}
-     * @memberof EventMatcherPolicy
      */
     query?: string | null;
 }
@@ -183,8 +154,11 @@ export function EventMatcherPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        lastUpdated: new Date(json["last_updated"]),
-        created: new Date(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         action:
             json["action"] === undefined
                 ? undefined

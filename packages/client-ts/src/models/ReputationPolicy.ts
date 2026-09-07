@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Reputation Policy Serializer
  * @export
@@ -20,80 +22,54 @@
 export interface ReputationPolicy {
     /**
      *
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof ReputationPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof ReputationPolicy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Date}
-     * @memberof ReputationPolicy
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof ReputationPolicy
      */
     readonly created: Date;
     /**
      *
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     checkIp?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof ReputationPolicy
      */
     checkUsername?: boolean;
     /**
      *
-     * @type {number}
-     * @memberof ReputationPolicy
      */
     threshold?: number;
 }
@@ -164,8 +140,11 @@ export function ReputationPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        lastUpdated: new Date(json["last_updated"]),
-        created: new Date(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
         checkUsername: json["check_username"] == null ? undefined : json["check_username"],
         threshold: json["threshold"] == null ? undefined : json["threshold"],

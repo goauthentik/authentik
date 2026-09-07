@@ -7,8 +7,8 @@ It is a **polyglot monorepo**. Most work lands in one of the subtrees below; whe
 | Language       | Where                      | What it is                                                                              | Deeper guide                                |
 | -------------- | -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- |
 | **Python**     | `authentik/`, `lifecycle/` | The core server — a Django + Django REST Framework app. The source of truth for the IdP. | —                                           |
-| **Go**         | `cmd/`, `internal/`        | **Outposts** (LDAP, proxy, RAC, RADIUS) and the front reverse-proxy that fronts Django.  | —                                           |
-| **Rust**       | `src/`, `packages/ak-*`    | Newer server/worker components and shared crates (`ak-axum`, `ak-common`, `ak-guardian`). | —                                           |
+| **Go**         | `cmd/`, `internal/`        | **Outposts** (LDAP, RAC, RADIUS).  | —                                           |
+| **Rust**       | `src/`, `packages/ak-*`    | Newer server/worker/proxy outpost components and shared crates (`ak-axum`, `ak-common`, `ak-guardian`). | —                                           |
 | **TypeScript** | `web/`                     | The web UI — three Lit + PatternFly apps (Admin, User, Flow).                            | [`web/AGENTS.md`](web/AGENTS.md)            |
 | **Docs**       | `website/`                 | The documentation, integrations, and API sites (Docusaurus).                             | [`website/AGENTS.md`](website/AGENTS.md)    |
 
@@ -19,8 +19,8 @@ The Python core and the web UI talk through a **generated OpenAPI client** — n
 ```
 authentik/          # Django core — the IdP itself (see "The authentik Django package" below)
 lifecycle/          # Boot/runtime: migrations, gunicorn config, the `ak` CLI, container + AWS entrypoints
-cmd/                # Go entrypoints: ldap/ proxy/ rac/ radius/ outposts + server/ (front reverse-proxy)
-internal/           # Shared Go: outpost implementations, config, web proxy, gounicorn process manager
+cmd/                # Go entrypoints: ldap/ rac/ radius/ outposts
+internal/           # Shared Go: outpost implementations, config
 src/                # Rust server/worker (ak-axum based; gated behind cargo features)
 packages/           # Shared workspace packages, polyglot:
                     #   client-go / client-rust / client-ts  — GENERATED API clients (do not hand-edit)
@@ -144,9 +144,9 @@ Authoritative contributor docs live under `website/docs/developer-docs/` and are
 
 - `setup/full-dev-environment.mdx` — full backend + frontend dev environment.
 - `setup/frontend-dev-environment.mdx` — web-only setup.
-- `setup/debugging.md` — attaching a debugger (VS Code config included).
+- `setup/debugging.mdx` — attaching a debugger (VS Code config included).
 - `docs/style-guide.mdx` — the canonical prose style guide (also governs this repo's docs).
-- `contributing.md` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
+- `contributing.mdx` / top-level `CONTRIBUTING.md` — contribution process. `SECURITY.md` — reporting vulnerabilities.
 
 ## Tech stack
 

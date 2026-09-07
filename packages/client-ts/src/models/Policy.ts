@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Policy Serializer
  * @export
@@ -20,62 +22,42 @@
 export interface Policy {
     /**
      *
-     * @type {string}
-     * @memberof Policy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Policy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof Policy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof Policy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof Policy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof Policy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof Policy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof Policy
      */
     readonly boundTo: number;
     /**
      *
-     * @type {Date}
-     * @memberof Policy
      */
     readonly lastUpdated: Date;
     /**
      *
-     * @type {Date}
-     * @memberof Policy
      */
     readonly created: Date;
 }
@@ -143,8 +125,11 @@ export function PolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): Po
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
-        lastUpdated: new Date(json["last_updated"]),
-        created: new Date(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
     };
 }
 

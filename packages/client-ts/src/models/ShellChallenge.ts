@@ -24,26 +24,18 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface ShellChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof ShellChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof ShellChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof ShellChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof ShellChallenge
      */
     body: string;
 }

@@ -21026,7 +21026,7 @@ paths:
         name: saml_version
         schema:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: |+
             SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
@@ -35048,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -38793,6 +38808,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -39122,13 +39141,8 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -41527,6 +41541,25 @@ components:
       - sidebar_right
       - sidebar_left_frame_background
       - sidebar_right_frame_background
+      type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
       type: string
     FlowRequest:
       type: object
@@ -53783,9 +53816,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -53857,15 +53890,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -54314,7 +54342,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -55285,10 +55313,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55336,9 +55366,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -58608,11 +58636,6 @@ components:
       - disabled
       - disabled_deleted
       type: string
-    SamlVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
     Schedule:
       type: object
       properties:
@@ -58900,9 +58923,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58972,15 +58995,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -58993,9 +59011,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -59067,15 +59085,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:
@@ -61804,6 +61817,11 @@ components:
       - id
       - timestamp
       - version
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -61903,7 +61921,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -62027,7 +62045,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.

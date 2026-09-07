@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
 import type { Provider } from "./Provider";
 import { ProviderFromJSON, ProviderToJSON } from "./Provider";
 import type { User } from "./User";
@@ -25,50 +26,34 @@ import { UserFromJSON, UserToJSON } from "./User";
 export interface TokenModel {
     /**
      *
-     * @type {number}
-     * @memberof TokenModel
      */
     readonly pk: number;
     /**
      *
-     * @type {Provider}
-     * @memberof TokenModel
      */
     provider: Provider;
     /**
      *
-     * @type {User}
-     * @memberof TokenModel
      */
     user: User;
     /**
      * Check if token is expired yet.
-     * @type {boolean}
-     * @memberof TokenModel
      */
     readonly isExpired: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof TokenModel
      */
     expires?: Date | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof TokenModel
      */
     scope: Array<string>;
     /**
      * Get the token's id_token as JSON String
-     * @type {string}
-     * @memberof TokenModel
      */
     readonly idToken: string;
     /**
      *
-     * @type {boolean}
-     * @memberof TokenModel
      */
     revoked?: boolean;
 }
@@ -116,7 +101,7 @@ export function TokenModelFromJSONTyped(json: any, ignoreDiscriminator: boolean)
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
         scope: json["scope"],
         idToken: json["id_token"],
         revoked: json["revoked"] == null ? undefined : json["revoked"],
@@ -138,7 +123,7 @@ export function TokenModelToJSONTyped(
     return {
         provider: ProviderToJSON(value["provider"]),
         user: UserToJSON(value["user"]),
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
         scope: value["scope"],
         revoked: value["revoked"],
     };

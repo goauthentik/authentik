@@ -20,8 +20,6 @@
 export interface PatchedTOTPDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof PatchedTOTPDeviceRequest
      */
     name?: string;
 }

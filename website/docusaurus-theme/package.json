@@ -20,7 +20,8 @@
         "./releases/node": "./releases/node.mjs",
         "./llms-txt/plugin": "./llms-txt/plugin.mjs",
         "./llms-txt/node": "./llms-txt/node.mjs",
-        "./llms-txt/common": "./llms-txt/common.mjs"
+        "./llms-txt/common": "./llms-txt/common.mjs",
+        "./mdx-only/plugin": "./mdx-only/plugin.mjs"
     },
     "imports": {
         "#remark": "./remark/index.mjs",

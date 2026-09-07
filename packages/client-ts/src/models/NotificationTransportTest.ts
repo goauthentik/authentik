@@ -20,8 +20,6 @@
 export interface NotificationTransportTest {
     /**
      *
-     * @type {Array<string>}
-     * @memberof NotificationTransportTest
      */
     messages: Array<string>;
 }

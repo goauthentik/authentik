@@ -20,8 +20,6 @@
 export interface EmailDeviceRequest {
     /**
      * The human-readable name of this device.
-     * @type {string}
-     * @memberof EmailDeviceRequest
      */
     name: string;
 }

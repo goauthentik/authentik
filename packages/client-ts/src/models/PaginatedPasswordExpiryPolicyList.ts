@@ -25,20 +25,14 @@ import { PasswordExpiryPolicyFromJSON, PasswordExpiryPolicyToJSON } from "./Pass
 export interface PaginatedPasswordExpiryPolicyList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPasswordExpiryPolicyList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PasswordExpiryPolicy>}
-     * @memberof PaginatedPasswordExpiryPolicyList
      */
     results: Array<PasswordExpiryPolicy>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPasswordExpiryPolicyList
      */
     autocomplete: { [key: string]: any };
 }

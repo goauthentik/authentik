@@ -28,62 +28,42 @@ import { RequestRuleFromJSON } from "./RequestRule";
 export interface RequestRuleBinding {
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     uuid?: string;
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     readonly pbmUuid: string;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof RequestRuleBinding
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     rule: string;
     /**
      *
-     * @type {RequestRule}
-     * @memberof RequestRuleBinding
      */
     readonly ruleObj: RequestRule;
     /**
      *
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     target: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof RequestRuleBinding
      */
     readonly related: Array<string>;
     /**
      *
-     * @type {Array<RelatedTarget>}
-     * @memberof RequestRuleBinding
      */
     readonly relatedObj: Array<RelatedTarget>;
     /**
      * How long a request against this binding stays pending before it automatically lapses if not approved or denied.
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     expiryPending?: string;
     /**
      * The maximum duration a grant approved against this binding can last.
-     * @type {string}
-     * @memberof RequestRuleBinding
      */
     expiryGrantedMax?: string;
 }

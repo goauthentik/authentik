@@ -25,20 +25,14 @@ import { SCIMProviderUserFromJSON, SCIMProviderUserToJSON } from "./SCIMProvider
 export interface PaginatedSCIMProviderUserList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedSCIMProviderUserList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<SCIMProviderUser>}
-     * @memberof PaginatedSCIMProviderUserList
      */
     results: Array<SCIMProviderUser>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedSCIMProviderUserList
      */
     autocomplete: { [key: string]: any };
 }
