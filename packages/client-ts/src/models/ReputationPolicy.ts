@@ -74,6 +74,12 @@ export interface ReputationPolicy {
     readonly lastUpdated: Date;
     /**
      *
+     * @type {Date}
+     * @memberof ReputationPolicy
+     */
+    readonly created: Date;
+    /**
+     *
      * @type {boolean}
      * @memberof ReputationPolicy
      */
@@ -134,6 +140,7 @@ export function instanceOfReputationPolicy(value: object): value is ReputationPo
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -158,6 +165,7 @@ export function ReputationPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         checkIp: json["check_ip"] == null ? undefined : json["check_ip"],
         checkUsername: json["check_username"] == null ? undefined : json["check_username"],
         threshold: json["threshold"] == null ? undefined : json["threshold"],
@@ -178,6 +186,7 @@ export function ReputationPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

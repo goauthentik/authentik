@@ -73,6 +73,12 @@ export interface PasswordPolicy {
      */
     readonly lastUpdated: Date;
     /**
+     *
+     * @type {Date}
+     * @memberof PasswordPolicy
+     */
+    readonly created: Date;
+    /**
      * Field key to check, field keys defined in Prompt stages are available.
      * @type {string}
      * @memberof PasswordPolicy
@@ -194,6 +200,7 @@ export function instanceOfPasswordPolicy(value: object): value is PasswordPolicy
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -218,6 +225,7 @@ export function PasswordPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
         amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
@@ -252,6 +260,7 @@ export function PasswordPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

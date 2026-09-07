@@ -79,6 +79,12 @@ export interface GeoIPPolicy {
     readonly lastUpdated: Date;
     /**
      *
+     * @type {Date}
+     * @memberof GeoIPPolicy
+     */
+    readonly created: Date;
+    /**
+     *
      * @type {Array<number>}
      * @memberof GeoIPPolicy
      */
@@ -175,6 +181,7 @@ export function instanceOfGeoIPPolicy(value: object): value is GeoIPPolicy {
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("countries" in value) || value["countries"] === undefined) return false;
     if (
         (!("countriesObj" in (value as Record<string, any>)) &&
@@ -204,6 +211,7 @@ export function GeoIPPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         asns: json["asns"] == null ? undefined : json["asns"],
         countries: (json["countries"] as Array<any>).map(CountryCodeEnumFromJSON),
         countriesObj: (json["countries_obj"] as Array<any>).map(
@@ -238,6 +246,7 @@ export function GeoIPPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
         | "countriesObj"
     > | null,
     ignoreDiscriminator: boolean = false,

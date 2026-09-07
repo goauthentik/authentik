@@ -74,6 +74,12 @@ export interface DummyPolicy {
     readonly lastUpdated: Date;
     /**
      *
+     * @type {Date}
+     * @memberof DummyPolicy
+     */
+    readonly created: Date;
+    /**
+     *
      * @type {boolean}
      * @memberof DummyPolicy
      */
@@ -134,6 +140,7 @@ export function instanceOfDummyPolicy(value: object): value is DummyPolicy {
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -155,6 +162,7 @@ export function DummyPolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         result: json["result"] == null ? undefined : json["result"],
         waitMin: json["wait_min"] == null ? undefined : json["wait_min"],
         waitMax: json["wait_max"] == null ? undefined : json["wait_max"],
@@ -175,6 +183,7 @@ export function DummyPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

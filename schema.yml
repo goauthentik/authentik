@@ -39976,6 +39976,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         result:
           type: boolean
         wait_min:
@@ -39989,6 +39993,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -40848,6 +40853,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
@@ -40878,6 +40887,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -41078,11 +41088,16 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         expression:
           type: string
       required:
       - bound_to
       - component
+      - created
       - expression
       - last_updated
       - meta_model_name
@@ -41805,6 +41820,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         asns:
           type: array
           items:
@@ -41857,6 +41876,7 @@ components:
       - component
       - countries
       - countries_obj
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -49861,6 +49881,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         days:
           type: integer
           maximum: 2147483647
@@ -49870,6 +49894,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - days
       - last_updated
       - meta_model_name
@@ -49936,6 +49961,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -49984,6 +50013,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -54722,9 +54752,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -56470,6 +56505,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         check_ip:
           type: boolean
         check_username:
@@ -56481,6 +56520,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name
@@ -60404,6 +60444,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -60416,6 +60460,7 @@ components:
       required:
       - bound_to
       - component
+      - created
       - last_updated
       - meta_model_name
       - name

@@ -80,6 +80,12 @@ export interface EventMatcherPolicy {
      */
     readonly lastUpdated: Date;
     /**
+     *
+     * @type {Date}
+     * @memberof EventMatcherPolicy
+     */
+    readonly created: Date;
+    /**
      * Match created events with this action type. When left empty, all action types will be matched.
      * @type {EventActions}
      * @memberof EventMatcherPolicy
@@ -153,6 +159,7 @@ export function instanceOfEventMatcherPolicy(value: object): value is EventMatch
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -177,6 +184,7 @@ export function EventMatcherPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         action:
             json["action"] === undefined
                 ? undefined
@@ -220,6 +228,7 @@ export function EventMatcherPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

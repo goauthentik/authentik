@@ -73,6 +73,12 @@ export interface UniquePasswordPolicy {
      */
     readonly lastUpdated: Date;
     /**
+     *
+     * @type {Date}
+     * @memberof UniquePasswordPolicy
+     */
+    readonly created: Date;
+    /**
      * Field key to check, field keys defined in Prompt stages are available.
      * @type {string}
      * @memberof UniquePasswordPolicy
@@ -128,6 +134,7 @@ export function instanceOfUniquePasswordPolicy(value: object): value is UniquePa
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -152,6 +159,7 @@ export function UniquePasswordPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         numHistoricalPasswords:
             json["num_historical_passwords"] == null ? undefined : json["num_historical_passwords"],
@@ -172,6 +180,7 @@ export function UniquePasswordPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

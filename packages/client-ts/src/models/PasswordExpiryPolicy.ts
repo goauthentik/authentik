@@ -74,6 +74,12 @@ export interface PasswordExpiryPolicy {
     readonly lastUpdated: Date;
     /**
      *
+     * @type {Date}
+     * @memberof PasswordExpiryPolicy
+     */
+    readonly created: Date;
+    /**
+     *
      * @type {number}
      * @memberof PasswordExpiryPolicy
      */
@@ -128,6 +134,7 @@ export function instanceOfPasswordExpiryPolicy(value: object): value is Password
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("days" in value) || value["days"] === undefined) return false;
     return true;
 }
@@ -153,6 +160,7 @@ export function PasswordExpiryPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         days: json["days"],
         denyOnly: json["deny_only"] == null ? undefined : json["deny_only"],
     };
@@ -172,6 +180,7 @@ export function PasswordExpiryPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

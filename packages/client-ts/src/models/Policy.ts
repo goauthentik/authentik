@@ -72,6 +72,12 @@ export interface Policy {
      * @memberof Policy
      */
     readonly lastUpdated: Date;
+    /**
+     *
+     * @type {Date}
+     * @memberof Policy
+     */
+    readonly created: Date;
 }
 
 /**
@@ -116,6 +122,7 @@ export function instanceOfPolicy(value: object): value is Policy {
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -137,6 +144,7 @@ export function PolicyFromJSONTyped(json: any, ignoreDiscriminator: boolean): Po
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
     };
 }
 
@@ -154,6 +162,7 @@ export function PolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

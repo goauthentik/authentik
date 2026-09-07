@@ -74,6 +74,12 @@ export interface ExpressionPolicy {
     readonly lastUpdated: Date;
     /**
      *
+     * @type {Date}
+     * @memberof ExpressionPolicy
+     */
+    readonly created: Date;
+    /**
+     *
      * @type {string}
      * @memberof ExpressionPolicy
      */
@@ -122,6 +128,7 @@ export function instanceOfExpressionPolicy(value: object): value is ExpressionPo
             (value as Record<string, any>)["last_updated"] === undefined)
     )
         return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     if (!("expression" in value) || value["expression"] === undefined) return false;
     return true;
 }
@@ -147,6 +154,7 @@ export function ExpressionPolicyFromJSONTyped(
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
         lastUpdated: new Date(json["last_updated"]),
+        created: new Date(json["created"]),
         expression: json["expression"],
     };
 }
@@ -165,6 +173,7 @@ export function ExpressionPolicyToJSONTyped(
         | "metaModelName"
         | "boundTo"
         | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {
