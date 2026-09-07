@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from time import sleep
+from urllib.parse import urlsplit, urlunsplit
 
 from docker.types import Healthcheck
 from selenium.common.exceptions import (
@@ -13,7 +14,7 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import SourceUserMatchingModes
+from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.tests.utils import create_test_user
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
@@ -22,6 +23,14 @@ from authentik.stages.identification.models import IdentificationStage
 from tests.decorators import retry
 
 APP_URL = "http://localhost:9009"
+# A non-root app URL, to check the original destination survives the source login
+DEEP_LINK_URL = f"{APP_URL}/deep/link"
+
+
+def initial_uri(entry: str) -> str:
+    """The request URI an app sees when a login is started at `entry`"""
+    parts = urlsplit(entry)
+    return urlunsplit(("", "", parts.path or "/", parts.query, "")) or "/"
 
 
 class DexOAuthSourceMixin:
@@ -121,38 +130,42 @@ class DexOAuthSourceMixin:
 class SourceAppRedirectMixin(DexOAuthSourceMixin):
     """Log in at an application via an OAuth source, and assert we land back at the app.
 
-    Subclasses provide the application (`setup_app`) and its claim assertions
-    (`assert_app_login`); the tests below are identical for every provider type.
+    Subclasses provide the application (`setup_app`), its claim assertions
+    (`assert_app_login`) and the URLs it is expected to be reached at; the tests
+    below are identical for every provider type.
     """
 
     def setup_app(self) -> None:
         """Create the provider + application, and start the container acting as the app"""
         raise NotImplementedError
 
-    def assert_app_login(self, username: str, email: str) -> None:
-        """Assert the app received an assertion/token for the given user"""
+    def assert_app_login(self, user: User, entry_uri: str) -> None:
+        """Assert the app logged `user` in, having been entered at `entry_uri`"""
         raise NotImplementedError
-
-    def restart_at_app(self):
-        """Start a fresh login at the app, discarding any session it kept for itself.
-
-        Cookies are scoped to the current domain, so this only clears the app's own
-        session (the app and authentik are served from different hosts).
-        """
-        self.driver.get(APP_URL)
-        self.driver.delete_all_cookies()
-        self.driver.get(APP_URL)
-
-    def pass_consent(self):
-        """Click through the consent stage, for applications that trigger one"""
 
     def app_destination_url(self) -> str:
         """The URL the application is expected to be reached at once login is done"""
         raise NotImplementedError
 
-    def wait_for_app(self, destination: str | None = None):
+    def deep_link_destination_url(self) -> str:
+        """Where a login started at `DEEP_LINK_URL` is expected to land"""
+        raise NotImplementedError
+
+    def pass_consent(self):
+        """Click through the consent stage, for applications that trigger one"""
+
+    def restart_at_app(self, entry: str):
+        """Start a fresh login at the app, discarding any session it kept for itself.
+
+        Cookies are scoped to the current domain, so this only clears the app's own
+        session (the app and authentik are served from different hosts).
+        """
+        self.driver.get(entry)
+        self.driver.delete_all_cookies()
+        self.driver.get(entry)
+
+    def wait_for_app(self, destination: str):
         """Wait until the browser has landed back at the expected application URL"""
-        destination = destination or self.app_destination_url()
         try:
             self.wait.until(lambda driver: driver.current_url.startswith(destination))
         except TimeoutException:
@@ -161,6 +174,39 @@ class SourceAppRedirectMixin(DexOAuthSourceMixin):
                 f"{destination} after logging in via the source, "
                 f"but ended up at {self.driver.current_url}"
             )
+
+    def source_auth(self, entry: str, destination: str):
+        """Log in at `entry` via the source as a user that already exists"""
+        user = create_test_user(email="admin@example.com")
+        self.create_source(user_matching_mode=SourceUserMatchingModes.EMAIL_LINK)
+        self.setup_app()
+
+        self.driver.get(entry)
+        self.click_source_button()
+        self.login_via_oauth_provider()
+
+        self.pass_consent()
+        self.wait_for_app(destination)
+        self.assert_app_login(user, initial_uri(entry))
+
+    def source_enroll(self, entry: str, destination: str):
+        """Log in at `entry` via the source, enrolling a new user on the way"""
+        self.create_source()
+        self.setup_app()
+
+        self.driver.get(entry)
+        self.click_source_button()
+        self.login_via_oauth_provider()
+
+        # At this point we've been redirected back and we're asked for the username
+        self.enroll_username("foo")
+
+        self.pass_consent()
+        self.wait_for_app(destination)
+        # `name` comes from dex's static user, `username` from the enrollment prompt
+        self.assert_app_login(
+            User(username="foo", name="admin", email="admin@example.com"), initial_uri(entry)
+        )
 
     @retry()
     @apply_blueprint(
@@ -177,17 +223,7 @@ class SourceAppRedirectMixin(DexOAuthSourceMixin):
     @reconcile_app("authentik_crypto")
     def test_source_auth(self):
         """test app login via OAuth source (existing user, linked by email)"""
-        user = create_test_user(email="admin@example.com")
-        self.create_source(user_matching_mode=SourceUserMatchingModes.EMAIL_LINK)
-        self.setup_app()
-
-        self.driver.get(APP_URL)
-        self.click_source_button()
-        self.login_via_oauth_provider()
-
-        self.pass_consent()
-        self.wait_for_app()
-        self.assert_app_login(user.username, user.email)
+        self.source_auth(APP_URL, self.app_destination_url())
 
     @retry()
     @apply_blueprint(
@@ -204,19 +240,7 @@ class SourceAppRedirectMixin(DexOAuthSourceMixin):
     @reconcile_app("authentik_crypto")
     def test_source_enroll(self):
         """test app login via OAuth source (new user, enrolled)"""
-        self.create_source()
-        self.setup_app()
-
-        self.driver.get(APP_URL)
-        self.click_source_button()
-        self.login_via_oauth_provider()
-
-        # At this point we've been redirected back and we're asked for the username
-        self.enroll_username("foo")
-
-        self.pass_consent()
-        self.wait_for_app()
-        self.assert_app_login("foo", "admin@example.com")
+        self.source_enroll(APP_URL, self.app_destination_url())
 
     @retry()
     def test_source_enroll_auth(self):
@@ -228,10 +252,47 @@ class SourceAppRedirectMixin(DexOAuthSourceMixin):
         self.driver.get(self.url("authentik_flows:default-invalidation"))
         sleep(1)
 
-        self.restart_at_app()
+        self.restart_at_app(APP_URL)
         self.click_source_button()
         self.login_via_oauth_provider()
 
         self.pass_consent()
-        self.wait_for_app()
-        self.assert_app_login("foo", "admin@example.com")
+        self.wait_for_app(self.app_destination_url())
+        # `name` comes from dex's static user, `username` from the enrollment prompt
+        self.assert_app_login(
+            User(username="foo", name="admin", email="admin@example.com"), initial_uri(APP_URL)
+        )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
+    )
+    @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml", "system/providers-saml.yaml")
+    @reconcile_app("authentik_crypto")
+    def test_source_auth_deep_link(self):
+        """test app login via OAuth source, started at a deep link into the app"""
+        self.source_auth(DEEP_LINK_URL, self.deep_link_destination_url())
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
+    )
+    @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml", "system/providers-saml.yaml")
+    @reconcile_app("authentik_crypto")
+    def test_source_enroll_deep_link(self):
+        """test app enrollment via OAuth source, started at a deep link into the app"""
+        self.source_enroll(DEEP_LINK_URL, self.deep_link_destination_url())

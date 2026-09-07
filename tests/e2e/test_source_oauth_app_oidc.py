@@ -11,7 +11,7 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.core.models import Application
+from authentik.core.models import Application, User
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
@@ -67,7 +67,7 @@ class TestSourceOAuthAppOIDC(SourceAppRedirectMixin, SeleniumTestCase):
         )
         # The application has to exist before the client fetches the discovery document
         self.run_container(
-            image="ghcr.io/beryju/oidc-test-client:2.1",
+            image="ghcr.io/beryju/oidc-test-client:2.7.1",
             ports={"9009": "9009"},
             environment={
                 "OIDC_CLIENT_ID": self.client_id,
@@ -79,6 +79,11 @@ class TestSourceOAuthAppOIDC(SourceAppRedirectMixin, SeleniumTestCase):
     def app_destination_url(self):
         return REDIRECT_URI
 
+    def deep_link_destination_url(self):
+        # The client always lands on its redirect URI; the URL the login started at
+        # comes back in the token payload as InitialURL instead
+        return REDIRECT_URI
+
     def pass_consent(self):
         # The test client requests offline_access and sends prompt=consent,
         # so a consent stage is shown even with an implicit-consent flow
@@ -88,19 +93,25 @@ class TestSourceOAuthAppOIDC(SourceAppRedirectMixin, SeleniumTestCase):
         consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
         consent_stage.find_element(By.CSS_SELECTOR, "[type=submit]").click()
 
-    def assert_app_login(self, username: str, email: str):
+    def assert_app_login(self, user: User, entry_uri: str):
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
         claims = body.get("IDTokenClaims", {})
 
         self.assertEqual(
             claims.get("nickname"),
-            username,
+            user.username,
             f"IDTokenClaims.nickname mismatch at {self.driver.current_url}: {snippet}",
         )
 
         self.assertEqual(
             claims.get("email"),
-            email,
+            user.email,
             f"IDTokenClaims.email mismatch at {self.driver.current_url}: {snippet}",
+        )
+
+        self.assertEqual(
+            body.get("InitialURL"),
+            entry_uri,
+            f"InitialURL mismatch at {self.driver.current_url}: {snippet}",
         )

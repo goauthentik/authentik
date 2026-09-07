@@ -2,12 +2,12 @@
 
 from json import dumps
 
-from authentik.core.models import Application
+from authentik.core.models import Application, User
 from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
-from tests.e2e.oauth_source import SourceAppRedirectMixin
+from tests.e2e.oauth_source import DEEP_LINK_URL, SourceAppRedirectMixin
 from tests.selenium import SeleniumTestCase
 
 
@@ -50,19 +50,23 @@ class TestSourceOAuthAppSAML(SourceAppRedirectMixin, SeleniumTestCase):
     def app_destination_url(self):
         return "http://localhost:9009/"
 
-    def assert_app_login(self, username: str, email: str):
+    def deep_link_destination_url(self):
+        # The SP carries the originally requested path through the login via RelayState
+        return DEEP_LINK_URL
+
+    def assert_app_login(self, user: User, entry_uri: str):
         body = self.parse_json_content()
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
         attrs = body.get("attr", {})
 
         self.assertEqual(
             attrs.get("http://schemas.goauthentik.io/2021/02/saml/username"),
-            [username],
+            [user.username],
             f"Claim 'saml/username' mismatch at {self.driver.current_url}: {snippet}",
         )
 
         self.assertEqual(
             attrs.get("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"),
-            [email],
+            [user.email],
             f"Claim 'emailaddress' mismatch at {self.driver.current_url}: {snippet}",
         )
