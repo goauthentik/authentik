@@ -21026,7 +21026,7 @@ paths:
         name: saml_version
         schema:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: |+
             SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
@@ -35047,6 +35047,21 @@ paths:
           items:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
+        style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
         style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -54267,7 +54282,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -58541,11 +58556,6 @@ components:
       - disabled
       - disabled_deleted
       type: string
-    SamlVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
     Schedule:
       type: object
       properties:
@@ -61717,6 +61727,11 @@ components:
       - id
       - timestamp
       - version
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -61816,7 +61831,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -61940,7 +61955,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.

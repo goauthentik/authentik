@@ -1,5 +1,6 @@
 ---
 title: Static authenticator setup stage
+description: Generate single-use backup codes for users when other authenticators are unavailable.
 ---
 
 The Static Authenticator Setup stage creates one-time backup codes for a user. These codes are typically used as a fallback when the user's primary authenticator is unavailable.

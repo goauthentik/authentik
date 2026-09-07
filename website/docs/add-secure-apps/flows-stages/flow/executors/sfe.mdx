@@ -1,5 +1,6 @@
 ---
 title: Simplified flow executor
+description: How the simplified flow executor supports older browsers.
 ---
 
 A simplified web-based flow executor that authentik automatically uses for older browsers that do not support modern web technologies.

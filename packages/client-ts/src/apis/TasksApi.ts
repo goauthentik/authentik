@@ -119,6 +119,14 @@ export interface TasksTasksListRequest {
      */
     aggregatedStatus?: Array<TaskAggregatedStatusEnum>;
     /**
+     *
+     */
+    messageId?: string;
+    /**
+     * Multiple values may be separated by commas.
+     */
+    messageIdIn?: Array<string>;
+    /**
      * Which field to use when ordering the results.
      */
     ordering?: string;
@@ -540,6 +548,16 @@ export class TasksApi extends runtime.BaseAPI {
 
         if (requestParameters["aggregatedStatus"] != null) {
             queryParameters["aggregated_status"] = requestParameters["aggregatedStatus"];
+        }
+
+        if (requestParameters["messageId"] != null) {
+            queryParameters["message_id"] = requestParameters["messageId"];
+        }
+
+        if (requestParameters["messageIdIn"] != null) {
+            queryParameters["message_id__in"] = requestParameters["messageIdIn"]!.join(
+                runtime.COLLECTION_FORMATS["csv"],
+            );
         }
 
         if (requestParameters["ordering"] != null) {
