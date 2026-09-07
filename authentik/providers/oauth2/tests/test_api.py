@@ -5,16 +5,20 @@ from sys import version_info
 from unittest import skipUnless
 
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
     OAuth2Provider,
     RedirectURI,
     RedirectURIMatchingMode,
+    RefreshToken,
     ScopeMapping,
 )
 
@@ -51,6 +55,54 @@ class TestAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["issuer"], "http://testserver/application/o/test/")
+
+    def test_global_token_view_permission(self):
+        """Test that global view permissions are honored for all grant APIs"""
+        service_account = create_test_user()
+        token_owner = create_test_user()
+        self.client.force_login(service_account)
+
+        grants = [
+            (
+                AuthorizationCode,
+                "authorization_codes",
+                "authorizationcode",
+                {"code": generate_id()},
+            ),
+            (
+                RefreshToken,
+                "refresh_tokens",
+                "refreshtoken",
+                {"token": generate_id(), "_id_token": "{}"},
+            ),
+            (
+                AccessToken,
+                "access_tokens",
+                "accesstoken",
+                {"token": generate_id(), "_id_token": "{}"},
+            ),
+        ]
+        for model, endpoint, model_name, fields in grants:
+            for action in ("view", "delete"):
+                service_account.assign_perms_to_managed_role(
+                    f"authentik_providers_oauth2.{action}_{model_name}"
+                )
+            grant = model.objects.create(
+                provider=self.provider,
+                user=token_owner,
+                auth_time=timezone.now(),
+                expiring=False,
+                **fields,
+            )
+
+            response = self.client.get(f"/api/v3/oauth2/{endpoint}/")
+
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["results"][0]["user"]["pk"], token_owner.pk)
+
+            response = self.client.delete(f"/api/v3/oauth2/{endpoint}/{grant.pk}/")
+
+            self.assertEqual(response.status_code, 204)
 
     # https://github.com/goauthentik/authentik/pull/5918
     @skipUnless(version_info >= (3, 11, 4), "This behaviour is only Python 3.11.4 and up")
