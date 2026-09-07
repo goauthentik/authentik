@@ -20,11 +20,6 @@ from authentik.stages.authenticator import device_classes, devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 
-try:
-    from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import EndpointDevice
-except ModuleNotFoundError:
-    EndpointDevice = None
-
 
 class DeviceSerializer(MetaNameSerializer):
     """Serializer for authenticator devices"""
@@ -47,16 +42,12 @@ class DeviceSerializer(MetaNameSerializer):
         """Get extra description"""
         if isinstance(instance, WebAuthnDevice):
             return instance.device_type.description if instance.device_type else None
-        if EndpointDevice and isinstance(instance, EndpointDevice):
-            return instance.data.get("deviceSignals", {}).get("deviceModel")
         return None
 
     def get_external_id(self, instance: Device) -> str | None:
         """Get external Device ID"""
         if isinstance(instance, WebAuthnDevice):
             return instance.device_type.aaguid if instance.device_type else None
-        if EndpointDevice and isinstance(instance, EndpointDevice):
-            return instance.data.get("deviceSignals", {}).get("deviceModel")
         return None
 
 

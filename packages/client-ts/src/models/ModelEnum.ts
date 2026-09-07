@@ -187,8 +187,6 @@ export const ModelEnum = {
     AuthentikRequestsGrantrequest: "authentik_requests.grantrequest",
     AuthentikStagesAccountLockdownAccountlockdownstage:
         "authentik_stages_account_lockdown.accountlockdownstage",
-    AuthentikStagesAuthenticatorEndpointGdtcAuthenticatorendpointgdtcstage:
-        "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
     AuthentikStagesMtlsMutualtlsstage: "authentik_stages_mtls.mutualtlsstage",
     AuthentikStagesSourceSourcestage: "authentik_stages_source.sourcestage",
     UnknownDefaultOpenApi: "11184809",
