@@ -12,15 +12,20 @@ from selenium.webdriver.support import expected_conditions as ec
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from tests.decorators import retry
-from tests.e2e.oauth_source import DexOAuthSourceMixin
+from tests.e2e.oauth_source import TestOAuthSource
 from tests.selenium import SeleniumTestCase
 
 MAX_REFRESH_RETRIES = 5
 INTERFACE_TIMEOUT = 10
 
 
-class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
+class TestSourceOAuth2(SeleniumTestCase):
     """test OAuth Source flow"""
+
+    def setUp(self):
+        super().setUp()
+        self.source = TestOAuthSource(self)
+        self.source.start()
 
     def find_settings_tab_panel(self, tab_name: str, panel_content_selector: str):
         """Find a settings tab panel by name"""
@@ -78,16 +83,10 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
     )
     def test_oauth_enroll(self):
         """test OAuth Source With With OIDC"""
-        self.create_source()
+        self.source.create()
         self.driver.get(self.live_server_url)
 
-        self.click_source_button()
-
-        self.login_via_oauth_provider()
-
-        # At this point we've been redirected back
-        # and we're asked for the username
-        self.fill_prompt("username", "foo")
+        self.source.enroll()
 
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url())
@@ -101,9 +100,7 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
         # We're logged in at the end of this, log out and re-login
         self.driver.get(self.url("authentik_flows:default-invalidation"))
         sleep(1)
-        self.click_source_button()
-
-        self.login_via_oauth_provider()
+        self.source.auth()
 
         self.wait.until(ec.url_matches(self.if_user_url()))
 
@@ -126,7 +123,7 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
         This test will enroll the user via OAuth, then log in as admin and link the OAuth
         source to the admin user.
         """
-        self.create_source()
+        self.source.create()
         self.driver.get(self.live_server_url)
         self.login()
 
@@ -134,10 +131,10 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
         sleep(3)
 
         self.driver.get(
-            self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.slug)
+            self.url("authentik_sources_oauth:oauth-client-login", source_slug=self.source.slug)
         )
 
-        self.login_via_oauth_provider()
+        self.source.login()
 
         post_login_expected_url = self.if_user_url("/settings;page-sources")
 
@@ -147,7 +144,7 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
             "Expected to be redirected to user settings after linking OAuth source",
         )
 
-        selector = f"[data-test-id=source-settings-list-item][data-slug='{self.slug}']"
+        selector = f"[data-test-id=source-settings-list-item][data-slug='{self.source.slug}']"
         sourceElement = None
 
         for attempt in range(MAX_REFRESH_RETRIES):

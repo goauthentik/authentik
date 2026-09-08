@@ -1,4 +1,4 @@
-"""Shared tooling for source-into-application e2e tests"""
+"""Helpers for tests that log into an application via a source"""
 
 from pathlib import Path
 from time import sleep
@@ -22,8 +22,8 @@ from authentik.common.oauth.constants import (
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
 )
-from authentik.core.models import Application, SourceUserMatchingModes, User
-from authentik.core.tests.utils import create_test_cert, create_test_user
+from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_cert
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import (
@@ -41,12 +41,16 @@ from tests.decorators import SHADOW_ROOT_RETRIES, retry
 APP_URL = "http://localhost:9009"
 # A non-root app URL, to check the original destination survives the source login
 DEEP_LINK_URL = f"{APP_URL}/deep/link"
-AUTHORIZATION_FLOW = "default-provider-authorization-implicit-consent"
 REDIRECT_URI = f"{APP_URL}/auth/callback"
+AUTHORIZATION_FLOW = "default-provider-authorization-implicit-consent"
+# dex's static user
+DEX_USER = "admin"
+DEX_EMAIL = "admin@example.com"
+DEX_PASSWORD = "password"  # nosec
 
 
 def source_app_test(func):
-    """Blueprints and retry every source-into-application test needs"""
+    """Apply the blueprints and retries these tests share"""
     for deco in (
         reconcile_app("authentik_crypto"),
         apply_blueprint("system/providers-oauth2.yaml", "system/providers-saml.yaml"),
@@ -72,127 +76,64 @@ def initial_uri(entry: str) -> str:
     return urlunsplit(("", "", parts.path or "/", parts.query, "")) or "/"
 
 
-class FlowStageMixin:
-    """Reach into the flow executor's shadow DOM"""
-
-    def get_stage_shadow_root(self, stage: str):
-        """Dive to a flow stage's shadow root.
-
-        Right after a redirect the executor can still be swapping stages, which
-        detaches the outer shadow root part-way through the two-step dive.
-        """
-        for attempt in range(SHADOW_ROOT_RETRIES):
-            try:
-                return self.get_shadow_root(stage, self.get_shadow_root("ak-flow-executor"))
-            except DetachedShadowRootException, StaleElementReferenceException:
-                if attempt == SHADOW_ROOT_RETRIES - 1:
-                    raise
-                sleep(1)
-        return None
-
-    def fill_prompt(self, field: str, value: str):
-        """Fill in a single field of a prompt stage"""
-        element = self.get_stage_shadow_root("ak-stage-prompt").find_element(
-            By.CSS_SELECTOR, f"input[name={field}]"
-        )
-        element.click()
-        element.send_keys(value)
-        element.send_keys(Keys.ENTER)
-
-
-class OIDCAppMixin(FlowStageMixin):
-    """An OIDC application, served by the oidc-test-client container"""
-
-    # The client sends prompt=consent for offline_access, so a consent stage is shown
-    # even with an implicit-consent authorization flow
-    scopes = [SCOPE_OPENID, SCOPE_OFFLINE_ACCESS, SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL]
-
-    def setUp(self):
-        self.client_id = generate_id()
-        self.app_client_secret = generate_key()
-        self.application_slug = generate_id()
-        super().setUp()
-
-    def extra_scope_mappings(self) -> list[ScopeMapping]:
-        """Scope mappings on top of the defaults"""
-        return []
-
-    def setup_app(self):
-        provider = OAuth2Provider.objects.create(
-            name=self.application_slug,
-            client_type=ClientType.CONFIDENTIAL,
-            client_id=self.client_id,
-            client_secret=self.app_client_secret,
-            signing_key=create_test_cert(),
-            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, REDIRECT_URI)],
-            authorization_flow=Flow.objects.get(slug=AUTHORIZATION_FLOW),
-            grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
-        )
-        provider.property_mappings.set(
-            [
-                *ScopeMapping.objects.filter(scope_name__in=self.scopes),
-                *self.extra_scope_mappings(),
-            ]
-        )
-        Application.objects.create(
-            name=self.application_slug, slug=self.application_slug, provider=provider
-        )
-        # The application has to exist before the client fetches the discovery document
-        self.run_container(
-            image=self.pinned_image("oidc-test-client", "e2e/compose.yml"),
-            ports={"9009": "9009"},
-            environment={
-                "OIDC_CLIENT_ID": self.client_id,
-                "OIDC_CLIENT_SECRET": self.app_client_secret,
-                "OIDC_PROVIDER": f"{self.live_server_url}/application/o/{self.application_slug}/",
-                "OIDC_SCOPES": ",".join(self.scopes),
-            },
-        )
-
-    def pass_consent(self):
-        """Click through the consent stage the client asks for"""
+@retry(is_test_case=False)
+def stage_shadow_root(test, stage: str):
+    """Get a flow stage's shadow root, retrying while the executor swaps stages"""
+    for attempt in range(SHADOW_ROOT_RETRIES):
         try:
-            self.wait.until(ec.url_contains(f"/if/flow/{AUTHORIZATION_FLOW}/"))
-        except TimeoutException:
-            self.fail(
-                "Expected the pending application authorization to resume, but ended up at "
-                f"{self.driver.current_url}"
-            )
-        self.get_stage_shadow_root("ak-stage-consent").find_element(
-            By.CSS_SELECTOR, "[type=submit]"
-        ).click()
-
-    # The client always lands on its redirect URI; the URL the login started at comes
-    # back in the token payload as InitialURL instead
-    def app_destination_url(self) -> str:
-        return REDIRECT_URI
-
-    def deep_link_destination_url(self) -> str:
-        return REDIRECT_URI
+            return test.get_shadow_root(stage, test.get_shadow_root("ak-flow-executor"))
+        except DetachedShadowRootException, StaleElementReferenceException:
+            if attempt == SHADOW_ROOT_RETRIES - 1:
+                raise
+            sleep(1)
+    return None
 
 
-class AppRedirectMixin:
-    """Assert the browser lands back at an application after logging in"""
-
-    def wait_for_app(self, destination: str):
-        try:
-            self.wait.until(lambda driver: driver.current_url.startswith(destination))
-        except TimeoutException:
-            self.fail(
-                f"Expected to be redirected back to the application at {destination} "
-                f"after logging in via the source, but ended up at {self.driver.current_url}"
-            )
+def click_source_button(test):
+    """Click the source button on the identification stage"""
+    selector = "fieldset[name='login-sources'] button"
+    identification_stage = stage_shadow_root(test, "ak-stage-identification")
+    WebDriverWait(identification_stage, test.wait_timeout).until(
+        ec.presence_of_element_located((By.CSS_SELECTOR, selector))
+    )
+    identification_stage.find_element(By.CSS_SELECTOR, selector).click()
 
 
-class DexOAuthSourceMixin(FlowStageMixin):
-    """Run a dex IdP container and create a matching OAuth source"""
+def fill_prompt(test, field: str, value: str):
+    """Fill in a single field of a prompt stage"""
+    element = stage_shadow_root(test, "ak-stage-prompt").find_element(
+        By.CSS_SELECTOR, f"input[name={field}]"
+    )
+    element.click()
+    element.send_keys(value)
+    element.send_keys(Keys.ENTER)
 
-    def setUp(self):
-        self.client_secret = generate_id()
+
+def wait_for_app(test, destination: str):
+    """Wait until the browser has landed back at the application"""
+    try:
+        test.wait.until(lambda driver: driver.current_url.startswith(destination))
+    except TimeoutException:
+        test.fail(
+            f"Expected to be redirected back to the application at {destination} "
+            f"after logging in via the source, but ended up at {test.driver.current_url}"
+        )
+
+
+class TestOAuthSource:
+    """An OAuth source, backed by a dex container"""
+
+    __test__ = False
+
+    def __init__(self, test):
+        self.test = test
         self.slug = generate_id()
-        super().setUp()
-        self.run_container(
-            image=self.pinned_image("dex", "e2e/compose.yml"),
+        self.client_secret = generate_id()
+
+    def start(self):
+        """Run the dex container"""
+        self.test.run_container(
+            image=self.test.pinned_image("dex", "e2e/compose.yml"),
             ports={"5556": "5556"},
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],
@@ -200,8 +141,8 @@ class DexOAuthSourceMixin(FlowStageMixin):
                 start_period=1 * 1_000 * 1_000_000,
             ),
             environment={
-                "AK_HOST": self.host,
-                "AK_REDIRECT_URL": self.url(
+                "AK_HOST": self.test.host,
+                "AK_REDIRECT_URL": self.test.url(
                     "authentik_sources_oauth:oauth-client-callback", source_slug=self.slug
                 ),
                 "AK_CLIENT_SECRET": self.client_secret,
@@ -213,137 +154,142 @@ class DexOAuthSourceMixin(FlowStageMixin):
             },
         )
 
-    def create_source(self, **kwargs) -> OAuthSource:
-        """Create an OAuth source pointing at dex, and show it on the login page"""
+    def create(self, show_on_login=True, **kwargs) -> OAuthSource:
+        """Create the source, and show it on the login page"""
+        host = self.test.host
         kwargs.setdefault(
             "authentication_flow", Flow.objects.get(slug="default-source-authentication")
         )
         kwargs.setdefault("enrollment_flow", Flow.objects.get(slug="default-source-enrollment"))
-        source = OAuthSource.objects.create(  # nosec
+        self.source = OAuthSource.objects.create(  # nosec
             name=generate_id(),
             slug=self.slug,
             provider_type="openidconnect",
-            authorization_url=f"http://{self.host}:5556/dex/auth",
-            access_token_url=f"http://{self.host}:5556/dex/token",
-            profile_url=f"http://{self.host}:5556/dex/userinfo",
+            authorization_url=f"http://{host}:5556/dex/auth",
+            access_token_url=f"http://{host}:5556/dex/token",
+            profile_url=f"http://{host}:5556/dex/userinfo",
             consumer_key="example-app",
             consumer_secret=self.client_secret,
             **kwargs,
         )
-        ident_stage = IdentificationStage.objects.first()
-        ident_stage.sources.set([source])
-        ident_stage.save()
-        return source
+        if show_on_login:
+            ident_stage = IdentificationStage.objects.first()
+            ident_stage.sources.set([self.source])
+            ident_stage.save()
+        return self.source
 
-    def login_via_oauth_provider(self):
-        """Perform login at the OAuth provider (Dex)"""
-        self.wait.until(ec.presence_of_element_located((By.ID, "login")))
-        initial_provider_url = self.driver.current_url
+    def login(self):
+        """Log in at dex"""
+        self.test.wait.until(ec.presence_of_element_located((By.ID, "login")))
+        current_url = self.test.driver.current_url
 
-        self.driver.find_element(By.ID, "login").send_keys("admin@example.com")
-        self.driver.find_element(By.ID, "password").send_keys("password")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+        self.test.driver.find_element(By.ID, "login").send_keys(DEX_EMAIL)
+        self.test.driver.find_element(By.ID, "password").send_keys(DEX_PASSWORD)
+        self.test.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
 
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]")))
-        self.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
-        self.wait.until(ec.url_changes(initial_provider_url))
-
-    @retry(is_test_case=False)
-    def click_source_button(self):
-        """Click the source button on the identification stage"""
-        selector = "fieldset[name='login-sources'] button"
-        identification_stage = self.get_stage_shadow_root("ak-stage-identification")
-
-        WebDriverWait(identification_stage, self.wait_timeout).until(
-            ec.presence_of_element_located((By.CSS_SELECTOR, selector))
+        self.test.wait.until(
+            ec.presence_of_element_located((By.CSS_SELECTOR, "button[type=submit]"))
         )
-        identification_stage.find_element(By.CSS_SELECTOR, selector).click()
+        self.test.driver.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
+        self.test.wait.until(ec.url_changes(current_url))
+
+    def auth(self):
+        """Pick this source on the login page and authenticate as an existing user"""
+        click_source_button(self.test)
+        self.login()
+
+    def enroll(self, username="foo") -> User:
+        """Pick this source on the login page and enroll a new user"""
+        self.auth()
+        fill_prompt(self.test, "username", username)
+        # `name` comes from dex, `username` from the enrollment prompt
+        return User(username=username, name=DEX_USER, email=DEX_EMAIL)
 
 
-class SourceAppRedirectMixin(AppRedirectMixin, DexOAuthSourceMixin):
-    """Log in at an application via an OAuth source, and assert we land back at the app.
+class TestOIDCApp:
+    """An OIDC application, backed by an oidc-test-client container"""
 
-    Subclasses provide the application (`setup_app`, `*_destination_url`, `pass_consent`)
-    and its claim assertions (`assert_app_login`).
-    """
+    __test__ = False
 
-    def restart_at_app(self, entry: str):
-        """Start a fresh login at the app, discarding any session it kept for itself.
+    scopes = [SCOPE_OPENID, SCOPE_OFFLINE_ACCESS, SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL]
 
-        Cookies are scoped to the current domain, so this only clears the app's own
-        session (the app and authentik are served from different hosts).
-        """
-        self.driver.get(entry)
-        self.driver.delete_all_cookies()
-        self.driver.get(entry)
+    def __init__(self, test, scopes: list[str] | None = None):
+        self.test = test
+        self.slug = generate_id()
+        self.client_id = generate_id()
+        self.client_secret = generate_key()
+        self.scopes = scopes or self.scopes
 
-    def source_auth(self, entry: str, destination: str):
-        """Log in at `entry` via the source as a user that already exists"""
-        user = create_test_user(email="admin@example.com")
-        self.create_source(user_matching_mode=SourceUserMatchingModes.EMAIL_LINK)
-        self.setup_app()
+    def start(self, *extra_mappings: ScopeMapping):
+        """Create the provider and application, and run the client container"""
+        provider = OAuth2Provider.objects.create(
+            name=self.slug,
+            client_type=ClientType.CONFIDENTIAL,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            signing_key=create_test_cert(),
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, REDIRECT_URI)],
+            authorization_flow=Flow.objects.get(slug=AUTHORIZATION_FLOW),
+            grant_types=[GrantType.AUTHORIZATION_CODE, GrantType.REFRESH_TOKEN],
+        )
+        provider.property_mappings.set(
+            [*ScopeMapping.objects.filter(scope_name__in=self.scopes), *extra_mappings]
+        )
+        Application.objects.create(name=self.slug, slug=self.slug, provider=provider)
+        # The application has to exist before the client fetches the discovery document
+        self.test.run_container(
+            image=self.test.pinned_image("oidc-test-client", "e2e/compose.yml"),
+            ports={"9009": "9009"},
+            environment={
+                "OIDC_CLIENT_ID": self.client_id,
+                "OIDC_CLIENT_SECRET": self.client_secret,
+                "OIDC_PROVIDER": f"{self.test.live_server_url}/application/o/{self.slug}/",
+                "OIDC_SCOPES": ",".join(self.scopes),
+            },
+        )
 
-        self.driver.get(entry)
-        self.click_source_button()
-        self.login_via_oauth_provider()
+    def open(self, url=APP_URL):
+        """Browse to the application, which starts the authorization"""
+        self.test.driver.get(url)
 
-        self.pass_consent()
-        self.wait_for_app(destination)
-        self.assert_app_login(user, initial_uri(entry))
+    def reopen(self, url=APP_URL):
+        """Browse to the application again, discarding the session it kept for itself"""
+        self.test.driver.get(url)
+        self.test.driver.delete_all_cookies()
+        self.test.driver.get(url)
 
-    def source_enroll(self, entry: str, destination: str):
-        """Log in at `entry` via the source, enrolling a new user on the way"""
-        self.create_source()
-        self.setup_app()
+    def consent(self):
+        """Click through the consent stage the client asks for"""
+        try:
+            self.test.wait.until(ec.url_contains(f"/if/flow/{AUTHORIZATION_FLOW}/"))
+        except TimeoutException:
+            self.test.fail(
+                "Expected the application's authorization to resume, but ended up at "
+                f"{self.test.driver.current_url}"
+            )
+        stage_shadow_root(self.test, "ak-stage-consent").find_element(
+            By.CSS_SELECTOR, "[type=submit]"
+        ).click()
 
-        self.driver.get(entry)
-        self.click_source_button()
-        self.login_via_oauth_provider()
-        # At this point we've been redirected back and we're asked for the username
-        self.fill_prompt("username", "foo")
-
-        self.pass_consent()
-        self.wait_for_app(destination)
-        self.assert_app_login(self.enrolled_user(), initial_uri(entry))
-
-    def enrolled_user(self) -> User:
-        """`name` comes from dex's static user, `username` from the enrollment prompt"""
-        return User(username="foo", name="admin", email="admin@example.com")
-
-    @source_app_test
-    def test_source_auth(self):
-        """test app login via OAuth source (existing user, linked by email)"""
-        self.source_auth(APP_URL, self.app_destination_url())
-
-    @source_app_test
-    def test_source_enroll(self):
-        """test app login via OAuth source (new user, enrolled)"""
-        self.source_enroll(APP_URL, self.app_destination_url())
-
-    @source_app_test
-    def test_source_auth_deep_link(self):
-        """test app login via OAuth source, started at a deep link into the app"""
-        self.source_auth(DEEP_LINK_URL, self.deep_link_destination_url())
-
-    @source_app_test
-    def test_source_enroll_deep_link(self):
-        """test app enrollment via OAuth source, started at a deep link into the app"""
-        self.source_enroll(DEEP_LINK_URL, self.deep_link_destination_url())
-
-    @retry()
-    def test_source_enroll_auth(self):
-        """test app login via OAuth source (enroll, then authenticate again)"""
-        self.test_source_enroll()
-
-        # We're logged in at the end of this, log out and re-login via the source.
-        # The app is already running, so don't call setup_app() again.
-        self.driver.get(self.url("authentik_flows:default-invalidation"))
-        sleep(1)
-
-        self.restart_at_app(APP_URL)
-        self.click_source_button()
-        self.login_via_oauth_provider()
-
-        self.pass_consent()
-        self.wait_for_app(self.app_destination_url())
-        self.assert_app_login(self.enrolled_user(), initial_uri(APP_URL))
+    def assert_login(self, user: User, entry=APP_URL, **claims):
+        """Assert the application logged `user` in, having been entered at `entry`"""
+        self.consent()
+        # The client always lands on its redirect URI, and reports where it started
+        # as InitialURL
+        wait_for_app(self.test, REDIRECT_URI)
+        body = self.test.parse_json_content()
+        token = body.get("IDTokenClaims", {})
+        expected = {
+            "nickname": user.username,
+            "email": user.email,
+            **claims,
+        }
+        for claim, want in expected.items():
+            self.test.assertEqual(
+                token.get(claim), want, f"{claim} mismatch at {self.test.driver.current_url}"
+            )
+        self.test.assertEqual(
+            body.get("InitialURL"),
+            initial_uri(entry),
+            f"InitialURL mismatch at {self.test.driver.current_url}",
+        )
