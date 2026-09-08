@@ -10,13 +10,14 @@ from uuid import uuid4
 
 import pgtrigger
 from deepmerge import always_merger
-from django.contrib.auth.hashers import check_password, identify_hasher
+from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.validators import validate_slug
 from django.db import models
-from django.db.models import Manager, Q, QuerySet, options
+from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -26,6 +27,8 @@ from guardian.models import RoleModelPermission, RoleObjectPermission
 from model_utils.managers import InheritanceManager
 from psqlextra.indexes import UniqueIndex
 from psqlextra.models import PostgresMaterializedViewModel
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import BooleanField, CharField, IntegerField, ListField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -42,12 +45,13 @@ from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
+    ExpiringModel,
     SerializerModel,
+    SimpleThroughModel,
 )
 from authentik.lib.utils.inheritance import get_deepest_child
-from authentik.lib.utils.reflection import class_to_path
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.models import PolicyBindingModel
+from authentik.policies.models import PolicyBindingModel, RequestableChildModel, RequestableModel
 from authentik.rbac.models import Role
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
@@ -187,7 +191,9 @@ class Group(SerializerModel, AttributesMixin):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="groups", blank=True)
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="groups", blank=True, through="GroupRole"
+    )
 
     parents = models.ManyToManyField(
         "Group",
@@ -369,8 +375,10 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
     type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
-    groups = models.ManyToManyField("Group", related_name="users")
-    roles = models.ManyToManyField("authentik_rbac.Role", related_name="users", blank=True)
+    groups = models.ManyToManyField("Group", related_name="users", through="UserGroup")
+    roles = models.ManyToManyField(
+        "authentik_rbac.Role", related_name="users", blank=True, through="UserRole"
+    )
     password_change_date = models.DateTimeField(auto_now_add=True)
 
     last_updated = models.DateTimeField(auto_now=True)
@@ -394,6 +402,7 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
             models.Index(fields=["type"]),
             models.Index(fields=["date_joined"]),
             models.Index(fields=["last_updated"]),
+            models.Index(fields=["username", "is_active", "type"]),
         ]
 
     def __str__(self):
@@ -560,24 +569,15 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
         self.password_change_date = now()
         return super().set_password(raw_password)
 
-    @staticmethod
-    def validate_password_hash(password_hash: str):
-        """Validate that the value is a recognized Django password hash."""
-        identify_hasher(password_hash)  # Raises ValueError if invalid
-
     def set_password_from_hash(self, password_hash: str, signal=True, sender=None, request=None):
         """Set password directly from a pre-hashed value.
 
         Unlike set_password(), this does not hash the input again. The provided value
-        must already be a valid Django password hash, and it is stored directly on the
-        user after validation.
+        must already be validated by the caller, and it is stored directly on the user.
 
         Because no raw password is available, downstream password sync integrations
         such as LDAP and Kerberos cannot be updated from this code path.
-
-        Raises ValueError if the hash format is not recognized.
         """
-        self.validate_password_hash(password_hash)
         if self.pk and signal:
             from authentik.core.signals import password_hash_changed
 
@@ -610,15 +610,14 @@ class User(SerializerModel, AttributesMixin, AbstractUser):
 
     def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
-        if request and hasattr(request, "LANGUAGE_CODE"):
-            return request.LANGUAGE_CODE
         try:
-            return self.attributes.get("settings", {}).get("locale", "")
-
+            locale = self.attributes.get("settings", {}).get("locale", "")
+            if locale:
+                return locale
         except Exception as exc:  # noqa
             LOGGER.warning("Failed to get default locale", exc=exc)
-        if request:
-            return request.brand.locale
+        if request and hasattr(request, "LANGUAGE_CODE"):
+            return request.LANGUAGE_CODE
         return ""
 
     @property
@@ -660,7 +659,9 @@ class Provider(SerializerModel):
         related_name="provider_invalidation",
     )
 
-    property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
+    property_mappings = models.ManyToManyField(
+        "PropertyMapping", default=None, blank=True, through="ProviderPropertyMapping"
+    )
 
     backchannel_application = models.ForeignKey(
         "Application",
@@ -734,7 +735,7 @@ class ApplicationQuerySet(QuerySet):
         return qs
 
 
-class Application(SerializerModel, PolicyBindingModel):
+class Application(RequestableModel, SerializerModel, PolicyBindingModel):
     """Every Application which uses authentik for authentication/identification/authorization
     needs an Application record. Other authentication types can subclass this Model to
     add custom fields and other properties"""
@@ -839,12 +840,17 @@ class Application(SerializerModel, PolicyBindingModel):
     def __str__(self):
         return str(self.name)
 
+    def requestable_child_model_types(self):
+        return [ApplicationEntitlement]
+
     class Meta:
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
 
 
-class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingModel):
+class ApplicationEntitlement(
+    RequestableChildModel, AttributesMixin, SerializerModel, PolicyBindingModel
+):
     """Application-scoped entitlement to control authorization in an application"""
 
     name = models.TextField()
@@ -858,6 +864,14 @@ class ApplicationEntitlement(AttributesMixin, SerializerModel, PolicyBindingMode
 
     def __str__(self):
         return f"Application Entitlement {self.name} for app {self.app_id}"
+
+    @property
+    def requestable_parent(self) -> Application:
+        return self.app
+
+    @property
+    def requestable_label(self):
+        return self.name
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -940,10 +954,18 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ),
     )
     user_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_userpropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_userpropertymappings_set",
+        through="SourceUserPropertyMapping",
     )
     group_property_mappings = models.ManyToManyField(
-        "PropertyMapping", default=None, blank=True, related_name="source_grouppropertymappings_set"
+        "PropertyMapping",
+        default=None,
+        blank=True,
+        related_name="source_grouppropertymappings_set",
+        through="SourceGroupPropertyMapping",
     )
 
     icon = FileField(blank=True, default="")
@@ -1132,75 +1154,6 @@ class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("group", "source"),)
 
 
-class ExpiringManager(Manager):
-    """Manager for expiring objects which filters out expired objects by default"""
-
-    def get_queryset(self):
-        return QuerySet(self.model, using=self._db).exclude(expires__lt=now(), expiring=True)
-
-    def including_expired(self):
-        return QuerySet(self.model, using=self._db)
-
-
-class ExpiringModel(models.Model):
-    """Base Model which can expire, and is automatically cleaned up."""
-
-    expires = models.DateTimeField(default=None, null=True)
-    expiring = models.BooleanField(default=True)
-
-    objects = ExpiringManager()
-
-    class Meta:
-        abstract = True
-        indexes = [
-            models.Index(fields=["expires"]),
-            models.Index(fields=["expiring"]),
-            models.Index(fields=["expiring", "expires"]),
-        ]
-
-    def expire_action(self, *args, **kwargs):
-        """Handler which is called when this object is expired. By
-        default the object is deleted. This is less efficient compared
-        to bulk deleting objects, but classes like Token() need to change
-        values instead of being deleted."""
-        try:
-            return self.delete(*args, **kwargs)
-        except self.DoesNotExist:
-            # Object has already been deleted, so this should be fine
-            return None
-
-    @classmethod
-    def filter_not_expired(cls, **kwargs) -> QuerySet[Self]:
-        """Filer for tokens which are not expired yet or are not expiring,
-        and match filters in `kwargs`"""
-        from authentik.events.models import Event
-
-        deprecation_id = f"{class_to_path(cls)}.filter_not_expired"
-
-        Event.log_deprecation(
-            deprecation_id,
-            message=(
-                ".filter_not_expired() is deprecated as the default lookup now excludes "
-                "expired objects."
-            ),
-        )
-
-        for obj in (
-            cls.objects.including_expired()
-            .filter(**kwargs)
-            .filter(Q(expires__lt=now(), expiring=True))
-        ):
-            obj.delete()
-        return cls.objects.filter(**kwargs)
-
-    @property
-    def is_expired(self) -> bool:
-        """Check if token is expired yet."""
-        if not self.expiring:
-            return False
-        return now() > self.expires
-
-
 class TokenIntents(models.TextChoices):
     """Intents a Token can be created for."""
 
@@ -1257,11 +1210,15 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         """Handler which is called when this object is expired."""
         from authentik.events.models import Event, EventAction
 
-        if self.intent in [
-            TokenIntents.INTENT_RECOVERY,
-            TokenIntents.INTENT_VERIFICATION,
-            TokenIntents.INTENT_APP_PASSWORD,
-        ]:
+        if (
+            self.intent
+            in [
+                TokenIntents.INTENT_RECOVERY,
+                TokenIntents.INTENT_VERIFICATION,
+                TokenIntents.INTENT_APP_PASSWORD,
+            ]
+            or Actor.objects.filter(pk=self.user_id).exists()
+        ):
             super().expire_action(*args, **kwargs)
             return
 
@@ -1314,6 +1271,105 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+class SourceUserPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_user_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source User Property Mapping")
+        verbose_name_plural = _("Source User Property Mappings")
+
+    def __str__(self):
+        return (
+            f"SourceUserPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class SourceGroupPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_source_group_property_mappings"
+        unique_together = (("property_mapping", "source"),)
+        verbose_name = _("Source Group Property Mapping")
+        verbose_name_plural = _("Source Group Property Mappings")
+
+    def __str__(self):
+        return (
+            f"SourceGroupPropertyMapping for Source {self.source_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class ProviderPropertyMapping(SimpleThroughModel):
+    property_mapping = models.ForeignKey(
+        PropertyMapping, on_delete=models.CASCADE, db_column="propertymapping_id"
+    )
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_provider_property_mappings"
+        unique_together = (("property_mapping", "provider"),)
+        verbose_name = _("Provider Property Mapping")
+        verbose_name_plural = _("Provider Property Mappings")
+
+    def __str__(self):
+        return (
+            f"ProviderPropertyMapping for Provider {self.provider_id} "
+            f"and PropertyMapping {self.property_mapping_id}."
+        )
+
+
+class UserRole(SimpleThroughModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_roles"
+        unique_together = (("user", "role"),)
+        verbose_name = _("User Role")
+        verbose_name_plural = _("User Roles")
+
+    def __str__(self):
+        return f"UserRole for User {self.user_id} and Role {self.role_id}."
+
+
+class GroupRole(SimpleThroughModel):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_group_roles"
+        unique_together = (("group", "role"),)
+        verbose_name = _("Group Role")
+        verbose_name_plural = _("Group Roles")
+
+    def __str__(self):
+        return f"GroupRole for Group {self.group_id} and Role {self.role_id}."
+
+
+class UserGroup(SimpleThroughModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = "authentik_core_user_groups"
+        unique_together = (("user", "group"),)
+        verbose_name = _("User Group")
+        verbose_name_plural = _("User Groups")
+
+    def __str__(self):
+        return f"UserGroup for User {self.user_id} and Group {self.group_id}."
+
+
 class Session(ExpiringModel, AbstractBaseSession):
     """User session with extra fields for fast access"""
 
@@ -1360,6 +1416,26 @@ class Session(ExpiringModel, AbstractBaseSession):
         raise NotImplementedError
 
 
+class UserSwitchingSession(models.Model):
+    """Sessions grouped by one browser's user-switching cookie."""
+
+    token = models.CharField(max_length=64, primary_key=True)
+    current_session = models.OneToOneField(
+        "authentik_core.AuthenticatedSession",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+
+    class Meta:
+        verbose_name = _("User Switching Session")
+        verbose_name_plural = _("User Switching Sessions")
+        default_permissions = []
+
+    def __str__(self) -> str:
+        return f"User Switching Session {self.token[:10]}"
+
+
 class AuthenticatedSession(SerializerModel):
     session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True)
     # We use the session as primary key, but we need the API to be able to reference
@@ -1368,11 +1444,64 @@ class AuthenticatedSession(SerializerModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    user_switching_session = models.ForeignKey(
+        UserSwitchingSession,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="authenticated_sessions",
+    )
+
+    @property
+    def is_current(self) -> bool:
+        """Whether this is the current login for its browser."""
+        return (
+            self.user_switching_session_id is None
+            or self.user_switching_session.current_session_id == self.session_id
+        )
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.core.api.authenticated_sessions import AuthenticatedSessionSerializer
 
         return AuthenticatedSessionSerializer
+
+    @classmethod
+    def from_request(cls, request: HttpRequest, user: User) -> Self | None:
+        """Return an in-memory authenticated session for the request's session.
+
+        This does not touch the database; because ``session`` is the primary key the
+        returned instance can be used to look up related objects. Callers that want to
+        persist a login should use ``create_from_request`` instead."""
+        if not hasattr(request, "session") or not request.session.exists(
+            request.session.session_key
+        ):
+            return None
+        return cls(
+            session=Session.objects.filter(session_key=request.session.session_key).first(),
+            user=user,
+        )
+
+    @classmethod
+    def create_from_request(cls, request: HttpRequest, user: User) -> Self | None:
+        """Persist the request's session as the current login and bind the switching token."""
+        from authentik.core import user_switching
+
+        if not hasattr(request, "session") or not request.session.exists(
+            request.session.session_key
+        ):
+            return None
+        session = Session.objects.filter(session_key=request.session.session_key).first()
+        if session is None:
+            return None
+        authenticated_session, _ = cls.objects.update_or_create(
+            session=session,
+            defaults={"user": user},
+        )
+        token = user_switching.ensure_request_token(request)
+        if token:
+            user_switching.activate_session(session.session_key, token)
+            authenticated_session.user_switching_session_id = token
+        return authenticated_session
 
     class Meta:
         verbose_name = _("Authenticated Session")
@@ -1381,14 +1510,162 @@ class AuthenticatedSession(SerializerModel):
     def __str__(self) -> str:
         return f"Authenticated Session {str(self.pk)[:10]}"
 
-    @staticmethod
-    def from_request(request: HttpRequest, user: User) -> AuthenticatedSession | None:
-        """Create a new session from a http request"""
-        if not hasattr(request, "session") or not request.session.exists(
-            request.session.session_key
+
+class ObjectAttribute(SerializerModel, ManagedModel, CreatedUpdatedModel):
+    """User-defined schema for models' `attributes` JSON field."""
+
+    class AttributeType(models.TextChoices):
+        TEXT = "text"
+        NUMBER = "number"
+        BOOLEAN = "boolean"
+
+    attribute_id = models.UUIDField(default=uuid4, primary_key=True)
+
+    enabled = models.BooleanField(default=True)
+
+    object_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    label = models.TextField()
+    group = models.TextField(blank=True)
+    key = models.TextField()
+
+    type = models.TextField(choices=AttributeType.choices)
+    is_unique = models.BooleanField(default=False)
+    is_required = models.BooleanField(default=False)
+    regex = models.TextField(blank=True)
+    # Currently not accessible via API/UI, as there are some challenges UI-wise
+    # with regards to merging data
+    # https://github.com/goauthentik/authentik/issues/24250
+    is_array = models.BooleanField(default=False)
+
+    def run_validation(self, value: Any) -> None:
+        err_key = f"attributes_{self.key}"
+
+        if self.is_required and value is None:
+            raise ValidationError({err_key: _("This field is required")})
+        if value is None:
+            return
+
+        field_kwargs = {}
+
+        match (self.type):
+            case self.AttributeType.TEXT:
+                field_cls = CharField
+                field_kwargs["allow_blank"] = True
+            case self.AttributeType.NUMBER:
+                field_cls = IntegerField
+            case self.AttributeType.BOOLEAN:
+                field_cls = BooleanField
+            case _:
+                raise ValidationError("Invalid field type")
+
+        field = field_cls(required=False, **field_kwargs)
+        if self.is_array:
+            field = ListField(
+                child=field,
+                required=False,
+                error_messages={"not_a_list": _("Value must be an array.")},
+            )
+
+        try:
+            field.run_validation(value)
+        except ValidationError as exc:
+            raise ValidationError({err_key: exc.detail}) from exc
+
+        if self.regex != "":
+            values = value if self.is_array else [value]
+            if not all(re.fullmatch(self.regex, str(v)) for v in values):
+                raise ValidationError({err_key: _("Value does not match configured pattern.")})
+
+        if not self.is_array and self.is_unique:
+            model: type[models.Model] = self.object_type.model_class()
+            lookup_key = f"attributes__{self.key.replace('.', '__')}"
+            if model.objects.filter(**{lookup_key: value}).exists():
+                raise ValidationError({err_key: _("Value is not unique.")})
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.object_attributes import ObjectAttributeSerializer
+
+        return ObjectAttributeSerializer
+
+    def __str__(self):
+        return f"Object attribute '{self.key}' for content type {self.object_type_id}"
+
+    class Meta:
+        verbose_name = _("Object Attribute")
+        verbose_name_plural = _("Object Attributes")
+        unique_together = (("object_type", "key", "enabled"),)
+
+
+class ActorPolicyInheritance(models.TextChoices):
+
+    MIRROR = "mirror", _("Mirror policy engine")
+    COPY = "copy", _("Copy policy bindings")
+    NONE = "none", _("Don't inherit any policy bindings")
+
+
+class Actor(ExpiringModel, User):
+    """Generic actor which can either perform tasks by itself
+    or on behalf of a parent user."""
+
+    parent = models.ForeignKey(
+        User, on_delete=models.SET_DEFAULT, default=None, null=True, related_name="actors"
+    )
+    policy_behavior = models.TextField(choices=ActorPolicyInheritance)
+
+    class Meta(ExpiringModel.Meta):
+        verbose_name = _("Actor")
+        verbose_name_plural = _("Actors")
+
+    def save(self, *args, **kwargs):
+        # policy_behavior determines how the actor derives access and may only be chosen at
+        # creation time; changing it afterwards is rejected.
+        if (
+            not self._state.adding
+            and hasattr(self, "_original_policy_behavior")
+            and self._original_policy_behavior != self.policy_behavior
         ):
-            return None
-        return AuthenticatedSession(
-            session=Session.objects.filter(session_key=request.session.session_key).first(),
-            user=user,
+            raise ValidationError(
+                {"policy_behavior": _("Policy behavior cannot be changed after creation.")}
+            )
+        super().save(*args, **kwargs)
+        self._original_policy_behavior = self.policy_behavior
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        instance._original_policy_behavior = instance.policy_behavior
+        return instance
+
+    def copy_parent_policy_bindings(self):
+        """Snapshot the parent's directly-assigned policy bindings onto this actor.
+
+        Unlike MIRROR (which defers to the parent live), COPY takes an independent snapshot at
+        creation: the actor holds its own PolicyBindings, so later changes to the parent don't
+        affect it. Only bindings that reference the parent as a *user* are copied -- access the
+        parent derives from group membership is not (use MIRROR, or add the actor to groups).
+        """
+        from authentik.policies.models import PolicyBinding
+
+        if not self.parent_id:
+            return
+        for binding in PolicyBinding.objects.filter(user_id=self.parent_id):
+            binding.pk = None
+            binding.policy_binding_uuid = uuid4()
+            binding._state.adding = True
+            binding.user = self
+            binding.save()
+
+    @staticmethod
+    def for_user(user: User | None, policy_behavior: ActorPolicyInheritance, **kwargs):
+        prefix = f"{user.username}" if user else "global"
+        actor = Actor.objects.create(
+            username=f"{prefix}-{generate_id()}"[:USERNAME_MAX_LENGTH],
+            parent=user,
+            policy_behavior=policy_behavior,
+            type=UserTypes.SERVICE_ACCOUNT,
+            **kwargs,
         )
+        actor.set_unusable_password()
+        actor.save()
+        return actor

@@ -1,3 +1,4 @@
+import "#components/ak-text-input";
 import "#elements/forms/HorizontalFormElement";
 
 import { aki } from "#common/api/client";
@@ -28,14 +29,18 @@ export class DenyStageForm extends BaseStageForm<DenyStage> {
                     "Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                label=${msg("Stage Name", {
+                    id: "stage.name.label",
+                })}
+                required
+                name="name"
+                value=${this.instance?.name || ""}
+                placeholder=${msg("Type a name for this stage...", {
+                    id: "stage.name.placeholder",
+                })}
+                ?autofocus=${!this.instance}
+            ></ak-text-input>
             <ak-form-group open label="${msg("Stage-specific settings")}">
                 <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Deny message")} name="denyMessage">

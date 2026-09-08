@@ -1,0 +1,13 @@
+# Prettier Ignorefile
+
+## Node
+node_modules
+
+## Static Files
+**/LICENSE
+./README.md
+
+## Build asset directories
+coverage
+dist
+out

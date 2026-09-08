@@ -31,6 +31,17 @@ def enterprise_test(
     """Install testing enterprise license"""
 
     def wrapper_outer(func: Callable):
+        # Mirror `unittest.mock.patch`'s class decoration: wrap each test method
+        # individually. Wrapping the class itself would replace it with a function,
+        # and pytest would silently collect no tests from it.
+        if isinstance(func, type):
+            for name in dir(func):
+                if not name.startswith("test"):
+                    continue
+                attr = getattr(func, name)
+                if callable(attr):
+                    setattr(func, name, wrapper_outer(attr))
+            return func
 
         @wraps(func)
         def wrapper(*args, **kwargs):

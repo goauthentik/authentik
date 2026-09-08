@@ -244,6 +244,12 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+                    <ak-switch-input
+                        name="discoveryEnabled"
+                        label=${msg("Enable automatic discovery of remote resources.")}
+                        ?checked=${this.instance?.discoveryEnabled ?? true}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>`;
     }

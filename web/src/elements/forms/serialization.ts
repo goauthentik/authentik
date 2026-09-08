@@ -1,9 +1,13 @@
+import type { Comparator } from "#common/collections";
 import { dateToUTC } from "#common/temporal";
 
-import { AKElement } from "#elements/Base";
 import { isControlElement } from "#elements/ControlElement";
 import { isFormField } from "#elements/forms/form-associated-element";
 import { isNamedElement, NamedElement } from "#elements/utils/inputs";
+
+import { deepmerge } from "deepmerge-ts";
+
+import type { LitElement } from "lit";
 
 function isIgnored<T extends Element>(element: T) {
     if (!(element instanceof HTMLElement)) return false;
@@ -22,7 +26,7 @@ function assignValue(
     let parent = destination;
 
     if (!element.name?.includes(".")) {
-        parent[element.name] = value;
+        parent[element.name] = deepmerge(parent[element.name], value);
         return;
     }
 
@@ -41,86 +45,107 @@ function assignValue(
 }
 
 /**
+ * Sort elements by their specificity, the more precise the key (more dots)
+ * the later it gets serialized, to ensure it has a higher priority than general
+ * fields (such as attributes vs attributes.foo.bar)
+ */
+const specificityComparator: Comparator<Element> = (a, b) => {
+    if (!isNamedElement(a) || !isNamedElement(b)) {
+        return -1;
+    }
+
+    return a.name.split(".").length - b.name.split(".").length;
+};
+
+/**
  * Convert the elements of the form to JSON.
  *
+ * Note that this triggers {@linkcode LitElement.requestUpdate} on all elements.
  */
-export function serializeForm<T = Record<string, unknown>>(elements: Iterable<AKElement>): T {
+export function serializeForm<T = Record<string, unknown>>(elements: Iterable<LitElement>): T {
     const json: Record<string, unknown> = {};
 
-    Array.from(elements).forEach((element) => {
-        element.requestUpdate();
+    Array.from(elements)
+        .sort(specificityComparator)
+        .forEach((element) => {
+            // TODO: Either see if we can remove this, or pass in specific in parameters
+            // to ensure a specific updates.
+            element.requestUpdate();
 
-        if (element.hidden) return;
+            if (element.hidden) return;
 
-        if (isNamedElement(element) && (isFormField(element) || isControlElement(element))) {
-            return assignValue(element, element.toJSON(), json);
-        }
+            if (isNamedElement(element) && (isFormField(element) || isControlElement(element))) {
+                return assignValue(element, element.toJSON(), json);
+            }
 
-        const inputElement = element.querySelector("[name]");
+            const inputElement = element.querySelector("[name]");
 
-        if (element.hidden || !inputElement || isIgnored(inputElement)) {
-            return;
-        }
+            if (element.hidden || !inputElement || isIgnored(inputElement)) {
+                return;
+            }
 
-        if (
-            isNamedElement(element) &&
-            (isFormField(inputElement) || isControlElement(inputElement))
-        ) {
-            return assignValue(element, inputElement.toJSON(), json);
-        }
+            if (
+                isNamedElement(element) &&
+                (isFormField(inputElement) || isControlElement(inputElement))
+            ) {
+                return assignValue(element, inputElement.toJSON(), json);
+            }
 
-        if (inputElement instanceof HTMLSelectElement && inputElement.multiple) {
-            const selectElement = inputElement as unknown as HTMLSelectElement;
+            if (inputElement instanceof HTMLSelectElement && inputElement.multiple) {
+                const selectElement = inputElement as unknown as HTMLSelectElement;
 
-            return assignValue(
+                return assignValue(
+                    inputElement,
+                    Array.from(selectElement.selectedOptions, (v) => v.value),
+                    json,
+                );
+            }
+
+            if (inputElement instanceof HTMLInputElement) {
+                if (inputElement.type === "date") {
+                    return assignValue(inputElement, inputElement.valueAsDate, json);
+                }
+
+                if (inputElement.type === "datetime-local") {
+                    const valueAsNumber = inputElement.valueAsNumber;
+                    return assignValue(
+                        inputElement,
+                        isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
+                        json,
+                    );
+                }
+
+                if (
+                    "type" in inputElement.dataset &&
+                    inputElement.dataset.type === "datetime-local"
+                ) {
+                    // Workaround for Firefox <93, since 92 and older don't support
+                    // datetime-local fields
+                    const date = new Date(inputElement.value);
+                    return assignValue(
+                        inputElement,
+                        isNaN(date.getTime()) ? undefined : dateToUTC(date),
+                        json,
+                    );
+                }
+
+                if (inputElement.type === "checkbox") {
+                    return assignValue(inputElement, inputElement.checked, json);
+                }
+            }
+
+            if (isNamedElement(inputElement) && "value" in inputElement) {
+                return assignValue(inputElement, inputElement.value, json);
+            }
+
+            console.error(`authentik/forms: Could not find value for element`, {
+                element,
                 inputElement,
-                Array.from(selectElement.selectedOptions, (v) => v.value),
                 json,
-            );
-        }
+            });
 
-        if (inputElement instanceof HTMLInputElement) {
-            if (inputElement.type === "date") {
-                return assignValue(inputElement, inputElement.valueAsDate, json);
-            }
-
-            if (inputElement.type === "datetime-local") {
-                const valueAsNumber = inputElement.valueAsNumber;
-                return assignValue(
-                    inputElement,
-                    isNaN(valueAsNumber) ? undefined : dateToUTC(new Date(valueAsNumber)),
-                    json,
-                );
-            }
-
-            if ("type" in inputElement.dataset && inputElement.dataset.type === "datetime-local") {
-                // Workaround for Firefox <93, since 92 and older don't support
-                // datetime-local fields
-                const date = new Date(inputElement.value);
-                return assignValue(
-                    inputElement,
-                    isNaN(date.getTime()) ? undefined : dateToUTC(date),
-                    json,
-                );
-            }
-
-            if (inputElement.type === "checkbox") {
-                return assignValue(inputElement, inputElement.checked, json);
-            }
-        }
-
-        if (isNamedElement(inputElement) && "value" in inputElement) {
-            return assignValue(inputElement, inputElement.value, json);
-        }
-
-        console.error(`authentik/forms: Could not find value for element`, {
-            element,
-            inputElement,
-            json,
+            throw new Error(`Could not find value for element ${inputElement.tagName}`);
         });
-
-        throw new Error(`Could not find value for element ${inputElement.tagName}`);
-    });
 
     return json as unknown as T;
 }

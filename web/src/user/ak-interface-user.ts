@@ -3,15 +3,17 @@ import "#elements/banner/EnterpriseStatusBanner";
 import "#components/notifications/APIDrawer";
 import "#components/notifications/NotificationDrawer";
 import "#elements/router/RouterOutlet";
+import "#components/ak-nav-tabs";
 
 import { globalAK } from "#common/global";
-import { configureSentry } from "#common/sentry/index";
 import { isGuest } from "#common/users";
 import { WebsocketClient } from "#common/ws/WebSocketClient";
 
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { listen } from "#elements/decorators/listen";
 import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { ifPresent } from "#elements/utils/attributes";
 import { ThemedImage } from "#elements/utils/images";
@@ -29,8 +31,10 @@ import { ROUTES } from "#user/Routes";
 
 import { ConsoleLogger } from "#logger/browser";
 
+import { CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { guard } from "lit/directives/guard.js";
 
@@ -44,7 +48,9 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 @customElement("ak-interface-user")
-class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface)) {
+class UserInterface extends WithLicenseSummary(
+    WithBrandConfig(WithSession(WithCapabilitiesConfig(AuthenticatedInterface))),
+) {
     public static readonly styles = [
         PFDisplay,
         PFBrand,
@@ -55,6 +61,11 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
         PFDropdown,
         PFNotificationBadge,
         Styles,
+        css`
+            .pf-c-page__header-nav {
+                --pf-c-page__header-nav--BackgroundColor: transparent;
+            }
+        `,
     ];
 
     #logger = ConsoleLogger.prefix("user-interface");
@@ -71,8 +82,6 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
     //#region Lifecycle
 
     constructor() {
-        configureSentry();
-
         super();
 
         WebsocketClient.connect();
@@ -132,6 +141,26 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
 
         const backgroundStyles = this.uiConfig.theme.background;
 
+        const navItems = [{ label: msg("Applications"), link: "/library" }];
+        // Requests are an enterprise feature, can be disabled for the user interface
+        // and are only shown when the admin has configured at least one request rule
+        // We can't easily check if this user actually has something they can request,
+        // that is a semi-expensive request
+        if (
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
+            this.uiConfig.enabledFeatures.requests &&
+            this.can(CapabilitiesEnum.CanRequest)
+        ) {
+            navItems.push({ label: msg("Discover"), link: "/requests" });
+        }
+        if (
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed &&
+            this.uiConfig.enabledFeatures.agents &&
+            this.can(CapabilitiesEnum.CanAgentSelfService)
+        ) {
+            navItems.push({ label: msg("Agents"), link: "/agents" });
+        }
+
         return html`<ak-enterprise-status interface="user"></ak-enterprise-status>
             <div part="page" class="pf-c-page">
                 <div part="background-wrapper" style=${ifPresent(backgroundStyles)}>
@@ -156,6 +185,12 @@ class UserInterface extends WithBrandConfig(WithSession(AuthenticatedInterface))
                             })}
                         </a>
                     </div>
+                    ${navItems.length > 1
+                        ? html`<ak-nav-tabs
+                              class="pf-c-page__header-nav"
+                              .items=${navItems}
+                          ></ak-nav-tabs>`
+                        : nothing}
                     <ak-nav-buttons>${this.renderAdminInterfaceLink()}</ak-nav-buttons>
                 </header>
                 <div class="pf-c-page__drawer">

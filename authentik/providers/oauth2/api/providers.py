@@ -95,7 +95,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_sources",
             "jwt_federation_providers",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
@@ -108,12 +108,15 @@ class OAuth2ProviderSetupURLs(PassiveSerializer):
     provider_info = CharField(read_only=True)
     logout = CharField(read_only=True)
     jwks = CharField(read_only=True)
+    dcr_registration = CharField(read_only=True, allow_null=True)
 
 
 class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
     """OAuth2Provider Viewset"""
 
-    queryset = OAuth2Provider.objects.all()
+    queryset = OAuth2Provider.objects.select_related(
+        "application", "backchannel_application"
+    ).prefetch_related("property_mappings", "jwt_federation_sources", "jwt_federation_providers")
     serializer_class = OAuth2ProviderSerializer
     filterset_fields = [
         "name",
@@ -181,6 +184,12 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             data["jwks"] = request.build_absolute_uri(
                 reverse(
                     "authentik_providers_oauth2:jwks",
+                    kwargs={"application_slug": provider.application.slug},
+                )
+            )
+            data["dcr_registration"] = request.build_absolute_uri(
+                reverse(
+                    "authentik_providers_oauth2:dynamic-client-registration",
                     kwargs={"application_slug": provider.application.slug},
                 )
             )

@@ -4,7 +4,9 @@ from django.core.checks import Warning
 from django.db.backends.base.validation import BaseDatabaseValidation
 from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
 
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, DIRECT_DB_ALIAS
+
+ENCODING_DOCS_URL = "https://docs.goauthentik.io/install-config/configuration/#postgresql-settings"
 
 
 class DatabaseValidation(BaseDatabaseValidation):
@@ -33,6 +35,8 @@ class DatabaseValidation(BaseDatabaseValidation):
                 messages.append(
                     Warning(
                         f"PostgreSQL Server encoding is not UTF8: {server_encoding}",
+                        hint="Dump the database, re-create it with `ENCODING 'UTF8'` "
+                        f"and restore the dump. See {ENCODING_DOCS_URL}",
                         id="ak.db.W002",
                     )
                 )
@@ -45,16 +49,24 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     validation_class = DatabaseValidation
 
     def get_connection_params(self):
-        """Refresh DB credentials before getting connection params"""
+        """Refresh host/port/user/password from CONFIG on each connection open.
+
+        Supports file-mounted secrets rotating without a process restart. Uses
+        the alias-specific prefix (``postgresql.read_replicas.<name>.*`` or
+        ``postgresql.direct.*``) when applicable, falling back to
+        ``postgresql.*`` for unset keys. OPTIONS (sslmode etc.) is unchanged.
+        """
         conn_params = super().get_connection_params()
 
         prefix = "postgresql"
         if self.alias.startswith("replica_"):
             prefix = f"postgresql.read_replicas.{self.alias.removeprefix('replica_')}"
+        elif self.alias == DIRECT_DB_ALIAS:
+            prefix = "postgresql.direct"
 
         for setting in ("host", "port", "user", "password"):
             conn_params[setting] = CONFIG.refresh(f"{prefix}.{setting}")
-            if conn_params[setting] is None and self.alias.startswith("replica_"):
+            if conn_params[setting] is None and prefix != "postgresql":
                 conn_params[setting] = CONFIG.refresh(f"postgresql.{setting}")
 
         return conn_params

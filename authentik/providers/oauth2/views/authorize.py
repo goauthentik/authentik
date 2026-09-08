@@ -26,6 +26,7 @@ from authentik.common.oauth.constants import (
     PROMPT_LOGIN,
     PROMPT_NONE,
     QS_LOGIN_HINT,
+    SCOPE_BOUND_KEY,
     SCOPE_GITHUB,
     SCOPE_OFFLINE_ACCESS,
     SCOPE_OPENID,
@@ -48,6 +49,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.providers.oauth2.dpop import is_valid_jkt
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
     ClientIdError,
@@ -103,6 +105,7 @@ class OAuthAuthorizationParams:
 
     code_challenge: str | None = None
     code_challenge_method: str | None = None
+    dpop_jkt: str | None = None
 
     github_compat: InitVar[bool] = False
 
@@ -127,6 +130,7 @@ class OAuthAuthorizationParams:
         response_mode = query_dict.get("response_mode", False)
 
         max_age = query_dict.get("max_age")
+        dpop_jkt = query_dict.get("dpop_jkt")
         return OAuthAuthorizationParams(
             client_id=query_dict.get("client_id", ""),
             redirect_uri=redirect_uri,
@@ -141,6 +145,7 @@ class OAuthAuthorizationParams:
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
             code_challenge_method=query_dict.get("code_challenge_method", "plain"),
+            dpop_jkt=dpop_jkt,
             github_compat=github_compat,
         )
 
@@ -168,6 +173,7 @@ class OAuthAuthorizationParams:
             )
         self.check_grant()
         self.check_scope(github_compat)
+        self.check_dpop_jkt()
         self.check_nonce()
         self.check_code_challenge()
 
@@ -321,6 +327,35 @@ class OAuthAuthorizationParams:
                 # Spec says to ignore the scope when the response_type wouldn't result
                 # in an authorization code being generated
                 self.scope.remove(SCOPE_OFFLINE_ACCESS)
+        # Key binding requires dpop_jkt at authorization time
+        if SCOPE_BOUND_KEY in self.scope and not self.dpop_jkt:
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                description="dpop_jkt is required when bound_key scope is requested",
+            )
+        # dpop_jkt should only be set if requesting the key binding scope
+        if SCOPE_BOUND_KEY not in self.scope and self.dpop_jkt:
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                description="dpop_jkt is set when bound_key scope is not requested",
+            )
+
+    def check_dpop_jkt(self):
+        """Validate dpop_jkt format if provided."""
+        if self.dpop_jkt and not is_valid_jkt(self.dpop_jkt):
+            raise AuthorizeError(
+                self.redirect_uri,
+                error="invalid_request",
+                grant_type=self.grant_type,
+                state=self.state,
+                description="dpop_jkt must be a base64url-encoded SHA-256 JWK thumbprint",
+            )
 
     def check_nonce(self):
         """Nonce parameter validation."""
@@ -382,6 +417,9 @@ class OAuthAuthorizationParams:
         if self.code_challenge and self.code_challenge_method:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
+
+        if self.dpop_jkt:
+            code.dpop_jkt = self.dpop_jkt
 
         return code
 

@@ -35,6 +35,7 @@ from authentik.common.saml.constants import (
     SHA384,
     SHA512,
 )
+from authentik.common.saml.utils import get_element_text
 from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
@@ -90,8 +91,14 @@ class SAMLSource(Source):
 
     issuer_override = models.TextField(
         blank=True,
-        default=None,
+        default="",
         help_text=_("Also known as Entity ID. Defaults to the Metadata URL."),
+    )
+
+    audience_override = models.TextField(
+        blank=True,
+        default="",
+        help_text=_("Audience value this IdP sends for authentik."),
     )
 
     sso_url = models.TextField(
@@ -235,7 +242,7 @@ class SAMLSource(Source):
             key = attribute.attrib["Name"]
             attributes.setdefault(key, [])
             for value in attribute.iterchildren():
-                attributes[key].append(value.text)
+                attributes[key].append(get_element_text(value))
         if SAML_ATTRIBUTES_GROUP in attributes:
             attributes["groups"] = attributes[SAML_ATTRIBUTES_GROUP]
             del attributes[SAML_ATTRIBUTES_GROUP]
@@ -244,7 +251,7 @@ class SAMLSource(Source):
             if key == "groups":
                 continue
             attributes[key] = BaseEvaluator.expr_flatten(value)
-        attributes["username"] = name_id.text
+        attributes["username"] = get_element_text(name_id)
 
         return attributes
 

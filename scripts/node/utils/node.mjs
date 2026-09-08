@@ -67,7 +67,7 @@ export function loadJSON(jsonPath) {
         });
 }
 
-const PackageJSONComparisionFields = /** @type {const} */ ([
+const PackageJSONComparisonFields = /** @type {const} */ ([
     "name",
     "dependencies",
     "devDependencies",
@@ -77,14 +77,14 @@ const PackageJSONComparisionFields = /** @type {const} */ ([
 ]);
 
 /**
- * @typedef {typeof PackageJSONComparisionFields[number]} PackageJSONComparisionField
+ * @typedef {typeof PackageJSONComparisonFields[number]} PackageJSONComparisonField
  */
 
 /**
  * Extracts only the dependency fields from a package.json object for comparison purposes.
  *
  * @param {PackageJSON} data
- * @returns {Pick<PackageJSON, PackageJSONComparisionField>}
+ * @returns {Pick<PackageJSON, PackageJSONComparisonField>}
  */
 export function pluckDependencyFields(data) {
     /**
@@ -92,13 +92,13 @@ export function pluckDependencyFields(data) {
      */
     const result = {};
 
-    for (const field of PackageJSONComparisionFields) {
+    for (const field of PackageJSONComparisonFields) {
         if (data[field]) {
             result[field] = data[field];
         }
     }
 
-    return /** @type {Pick<PackageJSON, PackageJSONComparisionField>} */ (result);
+    return /** @type {Pick<PackageJSON, PackageJSONComparisonField>} */ (result);
 }
 
 //#region Versioning

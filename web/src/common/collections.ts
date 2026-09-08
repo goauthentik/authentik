@@ -1,4 +1,17 @@
 /**
+ * @file Collection of utility functions for working with collections.
+ */
+
+/**
+ * A comparison function for sorting elements in a collection.
+ *
+ * @param a The first element to compare.
+ * @param b The second element to compare.
+ * @returns A negative number if `a` should come before `b`, a positive number if `a` should come after `b`, or 0 if they are equal.
+ */
+export type Comparator<T> = (a: T, b: T) => number;
+
+/**
  * Given an array or length, return logical index of the element at the given delta.
  * This is effectively a modulo loop, allowing for positive and negative deltas.
  */

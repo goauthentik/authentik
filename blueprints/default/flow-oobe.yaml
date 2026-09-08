@@ -65,6 +65,22 @@ entries:
     name: initial-setup-field-password-repeat
   model: authentik_stages_prompt.prompt
 - attrs:
+    order: 400
+    label: Base URL
+    sub_text: "Configure the base URL under which this authentik instance is reachable, e.g. https://authentik.company. Do not include any path component (for example, /authentik)."
+    field_key: base_url
+    type: text
+    required: true
+    placeholder: https://authentik.company
+    placeholder_expression: false
+    initial_value_expression: true
+    initial_value: |
+      return request.http_request.build_absolute_uri("/").rstrip("/")
+  id: prompt-field-base-url
+  identifiers:
+    name: initial-setup-field-base-url
+  model: authentik_stages_prompt.prompt
+- attrs:
     expression: |
       # This policy sets the user for the currently running flow
       # by injecting "pending_user"
@@ -91,6 +107,25 @@ entries:
   identifiers:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      from django.core.exceptions import ValidationError
+      from authentik.tenants.models import Tenant
+      from authentik.tenants.utils import normalize_base_url
+
+      base_url = normalize_base_url((request.context.get("prompt_data") or {}).get("base_url"))
+      if not base_url:
+          return True
+      try:
+          Tenant._meta.get_field("base_url").run_validators(base_url)
+      except ValidationError as exc:
+          ak_message(exc.messages[0])
+          return False
+      return True
+  id: policy-default-oobe-base-url-valid
+  identifiers:
+    name: default-oobe-base-url-valid
+  model: authentik_policies_expression.expressionpolicy
 - state: absent
   identifiers:
     name: default-oobe-flow-set-authentication
@@ -99,8 +134,11 @@ entries:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
+    - !KeyOf prompt-field-base-url
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
+    validation_policies:
+    - !KeyOf policy-default-oobe-base-url-valid
   id: stage-default-oobe-password
   identifiers:
     name: stage-default-oobe-password

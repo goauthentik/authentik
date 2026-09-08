@@ -1,18 +1,23 @@
 """Test OAuth2 Back-Channel Logout implementation"""
 
+import json
+from dataclasses import asdict
 from unittest.mock import Mock, patch
 
 import jwt
 from django.test import RequestFactory
+from django.urls import reverse
+from django.utils import timezone
 from dramatiq.results.errors import ResultFailure
 from requests import Response
 from requests.exceptions import HTTPError, Timeout
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
-from authentik.providers.oauth2.id_token import hash_session_key
+from authentik.providers.oauth2.id_token import IDToken, hash_session_key
 from authentik.providers.oauth2.models import (
+    AccessToken,
     OAuth2LogoutMethod,
     OAuth2Provider,
     RedirectURI,
@@ -191,3 +196,129 @@ class TestBackChannelLogout(OAuthTestCase):
             send_backchannel_logout_request.send(
                 self.provider.pk, "http://testserver", sub="test-user-uid"
             ).get_result()
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_frontchannel_provider_no_backchannel(self, mock_get_session):
+        """Deleting a session does not back-channel a front-channel provider"""
+        self.provider.logout_uri = "http://testserver/logout"
+        self.provider.logout_method = OAuth2LogoutMethod.FRONTCHANNEL
+        self.provider.save()
+        mock_session = Mock()
+        mock_get_session.return_value = mock_session
+
+        session = Session.objects.create(
+            session_key=generate_id(),
+            last_ip="255.255.255.255",
+            last_user_agent="",
+        )
+        auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
+        AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=auth_session,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
+        )
+
+        session.delete()
+
+        mock_session.post.assert_not_called()
+
+
+class TestBackChannelLogoutUserDeactivation(OAuthTestCase):
+    """Test that deactivating a user triggers back-channel logout"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.admin = create_test_admin_user()
+        self.user = create_test_admin_user()
+        self.provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver/callback"),
+            ],
+            signing_key=self.keypair,
+            logout_uri="http://testserver/backchannel_logout",
+            logout_method=OAuth2LogoutMethod.BACKCHANNEL,
+        )
+        self.app = Application.objects.create(
+            name=generate_id(), slug=generate_id(), provider=self.provider
+        )
+        self.session_key = generate_id()
+        self.session = Session.objects.create(
+            session_key=self.session_key,
+            last_ip="255.255.255.255",
+            last_user_agent="",
+        )
+        self.auth_session = AuthenticatedSession.objects.create(
+            session=self.session,
+            user=self.user,
+        )
+        self.token = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            session=self.auth_session,
+            token=generate_id(),
+            auth_time=timezone.now(),
+            _scope="openid user profile",
+            _id_token=json.dumps(asdict(IDToken(iss="http://testserver", sub=str(self.user.uid)))),
+        )
+
+    def _mock_http(self, mock_get_session: Mock) -> Mock:
+        """Wire up a mocked HTTP session that always succeeds"""
+        mock_session = Mock()
+        mock_get_session.return_value = mock_session
+        mock_response = Mock(spec=Response)
+        mock_response.status_code = 200
+        mock_response.raise_for_status.return_value = None
+        mock_session.post.return_value = mock_response
+        return mock_session
+
+    def _assert_logout_token_sent(self, mock_session: Mock):
+        """Assert a single logout token was POSTed to the provider's logout URI"""
+        mock_session.post.assert_called_once()
+        args, kwargs = mock_session.post.call_args
+        self.assertEqual(args[0], self.provider.logout_uri)
+        key, alg = self.provider.jwt_key
+        if alg != "HS256":
+            key = self.provider.signing_key.public_key
+        decoded = jwt.decode(
+            kwargs["data"]["logout_token"],
+            key,
+            algorithms=[alg],
+            options={"verify_exp": False, "verify_aud": False},
+        )
+        self.assertEqual(decoded["sub"], str(self.user.uid))
+        self.assertEqual(decoded["sid"], hash_session_key(self.session_key))
+        self.assertIn("http://schemas.openid.net/event/backchannel-logout", decoded["events"])
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_user_deactivated_model(self, mock_get_session):
+        """Deactivating a user directly sends back-channel logout"""
+        mock_session = self._mock_http(mock_get_session)
+
+        self.user.is_active = False
+        self.user.save()
+
+        self._assert_logout_token_sent(mock_session)
+        self.assertFalse(Session.objects.filter(session_key=self.session_key).exists())
+        self.assertEqual(AccessToken.objects.including_expired().filter(user=self.user).count(), 0)
+
+    @patch("authentik.providers.oauth2.tasks.get_http_session")
+    def test_user_deactivated_api(self, mock_get_session):
+        """Deactivating a user through the API sends back-channel logout"""
+        mock_session = self._mock_http(mock_get_session)
+
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.user.pk}),
+            data=json.dumps({"is_active": False}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self._assert_logout_token_sent(mock_session)
+        self.assertFalse(Session.objects.filter(session_key=self.session_key).exists())

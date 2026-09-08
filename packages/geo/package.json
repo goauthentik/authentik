@@ -1,0 +1,59 @@
+{
+    "name": "@goauthentik/geo",
+    "version": "1.0.0",
+    "description": "Hexworld basemap archive generator for authentik",
+    "license": "MIT",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "packages/geo"
+    },
+    "scripts": {
+        "hexworld:build": "node scripts/build-hexworld.ts",
+        "lint": "eslint --fix .",
+        "lint:types": "tsc -p . --noEmit && tsc -p scripts && tsc -p test",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check .",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "tiles:pull-hexworld": "node scripts/pull-hexworld.ts"
+    },
+    "type": "module",
+    "dependencies": {
+        "h3-js": "^4.5.0",
+        "pmtiles": "^4.4.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/prettier-config": "link:../prettier-config",
+        "@goauthentik/tsconfig": "link:../tsconfig",
+        "@mapbox/vector-tile": "^2.0.3",
+        "@types/geojson": "^7946.0.16",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "pbf": "^4.0.1",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24",
+            "onFail": "warn"
+        },
+        "packageManager": {
+            "name": "pnpm",
+            "version": ">=11.5.1",
+            "onFail": "warn"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config"
+}

@@ -40,6 +40,7 @@
  * @property {string} url Absolute URL of the rendered page.
  * @property {string} description
  * @property {string} content Cleaned Markdown body.
+ * @property {string} [slug] Docusaurus frontmatter slug override.
  * @property {string} [group] Topic dir or category slug for grouping.
  * @property {string} [groupLabel] Display label for the group (defaults to group).
  */

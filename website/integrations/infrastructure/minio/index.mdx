@@ -10,7 +10,7 @@ import Tabs from "@theme/Tabs";
 
 ## What is MinIO?
 
-> MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
+> MinIO is an S3-compatible object storage platform for AI, analytics, and data-intensive workloads.
 >
 > -- https://www.min.io/
 
@@ -21,8 +21,8 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::warning MinIO product changes
-[MinIO](https://github.com/minio/minio) is in maintenance mode since December 2025. [MinIO AIStor Free](https://www.min.io/download) is its closed-source commercially licensed replacement; a full-featured, single-node deployment which supports SSO.
+:::warning MinIO product status
+The [MinIO community repository](https://github.com/minio/minio) is no longer maintained, and legacy pre-built community binaries are no longer maintained. MinIO directs new deployments to [AIStor Free](https://www.min.io/download) or AIStor Enterprise.
 :::
 
 :::info
@@ -33,25 +33,62 @@ This documentation lists only the settings that you need to change from their de
 
 <RedirectURI20265Note />
 
-To support the integration of MinIO with authentik, you need to create an application/provider pair in authentik.
+To support the integration of MinIO with authentik, you need to create a scope mapping, an application/provider pair, and application entitlements in authentik.
 
-### Create an application and provider in authentik
+### Create a scope mapping
+
+MinIO uses the `policy` claim to assign MinIO policies to OIDC users. Create a scope mapping to pass authentik application entitlements as MinIO policy names.
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **New Application** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+2. Navigate to **Customization** > **Property mappings** and click **Create**.
+3. Select **Scope Mapping** as the property mapping type.
+4. Configure the following settings:
+    - **Name**: provide a descriptive name, such as `MinIO policies`.
+    - **Scope name**: `minio`
+    - **Expression**:
+
+        ```python
+        return {
+            "policy": [
+                entitlement.name
+                for entitlement in request.user.app_entitlements(provider.application)
+            ],
+        }
+        ```
+
+5. Click **Finish**.
+
+### Create an application and provider
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it will be required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
         - Add a **Redirect URI** of type `Strict` `Authorization` as `https://minio.company/oauth_callback`.
         - Select any available signing key.
+        - Under **Advanced protocol settings** > **Selected Scopes**, add the scope mapping that you created in the previous section.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 
 3. Click **Submit** to save the new application and provider.
 
+### Create application entitlements
+
+Use [application entitlements](/docs/add-secure-apps/applications/manage_apps/#application-entitlements) to represent the MinIO policies that this application should assign.
+
+1. Open the MinIO application that you just created in the authentik Admin interface.
+2. Click the **Application entitlements** tab.
+3. Create one entitlement for each MinIO policy that users should be able to receive, such as `readonly`.
+4. Bind the appropriate users or groups to each entitlement.
+
+The entitlement names must exactly match existing MinIO policy names. Users who authenticate without at least one matching policy have no permissions in MinIO.
+
 ## MinIO configuration
 
-You can set up OpenID in three different ways: via environment variables, the web interface, or the command line.
+Create the MinIO policies that correspond to your authentik application entitlement names before users sign in. You can create policies in the MinIO Console or with the `mc admin policy` commands. Designing bucket policies is outside the scope of this guide.
+
+You can set up OIDC in three different ways: with environment variables, the web interface, or the command line.
 
 <Tabs
   defaultValue="environment-variables"
@@ -62,55 +99,63 @@ You can set up OpenID in three different ways: via environment variables, the we
   ]}>
   <TabItem value="environment-variables">
 
-MinIO OpenID Connect configuration can be configured using [environment variables](https://docs.min.io/enterprise/aistor-object-store/reference/aistor-server/settings/iam/openid/?tab=role-policy-environment-variable).
+You can configure MinIO OIDC settings using [environment variables](https://docs.min.io/aistor/reference/aistor-server/settings/iam/openid/).
 
 Add the following variables to your environment file:
 
-```yaml
+```env title=".env"
 MINIO_IDENTITY_OPENID_CONFIG_URL="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
-MINIO_IDENTITY_OPENID_CLIENT_ID="<client id>"
-MINIO_IDENTITY_OPENID_CLIENT_SECRET="<client secret>"
+MINIO_IDENTITY_OPENID_CLIENT_ID="<Client ID from authentik>"
+MINIO_IDENTITY_OPENID_CLIENT_SECRET="<Client Secret from authentik>"
 MINIO_IDENTITY_OPENID_DISPLAY_NAME="authentik"
-MINIO_IDENTITY_OPENID_CLAIM_NAME="policy"
-MINIO_IDENTITY_OPENID_SCOPES="openid,profile,email"
+MINIO_IDENTITY_OPENID_SCOPES="openid,profile,email,minio"
 ```
 
-Redeploy MinIO AIStor for the changes to take effect.
+Restart MinIO for the changes to take effect.
 
   </TabItem>
   <TabItem value="web-interface">
 
-From the sidebar of the main page, go to **Access** > **OpenID**, click **Add Configuration**, and configure the following settings:
+In the MinIO Console, navigate to **Access** > **OpenID**, click **Add Configuration**, and configure the following settings:
 
-- **Name**: MinIO
+- **Name**: `authentik`
 - **Config URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
-- **Client ID**: Your client ID from the previous step
-- **Client Secret**: Your client secret from the previous step
-- **Scopes**: `openid, email, profile`
+- **Client ID**: Client ID from authentik
+- **Client Secret**: Client Secret from authentik
+- **Scopes**: `openid,profile,email,minio`
 - **Redirect URI**: `https://minio.company/oauth_callback`
 
-Finally, click **Save** and follow the instructions in the popup to restart your instance.
+Click **Save**, then restart MinIO for the changes to take effect.
 
   </TabItem>
   <TabItem value="command-line">
 
-You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You then need to create an alias for your instance using: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret key and access key.
+Install and configure the MinIO Client (`mc`) with an alias for your MinIO deployment. The example below uses `myminio` as the alias.
 
-After that is done, run the following command to configure the OpenID provider:
+Run the following command to configure the OpenID provider:
 
-```
-~ mc admin config set myminio identity_openid \
+```shell
+mc idp openid add myminio authentik \
   config_url="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration" \
-  client_id="<client id>" \
-  client_secret="<client secret>" \
-  scopes="openid,profile,email"
+  client_id="<Client ID from authentik>" \
+  client_secret="<Client Secret from authentik>" \
+  display_name="authentik" \
+  scopes="openid,profile,email,minio" \
+  redirect_uri="https://minio.company/oauth_callback"
 ```
 
-The [upstream MinIO docs on OIDC](https://min.io/docs/minio/linux/reference/minio-mc-admin/mc-admin-config.html#openid-identity-management) indicate that the `client_secret` (and thus confidential client type) are optional depending on provider. Experimentally with a single-node MinIO instance, the client secret was required and worked without further issue.
+Restart MinIO for the changes to take effect.
 
   </TabItem>
 </Tabs>
 
+## Configuration verification
+
+To confirm that authentik is properly configured with MinIO, open MinIO and sign in with authentik. After authentication, verify that the signed-in user receives the expected MinIO policy permissions.
+
 ## Resources
 
-- [MinIO Docs - OpenID Settings](https://docs.min.io/enterprise/aistor-object-store/reference/aistor-server/settings/iam/openid/)
+- [MinIO AIStor Docs - OpenID Connect Identity Management](https://docs.min.io/aistor/administration/iam/identity/oidc-identity/)
+- [MinIO AIStor Docs - OpenID Settings](https://docs.min.io/aistor/reference/aistor-server/settings/iam/openid/)
+- [MinIO AIStor Docs - OpenID Connect Access Management](https://docs.min.io/aistor/administration/iam/access/oidc-access/)
+- [MinIO AIStor Docs - mc idp openid add](https://docs.min.io/aistor/reference/cli/mc-idp-openid/mc-idp-openid-add/)

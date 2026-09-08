@@ -29,7 +29,7 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, advisory_lock_db_alias
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.sync.incoming.models import IncomingSyncSource
 from authentik.lib.utils.time import fqdn_rand
@@ -142,6 +142,10 @@ class LDAPSource(IncomingSyncSource):
     sync_groups = models.BooleanField(default=True)
     sync_parent_group = models.ForeignKey(
         Group, blank=True, null=True, default=None, on_delete=models.SET_DEFAULT
+    )
+
+    sync_group_hierarchy = models.BooleanField(
+        default=False, help_text=_("Sync group parentage/hierarchy from LDAP directories.")
     )
 
     lookup_groups_from_user = models.BooleanField(
@@ -315,6 +319,7 @@ class LDAPSource(IncomingSyncSource):
             lock_id=f"goauthentik.io/{connection.schema_name}/sources/ldap/sync/{self.slug}",
             timeout=0,
             side_effect=pglock.Return,
+            using=advisory_lock_db_alias(),
         )
 
     def get_ldap_server_info(self, srv: Server) -> dict[str, str]:

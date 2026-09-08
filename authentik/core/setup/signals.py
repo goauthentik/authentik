@@ -6,6 +6,7 @@ from structlog.stdlib import get_logger
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.apps import Setup
+from authentik.lib.validators import validate_password_hash
 from authentik.root.signals import post_startup
 from authentik.tenants.models import Tenant
 
@@ -32,11 +33,16 @@ def post_startup_setup_bootstrap(sender, **_):
             LOGGER.info("Tenant is already setup, skipping", tenant=tenant.schema_name)
             continue
         with tenant:
+            if password_hash := getenv("AUTHENTIK_BOOTSTRAP_PASSWORD_HASH"):
+                validate_password_hash(password_hash)
             importer = Importer.from_string(content)
             valid, logs = importer.validate()
             if not valid:
                 LOGGER.warning("Blueprint invalid", tenant=tenant.schema_name)
                 for log in logs:
                     log.log()
-            importer.apply()
+                continue
+            if not importer.apply():
+                LOGGER.warning("Failed to apply bootstrap blueprint", tenant=tenant.schema_name)
+                continue
             Setup.set(True, tenant=tenant)

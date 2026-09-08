@@ -1,3 +1,7 @@
+/**
+ * @file Display details for a federated LDAP Identity Source: Overview, Synced Users, Synced Groups, Changelog, Permissions
+ */
+
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/sources/ldap/LDAPSourceConnectivity";
 import "#admin/sources/ldap/LDAPSourceUserList";
@@ -8,7 +12,6 @@ import "#elements/CodeMirror";
 import "#elements/Tabs";
 import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
-import "#components/tasks/ScheduleList";
 
 import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
@@ -18,6 +21,7 @@ import { modalInvoker } from "#elements/dialogs";
 import { SlottedTemplateResult } from "#elements/types";
 
 import renderDescriptionList from "#components/DescriptionList";
+import { scheduleCard } from "#components/tasks/scheduleCard";
 
 import { LDAPSourceForm } from "#admin/sources/ldap/LDAPSourceForm";
 
@@ -34,6 +38,8 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+const SOURCE_MODEL = ModelEnum.AuthentikSourcesLdapLdapsource;
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
@@ -73,7 +79,7 @@ export class LDAPSourceViewPage extends AKElement {
         if (!this.source) {
             return nothing;
         }
-        const [appLabel, modelName] = ModelEnum.AuthentikSourcesLdapLdapsource.split(".");
+
         return html`<main>
             <ak-tabs>
                 <div
@@ -140,15 +146,8 @@ export class LDAPSourceViewPage extends AKElement {
                                 ></ak-source-ldap-connectivity>
                             </div>
                         </div>
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">
-                                <p>${msg("Schedules")}</p>
-                            </div>
-                            <ak-schedule-list
-                                .relObjAppLabel=${appLabel}
-                                .relObjModel=${modelName}
-                                .relObjId="${this.source?.pk}"
-                            ></ak-schedule-list>
+                        <div class="pf-l-grid__item pf-m-12-col">
+                            ${scheduleCard(SOURCE_MODEL, this.source.pk)}
                         </div>
                     </div>
                 </div>

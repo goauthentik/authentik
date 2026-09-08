@@ -14,7 +14,7 @@ outputs:
     description: "Tag in the form gh-<safe-branch-name>"
     value: "${{ steps.compute-tags.outputs.tag-branch }}"
   tag-flux:
-    description: "Tag in the form gh-<timestamp>-<short sha>"
+    description: "Tag in the form gh-<safe-branch-name>-<timestamp>-<short sha>"
     value: "${{ steps.compute-tags.outputs.tag-flux }}"
 
 runs:
@@ -39,7 +39,7 @@ runs:
 
         tag_full = f"gh-{sha}"
         tag_branch = f"gh-{safe_branch_name}"
-        tag_flux = f"gh-{int(time())}-{short_sha}"
+        tag_flux = f"gh-{safe_branch_name}-{int(time())}-{short_sha}"
 
         with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
             print(f"safe-branch-name={safe_branch_name}", file=_output)

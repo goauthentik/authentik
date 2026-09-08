@@ -75,6 +75,7 @@
 [part="card-title"] {
     padding: 0 !important;
     z-index: 1;
+    min-width: 0;
     text-stroke-width: 0.15em;
     text-stroke-color: var(--pf-c-card--BackgroundColor);
 
@@ -98,6 +99,7 @@
         box-orient: vertical;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        overflow-wrap: anywhere;
         text-align: center;
         text-wrap: balance;
         line-height: 1.2;

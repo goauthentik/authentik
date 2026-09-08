@@ -1,4 +1,5 @@
 import "#admin/providers/rac/ConnectionTokenList";
+import "#admin/users/UserAgentList";
 import "#admin/users/UserTokenList";
 import "#admin/users/oauth/UserAccessTokenList";
 import "#admin/users/oauth/UserRefreshTokenList";
@@ -11,6 +12,7 @@ import "./UserDevicesTable.js";
 
 import { AKElement } from "#elements/Base";
 import { WithLazyTabs } from "#elements/mixins/lazy-tabs";
+import { WithLicenseSummary } from "#elements/mixins/license";
 
 import { User } from "@goauthentik/api";
 
@@ -23,7 +25,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-user-credentials-tab")
-export class UserCredentialsTab extends WithLazyTabs(AKElement) {
+export class UserCredentialsTab extends WithLazyTabs(WithLicenseSummary(AKElement)) {
     @property({ attribute: false })
     public user?: User;
 
@@ -71,6 +73,26 @@ export class UserCredentialsTab extends WithLazyTabs(AKElement) {
                     </div>`,
                 )}
             </div>
+            ${this.hasEnterpriseLicense
+                ? html`<div
+                      role="tabpanel"
+                      tabindex="0"
+                      slot="page-agents"
+                      id="page-agents"
+                      aria-label=${msg("Agents")}
+                      class="pf-c-page__main-section pf-m-no-padding-mobile"
+                      @activate=${() => this.activateTab("page-agents")}
+                  >
+                      ${this.renderWhenActive(
+                          "page-agents",
+                          html`<div class="pf-c-card">
+                              <ak-admin-user-agent-list
+                                  .user=${this.user}
+                              ></ak-admin-user-agent-list>
+                          </div>`,
+                      )}
+                  </div>`
+                : nothing}
             <div
                 role="tabpanel"
                 tabindex="0"
