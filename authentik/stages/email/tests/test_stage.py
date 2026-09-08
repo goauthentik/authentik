@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 
 from authentik.brands.models import Brand
+from authentik.core.models import User
 from authentik.core.tests.utils import RequestFactory, create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
@@ -103,6 +104,39 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
         self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <{self.user.email}>"])
+        self.assertEqual(FlowToken.objects.filter(user=self.user).count(), 1)
+
+    def test_synthetic_pending_user(self):
+        """Test that synthetic users get the sent-email challenge without a token or email."""
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+
+        for designation in (FlowDesignation.AUTHENTICATION, FlowDesignation.RECOVERY):
+            with self.subTest(designation=designation):
+                self.flow.designation = designation
+                self.flow.save(update_fields=["designation"])
+                pending_user = User(
+                    username="unknown",
+                    email="unknown@example.com",
+                )
+                self.assertIsNone(pending_user.pk)
+
+                plan = FlowPlan(
+                    flow_pk=self.flow.pk.hex,
+                    bindings=[self.binding],
+                    markers=[StageMarker()],
+                )
+                plan.context[PLAN_CONTEXT_PENDING_USER] = pending_user
+
+                session = self.client.session
+                session[SESSION_KEY_PLAN] = plan
+                session.save()
+
+                response = self.client.get(url)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertStageResponse(response, self.flow, component="ak-stage-email")
+                self.assertEqual(FlowToken.objects.filter(flow=self.flow).count(), 0)
+                self.assertEqual(len(mail.outbox), 0)
 
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",
