@@ -99,9 +99,7 @@ function registerEventCallbacks<T extends ListenerMixin>(target: T): ListenDecor
 
             if (!isEventListenerLike(listener)) {
                 throw new TypeError(
-                    `Listener "${String(
-                        propKey,
-                    )}" is not a valid event listener. It must be a function or an object with a handleEvent method.`,
+                    `Listener "${String(propKey)}" is not a valid event listener. It must be a function or an object with a handleEvent method.`,
                 );
             }
 

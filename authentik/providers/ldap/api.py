@@ -43,7 +43,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "bind_mode",
             "mfa_support",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = ProviderSerializer.Meta.extra_write_kwargs
 
 
 class LDAPProviderFilter(FilterSet):
@@ -91,7 +91,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     unbind_flow_slug = SerializerMethodField()
 
     def get_application_slug(self, instance: LDAPProvider) -> str:
-        """Prioritise backchannel slug over direct application slug"""
+        """Prioritize backchannel slug over direct application slug"""
         if instance.backchannel_application:
             return instance.backchannel_application.slug
         return instance.application.slug

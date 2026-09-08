@@ -3,7 +3,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/SearchSelect/index";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { Form } from "#elements/forms/Form";
 
@@ -67,7 +67,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     if (query !== undefined) {
                         args.search = query;
                     }
-                    const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
+                    const users = await aki(CoreApi).coreUsersList(args);
                     return users.results;
                 }}
                 .renderElement=${(user: User): string => {
@@ -94,7 +94,7 @@ export class SyncObjectForm extends Form<SyncObjectRequest> {
                     if (query !== undefined) {
                         args.search = query;
                     }
-                    const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                    const groups = await aki(CoreApi).coreGroupsList(args);
                     return groups.results;
                 }}
                 .renderElement=${(group: Group): string => {

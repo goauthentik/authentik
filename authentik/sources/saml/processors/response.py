@@ -26,6 +26,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_X509,
     SAML_STATUS_SUCCESS,
 )
+from authentik.common.saml.utils import get_element_text
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
@@ -293,7 +294,7 @@ class ResponseProcessor:
         name_id = subject.find(f"{{{NS_SAML_ASSERTION}}}NameID")
         if name_id is None:
             raise ValueError("NameID element not found")
-        return name_id, "".join(name_id.itertext())
+        return name_id, get_element_text(name_id)
 
     def _get_name_id_filter(self) -> dict[str, str]:
         """Returns the subject's NameID as a Filter for the `User`"""

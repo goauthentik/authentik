@@ -113,7 +113,9 @@ test.describe("Users", () => {
         const userPathsTree = page.getByRole("tree", { name: "User paths" });
         await expect(userPathsTree, "User paths tree is visible").toBeVisible();
 
-        await userPathsTree.getByRole("button", { name: `Select "Root"`, exact: true }).click();
+        await userPathsTree
+            .getByRole("button", { name: `Select "goauthentik.io"`, exact: true })
+            .click();
     });
 
     //#endregion

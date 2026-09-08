@@ -1,7 +1,7 @@
 import "#elements/EmptyState";
 import "#elements/Expand";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -55,7 +55,7 @@ export class FlowInspector extends AKElement {
 
     @listen(AKFlowAdvanceEvent, { target: window })
     protected advanceHandler = (): void => {
-        new FlowsApi(DEFAULT_CONFIG)
+        aki(FlowsApi)
             .flowsInspectorGet({
                 flowSlug: this.flowSlug || "",
             })

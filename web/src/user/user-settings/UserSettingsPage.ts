@@ -7,7 +7,7 @@ import "#user/user-settings/details/UserSettingsFlowExecutor";
 import "#user/user-settings/mfa/MFADevicesPage";
 import "#user/user-settings/tokens/UserTokenList";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 import { startAccountLockdown } from "#common/users";
 
@@ -57,7 +57,7 @@ export class UserSettingsPage extends WithLicenseSummary(WithSession(AKElement))
         Styles,
     ];
 
-    protected stagesAPI = new StagesApi(DEFAULT_CONFIG);
+    protected stagesAPI = aki(StagesApi);
 
     @state()
     protected userSettings: UserSetting[] | null = null;

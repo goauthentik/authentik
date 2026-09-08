@@ -11,7 +11,7 @@ import "#elements/buttons/ActionButton/index";
 import "#elements/buttons/SpinnerButton/index";
 import "#elements/ak-mdx/ak-mdx";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -44,7 +44,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 export class GroupViewPage extends WithLicenseSummary(AKElement) {
     @property({ type: String })
     set groupId(id: string) {
-        new CoreApi(DEFAULT_CONFIG)
+        aki(CoreApi)
             .coreGroupsRetrieve({
                 groupUuid: id,
                 includeUsers: false,

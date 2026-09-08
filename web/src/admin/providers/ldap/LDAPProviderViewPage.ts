@@ -7,7 +7,7 @@ import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { EVENT_REFRESH } from "#common/constants";
 
 import { AKElement } from "#elements/Base";
@@ -62,7 +62,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
     }
 
     fetchProvider(id: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
+        aki(ProvidersApi)
             .providersLdapRetrieve({ id })
             .then((prov) => (this.provider = prov));
     }
@@ -123,13 +123,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
         }
 
         return html`
-            ${
-                this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${msg("Warning: Provider is not used by any Outpost.")}
-                      </div>`
-                    : nothing
-            }
+            ${this.provider?.outpostSet.length < 1 ? html`<div slot="header" class="pf-c-banner pf-m-warning">${msg("Warning: Provider is not used by any Outpost.")}</div>` : nothing}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -210,9 +204,7 @@ export class LDAPProviderViewPage extends WithSession(AKElement) {
                             </div>
                             <div class="pf-c-form__group">
                                 <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg(
-                                        "Bind Password",
-                                    )}</span>
+                                    <span class="pf-c-form__label-text">${msg("Bind Password")}</span>
                                 </label>
                                 <input
                                     class="pf-c-form-control"

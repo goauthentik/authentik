@@ -3,6 +3,10 @@
 ## Node
 node_modules
 
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml
+
 ## Static Files
 **/LICENSE
 

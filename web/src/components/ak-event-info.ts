@@ -1,7 +1,7 @@
 import "#elements/Expand";
 import "#elements/Spinner";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 import { EventContext, EventContextProperty, EventModel, EventWithContext } from "#common/events";
 
@@ -348,7 +348,7 @@ ${JSON.stringify(value.new_value, null, 4)}</pre
                     <div class="pf-c-card__body">
                         <span
                             >${until(
-                                new FlowsApi(DEFAULT_CONFIG)
+                                aki(FlowsApi)
                                     .flowsInstancesList({
                                         flowUuid: this.event.context.flow as string,
                                     })

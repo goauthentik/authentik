@@ -4,6 +4,7 @@ sidebar_label: Skyhigh Security
 support_level: community
 ---
 
+import SAMLProvider20265Warning from "../../_saml-provider-2026-5-warning.mdx";
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
@@ -54,6 +55,8 @@ To support dashboard administrator login, create an application/provider pair in
 
 #### Create an application and provider in authentik
 
+<SAMLProvider20265Warning />
+
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -99,6 +102,8 @@ To confirm that authentik is properly configured with Skyhigh Security, open the
 To support Secure Web Gateway and Private Access, create an application/provider pair in authentik.
 
 #### Create an application and provider in authentik
+
+<SAMLProvider20265Warning />
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.

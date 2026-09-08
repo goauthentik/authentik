@@ -7,7 +7,7 @@ import "#elements/forms/HorizontalFormElement";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { renderModal } from "#elements/dialogs";
 import { AKFormSubmitEvent, Form } from "#elements/forms/Form";
@@ -30,7 +30,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
     public static override verboseName = msg("Role");
     public static override verboseNamePlural = msg("Roles");
 
-    #api = new RbacApi(DEFAULT_CONFIG);
+    #api = aki(RbacApi);
 
     @property({ attribute: false })
     public user: User | null = null;
@@ -113,7 +113,7 @@ export class AddRelatedRoleForm extends Form<{ roles: string[] }> {
 
 @customElement("ak-related-role-table")
 export class RelatedRoleTable extends Table<Role> {
-    #api = new RbacApi(DEFAULT_CONFIG);
+    #api = aki(RbacApi);
 
     checkbox = true;
     clearOnRefresh = true;

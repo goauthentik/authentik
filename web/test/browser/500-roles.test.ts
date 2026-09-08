@@ -162,7 +162,7 @@ test.describe("Roles", () => {
 
         await test.step("Verify role name updated on view page", async () => {
             await expect(
-                page.getByText(updatedName),
+                page.getByText(`Role ${updatedName}`),
                 "Updated role name is visible on view page",
             ).toBeVisible();
         });

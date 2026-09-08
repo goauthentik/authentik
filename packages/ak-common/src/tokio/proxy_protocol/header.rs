@@ -103,7 +103,7 @@ pub enum Tlv<'a> {
     /// Contains the host name value passed by the client, as an UTF-8 encoded string. In case of
     /// TLS being used on the client connection, this is the exact copy of the `server_name`
     /// extension as defined by RFC3546, section 3.1, often referred to as SNI. There are probably
-    /// other situations where an authority can be mentionned on a connection without TLS being
+    /// other situations where an authority can be mentioned on a connection without TLS being
     /// involved at all.
     Authority(Cow<'a, str>),
 

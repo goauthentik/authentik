@@ -2,9 +2,9 @@ import "#elements/timestamp/ak-timestamp";
 
 import { Pagination } from "@goauthentik/api";
 
-import { html, TemplateResult } from "lit";
+import { html, LitElement, TemplateResult } from "lit";
 
-export interface TableLike {
+export interface TableLike extends LitElement {
     /**
      * The column name to order by, optionally prefixed with `-` to reverse the order.
      */

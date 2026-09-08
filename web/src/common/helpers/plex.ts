@@ -1,4 +1,4 @@
-import { SentryIgnoredError } from "#common/sentry/index";
+import { SentryIgnoredError } from "#common/sentry/error";
 
 export interface PlexPinResponse {
     // Only has the fields we care about
@@ -62,9 +62,7 @@ export class PlexAPIClient {
         });
         const pin: PlexPinResponse = await pinResponse.json();
         return {
-            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(
-                clientIdentifier,
-            )}&code=${pin.code}`,
+            authUrl: `https://app.plex.tv/auth#!?clientID=${encodeURIComponent(clientIdentifier)}&code=${pin.code}`,
             pin: pin,
         };
     }

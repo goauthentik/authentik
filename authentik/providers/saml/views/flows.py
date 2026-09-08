@@ -10,12 +10,15 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
+from authentik.flows.apps import ContinuousLogin
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
     AutoSubmitChallengeResponse,
     Challenge,
     ChallengeResponse,
+    HttpChallengeResponse,
+    RedirectChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
@@ -135,6 +138,15 @@ class SAMLFlowFinalView(ChallengeStageView):
             if auth_n_request.relay_state:
                 url_args[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
             querystring = urlencode(url_args)
+            if ContinuousLogin.get():
+                return HttpChallengeResponse(
+                    RedirectChallenge(
+                        instance={
+                            "to": f"{provider.acs_url}?{querystring}",
+                            "final_redirect": True,
+                        }
+                    )
+                )
             return redirect(f"{provider.acs_url}?{querystring}")
         return bad_request_message(request, "Invalid sp_binding specified")
 

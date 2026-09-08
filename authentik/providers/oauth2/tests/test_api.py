@@ -34,6 +34,24 @@ class TestAPI(APITestCase):
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
+    def test_list_application_details(self):
+        """Listing retains mappings and providers without an application."""
+        unassigned = OAuth2Provider.objects.create(
+            name=generate_id(), authorization_flow=self.provider.authorization_flow
+        )
+        self.provider.jwt_federation_providers.add(unassigned)
+        response = self.client.get(reverse("authentik_api:oauth2provider-list"))
+        self.assertEqual(response.status_code, 200)
+        providers = {provider["pk"]: provider for provider in response.data["results"]}
+        self.assertEqual(providers[self.provider.pk]["assigned_application_slug"], self.app.slug)
+        self.assertEqual(providers[self.provider.pk]["assigned_application_name"], self.app.name)
+        self.assertCountEqual(
+            providers[self.provider.pk]["property_mappings"],
+            [mapping.pk for mapping in self.provider.property_mappings.all()],
+        )
+        self.assertIsNone(providers[unassigned.pk]["assigned_application_slug"])
+        self.assertEqual(providers[self.provider.pk]["jwt_federation_providers"], [unassigned.pk])
+
     def test_preview(self):
         """Test Preview API Endpoint"""
         response = self.client.get(
@@ -65,6 +83,40 @@ class TestAPI(APITestCase):
         self.provider.save()
         self.provider.refresh_from_db()
         self.assertIsNone(self.provider.launch_url)
+
+    def test_validate_client_id(self):
+        """Test redirect_uris API"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "client_id": "ú",
+                "redirect_uris": [],
+            },
+        )
+        self.assertJSONEqual(
+            response.content,
+            {"client_id": ["Client ID must consist of only ASCII characters."]},
+        )
+
+    def test_validate_client_secret(self):
+        """Test redirect_uris API"""
+        response = self.client.post(
+            reverse("authentik_api:oauth2provider-list"),
+            data={
+                "name": generate_id(),
+                "authorization_flow": create_test_flow().pk,
+                "invalidation_flow": create_test_flow().pk,
+                "client_secret": "ú",
+                "redirect_uris": [],
+            },
+        )
+        self.assertJSONEqual(
+            response.content,
+            {"client_secret": ["Client secret must consist of only ASCII characters."]},
+        )
 
     def test_validate_redirect_uris(self):
         """Test redirect_uris API"""

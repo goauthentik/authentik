@@ -6,7 +6,7 @@ import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { PFSize } from "#common/enums";
 
 import { IconEditButton, ModalInvokerButton } from "#elements/dialogs";
@@ -38,9 +38,7 @@ export class PromptListPage extends TablePage<Prompt> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Prompt>> {
-        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList(
-            await this.defaultEndpointConfig(),
-        );
+        return aki(StagesApi).stagesPromptPromptsList(await this.defaultEndpointConfig());
     }
 
     protected columns: TableColumn[] = [
@@ -58,12 +56,12 @@ export class PromptListPage extends TablePage<Prompt> {
             object-label=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
+                return aki(StagesApi).stagesPromptPromptsUsedByList({
                     promptUuid: item.pk,
                 });
             }}
             .delete=${(item: Prompt) => {
-                return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsDestroy({
+                return aki(StagesApi).stagesPromptPromptsDestroy({
                     promptUuid: item.pk,
                 });
             }}

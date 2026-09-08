@@ -3,6 +3,7 @@ import "#admin/applications/ApplicationCheckAccessForm";
 import "#admin/applications/ApplicationForm";
 import "#admin/applications/entitlements/ApplicationEntitlementPage";
 import "#admin/policies/BoundPoliciesList";
+import "#admin/requests/BoundRequestRulesTable";
 import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/lifecycle/ObjectLifecyclePage";
 import "#admin/events/ObjectChangelog";
@@ -12,7 +13,7 @@ import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#admin/applications/ApplicationEvents";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -94,7 +95,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     //#region Lifecycle
 
     protected fetchIsMissingOutpost(providersByPk: Array<number>) {
-        new OutpostsApi(DEFAULT_CONFIG)
+        aki(OutpostsApi)
             .outpostsInstancesList({
                 providersByPk,
                 pageSize: 1,
@@ -107,7 +108,7 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
     }
 
     protected fetchApplication(slug: string) {
-        new CoreApi(DEFAULT_CONFIG)
+        aki(CoreApi)
             .coreApplicationsRetrieve({ slug })
             .then((app) => {
                 this.application = app;
@@ -120,18 +121,23 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                 ) {
                     this.fetchIsMissingOutpost([app.provider || 0]);
                 }
-                return new EventsApi(DEFAULT_CONFIG)
+            })
+            .catch(async (error) => {
+                this.error = await parseAPIResponseError(error);
+            })
+            .finally(() => {
+                return aki(EventsApi)
                     .eventsEventsStatsRetrieve({
                         action: EventActions.AuthorizeApplication,
-                        contextAuthorizedApp: app.pk.replaceAll("-", ""),
+                        contextAuthorizedApp: this.application?.pk.replaceAll("-", ""),
                         countSteps: ["hours=24", "days=7", "days=30"],
                     })
                     .then((stats) => {
                         this.stats = stats;
+                    })
+                    .catch(() => {
+                        console.warn("Failed to fetch events");
                     });
-            })
-            .catch(async (error) => {
-                this.error = await parseAPIResponseError(error);
             });
     }
 
@@ -381,15 +387,33 @@ export class ApplicationViewPage extends WithLicenseSummary(AKElement) {
                     objectPk=${this.application.pk}
                 ></ak-rbac-object-permission-page>
                 ${this.hasEnterpriseLicense
-                    ? html`<ak-object-lifecycle-page
-                          role="tabpanel"
-                          tabindex="0"
-                          slot="page-lifecycle"
-                          id="page-lifecycle"
-                          aria-label=${msg("Lifecycle")}
-                          model=${ContentTypeEnum.AuthentikCoreApplication}
-                          object-pk=${this.application.pk}
-                      ></ak-object-lifecycle-page>`
+                    ? html` <section
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-rule-bindings"
+                              id="page-rule-bindings"
+                              aria-label="${msg("Request rules")}"
+                              class="pf-c-page__main-section pf-m-no-padding-mobile"
+                          >
+                              <div class="pf-c-card">
+                                  <div class="pf-c-card__title">
+                                      ${msg(
+                                          "Configure rules which grant users the ability to request access to this app.",
+                                      )}
+                                  </div>
+                                  <ak-bound-request-rules-table .target=${this.application.pk}>
+                                  </ak-bound-request-rules-table>
+                              </div>
+                          </section>
+                          <ak-object-lifecycle-page
+                              role="tabpanel"
+                              tabindex="0"
+                              slot="page-lifecycle"
+                              id="page-lifecycle"
+                              aria-label=${msg("Lifecycle")}
+                              model=${ContentTypeEnum.AuthentikCoreApplication}
+                              object-pk=${this.application.pk}
+                          ></ak-object-lifecycle-page>`
                     : nothing}
             </ak-tabs>
         </main>`;

@@ -5,8 +5,10 @@
     "license": "MIT",
     "private": true,
     "type": "module",
+    "types": "./index.d.ts",
     "exports": {
         ".": {
+            "types": "./index.d.ts",
             "import": "./index.js"
         }
     }

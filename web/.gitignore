@@ -36,6 +36,10 @@ playwright-traces
 test-results
 *.lcov
 
+# Vitest browser mode writes these on a failing test
+.vitest-attachments/
+**/__screenshots__/
+
 # nyc test coverage
 .nyc_output
 
@@ -123,3 +127,24 @@ storybook-static/
 .wireit
 
 custom-elements.json
+
+### Agents ###
+
+AGENT.local.md
+AGENTS.local.md
+CLAUDE.local.md
+
+.agents/*.local.json
+.agents/scheduled_tasks.*
+.agents/worktree
+
+## Claude
+
+.claude/*.local.json
+.claude/scheduled_tasks.*
+.claude/worktree
+
+## Pi
+
+.pi
+.deps-stamp

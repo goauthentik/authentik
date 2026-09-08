@@ -71,3 +71,28 @@ class QLTest(APITestCase):
         content = loads(res.content)
         self.assertEqual(content["pagination"]["count"], 1)
         self.assertEqual(content["results"][0]["username"], self.user.username)
+
+    def test_search_json_non_string(self):
+        """Test search queries against non-string JSON values"""
+        self.user.attributes = {"enabled": True, "count": 3, "speed": 1.5}
+        self.user.save()
+        self.client.force_login(self.user)
+        for query in (
+            "attributes.enabled = True",
+            "attributes.count = 3",
+            "attributes.speed = 1.5",
+            "attributes.count = 3.0",
+            "attributes.speed in (1.5, 2.5)",
+            "attributes.speed >= 1.0 and attributes.speed <= 2.0",
+        ):
+            with self.subTest(query=query):
+                res = self.client.get(
+                    reverse(
+                        "authentik_api:user-list",
+                    )
+                    + f"?{urlencode({"search": query})}"
+                )
+                self.assertEqual(res.status_code, 200)
+                content = loads(res.content)
+                self.assertEqual(content["pagination"]["count"], 1)
+                self.assertEqual(content["results"][0]["username"], self.user.username)

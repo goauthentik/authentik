@@ -8,18 +8,30 @@
         "url": "https://github.com/goauthentik/authentik.git"
     },
     "scripts": {
-        "build": "npm run clean && tsc -b tsconfig.json tsconfig.esm.json",
+        "build": "pnpm run clean && tsc -b tsconfig.json tsconfig.esm.json",
         "clean": "tsc -b --clean tsconfig.json tsconfig.esm.json",
-        "prepare": "npm run build"
+        "prepare": "pnpm run build"
     },
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
     "devDependencies": {
         "@goauthentik/prettier-config": "^3.5.0",
         "prettier": "^3.8.1",
         "typescript": "^4.0 || ^5.0"
     },
+    "engines": {
+        "node": ">=24",
+        "pnpm": ">=11.20.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "onFail": "warn",
+            "version": ">=24"
+        }
+    },
+    "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee",
     "prettier": "@goauthentik/prettier-config",
     "sideEffects": false,
-    "module": "./dist/esm/index.js"
+    "module": "./src/index.ts"
 }

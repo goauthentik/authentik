@@ -3,7 +3,13 @@ build
 out
 coverage
 .docusaurus
-node_modules
 help
 static
 scripts/docsmg/target/
+
+## Node
+node_modules
+
+# PNPM
+pnpm-workspace.yaml
+pnpm-lock.yaml

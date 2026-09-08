@@ -1,6 +1,6 @@
 import "#elements/buttons/SpinnerButton/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
 import { SlottedTemplateResult } from "#elements/types";
@@ -23,7 +23,7 @@ export class ProviderTable extends Table<Provider> {
     public override order = "name";
 
     protected override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersAllList({
+        return aki(ProvidersApi).providersAllList({
             ...(await this.defaultEndpointConfig()),
             backchannel: this.backchannel,
         });

@@ -19,7 +19,7 @@ class TestMetadataProcessor(TestCase):
         self.source = SAMLSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
-            issuer="authentik",
+            issuer_override="authentik",
             signing_kp=create_test_cert(),
             encryption_kp=create_test_cert(),
             pre_authentication_flow=create_test_flow(),

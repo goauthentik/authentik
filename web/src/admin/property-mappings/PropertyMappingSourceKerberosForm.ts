@@ -1,7 +1,7 @@
 import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { BasePropertyMappingForm } from "#admin/property-mappings/BasePropertyMappingForm";
 
@@ -13,23 +13,19 @@ import { customElement } from "lit/decorators.js";
 export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<KerberosSourcePropertyMapping> {
     protected override docLink = "/users-sources/sources/property-mappings/expressions";
 
-    loadInstance(pk: string): Promise<KerberosSourcePropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosRetrieve({
-            pmUuid: pk,
-        });
-    }
-
-    async send(data: KerberosSourcePropertyMapping): Promise<KerberosSourcePropertyMapping> {
-        if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosUpdate({
-                pmUuid: this.instance.pk,
-                kerberosSourcePropertyMappingRequest: data,
-            });
-        }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosCreate({
-            kerberosSourcePropertyMappingRequest: data,
-        });
-    }
+    protected endpoints = {
+        load: (pk: string) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosRetrieve({ pmUuid: pk }),
+        create: (kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosCreate({
+                kerberosSourcePropertyMappingRequest,
+            }),
+        update: (pk: string, kerberosSourcePropertyMappingRequest: KerberosSourcePropertyMapping) =>
+            aki(PropertymappingsApi).propertymappingsSourceKerberosUpdate({
+                pmUuid: pk,
+                kerberosSourcePropertyMappingRequest,
+            }),
+    };
 }
 
 declare global {

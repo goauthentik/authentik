@@ -22,6 +22,7 @@ from authentik.core.tests.utils import (
     create_test_admin_user,
     create_test_brand,
     create_test_flow,
+    create_test_session,
     create_test_user,
 )
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation
@@ -53,6 +54,17 @@ class TestUsersAPI(APITestCase):
         user.refresh_from_db()
         self.assertEqual(user.password, password_hash)
         self.assertTrue(user.check_password(password))
+
+    def _assert_password_hash_rejected(
+        self, user: User, original_password_hash: str, response
+    ) -> None:
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"password": [INVALID_PASSWORD_HASH_ERROR]},
+        )
+        user.refresh_from_db()
+        self.assertEqual(user.password, original_password_hash)
 
     def test_filter_type(self):
         """Test API filtering by type"""
@@ -111,6 +123,19 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
+    def test_set_type(self):
+        """Test type set"""
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": self.admin.pk}),
+            data={"type": UserTypes.INTERNAL_SERVICE_ACCOUNT},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content,
+            {"type": ["Can't change internal service account to other user type."]},
+        )
+
     def test_set_password(self):
         """Test Direct password set"""
         self.client.force_login(self.admin)
@@ -145,13 +170,15 @@ class TestUsersAPI(APITestCase):
     def test_set_password_hash_invalid(self):
         """Test invalid password hashes are rejected."""
         self.client.force_login(self.admin)
-        response = self._set_password_hash(self.user, INVALID_PASSWORD_HASH)
+        original_password = self.user.password
+        for password_hash in (
+            INVALID_PASSWORD_HASH,
+            "pbkdf2_sha256$1000000/K4wGpWYKfJPSCcNM=",
+        ):
+            with self.subTest(password_hash=password_hash):
+                response = self._set_password_hash(self.user, password_hash)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertJSONEqual(
-            response.content,
-            {"password": [INVALID_PASSWORD_HASH_ERROR]},
-        )
+                self._assert_password_hash_rejected(self.user, original_password, response)
 
     def test_recovery(self):
         """Test user recovery link"""
@@ -429,6 +456,33 @@ class TestUsersAPI(APITestCase):
         )
         self.assertJSONEqual(response.content.decode(), {"paths": expected})
 
+    def test_path_startswith(self):
+        """Test path_startswith, which must not match sibling paths sharing a prefix"""
+        root = generate_id(20)
+        exact = create_test_user(path=f"{root}/group1")
+        nested = create_test_user(path=f"{root}/group1/sub")
+        sibling = create_test_user(path=f"{root}/group11")
+
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"path_startswith": f"{root}/group1"},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertCountEqual(pks, [exact.pk, nested.pk])
+        self.assertNotIn(sibling.pk, pks)
+
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={"path_startswith": root},
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        pks = [r["pk"] for r in body["results"]]
+        self.assertCountEqual(pks, [exact.pk, nested.pk, sibling.pk])
+
     def test_path_valid(self):
         """Test path"""
         self.client.force_login(self.admin)
@@ -505,6 +559,28 @@ class TestUsersAPI(APITestCase):
         response = self.client.patch(
             reverse("authentik_api:user-detail", kwargs={"pk": user.pk}),
             data={
+                "is_active": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(Session.objects.filter(session_key=session_id).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
+        )
+
+    def test_session_delete_put(self):
+        """Ensure sessions are deleted when a user is deactivated via PUT"""
+        user = create_test_admin_user()
+        session = create_test_session(user)
+        session_id = session.session.session_key
+
+        self.client.force_login(self.admin)
+        response = self.client.put(
+            reverse("authentik_api:user-detail", kwargs={"pk": user.pk}),
+            data={
+                "username": user.username,
+                "name": user.name,
                 "is_active": False,
             },
         )

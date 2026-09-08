@@ -34,8 +34,8 @@ const statusToDetails = new Map<P4Disposition, [string, string]>([
  *
  * - type="error" (default): A Red ✖
  * - type="warning" An orange ⚠
- * - type="info" A grey ⓘ
- * - type="neutral" A grey ✖
+ * - type="info" A gray ⓘ
+ * - type="neutral" A gray ✖
  *
  * By default, the messages for "good" and "other" are "Yes" and "No" respectively, but these can be
  * customized with the attributes `good-label` and `bad-label`.

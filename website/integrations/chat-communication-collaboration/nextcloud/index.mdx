@@ -45,9 +45,9 @@ Nextcloud can use OIDC, SAML, or LDAP for authentication. OIDC is usually the si
 <Tabs
 defaultValue="oidc"
 values={[
- { label: "OIDC", value: "oidc" },
- { label: "SAML", value: "saml" },
- { label: "LDAP", value: "ldap" }
+    { label: "OIDC", value: "oidc" },
+    { label: "SAML", value: "saml" },
+    { label: "LDAP", value: "ldap" }
 ]}
 >
 <TabItem value="oidc">
@@ -64,11 +64,11 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property mappings** and click **Create**.
- - **Select type**: select **Scope Mapping**.
- - **Create Scope Mapping**:
- - **Name**: `Nextcloud Profile`
- - **Scope name**: `nextcloud`
- - **Expression**:
+    - **Select type**: select **Scope Mapping**.
+    - **Create Scope Mapping**:
+        - **Name**: `Nextcloud Profile`
+        - **Scope name**: `nextcloud`
+        - **Expression**:
 
             ```python
             groups = [
@@ -96,17 +96,17 @@ To set a quota, define the `nextcloud_quota` attribute on a user, group, or Next
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
- - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
- - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
- - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
- - Note the **Client ID** and **Client Secret** values because they will be required later.
- - Add a **Redirect URI** of type `Strict` `Authorization` as `https://nextcloud.company/apps/user_oidc/code`.
- - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://nextcloud.company`.
- - Select any available signing key.
- - Under **Advanced protocol settings**:
- - **Subject Mode**: select `Based on the User's UUID`.
- - If you created the `Nextcloud Profile` scope mapping, add it to **Selected Scopes**.
- - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID** and **Client Secret** values because they will be required later.
+        - Add a **Redirect URI** of type `Strict` `Authorization` as `https://nextcloud.company/apps/user_oidc/code`.
+        - Add a **Redirect URI** of type `Strict` `Post Logout` as `https://nextcloud.company`.
+        - Select any available signing key.
+        - Under **Advanced protocol settings**:
+            - **Subject Mode**: select `Based on the User's UUID`.
+            - If you created the `Nextcloud Profile` scope mapping, add it to **Selected Scopes**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 If you created the `Nextcloud Profile` scope mapping and want authentik to send Nextcloud-specific group values, open the new application, click the **Application entitlements** tab, and create the entitlements that Nextcloud should receive in the `groups` claim. Bind the appropriate users or groups to each entitlement.
@@ -116,22 +116,22 @@ If you created the `Nextcloud Profile` scope mapping and want authentik to send 
 1. In Nextcloud, install the **OpenID Connect user backend** app.
 2. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
 3. Click the **+** button and enter the following settings:
- - **Identifier**: `authentik`
- - **Client ID**: `<Client ID from authentik>`
- - **Client secret**: `<Client Secret from authentik>`
- - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
- - **Scope**: `email profile openid`
- - If you created the `Nextcloud Profile` scope mapping, add `nextcloud` to the **Scope** value.
- - Under **Attribute mapping**:
- - **User ID mapping**: `sub`
- - **Display name mapping**: `name`
- - **Email mapping**: `email`
- - If you created the `Nextcloud Profile` scope mapping:
- - **User ID mapping**: `user_id`
- - **Quota mapping**: `quota`
- - **Groups mapping**: `groups`
- - Enable **Use group provisioning**.
- - Disable **Use unique user ID** if you use `user_id` to match existing Nextcloud users or if you send the `admin` group for administrator access.
+    - **Identifier**: `authentik`
+    - **Client ID**: `<Client ID from authentik>`
+    - **Client secret**: `<Client Secret from authentik>`
+    - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
+    - **Scope**: `email profile openid`
+    - If you created the `Nextcloud Profile` scope mapping, add `nextcloud` to the **Scope** value.
+    - Under **Attribute mapping**:
+        - **User ID mapping**: `sub`
+        - **Display name mapping**: `name`
+        - **Email mapping**: `email`
+        - If you created the `Nextcloud Profile` scope mapping:
+            - **User ID mapping**: `user_id`
+            - **Quota mapping**: `quota`
+            - **Groups mapping**: `groups`
+            - Enable **Use group provisioning**.
+    - Disable **Use unique user ID** if you use `user_id` to match existing Nextcloud users or if you send the `admin` group for administrator access.
 
 :::info Local provider connections
 If authentik and Nextcloud are running on the same host and Nextcloud cannot reach authentik, add `'allow_local_remote_servers' => true` to the Nextcloud `config/config.php` file.
@@ -172,11 +172,11 @@ If you do not need storage quota or group information in Nextcloud, skip to the 
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property mappings** and click **Create**.
- - **Select type**: select **SAML Provider Property Mapping**.
- - **Create SAML Provider Property Mapping**:
- - **Name**: `Nextcloud quota`
- - **SAML Attribute Name**: `nextcloud_quota`
- - **Expression**:
+    - **Select type**: select **SAML Provider Property Mapping**.
+    - **Create SAML Provider Property Mapping**:
+        - **Name**: `Nextcloud quota`
+        - **SAML Attribute Name**: `nextcloud_quota`
+        - **Expression**:
 
             ```python
             return (
@@ -187,11 +187,11 @@ If you do not need storage quota or group information in Nextcloud, skip to the 
 
 3. Click **Finish**.
 4. Click **Create** again.
- - **Select type**: select **SAML Provider Property Mapping**.
- - **Create SAML Provider Property Mapping**:
- - **Name**: `Nextcloud groups`
- - **SAML Attribute Name**: `http://schemas.xmlsoap.org/claims/Group`
- - **Expression**:
+    - **Select type**: select **SAML Provider Property Mapping**.
+    - **Create SAML Provider Property Mapping**:
+        - **Name**: `Nextcloud groups`
+        - **SAML Attribute Name**: `http://schemas.xmlsoap.org/claims/Group`
+        - **Expression**:
 
             ```python
             for entitlement in request.user.app_entitlements(provider.application):
@@ -206,17 +206,17 @@ This mapping reads Nextcloud-specific groups from application entitlements. Afte
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
- - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
- - **Choose a Provider type**: select **SAML Provider** as the provider type.
- - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
- - Set the **ACS URL** to `https://nextcloud.company/apps/user_saml/saml/acs`.
- - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
- - Set the **SLS URL** to `https://nextcloud.company/apps/user_saml/saml/sls`.
- - Set the **SLS Binding** to `Redirect`.
- - Set the **Logout Method** to `Front-channel (Iframe)`.
- - Under **Advanced protocol settings**, select an available **Signing certificate**.
- - If you created SAML property mappings for Nextcloud, add them to **Property mappings**.
- - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the application **Slug** because it will be required later.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Set the **ACS URL** to `https://nextcloud.company/apps/user_saml/saml/acs`.
+        - Set the **Audience** to `https://nextcloud.company/apps/user_saml/saml/metadata`.
+        - Set the **SLS URL** to `https://nextcloud.company/apps/user_saml/saml/sls`.
+        - Set the **SLS Binding** to `Redirect`.
+        - Set the **Logout Method** to `Front-channel (Iframe)`.
+        - Under **Advanced protocol settings**, select an available **Signing certificate**.
+        - If you created SAML property mappings for Nextcloud, add them to **Property mappings**.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 If you created the `Nextcloud groups` property mapping, open the new application, click the **Application entitlements** tab, and create the entitlements that Nextcloud should receive as SAML group values. Bind the appropriate users or groups to each entitlement.
@@ -233,24 +233,24 @@ If you created the `Nextcloud groups` property mapping, open the new application
 3. Click your profile picture in the top-right corner and select **Administrative settings**.
 4. Under **SSO & SAML authentication**, click **Use built-in SAML authentication**.
 5. In the **General** section, set:
- - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
- - **Optional display name**: `authentik`
+    - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
+    - **Optional display name**: `authentik`
 
 :::danger Stable user IDs
 Using the UID attribute as username is not recommended because of its mutable nature. If you map to the username instead, [disable username changing](/docs/sys-mgmt/settings#allow-users-to-change-username) and set **Attribute to map the UID to** to `http://schemas.goauthentik.io/2021/02/saml/username`.
 :::
 
 6. In the **Identity Provider Data** section, set:
- - **Identifier of the IdP entity**: `https://authentik.company/application/saml/<application_slug>/metadata/`
- - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/`
- - Under **Show optional Identity Provider settings**:
- - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/`
- - **X.509 certificate of the IdP**: paste the contents of the certificate file downloaded from authentik.
+    - **Identifier of the IdP entity**: `https://authentik.company/application/saml/<application_slug>/metadata/`
+    - **URL Target of the IdP where the SP will send the Authentication Request Message**: `https://authentik.company/application/saml/<application_slug>/`
+    - Under **Show optional Identity Provider settings**:
+        - **URL Location of the IdP where the SP will send the SLO Request**: `https://authentik.company/application/saml/<application_slug>/`
+        - **X.509 certificate of the IdP**: paste the contents of the certificate file downloaded from authentik.
 7. In the **Attribute mapping** section, set:
- - **Attribute to map the display name to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
- - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
- - If you created the `Nextcloud quota` property mapping, set **Attribute to map the quota to** to `nextcloud_quota`.
- - If you created the `Nextcloud groups` property mapping, set **Attribute to map the user's groups to** to `http://schemas.xmlsoap.org/claims/Group`.
+    - **Attribute to map the display name to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **Attribute to map the email address to**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+    - If you created the `Nextcloud quota` property mapping, set **Attribute to map the quota to** to `nextcloud_quota`.
+    - If you created the `Nextcloud groups` property mapping, set **Attribute to map the user's groups to** to `http://schemas.xmlsoap.org/claims/Group`.
 
 </TabItem>
 <TabItem value="ldap">
@@ -261,19 +261,19 @@ To support the integration of Nextcloud with authentik over LDAP, you need to cr
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
- - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
- - **Choose a Provider type**: select **LDAP** as the provider type.
- - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and the following required configuration.
- - Note the **Base DN** because it will be required later.
- - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **LDAP** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the bind flow to use for this provider, and the following required configuration.
+        - Note the **Base DN** because it will be required later.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage the listing and access to applications on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
 ### Create an LDAP outpost
 
 1. Navigate to **Applications** > **Outposts** and click **Create**.
- - **Name**: provide a suitable name for the outpost.
- - **Type**: select `LDAP`.
- - **Applications**: add the newly created Nextcloud application to **Selected Applications**.
+    - **Name**: provide a suitable name for the outpost.
+    - **Type**: select `LDAP`.
+    - **Applications**: add the newly created Nextcloud application to **Selected Applications**.
 2. Click **Create**.
 
 ### Configure the LDAP user and group backend
@@ -282,33 +282,33 @@ To support the integration of Nextcloud with authentik over LDAP, you need to cr
 2. Log in to Nextcloud as an administrator.
 3. Navigate to **Settings** > **LDAP user and group backend**.
 4. On the **Server** tab:
- - Click the **+** icon.
- - **Host**: enter the hostname or IP address of the authentik LDAP outpost, preceded by `ldap://` or `ldaps://`.
- - **Port**: enter `389` for LDAP or `636` for LDAPS.
- - Under **Credentials**, enter the **Bind DN** of the authentik LDAP provider and the associated user password.
- - Under **Base DN**, enter the **Base DN** of the authentik LDAP provider.
+    - Click the **+** icon.
+    - **Host**: enter the hostname or IP address of the authentik LDAP outpost, preceded by `ldap://` or `ldaps://`.
+    - **Port**: enter `389` for LDAP or `636` for LDAPS.
+    - Under **Credentials**, enter the **Bind DN** of the authentik LDAP provider and the associated user password.
+    - Under **Base DN**, enter the **Base DN** of the authentik LDAP provider.
 5. On the **Users** tab, set **Only these object classes** to `user`.
 6. On the **LDAP/AD integration** tab:
- - Clear **LDAP/AD Username**.
- - Set **Other Attributes** to `cn`.
- - Click **Expert** in the top-right corner and set:
- - **Internal Username Attribute**: `uid`
- - **UUID Attribute for Users**: `uid`
- - **UUID Attribute for Groups**: `gidNumber`
- - Click **Advanced** in the top-right corner and set:
- - Under **Connection Settings**:
- - **Configuration Active**: checked
- - Under **Directory Settings**:
- - **User Display Name Field**: `name`
- - **Base User Tree**: `ou=users,<Base DN from authentik>`
- - **Group Display Name Field**: `cn`
- - **Base Group Tree**: `ou=groups,<Base DN from authentik>`
- - **Group-Member Association**: `member (AD)`
- - Under **Special Attributes**:
- - **Email Field**: `mail`
+    - Clear **LDAP/AD Username**.
+    - Set **Other Attributes** to `cn`.
+    - Click **Expert** in the top-right corner and set:
+        - **Internal Username Attribute**: `uid`
+        - **UUID Attribute for Users**: `uid`
+        - **UUID Attribute for Groups**: `gidNumber`
+    - Click **Advanced** in the top-right corner and set:
+        - Under **Connection Settings**:
+            - **Configuration Active**: checked
+        - Under **Directory Settings**:
+            - **User Display Name Field**: `name`
+            - **Base User Tree**: `ou=users,<Base DN from authentik>`
+            - **Group Display Name Field**: `cn`
+            - **Base Group Tree**: `ou=groups,<Base DN from authentik>`
+            - **Group-Member Association**: `member (AD)`
+        - Under **Special Attributes**:
+            - **Email Field**: `mail`
 7. On the **Groups** tab:
- - Set **Only these object classes** to `group`.
- - Select the authentik groups that require Nextcloud access.
+    - Set **Only these object classes** to `group`.
+    - Select the authentik groups that require Nextcloud access.
 
 </TabItem>
 </Tabs>

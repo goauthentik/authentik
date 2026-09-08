@@ -2,7 +2,7 @@ import "#elements/CodeMirror";
 import "#elements/forms/HorizontalFormElement";
 import "#components/ak-switch-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { ModelForm } from "#elements/forms/ModelForm";
 
@@ -20,28 +20,26 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     KubernetesServiceConnection,
     string
 > {
-    loadInstance(pk: string): Promise<KubernetesServiceConnection> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesRetrieve({
-            uuid: pk,
-        });
-    }
+    protected endpoints = {
+        load: (uuid: string) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesRetrieve({
+                uuid,
+            }),
+        create: (kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesCreate({
+                kubernetesServiceConnectionRequest,
+            }),
+        update: (uuid: string, kubernetesServiceConnectionRequest: KubernetesServiceConnection) =>
+            aki(OutpostsApi).outpostsServiceConnectionsKubernetesUpdate({
+                uuid,
+                kubernetesServiceConnectionRequest,
+            }),
+    };
 
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated integration.")
             : msg("Successfully created integration.");
-    }
-
-    async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
-        if (this.instance) {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
-                uuid: this.instance.pk || "",
-                kubernetesServiceConnectionRequest: data,
-            });
-        }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-            kubernetesServiceConnectionRequest: data,
-        });
     }
 
     protected override renderForm(): TemplateResult {

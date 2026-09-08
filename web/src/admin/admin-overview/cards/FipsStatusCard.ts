@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AdminStatus, AdminStatusCard } from "#admin/admin-overview/cards/AdminStatusCard";
 
@@ -19,7 +19,7 @@ export class FipsStatusCard extends AdminStatusCard<SystemInfo> {
     protected statusSummary?: string;
 
     async getPrimaryValue(): Promise<SystemInfo> {
-        return new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
+        return aki(AdminApi).adminSystemRetrieve();
     }
 
     setStatus(summary: string, content: StatusContent): Promise<AdminStatus> {

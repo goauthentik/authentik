@@ -14,7 +14,7 @@ import "#elements/forms/SearchSelect/index";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { SlottedTemplateResult } from "#elements/types";
 import { ifPreviousValue } from "#elements/utils/properties";
@@ -82,7 +82,7 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
     //#region Lifecycle
 
     protected async loadInstance(pk: string): Promise<OAuthSource> {
-        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
+        const source = await aki(SourcesApi).sourcesOauthRetrieve({
             slug: pk,
         });
         this.providerType = source.type;
@@ -99,19 +99,19 @@ export class OAuthSourceForm extends BaseSourceForm<OAuthSource> {
         data.providerType = (this.providerType?.name || "") as ProviderTypeEnum;
 
         if (this.instance) {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
+            return aki(SourcesApi).sourcesOauthPartialUpdate({
                 slug: this.instance.slug,
                 patchedOAuthSourceRequest: data,
             });
         }
 
-        return new SourcesApi(DEFAULT_CONFIG).sourcesOauthCreate({
+        return aki(SourcesApi).sourcesOauthCreate({
             oAuthSourceRequest: data as unknown as OAuthSourceRequest,
         });
     }
 
     protected fetchProviderType(modelName: string): Promise<void> {
-        return new SourcesApi(DEFAULT_CONFIG)
+        return aki(SourcesApi)
             .sourcesOauthSourceTypesList({
                 name: modelName?.replace("oauthsource", ""),
             })

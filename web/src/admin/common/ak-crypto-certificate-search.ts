@@ -1,6 +1,6 @@
 import "#elements/forms/SearchSelect/index";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -115,9 +115,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
         if (this.allowedKeyTypes?.length) {
             args.keyType = this.allowedKeyTypes;
         }
-        const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList(
-            args,
-        );
+        const certificates = await aki(CryptoApi).cryptoCertificatekeypairsList(args);
         return certificates.results;
     };
 

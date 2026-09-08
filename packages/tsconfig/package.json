@@ -14,8 +14,7 @@
     "main": "tsconfig.json",
     "type": "module",
     "engines": {
-        "node": ">=24",
-        "npm": ">=11.14.1"
+        "node": ">=24"
     },
     "devEngines": {
         "runtime": {
@@ -24,8 +23,8 @@
             "onFail": "warn"
         },
         "packageManager": {
-            "name": "npm",
-            "version": ">=11.14.1",
+            "name": "pnpm",
+            "version": ">=11.5.1",
             "onFail": "warn"
         }
     },

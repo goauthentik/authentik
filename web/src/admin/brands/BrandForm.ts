@@ -11,7 +11,7 @@ import "#components/ak-text-input";
 import "#components/ak-switch-input";
 import "#components/ak-file-search-input";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { DefaultBrand } from "#common/ui/config";
 
 import { ModelForm } from "#elements/forms/ModelForm";
@@ -44,8 +44,8 @@ export class BrandForm extends ModelForm<Brand, string> {
     public static override verboseName = msg("Brand");
     public static override verboseNamePlural = msg("Brands");
 
-    #coreAPI = new CoreApi(DEFAULT_CONFIG);
-    #flowsAPI = new FlowsApi(DEFAULT_CONFIG);
+    #coreAPI = aki(CoreApi);
+    #flowsAPI = aki(FlowsApi);
 
     @state()
     protected lockdownFlowAuthentication: AuthenticationEnum | null = null;
@@ -109,6 +109,7 @@ export class BrandForm extends ModelForm<Brand, string> {
             brandingLogo = "",
             brandingFavicon = "",
             brandingCustomCss = "",
+            brandingMapTiles = "",
         } = this.instance ?? DefaultBrand;
 
         const defaultFlowBackground =
@@ -177,6 +178,20 @@ export class BrandForm extends ModelForm<Brand, string> {
                         )}
                     ></ak-file-search-input>
 
+                    <ak-text-input
+                        name="brandingMapTiles"
+                        input-hint="code"
+                        placeholder="pmtiles://https://tiles.example.com/basemap.pmtiles"
+                        value=${brandingMapTiles}
+                        label=${msg("Map tiles", { id: "brand.map-tiles.label" })}
+                        autocomplete="off"
+                        spellcheck="false"
+                        help=${msg(
+                            "Vector tile source for the events map. Accepts a pmtiles:// archive URL or an XYZ template such as /tiles/{z}/{x}/{y}.mvt. Leave empty to use the bundled basemap, which needs no tile server. This URL is served to unauthenticated clients along with the rest of the brand, so avoid tile providers that carry an API key in the URL.",
+                            { id: "brand.map-tiles.description" },
+                        )}
+                    ></ak-text-input>
+
                     <ak-form-element-horizontal name="brandingCustomCss">
                         ${AKLabel(
                             {
@@ -217,9 +232,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                                 if (query !== undefined) {
                                     args.search = query;
                                 }
-                                const users = await new CoreApi(
-                                    DEFAULT_CONFIG,
-                                ).coreApplicationsList(args);
+                                const users = await aki(CoreApi).coreApplicationsList(args);
 
                                 return users.results;
                             }}
@@ -254,6 +267,26 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User switch flow", {
+                            id: "brand.form.flow-user-switch.label",
+                        })}
+                        name="flowUserSwitch"
+                    >
+                        <ak-flow-search
+                            placeholder=${msg("Select a user switch flow...", {
+                                id: "brand.form.flow-user-switch.placeholder",
+                            })}
+                            flowType=${FlowDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.flowUserSwitch}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Authentication flow used when switching between users signed in on the same browser. If left empty, user switching is disabled.",
+                                { id: "brand.form.flow-user-switch.description" },
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -345,6 +378,16 @@ export class BrandForm extends ModelForm<Brand, string> {
                                   )}
                               </ak-alert>`
                             : null}
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Request flow")} name="flowRequest">
+                        <ak-flow-search
+                            placeholder=${msg("Select a request flow...")}
+                            flowType=${FlowDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowRequest}
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Default flow used by users requesting access.")}
+                        </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

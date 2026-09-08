@@ -26,7 +26,6 @@ class AuthenticatorWebAuthnStageSerializer(StageSerializer):
             "hints",
             "device_type_restrictions",
             "device_type_restrictions_obj",
-            "prevent_duplicate_devices",
             "max_attempts",
         ]
 

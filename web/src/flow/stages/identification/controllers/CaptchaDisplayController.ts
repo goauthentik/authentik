@@ -49,6 +49,12 @@ export class CaptchaDisplayController implements ReactiveController {
         const input = this.#inputRef.value;
         if (!input) return;
         input.value = token;
+        // The surrounding identification form only updates its validity when form controls
+        // emit normal input events, so mirror a user's field change after the CAPTCHA solves.
+        input.dispatchEvent(new Event("input", { bubbles: true, composed: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true, composed: true }));
+        this.#loaded = true;
+        this.host.requestUpdate();
     };
 
     public onFailure() {

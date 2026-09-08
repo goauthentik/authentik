@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 
 import { AKElement } from "#elements/Base";
 import { ISearchSelect } from "#elements/forms/SearchSelect/ak-search-select";
@@ -17,7 +17,7 @@ async function fetchObjects(query?: string): Promise<Group[]> {
     if (query !== undefined) {
         args.search = query;
     }
-    const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+    const groups = await aki(CoreApi).coreGroupsList(args);
     return groups.results;
 }
 

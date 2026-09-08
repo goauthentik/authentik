@@ -4,7 +4,7 @@ import "#admin/rbac/ak-rbac-object-permission-page";
 import "#admin/endpoints/connectors/agent/EnrollmentTokenListPage";
 import "#admin/endpoints/connectors/agent/AgentConnectorSetup";
 
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { APIError, parseAPIResponseError } from "#common/errors/network";
 
 import { AKElement } from "#elements/Base";
@@ -37,7 +37,7 @@ export class AgentConnectorViewPage extends AKElement {
     static styles: CSSResult[] = [PFCard, PFPage, PFGrid, PFButton, PFDescriptionList];
 
     protected fetchDevice(id: string) {
-        new EndpointsApi(DEFAULT_CONFIG)
+        aki(EndpointsApi)
             .endpointsAgentsConnectorsRetrieve({ connectorUuid: id })
             .then((conn) => {
                 this.connector = conn;

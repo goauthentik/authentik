@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "#common/api/config";
+import { aki } from "#common/api/client";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
 
@@ -46,7 +46,7 @@ export class DebugPage extends AKElement {
                             <button
                                 class="pf-c-button pf-m-primary"
                                 @click=${() => {
-                                    new AdminApi(DEFAULT_CONFIG)
+                                    aki(AdminApi)
                                         .adminSystemCreate()
                                         .then(() => {
                                             showMessage({
