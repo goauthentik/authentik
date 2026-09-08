@@ -119,7 +119,7 @@ class TestSourceSAML(SeleniumTestCase):
             verification_kp=keypair,
         )
         self.run_container(
-            image="ghcr.io/beryju/saml-test-idp:0.11",
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "IDP_ROOT_URL": f"http://{self.host}:9009",
@@ -193,7 +193,7 @@ class TestSourceSAML(SeleniumTestCase):
             verification_kp=keypair,
         )
         self.run_container(
-            image="ghcr.io/beryju/saml-test-idp:0.11",
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "IDP_ROOT_URL": f"http://{self.host}:9009",
@@ -280,7 +280,7 @@ class TestSourceSAML(SeleniumTestCase):
             verification_kp=keypair,
         )
         self.run_container(
-            image="ghcr.io/beryju/saml-test-idp:0.11",
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "IDP_ROOT_URL": f"http://{self.host}:9009",
@@ -354,7 +354,7 @@ class TestSourceSAML(SeleniumTestCase):
             verification_kp=keypair,
         )
         self.run_container(
-            image="ghcr.io/beryju/saml-test-idp:0.11",
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "IDP_ROOT_URL": f"http://{self.host}:9009",
