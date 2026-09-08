@@ -23,6 +23,7 @@
         "@goauthentik/logger-js": "workspace:*",
         "@goauthentik/prettier-config": "workspace:*",
         "@goauthentik/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
         "cspell": "^10.0.1",
         "eslint": "catalog:",
         "npm-run-all": "^4.1.5",
