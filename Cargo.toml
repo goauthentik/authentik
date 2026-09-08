@@ -129,7 +129,7 @@ thiserror = "= 2.0.20"
 time = { version = "= 0.3.55", features = ["macros"] }
 tokio = { version = "= 1.53.1", features = ["full", "tracing"] }
 tokio-retry2 = "= 0.9.1"
-tokio-rustls = "= 0.26.4"
+tokio-rustls = "= 0.26.5"
 tokio-tungstenite = { version = "= 0.30.0", features = [
   "rustls-tls-webpki-roots",
   "url",
