@@ -4,13 +4,13 @@
  * @import { ListenOptions } from "node:net";
  * @import { Server as HTTPServer } from "node:http";
  * @import { Server as HTTPSServer } from "node:https";
- * @import { Logger } from "@goauthentik/logger-js";
+ * @import { ConsoleLike } from "@goauthentik/esbuild-plugin-live-reload/shared";
  */
 
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
 
-import { createLogger } from "@goauthentik/logger-js";
+import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
 
 import { findFreePorts } from "find-free-ports";
 
@@ -64,7 +64,7 @@ async function findDisparatePort() {
  *
  * @property {string} pathname
  * @property {EventTarget} dispatcher
- * @property {Logger} [logger]
+ * @property {ConsoleLike} [logger]
  *
  * @category Server API
  * @runtime node
@@ -155,7 +155,7 @@ export function createRequestHandler({ pathname, dispatcher, logger = createLogg
  * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
  * @property {ListenOptions} [listenOptions] Options for the server's listen method.
  * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
- * @property {Logger} [logger] A console-like logger.
+ * @property {ConsoleLike} [logger] A console-like logger.
  * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
  */
 

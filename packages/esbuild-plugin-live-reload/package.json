@@ -46,13 +46,11 @@
     "devDependencies": {
         "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
-        "@goauthentik/logger-js": "link:../logger-js",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
         "esbuild": "catalog:",
         "eslint": "catalog:",
-        "pino": "^10.3.1",
         "prettier": "catalog:",
         "prettier-plugin-packagejson": "catalog:",
         "typedoc": "^0.28.20",
@@ -61,7 +59,6 @@
         "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
-        "@goauthentik/logger-js": "^1.0.1",
         "esbuild": "^0.28.1"
     },
     "files": [
@@ -95,11 +92,6 @@
         "reload",
         "authentik"
     ],
-    "peerDependenciesMeta": {
-        "@goauthentik/logger-js": {
-            "optional": true
-        }
-    },
     "publishConfig": {
         "access": "public"
     }
