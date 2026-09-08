@@ -20,16 +20,19 @@ OLD_GAUGE_WORKERS = Gauge(
     "authentik_admin_workers",
     "Currently connected workers, their versions and if they are the same version as authentik",
     ["version", "version_matched"],
+    multiprocess_mode="livemostrecent",
 )
 GAUGE_WORKERS = Gauge(
     "authentik_tasks_workers",
     "Currently connected workers, their versions and if they are the same version as authentik",
     ["version", "version_matched"],
+    multiprocess_mode="livemostrecent",
 )
 GAUGE_TASKS_QUEUED = Gauge(
     "authentik_tasks_queued",
     "The number of tasks in queue.",
     ["queue_name", "actor_name"],
+    multiprocess_mode="livemostrecent",
 )
 
 
@@ -38,6 +41,11 @@ def monitoring_set_workers(sender, **kwargs):
     """Set worker gauge"""
     worker_version_count = {}
     our_version = parse(authentik_full_version())
+    worker_versions = WorkerStatus.objects.values_list("version", flat=True).distinct()
+    for version in worker_versions:
+        for gauge in (OLD_GAUGE_WORKERS, GAUGE_WORKERS):
+            gauge.labels(version, True).set(0)
+            gauge.labels(version, False).set(0)
     for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(seconds=45)):
         version_matching = parse(status.version) == our_version
         worker_version_count.setdefault(status.version, {"count": 0, "matching": version_matching})

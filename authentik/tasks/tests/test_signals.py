@@ -8,6 +8,7 @@ Pure unit tests — ``Task.objects`` and ``get_broker`` are mocked so no DB
 connection is required.
 """
 
+from types import SimpleNamespace
 from unittest import TestCase, mock
 
 
@@ -91,3 +92,48 @@ class TestMonitoringSetQueuedTasksDoesNotScan(TestCase):
 
         mock_task.objects.filter.assert_called_once_with(state=TaskState.QUEUED)
         mock_gauge.labels.return_value.set.assert_any_call(5)
+
+
+class TestMonitoringSetWorkers(TestCase):
+    """Tests for worker-count gauge refreshes."""
+
+    def test_obsolete_version_labels_are_reset(self):
+        """Inactive versions and their old match state are reset to zero."""
+        from authentik.tasks import signals
+
+        statuses = [SimpleNamespace(version="2026.5.6")]
+        worker_status = mock.Mock()
+        worker_status.objects.values_list.return_value.distinct.return_value = [
+            "2026.5.6",
+            "2026.4.0",
+        ]
+        worker_status.objects.filter.return_value = statuses
+        old_children = {}
+        children = {}
+
+        def old_labels(version, matched):
+            return old_children.setdefault((version, matched), mock.Mock())
+
+        def labels(version, matched):
+            return children.setdefault((version, matched), mock.Mock())
+
+        with (
+            mock.patch.object(signals, "authentik_full_version", return_value="2026.5.6"),
+            mock.patch.object(signals, "WorkerStatus", worker_status),
+            mock.patch.object(signals, "OLD_GAUGE_WORKERS") as old_gauge,
+            mock.patch.object(signals, "GAUGE_WORKERS") as gauge,
+        ):
+            old_gauge.labels.side_effect = old_labels
+            gauge.labels.side_effect = labels
+            signals.monitoring_set_workers(sender=self)
+
+        worker_status.objects.values_list.assert_called_once_with("version", flat=True)
+        worker_status.objects.values_list.return_value.distinct.assert_called_once_with()
+        for gauge_children in (old_children, children):
+            gauge_children[("2026.4.0", True)].set.assert_called_once_with(0)
+            gauge_children[("2026.4.0", False)].set.assert_called_once_with(0)
+            gauge_children[("2026.5.6", False)].set.assert_called_once_with(0)
+            self.assertEqual(
+                gauge_children[("2026.5.6", True)].set.call_args_list,
+                [mock.call(0), mock.call(1)],
+            )
