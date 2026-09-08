@@ -24,6 +24,7 @@
         "storybook:build": "wireit",
         "test": "vitest",
         "test:e2e": "playwright test",
+        "test:unit": "vitest run",
         "tsc": "wireit",
         "watch": "run-s build-locales bundler:watch"
     },
