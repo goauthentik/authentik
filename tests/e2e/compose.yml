@@ -70,5 +70,5 @@ services:
     image: docker.io/envoyproxy/envoy:v1.39-latest
     profiles: [pin-only]
   caddy:
-    image: docker.io/library/caddy:2.8
+    image: docker.io/library/caddy:2.11
     profiles: [pin-only]
