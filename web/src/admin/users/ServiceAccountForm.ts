@@ -180,7 +180,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     input-hint="code"
                     readonly
                     .help=${msg(
-                        "You can retrieve the password later from the user's Credentials/Tokens tab or from Directory > Tokens and App Passwords.",
+                        "You can retrieve the password from the user's Credentials/Tokens tab or from Directory > Tokens and App Passwords.",
                     )}
                 >
                 </ak-hidden-text-input>
