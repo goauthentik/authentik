@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.flows.api.bindings import FlowStageBindingSerializer, FlowStageBindingViewSet
 from authentik.flows.api.stages import StageSerializer, StageViewSet
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding, Stage
 from authentik.lib.generators import generate_id
@@ -46,6 +47,22 @@ class TestFlowsAPI(APITestCase):
         """Test that stage serializer returns the correct type"""
         dummy = DummyStage.objects.create()
         self.assertIn(dummy, StageViewSet().get_queryset())
+
+    def test_binding_stage_details(self):
+        """Bindings retain the concrete stage type and every flow using the stage."""
+        stage = DummyStage.objects.create(name=generate_id())
+        flows = [create_test_flow(), create_test_flow()]
+        for flow in flows:
+            FlowStageBinding.objects.create(target=flow, stage=stage, order=0)
+        bindings = FlowStageBindingViewSet().get_queryset().filter(stage=stage)
+        data = FlowStageBindingSerializer(bindings, many=True).data
+        self.assertEqual(len(data), 2)
+        for binding in data:
+            self.assertEqual(binding["stage_obj"]["component"], stage.component)
+            self.assertCountEqual(
+                [flow["pk"] for flow in binding["stage_obj"]["flow_set"]],
+                [str(flow.pk) for flow in flows],
+            )
 
     def test_api_diagram(self):
         """Test flow diagram."""
