@@ -41,11 +41,9 @@ os.environ[TRACER_DEFER_POSTFORK_ENV_VAR] = "true"
 _worker_id: dict[str, int | None] = {"value": None}
 
 
-def _pid_or_worker_id():
-    return _worker_id["value"] if _worker_id["value"] is not None else 0
-
-
-values.ValueClass = MultiProcessValue(_pid_or_worker_id)
+values.ValueClass = MultiProcessValue(
+    lambda: _worker_id["value"] if _worker_id["value"] is not None else 0
+)
 
 setup()
 
