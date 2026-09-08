@@ -21,10 +21,18 @@
     "exports": {
         "./package.json": "./package.json",
         ".": {
-            "types": "./out/index.d.ts",
-            "node": "./lib/node.js",
-            "browser": "./index.js",
-            "import": "./index.js"
+            "node": {
+                "types": "./out/lib/node.d.ts",
+                "default": "./lib/node.js"
+            },
+            "browser": {
+                "types": "./out/index.d.ts",
+                "default": "./index.js"
+            },
+            "default": {
+                "types": "./out/index.d.ts",
+                "default": "./index.js"
+            }
         }
     },
     "devDependencies": {
