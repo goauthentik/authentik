@@ -70,12 +70,6 @@ def source_app_test(func):
     return func
 
 
-def initial_uri(entry: str) -> str:
-    """The request URI an app sees when a login is started at `entry`"""
-    parts = urlsplit(entry)
-    return urlunsplit(("", "", parts.path or "/", parts.query, "")) or "/"
-
-
 @retry(is_test_case=False)
 def stage_shadow_root(test, stage: str):
     """Get a flow stage's shadow root, retrying while the executor swaps stages"""
@@ -288,8 +282,9 @@ class TestOIDCApp:
             self.test.assertEqual(
                 token.get(claim), want, f"{claim} mismatch at {self.test.driver.current_url}"
             )
+        parts = urlsplit(entry)
         self.test.assertEqual(
             body.get("InitialURL"),
-            initial_uri(entry),
+            urlunsplit(("", "", parts.path or "/", parts.query, "")) or "/",
             f"InitialURL mismatch at {self.test.driver.current_url}",
         )
