@@ -347,7 +347,9 @@ updates:
       - /packages/client-rust
       - /packages/client-ts
       - /scripts
+      - /tests
       - /tests/e2e
+      - /tests/integration
       - /tests/openid_conformance
     schedule:
       interval: daily
