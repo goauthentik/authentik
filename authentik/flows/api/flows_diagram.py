@@ -41,6 +41,7 @@ def model_label(instance: Model) -> str:
 
 @dataclass
 class DiagramNode:
+
     identifier: str
     type: DiagramNodeTypes
 
@@ -60,6 +61,7 @@ class DiagramNode:
 
 @dataclass
 class DiagramEdge:
+
     source: str
     target: str
     type: DiagramEdgeTypes = DiagramEdgeTypes.PROCEED
@@ -127,17 +129,25 @@ class FlowDiagram:
         type: DiagramEdgeTypes = DiagramEdgeTypes.PROCEED,
     ) -> None:
         for source in sources:
-            self.graph.edges.append(DiagramEdge(source.identifier, target.identifier, type))
+            self.graph.edges.append(
+                DiagramEdge(source.identifier, target.identifier, type)
+            )
 
-    def get_policy_bindings(self, target: PolicyBindingModel) -> QuerySet[PolicyBinding]:
+    def get_policy_bindings(
+        self, target: PolicyBindingModel
+    ) -> QuerySet[PolicyBinding]:
         return (
-            get_objects_for_user(self.user, "authentik_policies.view_policybinding")
+            get_objects_for_user(
+                self.user, "authentik_policies.view_policybinding"
+            )
             .filter(target=target)
             .exclude(policy__isnull=True)
             .order_by("order")
         )
 
-    def get_authentication_requirement(self, flow_start: DiagramNode, end: DiagramNode) -> None:
+    def get_authentication_requirement(
+        self, flow_start: DiagramNode, end: DiagramNode
+    ) -> None:
         if self.flow.authentication == FlowAuthenticationRequirement.NONE:
             return
 
@@ -148,17 +158,25 @@ class FlowDiagram:
                 name=self.flow.authentication,
             )
         )
-        self.add_edges([requirement], end, DiagramEdgeTypes.REQUIREMENT_UNFULFILLED)
-        self.add_edges([requirement], flow_start, DiagramEdgeTypes.REQUIREMENT_FULFILLED)
+        self.add_edges(
+            [requirement], end, DiagramEdgeTypes.REQUIREMENT_UNFULFILLED
+        )
+        self.add_edges(
+            [requirement], flow_start, DiagramEdgeTypes.REQUIREMENT_FULFILLED
+        )
 
-    def get_flow_policies(self, flow_start: DiagramNode, end: DiagramNode) -> None:
+    def get_flow_policies(
+        self, flow_start: DiagramNode, end: DiagramNode
+    ) -> None:
         bindings = list(self.get_policy_bindings(self.flow))
 
         if not bindings:
             return
 
         pre = self.add_node(
-            DiagramNode(identifier="flow_pre", type=DiagramNodeTypes.PRE_FLOW_POLICIES)
+            DiagramNode(
+                identifier="flow_pre", type=DiagramNodeTypes.PRE_FLOW_POLICIES
+            )
         )
 
         for index, binding in enumerate(bindings):
@@ -174,7 +192,9 @@ class FlowDiagram:
         last_stage: DiagramNode | None = None
 
         stages = (
-            get_objects_for_user(self.user, "authentik_flows.view_flowstagebinding")
+            get_objects_for_user(
+                self.user, "authentik_flows.view_flowstagebinding"
+            )
             .filter(target=self.flow)
             .order_by("order")
         )
@@ -193,7 +213,9 @@ class FlowDiagram:
                     )
                 )
 
-            stage = self.add_node(stage_node(f"stage_{stage_index}", stage_binding))
+            stage = self.add_node(
+                stage_node(f"stage_{stage_index}", stage_binding)
+            )
 
             for policy in policies:
                 self.add_edges(parents, policy)
@@ -203,7 +225,9 @@ class FlowDiagram:
             else:
                 self.add_edges(parents, stage)
 
-            self.add_edges(previous_policies, stage, DiagramEdgeTypes.POLICY_DENIED)
+            self.add_edges(
+                previous_policies, stage, DiagramEdgeTypes.POLICY_DENIED
+            )
 
             parents, previous_policies, last_stage = [stage], policies, stage
 
