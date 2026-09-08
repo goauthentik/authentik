@@ -31,7 +31,7 @@ services:
     image: ghcr.io/beryju/saml-test-idp:0.11
     profiles: [pin-only]
   grafana:
-    image: grafana/grafana:7.1.0
+    image: docker.io/grafana/grafana:7.1.0
     profiles: [pin-only]
   oidc-test-client:
     image: ghcr.io/beryju/oidc-test-client:2.1
@@ -51,16 +51,14 @@ services:
   scim2-compliance-test-utility:
     image: ghcr.io/suvera/scim2-compliance-test-utility@sha256:eca913bb73c46892cd1fb2dfd2fef1c5881e6abc5cb0eec7e92fb78c1b933ece
     profiles: [pin-only]
-  # Floating tags: Dependabot cannot bump `latest`. Re-pin to a concrete
-  # upstream version to get real update coverage for these three.
   whoami:
-    image: traefik/whoami:latest
+    image: ghcr.io/traefik/whoami:v1.12
     profiles: [pin-only]
   test-samba-dc:
-    image: ghcr.io/beryju/test-samba-dc:latest
+    image: ghcr.io/beryju/test-samba-dc:v1.0
     profiles: [pin-only]
   openssh-server:
-    image: lscr.io/linuxserver/openssh-server:latest
+    image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]
   traefik:
     image: docker.io/library/traefik:3.1
