@@ -22,7 +22,7 @@ catalog:
   "@types/node": "^26.1.2"
   "@vitest/browser": "^4.1.10"
   "@vitest/browser-playwright": "^4.1.10"
-  esbuild: "^0.28.1"
+  esbuild: "^0.28.2"
   eslint: "^9.39.5"
   playwright: "^1.62.1"
   prettier: "3.8.3"
@@ -30,7 +30,7 @@ catalog:
   typescript: "^6.0.3"
   typescript-eslint: "^8.65.0"
   vite: "^8.2.0"
-  vitest: "^4.1.10"
+  vitest: "^4.1.11"
 
 overrides:
   "@typescript-eslint/eslint-plugin>typescript": "catalog:"
