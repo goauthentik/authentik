@@ -27,7 +27,11 @@ It can either be bound to a flow or embedded inside the [Identification stage](.
 
 Use this stage anywhere a flow should require a CAPTCHA check, especially in enrollment, recovery, or other public-facing flows.
 
-If you embed it in the [Identification stage](../identification/index.mdx), configure the CAPTCHA provider for invisible or background use.
+If you embed it in an [Identification stage](../identification/index.mdx), configure the CAPTCHA provider for invisible or background use.
+
+:::note CAPTCHA and passkey authentication
+The CAPTCHA stage does not run when the user completes an Identification stage with a passkey, because authentik completes identification immediately after a successful WebAuthn check. For more information about this behavior and its security rationale, see [CAPTCHA and passkey authentication](../identification/index.mdx#captcha-and-passkey-authentication).
+:::
 
 ## Notes
 
