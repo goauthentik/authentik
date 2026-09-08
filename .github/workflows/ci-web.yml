@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       code: "${{ steps.detect.outputs.code }}"
+      bundled-docs: "${{ steps.detect.outputs.bundled-docs }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
         with:
@@ -65,7 +66,10 @@ jobs:
         run: pnpm --dir web run lit-analyse
 
   build:
-    if: "${{ needs.changes.outputs.code == 'true' }}"
+    # Also runs for documentation that is compiled into the bundle: a malformed
+    # file under website/docs fails this build, so it is the canary that keeps
+    # the skipped server container build honest.
+    if: "${{ needs.changes.outputs.code == 'true' || needs.changes.outputs.bundled-docs == 'true' }}"
     needs:
       - changes
     runs-on: ubuntu-latest
