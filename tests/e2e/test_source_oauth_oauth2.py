@@ -87,7 +87,7 @@ class TestSourceOAuth2(DexOAuthSourceMixin, SeleniumTestCase):
 
         # At this point we've been redirected back
         # and we're asked for the username
-        self.enroll_username("foo")
+        self.fill_prompt("username", "foo")
 
         # Wait until we've logged in
         self.wait_for_url(self.if_user_url())

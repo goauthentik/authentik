@@ -290,20 +290,13 @@ jobs:
             glob: tests/e2e/test_provider_proxy*
             profiles: selenium
           - name: oauth
-            glob: >-
-              tests/e2e/test_provider_oauth2*
-              tests/e2e/test_source_oauth_oauth*
-              tests/e2e/test_source_oauth_app_oidc*
-              tests/e2e/test_source_oauth_app_saml*
+            glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
             profiles: selenium
           - name: oauth-oidc
             glob: tests/e2e/test_provider_oidc*
             profiles: selenium
           - name: saml
-            glob: >-
-              tests/e2e/test_provider_saml*
-              tests/e2e/test_source_saml*
-              tests/e2e/test_source_chained*
+            glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
             profiles: selenium
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
