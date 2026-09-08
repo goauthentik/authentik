@@ -157,3 +157,95 @@ export function parseRange(range) {
 }
 
 //#endregion
+
+//#region Package manager
+
+/**
+ * The npm registry used to resolve the integrity hash of a `packageManager` pin.
+ */
+const NPM_REGISTRY_ORIGIN = process.env.npm_config_registry || "https://registry.npmjs.org";
+
+/**
+ * How long to wait on the registry before giving up on the integrity check.
+ */
+const REGISTRY_TIMEOUT_MS = 10 * 1000;
+
+/**
+ * @typedef {object} PackageManagerSpec
+ * @property {string} name The package manager's package name, e.g. `pnpm`.
+ * @property {string} version The exact pinned version, e.g. `12.4.0`.
+ * @property {string | null} hash The `sha512.<hex>` suffix, if the pin carries one.
+ */
+
+/**
+ * Parses a `packageManager` field, i.e. `pnpm@12.4.0+sha512.37536c26...`
+ *
+ * @param {string} spec
+ * @returns {PackageManagerSpec}
+ * @throws {Error} If the field isn't a `<name>@<version>` pin.
+ */
+export function parsePackageManager(spec) {
+    const match = /^(?<name>@?[^@]+)@(?<version>[^+]+)(?:\+(?<hash>.+))?$/.exec(spec.trim());
+
+    if (!match?.groups) {
+        throw new Error(`Malformed packageManager field: ${spec}`);
+    }
+
+    const { name, version, hash } = match.groups;
+
+    return { name, version, hash: hash || null };
+}
+
+/**
+ * Serializes a {@linkcode PackageManagerSpec} back into a `packageManager` field.
+ *
+ * @param {PackageManagerSpec} spec
+ * @returns {string}
+ */
+export function formatPackageManager({ name, version, hash }) {
+    return `${name}@${version}` + (hash ? `+${hash}` : "");
+}
+
+/**
+ * Resolves the expected `sha512.<hex>` suffix for a `packageManager` pin.
+ *
+ * The npm registry publishes the tarball's integrity as base64 (`sha512-<base64>`),
+ * while `packageManager` spells the same digest as hex.
+ *
+ * @param {string} name The package manager's package name, e.g. `pnpm`.
+ * @param {string} version The exact version to look up.
+ * @returns {Promise<string>}
+ * @throws {Error} If the registry can't be reached, or the version isn't published.
+ */
+export async function resolvePackageManagerHash(name, version) {
+    const packageURL = `${NPM_REGISTRY_ORIGIN.replace(/\/$/, "")}/${encodeURIComponent(name)}/${encodeURIComponent(version)}`;
+
+    const response = await fetch(packageURL, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(REGISTRY_TIMEOUT_MS),
+    }).catch((cause) => {
+        throw new Error(`Failed to reach the npm registry at ${packageURL}`, { cause });
+    });
+
+    if (!response.ok) {
+        throw new Error(
+            `Registry returned ${response.status} ${response.statusText} for ${packageURL}`,
+        );
+    }
+
+    /**
+     * @type {{ dist?: { integrity?: string } }}
+     */
+    const manifest = await response.json();
+    const integrity = manifest.dist?.integrity;
+
+    if (!integrity) {
+        throw new Error(`Registry manifest for ${name}@${version} has no dist.integrity`);
+    }
+
+    const [algorithm, encoded] = integrity.split("-");
+
+    return `${algorithm}.${Buffer.from(encoded, "base64").toString("hex")}`;
+}
+
+//#endregion

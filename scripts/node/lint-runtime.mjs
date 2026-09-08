@@ -16,7 +16,17 @@ import { parseArgs } from "node:util";
 import { ConsoleLogger } from "../../packages/logger-js/lib/node.js";
 import { parseCWD, reportAndExit } from "./utils/commands.mjs";
 import { resolveRepoRoot } from "./utils/git.mjs";
-import { compareVersions, findNPMPackage, loadJSON, node, pnpm, parseRange } from "./utils/node.mjs";
+import {
+    compareVersions,
+    findNPMPackage,
+    formatPackageManager,
+    loadJSON,
+    node,
+    parsePackageManager,
+    parseRange,
+    pnpm,
+    resolvePackageManagerHash,
+} from "./utils/node.mjs";
 
 const logger = ConsoleLogger.prefix("lint-runtime");
 
@@ -34,8 +44,9 @@ async function readRequirements(start) {
 
     const requiredPnpmVersion = packageJSONData.engines?.pnpm;
     const requiredNodeVersion = packageJSONData.engines?.node;
+    const packageManager = packageJSONData.packageManager;
 
-    return { nodeVersion, requiredPnpmVersion, requiredNodeVersion };
+    return { nodeVersion, requiredPnpmVersion, requiredNodeVersion, packageManager };
 }
 
 async function main() {
@@ -58,7 +69,8 @@ async function main() {
         logger.info(`pnpm ${pnpmVersion}`);
     }
 
-    const { nodeVersion, requiredPnpmVersion, requiredNodeVersion } = await readRequirements(cwd);
+    const { nodeVersion, requiredPnpmVersion, requiredNodeVersion, packageManager } =
+        await readRequirements(cwd);
 
     logger.info(`node ${nodeVersion}`);
 
@@ -85,6 +97,55 @@ async function main() {
             `Node.js version ${nodeVersion} does not satisfy required version ${requiredNodeVersion}`,
         );
     }
+
+    if (packageManager) {
+        await lintPackageManager(packageManager, requiredPnpmVersion);
+    }
+}
+
+/**
+ * Checks that the `packageManager` pin names a version allowed by `engines`, and that its
+ * integrity suffix matches the tarball the registry actually publishes for that version.
+ *
+ * Corepack used to verify this suffix on our behalf. Now that it's deprecated, nothing else
+ * reads it — so a stale hash would sit in package.json unnoticed until someone trusted it.
+ *
+ * @param {string} packageManager The raw `packageManager` field.
+ * @param {string} [requiredPnpmVersion] The `engines.pnpm` range, when present.
+ */
+async function lintPackageManager(packageManager, requiredPnpmVersion) {
+    logger.info(`package.json packageManager ${packageManager}`);
+
+    const spec = parsePackageManager(packageManager);
+
+    if (requiredPnpmVersion && spec.name === "pnpm") {
+        const { operator, version: required } = parseRange(requiredPnpmVersion);
+        const result = compareVersions(spec.version, required);
+
+        assert.ok(
+            operator === ">=" ? result >= 0 : result === 0,
+            `packageManager pins pnpm ${spec.version}, which does not satisfy engines.pnpm ${requiredPnpmVersion}`,
+        );
+    }
+
+    if (!spec.hash) {
+        logger.warn("packageManager has no integrity suffix; skipping hash check.");
+        return;
+    }
+
+    const expectedHash = await resolvePackageManagerHash(spec.name, spec.version).catch((error) => {
+        logger.warn(`Skipping integrity check: ${error.message}`);
+        return null;
+    });
+
+    if (!expectedHash) return;
+
+    assert.ok(
+        spec.hash === expectedHash,
+        `packageManager integrity does not match the published ${spec.name}@${spec.version} tarball.\n` +
+            `Copy this into package.json:\n\n` +
+            `    "packageManager": "${formatPackageManager({ ...spec, hash: expectedHash })}"\n`,
+    );
 }
 
 main()
