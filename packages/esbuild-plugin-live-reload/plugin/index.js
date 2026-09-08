@@ -10,9 +10,22 @@
 import * as http from "node:http";
 import { resolve as resolvePath } from "node:path";
 
-import { createLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
+import { createLogger as createConsoleLogger } from "@goauthentik/esbuild-plugin-live-reload/shared";
 
 import { findFreePorts } from "find-free-ports";
+
+/**
+ * authentik's logger, when the optional `@goauthentik/logger-js` peer is present.
+ *
+ * It's optional so that consumers outside the monorepo aren't made to install a
+ * logging package to use an esbuild plugin; without it, log output falls back to
+ * the console-backed logger this package already ships.
+ *
+ * @type {(prefix?: string) => import("@goauthentik/esbuild-plugin-live-reload/shared").ConsoleLike}
+ */
+const createLogger = await import("@goauthentik/logger-js")
+    .then((module) => module.createLogger)
+    .catch(() => createConsoleLogger);
 
 /**
  * Serializes a custom event to a text stream.

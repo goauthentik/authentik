@@ -343,6 +343,9 @@ importers:
       '@goauthentik/eslint-config':
         specifier: link:../eslint-config
         version: link:../eslint-config
+      '@goauthentik/logger-js':
+        specifier: link:../logger-js
+        version: link:../logger-js
       '@goauthentik/prettier-config':
         specifier: link:../prettier-config
         version: link:../prettier-config

@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "2.0.3",
+    "version": "3.0.0",
     "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "repository": {
@@ -46,6 +46,7 @@
     "devDependencies": {
         "@eslint/js": "catalog:",
         "@goauthentik/eslint-config": "link:../eslint-config",
+        "@goauthentik/logger-js": "link:../logger-js",
         "@goauthentik/prettier-config": "link:../prettier-config",
         "@goauthentik/tsconfig": "link:../tsconfig",
         "@types/node": "catalog:",
@@ -59,6 +60,7 @@
         "typescript-eslint": "catalog:"
     },
     "peerDependencies": {
+        "@goauthentik/logger-js": "^3.0.0",
         "esbuild": "^0.28.1"
     },
     "files": [
@@ -92,6 +94,11 @@
         "reload",
         "authentik"
     ],
+    "peerDependenciesMeta": {
+        "@goauthentik/logger-js": {
+            "optional": true
+        }
+    },
     "publishConfig": {
         "access": "public"
     }
