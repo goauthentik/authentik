@@ -31,7 +31,7 @@ class TestWorkerMiddleware(TestCase):
         del broker.actors[test_task.actor_name]
 
     def test_task_exceptions(self):
-        @actor
+        @actor(description="test-helper-exception")
         def test_task():
             raise ValueError("foo")
 
@@ -45,7 +45,7 @@ class TestWorkerMiddleware(TestCase):
             [
                 "Task has been queued",
                 "Task is being processed",
-                "foo",
+                "Task has encountered an error: foo",
             ],
         )
         broker = get_broker()

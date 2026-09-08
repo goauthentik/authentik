@@ -3,7 +3,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.endpoints.models import Connector
 from authentik.flows.stage import StageView
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.tracing.exceptions import TracingIgnoredException
 
 MERGED_VENDOR = "goauthentik.io/@merged"
 
@@ -19,7 +19,7 @@ class Capabilities(models.TextChoices):
     STAGE_ENDPOINTS = "stage_endpoints"
 
 
-class ConnectorSyncException(SentryIgnoredException):
+class ConnectorSyncException(TracingIgnoredException):
     """Base exceptions for errors during sync"""
 
 
