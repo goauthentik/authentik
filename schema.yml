@@ -5929,6 +5929,11 @@ paths:
       operationId: endpoints_agents_connectors_auth_ia_create
       description: Mixin to add a used_by endpoint to return a list of all objects
         using this object
+      parameters:
+      - in: query
+        name: login_hint
+        schema:
+          type: string
       tags:
       - endpoints
       security:
@@ -21021,7 +21026,7 @@ paths:
         name: saml_version
         schema:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: |+
             SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
@@ -35043,6 +35048,21 @@ paths:
             $ref: '#/components/schemas/TaskAggregatedStatusEnum'
         explode: true
         style: form
+      - in: query
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: message_id__in
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
       - $ref: '#/components/parameters/QueryPaginationPageSize'
@@ -38788,6 +38808,10 @@ components:
           type: string
         layout:
           $ref: '#/components/schemas/ContextualFlowInfoLayoutEnum'
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowMessage'
       required:
       - cancel_url
       - layout
@@ -39117,13 +39141,8 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - flows_continuous_login
-          - flows_refresh_others
           readOnly: true
       required:
       - branding_custom_css
@@ -39967,6 +39986,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         result:
           type: boolean
         wait_min:
@@ -39980,6 +40007,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -40834,6 +40863,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
@@ -40864,6 +40901,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41059,12 +41098,22 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         expression:
           type: string
       required:
       - bound_to
       - component
+      - created
       - expression
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41493,6 +41542,25 @@ components:
       - sidebar_left_frame_background
       - sidebar_right_frame_background
       type: string
+    FlowMessage:
+      type: object
+      description: Serializer for a django.contrib.messages message
+      properties:
+        level:
+          $ref: '#/components/schemas/FlowMessageLevelEnum'
+        message:
+          type: string
+      required:
+      - level
+      - message
+    FlowMessageLevelEnum:
+      enum:
+      - debug
+      - info
+      - success
+      - warning
+      - error
+      type: string
     FlowRequest:
       type: object
       description: Flow Serializer
@@ -41781,6 +41849,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         asns:
           type: array
           items:
@@ -41833,6 +41909,8 @@ components:
       - component
       - countries
       - countries_obj
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -42366,10 +42444,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         agent_owner:
           allOf:
           - $ref: '#/components/schemas/PartialUser'
           readOnly: true
+          nullable: true
         is_active:
           type: boolean
           readOnly: true
@@ -49830,6 +49910,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         days:
           type: integer
           maximum: 2147483647
@@ -49839,7 +49927,9 @@ components:
       required:
       - bound_to
       - component
+      - created
       - days
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -49900,6 +49990,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -49948,6 +50046,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -53716,9 +53816,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -53790,15 +53890,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
     PatchedSourceStageRequest:
       type: object
       description: SourceStage Serializer
@@ -54247,7 +54342,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -54681,9 +54776,19 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -55208,10 +55313,12 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         invalidation_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used ending the session from a provider.
         property_mappings:
           type: array
@@ -55259,9 +55366,7 @@ components:
       - assigned_application_slug
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
-      - authorization_flow
       - component
-      - invalidation_flow
       - meta_model_name
       - name
       - pk
@@ -56424,6 +56529,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         check_ip:
           type: boolean
         check_username:
@@ -56435,6 +56548,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -58521,11 +58636,6 @@ components:
       - disabled
       - disabled_deleted
       type: string
-    SamlVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
     Schedule:
       type: object
       properties:
@@ -58813,9 +58923,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58885,15 +58995,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SettingsRequest:
@@ -58906,9 +59011,9 @@ components:
           description: Configure how authentik should show avatars for users.
         base_url:
           type: string
-          format: uri
           description: Configure the base URL under which this authentik instance
             is reachable, e.g. https://authentik.company
+          format: uri
           maxLength: 200
         default_user_change_name:
           type: boolean
@@ -58980,15 +59085,10 @@ components:
               type: boolean
               description: Upon successful authentication, re-start authentication
                 in other open tabs.
-            flows_refresh_others:
-              type: boolean
-              description: Refresh other tabs after successful authentication.
-              deprecated: true
           required:
           - core_default_app_access
           - enterprise_audit_include_expanded_diff
           - flows_continuous_login
-          - flows_refresh_others
       required:
       - flags
     SeverityEnum:
@@ -60353,6 +60453,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -60365,6 +60473,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -61707,6 +61817,11 @@ components:
       - id
       - timestamp
       - version
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -61806,7 +61921,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -61930,7 +62045,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.

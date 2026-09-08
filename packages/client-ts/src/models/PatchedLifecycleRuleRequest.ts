@@ -24,62 +24,42 @@ import { ContentTypeEnumFromJSON, ContentTypeEnumToJSON } from "./ContentTypeEnu
 export interface PatchedLifecycleRuleRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedLifecycleRuleRequest
      */
     name?: string;
     /**
      *
-     * @type {ContentTypeEnum}
-     * @memberof PatchedLifecycleRuleRequest
      */
     contentType?: ContentTypeEnum;
     /**
      *
-     * @type {string}
-     * @memberof PatchedLifecycleRuleRequest
      */
     objectId?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedLifecycleRuleRequest
      */
     interval?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedLifecycleRuleRequest
      */
     gracePeriod?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedLifecycleRuleRequest
      */
     reviewerGroups?: Array<string>;
     /**
      *
-     * @type {number}
-     * @memberof PatchedLifecycleRuleRequest
      */
     minReviewers?: number;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedLifecycleRuleRequest
      */
     minReviewersIsPerGroup?: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedLifecycleRuleRequest
      */
     reviewers?: Array<string>;
     /**
      * Select which transports should be used to notify the reviewers. If none are selected, the notification will only be shown in the authentik UI.
-     * @type {Array<string>}
-     * @memberof PatchedLifecycleRuleRequest
      */
     notificationTransports?: Array<string>;
 }

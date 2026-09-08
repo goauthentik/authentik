@@ -122,6 +122,12 @@ const BASE_ESBUILD_OPTIONS = {
     /**
      * Conditions for module resolution.
      *
+     * `bundler` lets workspace packages that ship TypeScript sources (e.g.
+     * `@goauthentik/theme`) expose `src/*.ts` to this build while keeping a
+     * compiled `default` entry for plain Node consumers. esbuild does not
+     * imply it, so without this the resolver falls through to the built
+     * output and every edit needs a rebuild of the dependency first.
+     *
      * @see https://esbuild.github.io/api/#conditions
      * @see https://nodejs.org/api/packages.html#packages_conditional_exports
      */

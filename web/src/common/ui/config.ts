@@ -18,7 +18,6 @@ export const DefaultBrand = {
     matchedDomain: "",
     defaultLocale: "",
     flags: {
-        flowsRefreshOthers: false,
         flowsContinuousLogin: false,
     },
 } as const satisfies CurrentBrand;

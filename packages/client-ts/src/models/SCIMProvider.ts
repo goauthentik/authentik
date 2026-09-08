@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { CompatibilityModeEnum } from "./CompatibilityModeEnum";
 import {
     CompatibilityModeEnumFromJSON,
@@ -31,170 +32,114 @@ import {
 export interface SCIMProvider {
     /**
      *
-     * @type {number}
-     * @memberof SCIMProvider
      */
     readonly pk: number;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProvider
      */
     name: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SCIMProvider
      */
     propertyMappings?: Array<string>;
     /**
      * Property mappings used for group creation/updating.
-     * @type {Array<string>}
-     * @memberof SCIMProvider
      */
     propertyMappingsGroup?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly component: string;
     /**
      * Internal application name, used in URLs.
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly assignedBackchannelApplicationSlug: string | null;
     /**
      * Application's display Name.
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly assignedBackchannelApplicationName: string | null;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly metaModelName: string;
     /**
      * Base URL to SCIM requests, usually ends in /v2
-     * @type {string}
-     * @memberof SCIMProvider
      */
     url: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SCIMProvider
      */
     verifyCertificates?: boolean;
     /**
      * Authentication token
-     * @type {string}
-     * @memberof SCIMProvider
      */
     token?: string;
     /**
      *
-     * @type {SCIMAuthenticationModeEnum}
-     * @memberof SCIMProvider
      */
     authMode?: SCIMAuthenticationModeEnum;
     /**
      * OAuth Source used for authentication
-     * @type {string}
-     * @memberof SCIMProvider
      */
     authOauth?: string | null;
     /**
      * Additional OAuth parameters, such as grant_type
-     * @type {{ [key: string]: any; }}
-     * @memberof SCIMProvider
      */
     authOauthParams?: { [key: string]: any };
     /**
      *
-     * @type {Date}
-     * @memberof SCIMProvider
      */
     readonly authOauthTokenLastUpdated: Date | null;
     /**
      *
-     * @type {Date}
-     * @memberof SCIMProvider
      */
     readonly authOauthTokenExpires: Date | null;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly authOauthUrlCallback: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SCIMProvider
      */
     readonly authOauthUrlStart: string | null;
     /**
      * Alter authentik behavior for vendor-specific SCIM implementations.
-     * @type {CompatibilityModeEnum}
-     * @memberof SCIMProvider
      */
     compatibilityMode?: CompatibilityModeEnum;
     /**
      * Cache duration for ServiceProviderConfig responses. Set minutes=0 to disable.
-     * @type {string}
-     * @memberof SCIMProvider
      */
     serviceProviderConfigCacheTimeout?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SCIMProvider
      */
     excludeUsersServiceAccount?: boolean;
     /**
      * Controls the number of objects synced in a single task
-     * @type {number}
-     * @memberof SCIMProvider
      */
     syncPageSize?: number;
     /**
      * Timeout for synchronization of a single page
-     * @type {string}
-     * @memberof SCIMProvider
      */
     syncPageTimeout?: string;
     /**
      * When enabled, authentik will attempt to discover existing resources in the remote system.
-     * @type {boolean}
-     * @memberof SCIMProvider
      */
     discoveryEnabled?: boolean;
     /**
      * Group filters used to define sync-scope for groups.
-     * @type {Array<string>}
-     * @memberof SCIMProvider
      */
     groupFilters?: Array<string>;
     /**
      * When enabled, provider will not modify or create objects in the remote system.
-     * @type {boolean}
-     * @memberof SCIMProvider
      */
     dryRun?: boolean;
 }
@@ -311,11 +256,11 @@ export function SCIMProviderFromJSONTyped(json: any, ignoreDiscriminator: boolea
         authOauthTokenLastUpdated:
             json["auth_oauth_token_last_updated"] == null
                 ? null
-                : new Date(json["auth_oauth_token_last_updated"]),
+                : parseDateTime(json["auth_oauth_token_last_updated"]),
         authOauthTokenExpires:
             json["auth_oauth_token_expires"] == null
                 ? null
-                : new Date(json["auth_oauth_token_expires"]),
+                : parseDateTime(json["auth_oauth_token_expires"]),
         authOauthUrlCallback: json["auth_oauth_url_callback"],
         authOauthUrlStart: json["auth_oauth_url_start"],
         compatibilityMode:

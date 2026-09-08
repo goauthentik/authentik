@@ -20,32 +20,22 @@
 export interface DockerServiceConnectionRequest {
     /**
      *
-     * @type {string}
-     * @memberof DockerServiceConnectionRequest
      */
     name: string;
     /**
      * If enabled, use the local connection. Required Docker socket/Kubernetes Integration
-     * @type {boolean}
-     * @memberof DockerServiceConnectionRequest
      */
     local?: boolean;
     /**
      * Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system.
-     * @type {string}
-     * @memberof DockerServiceConnectionRequest
      */
     url: string;
     /**
      * CA which the endpoint's Certificate is verified against. Can be left empty for no validation.
-     * @type {string}
-     * @memberof DockerServiceConnectionRequest
      */
     tlsVerification?: string | null;
     /**
      * Certificate/Key used for authentication. Can be left empty for no authentication.
-     * @type {string}
-     * @memberof DockerServiceConnectionRequest
      */
     tlsAuthentication?: string | null;
 }

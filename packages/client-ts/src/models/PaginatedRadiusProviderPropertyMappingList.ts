@@ -28,20 +28,14 @@ import {
 export interface PaginatedRadiusProviderPropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<RadiusProviderPropertyMapping>}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
      */
     results: Array<RadiusProviderPropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedRadiusProviderPropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

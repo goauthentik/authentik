@@ -28,20 +28,14 @@ import {
 export interface PaginatedPlexSourcePropertyMappingList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedPlexSourcePropertyMappingList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<PlexSourcePropertyMapping>}
-     * @memberof PaginatedPlexSourcePropertyMappingList
      */
     results: Array<PlexSourcePropertyMapping>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedPlexSourcePropertyMappingList
      */
     autocomplete: { [key: string]: any };
 }

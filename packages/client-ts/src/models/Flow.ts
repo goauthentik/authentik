@@ -33,110 +33,74 @@ import { ThemedUrlsFromJSON } from "./ThemedUrls";
 export interface Flow {
     /**
      *
-     * @type {string}
-     * @memberof Flow
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof Flow
      */
     readonly policybindingmodelPtrId: string;
     /**
      *
-     * @type {string}
-     * @memberof Flow
      */
     name: string;
     /**
      * Visible in the URL.
-     * @type {string}
-     * @memberof Flow
      */
     slug: string;
     /**
      * Shown as the Title in Flow pages.
-     * @type {string}
-     * @memberof Flow
      */
     title: string;
     /**
      * Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
-     * @type {FlowDesignationEnum}
-     * @memberof Flow
      */
     designation: FlowDesignationEnum;
     /**
      * Background shown during execution
-     * @type {string}
-     * @memberof Flow
      */
     background?: string;
     /**
      * Get the URL to the background image
-     * @type {string}
-     * @memberof Flow
      */
     readonly backgroundUrl: string;
     /**
      *
-     * @type {ThemedUrls}
-     * @memberof Flow
      */
     readonly backgroundThemedUrls: ThemedUrls | null;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Flow
      */
     readonly stages: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof Flow
      */
     readonly policies: Array<string>;
     /**
      * Get count of cached flows
-     * @type {number}
-     * @memberof Flow
      */
     readonly cacheCount: number;
     /**
      *
-     * @type {PolicyEngineMode}
-     * @memberof Flow
      */
     policyEngineMode?: PolicyEngineMode;
     /**
      * Enable compatibility mode, increases compatibility with password managers on mobile devices.
-     * @type {boolean}
-     * @memberof Flow
      */
     compatibilityMode?: boolean;
     /**
      * Get export URL for flow
-     * @type {string}
-     * @memberof Flow
      */
     readonly exportUrl: string;
     /**
      *
-     * @type {FlowLayoutEnum}
-     * @memberof Flow
      */
     layout?: FlowLayoutEnum;
     /**
      * Configure what should happen when a flow denies access to a user.
-     * @type {DeniedActionEnum}
-     * @memberof Flow
      */
     deniedAction?: DeniedActionEnum;
     /**
      * Required level of authentication and authorization to access a flow.
-     * @type {AuthenticationEnum}
-     * @memberof Flow
      */
     authentication?: AuthenticationEnum;
 }

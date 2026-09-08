@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime, serializeDateTime } from "../runtime";
+
 /**
  * Mixin to validate that a valid enterprise license
  * exists before allowing to save the object
@@ -21,50 +23,34 @@
 export interface PatchedAgentRequest {
     /**
      * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-     * @type {string}
-     * @memberof PatchedAgentRequest
      */
     username?: string;
     /**
      * User's display name.
-     * @type {string}
-     * @memberof PatchedAgentRequest
      */
     name?: string;
     /**
      * Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
-     * @type {boolean}
-     * @memberof PatchedAgentRequest
      */
     isActive?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedAgentRequest
      */
     lastLogin?: Date | null;
     /**
      *
-     * @type {string}
-     * @memberof PatchedAgentRequest
      */
     email?: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PatchedAgentRequest
      */
     attributes?: { [key: string]: any };
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedAgentRequest
      */
     expiring?: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof PatchedAgentRequest
      */
     expires?: Date | null;
 }
@@ -96,7 +82,7 @@ export function PatchedAgentRequestFromJSONTyped(
                 ? undefined
                 : json["last_login"] === null
                   ? null
-                  : new Date(json["last_login"]),
+                  : parseDateTime(json["last_login"]),
         email: json["email"] == null ? undefined : json["email"],
         attributes: json["attributes"] == null ? undefined : json["attributes"],
         expiring: json["expiring"] == null ? undefined : json["expiring"],
@@ -105,7 +91,7 @@ export function PatchedAgentRequestFromJSONTyped(
                 ? undefined
                 : json["expires"] === null
                   ? null
-                  : new Date(json["expires"]),
+                  : parseDateTime(json["expires"]),
     };
 }
 
@@ -126,10 +112,10 @@ export function PatchedAgentRequestToJSONTyped(
         name: value["name"],
         is_active: value["isActive"],
         last_login:
-            value["lastLogin"] == null ? value["lastLogin"] : value["lastLogin"].toISOString(),
+            value["lastLogin"] == null ? value["lastLogin"] : serializeDateTime(value["lastLogin"]),
         email: value["email"],
         attributes: value["attributes"],
         expiring: value["expiring"],
-        expires: value["expires"] == null ? value["expires"] : value["expires"].toISOString(),
+        expires: value["expires"] == null ? value["expires"] : serializeDateTime(value["expires"]),
     };
 }

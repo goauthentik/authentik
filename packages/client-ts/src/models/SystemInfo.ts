@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { SystemInfoRuntime } from "./SystemInfoRuntime";
 import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfoRuntime";
 
@@ -23,56 +24,38 @@ import { SystemInfoRuntimeFromJSON, SystemInfoRuntimeToJSON } from "./SystemInfo
 export interface SystemInfo {
     /**
      * Get HTTP Request headers
-     * @type {{ [key: string]: string; }}
-     * @memberof SystemInfo
      */
     readonly httpHeaders: { [key: string]: string };
     /**
      * Get HTTP host
-     * @type {string}
-     * @memberof SystemInfo
      */
     readonly httpHost: string;
     /**
      * Get HTTP Secure flag
-     * @type {boolean}
-     * @memberof SystemInfo
      */
     readonly httpIsSecure: boolean;
     /**
      *
-     * @type {SystemInfoRuntime}
-     * @memberof SystemInfo
      */
     runtime: SystemInfoRuntime;
     /**
      * Currently active brand
-     * @type {string}
-     * @memberof SystemInfo
      */
     readonly brand: string;
     /**
      * Current server time
-     * @type {Date}
-     * @memberof SystemInfo
      */
     readonly serverTime: Date;
     /**
      * Whether the embedded outpost is disabled
-     * @type {boolean}
-     * @memberof SystemInfo
      */
     readonly embeddedOutpostDisabled: boolean;
     /**
      * Get the FQDN configured on the embedded outpost
-     * @type {string}
-     * @memberof SystemInfo
      */
     readonly embeddedOutpostHost: string;
     /**
      * Configured external base URL. Can be empty
-     * @type {string}
-     * @memberof SystemInfo
      */
     readonly baseUrl: string;
 }
@@ -149,7 +132,8 @@ export function SystemInfoFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         httpIsSecure: json["http_is_secure"],
         runtime: SystemInfoRuntimeFromJSON(json["runtime"]),
         brand: json["brand"],
-        serverTime: new Date(json["server_time"]),
+        serverTime:
+            json["server_time"] == null ? json["server_time"] : parseDateTime(json["server_time"]),
         embeddedOutpostDisabled: json["embedded_outpost_disabled"],
         embeddedOutpostHost: json["embedded_outpost_host"],
         baseUrl: json["base_url"],

@@ -276,7 +276,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_redirect",
         ]
         extra_kwargs = {
-            **ProviderSerializer.Meta.extra_kwargs,
+            **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_kp": {"validators": [KeyTypeValidator(*XML_SIGNING_KEY_TYPES)]},
         }
 

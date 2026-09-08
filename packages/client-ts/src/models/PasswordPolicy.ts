@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Password Policy Serializer
  * @export
@@ -20,128 +22,94 @@
 export interface PasswordPolicy {
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     name: string;
     /**
      * When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.
-     * @type {boolean}
-     * @memberof PasswordPolicy
      */
     executionLogging?: boolean;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     readonly metaModelName: string;
     /**
      * Return objects policy is bound to
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     readonly boundTo: number;
     /**
+     *
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
+    /**
      * Field key to check, field keys defined in Prompt stages are available.
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     passwordField?: string;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     amountDigits?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     amountUppercase?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     amountLowercase?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     amountSymbols?: number;
     /**
      *
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     lengthMin?: number;
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     symbolCharset?: string;
     /**
      *
-     * @type {string}
-     * @memberof PasswordPolicy
      */
     errorMessage?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicy
      */
     checkStaticRules?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicy
      */
     checkHaveIBeenPwned?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof PasswordPolicy
      */
     checkZxcvbn?: boolean;
     /**
      * How many times the password hash is allowed to be on haveibeenpwned
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     hibpAllowedCount?: number;
     /**
      * If the zxcvbn score is equal or less than this value, the policy will fail.
-     * @type {number}
-     * @memberof PasswordPolicy
      */
     zxcvbnScoreThreshold?: number;
 }
@@ -181,6 +149,14 @@ export function instanceOfPasswordPolicy(value: object): value is PasswordPolicy
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -204,6 +180,11 @@ export function PasswordPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
         amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
@@ -231,7 +212,14 @@ export function PasswordPolicyToJSON(json: any): PasswordPolicy {
 export function PasswordPolicyToJSONTyped(
     value?: Omit<
         PasswordPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

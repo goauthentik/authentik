@@ -20,20 +20,14 @@
 export interface PatchedTenantRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedTenantRequest
      */
     schemaName?: string;
     /**
      *
-     * @type {string}
-     * @memberof PatchedTenantRequest
      */
     name?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof PatchedTenantRequest
      */
     ready?: boolean;
 }

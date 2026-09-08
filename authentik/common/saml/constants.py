@@ -28,6 +28,10 @@ SAML_ATTRIBUTES_GROUP = "http://schemas.xmlsoap.org/claims/Group"
 SAML_BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 SAML_BINDING_REDIRECT = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
 
+# Bindings authentik supports. Metadata commonly advertises further bindings
+# (SOAP, HTTP-Artifact, PAOS, ...) which we can't use.
+SAML_BINDINGS_SUPPORTED = (SAML_BINDING_REDIRECT, SAML_BINDING_POST)
+
 SAML_STATUS_SUCCESS = "urn:oasis:names:tc:SAML:2.0:status:Success"
 
 DEFAULT_ISSUER = "authentik"

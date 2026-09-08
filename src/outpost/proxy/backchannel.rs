@@ -11,6 +11,15 @@ use crate::outpost::proxy::claims::Claims;
 
 const X_FORWARDED_PROTO: HeaderName = HeaderName::from_static("x-forwarded-proto");
 
+/// `host[:port]` for `url`, leaving out the scheme's default port.
+fn authority(url: &Url) -> Option<String> {
+    let host = url.host_str()?;
+    Some(match url.port() {
+        Some(port) => format!("{host}:{port}"),
+        None => host.to_owned(),
+    })
+}
+
 /// The host and scheme to claim on backchannel requests.
 ///
 /// The core derives a provider's issuer from the request host and forwarded
@@ -26,20 +35,34 @@ pub(crate) struct TokenHost {
 impl TokenHost {
     /// Build the override from a browser-facing URL, or `None` if it has no host.
     pub(crate) fn new(url: &Url) -> Option<Self> {
-        let host = url.host_str()?;
         Some(Self {
-            host: match url.port() {
-                Some(port) => format!("{host}:{port}"),
-                None => host.to_owned(),
-            },
+            host: authority(url)?,
             scheme: url.scheme().to_owned(),
         })
     }
 
-    fn apply(&self, request: RequestBuilder) -> RequestBuilder {
+    /// Claim the host and scheme on a request bound for `target`.
+    ///
+    /// A request that already addresses this host is left untouched: the
+    /// transport derives the authority from the URL on its own (as `:authority`
+    /// over HTTP/2), so adding a `Host` header would send it twice and strict
+    /// reverse proxies answer duplicate `Host` headers with a 400.
+    fn apply(&self, request: RequestBuilder, target: &str) -> RequestBuilder {
+        if self.addresses(target) {
+            return request;
+        }
         request
             .header(HOST, self.host.as_str())
             .header(X_FORWARDED_PROTO, self.scheme.as_str())
+    }
+
+    /// Whether `target` already points at the host this override would claim.
+    fn addresses(&self, target: &str) -> bool {
+        Url::parse(target)
+            .ok()
+            .as_ref()
+            .and_then(authority)
+            .is_some_and(|authority| authority == self.host)
     }
 }
 
@@ -61,9 +84,9 @@ struct IntrospectionResponse {
 
 /// Exchange an authorization code for an access token (used as the ID token).
 ///
-/// `token_host`, when set, makes the request claim the browser-facing host and
-/// scheme so the issuer matches even though the request goes over the
-/// backchannel.
+/// `token_host`, when set and different from `token_url`, makes the request
+/// claim the browser-facing host and scheme so the issuer matches even though
+/// the request goes over the backchannel.
 pub(crate) async fn exchange_code(
     client: &ClientWithMiddleware,
     token_url: &str,
@@ -81,7 +104,7 @@ pub(crate) async fn exchange_code(
         ("client_secret", client_secret),
     ]);
     if let Some(host) = token_host {
-        request = host.apply(request);
+        request = host.apply(request, token_url);
     }
     let response = request.send().await?.error_for_status()?;
     Ok(response.json::<TokenResponse>().await?.access_token)
@@ -111,7 +134,7 @@ pub(crate) async fn client_credentials_token(
         ("scope", scope),
     ]);
     if let Some(host) = token_host {
-        request = host.apply(request);
+        request = host.apply(request, token_url);
     }
     let response = request.send().await?;
     if !response.status().is_success() {
@@ -135,7 +158,7 @@ pub(crate) async fn introspect_token(
         ("token", token),
     ]);
     if let Some(host) = token_host {
-        request = host.apply(request);
+        request = host.apply(request, introspection_url);
     }
     let response = request.send().await?;
     if !response.status().is_success() {
@@ -171,8 +194,10 @@ mod tests {
         // A request to the internal token endpoint must claim the browser-facing host and scheme,
         // otherwise the core mints a token whose issuer is `http://...` and verification against
         // the `https://` issuer fails.
+        const TARGET: &str = "http://localhost:8000/application/o/token/";
+
         let request = token_host("https://authentik.test.goauthentik.io/")
-            .apply(client().post("http://localhost:8000/application/o/token/"))
+            .apply(client().post(TARGET), TARGET)
             .build()
             .expect("failed to build request");
 
@@ -186,6 +211,42 @@ mod tests {
                 .get(X_FORWARDED_PROTO)
                 .expect("forwarded proto header"),
             "https"
+        );
+    }
+
+    #[test]
+    fn leaves_request_alone_when_target_matches() {
+        // The transport already derives the authority from the URL, so overriding it here would
+        // send `Host` twice (next to `:authority` over HTTP/2) and strict proxies reply 400.
+        for target in [
+            "https://authentik.test.goauthentik.io/application/o/token/",
+            "https://authentik.test.goauthentik.io:443/application/o/token/",
+        ] {
+            let request = token_host("https://authentik.test.goauthentik.io/")
+                .apply(client().post(target), target)
+                .build()
+                .expect("failed to build request");
+
+            assert!(request.headers().get(HOST).is_none(), "target: {target}");
+            assert!(
+                request.headers().get(X_FORWARDED_PROTO).is_none(),
+                "target: {target}"
+            );
+        }
+    }
+
+    #[test]
+    fn overrides_when_only_the_port_differs() {
+        const TARGET: &str = "https://authentik.test.goauthentik.io:9443/application/o/token/";
+
+        let request = token_host("https://authentik.test.goauthentik.io/")
+            .apply(client().post(TARGET), TARGET)
+            .build()
+            .expect("failed to build request");
+
+        assert_eq!(
+            request.headers().get(HOST).expect("host header"),
+            "authentik.test.goauthentik.io"
         );
     }
 

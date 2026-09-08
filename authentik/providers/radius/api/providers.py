@@ -54,7 +54,7 @@ class RadiusProviderSerializer(
             "certificate",
         ]
         extra_kwargs = {
-            **ProviderSerializer.Meta.extra_kwargs,
+            **ProviderSerializer.Meta.extra_write_kwargs,
             "certificate": {"validators": [KeyTypeValidator(*TLS_KEY_TYPES)]},
         }
 

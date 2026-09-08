@@ -20,20 +20,14 @@
 export interface PatchedPromptStageRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedPromptStageRequest
      */
     name?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedPromptStageRequest
      */
     fields?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof PatchedPromptStageRequest
      */
     validationPolicies?: Array<string>;
 }

@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { Source } from "./Source";
 import { SourceFromJSON } from "./Source";
 
@@ -23,44 +24,30 @@ import { SourceFromJSON } from "./Source";
 export interface UserSourceConnection {
     /**
      *
-     * @type {number}
-     * @memberof UserSourceConnection
      */
     readonly pk: number;
     /**
      *
-     * @type {number}
-     * @memberof UserSourceConnection
      */
     readonly user: number;
     /**
      *
-     * @type {string}
-     * @memberof UserSourceConnection
      */
     source: string;
     /**
      *
-     * @type {Source}
-     * @memberof UserSourceConnection
      */
     readonly sourceObj: Source;
     /**
      *
-     * @type {string}
-     * @memberof UserSourceConnection
      */
     identifier: string;
     /**
      *
-     * @type {Date}
-     * @memberof UserSourceConnection
      */
     readonly created: Date;
     /**
      *
-     * @type {Date}
-     * @memberof UserSourceConnection
      */
     readonly lastUpdated: Date;
 }
@@ -108,8 +95,11 @@ export function UserSourceConnectionFromJSONTyped(
         source: json["source"],
         sourceObj: SourceFromJSON(json["source_obj"]),
         identifier: json["identifier"],
-        created: new Date(json["created"]),
-        lastUpdated: new Date(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
     };
 }
 

@@ -27,104 +27,70 @@ import { ProviderEnumFromJSON, ProviderEnumToJSON } from "./ProviderEnum";
 export interface AuthenticatorSMSStage {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     readonly pk: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     name: string;
     /**
      * Get object type so that we know how to edit the object
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     readonly metaModelName: string;
     /**
      *
-     * @type {Array<FlowSet>}
-     * @memberof AuthenticatorSMSStage
      */
     readonly flowSet: Array<FlowSet>;
     /**
      * Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     configureFlow?: string | null;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     friendlyName?: string;
     /**
      *
-     * @type {ProviderEnum}
-     * @memberof AuthenticatorSMSStage
      */
     provider: ProviderEnum;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     fromNumber: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     accountSid: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     auth: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     authPassword?: string;
     /**
      *
-     * @type {AuthTypeEnum}
-     * @memberof AuthenticatorSMSStage
      */
     authType?: AuthTypeEnum;
     /**
      * When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not reused in the future.
-     * @type {boolean}
-     * @memberof AuthenticatorSMSStage
      */
     verifyOnly?: boolean;
     /**
      * Optionally modify the payload being sent to custom providers.
-     * @type {string}
-     * @memberof AuthenticatorSMSStage
      */
     mapping?: string | null;
 }

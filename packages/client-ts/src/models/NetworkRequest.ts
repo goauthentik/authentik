@@ -26,26 +26,18 @@ import {
 export interface NetworkRequest {
     /**
      *
-     * @type {string}
-     * @memberof NetworkRequest
      */
     hostname: string;
     /**
      *
-     * @type {boolean}
-     * @memberof NetworkRequest
      */
     firewallEnabled?: boolean;
     /**
      *
-     * @type {Array<NetworkInterfaceRequest>}
-     * @memberof NetworkRequest
      */
     interfaces: Array<NetworkInterfaceRequest>;
     /**
      *
-     * @type {string}
-     * @memberof NetworkRequest
      */
     gateway?: string;
 }

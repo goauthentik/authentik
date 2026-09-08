@@ -20,38 +20,26 @@
 export interface Version {
     /**
      * Get current version
-     * @type {string}
-     * @memberof Version
      */
     readonly versionCurrent: string;
     /**
      * Get latest version from cache
-     * @type {string}
-     * @memberof Version
      */
     readonly versionLatest: string;
     /**
      * Check if latest version is valid
-     * @type {boolean}
-     * @memberof Version
      */
     readonly versionLatestValid: boolean;
     /**
      * Get build hash, if version is not latest or released
-     * @type {string}
-     * @memberof Version
      */
     readonly buildHash: string;
     /**
      * Check if we're running the latest version
-     * @type {boolean}
-     * @memberof Version
      */
     readonly outdated: boolean;
     /**
      * Check if any outpost is outdated/has a version mismatch
-     * @type {boolean}
-     * @memberof Version
      */
     readonly outpostOutdated: boolean;
 }

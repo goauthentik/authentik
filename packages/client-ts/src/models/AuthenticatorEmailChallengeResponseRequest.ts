@@ -20,20 +20,14 @@
 export interface AuthenticatorEmailChallengeResponseRequest {
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
      */
     component?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
      */
     code?: string;
     /**
      *
-     * @type {string}
-     * @memberof AuthenticatorEmailChallengeResponseRequest
      */
     email?: string;
 }

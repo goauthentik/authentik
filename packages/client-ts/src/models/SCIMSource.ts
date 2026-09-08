@@ -23,86 +23,58 @@ import { TokenFromJSON } from "./Token";
 export interface SCIMSource {
     /**
      *
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly pk: string;
     /**
      * Source's display Name.
-     * @type {string}
-     * @memberof SCIMSource
      */
     name: string;
     /**
      * Internal source name, used in URLs.
-     * @type {string}
-     * @memberof SCIMSource
      */
     slug: string;
     /**
      *
-     * @type {boolean}
-     * @memberof SCIMSource
      */
     enabled?: boolean;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SCIMSource
      */
     userPropertyMappings?: Array<string>;
     /**
      *
-     * @type {Array<string>}
-     * @memberof SCIMSource
      */
     groupPropertyMappings?: Array<string>;
     /**
      * Get object component so that we know how to edit the object
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly component: string;
     /**
      * Return object's verbose_name
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly verboseName: string;
     /**
      * Return object's plural verbose_name
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly verboseNamePlural: string;
     /**
      * Return internal model name
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly metaModelName: string;
     /**
      * Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly managed: string | null;
     /**
      *
-     * @type {string}
-     * @memberof SCIMSource
      */
     userPathTemplate?: string;
     /**
      * Get Root URL
-     * @type {string}
-     * @memberof SCIMSource
      */
     readonly rootUrl: string;
     /**
      *
-     * @type {Token}
-     * @memberof SCIMSource
      */
     readonly tokenObj: Token;
 }

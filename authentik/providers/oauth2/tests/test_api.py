@@ -133,6 +133,24 @@ class TestAPI(APITestCase):
                 response = self.set_signing_key(create_test_cert(alg))
                 self.assertEqual(response.status_code, 200)
 
+    def test_list_application_details(self):
+        """Listing retains mappings and providers without an application."""
+        unassigned = OAuth2Provider.objects.create(
+            name=generate_id(), authorization_flow=self.provider.authorization_flow
+        )
+        self.provider.jwt_federation_providers.add(unassigned)
+        response = self.client.get(reverse("authentik_api:oauth2provider-list"))
+        self.assertEqual(response.status_code, 200)
+        providers = {provider["pk"]: provider for provider in response.data["results"]}
+        self.assertEqual(providers[self.provider.pk]["assigned_application_slug"], self.app.slug)
+        self.assertEqual(providers[self.provider.pk]["assigned_application_name"], self.app.name)
+        self.assertCountEqual(
+            providers[self.provider.pk]["property_mappings"],
+            [mapping.pk for mapping in self.provider.property_mappings.all()],
+        )
+        self.assertIsNone(providers[unassigned.pk]["assigned_application_slug"])
+        self.assertEqual(providers[self.provider.pk]["jwt_federation_providers"], [unassigned.pk])
+
     def test_preview(self):
         """Test Preview API Endpoint"""
         response = self.client.get(

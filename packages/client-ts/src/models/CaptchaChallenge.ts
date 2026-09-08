@@ -24,50 +24,34 @@ import type { ErrorDetail } from "./ErrorDetail";
 export interface CaptchaChallenge {
     /**
      *
-     * @type {ContextualFlowInfo}
-     * @memberof CaptchaChallenge
      */
     flowInfo?: ContextualFlowInfo;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallenge
      */
     component?: string;
     /**
      *
-     * @type {{ [key: string]: Array<ErrorDetail>; }}
-     * @memberof CaptchaChallenge
      */
     responseErrors?: { [key: string]: Array<ErrorDetail> };
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallenge
      */
     pendingUser: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallenge
      */
     pendingUserAvatar: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallenge
      */
     siteKey: string;
     /**
      *
-     * @type {string}
-     * @memberof CaptchaChallenge
      */
     jsUrl: string;
     /**
      *
-     * @type {boolean}
-     * @memberof CaptchaChallenge
      */
     interactive: boolean;
 }

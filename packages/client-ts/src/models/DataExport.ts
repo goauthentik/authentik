@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
 import type { ContentType } from "./ContentType";
 import { ContentTypeFromJSON } from "./ContentType";
 import type { PartialUser } from "./PartialUser";
@@ -26,44 +27,30 @@ import { PartialUserFromJSON } from "./PartialUser";
 export interface DataExport {
     /**
      *
-     * @type {string}
-     * @memberof DataExport
      */
     readonly id: string;
     /**
      *
-     * @type {PartialUser}
-     * @memberof DataExport
      */
     readonly requestedBy: PartialUser;
     /**
      *
-     * @type {Date}
-     * @memberof DataExport
      */
     readonly requestedOn: Date;
     /**
      *
-     * @type {ContentType}
-     * @memberof DataExport
      */
     readonly contentType: ContentType;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof DataExport
      */
     queryParams: { [key: string]: any };
     /**
      *
-     * @type {string}
-     * @memberof DataExport
      */
     readonly fileUrl: string;
     /**
      *
-     * @type {boolean}
-     * @memberof DataExport
      */
     readonly completed: boolean;
 }
@@ -123,7 +110,10 @@ export function DataExportFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         id: json["id"],
         requestedBy: PartialUserFromJSON(json["requested_by"]),
-        requestedOn: new Date(json["requested_on"]),
+        requestedOn:
+            json["requested_on"] == null
+                ? json["requested_on"]
+                : parseDateTime(json["requested_on"]),
         contentType: ContentTypeFromJSON(json["content_type"]),
         queryParams: json["query_params"],
         fileUrl: json["file_url"],

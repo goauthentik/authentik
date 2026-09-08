@@ -20,20 +20,14 @@
 export interface PatchedScheduleRequest {
     /**
      *
-     * @type {string}
-     * @memberof PatchedScheduleRequest
      */
     relObjId?: string | null;
     /**
      * When to schedule tasks
-     * @type {string}
-     * @memberof PatchedScheduleRequest
      */
     crontab?: string;
     /**
      * Pause this schedule
-     * @type {boolean}
-     * @memberof PatchedScheduleRequest
      */
     paused?: boolean;
 }

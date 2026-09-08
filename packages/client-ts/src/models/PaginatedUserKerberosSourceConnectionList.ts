@@ -28,20 +28,14 @@ import {
 export interface PaginatedUserKerberosSourceConnectionList {
     /**
      *
-     * @type {Pagination}
-     * @memberof PaginatedUserKerberosSourceConnectionList
      */
     pagination: Pagination;
     /**
      *
-     * @type {Array<UserKerberosSourceConnection>}
-     * @memberof PaginatedUserKerberosSourceConnectionList
      */
     results: Array<UserKerberosSourceConnection>;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof PaginatedUserKerberosSourceConnectionList
      */
     autocomplete: { [key: string]: any };
 }

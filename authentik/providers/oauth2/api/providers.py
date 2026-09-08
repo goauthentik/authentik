@@ -101,7 +101,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "jwt_federation_providers",
         ]
         extra_kwargs = {
-            **ProviderSerializer.Meta.extra_kwargs,
+            **ProviderSerializer.Meta.extra_write_kwargs,
             "signing_key": {"validators": [KeyTypeValidator(*JWT_SIGNING_KEY_TYPES)]},
             "encryption_key": {"validators": [KeyTypeValidator(*JWE_ENCRYPTION_KEY_TYPES)]},
         }
