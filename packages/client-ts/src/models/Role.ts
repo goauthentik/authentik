@@ -26,6 +26,12 @@ export interface Role {
      *
      */
     name: string;
+    /**
+     *
+     * @type {number}
+     * @memberof Role
+     */
+    readonly userCount: number;
 }
 
 /**
@@ -34,6 +40,13 @@ export interface Role {
 export function instanceOfRole(value: object): value is Role {
     if (!("pk" in value) || value["pk"] === undefined) return false;
     if (!("name" in value) || value["name"] === undefined) return false;
+    if (
+        (!("userCount" in (value as Record<string, any>)) &&
+            !("user_count" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["userCount"] === undefined &&
+            (value as Record<string, any>)["user_count"] === undefined)
+    )
+        return false;
     return true;
 }
 
@@ -48,6 +61,7 @@ export function RoleFromJSONTyped(json: any, ignoreDiscriminator: boolean): Role
     return {
         pk: json["pk"],
         name: json["name"],
+        userCount: json["user_count"],
     };
 }
 
@@ -56,7 +70,7 @@ export function RoleToJSON(json: any): Role {
 }
 
 export function RoleToJSONTyped(
-    value?: Omit<Role, "pk"> | null,
+    value?: Omit<Role, "pk" | "userCount"> | null,
     ignoreDiscriminator: boolean = false,
 ): any {
     if (value == null) {
