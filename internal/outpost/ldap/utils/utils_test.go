@@ -70,10 +70,10 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 }
 
 func TestAKAttrsToLDAP_Dict(t *testing.T) {
-	// dict
+	// Nested maps should be flattened to camelCase
 	d := map[string]any{
-		"foo": map[string]string{
-			"foo": "bar",
+		"settings": map[string]any{
+			"locale": "en",
 		},
 	}
 	mapped := AttributesToLDAP(d, func(key string) string {
@@ -82,8 +82,8 @@ func TestAKAttrsToLDAP_Dict(t *testing.T) {
 		return value
 	})
 	assert.Equal(t, 1, len(mapped))
-	assert.Equal(t, "foo", mapped[0].Name)
-	assert.Equal(t, []string{"map[foo:bar]"}, mapped[0].Values)
+	assert.Equal(t, "settingsLocale", mapped[0].Name)
+	assert.Equal(t, []string{"en"}, mapped[0].Values)
 }
 
 func TestAKAttrsToLDAP_Mixed(t *testing.T) {
