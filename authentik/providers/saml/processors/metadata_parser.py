@@ -9,18 +9,18 @@ from defusedxml.lxml import fromstring
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.common.saml.constants import (
-    NS_MAP,
-    NS_SAML_METADATA,
-    SAML_BINDING_POST,
-    SAML_BINDING_REDIRECT,
-)
+from authentik.common.saml.constants import NS_MAP, NS_SAML_METADATA
 from authentik.crypto.models import CertificateKeyPair, format_cert
 from authentik.flows.models import Flow
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.sources.saml.models import SAMLNameIDPolicy
 
 LOGGER = get_logger()
+
+# Which binding to pick when metadata advertises an endpoint for more than one of them.
+# POST is preferred as the Redirect binding must not be used to deliver a Response
+# (SAML 2.0 Profiles, 4.1.2) and only a POST SLS binding allows back-channel logout.
+BINDING_PREFERENCE = (SAMLBindings.POST, SAMLBindings.REDIRECT)
 
 
 @dataclass(slots=True)
@@ -116,6 +116,36 @@ class ServiceProviderMetadataParser:
             certificate_data=raw_cert,
         )
 
+    def select_endpoint(
+        self, endpoints: list[etree.Element]
+    ) -> tuple[SAMLBindings, str] | tuple[None, None]:
+        """Select the endpoint authentik should use out of `endpoints`, ignoring any endpoint
+        with a binding we don't support. Endpoints are picked by `BINDING_PREFERENCE` first,
+        then by `isDefault`, and lastly by the order they're listed in."""
+        supported = []
+        for endpoint in endpoints:
+            binding = SAMLBindings.from_metadata_binding(endpoint.attrib.get("Binding"))
+            location = endpoint.attrib.get("Location")
+            if not binding or not location:
+                LOGGER.debug(
+                    "Skipping endpoint with unsupported binding",
+                    binding=endpoint.attrib.get("Binding"),
+                    location=location,
+                )
+                continue
+            supported.append((endpoint, binding, location))
+        if not supported:
+            return None, None
+        # sorted() is stable, so endpoints that tie keep the order they're listed in
+        endpoint, binding, location = sorted(
+            supported,
+            key=lambda endpoint: (
+                BINDING_PREFERENCE.index(endpoint[1]),
+                endpoint[0].attrib.get("isDefault", "").lower() != "true",
+            ),
+        )[0]
+        return binding, location
+
     def check_signature(self, root: etree.Element, keypair: CertificateKeyPair):
         """If Metadata is signed, check validity of signature"""
         xmlsec.tree.add_ids(root, ["ID"])
@@ -162,34 +192,29 @@ class ServiceProviderMetadataParser:
         if len(acs_services) < 1:
             raise ValueError("No AssertionConsumerService found.")
 
-        acs_service = acs_services[0]
-        acs_binding = {
-            SAML_BINDING_REDIRECT: SAMLBindings.REDIRECT,
-            SAML_BINDING_POST: SAMLBindings.POST,
-        }[acs_service.attrib["Binding"]]
-        acs_location = acs_service.attrib["Location"]
+        acs_binding, acs_location = self.select_endpoint(acs_services)
+        if not acs_binding:
+            raise ValueError(
+                "No AssertionConsumerService with a supported binding found. "
+                "Only HTTP-POST and HTTP-Redirect are supported."
+            )
 
         signing_keypair = self.get_signing_cert(root)
         if signing_keypair:
             self.check_signature(root, signing_keypair)
         encryption_keypair = self.get_encryption_cert(root)
 
-        name_id_format = descriptor.findall(f"{{{NS_SAML_METADATA}}}NameIDFormat")
+        # Use the first NameIDFormat we support, formats we don't know are skipped
         name_id_policy = SAMLNameIDPolicy.UNSPECIFIED
-        if len(name_id_format) > 0:
-            name_id_policy = SAMLNameIDPolicy(name_id_format[0].text)
+        for name_id_format in descriptor.findall(f"{{{NS_SAML_METADATA}}}NameIDFormat"):
+            if name_id_format.text in SAMLNameIDPolicy.values:
+                name_id_policy = SAMLNameIDPolicy(name_id_format.text)
+                break
+            LOGGER.debug("Skipping unsupported NameIDFormat", name_id_format=name_id_format.text)
 
-        # Parse SingleLogoutService (optional)
-        sls_binding = None
-        sls_location = None
+        # Parse SingleLogoutService (not always present)
         sls_services = descriptor.findall(f"{{{NS_SAML_METADATA}}}SingleLogoutService")
-        if len(sls_services) > 0:
-            sls_service = sls_services[0]
-            sls_binding = {
-                SAML_BINDING_REDIRECT: SAMLBindings.REDIRECT,
-                SAML_BINDING_POST: SAMLBindings.POST,
-            }.get(sls_service.attrib.get("Binding"))
-            sls_location = sls_service.attrib.get("Location")
+        sls_binding, sls_location = self.select_endpoint(sls_services)
 
         return ServiceProviderMetadata(
             entity_id=entity_id,
