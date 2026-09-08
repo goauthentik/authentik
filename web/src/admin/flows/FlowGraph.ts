@@ -46,8 +46,8 @@ function declareNode(node: DiagramNode, id: string): string {
         .with(D.FlowStart,       () => declaration(id, SUBROUTINE, `${msg("Flow")}\n<strong>${name}</strong>`))
         .with(D.FlowEnd,         () => declaration(id, SUBROUTINE, msg("End of the flow")))
         .with(D.PreFlowPolicies, () => declaration(id, SUBROUTINE, msg("Pre-flow policies")))
-        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`Stage (<strong>${verboseName}</strong>)`)}\n${name}${toolbar}`))
-        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`Policy (<strong>${verboseName}</strong>)`)}\n${name}${toolbar}`))
+        .with(D.Stage,           () => declaration(id, STADIUM, `${msg(str`<strong>${verboseName}</strong>`)}\n${name}${toolbar}`))
+        .with(D.Policy,          () => declaration(id, HEXAGON, `${msg(str`<strong>${verboseName}</strong>`)}\n${name}${toolbar}`))
         .with(D.AuthenticationRequirement, () => declaration(id, RECTANGLE, `${msg("Flow authentication requirement")}\n${name}`))
         .with(D.UnknownDefaultOpenApi,     () => declaration(id, RECTANGLE, name))
         .exhaustive();

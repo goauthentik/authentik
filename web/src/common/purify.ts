@@ -64,15 +64,20 @@ export const SanitizedTrustPolicy = trustedTypes.createPolicy("authentik-sanitiz
  * DOMPurify's default tag list would strip the custom elements our
  * pipeline emits (`<ak-alert>`, `<ak-md-a>`, `<ak-diagram>`) along with
  * the `part`/`level` attributes they rely on, so those are explicitly
- * allowed. Everything else — script handlers, unknown elements, unsafe
- * URLs injected via a replacer — is still removed.
+ * allowed. `target` is allowed for the same reason: `rehypeAnchors` opens
+ * external and cross-doc links in a new tab, and without it the attribute
+ * is dropped while the paired `rel` survives. Every browser we support
+ * implies `rel="noopener"` for `target="_blank"` regardless, so a replacer
+ * that injects a bare `target` cannot reach the opener. Everything else —
+ * script handlers, unknown elements, unsafe URLs injected via a replacer —
+ * is still removed.
  */
 export const CompiledMarkdownSanitizePolicy = trustedTypes.createPolicy("authentik-markdown", {
     createHTML: (untrustedHTML: string) => {
         return DOMPurify.sanitize(untrustedHTML, {
             RETURN_TRUSTED_TYPE: false,
             ADD_TAGS: ["ak-alert", "ak-md-a", "ak-diagram"],
-            ADD_ATTR: ["part", "level"],
+            ADD_ATTR: ["part", "level", "target"],
         });
     },
 });
