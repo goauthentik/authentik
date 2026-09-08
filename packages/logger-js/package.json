@@ -23,15 +23,15 @@
         ".": {
             "node": {
                 "types": "./out/lib/node.d.ts",
-                "default": "./lib/node.js"
+                "default": "./lib/node.ts"
             },
             "browser": {
                 "types": "./out/index.d.ts",
-                "default": "./index.js"
+                "default": "./out/index.js"
             },
             "default": {
                 "types": "./out/index.d.ts",
-                "default": "./index.js"
+                "default": "./out/index.js"
             }
         }
     },
@@ -53,9 +53,8 @@
         "pino-pretty": "^13.1.2"
     },
     "files": [
-        "./index.js",
-        "lib/**/*",
-        "out/**/*"
+        "out/**/*",
+        "types/**/*"
     ],
     "engines": {
         "node": ">=24"
@@ -82,6 +81,23 @@
         }
     },
     "publishConfig": {
-        "access": "public"
+        "access": "public",
+        "exports": {
+            "./package.json": "./package.json",
+            ".": {
+                "node": {
+                    "types": "./out/lib/node.d.ts",
+                    "default": "./out/lib/node.js"
+                },
+                "browser": {
+                    "types": "./out/index.d.ts",
+                    "default": "./out/index.js"
+                },
+                "default": {
+                    "types": "./out/index.d.ts",
+                    "default": "./out/index.js"
+                }
+            }
+        }
     }
 }
