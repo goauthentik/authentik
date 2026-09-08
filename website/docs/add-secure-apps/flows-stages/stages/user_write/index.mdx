@@ -19,13 +19,42 @@ It is commonly used in enrollment, recovery, and profile-update flows after a [P
 - **User type**: select the user type for newly created users: Internal, External, or Service Account.
 - **User path template**: optionally set the path new users will be created under. If left blank, the default path will be used.
 
+## Data written to users
+
+The stage reads values from `prompt_data` in the [flow context](../../flow/context/index.mdx#prompt_data-dictionary). The key tells the stage where to store each value:
+
+| Prompt data key            | Result on the user                              |
+| -------------------------- | ----------------------------------------------- |
+| `username`                 | Sets the built-in username.                     |
+| `name`                     | Sets the built-in display name.                 |
+| `email`                    | Sets the built-in email address.                |
+| `password`                 | Sets the user's password.                       |
+| `attributes`               | Merges a dictionary into the user's attributes. |
+| `attributes.<key>`         | Sets a custom user attribute.                   |
+| `attributes.<group>.<key>` | Sets a nested custom user attribute.            |
+
+For example, prompt fields with the keys `attributes.given_name` and `attributes.family_name` produce these user attributes:
+
+```yaml
+family_name: Roy
+given_name: Dominic
+```
+
+Use `attributes.<key>` for custom attributes. The stage does not write other keys, such as `department`, to the user; their values remain in `prompt_data` until the flow ends, available to later stages and policies.
+
+For a complete configuration procedure, see [Collect custom user attributes during enrollment](../../flow/collect-user-attributes.mdx).
+
 ## Flow integration
 
-Use this stage after one or more stages that populate flow context, usually a [Identification stage](../identification/index.mdx), [Prompt stage](../prompt/index.mdx), or [Email stage](../email/index.mdx).
+Use this stage after one or more stages that populate flow context, usually an [Identification stage](../identification/index.mdx), [Prompt stage](../prompt/index.mdx), or [Email stage](../email/index.mdx).
 
 In enrollment flows, this stage is often followed by a [User Login](../user_login/index.mdx) stage so the newly created user is immediately signed in.
 
 ## Notes
+
+### Invitation data
+
+An [Invitation](../invitation/index.mdx) stage adds the invitation's built-in properties and custom attributes to `prompt_data`. The User Write stage stores an `attributes` dictionary or dotted keys such as `attributes.department` in the same way as submitted prompt values. For more information, see [Invitations](../../../../users-sources/user/invitations.mdx).
 
 ### Dynamic groups
 

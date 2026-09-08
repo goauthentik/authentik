@@ -230,7 +230,6 @@ import { type SAMLMetadata, SAMLMetadataFromJSON } from "../models/SAMLMetadata"
 import { type SAMLNameIDPolicyEnum } from "../models/SAMLNameIDPolicyEnum";
 import { type SAMLProvider, SAMLProviderFromJSON } from "../models/SAMLProvider";
 import { type SAMLProviderRequest, SAMLProviderRequestToJSON } from "../models/SAMLProviderRequest";
-import { type SamlVersionEnum } from "../models/SamlVersionEnum";
 import { type SCIMProvider, SCIMProviderFromJSON } from "../models/SCIMProvider";
 import { type SCIMProviderGroup, SCIMProviderGroupFromJSON } from "../models/SCIMProviderGroup";
 import {
@@ -260,6 +259,7 @@ import {
     type WSFederationProviderRequest,
     WSFederationProviderRequestToJSON,
 } from "../models/WSFederationProviderRequest";
+import { type WSFedSAMLVersionEnum } from "../models/WSFedSAMLVersionEnum";
 import * as runtime from "../runtime";
 
 export interface ProvidersAllDestroyRequest {
@@ -1987,7 +1987,7 @@ export interface ProvidersWsfedListRequest {
     /**
      *
      */
-    samlVersion?: SamlVersionEnum;
+    samlVersion?: WSFedSAMLVersionEnum;
     /**
      * A search term.
      */

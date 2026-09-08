@@ -19,8 +19,8 @@ import { GroupResult } from "#common/utils";
 import { AKElement } from "#elements/Base";
 import { intersectionObserver } from "#elements/decorators/intersection-observer";
 import {
-    EntityDescriptorElement,
     isTransclusionParentElement,
+    NamedEntityElement,
     type TransclusionChildElement,
     TransclusionChildSymbol,
 } from "#elements/dialogs/shared";
@@ -50,6 +50,7 @@ import { createRef, ref } from "lit/directives/ref.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
@@ -91,12 +92,13 @@ export abstract class Table<T extends object, D = T>
     extends WithSession(AKElement)
     implements TableLike, TransclusionChildElement
 {
-    declare ["constructor"]: EntityDescriptorElement;
+    declare ["constructor"]: NamedEntityElement;
 
     static styles: CSSResult[] = [
         PFTable,
         PFBullseye,
         PFButton,
+        PFSwitch,
         PFToolbar,
         PFDropdown,
         PFPagination,

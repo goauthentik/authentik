@@ -10,13 +10,13 @@ Configure your monitoring software to send requests to `/-/health/live/`, which 
 
 ## Worker monitoring
 
-The worker container can be monitored by running `ak healthcheck` in the worker container. This will check that the worker is running and ensure that a PostgreSQL connection can be established correctly.
+The worker container can be monitored by running `ak healthcheck` in the worker container. This checks that the worker process is running and responding.
 
-You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if a PostgreSQL connection can be established correctly.
+You can also send HTTP requests to `/-/health/ready/`, which will return `HTTP 200` if the worker processes are responding and a PostgreSQL connection can be established correctly. The worker serves this on the port set by [`AUTHENTIK_LISTEN__HTTP`](../../install-config/configuration/configuration.mdx#authentik_listen__http).
 
 ## Outpost monitoring
 
-Both kinds of outpost (proxy and LDAP) listen on a separate port (9300) and can be monitored by sending HTTP requests to `/outpost.goauthentik.io/ping`.
+All outposts (proxy, LDAP, RADIUS, and RAC) listen on a separate port (9300) and can be monitored by sending HTTP requests to `/outpost.goauthentik.io/ping`.
 
 ---
 

@@ -27,6 +27,7 @@ import {
 import { listen } from "#elements/decorators/listen";
 import { renderDialog } from "#elements/dialogs";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { WithNotifications } from "#elements/mixins/notifications";
 import { canAccessAdmin, WithSession } from "#elements/mixins/session";
 import { navigate } from "#elements/router/RouterOutlet";
@@ -46,7 +47,7 @@ import { ROUTES } from "#admin/Routes";
 import { CapabilitiesEnum } from "@goauthentik/api";
 
 import { LOCALE_STATUS_EVENT, LocaleStatusEventDetail, msg } from "@lit/localize";
-import { CSSResult, html, nothing, PropertyValues, TemplateResult } from "lit";
+import { CSSResult, html, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { guard } from "lit/directives/guard.js";
@@ -58,8 +59,8 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithCapabilitiesConfig(
-    WithNotifications(WithSession(AuthenticatedInterface)),
+export class AdminInterface extends WithLicenseSummary(
+    WithCapabilitiesConfig(WithNotifications(WithSession(AuthenticatedInterface))),
 ) {
     //#region Styles
 
@@ -81,6 +82,14 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
     @property({ type: Array })
     public entries: readonly SidebarEntry[] = createAdminSidebarEntries();
+
+    protected get navigationEntries(): readonly SidebarEntry[] {
+        if (!this.can(CapabilitiesEnum.IsEnterprise)) {
+            return this.entries;
+        }
+
+        return [...this.entries, ...createAdminSidebarEnterpriseEntries()];
+    }
 
     //#endregion
 
@@ -147,30 +156,31 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 action: () => navigate("/core/applications", { createWizard: true }),
                 group: msg("Applications"),
             },
-            {
-                namespace: PaletteCommandNamespace.Navigation,
-                label: msg("Check the logs"),
-                action: () => navigate("/events/log"),
-                group: msg("Events"),
-            },
-            {
-                namespace: PaletteCommandNamespace.Navigation,
-                label: msg("Manage users"),
-                action: () => navigate("/identity/users"),
-                group: msg("Users"),
-            },
-            ...this.entries.flatMap(([, label, , children]) => [
-                ...(children ?? []).map(
-                    ([path, childLabel]): PaletteCommandDefinitionInit => ({
+            ...this.navigationEntries.flatMap(([, label, , children]) =>
+                (children ?? []).flatMap(([path, childLabel, attributes]) => {
+                    const enterpriseOnly =
+                        !Array.isArray(attributes) && attributes?.enterprise === true;
+
+                    if (enterpriseOnly && !this.can(CapabilitiesEnum.IsEnterprise)) {
+                        return [];
+                    }
+
+                    const command: PaletteCommandDefinitionInit = {
                         namespace: PaletteCommandNamespace.Navigation,
                         label: childLabel,
                         group: label,
                         action: () => {
-                            navigate(path!);
+                            navigate(
+                                enterpriseOnly && !this.hasEnterpriseLicense
+                                    ? "/enterprise/licenses"
+                                    : path!,
+                            );
                         },
-                    }),
-                ),
-            ]),
+                    };
+
+                    return [command];
+                }),
+            ),
             {
                 namespace: PaletteCommandNamespace.Search,
                 label: msg("Username or email address..."),
@@ -275,10 +285,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
                 </ak-page-navbar>
 
                 <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}"
-                    >${renderSidebarItems(this.entries)}
-                    ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(createAdminSidebarEnterpriseEntries())
-                        : nothing}
+                    >${renderSidebarItems(this.navigationEntries)}
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">

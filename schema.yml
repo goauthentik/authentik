@@ -21025,7 +21025,7 @@ paths:
         name: saml_version
         schema:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: |+
             SAML assertion version to issue in the security token. Microsoft Entra ID and classic ADFS-style relying parties typically require SAML 1.1.
 
@@ -40068,6 +40068,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         result:
           type: boolean
         wait_min:
@@ -40081,6 +40089,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -40935,6 +40945,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
@@ -40965,6 +40983,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41160,12 +41180,22 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         expression:
           type: string
       required:
       - bound_to
       - component
+      - created
       - expression
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -41909,6 +41939,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         asns:
           type: array
           items:
@@ -41961,6 +41999,8 @@ components:
       - component
       - countries
       - countries_obj
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -49960,6 +50000,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         days:
           type: integer
           maximum: 2147483647
@@ -49969,7 +50017,9 @@ components:
       required:
       - bound_to
       - component
+      - created
       - days
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -50030,6 +50080,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -50078,6 +50136,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -54372,7 +54432,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -54806,9 +54866,19 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -56549,6 +56619,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         check_ip:
           type: boolean
         check_username:
@@ -56560,6 +56638,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -58646,11 +58726,6 @@ components:
       - disabled
       - disabled_deleted
       type: string
-    SamlVersionEnum:
-      enum:
-      - '1.1'
-      - '2.0'
-      type: string
     Schedule:
       type: object
       properties:
@@ -60468,6 +60543,14 @@ components:
           type: integer
           description: Return objects policy is bound to
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
         password_field:
           type: string
           description: Field key to check, field keys defined in Prompt stages are
@@ -60480,6 +60563,8 @@ components:
       required:
       - bound_to
       - component
+      - created
+      - last_updated
       - meta_model_name
       - name
       - pk
@@ -61822,6 +61907,11 @@ components:
       - id
       - timestamp
       - version
+    WSFedSAMLVersionEnum:
+      enum:
+      - '1.1'
+      - '2.0'
+      type: string
     WSFederationProvider:
       type: object
       description: WSFederationProvider Serializer
@@ -61921,7 +62011,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
@@ -62045,7 +62135,7 @@ components:
             methods the user used to authenticate.
         saml_version:
           allOf:
-          - $ref: '#/components/schemas/SamlVersionEnum'
+          - $ref: '#/components/schemas/WSFedSAMLVersionEnum'
           description: SAML assertion version to issue in the security token. Microsoft
             Entra ID and classic ADFS-style relying parties typically require SAML
             1.1.
