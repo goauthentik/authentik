@@ -27,7 +27,7 @@ export function IconEditButton<T extends NamedEntityElementConstructor>(
     options?: DialogInit,
     iconName: string = "fa-edit",
 ): SlottedTemplateResult {
-    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Entity");
+    const noun = (factory as NamedEntityElementConstructor).verboseName ?? msg("Object");
     const label = itemName
         ? msg(str`Edit "${itemName}" ${noun}`, {
               id: "entity.edit.named",
