@@ -26,8 +26,8 @@ from structlog.stdlib import get_logger
 from authentik.api.validation import validate
 from authentik.common.saml.constants import (
     DEFAULT_ISSUER,
-    SAML_BINDING_POST,
     SAML_BINDING_REDIRECT,
+    SAML_BINDINGS_SUPPORTED,
 )
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
@@ -335,10 +335,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
                 name="force_binding",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
-                enum=[
-                    SAML_BINDING_REDIRECT,
-                    SAML_BINDING_POST,
-                ],
+                enum=SAML_BINDINGS_SUPPORTED,
                 description="Optionally force the metadata to only include one binding.",
             ),
             # Explicitly excluded, because otherwise spectacular automatically

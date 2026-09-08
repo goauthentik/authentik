@@ -2,25 +2,32 @@
 
 import sys
 from contextlib import contextmanager
+from inspect import iscoroutinefunction
+from platform import machine
+from socket import gethostname
 from typing import Any
 
-from asgiref.sync import iscoroutinefunction, markcoroutinefunction
+from asgiref.sync import markcoroutinefunction
 from django.conf import settings
 from django.utils.module_loading import import_string
 from opentelemetry import trace
+from opentelemetry.baggage.propagation import W3CBaggagePropagator
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.django import DjangoInstrumentor
 from opentelemetry.instrumentation.psycopg import PsycopgInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.instrumentation.structlog import StructlogInstrumentor
 from opentelemetry.instrumentation.threading import ThreadingInstrumentor
-from opentelemetry.propagate import inject
-from opentelemetry.sdk.resources import Resource
+from opentelemetry.propagate import inject, set_global_textmap
+from opentelemetry.propagators.b3 import B3MultiFormat
+from opentelemetry.propagators.composite import CompositePropagator
+from opentelemetry.sdk.resources import HOST_ARCH, HOST_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
 from opentelemetry.sdk.trace.sampling import ParentBased, TraceIdRatioBased
 from opentelemetry.trace import Span as OtelSpan
 from opentelemetry.trace import Status, StatusCode
+from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from structlog.stdlib import get_logger
 
 from authentik import authentik_build_hash, authentik_version
@@ -109,6 +116,11 @@ class OpenTelemetryTracer(Tracer):
         # Must run before instrument() below, so DjangoInstrumentor's own middleware is
         # inserted afterwards and doesn't get wrapped a second time
         settings.MIDDLEWARE = _trace_middleware_list(settings.MIDDLEWARE)
+        set_global_textmap(
+            CompositePropagator(
+                [TraceContextTextMapPropagator(), W3CBaggagePropagator(), B3MultiFormat()]
+            )
+        )
         ThreadingInstrumentor().instrument()
         RequestsInstrumentor().instrument()
         StructlogInstrumentor().instrument()
@@ -128,12 +140,14 @@ class OpenTelemetryTracer(Tracer):
         provider = TracerProvider(
             resource=Resource.create(
                 {
-                    "service.name": "authentik-v2",
+                    "service.name": "authentik",
                     "service.version": authentik_version(),
                     "deployment.environment": CONFIG.get("error_reporting.environment", "customer"),
                     "authentik.build_hash": authentik_build_hash("tagged"),
                     "authentik.env": get_env(),
                     "authentik.component": "backend",
+                    HOST_NAME: gethostname(),
+                    HOST_ARCH: machine(),
                 }
             ),
             sampler=ParentBased(TraceIdRatioBased(sample_rate)),
@@ -166,5 +180,5 @@ class OpenTelemetryTracer(Tracer):
 
     @contextmanager
     def start_span(self, op: str, name: str | None = None):
-        with tracer.start_as_current_span(op, attributes={"name": name}) as span:
+        with tracer.start_as_current_span(op, attributes={"name": name or op}) as span:
             yield _Span(span)
