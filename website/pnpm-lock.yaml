@@ -146,23 +146,23 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       '@swc/core-darwin-arm64':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/core-linux-arm64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/core-linux-x64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-darwin-arm64':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-linux-arm64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-linux-x64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       lightningcss-darwin-arm64:
         specifier: 1.33.0
         version: 1.33.0
@@ -264,23 +264,23 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       '@swc/core-darwin-arm64':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/core-linux-arm64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/core-linux-x64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-darwin-arm64':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-linux-arm64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       '@swc/html-linux-x64-gnu':
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       lightningcss-darwin-arm64:
         specifier: 1.33.0
         version: 1.33.0
@@ -2380,8 +2380,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-arm64@1.16.1':
-    resolution: {integrity: sha512-zlJblJ8ncErD43lKdxjbUaUskJQf+LxiPXYcWXD8/8ZMV+7uuAT+CwjciLXpyZBd5Pq/S726bMpeeAwSeL1hhg==}
+  '@swc/core-darwin-arm64@1.16.2':
+    resolution: {integrity: sha512-i/j0HNbnn79qnTVPicvay92Nark8fW8NQqn1e2mGERjUXNpBV0+SwQxlRpk2zBhn6laJ8PDI6Kn1nHZhnz3LCA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
@@ -2405,8 +2405,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/core-linux-arm64-gnu@1.16.1':
-    resolution: {integrity: sha512-moyKm0YZlHdHohzm1YwgAyesqnE853rO0REMfJLFAova51wF9BNi+3ZW2PeS7Vqvn6HeJuepLpAHbBdZctxpHA==}
+  '@swc/core-linux-arm64-gnu@1.16.2':
+    resolution: {integrity: sha512-/jcTmK6Ktz3owM3YtiKvjofV6p3VpHnYzTIrOGwDIOsDigRAAVuZ8east33wYO/7UTdKYFlyHNnJNT0WJqOA3Q==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -2440,8 +2440,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/core-linux-x64-gnu@1.16.1':
-    resolution: {integrity: sha512-VJQxqrisHV+B394IgrOu8YsIIXZgffnf5tO+yc9Z/hoUpuZEvuQTjWwlnpZdpyD+0nx6LTD1/3k646JYm43yJA==}
+  '@swc/core-linux-x64-gnu@1.16.2':
+    resolution: {integrity: sha512-LyHJgxCA4Tje0ysBMbEb0tt/ie8kgUKoFE3JAKFhpevmTmhYEoC0H9s47WuDsqiFckF1ITUguZIXJG6K5e0dvg==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -2490,8 +2490,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/html-darwin-arm64@1.16.1':
-    resolution: {integrity: sha512-kFs0Rk9pMb/FiX7BaRhSKsw4J4VoBR0J/iO1h5WtegcXz5kuR3L2VHhde0zSJt6irZU+NgiAw5ULLJJo/+yDCQ==}
+  '@swc/html-darwin-arm64@1.16.2':
+    resolution: {integrity: sha512-SNBUxkxLBXD0ATwnOG1rF8mpSrRtFDfqWnEUmbm/g4KwmCt7NuHHv9YYqA3lqfq90Ucc+Xlk7afx8KAW/utz4A==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [darwin]
@@ -2515,8 +2515,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/html-linux-arm64-gnu@1.16.1':
-    resolution: {integrity: sha512-27mr1L1WR1bsC9t3NkK6JWK5TMIC9fbz0QlM1yzaqRwn9Hs7S48ZkJAk5TC0lNxsU/BLrEr4kMLaDAJ8aVkjig==}
+  '@swc/html-linux-arm64-gnu@1.16.2':
+    resolution: {integrity: sha512-jonZVtHc6BesMjC/muUEJGzE1L2kVdgiPVuHc7CL79MrUm0Hjf8LS4Wmtjqe2bLTfRcaMfaYl/60ZcRXHCaYSQ==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -2550,8 +2550,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@swc/html-linux-x64-gnu@1.16.1':
-    resolution: {integrity: sha512-VUr08k9KncdAJGWO8dSNzY0JdZPKo1+7PjH/eNo5p1Fv9AwL4lzzh2uRvmYn9Ill2qfazPY+0Gse8BCWPL3KIw==}
+  '@swc/html-linux-x64-gnu@1.16.2':
+    resolution: {integrity: sha512-5EduoVpsnuAAkG9BW8COxcIKAe5swgNAEo+BVkAJCOy1ZMZm0krQYBdvlaDCsGGE9yLDKVPm7rpYIi7vTTZTbA==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -11516,7 +11516,7 @@ snapshots:
   '@swc/core-darwin-arm64@1.15.47':
     optional: true
 
-  '@swc/core-darwin-arm64@1.16.1':
+  '@swc/core-darwin-arm64@1.16.2':
     optional: true
 
   '@swc/core-darwin-x64@1.15.47':
@@ -11528,7 +11528,7 @@ snapshots:
   '@swc/core-linux-arm64-gnu@1.15.47':
     optional: true
 
-  '@swc/core-linux-arm64-gnu@1.16.1':
+  '@swc/core-linux-arm64-gnu@1.16.2':
     optional: true
 
   '@swc/core-linux-arm64-musl@1.15.47':
@@ -11543,7 +11543,7 @@ snapshots:
   '@swc/core-linux-x64-gnu@1.15.47':
     optional: true
 
-  '@swc/core-linux-x64-gnu@1.16.1':
+  '@swc/core-linux-x64-gnu@1.16.2':
     optional: true
 
   '@swc/core-linux-x64-musl@1.15.47':
@@ -11581,7 +11581,7 @@ snapshots:
   '@swc/html-darwin-arm64@1.15.47':
     optional: true
 
-  '@swc/html-darwin-arm64@1.16.1':
+  '@swc/html-darwin-arm64@1.16.2':
     optional: true
 
   '@swc/html-darwin-x64@1.15.47':
@@ -11593,7 +11593,7 @@ snapshots:
   '@swc/html-linux-arm64-gnu@1.15.47':
     optional: true
 
-  '@swc/html-linux-arm64-gnu@1.16.1':
+  '@swc/html-linux-arm64-gnu@1.16.2':
     optional: true
 
   '@swc/html-linux-arm64-musl@1.15.47':
@@ -11608,7 +11608,7 @@ snapshots:
   '@swc/html-linux-x64-gnu@1.15.47':
     optional: true
 
-  '@swc/html-linux-x64-gnu@1.16.1':
+  '@swc/html-linux-x64-gnu@1.16.2':
     optional: true
 
   '@swc/html-linux-x64-musl@1.15.47':
