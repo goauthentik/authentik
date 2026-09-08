@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+import { parseDateTime } from "../runtime";
+
 /**
  * Password Policy Serializer
  * @export
@@ -50,6 +52,14 @@ export interface PasswordPolicy {
      * Return objects policy is bound to
      */
     readonly boundTo: number;
+    /**
+     *
+     */
+    readonly lastUpdated: Date;
+    /**
+     *
+     */
+    readonly created: Date;
     /**
      * Field key to check, field keys defined in Prompt stages are available.
      */
@@ -139,6 +149,14 @@ export function instanceOfPasswordPolicy(value: object): value is PasswordPolicy
             (value as Record<string, any>)["bound_to"] === undefined)
     )
         return false;
+    if (
+        (!("lastUpdated" in (value as Record<string, any>)) &&
+            !("last_updated" in (value as Record<string, any>))) ||
+        ((value as Record<string, any>)["lastUpdated"] === undefined &&
+            (value as Record<string, any>)["last_updated"] === undefined)
+    )
+        return false;
+    if (!("created" in value) || value["created"] === undefined) return false;
     return true;
 }
 
@@ -162,6 +180,11 @@ export function PasswordPolicyFromJSONTyped(
         verboseNamePlural: json["verbose_name_plural"],
         metaModelName: json["meta_model_name"],
         boundTo: json["bound_to"],
+        lastUpdated:
+            json["last_updated"] == null
+                ? json["last_updated"]
+                : parseDateTime(json["last_updated"]),
+        created: json["created"] == null ? json["created"] : parseDateTime(json["created"]),
         passwordField: json["password_field"] == null ? undefined : json["password_field"],
         amountDigits: json["amount_digits"] == null ? undefined : json["amount_digits"],
         amountUppercase: json["amount_uppercase"] == null ? undefined : json["amount_uppercase"],
@@ -189,7 +212,14 @@ export function PasswordPolicyToJSON(json: any): PasswordPolicy {
 export function PasswordPolicyToJSONTyped(
     value?: Omit<
         PasswordPolicy,
-        "pk" | "component" | "verboseName" | "verboseNamePlural" | "metaModelName" | "boundTo"
+        | "pk"
+        | "component"
+        | "verboseName"
+        | "verboseNamePlural"
+        | "metaModelName"
+        | "boundTo"
+        | "lastUpdated"
+        | "created"
     > | null,
     ignoreDiscriminator: boolean = false,
 ): any {

@@ -10,10 +10,10 @@ from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
 from django.http import HttpRequest
 from django.utils.timezone import now
-from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Actor, ActorPolicyInheritance, Group, User, UserTypes
+from authentik.lib.tracing import active_tracer
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
@@ -275,7 +275,7 @@ class PolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     def build(self) -> PolicyEngine:
         """Build wrapper which monitors performance"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.policy.engine.build",
                 name=self.__pbm,
             ) as span,
@@ -347,7 +347,7 @@ class FilterPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     def build(self) -> FilterPolicyEngine:
         """Evaluate bindings against the user queryset"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.policy.engine_filter.build",
                 name=self.__pbm,
             ),
@@ -518,7 +518,7 @@ class ListPolicyEngine[T: PolicyBindingModel](_PolicyEngineBase):
     def build(self) -> ListPolicyEngine[T]:
         """Evaluate the user against every object in the queryset"""
         with (
-            start_span(
+            active_tracer().start_span(
                 op="authentik.policy.engine_list.build",
                 name=class_to_path(self.__objs.model),
             ),
