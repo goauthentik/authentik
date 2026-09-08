@@ -64,7 +64,7 @@ services:
     image: docker.io/library/traefik:3.1
     profiles: [pin-only]
   nginx:
-    image: docker.io/library/nginx:1.27
+    image: docker.io/library/nginx:1.31
     profiles: [pin-only]
   envoy:
     image: docker.io/envoyproxy/envoy:v1.39-latest
