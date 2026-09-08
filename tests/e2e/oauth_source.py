@@ -139,7 +139,7 @@ class OIDCAppMixin(FlowStageMixin):
         )
         # The application has to exist before the client fetches the discovery document
         self.run_container(
-            image="ghcr.io/beryju/oidc-test-client:2.7.1",
+            image=self.pinned_image("oidc-test-client", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "OIDC_CLIENT_ID": self.client_id,
@@ -192,7 +192,7 @@ class DexOAuthSourceMixin(FlowStageMixin):
         self.slug = generate_id()
         super().setUp()
         self.run_container(
-            image="ghcr.io/dexidp/dex:v2.44.0",
+            image=self.pinned_image("dex", "e2e/compose.yml"),
             ports={"5556": "5556"},
             healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:5556/dex/healthz"],

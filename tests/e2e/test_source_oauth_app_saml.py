@@ -35,7 +35,7 @@ class TestSourceOAuthAppSAML(SourceAppRedirectMixin, SeleniumTestCase):
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
         Application.objects.create(name="SAML", slug=generate_id(), provider=provider)
         self.run_container(
-            image="ghcr.io/beryju/saml-test-sp:1.1",
+            image=self.pinned_image("saml-test-sp", "e2e/compose.yml"),
             ports={"9009": "9009"},
             environment={
                 "SP_ENTITY_ID": provider.issuer_override,

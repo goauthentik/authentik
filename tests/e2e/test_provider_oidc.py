@@ -44,7 +44,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         """Setup client oidc-test-client container which we test OIDC against"""
         sleep(1)
         self.run_container(
-            image="ghcr.io/beryju/oidc-test-client:2.7.1",
+            image=self.pinned_image("oidc-test-client", "e2e/compose.yml"),
             ports={
                 "9009": "9009",
             },

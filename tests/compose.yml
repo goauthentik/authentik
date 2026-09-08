@@ -1,0 +1,6 @@
+services:
+  # Not started via `docker compose up`. Pinned here purely so Dependabot's
+  # docker-compose ecosystem can see and bump this image; tests/live.py reads
+  # the tag back out via DockerTestCase.pinned_image().
+  traefik:
+    image: docker.io/library/traefik:3.1

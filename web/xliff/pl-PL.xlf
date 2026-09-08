@@ -11674,6 +11674,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s7f9ff4596805832a">
   <source>Key used to sign tokens. If no signing key is selected, tokens are signed with HS256 using this provider's client secret.</source>
 </trans-unit>
+<trans-unit id="sdcfef055f5b959f5">
+  <source>The returned assertion was not a PublicKeyCredential</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

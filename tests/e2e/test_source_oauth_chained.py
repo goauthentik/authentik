@@ -3,10 +3,8 @@ Stage, in front of an OIDC application, and that data the inner flow produced is
 passed back out through the chain"""
 
 from json import dumps
-from pathlib import Path
 from unittest import expectedFailure
 
-from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -39,9 +37,11 @@ from tests.e2e.oauth_source import (
 from tests.e2e.test_source_saml import IDP_CERT, IDP_KEY
 from tests.selenium import SeleniumTestCase
 
-# The test IdP's static user. With SIMPLESAMLPHP_SP_NAME_ID_ATTRIBUTE=email the NameID
-# *is* this address, which is what a UserSAMLSourceConnection is keyed on.
-IDP_EMAIL = "user1@example.com"
+IDP_PORT = 8080
+# The test IdP's static user. It answers the SP's NameIDPolicy, and authentik's default
+# is persistent, which this IdP maps to the username -- so that, not the email, is what
+# a UserSAMLSourceConnection is keyed on.
+IDP_USER = "user1"
 # The extra value the inner source's flow collects, which has to survive back through
 # the Source Stage into the outer flow and out into the OIDC token
 NESTED_FIELD = "nested_extra"
@@ -60,29 +60,18 @@ class ChainedSourceMixin(OIDCAppMixin, AppRedirectMixin, DexOAuthSourceMixin):
     def setUp(self):
         self.saml_slug = generate_id()
         super().setUp()
+        # The IdP binds 9009 inside the container (and its healthcheck hardcodes that
+        # port), so publish it on 8080 instead to leave 9009 to the application
         self.run_container(
-            image="kristophjunge/test-saml-idp:1.15",
-            ports={"8080": "8080"},
-            healthcheck=Healthcheck(
-                test=["CMD", "curl", "http://localhost:8080"],
-                interval=5 * 1_000 * 1_000_000,
-                start_period=1 * 1_000 * 1_000_000,
-            ),
-            volumes={
-                str((Path(__file__).parent / "test-saml-idp/saml20-sp-remote.php").absolute()): {
-                    "bind": "/var/www/simplesamlphp/metadata/saml20-sp-remote.php",
-                    "mode": "ro",
-                }
-            },
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": "8080"},
             environment={
-                "SIMPLESAMLPHP_SP_ENTITY_ID": "entity-id",
-                "SIMPLESAMLPHP_SP_NAME_ID_FORMAT": (
-                    "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+                "IDP_ROOT_URL": f"http://{self.host}:{IDP_PORT}",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.saml_slug
                 ),
-                "SIMPLESAMLPHP_SP_NAME_ID_ATTRIBUTE": "email",
-                "SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE": self.url(
-                    "authentik_sources_saml:acs", source_slug=self.saml_slug
-                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
             },
         )
 
@@ -94,31 +83,32 @@ class ChainedSourceMixin(OIDCAppMixin, AppRedirectMixin, DexOAuthSourceMixin):
                 authentication_flow=authentication_flow,
                 user_matching_mode=SourceUserMatchingModes.EMAIL_LINK,
             )
+        keypair = CertificateKeyPair.objects.create(
+            name=generate_id(), certificate_data=IDP_CERT, key_data=IDP_KEY
+        )
         source = SAMLSource.objects.create(
             name=generate_id(),
             slug=self.saml_slug,
             authentication_flow=authentication_flow,
             enrollment_flow=Flow.objects.get(slug="default-source-enrollment"),
             pre_authentication_flow=Flow.objects.get(slug="default-source-pre-authentication"),
-            issuer_override="entity-id",
-            sso_url=f"http://{self.host}:8080/simplesaml/saml2/idp/SSOService.php",
+            sso_url=f"http://{self.host}:{IDP_PORT}/sso",
             binding_type=SAMLBindingTypes.REDIRECT,
-            signing_kp=CertificateKeyPair.objects.create(
-                name=generate_id(), certificate_data=IDP_CERT, key_data=IDP_KEY
-            ),
+            signing_kp=keypair,
+            verification_kp=keypair,
         )
-        UserSAMLSourceConnection.objects.create(source=source, user=user, identifier=IDP_EMAIL)
+        UserSAMLSourceConnection.objects.create(source=source, user=user, identifier=IDP_USER)
         return source
 
     def login_via_role_source(self, role: str):
         """Perform login at the IdP behind the source taking `role`"""
         if getattr(self, role) == "oauth":
             return self.login_via_oauth_provider()
-        self.wait.until(ec.presence_of_element_located((By.ID, "username")))
+        self.wait.until(ec.presence_of_element_located((By.NAME, "user")))
         initial_url = self.driver.current_url
-        self.driver.find_element(By.ID, "username").send_keys("user1")
-        self.driver.find_element(By.ID, "password").send_keys("user1pass")
-        self.driver.find_element(By.ID, "password").send_keys(Keys.ENTER)
+        self.driver.find_element(By.NAME, "user").send_keys(IDP_USER)
+        self.driver.find_element(By.NAME, "password").send_keys("user1pass")
+        self.driver.find_element(By.NAME, "password").send_keys(Keys.ENTER)
         return self.wait.until(ec.url_changes(initial_url))
 
     def extra_scope_mappings(self):
