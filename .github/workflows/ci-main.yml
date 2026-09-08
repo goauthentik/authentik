@@ -28,6 +28,20 @@ permissions:
   id-token: write
 
 jobs:
+  # Determines whether the pull request touches anything besides documentation.
+  # Everything that only validates code is gated on this, so that docs-only
+  # pull requests don't run the full test suite.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: "${{ steps.detect.outputs.code }}"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - id: detect
+        uses: ./.github/actions/detect-changes
   build-compute-tags:
     runs-on: ubuntu-latest
     outputs:
@@ -40,8 +54,10 @@ jobs:
       - id: compute-tags
         uses: ./.github/actions/compute-container-tags
   build:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
     needs:
       - build-compute-tags
+      - changes
     permissions:
       # Needed to upload cache to ghcr.io
       packages: write
@@ -72,6 +88,9 @@ jobs:
       should-cache: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"
       cache-suffix: "-${{ needs.build-compute-tags.outputs.safe-branch-name }}"
   lint:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     strategy:
       fail-fast: false
       matrix:
@@ -114,6 +133,9 @@ jobs:
       - name: run job
         run: make ci-lint-${{ matrix.job }}
   test-gen:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -130,6 +152,9 @@ jobs:
       - name: ensure schema is up-to-date
         run: git diff --exit-code -- schema.yml blueprints/schema.json packages/client-go packages/client-rust packages/client-ts
   test-migrations:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -138,6 +163,9 @@ jobs:
       - name: run migrations
         run: uv run python -m lifecycle.migrate
   test-make-seed:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     steps:
       - id: seed
@@ -146,10 +174,13 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
     name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: test-make-seed
+    needs:
+      - test-make-seed
+      - changes
     strategy:
       fail-fast: false
       matrix:
@@ -229,10 +260,13 @@ jobs:
         with:
           flags: unit-migrate
   test-unittest:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/10
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: test-make-seed
+    needs:
+      - test-make-seed
+      - changes
     strategy:
       fail-fast: false
       matrix:
@@ -258,6 +292,9 @@ jobs:
         with:
           flags: unit
   test-integration:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -276,12 +313,14 @@ jobs:
         with:
           flags: integration
   test-e2e:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
     name: test-e2e (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
       - build-compute-tags
       - build
+      - changes
     strategy:
       fail-fast: false
       matrix:
@@ -373,6 +412,9 @@ jobs:
         with:
           flags: e2e
   test-openid-conformance:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     name: test-openid-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -434,6 +476,9 @@ jobs:
           name: conformance-certification-${{ matrix.job.name }}
           path: tests/openid_conformance/exports/
   test-rust:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -477,10 +522,13 @@ jobs:
       - test-integration
       - test-e2e
       - test-rust
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
+          # Docs-only pull requests skip every code job; see the `changes` job.
+          allowed-skips: "build, lint, test-gen, test-migrations, test-migrations-from-stable, test-unittest, test-integration, test-e2e, test-rust"
           jobs: ${{ toJSON(needs) }}
   publish:
     if: "${{ github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}"

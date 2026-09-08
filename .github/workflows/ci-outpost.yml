@@ -22,7 +22,24 @@ env:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 jobs:
+  # Determines whether the pull request touches anything besides documentation.
+  # Everything that only validates code is gated on this, so that docs-only
+  # pull requests don't run the full test suite.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: "${{ steps.detect.outputs.code }}"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - id: detect
+        uses: ./.github/actions/detect-changes
   lint-golint:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -41,6 +58,9 @@ jobs:
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
+    needs:
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
@@ -60,15 +80,20 @@ jobs:
     needs:
       - lint-golint
       - test-unittest
+      - changes
     runs-on: ubuntu-latest
     steps:
       - uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # release/v1
         with:
+          # Docs-only pull requests skip every code job; see the `changes` job.
+          allowed-skips: "lint-golint, test-unittest"
           jobs: ${{ toJSON(needs) }}
   build-binary:
+    if: "${{ needs.changes.outputs.code == 'true' }}"
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
+      - changes
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

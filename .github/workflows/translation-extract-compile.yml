@@ -16,7 +16,24 @@ env:
   POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
 
 jobs:
+  # Determines whether the pull request touches anything besides documentation.
+  # Everything that only validates code is gated on this, so that docs-only
+  # pull requests don't run the full test suite.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: "${{ steps.detect.outputs.code }}"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - id: detect
+        uses: ./.github/actions/detect-changes
   compile:
+    needs:
+      - changes
+    if: "${{ !cancelled() && needs.changes.outputs.code != 'false' }}"
     runs-on: ubuntu-latest
     steps:
       - id: generate_token

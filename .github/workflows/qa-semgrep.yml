@@ -15,7 +15,23 @@ on:
     - cron: '12 15 * * *'
 
 jobs:
+  # Determines whether the pull request touches anything besides documentation.
+  # Everything that only validates code is gated on this, so that docs-only
+  # pull requests don't run the full test suite.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: "${{ steps.detect.outputs.code }}"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - id: detect
+        uses: ./.github/actions/detect-changes
   semgrep:
+    needs:
+      - changes
     name: semgrep/ci
     runs-on: ubuntu-latest
     permissions:
@@ -24,7 +40,7 @@ jobs:
       SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
     container:
       image: semgrep/semgrep
-    if: (github.actor != 'dependabot[bot]')
+    if: "${{ github.actor != 'dependabot[bot]' && !cancelled() && needs.changes.outputs.code != 'false' }}"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
       - run: semgrep ci
