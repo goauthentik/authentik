@@ -15,9 +15,6 @@ from tests.e2e.oauth_source import (
 )
 from tests.selenium import SeleniumTestCase
 
-CLAIM = "http://schemas.goauthentik.io/2021/02/saml/username"
-CLAIM_EMAIL = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-
 
 class TestSourceOAuthAppSAML(SourceAppRedirectMixin, SeleniumTestCase):
     """test OAuth Source login into a SAML application"""
@@ -60,7 +57,10 @@ class TestSourceOAuthAppSAML(SourceAppRedirectMixin, SeleniumTestCase):
         snippet = dumps(body, indent=2)[:500].replace("\n", " ")
         attrs = body.get("attr", {})
 
-        for claim, expected in ((CLAIM, user.username), (CLAIM_EMAIL, user.email)):
+        for claim, expected in (
+            ("http://schemas.goauthentik.io/2021/02/saml/username", user.username),
+            ("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress", user.email),
+        ):
             self.assertEqual(
                 attrs.get(claim),
                 [expected],

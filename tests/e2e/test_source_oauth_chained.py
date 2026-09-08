@@ -37,7 +37,7 @@ from tests.e2e.oauth_source import (
 from tests.e2e.test_source_saml import IDP_CERT, IDP_KEY
 from tests.selenium import SeleniumTestCase
 
-IDP_PORT = 8080
+IDP_PORT = "8080"
 # The test IdP's static user. It answers the SP's NameIDPolicy, and authentik's default
 # is persistent, which this IdP maps to the username -- so that, not the email, is what
 # a UserSAMLSourceConnection is keyed on.
@@ -60,20 +60,6 @@ class ChainedSourceMixin(OIDCAppMixin, AppRedirectMixin, DexOAuthSourceMixin):
     def setUp(self):
         self.saml_slug = generate_id()
         super().setUp()
-        # The IdP binds 9009 inside the container (and its healthcheck hardcodes that
-        # port), so publish it on 8080 instead to leave 9009 to the application
-        self.run_container(
-            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
-            ports={"9009": "8080"},
-            environment={
-                "IDP_ROOT_URL": f"http://{self.host}:{IDP_PORT}",
-                "IDP_METADATA_URL": self.url(
-                    "authentik_sources_saml:metadata", source_slug=self.saml_slug
-                ),
-                "IDP_SIGNING_CERT": IDP_CERT,
-                "IDP_SIGNING_KEY": IDP_KEY,
-            },
-        )
 
     def create_role_source(self, role: str, authentication_flow: Flow, user: User) -> Source:
         """Create the source taking `role`, resolving to `user` without enrollment"""
@@ -98,6 +84,21 @@ class ChainedSourceMixin(OIDCAppMixin, AppRedirectMixin, DexOAuthSourceMixin):
             verification_kp=keypair,
         )
         UserSAMLSourceConnection.objects.create(source=source, user=user, identifier=IDP_USER)
+        # The IdP fetches the source's metadata on startup, so it can only run once the
+        # source exists. It binds 9009 inside the container (and its healthcheck
+        # hardcodes that port), so publish it on 8080 to leave 9009 to the application.
+        self.run_container(
+            image=self.pinned_image("saml-test-idp", "e2e/compose.yml"),
+            ports={"9009": IDP_PORT},
+            environment={
+                "IDP_ROOT_URL": f"http://{self.host}:{IDP_PORT}",
+                "IDP_METADATA_URL": self.url(
+                    "authentik_sources_saml:metadata", source_slug=self.saml_slug
+                ),
+                "IDP_SIGNING_CERT": IDP_CERT,
+                "IDP_SIGNING_KEY": IDP_KEY,
+            },
+        )
         return source
 
     def login_via_role_source(self, role: str):
