@@ -3,14 +3,18 @@
     "version": "2026.11.0-rc1",
     "private": true,
     "scripts": {
-        "lint": "run-s lint:runtime lint:catalogs lint:spellcheck",
+        "check-types": "tsc -b",
+        "lint": "run-s check-types lint:runtime lint:catalogs lint:spellcheck",
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
         "lint:runtime": "node ./scripts/node/lint-runtime.ts",
         "lint:spellcheck": "cspell . --config cspell.config.jsonc"
     },
     "type": "module",
     "imports": {
-        "#logger": "./packages/logger-js/lib/node.js"
+        "#logger": {
+            "types": "./packages/logger-js/out/lib/node.d.ts",
+            "default": "./packages/logger-js/lib/node.js"
+        }
     },
     "dependencies": {
         "@eslint/js": "catalog:",

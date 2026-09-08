@@ -91,6 +91,9 @@ lint-spellcheck:  ## Reports spelling errors.
 lint-catalogs:  ## Reports pnpm catalog pins, and pnpm's own version pin, that drifted between workspaces.
 	node ./scripts/node/lint-catalogs.ts
 
+lint-check-types:  ## Type-check the repository's Node.js scripts.
+	pnpm run check-types
+
 lint: ci-lint-bandit ci-lint-mypy ci-lint-cargo-deny ci-lint-cargo-machete  ## Lint the python and golang sources
 	golangci-lint run -v
 
@@ -365,6 +368,9 @@ ci-lint-clippy: ci--meta-debug
 
 ci-lint-catalogs: ci--meta-debug
 	node ./scripts/node/lint-catalogs.ts
+
+ci-lint-check-types: ci--meta-debug
+	pnpm run check-types
 
 ci-test: ci--meta-debug
 	$(UV) run coverage run manage.py test --keepdb --parallel auto authentik
