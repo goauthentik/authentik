@@ -61,7 +61,7 @@ services:
     image: ghcr.io/linuxserver/openssh-server:10.3_p1-r1-ls236
     profiles: [pin-only]
   traefik:
-    image: docker.io/library/traefik:3.1
+    image: docker.io/library/traefik:v3.7
     profiles: [pin-only]
   nginx:
     image: docker.io/library/nginx:1.27
