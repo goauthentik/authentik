@@ -41,18 +41,20 @@ def monitoring_set_workers(sender, **kwargs):
     """Set worker gauge"""
     worker_version_count = {}
     our_version = parse(authentik_full_version())
-    worker_versions = WorkerStatus.objects.values_list("version", flat=True).distinct()
-    for version in worker_versions:
-        for gauge in (OLD_GAUGE_WORKERS, GAUGE_WORKERS):
-            gauge.labels(version, True).set(0)
-            gauge.labels(version, False).set(0)
     for status in WorkerStatus.objects.filter(last_seen__gt=now() - timedelta(seconds=45)):
         version_matching = parse(status.version) == our_version
         worker_version_count.setdefault(status.version, {"count": 0, "matching": version_matching})
         worker_version_count[status.version]["count"] += 1
-    for version, stats in worker_version_count.items():
-        OLD_GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
-        GAUGE_WORKERS.labels(version, stats["matching"]).set(stats["count"])
+    for gauge in (OLD_GAUGE_WORKERS, GAUGE_WORKERS):
+        # Zero every labelset this process has exported before, rather than the versions
+        # currently in the database: under multiprocess collection a labelset stays in this
+        # process' mmap file until it is overwritten, so a version whose WorkerStatus rows
+        # are already gone would otherwise be reported as connected forever.
+        for metric in gauge.collect():
+            for sample in metric.samples:
+                gauge.labels(**sample.labels).set(0)
+        for version, stats in worker_version_count.items():
+            gauge.labels(version, stats["matching"]).set(stats["count"])
 
 
 @receiver(monitoring_set)

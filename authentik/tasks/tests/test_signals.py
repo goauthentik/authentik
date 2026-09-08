@@ -97,43 +97,57 @@ class TestMonitoringSetQueuedTasksDoesNotScan(TestCase):
 class TestMonitoringSetWorkers(TestCase):
     """Tests for worker-count gauge refreshes."""
 
-    def test_obsolete_version_labels_are_reset(self):
-        """Inactive versions and their old match state are reset to zero."""
-        from authentik.tasks import signals
-
-        statuses = [SimpleNamespace(version="2026.5.6")]
+    def _scrape(self, signals, gauges, versions):
+        """Run the handler with ``versions`` as the currently-live workers."""
         worker_status = mock.Mock()
-        worker_status.objects.values_list.return_value.distinct.return_value = [
-            "2026.5.6",
-            "2026.4.0",
+        worker_status.objects.filter.return_value = [
+            SimpleNamespace(version=version) for version in versions
         ]
-        worker_status.objects.filter.return_value = statuses
-        old_children = {}
-        children = {}
-
-        def old_labels(version, matched):
-            return old_children.setdefault((version, matched), mock.Mock())
-
-        def labels(version, matched):
-            return children.setdefault((version, matched), mock.Mock())
-
         with (
             mock.patch.object(signals, "authentik_full_version", return_value="2026.5.6"),
             mock.patch.object(signals, "WorkerStatus", worker_status),
-            mock.patch.object(signals, "OLD_GAUGE_WORKERS") as old_gauge,
-            mock.patch.object(signals, "GAUGE_WORKERS") as gauge,
+            mock.patch.object(signals, "OLD_GAUGE_WORKERS", gauges[0]),
+            mock.patch.object(signals, "GAUGE_WORKERS", gauges[1]),
         ):
-            old_gauge.labels.side_effect = old_labels
-            gauge.labels.side_effect = labels
             signals.monitoring_set_workers(sender=self)
+        return {
+            gauge._name: {
+                (s.labels["version"], s.labels["version_matched"]): s.value
+                for metric in gauge.collect()
+                for s in metric.samples
+            }
+            for gauge in gauges
+        }
 
-        worker_status.objects.values_list.assert_called_once_with("version", flat=True)
-        worker_status.objects.values_list.return_value.distinct.assert_called_once_with()
-        for gauge_children in (old_children, children):
-            gauge_children[("2026.4.0", True)].set.assert_called_once_with(0)
-            gauge_children[("2026.4.0", False)].set.assert_called_once_with(0)
-            gauge_children[("2026.5.6", False)].set.assert_called_once_with(0)
-            self.assertEqual(
-                gauge_children[("2026.5.6", True)].set.call_args_list,
-                [mock.call(0), mock.call(1)],
+    def test_obsolete_version_labels_are_reset(self):
+        """A version that no longer has any WorkerStatus row is reported as zero.
+
+        The gauges are exported through prometheus' multiprocess collector, where a labelset
+        stays in the process' mmap file until it is overwritten — so it has to be zeroed
+        explicitly, and cannot be derived from the rows still in the database.
+        """
+        from prometheus_client import Gauge
+
+        from authentik.tasks import signals
+
+        gauges = [
+            Gauge(
+                name,
+                "test",
+                ["version", "version_matched"],
+                multiprocess_mode="livemostrecent",
+                registry=None,
             )
+            for name in ("test_admin_workers", "test_tasks_workers")
+        ]
+
+        samples = self._scrape(signals, gauges, ["2026.5.6", "2026.4.0"])
+        for series in samples.values():
+            self.assertEqual(series[("2026.5.6", "True")], 1)
+            self.assertEqual(series[("2026.4.0", "False")], 1)
+
+        # The 2026.4.0 worker is gone, and so is its WorkerStatus row
+        samples = self._scrape(signals, gauges, ["2026.5.6"])
+        for series in samples.values():
+            self.assertEqual(series[("2026.5.6", "True")], 1)
+            self.assertEqual(series[("2026.4.0", "False")], 0)
