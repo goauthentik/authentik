@@ -237,7 +237,7 @@ gen-dev-config:  ## Generate a local development config file
 # grants it arbitrary code execution at install — audit at review time.
 
 node-preinstall:  ## Verify the active Node.js and pnpm versions match what's in package.json.
-	node ./scripts/node/lint-runtime.mjs
+	node ./scripts/node/lint-runtime.ts
 
 node-install: node-preinstall  ## Install the necessary libraries to build Node.js packages
 	pnpm install --frozen-lockfile
@@ -288,7 +288,7 @@ docs-lint-fix: lint-spellcheck
 	pnpm --dir website run prettier
 
 docs-build:
-	node ./scripts/node/lint-runtime.mjs website
+	node ./scripts/node/lint-runtime.ts website
 	pnpm --dir website run build
 
 docs-watch:  ## Build and watch the topics documentation

@@ -13,9 +13,9 @@
 import * as assert from "node:assert/strict";
 import { parseArgs } from "node:util";
 
-import { ConsoleLogger } from "../../packages/logger-js/lib/node.js";
-import { parseCWD, reportAndExit } from "./utils/commands.mjs";
-import { resolveRepoRoot } from "./utils/git.mjs";
+import { parseCWD, reportAndExit } from "./utils/commands.ts";
+import { resolveRepoRoot } from "./utils/git.ts";
+import type { PackageJSON } from "./utils/node.ts";
 import {
     compareVersions,
     findNPMPackage,
@@ -26,19 +26,18 @@ import {
     parseRange,
     pnpm,
     resolvePackageManagerHash,
-} from "./utils/node.mjs";
+} from "./utils/node.ts";
+
+import { ConsoleLogger } from "#logger";
 
 const logger = ConsoleLogger.prefix("lint-runtime");
 
-/**
- * @param {string} start
- */
-async function readRequirements(start) {
+async function readRequirements(start: string) {
     const { packageJSONPath } = await findNPMPackage(start);
 
     logger.info(`Checking versions in ${packageJSONPath}`);
 
-    const packageJSONData = await loadJSON(packageJSONPath);
+    const packageJSONData = await loadJSON<PackageJSON>(packageJSONPath);
 
     const nodeVersion = await node`--version`().then((output) => output.replace(/^v/, ""));
 
@@ -110,10 +109,10 @@ async function main() {
  * Corepack used to verify this suffix on our behalf. Now that it's deprecated, nothing else
  * reads it — so a stale hash would sit in package.json unnoticed until someone trusted it.
  *
- * @param {string} packageManager The raw `packageManager` field.
- * @param {string} [requiredPnpmVersion] The `engines.pnpm` range, when present.
+ * @param packageManager The raw `packageManager` field.
+ * @param requiredPnpmVersion  The `engines.pnpm` range, when present.
  */
-async function lintPackageManager(packageManager, requiredPnpmVersion) {
+async function lintPackageManager(packageManager: string, requiredPnpmVersion?: string) {
     logger.info(`package.json packageManager ${packageManager}`);
 
     const spec = parsePackageManager(packageManager);

@@ -78,7 +78,7 @@ website/
   api/                  # API site (@goauthentik/api-docs) — generated from ../schema.yml
   docusaurus-theme/     # Shared theme/components/redirect logic for all three sites
     theme/              # Swizzled Docusaurus component overrides (shadow built-in theme)
-  scripts/              # Build/lint helper scripts (e.g. lint-runtime.mjs)
+  scripts/              # Build/lint helper scripts (e.g. lint-runtime.ts)
   static/               # Shared static assets
   package.json          # Root workspace definition
 ```

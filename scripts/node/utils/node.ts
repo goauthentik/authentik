@@ -1,23 +1,22 @@
 /**
  * Utility functions for working with npm packages and versions.
- *
- * @import { ExecOptions } from "node:child_process"
  */
 
 import * as fs from "node:fs/promises";
 import { dirname, join } from "node:path";
 
-import { $ } from "./commands.mjs";
+import { $ } from "./commands.ts";
 
 /**
  * Find the nearest directory containing both package.json and pnpm-lock.yaml,
  * starting from the given directory and walking upward.
  *
- * @param {string} start The directory to start searching from.
- * @returns {Promise<{ packageJSONPath: string, packageLockPath: string }>}
+ * @param start The directory to start searching from.
  * @throws {Error} If no co-located package.json and pnpm-lock.yaml are found.
  */
-export async function findNPMPackage(start) {
+export async function findNPMPackage(
+    start: string,
+): Promise<{ packageJSONPath: string; packageLockPath: string }> {
     let currentDir = start;
 
     while (currentDir !== dirname(currentDir)) {
@@ -40,25 +39,20 @@ export async function findNPMPackage(start) {
     throw new Error(`No co-located package.json and pnpm-lock.yaml found above ${start}`);
 }
 
-/**
- * @typedef {object} PackageJSON
- * @property {string} name
- * @property {string} version
- * @property {Record<string, string>} [dependencies]
- * @property {Record<string, string>} [devDependencies]
- * @property {Record<string, string>} [peerDependencies]
- * @property {Record<string, string>} [optionalDependencies]
- * @property {Record<string, string>} [peerDependenciesMeta]
- * @property {Record<string, string>} [engines]
- * @property {Record<string, string>} [devEngines]
- * @property {string} [packageManager]
- */
+export interface PackageJSON {
+    name: string;
+    version: string;
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+    optionalDependencies?: Record<string, string>;
+    peerDependenciesMeta?: Record<string, { optional?: boolean }>;
+    engines?: Record<string, string>;
+    devEngines?: Record<string, string>;
+    packageManager?: string;
+}
 
-/**
- * @param {string} jsonPath
- * @returns {Promise<PackageJSON>}
- */
-export function loadJSON(jsonPath) {
+export function loadJSON<T = unknown>(jsonPath: string): Promise<T> {
     return fs
         .readFile(jsonPath, "utf-8")
         .then(JSON.parse)
@@ -67,30 +61,24 @@ export function loadJSON(jsonPath) {
         });
 }
 
-const PackageJSONComparisonFields = /** @type {const} */ ([
+const PackageJSONComparisonFields = [
     "name",
     "dependencies",
     "devDependencies",
     "optionalDependencies",
     "peerDependencies",
     "peerDependenciesMeta",
-]);
+] as const satisfies ReadonlyArray<keyof PackageJSON>;
 
-/**
- * @typedef {typeof PackageJSONComparisonFields[number]} PackageJSONComparisonField
- */
+export type PackageJSONComparisonField = (typeof PackageJSONComparisonFields)[number];
 
 /**
  * Extracts only the dependency fields from a package.json object for comparison purposes.
- *
- * @param {PackageJSON} data
- * @returns {Pick<PackageJSON, PackageJSONComparisonField>}
  */
-export function pluckDependencyFields(data) {
-    /**
-     * @type {Record<string, unknown>}
-     */
-    const result = {};
+export function pluckDependencyFields(
+    data: PackageJSON,
+): Pick<PackageJSON, PackageJSONComparisonField> {
+    const result: Record<string, unknown> = {};
 
     for (const field of PackageJSONComparisonFields) {
         if (data[field]) {
@@ -98,7 +86,7 @@ export function pluckDependencyFields(data) {
         }
     }
 
-    return /** @type {Pick<PackageJSON, PackageJSONComparisonField>} */ (result);
+    return result as Pick<PackageJSON, PackageJSONComparisonField>;
 }
 
 //#region Versioning
@@ -106,44 +94,40 @@ export function pluckDependencyFields(data) {
 /**
  * Compares two semantic version strings (e.g., "14.17.0").
  *
- * @param {string} a The first version string.
- * @param {string} b The second version string.
- * @returns {number}
+ * A missing part counts as zero, so "24" and "24.0.0" compare equal.
+ *
+ * @param a The first version string.
+ * @param b The second version string.
  */
-export function compareVersions(a, b) {
+export function compareVersions(a: string, b: string): number {
     const pa = a.split(".").map(Number);
     const pb = b.split(".").map(Number);
+
     for (let i = 0; i < 3; i++) {
-        if (pa[i] > pb[i]) return 1;
-        if (pa[i] < pb[i]) return -1;
+        const left = pa[i] ?? 0;
+        const right = pb[i] ?? 0;
+
+        if (left > right) return 1;
+        if (left < right) return -1;
     }
+
     return 0;
 }
 
 /**
  * Runs a Node.js command and returns its stdout output as a string.
- *
- * @param {TemplateStringsArray} strings
- * @param  {...unknown} expressions
- * @returns {(options?: ExecOptions) => Promise<string>}
  */
 export const node = $.bind("node");
 
 /**
  * Runs a pnpm command and returns its stdout output as a string.
- *
- * @param {TemplateStringsArray} strings
- * @param  {...unknown} expressions
- * @returns {(options?: ExecOptions) => Promise<string>}
  */
 export const pnpm = $.bind("pnpm");
 
 /**
  * Parses a version range string, stripping any leading >= and normalizing to three parts.
- * @param {string} range
- * @returns {{ operator: ">=" | "=", version: string }}
  */
-export function parseRange(range) {
+export function parseRange(range: string): { operator: ">=" | "="; version: string } {
     const hasGte = range.startsWith(">=");
     const raw = hasGte ? range.slice(2) : range;
     const parts = raw.split(".").map(Number);
@@ -170,39 +154,56 @@ const NPM_REGISTRY_ORIGIN = process.env.npm_config_registry || "https://registry
  */
 const REGISTRY_TIMEOUT_MS = 10 * 1000;
 
+interface PackageManagerSpec {
+    /**
+     * The package manager's package name, e.g. `pnpm`.
+     */
+    name: string;
+
+    /**
+     * The exact pinned version, e.g. `12.4.0`.
+     */
+    version: string;
+
+    /**
+     * The `sha512.<hex>` suffix, if the pin carries one.
+     */
+    hash: string | null;
+}
+
+const PACKAGE_MANAGER_PATTERN = /^(?<name>@?[^@]+)@(?<version>[^+]+)(?:\+(?<hash>.+))?$/;
+
 /**
- * @typedef {object} PackageManagerSpec
- * @property {string} name The package manager's package name, e.g. `pnpm`.
- * @property {string} version The exact pinned version, e.g. `12.4.0`.
- * @property {string | null} hash The `sha512.<hex>` suffix, if the pin carries one.
+ * The named groups of {@linkcode PACKAGE_MANAGER_PATTERN}. Only `hash` is optional
+ * in the pattern, so a match always carries the other two.
  */
+interface PackageManagerGroups {
+    name: string;
+    version: string;
+    hash?: string;
+}
 
 /**
  * Parses a `packageManager` field, i.e. `pnpm@12.4.0+sha512.37536c26...`
  *
- * @param {string} spec
- * @returns {PackageManagerSpec}
  * @throws {Error} If the field isn't a `<name>@<version>` pin.
  */
-export function parsePackageManager(spec) {
-    const match = /^(?<name>@?[^@]+)@(?<version>[^+]+)(?:\+(?<hash>.+))?$/.exec(spec.trim());
+export function parsePackageManager(spec: string): PackageManagerSpec {
+    const groups = PACKAGE_MANAGER_PATTERN.exec(spec.trim())?.groups as
+        | PackageManagerGroups
+        | undefined;
 
-    if (!match?.groups) {
+    if (!groups) {
         throw new Error(`Malformed packageManager field: ${spec}`);
     }
 
-    const { name, version, hash } = match.groups;
-
-    return { name, version, hash: hash || null };
+    return { name: groups.name, version: groups.version, hash: groups.hash || null };
 }
 
 /**
  * Serializes a {@linkcode PackageManagerSpec} back into a `packageManager` field.
- *
- * @param {PackageManagerSpec} spec
- * @returns {string}
  */
-export function formatPackageManager({ name, version, hash }) {
+export function formatPackageManager({ name, version, hash }: PackageManagerSpec): string {
     return `${name}@${version}` + (hash ? `+${hash}` : "");
 }
 
@@ -212,12 +213,11 @@ export function formatPackageManager({ name, version, hash }) {
  * The npm registry publishes the tarball's integrity as base64 (`sha512-<base64>`),
  * while `packageManager` spells the same digest as hex.
  *
- * @param {string} name The package manager's package name, e.g. `pnpm`.
- * @param {string} version The exact version to look up.
- * @returns {Promise<string>}
+ * @param name The package manager's package name, e.g. `pnpm`.
+ * @param version The exact version to look up.
  * @throws {Error} If the registry can't be reached, or the version isn't published.
  */
-export async function resolvePackageManagerHash(name, version) {
+export async function resolvePackageManagerHash(name: string, version: string): Promise<string> {
     const packageURL = `${NPM_REGISTRY_ORIGIN.replace(/\/$/, "")}/${encodeURIComponent(name)}/${encodeURIComponent(version)}`;
 
     const response = await fetch(packageURL, {
@@ -233,10 +233,7 @@ export async function resolvePackageManagerHash(name, version) {
         );
     }
 
-    /**
-     * @type {{ dist?: { integrity?: string } }}
-     */
-    const manifest = await response.json();
+    const manifest = (await response.json()) as { dist?: { integrity?: string } };
     const integrity = manifest.dist?.integrity;
 
     if (!integrity) {
@@ -244,6 +241,12 @@ export async function resolvePackageManagerHash(name, version) {
     }
 
     const [algorithm, encoded] = integrity.split("-");
+
+    if (!algorithm || !encoded) {
+        throw new Error(
+            `Registry manifest for ${name}@${version} has a malformed dist.integrity: ${integrity}`,
+        );
+    }
 
     return `${algorithm}.${Buffer.from(encoded, "base64").toString("hex")}`;
 }

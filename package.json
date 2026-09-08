@@ -5,7 +5,7 @@
     "scripts": {
         "lint": "run-s lint:runtime lint:catalogs lint:spellcheck",
         "lint:catalogs": "node ./scripts/node/lint-catalogs.ts",
-        "lint:runtime": "node ./scripts/node/lint-runtime.mjs",
+        "lint:runtime": "node ./scripts/node/lint-runtime.ts",
         "lint:spellcheck": "cspell . --config cspell.config.jsonc"
     },
     "type": "module",

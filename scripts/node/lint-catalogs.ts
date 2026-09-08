@@ -25,9 +25,10 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { ConsoleLogger } from "../../packages/logger-js/lib/node.js";
-import { reportAndExit } from "./utils/commands.mjs";
-import { resolveRepoRoot } from "./utils/git.mjs";
+import { reportAndExit } from "./utils/commands.ts";
+import { resolveRepoRoot } from "./utils/git.ts";
+
+import { ConsoleLogger } from "#logger";
 
 import { parse as parseYAML } from "yaml";
 
@@ -89,6 +90,8 @@ function collectCatalog(source: string): Catalog {
  */
 function formatKey(key: string): string {
     const [catalogName, name] = key.split("::", 2);
+
+    if (!name) return key;
 
     return catalogName === DEFAULT_CATALOG ? name : `${name} (catalog: ${catalogName})`;
 }
@@ -230,7 +233,9 @@ async function lintPackageManagerPins(repoRoot: string): Promise<boolean> {
             continue;
         }
 
-        const groups = PACKAGE_MANAGER_PATTERN.exec(manifest.packageManager)?.groups;
+        const groups = PACKAGE_MANAGER_PATTERN.exec(manifest.packageManager)?.groups as
+            | { version: string; hash: string }
+            | undefined;
 
         if (!groups) {
             logger.error(
