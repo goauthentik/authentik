@@ -6,292 +6,158 @@ support_level: community
 
 ## What is PostgreSQL?
 
-> PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development.
+> PostgreSQL is an open source object-relational database system that uses and extends the SQL language.
 >
 > -- https://www.postgresql.org/
 
-This guide covers configuring PostgreSQL's OAuth authentication with authentik.
-
 ## Preparation
+
+This guide configures PostgreSQL OAuth authentication using the device authorization flow and Percona's `pg_oidc_validator`.
 
 The following placeholders are used in this guide:
 
 - `postgresql.company` is the FQDN of the PostgreSQL server.
 - `authentik.company` is the FQDN of the authentik installation.
-- `postgresql` is the slug of the authentik application.
+
+You need the following:
+
+- PostgreSQL 18 or later on both the server and the client, with TLS configured on the server.
+- The optional `libpq-oauth` module on the client. When building PostgreSQL from source, enable it with `--with-libcurl` and install `libcurl`. Some distributions package the module separately. The built-in device authorization flow is not available on Windows.
+- Percona's [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator#getting-started) installed on the server. PostgreSQL does not include an OAuth validator. This guide uses version 1.1.0; Percona describes its packages as experimental.
+- A reverse proxy in front of authentik that normalizes repeated slashes in upstream request paths, as described in [Configure discovery requests](#configure-discovery-requests).
 
 :::info
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-### Requirements
-
-OAuth authentication requires PostgreSQL 18 or later on both the server and the client. PostgreSQL divides OAuth support into three components, all of which must be available:
-
-- **Client**: The client requires the built-in device authorization flow from the optional `libpq-oauth` module. PostgreSQL builds this module when configured with `--with-libcurl`, and the module requires `libcurl` at runtime. Some distributions provide it as a separate package, such as `libpq-oauth` on Debian and Ubuntu. The built-in flow is not available on Windows.
-- **Server**: The server requires an OAuth validator module. The validator checks the bearer token that the client presents and reports the identity associated with it. PostgreSQL does not include a validator, so you must select and install a third-party module. For more information, see [Choose a validator](#choose-a-validator).
-- **authentik**: authentik provides the authorization server through an OAuth2/OpenID Connect provider that has the device code grant enabled.
-
-### Choose a validator
-
-authentik issues access tokens as JWTs signed with the provider's signing key, so the validator has to fetch the provider's JWKS and verify the signature before trusting any claim in the token. PostgreSQL's [Safely Designing a Validator Module](https://www.postgresql.org/docs/18/oauth-validator-design.html) documentation describes additional security considerations.
-
-Several independently developed validator modules are available:
-
-- [`pg_oidc_validator`](https://github.com/percona/pg_oidc_validator) by Percona: Version 1.1.0 validates JWTs against the provider's JWKS and lets you select the claim that identifies the user. The project describes its packages as experimental.
-- [`oauth_validator`](https://github.com/TantorLabs/oauth_validator) by Tantor Labs: This module reads the `sub` and `scope` claims from the JWT payload without verifying the signature. A forged token can therefore be accepted. Do not use this module unless you add signature verification.
-- [`pg_oidc_validator`](https://github.com/dvob/pg_oidc_validator) by dvob: This module verifies JWTs by using OpenID Connect discovery and JWKS. The project describes itself as a proof of concept for exploring Kubernetes service account authentication.
-
-These descriptions reflect the state of each project as of September 2026. Because the modules are developed independently of PostgreSQL, review the current status and implementation of the module that you select. Confirm that it verifies token signatures and all required claims before using it in production.
-
-This guide uses Percona's `pg_oidc_validator`.
-
 ## authentik configuration
 
-To integrate PostgreSQL with authentik, create an application/provider pair and configure a device code flow.
+To support the integration of PostgreSQL with authentik, you need to create an application/provider pair and configure a device code flow.
 
-### Create an application and provider in authentik
+### Create an application and provider
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications**, and click **New Application** to open the application wizard.
+2. Navigate to **Applications** > **Applications** and click **New Application** to open the application wizard.
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Note the **Slug** value because it is required later.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** value because it is required later.
-        - Set **Client type** to `Public`.
-        - Under **Grant Types**, select `Device-code`. This is the grant that `libpq`'s built-in flow uses, so no **Redirect URI** is needed. An application that installs its own OAuth hook can use a different grant.
-        - Select an available **Signing Key**. The validator reads the access token as a signed JWT and retrieves the corresponding public key from the provider's JWKS.
-        - Leave **Include claims in id_token** enabled so that the required claims from the selected scope mappings are included in the issued tokens.
+        - Set **Client Type** to `Public`.
+        - Under **Grant Types**, select only `Device-code`. This flow does not require a redirect URI.
+        - Select an available **Signing Key** so that the validator can verify access tokens using the provider's public key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/bindings-overview/) (policy, group, or user) to manage access to PostgreSQL and its listing on a user's **Application Dashboard** page.
 3. Click **Submit** to save the new application and provider.
 
-### Apply a device code flow
+### Configure a device code flow
 
-The built-in `libpq` flow uses the OAuth device authorization grant. This grant requires a device code flow on the brand that serves `authentik.company`.
+[Create and apply a device code flow](/docs/add-secure-apps/providers/oauth2/device_code/#create-and-apply-a-device-code-flow) to the brand that serves `authentik.company`. Skip this step if the brand already has a device code flow configured.
 
-Because the device code flow is configured per brand, you can skip this section if the brand already has one. Otherwise, follow [Create and apply a device code flow](/docs/add-secure-apps/providers/oauth2/device_code/#create-and-apply-a-device-code-flow).
+### Configure discovery requests
 
-### Choose the issuer URL
+Use `https://authentik.company/application/o/<application_slug>/` as the issuer URL throughout this guide, including the trailing slash.
 
-The following exact string comparisons must succeed:
+PostgreSQL and Percona's validator append `/.well-known/openid-configuration` to this URL. Configure your reverse proxy to forward the resulting `//.well-known/openid-configuration` path to authentik with a single slash.
 
-- `libpq` constructs an issuer identifier from the discovery URL by removing the `/.well-known/` segment. It then requires the resulting value to match the `issuer` field in the discovery document.
-- The validator compares the access token's `iss` claim with the `issuer` value in `pg_hba.conf`.
-
-authentik reports its issuer with a trailing slash. Use that value verbatim in both `pg_hba.conf` and the client connection string:
-
-```text
-https://authentik.company/application/o/postgresql/
-```
-
-PostgreSQL builds the discovery URL by appending `/.well-known/openid-configuration` to the issuer. This produces a doubled slash:
-
-```text
-https://authentik.company/application/o/postgresql//.well-known/openid-configuration
-```
-
-authentik returns a `404` response for that path. The reverse proxy in front of authentik must therefore normalize the doubled slash before forwarding the request.
-
-For example, nginx does not normalize the upstream request when `proxy_pass` has no URI component. If you use nginx, route the request through `$uri` so that nginx applies its path normalization:
+For nginx, add a trailing `/` to the upstream URL in the `proxy_pass` directive in your existing `location /` block:
 
 ```nginx
-location / {
-    proxy_pass http://authentik$uri$is_args$args;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-}
+proxy_pass http://authentik/;
 ```
 
-Adapt this example to your existing reverse proxy configuration, and preserve any other headers or settings that your authentik deployment requires.
+Use your existing upstream address in place of `http://authentik` and retain the other proxy settings, including headers. Reload the reverse proxy after changing its configuration.
 
-Before you configure PostgreSQL, confirm that both URLs return the same discovery document and that its `issuer` value is `https://authentik.company/application/o/postgresql/`:
+Confirm that the following request returns the discovery document and that its `issuer` value is `https://authentik.company/application/o/<application_slug>/`:
 
 ```bash
-curl -s "https://authentik.company/application/o/postgresql/.well-known/openid-configuration" | jq .issuer
-curl -s "https://authentik.company/application/o/postgresql//.well-known/openid-configuration" | jq .issuer
+curl --fail --silent --show-error \
+  'https://authentik.company/application/o/<application_slug>//.well-known/openid-configuration' \
+  | jq .issuer
 ```
-
-:::note Why not use the RFC 8414 URL?
-authentik also serves the metadata at https://authentik.company/.well-known/oauth-authorization-server/application/o/postgresql/. This URL satisfies `libpq` without requiring the reverse proxy to normalize a doubled slash. However, `pg_oidc_validator` 1.1.0 cannot use it for the following reasons:
-
-- Unless the configured issuer ends with `/.well-known/openid-configuration`, the validator appends that suffix to construct the metadata URL. Appending it to the RFC 8414 URL produces a path that returns a `404` response.
-- The validator compares the token's `iss` claim directly with the `issuer` value in `pg_hba.conf`, rather than with the issuer identifier derived from the discovery document URI. As a result, it rejects the token with `claim value does not match expected value`.
-
-`pg_hba.conf` accepts either an issuer identifier or a discovery document URI. A validator that correctly supports the second form can use the RFC 8414 URL without requiring the reverse proxy workaround.
-:::
 
 ## PostgreSQL configuration
 
-### Install and enable the validator
+### Enable the validator
 
-Install Percona's `pg_oidc_validator` on the PostgreSQL server. Then add the following settings to `postgresql.conf`:
+Add the following settings to the PostgreSQL server configuration:
 
 ```ini title="postgresql.conf"
 oauth_validator_libraries = 'pg_oidc_validator'
 pg_oidc_validator.authn_field = 'email'
 ```
 
-The `authn_field` setting selects the token claim that identifies the user. Its default value is `sub`, which contains an opaque identifier when authentik uses its default **Subject Mode**. Setting `authn_field` to `email` provides an identity that can be mapped to PostgreSQL roles more directly.
+The validator uses the `email` claim to identify users. Complete the authentication and identity mapping configuration below before reloading PostgreSQL.
 
-Apply the configuration in the following order, and reload PostgreSQL after you have completed all the steps:
+If the server accesses authentik through a different address, set `pg_oidc_validator.discovery_url_override` to the discovery URL reachable from the server. This setting changes where the validator fetches metadata; it does not change the expected token issuer.
 
-1. Set `oauth_validator_libraries` and `pg_oidc_validator.authn_field` in `postgresql.conf`.
-2. Add the `oauth` entry to `pg_hba.conf`, as described in [Configure authentication](#configure-authentication).
-3. Add the identity map to `pg_ident.conf`.
-4. Reload PostgreSQL.
+### Configure authentication and role mapping
 
-PostgreSQL validates every `oauth` entry in `pg_hba.conf` against `oauth_validator_libraries` when it reads the file. If no validator is configured, PostgreSQL reports the following error:
+1. Add the following entry above any other entry in `pg_hba.conf` that matches the same connections. Adjust the database, user, and address fields to limit which connections use OAuth.
 
-```text
-oauth_validator_libraries must be set for authentication method oauth
+    ```text title="pg_hba.conf"
+    # TYPE   DATABASE  USER  ADDRESS  METHOD  OPTIONS
+    hostssl  all       all   all      oauth   issuer="https://authentik.company/application/o/<application_slug>/" scope="openid email" map=authentik
+    ```
+
+2. Map authentik email addresses to PostgreSQL roles:
+
+    ```text title="pg_ident.conf"
+    # MAPNAME  SYSTEM-USERNAME       PG-USERNAME
+    authentik  /^(.*)@company\.com$  \1
+    ```
+
+    This example maps `alice@company.com` to the PostgreSQL role `alice`. Adjust the pattern for your email domain and role names.
+
+3. Create the corresponding PostgreSQL roles with the `LOGIN` attribute and grant the database privileges that each role needs. For example, to create the role used in this guide:
+
+    ```sql
+    CREATE ROLE alice LOGIN;
+    ```
+
+    OAuth does not create roles or grant database privileges.
+
+4. Reload PostgreSQL to apply all three configuration files. For example, run the following as a PostgreSQL administrator:
+
+    ```sql
+    SELECT pg_reload_conf();
+    ```
+
+### Map users to a shared role _(optional)_
+
+To let multiple users connect as the same PostgreSQL role, replace the identity map with the following:
+
+```text title="pg_ident.conf"
+# MAPNAME  SYSTEM-USERNAME       PG-USERNAME
+authentik  /^(.*)@company\.com$  employees
 ```
 
-During startup, this error is fatal and prevents the server from starting. On a running server, PostgreSQL logs `pg_hba.conf was not reloaded` and continues using the previously loaded rules.
+Create the `employees` role with `LOGIN`, grant its required privileges, and reload PostgreSQL. Users must specify `user=employees` when connecting. `current_user` returns `employees`, while `system_user` retains the authenticated identity, such as `oauth:alice@company.com`.
 
-### Configure authentication
-
-Add the following OAuth entry to `pg_hba.conf`. Place it above any other entry that matches the same connections:
-
-```text title="pg_hba.conf"
-# TYPE     DATABASE  USER  ADDRESS  METHOD  OPTIONS
-hostssl    all       all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email" map=authentik
-```
-
-The `hostssl` type requires TLS to be configured and `ssl` to be `on`. PostgreSQL otherwise logs `hostssl record cannot match because SSL is disabled` and ignores the entry, while the client sees only `no pg_hba.conf entry for host ...`, which does not point at the cause. Use `host` instead if you terminate TLS elsewhere.
-
-The `all` address keyword matches both IPv4 and IPv6 clients, where a CIDR such as `0.0.0.0/0` matches IPv4 only. The `scope` value has to be covered by the provider's scope mappings in authentik; `openid email` matches the defaults and provides the `email` claim that `authn_field` reads.
-
-Then map identities to database roles in `pg_ident.conf`:
-
-```text
-# MAPNAME    SYSTEM-USERNAME         PG-USERNAME
-authentik    /^(.*)@company\.com$    \1
-```
-
-This example maps `alice@company.com` to the PostgreSQL role `alice`. Adjust the pattern for your domain and naming conventions, and create the corresponding roles in PostgreSQL before users connect.
-
-Reload PostgreSQL after both files are in place.
+:::warning Token and session lifetime
+The validator checks tokens only when a connection is established and does not check revocation with authentik. An issued token can still open connections until it expires, even after the user's application access is removed. Existing database sessions remain open after token expiry. Use PostgreSQL's `pg_terminate_backend()` when you need to end an active session.
+:::
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with PostgreSQL, connect with `psql` from a client that has the OAuth flow module available:
+Connect to PostgreSQL with `psql` from a client that has the `libpq-oauth` module installed. Use a role that matches your identity map:
 
 ```bash
-psql "host=postgresql.company dbname=postgres user=alice \
-  oauth_issuer=https://authentik.company/application/o/postgresql/ \
-  oauth_client_id=<client_id_from_authentik>"
+psql "host=postgresql.company dbname=postgres user=alice sslmode=require \
+  oauth_issuer=https://authentik.company/application/o/<application_slug>/ \
+  oauth_client_id=<Client ID from authentik>"
 ```
 
-`psql` displays a URL and a code:
-
-```text
-Visit https://authentik.company/device and enter the code: 284051992
-```
-
-Open the URL in a browser, enter the code, and authenticate with authentik. `psql` completes the connection once the flow finishes. Run `SELECT current_user;` and confirm that it returns the mapped role.
-
-Two failures are common. A client-side error naming the issuer identifier means the proxy is not collapsing the doubled slash, or the trailing slash is missing from `issuer` or `oauth_issuer`:
-
-```text
-failed to fetch OpenID discovery document: unexpected response code 404
-```
-
-A server-side rejection in the PostgreSQL log means the token's `iss` claim does not equal the `issuer` string in `pg_hba.conf`:
-
-```text
-WARNING:  OAuth validation failed with exception: claim value does not match expected value
-FATAL:  OAuth bearer authentication failed for user "alice"
-```
-
-If the database server reaches authentik through a different URL than clients do, for example inside a container network, set `pg_oidc_validator.discovery_url_override` to the internal URL. It changes only where the validator fetches metadata and JWKS, not the issuer it expects in the token.
-
-## Mapping users to roles
-
-OAuth authenticates a user and maps their identity onto a database role. It does not create roles. Someone who authenticates successfully but has no matching role is refused with `role "<name>" does not exist`, so create the roles in PostgreSQL before anyone connects, by hand or through your provisioning tooling.
-
-### Shared roles
-
-The map in [Configure authentication](#configure-authentication) gives each person their own role. You can instead point several people at one role, which keeps the number of roles you have to create small:
-
-```text
-# MAPNAME    SYSTEM-USERNAME         PG-USERNAME
-authentik    /^(.*)@company\.com$    employees
-```
-
-PostgreSQL continues to record the authenticated identity. `current_user` returns the PostgreSQL role, while `system_user` returns the authenticated OAuth identity:
-
-```text
- current_user |       system_user
---------------+--------------------------
- employees    | oauth:alice@company.com
-```
-
-### Let authentik select the role
-
-`authn_field` can read any claim in the token, so authentik can decide which role someone receives. Add a scope mapping to the provider that returns the role name, for example from group membership:
-
-```python
-return {"pg_role": "analyst" if user.ak_groups.filter(name="db-analysts").exists() else "readonly"}
-```
-
-Read that claim instead of `email`:
-
-```ini title="postgresql.conf"
-pg_oidc_validator.authn_field = 'pg_role'
-```
-
-With a map that passes the claim through unchanged, the role someone can connect as follows their groups in authentik, and moving them between groups changes it without touching PostgreSQL:
-
-```text
-# MAPNAME   SYSTEM-USERNAME   PG-USERNAME
-pgrole      /^(.*)$           \1
-```
-
-PostgreSQL enforces this when the connection is made. A user whose claim resolves to `readonly` is refused if they ask for the `analyst` role.
-
-`system_user` then reports the role rather than the person, because it reflects whichever claim `authn_field` names. Choose this when you want group membership in authentik to drive database access, and keep `email` when you want each connection attributable to an individual.
-
-### Limiting access by scope
-
-`pg_hba.conf` matches on database as well as address, and the validator checks that the token carries every scope the matching line requires. Two lines can therefore require more of one database than of the rest:
-
-```text
-# TYPE   DATABASE   USER  ADDRESS  METHOD  OPTIONS
-hostssl  analytics  all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email analytics" map=authentik
-hostssl  all        all   all      oauth   issuer="https://authentik.company/application/o/postgresql/" scope="openid email" map=authentik
-```
-
-A token carrying only `openid email` reaches the other databases and is refused on `analytics`. Add a scope mapping named `analytics` to the provider as well, because authentik drops requested scopes that the provider does not define.
-
-### Filtering rows by identity
-
-`system_user` holds the authenticated identity, so a row-level security policy can narrow what each person reads even when several of them share one role:
+Open the URL displayed by `psql`, enter the code, and log in via authentik. After the connection completes, run the following query and confirm that it returns the expected role and email address:
 
 ```sql
-ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
-CREATE POLICY own_notes ON notes USING (owner = system_user);
+SELECT current_user, system_user;
 ```
 
-The comparison is against the whole `system_user` value, including its authentication method prefix, so `owner` has to hold `oauth:alice@company.com` rather than `alice@company.com`. Under the shared `employees` map above, two people connecting as that same role each then read only their own rows.
-
-[Row-level security does not apply to the role that owns the table](https://www.postgresql.org/docs/18/ddl-rowsecurity.html). A shared role that owns the tables it reads sees every row and the policy has no effect, so either add `ALTER TABLE ... FORCE ROW LEVEL SECURITY` or keep table ownership separate from the roles people log in as.
-
-### Privileges and session lifetime
-
-Privileges stay with PostgreSQL either way. authentik selects the role, and `GRANT` decides what that role can do.
-
-The validator runs once, when the connection is made, and nothing re-checks the token after that, so a session stays usable after its token expires.
-
-Revocation is limited in the same way. The validator verifies the token offline against the provider's JWKS and never asks authentik whether it is still valid, so for an individual token expiry is the only thing that ends it. An issued token keeps working after it, or the user's access to the application, is removed in authentik. `libpq`'s built-in flow does not cache tokens, so it runs the device flow again for each connection. Removing the user's access to the application stops new `psql` sessions; revoking a single token does not, because the user can obtain another. A client holding an issued token can keep reconnecting with it either way.
-
-Replacing the provider's signing key makes every token signed with the old one fail the next time it is presented, once the validator picks up the new JWKS. It blocks new connections for everyone using the provider rather than for one person, and sessions that are already established keep running, so it invalidates everything at once rather than revoking one person's access. Keep **Access token validity** short, and use `pg_terminate_backend()` to close sessions that are already open.
+If discovery fails with a `404` response, check that the reverse proxy forwards the discovery path with a single slash. If the validator reports `claim value does not match expected value`, check that the issuer in `pg_hba.conf` matches the discovery document, including the trailing slash.
 
 ## Resources
 
-- [PostgreSQL documentation: OAuth Authorization/Authentication](https://www.postgresql.org/docs/18/auth-oauth.html)
-- [PostgreSQL documentation: OAuth Support in libpq](https://www.postgresql.org/docs/18/libpq-oauth.html)
-- [PostgreSQL documentation: OAuth Validator Modules](https://www.postgresql.org/docs/18/oauth-validators.html)
-- [Percona pg_oidc_validator repository](https://github.com/percona/pg_oidc_validator)
-- [PostgreSQL documentation: Row Security Policies](https://www.postgresql.org/docs/18/ddl-rowsecurity.html)
-- [RFC 8414: OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
+- [PostgreSQL documentation - OAuth Authorization/Authentication](https://www.postgresql.org/docs/18/auth-oauth.html)
+- [PostgreSQL documentation - OAuth Support in libpq](https://www.postgresql.org/docs/18/libpq-oauth.html)
+- [PostgreSQL documentation - User Name Maps](https://www.postgresql.org/docs/18/auth-username-maps.html)
+- [Percona pg_oidc_validator - Configuration](https://github.com/percona/pg_oidc_validator#configuration)
+- [nginx documentation - proxy_pass](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass)
