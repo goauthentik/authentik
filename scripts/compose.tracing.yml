@@ -20,6 +20,11 @@ services:
     ports:
       - 127.0.0.1:4318:4318 # OTLP HTTP receiver
     restart: always
+  pyroscope:
+    image: docker.io/grafana/pyroscope:latest
+    ports:
+      - 127.0.0.1:4040:4040
+    restart: always
 
   grafana:
     image: docker.io/grafana/grafana:latest
@@ -57,8 +62,20 @@ configs:
     content: |
       apiVersion: 1
       datasources:
+        - name: Pyroscope
+          type: grafana-pyroscope-datasource
+          access: proxy
+          orgId: 1
+          uid: pyroscope
+          url: http://pyroscope:4040
         - name: Tempo
           type: tempo
           access: proxy
           url: http://tempo:3200
           isDefault: true
+          uid: tempo
+          jsonData:
+            tracesToProfiles:
+              datasourceUid: 'pyroscope'
+              tags: [{ key: 'service.name', value: 'service_name' }]
+              profileTypeId: 'process_cpu:cpu:nanoseconds:cpu:nanoseconds'
