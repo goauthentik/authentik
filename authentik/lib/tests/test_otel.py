@@ -11,6 +11,7 @@ from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanE
 
 from authentik.lib.tracing import otel
 from authentik.lib.tracing.exceptions import TracingIgnoredException, should_ignore_exception
+from authentik.lib.tracing.otel_django_middleware import _traced_middleware_path
 
 
 def _marker(name: str) -> None:
@@ -71,7 +72,7 @@ class TestOtelMiddleware(TestCase):
         self.addCleanup(patcher.stop)
 
     def _run(self, path, get_response):
-        middleware = import_string(otel._traced_middleware_path(path))(get_response)
+        middleware = import_string(_traced_middleware_path(path))(get_response)
         result = middleware("request")
         return middleware, result
 
@@ -112,7 +113,7 @@ class TestOtelMiddleware(TestCase):
             _marker("handler")
             return "response"
 
-        middleware = import_string(otel._traced_middleware_path(path))(get_response)
+        middleware = import_string(_traced_middleware_path(path))(get_response)
         self.assertEqual(async_to_sync(middleware)("request"), "response")
         self._assert_phases(path)
 
@@ -128,9 +129,7 @@ class TestOtelMiddleware(TestCase):
 
         path = "authentik.lib.tests.test_otel.DummyMiddleware"
         with patch("authentik.lib.tests.test_otel.DummyMiddleware", ShortCircuit):
-            middleware = import_string(otel._traced_middleware_path(path))(
-                lambda request: "response"
-            )
+            middleware = import_string(_traced_middleware_path(path))(lambda request: "response")
         self.assertEqual(middleware("request"), "short")
         self.assertEqual(
             [span.name for span in self.exporter.get_finished_spans()], [f"{path} (pre)"]
