@@ -2,7 +2,7 @@
 
 # Tag must track the root package.json `packageManager` version. ${BUILDPLATFORM}
 # keeps the binary's arch aligned with the builder stage on cross-arch builds.
-FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:11.20.0@sha256:d77573aba1649491010d3d252214be47197c0706417793cf393ac47cc324f315 AS pnpm
+FROM --platform=${BUILDPLATFORM} ghcr.io/pnpm/pnpm:12.4.0@sha256:4fcb6db39468ecafef34f3e866730df106f7639ba4512e42885d80f868ccb257 AS pnpm
 
 # Stage: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:26-trixie-slim@sha256:715e55e4b84e4bb0ff48e49b398a848f08e55daed8eb6a0ea1839ae53bc57583 AS node-builder
@@ -21,7 +21,7 @@ RUN --mount=type=bind,target=/work/package.json,src=./package.json \
     --mount=type=bind,target=/work/web/pnpm-lock.yaml,src=./web/pnpm-lock.yaml \
     --mount=type=bind,target=/work/scripts/node/,src=./scripts/node/ \
     --mount=type=bind,target=/work/packages/logger-js/,src=./packages/logger-js/ \
-    node ./scripts/node/lint-runtime.mjs ./web
+    node ./scripts/node/lint-runtime.ts ./web
 
 WORKDIR /work/web
 
