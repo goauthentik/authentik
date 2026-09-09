@@ -38,6 +38,7 @@ class PlexSourceSerializer(SourceSerializer):
             "allow_friends",
             "plex_token",
         ]
+        secret_fields = ["plex_token"]
 
 
 class PlexTokenRedeemSerializer(PassiveSerializer):
