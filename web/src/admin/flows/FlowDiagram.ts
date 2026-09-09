@@ -28,6 +28,9 @@ const EditIconStyles = css`
         block-size: var(--pf-global--spacer--lg, 1.5rem);
         padding: 0;
         line-height: 1;
+
+        --pf-global--Color--200: var(--pf-global--palette--purple-600);
+        --pf-global--Color--100: var(--pf-global--palette--purple-700);
     }
 `;
 
