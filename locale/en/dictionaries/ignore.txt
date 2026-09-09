@@ -8,6 +8,7 @@ buildx
 goauthentik
 llmstxt
 lxml
+mpvq
 pässwörd
 phlebotinum
 qewr
