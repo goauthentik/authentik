@@ -20,7 +20,9 @@ runs:
     - name: Cleanup apt
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       shell: bash
-      run: sudo apt-get remove --purge man-db
+      run: |
+        sudo rm -f /etc/apt/sources.list.d/google-chrome.*
+        sudo apt-get remove --purge man-db
     - name: Install apt deps
       if: ${{ contains(inputs.dependencies, 'system') || contains(inputs.dependencies, 'python') }}
       uses: gerlero/apt-install@c0fa73fe5c4a22deecf6d629565be92a15dd2026
