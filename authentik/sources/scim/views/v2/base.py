@@ -76,6 +76,7 @@ class SCIMView(APIView):
                 ("userName", None, None): "user__username",
                 ("active", None, None): "user__is_active",
                 ("name", "familyName", None): "attributes__familyName",
+                ("externalId", None, None): "external_id",
             }
         elif self.model == Group:
             attr_map = {
@@ -84,6 +85,7 @@ class SCIMView(APIView):
                 # `members` is a many-to-many relation, so it has to be filtered on a
                 # concrete field of the related user instead of on the relation itself
                 ("members", None, None): "group__users__uuid",
+                ("externalId", None, None): "external_id",
             }
         try:
             query = get_query(path, attr_map)
