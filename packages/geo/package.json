@@ -46,12 +46,7 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24",
-            "onFail": "warn"
-        },
-        "packageManager": {
-            "name": "pnpm",
-            "version": ">=11.5.1",
+            "version": ">=24.20",
             "onFail": "warn"
         }
     },

@@ -1,14 +1,26 @@
 /**
  * @file Shared utilities for the live reload plugin.
+ */
+
+/**
+ * The subset of the console API this plugin logs through.
  *
- * @import { BaseLogger } from "@goauthentik/logger-js";
+ * Declared here rather than borrowed from a logging package so that neither the
+ * plugin nor its published types require one: any `console` will do.
+ *
+ * @typedef {object} ConsoleLike
+ * @property {typeof console.info} info
+ * @property {typeof console.warn} warn
+ * @property {typeof console.error} error
+ * @property {typeof console.debug} debug
+ * @property {typeof console.trace} trace
  */
 
 /**
  * Creates a logger with the given prefix.
  *
  * @param {string} [prefix]
- * @returns {BaseLogger}
+ * @returns {ConsoleLike}
  */
 export function createLogger(prefix = "[Build Observer]") {
     return {
